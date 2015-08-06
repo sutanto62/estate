@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <!-- Action -->
+        <record model="ir.actions.act_window" id="action_list_variety">
+            <field name="name">Seed Variety</field>
+            <field name="res_model">estate_nursery.seed_variety</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.actions.act_window" id="action_list_progeny">
+            <field name="name">Seed Progeny</field>
+            <field name="res_model">estate_nursery.seed_progeny</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.actions.act_window" id="action_list_nursery_block">
+            <field name="name">Nursery Block</field>
+            <field name="res_model">estate_nursery.block</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- View -->
+        <record id="view_nursery_block_inherited" model="ir.ui.view">
+            <field name="name">Nursery Block</field>
+            <field name="model">estate_nursery.block</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Block" colors="blue:usage=='view';black:usage=='internal'">
+                    <field name="name"/>
+                    <field name="usage"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_nursery_block_form" model="ir.ui.view">
+            <field name="name">estate_nursery.block.form</field>
+            <field name="model">estate_nursery.block</field>
+            <field name="arch" type="xml">
+               <form string="Nursery Block">
+                   <field name="name"/>
+                   <field name="location_id"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="estate_nursery_menu" name="Nursery" parent="estate.main_estate_menu"/>
+        <menuitem id="nursery_seed_statement" name="Nursery Statement" parent="estate_nursery_menu" action="action_list_variety"/>
+        <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu"/>
+        <menuitem id="config_nursery_block" name="Nursery Block" parent="estate.estate_blocking_menu" action="action_list_nursery_block"/>
+        <menuitem id="config_seed_variety" name="Seed Variety" parent="estate.estate_config_menu" action="action_list_variety"/>
+        <menuitem id="config_seed_progeny" name="Seed Progeny" parent="estate.estate_config_menu" action="action_list_progeny"/>
+    </data>
+</openerp>

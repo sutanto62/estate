@@ -1,0 +1,34 @@
+<openerp>
+    <data>
+        <record id="variety0" model="estate_nursery.seed_variety">
+            <field name="name">Dami Mas</field>
+        </record>
+        <record id="progeny0" model="estate_nursery.seed_progeny">
+            <field name="name">Dami Mas 1</field>
+        </record>
+        <record id="nurseryblock0" model="estate_nursery.block">
+            <field name="name">A1</field>
+        </record>
+        <!--  -->
+        <!--   <record id="object0" model="estate_nursery.estate_nursery"> -->
+        <!--     <field name="name">Object 0</field> -->
+        <!--   </record> -->
+        <!--  -->
+        <!--   <record id="object1" model="estate_nursery.estate_nursery"> -->
+        <!--     <field name="name">Object 1</field> -->
+        <!--   </record> -->
+        <!--  -->
+        <!--   <record id="object2" model="estate_nursery.estate_nursery"> -->
+        <!--     <field name="name">Object 2</field> -->
+        <!--   </record> -->
+        <!--  -->
+        <!--   <record id="object3" model="estate_nursery.estate_nursery"> -->
+        <!--     <field name="name">Object 3</field> -->
+        <!--   </record> -->
+        <!--  -->
+        <!--   <record id="object4" model="estate_nursery.estate_nursery"> -->
+        <!--     <field name="name">Object 4</field> -->
+        <!--   </record> -->
+        <!--  -->
+    </data>
+</openerp>
