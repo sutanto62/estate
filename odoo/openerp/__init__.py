@@ -29,8 +29,8 @@ import sys
 evented = False
 
 # comment for pycharm debbuging
-#if sys.modules.get("gevent") is not None:
-#    evented = True
+if sys.modules.get("gevent") is not None:
+    evented = True
 
 # Is the server running in pefork mode (e.g. behind Gunicorn).
 # If this is True, the processes have to communicate some events,
