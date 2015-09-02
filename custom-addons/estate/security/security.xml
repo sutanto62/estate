@@ -1,0 +1,19 @@
+<openerp>
+    <data>
+        <record id="estate.group_user" model="res.groups">
+            <field name="name">Estate User</field>
+        </record>
+        <record id="estate.group_clerk" model="res.groups">
+            <field name="name">Estate Clerk</field>
+        </record>
+        <record id="estate.group_assistant" model="res.groups">
+            <field name="name">Estate Assistant</field>
+        </record>
+        <record id="estate.group_manager" model="res.groups">
+            <field name="name">Estate Manager</field>
+        </record>
+        <record id="estate.group_agronom" model="res.groups">
+            <field name="name">Estate Agronom</field>
+        </record>
+    </data>
+</openerp>

@@ -47,7 +47,6 @@ class Variety(models.Model):
     name = fields.Char(string="Variety Name")
     code = fields.Char(string="Short Name", help="Use for reporting label purposes.", size=3)
     comment = fields.Text(string="Additional Information")
-    # partner_id = fields.Many2one('res.partner', string="Supplier", domain=[('supplier','=',True)]) # fixme company?
     active = fields.Boolean("Planting Allowed", default=True, help="Seed Variety allowed to be planted.")
 
 
@@ -60,6 +59,12 @@ class Progeny(models.Model):
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety")
     comment = fields.Text(string="Additional Information")
     active = fields.Boolean("Planting Allowed", default=True, help="Seed Progeny allowed to be planted.")
+    supplier_id = fields.Many2one('res.partner', string="Supplier", domain=[('supplier','=',True)])
+    height_tree = fields.Float('Tree Height', digits=(2,2))
+    height_growth_speed= fields.Float('Average Growth Speed', help='Average growth speed per metric/year', digts=(2,2))
+    age_harvest = fields.Integer('Harvested Age', help='Ripe Age in Month')
+    weight_bunch = fields.Float('Average Weight FBR', help='Average weight in kilograms.')
+    oil_production = fields.Float('Oil Production', help='Average oil production per tonne/hectare/year', digits=(2,2))
 
 
 class Condition(models.Model):
@@ -156,26 +161,62 @@ class Cause(models.Model):
     stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage")
 
 class TransferDetail(models.TransientModel):
+    """Extend Transfer Detail to create Seed Batch."""
     _inherit = 'stock.transfer_details'
 
-    date_received = fields.Date("Date Received") # todo hide if stock move product is not seed
+    date_received = fields.Date("Date Received", help="Date of Seed received.") # todo hide if stock move product is not seed
+    partner_id = fields.Many2one('res.partner', string="Supplier", related='picking_id.partner_id', store=False, readonly=True)
 
+    # todo Create Seed Batch
     @api.one
     def do_detailed_transfer(self):
         """
         Extend stock transfer wizard for seed batch
         """
-        for item in self.item_ids:
-            # super(TransferDetail, self).do_detailed_transfer()
-            # Create Seed Batch
-            if item.product_id.seed:
-                self.do_create_batch(item.lot_id)
-                print "%s is a seed with Lot %s" % (item.product_id.seed, item.lot_id.name)
+        partner =  self.picking_id.partner_id
 
+        for item in self.item_ids:
+            # Create stock move Supplier to Internal Warehouse (Gudang Kebun)
+            # super(TransferDetail, self).do_detailed_transfer()
+
+            if item.product_id.seed:
+                # Create stock move Internal Warehouse to Production
+                # ...
+
+                if (item.variety_id and item.progeny_id):
+                    self.do_create_batch(item, self)
+
+                # Check and create batch (box) and batchline (bag) for seed product.
+                #       if product has no package
+                #           create one box and one bag
+                #       else
+                #           create batch and its batchline as product package.
+                # Check and create lot for current good receipt
+
+            print "Item %s (%s) has Seed field value of %s" % (item.product_id.name, partner.name, item.product_id.seed)
         return True
 
     @api.one
-    def do_create_batch(self, lot):
-        """
-        Create Seed Batch
-        """
+    def do_create_batch(self, item, transfer):
+        """Create Seed Batch by Lot/Serial for seed product."""
+        # Check first packaging
+        product = item.product_id
+        packaging = product.packaging_ids[0]
+
+        print "Create Batch for product is %s (box: %s, bag: %s @ %s)" % (product.name,
+                                                                          packaging.ul_container.name,
+                                                                          packaging.ul.name,
+                                                                          packaging.qty * packaging.ul_qty)
+
+        return True
+
+class TransferDetailItem(models.TransientModel):
+    """
+    Extend Transfer Detail Items to include Variety and Progeny information
+    """
+    _inherit = 'stock.transfer_details_items'
+
+    is_seed = fields.Boolean("Is Seed", related='product_id.seed')
+    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", ondelete="restrict")
+    progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", ondelete="restrict",
+                                 domain="[('variety_id','=',variety_id)]")

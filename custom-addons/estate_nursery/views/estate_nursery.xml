@@ -152,7 +152,7 @@
             </field>
         </record>
 
-        <!-- View, Extend Stock Transfer -->
+        <!-- View, Extend Stock Transfer todo create separate view for next release -->
         stock.view_stock_enter_transfer_details
         <record model="ir.ui.view" id="view_form_selection">
             <field name="name">Enter Transfers Detail Extended</field>
@@ -162,7 +162,17 @@
                 <field name="picking_destination_location_id" position="after">
                     <group name="top" string="Batch Information">
                         <field name="date_received"/>
+                        <field name="partner_id" readonly="True"/>
                     </group>
+                </field>
+                <field name="lot_id" position="after">
+                    <!-- Hide field using invisible
+                    <field name="is_seed" invisible="True"/>
+                    <field name="variety_id" string="Var" attrs="{'invisible': [('is_seed','=',False)]}"/>
+                    -->
+
+                    <field name="variety_id" string="Variety" groups="estate.group_user"/>
+                    <field name="progeny_id" string="Progeny" groups="estate.group_user" domain="[('variety_id','=',variety_id)]"/>
                 </field>
             </field>
         </record>

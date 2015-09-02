@@ -1,14 +1,40 @@
 <openerp>
     <data>
-        <record id="variety0" model="estate_nursery.seed_variety">
-            <field name="name">Dami Mas</field>
+        <record id="base.res_partner_ppks" model="res.partner">
+            <field name="name">Pusat Penelitian Kelapa Sawit</field>
+            <field name="is_company">True</field>
+            <field name="supplier">True</field>
+            <field name="active">True</field>
+            <field name="property_product_pricelist_purchase" ref="purchase.list0"/>
+            <field name="property_stock_customer" ref="stock.stock_location_customers"/>
+            <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
         </record>
-        <record id="progeny0" model="estate_nursery.seed_progeny">
-            <field name="name">Dami Mas 1</field>
+
+        <record id="estate_nursery.variety_dur" model="estate.nursery.variety">
+            <field name="name">Dura</field>
+            <field name="code">DUR</field>
+            <field name="active">True</field>
         </record>
-        <record id="nurseryblock0" model="estate_nursery.block">
-            <field name="name">A1</field>
+        <record id="estate_nursery.variety_pis" model="estate.nursery.variety">
+            <field name="name">Pisifera</field>
+            <field name="code">PIS</field>
+            <field name="active">True</field>
         </record>
+        <record id="estate_nursery.variety_ten" model="estate.nursery.variety">
+            <field name="name">Tenera</field>
+            <field name="code">TEN</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="estate_nursery.progeny_ppks540" model="estate.nursery.progeny">
+            <field name="name">PPKS 540</field>
+            <field name="code">P1</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_ppks"/>
+            <field name="active">True</field>
+        </record>
+
+
         <!--  -->
         <!--   <record id="object0" model="estate_nursery.estate_nursery"> -->
         <!--     <field name="name">Object 0</field> -->
