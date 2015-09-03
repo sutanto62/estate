@@ -21,9 +21,9 @@ class Seed(models.Model):
     seed = fields.Boolean("Seed Product", help="Included at Seed Management.", default=False)
     # age_purchased = fields.Integer("Purchased Age", help="Fill in age of seed in month") # deprecated move to stock_quant
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
-                                 help="Select Seed Variety.")
+                                 help="Select Seed Variety.") # todo active = true
     progeny_id = fields.Many2one('estate.nursery.progeny', "Progeny",
-                                 help="Value depends on Seed Variety.")
+                                 help="Value depends on Seed Variety.") # todo filtered by variety_id, active = true
 
 
 class Stage(models.Model):
@@ -84,7 +84,7 @@ class Batch(models.Model):
     _inherits = {'stock.production.lot': 'lot_id'}
 
     name = fields.Char("Batch No")
-    lot_id = fields.Many2one('stock.production.lot', ondelete="restrict", domain=[('product_id.seed','=',True)])
+    lot_id = fields.Many2one('stock.production.lot', "Lot", ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
@@ -92,6 +92,8 @@ class Batch(models.Model):
     age_seed = fields.Integer("Seed Age", required=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', "Seed Boxes")
     comment = fields.Text("Additional Information")
+    qty_received = fields.Integer('Quantity Received')
+    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     state = fields.Selection([
         ('draft','Draft'),
         ('0','Seed Selection'),
@@ -135,7 +137,7 @@ class Batchline(models.Model):
     child_ids = fields.One2many('estate.nursery.batchline', 'parent_id', "Contains")
     batch_id = fields.Many2one('estate.nursery.batch', "Batch")
     seed_qty = fields.Integer("Seed Quantity")
-
+    # todo create total seed per batch
 
 class Box(models.Model):
     """Deprecated. Use Batchline."""
@@ -155,36 +157,6 @@ class Bag(models.Model):
     condition_id = fields.Many2one('estate.nursery.condition', "Bag/Plastic Condition", domain="[('condition_category','=','1')]")
     qty_seed = fields.Integer("Seed Quantity")
 
-
-class Selection(models.Model):
-    """Delegation Inheritance Stock Quant for Seed Selection"""
-    _name = 'estate.nursery.selection'
-    _inherits = {'stock.quant': 'quant_id'}
-
-    #quant_id = fields.Many2one('stock.quant') #bag
-    bag_selection_ids = fields.One2many('estate.nursery.selection_line','selection_id',"Selection")
-
-
-class SelectionLine(models.Model):
-    """Quantity and condition of Seed Selection per Bag"""
-    _name = 'estate.nursery.selection_line'
-
-    selection_id = fields.Many2one('estate.nursery.selection',"Selection")
-    qty = fields.Integer('Quantity')
-    cause_id = fields.Many2one('estate.nursery.cause', "Cause")
-
-class Cause(models.Model):
-    """Selection Cause (normal, afkir, etc)."""
-    _name = 'estate.nursery.cause'
-    _sequence = 'sequence'
-
-    name = fields.Char('Name')
-    comment = fields.Text('Cause Description')
-    code = fields.Char('Cause Abbreviation', size=3)
-    sequence = fields.Integer('Sequence No')
-    selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage")
-
 class TransferDetail(models.TransientModel):
     """Extend Transfer Detail to create Seed Batch."""
     _inherit = 'stock.transfer_details'
@@ -197,26 +169,19 @@ class TransferDetail(models.TransientModel):
         Extend stock transfer wizard to create stock move and lot.
         """
         date_done = self.picking_id.date_done
-        partner = self.picking_id.partner_id
-        lot_new = self.env['stock.production.lot']
 
+        # Iterate through transfer detail item
         for item in self.item_ids:
-
-            print "Create stock move Supplier to Internal Warehouse (super)."
-
             if item.product_id.seed:
-                print "Create stock move from Internal Warehouse to Production."
-
                 if date_done or item.variety_id or item.progeny_id:
                     lot_new = self.do_create_lot(item.product_id)
                     item.write({'lot_id': lot_new[0].id})
                     batch = self.do_create_batch(item, self, lot_new[0])
-                    batchlines = self.do_create_batchline(item, batch[0])
+                    self.do_create_batchline(item, batch[0])
                 else:
                     raise exceptions.Warning('Required Date of Transfer, Variety and Progeny.')
-
-            # Create stock move Supplier to Internal Warehouse (Gudang Kebun)
             super(TransferDetail, self).do_detailed_transfer()
+
         return True
 
     @api.one
@@ -246,7 +211,8 @@ class TransferDetail(models.TransientModel):
             'variety_id': item.variety_id.id,
             'progeny_id': item.progeny_id.id,
             'date_received': date_done,
-            'age_seed': transfer.age_seed
+            'age_seed': transfer.age_seed,
+            'qty_received': item.quantity
         }
 
         # print "Create Seed Batch. %s (v: %s, p: %s) is received at %s from %s" % (item.product_id.name,
@@ -289,6 +255,8 @@ class TransferDetail(models.TransientModel):
 
         item_qty = item.quantity
         serial = 0
+
+        # todo recode using recursive call (http://goo.gl/rjRtEs)
 
         # Count full box
         box_amount_full = int(item_qty/pak_content)

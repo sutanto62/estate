@@ -56,5 +56,82 @@
         <!--     <field name="name">Object 4</field> -->
         <!--   </record> -->
         <!--  -->
+        <!--
+        product.product
+        -->
+        <record id="seed_dami" model="product.product">
+            <field name="name">Kecambah Dami Mas</field>
+            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="standard_price">8090</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="default_code">090901</field>
+            <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+        <record id="seed_ppks" model="product.product">
+            <field name="name">Kecambah PPKS</field>
+            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="standard_price">7500</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="default_code">090902</field>
+            <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+        <record id="seed_topaz" model="product.product">
+            <field name="name">Kecambah Topaz</field>
+            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="standard_price">7750</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="default_code">090902</field>
+            <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <!--
+        product.ul
+        -->
+        <record id="seed_box" model="product.ul">
+            <field name="name">Seed Box 60 x 30 x 30</field>
+            <field name="type">box</field>
+        </record>
+        <record id="seed_bag_200" model="product.ul">
+            <field name="name">Seed Bag 200</field>
+            <field name="type">pack</field>
+        </record>
+        <record id="seed_bag_100" model="product.ul">
+            <field name="name">Seed Bag 100</field>
+            <field name="type">pack</field>
+        </record>
+
+        <!--
+        product.packaging
+        depend on: group_stock_packaging = true at stock.config.settings
+        -->
+        <record id="packaging_seed_1" model="product.packaging">
+            <field name="qty">200</field>
+            <field name="ul" ref="estate_nursery.seed_bag_200"/>
+            <field name="ul_container" ref="estate_nursery.seed_box"/>
+            <field name="ul_qty">3</field>
+            <field name="rows">2</field>
+            <field name="weight">15</field>
+            <field name="product_tmpl_id" ref="estate_nursery.seed_dami_product_template"/>
+        </record>
+        <record id="packaging_seed_2" model="product.packaging">
+            <field name="qty">100</field>
+            <field name="ul" ref="estate_nursery.seed_bag_100"/>
+            <field name="ul_container" ref="estate_nursery.seed_box"/>
+            <field name="ul_qty">9</field>
+            <field name="rows">2</field>
+            <field name="weight">15</field>
+            <field name="product_tmpl_id" ref="estate_nursery.seed_ppks_product_template"/>
+        </record>
+
+
     </data>
 </openerp>

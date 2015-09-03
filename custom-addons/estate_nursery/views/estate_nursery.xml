@@ -23,6 +23,11 @@
             <field name="res_model">estate.nursery.batch</field>
             <field name="view_mode">tree,form</field>
         </record>
+        <record model="ir.actions.act_window" id="action_list_batchline">
+            <field name="name">Seed Batchline</field>
+            <field name="res_model">estate.nursery.batchline</field>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <record model="ir.actions.act_window" id="action_list_receiving_selection">
             <field name="name">Seed Receiving</field>
@@ -122,6 +127,7 @@
                     <field name="variety_id"/>
                     <field name="progeny_id"/>
                     <field name="date_received"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -132,21 +138,65 @@
             <field name="model">estate.nursery.batch</field>
             <field name="arch" type="xml">
                 <form string="Seed Batch Form">
+                    <header>
+                        <button name="action_draft" type="object"
+                                string="Reset to Draft"
+                                states="0,1,2,3,4,5,done"/>
+                        <button name="action_selection" type="object"
+                                string="Receive Seed"
+                                states="draft"/>
+                        <button name="action_selection_next" type="object"
+                                string="Next Selection"
+                                states="0,1,2,3,4"/>
+                    </header>
                     <group name="top" string="Batch Information">
                         <group name="top_left">
                             <field name="name"/>
-                            <field name="lot_id"/>
                             <field name="date_received"/>
+                            <field name="qty_received"/>
+                            <field name="state"/>
                         </group>
                         <group name="top_right">
+                            <field name="product_id"/>
                             <field name="variety_id"/>
                             <field name="progeny_id"/>
                             <field name="age_seed"/> month
+
                         </group>
                     </group>
-                    <group name="bottom" string="Batch">
-                        <field name="batchline_ids"/>
+                    <group name="bottom" string="Information">
                         <field name="comment"/>
+                    </group>
+                    <field name="batchline_ids"/>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- View, Seed Batchline -->
+        <record model="ir.ui.view" id="view_seed_batchline_tree">
+            <field name="name">Seed Batchline</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Batch List" editable="True"> <!-- #todo set editable based on state-->
+                    <field name="name"/>
+                    <field name="complete_name"/>
+                    <field name="seed_qty"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form, Seed Batchline -->
+        <record model="ir.ui.view" id="view_seed_batchline_form">
+            <field name="name">Seed Batchline</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                <form string="Seed Batchline">
+                    <group>
+                        <field name="name"/>
+                        <field name="complete_name"/>
+                        <field name="parent_id"/>
+                        <field name="seed_qty"/>
                     </group>
                 </form>
             </field>
@@ -161,8 +211,7 @@
             <field name="arch" type="xml">
                 <field name="picking_destination_location_id" position="after">
                     <group name="top" string="Batch Information">
-                        <field name="date_received"/>
-                        <field name="partner_id" readonly="True"/>
+                        <field name="age_seed"/> month
                     </group>
                 </field>
                 <field name="lot_id" position="after">

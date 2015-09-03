@@ -25,7 +25,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'templates.xml',
-        'views/estate_nursery.xml'
+        'views/estate_nursery.xml',
+        'views/estate_nursery_selection.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
