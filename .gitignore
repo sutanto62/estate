@@ -11,6 +11,7 @@
 
 # Exclude default and additional addons
 .idea/*.xml
+.idea/*.name
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

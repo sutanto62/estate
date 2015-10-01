@@ -108,10 +108,16 @@
             <field name="arch" type="xml">
                 <form string="Seed Batch Form">
                     <header>
-                        <button name="action_receive" type="object"
-                                string="Receive"
-                                states="draft"
+                        <button name="draft" type="workflow"
+                                string="Submit"
                                 class="oe_highlight"/>
+                        <button name="confirmed" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"/>
+                        <button name="approved" type="workflow"
+                                string="Approved"
+                                class="oe_highlight"/>
+                        <field name="state" widget="statusbar"/>
                         <!--
                         <button name="action_selection_next" type="object"
                                 string="Next Selection"
@@ -123,26 +129,45 @@
                         <group name="top_left">
                             <field name="name"/>
                             <field name="date_received" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="state"/>
+                            <field name="date_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="state" invisible="False"/>
+                            <field name="nursery_stage" invisible="False"/>
                         </group>
                         <group name="top_right">
-                            <field name="product_id"/>
-                            <field name="variety_id"/>
-                            <field name="progeny_id"/>
-                            <field name="age_seed"/> month
                             <field name="picking_id"/>
-                            <field name="culling_location_id" attrs="{'required': [('state','=','0')]}"/>
+                            <field name="culling_location_id" attrs="{'required': [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
                         </group>
                     </group>
-                    <group name="bottom" string="Information">
-                        <field name="comment"/>
-                    </group>
-                    <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
-                            context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
+                    <notebook>
+                        <page string="Detail Information">
+                            <group name="top" string="Information">
+                                <group name="top_left">
+                                    <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                </group>
+                                <group name="top_right">
+                                    <field name="product_id"/>
+                                    <field name="variety_id"/>
+                                    <field name="progeny_id"/>
+                                    <field name="age_seed"/> month
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Delivery (Box/Bags)">
+                            <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
+                                context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
+                        </page>
+                        <page string="Additional Information">
+                            <group name="bottom" string="Information">
+                                <field name="comment"/>
+                            </group>
+                        </page>
+                    </notebook>
+
+
+
                 </form>
             </field>
         </record>
@@ -153,20 +178,27 @@
             <field name="name">Seed Batchline</field>
             <field name="model">estate.nursery.batchline</field>
             <field name="arch" type="xml">
-                <tree string="Seed Batch List" editable='top' colors="red:selection_do_var &lt; 0">
+                <tree string="Seed Batch List" editable='top' colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
                     <field name="name"/>
                     <field name="complete_name" string="ID"/>
                     <field name="seed_qty" string="Qty DO" sum="Qty DO"/>
                     <field name="qty_single" string="Sgl."/>
                     <field name="qty_double" string="Dbl."/>
                     <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal"/>
-                    <field name="percentage_normal" string="% Nor."  groups="['estate.group_manager','estate.group_assistant', 'estate.group_agronom']"/>
+                    <field name="percentage_normal" string="% Nor."
+                           groups="estate.group_assistant"/>
                     <field name="qty_broken" string="Bro."/>
                     <field name="qty_dead" string="Dd."/>
                     <field name="qty_fungus" string="Fgs."/>
-                    <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal"/>
-                    <field name="percentage_abnormal" string="% Abn."  groups="['estate.group_manager','estate.group_assistant', 'estate.group_agronom']"/>
-                    <field name="selection_do_var" string="Var"  groups="['estate.group_manager','estate.group_assistant', 'estate.group_agronom']"/>
+                    <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal" />
+                    <field name="percentage_abnormal" string="% Abn."
+                           groups="estate.group_assistant"/>
+                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted"/>
+                    <field name="location_id" string="Loc."/>
+                    <field name="selection_do_var" string="Var DO"
+                           groups="estate.group_assistant"/>
+                    <field name="planting_selection_var" string="Var Plt."
+                           groups="estate.group_assistant"/>
                 </tree>
             </field>
         </record>
@@ -220,14 +252,14 @@
                     <header>
                         <button name="action_planted" type="object"
                                 string="Planted"
-                                states="0"
+                                states="confirmed"
                                 class="oe_highlight"/>
                     </header>
                     <group name="top" string="Batch Information">
                         <group name="top_left">
                             <field name="name"/>
                             <field name="date_received" attrs="{'readonly': [('state','!=','draft')], 'required': [('state','!=','draft')]}"/>
-                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','0'))], 'required': [('state','not in',('draft','0'))]}"/>
+                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','confirmed'))], 'required': [('state','not in',('draft','confirmed'))]}"/>
                             <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
@@ -245,13 +277,13 @@
                     <group name="bottom" string="Information">
                         <field name="comment"/>
                     </group>
-                    <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', '0')]}"
+                    <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'confirmed')]}"
                                context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_planting_tree'}"/>
                 </form>
             </field>
         </record>
 
-        <!-- View, Seed Batchline Planting -->
+        <!-- View, Seed Batchline Planting @deprecated -->
         <record model="ir.ui.view" id="view_seed_batchline_planting_tree">
             <field name="name">Seed Batchline</field>
             <field name="model">estate.nursery.batchline</field>
@@ -261,7 +293,7 @@
                     <field name="complete_name" string="ID"/>
                     <field name="qty_planted" sum="Total Planted"/>
                     <field name="location_id"/>
-                    <field name="planting_selection_var" sum="Average Planted" groups="estate.group_manager,estate.group_assistant"/>
+                    <field name="planting_selection_var" sum="Average Planted" groups="estate.group_assistant"/>
                     <field name="selection_do_var" invisible="True"/>
                     <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal" invisible="True"/>
                 </tree>
@@ -346,8 +378,10 @@
                   action="action_list_receiving_selection" sequence="12"/>
         <menuitem id="nursery_seed_batch" name="Seed Batch" parent="estate_nursery_menu"
                   action="action_list_batch" sequence="13"/>
+        <!--
         <menuitem id="nursery_seed_batch_planting" name="Seed Planting" parent="estate_nursery_menu"
                   action="action_list_batch_planting" sequence="14"/>
+        -->
         <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu"/>
         <menuitem id="config_seed_variety" name="Seed Variety" parent="estate.estate_master_menu"
                   action="action_list_variety"/>

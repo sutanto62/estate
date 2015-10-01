@@ -10,6 +10,16 @@
             <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
         </record>
 
+        <record id="base.res_partner_dami" model="res.partner">
+            <field name="name">Dami Mas Sejahtera</field>
+            <field name="is_company">True</field>
+            <field name="supplier">True</field>
+            <field name="active">True</field>
+            <field name="property_product_pricelist_purchase" ref="purchase.list0"/>
+            <field name="property_stock_customer" ref="stock.stock_location_customers"/>
+            <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
+        </record>
+
         <record id="estate_nursery.variety_dur" model="estate.nursery.variety">
             <field name="name">Dura</field>
             <field name="code">DUR</field>
@@ -31,6 +41,22 @@
             <field name="code">P1</field>
             <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_ppks"/>
+            <field name="active">True</field>
+        </record>
+
+        <record id="estate_nursery.progeny_damiym" model="estate.nursery.progeny">
+            <field name="name">Dami YM</field>
+            <field name="code">YM</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_dami"/>
+            <field name="active">True</field>
+        </record>
+
+        <record id="estate_nursery.progeny_damiam" model="estate.nursery.progeny">
+            <field name="name">Dami AM</field>
+            <field name="code">AM</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_dami"/>
             <field name="active">True</field>
         </record>
 
@@ -114,7 +140,7 @@
         depend on: group_stock_packaging = true at stock.config.settings
         -->
         <record id="packaging_seed_1" model="product.packaging">
-            <field name="qty">200</field>
+            <field name="qty">5</field>
             <field name="ul" ref="estate_nursery.seed_bag_200"/>
             <field name="ul_container" ref="estate_nursery.seed_box"/>
             <field name="ul_qty">3</field>
@@ -123,13 +149,66 @@
             <field name="product_tmpl_id" ref="estate_nursery.seed_dami_product_template"/>
         </record>
         <record id="packaging_seed_2" model="product.packaging">
-            <field name="qty">100</field>
+            <field name="qty">7</field>
             <field name="ul" ref="estate_nursery.seed_bag_100"/>
             <field name="ul_container" ref="estate_nursery.seed_box"/>
-            <field name="ul_qty">9</field>
+            <field name="ul_qty">3</field>
             <field name="rows">2</field>
             <field name="weight">15</field>
             <field name="product_tmpl_id" ref="estate_nursery.seed_ppks_product_template"/>
+        </record>
+
+        <!-- stock.location -->
+        <record id="estate_nursery.location_estate" model="stock.location">
+            <field name="name">GLY</field>
+            <field name="location_id" ref="stock.stock_location_locations"/>
+            <field name="usage">view</field>
+            <field name="scrap_location">False</field>
+        </record>
+        <record id="estate_nursery.location_nursery" model="stock.location">
+            <field name="name">Pembibitan Liyodu</field>
+            <field name="location_id" ref="estate_nursery.location_estate"/>
+            <field name="usage">view</field>
+            <field name="scrap_location">False</field>
+            <field name="estate_location">True</field>
+            <field name="estate_location_level">2</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_prenursery" model="stock.location">
+            <field name="name">Pre Nursery</field>
+            <field name="location_id" ref="estate_nursery.location_nursery"/>
+            <field name="usage">view</field>
+            <field name="scrap_location">False</field>
+            <field name="estate_location">True</field>
+            <field name="estate_location_level">2</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_prenursery_1" model="stock.location">
+            <field name="name">PN1</field>
+            <field name="location_id" ref="estate_nursery.location_prenursery"/>
+            <field name="usage">production</field>
+            <field name="scrap_location">False</field>
+            <field name="estate_location">True</field>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_prenursery_2" model="stock.location">
+            <field name="name">PN2</field>
+            <field name="location_id" ref="estate_nursery.location_prenursery"/>
+            <field name="usage">production</field>
+            <field name="scrap_location">False</field>
+            <field name="estate_location">True</field>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_culling" model="stock.location">
+            <field name="name">Culling</field>
+            <field name="location_id" ref="estate_nursery.location_prenursery"/>
+            <field name="usage">inventory</field>
+            <field name="scrap_location">True</field>
+            <field name="estate_location">True</field>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
         </record>
 
 

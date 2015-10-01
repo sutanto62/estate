@@ -104,7 +104,7 @@ class Batch(models.Model):
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery')])
-    state = fields.Selection([
+    nursery_stage = fields.Selection([
         ('draft', 'Draft'),
         ('0', 'Seed Selection'),
         ('1', 'Seed Planted'),
@@ -113,12 +113,31 @@ class Batch(models.Model):
         ('4', 'Selection 1 (MN)'),
         ('5', 'Selection 2 (MN)'),
         ('6', 'Selection 3 (MN)'),
-        ('done', 'Done')], default='draft', string="Selection State")
+        ('done', 'Done')], default='draft', string="Selection State") # todo change seed selection phase
+
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('new', 'New'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')], string="State") # todo change to state (workflow)
 
     @api.one
     def action_draft(self):
         """Set Batch State to draft."""
-        self.write({'state':'draft'})
+        self.state = 'draft'
+
+    @api.one
+    def action_new(self):
+        self.state = 'new'
+
+    @api.one
+    def action_confirmed(self):
+        """Set batch state to 0"""
+        self.state = 'confirmed'
+
+    @api.one
+    def action_approved(self):
+        self.state = 'done'
 
     @api.one
     def action_receive(self):
@@ -128,15 +147,17 @@ class Batch(models.Model):
         for item in self.batchline_ids:
             self.qty_normal += item.subtotal_normal
             self.qty_abnormal += item.subtotal_abnormal
-        self.write({'state':'0', 'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
+        self.write({'state':'confirmed', 'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
+
+        self.action_planted()
 
         return True
 
     @api.one
     def action_selection_next(self):
         """Set Batch State to next selection"""
-        if int(self.state) < 6:
-            self.state = str(int(self.state)+1)
+        if int(self.nursery_stage) < 6:
+            self.nursery_stage = str(int(self.nursery_stage)+1)
 
     @api.one
     def action_create_selection(self):
@@ -151,7 +172,7 @@ class Batch(models.Model):
         3. Move quantity of abnormal seed to culling location.
         """
 
-        self.state = '1'
+        self.nursery_stage = '1'
 
         # Get unique location of planted location
         location_ids = set()
@@ -264,7 +285,7 @@ class Batchline(models.Model):
     @api.one
     @api.depends('subtotal_normal', 'subtotal_abnormal', 'qty_planted')
     def _compute_variance(self):
-        """Compute variance of received to packaging"""
+        """Compute variance of received and planted."""
         self.selection_do_var = (self.subtotal_normal + self.subtotal_abnormal) - self.seed_qty
         self.planting_selection_var = self.qty_planted - self.subtotal_normal
 
