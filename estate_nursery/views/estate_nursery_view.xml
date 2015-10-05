@@ -108,15 +108,28 @@
             <field name="arch" type="xml">
                 <form string="Seed Batch Form">
                     <header>
+                        <!--
                         <button name="draft" type="workflow"
                                 string="Submit"
                                 class="oe_highlight"/>
+                        -->
+                        <button name="draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant"/>
+
                         <button name="confirmed" type="workflow"
                                 string="Confirmed"
-                                class="oe_highlight"/>
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant"/>
+
                         <button name="approved" type="workflow"
                                 string="Approved"
-                                class="oe_highlight"/>
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_manager"/>
                         <field name="state" widget="statusbar"/>
                         <!--
                         <button name="action_selection_next" type="object"
@@ -130,8 +143,8 @@
                             <field name="name"/>
                             <field name="date_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="date_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="state" invisible="False"/>
-                            <field name="nursery_stage" invisible="False"/>
+                            <field name="state" invisible="True"/>
+                            <field name="nursery_stage" invisible="True"/>
                         </group>
                         <group name="top_right">
                             <field name="picking_id"/>

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, exceptions
+from openerp import models, fields, api, exceptions, _
 
 # class estate_nursery(models.Model):
 #     _name = 'estate_nursery.estate_nursery'
@@ -83,7 +83,7 @@ class Batch(models.Model):
     _description = "Seed Batch"
     _inherits = {'stock.production.lot': 'lot_id'}
 
-    name = fields.Char("Batch No")
+    name = fields.Char(_("Batch No"))
     lot_id = fields.Many2one('stock.production.lot', "Lot", ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
@@ -95,12 +95,12 @@ class Batch(models.Model):
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
-    qty_planted = fields.Integer("Planted", compute='_compute_total')
-    batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', "Seed Boxes") # Detailed selection
-    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', "Selection") # Detaileld selection
+    qty_planted = fields.Integer(_("Planted"), compute='_compute_total')
+    batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
+    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection")) # Detaileld selection
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
-    culling_location_id = fields.Many2one('stock.location', "Culling Location",
+    culling_location_id = fields.Many2one('stock.location', _("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery')])
@@ -113,41 +113,38 @@ class Batch(models.Model):
         ('4', 'Selection 1 (MN)'),
         ('5', 'Selection 2 (MN)'),
         ('6', 'Selection 3 (MN)'),
-        ('done', 'Done')], default='draft', string="Selection State") # todo change seed selection phase
+        ('done', 'Done')], default='draft', string="Selection State")
 
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('new', 'New'),
         ('confirmed', 'Confirmed'),
-        ('done', 'Done')], string="State") # todo change to state (workflow)
+        ('done', 'Done')], string="State")
 
     @api.one
     def action_draft(self):
-        """Set Batch State to draft."""
+        """Set Batch State to Draft."""
         self.state = 'draft'
 
     @api.one
-    def action_new(self):
-        self.state = 'new'
-
-    @api.one
     def action_confirmed(self):
-        """Set batch state to 0"""
+        """Set Batch state to Confirmed."""
         self.state = 'confirmed'
 
     @api.one
     def action_approved(self):
+        """Approved Batch is planted Seed."""
+        self.action_receive()
         self.state = 'done'
 
     @api.one
     def action_receive(self):
-        """Change state to draft and count seed."""
+        """Count quantity of seed received and planted."""
         self.qty_normal = 0
         self.qty_abnormal = 0
         for item in self.batchline_ids:
             self.qty_normal += item.subtotal_normal
             self.qty_abnormal += item.subtotal_abnormal
-        self.write({'state':'confirmed', 'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
+        self.write({'nursery_stage': '0' , 'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
 
         self.action_planted()
 

@@ -1,2 +1,3 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_estate_nursery_estate_nursery,estate_nursery.estate_nursery,model_estate_nursery_estate_nursery,,1,0,0,0
+"id","name","model_id/id","group_id/id","perm_read","perm_write","perm_create","perm_unlink"
+"__export__.ir_model_access_609","estate_nursery_batchline","estate_nursery.model_estate_nursery_batchline","estate.group_user","True","True","True","True"
+"__export__.ir_model_access_608","estate_nursery_batch","estate_nursery.model_estate_nursery_batch","estate.group_user","True","True","True","False"
