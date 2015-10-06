@@ -1,0 +1,40 @@
+# Exclude everything except custom-addons
+#/*
+#!/custom-addons
+# Ignore pyc files
+#*.pyc
+#/custom-addons/**/*.pyc
+#.idea # ignore .idea folder
+# Exclude hidden folder
+.*
+!/.gitignore
+
+# Exclude default and additional addons
+.idea/*.xml
+.idea/*.name
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+.Python
+env/
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Developer
+.mr.developer.cfg
+.project
+.pydevproject

@@ -1,0 +1,15 @@
+<openerp>
+    <data>
+        <record id="estate.group_user" model="res.groups">
+            <field name="name">Estate User</field>
+        </record>
+        <record id="estate.group_assistant" model="res.groups">
+            <field name="name">Estate Assistant</field>
+            <field name="implied_ids" eval="[(4, ref('estate.group_user'))]"/>
+        </record>
+        <record id="estate.group_manager" model="res.groups">
+            <field name="name">Estate Manager</field>
+            <field name="implied_ids" eval="[(4, ref('estate.group_user')), (4, ref('estate.group_assistant'))]"/>
+        </record>
+    </data>
+</openerp>
