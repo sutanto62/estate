@@ -148,6 +148,7 @@
                         </group>
                         <group name="top_right">
                             <field name="picking_id"/>
+                            <field name="lot_id"/>
                             <field name="culling_location_id" attrs="{'required': [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
                         </group>
                     </group>
