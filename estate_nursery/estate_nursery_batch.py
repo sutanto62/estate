@@ -12,7 +12,7 @@ class EstateLocation(models.Model):
     _inherit = 'stock.location'
 
     qty_seed = fields.Integer(string="Seed Quantity")
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage")
+    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage", ondelete='set null')
 
 
 class Seed(models.Model):
@@ -21,9 +21,9 @@ class Seed(models.Model):
     seed = fields.Boolean("Seed Product", help="Included at Seed Management.", default=False)
     # age_purchased = fields.Integer("Purchased Age", help="Fill in age of seed in month") # deprecated move to stock_quant
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
-                                 help="Select Seed Variety.") # todo active = true
+                                 help="Select Seed Variety.")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Progeny",
-                                 help="Value depends on Seed Variety.") # todo filtered by variety_id, active = true
+                                 help="Value depends on Seed Variety.")
 
 
 class Stage(models.Model):
@@ -78,7 +78,7 @@ class Condition(models.Model):
 
 
 class Batch(models.Model):
-    """Delegation Inheritance Product for Seed Batch"""
+    """Delegation Inheritance Product for Seed Batch. Created from Transfer."""
     _name = 'estate.nursery.batch'
     _description = "Seed Batch"
     _inherits = {'stock.production.lot': 'lot_id'}
@@ -96,14 +96,16 @@ class Batch(models.Model):
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total')
-    batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
-    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection")) # Detaileld selection
+    batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes"))  # Detailed selection
+    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))  # Detailed selection
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     culling_location_id = fields.Many2one('stock.location', _("Culling Location"),
+                                          help="Select scrap bloc nursery estate location.",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery')])
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', True)])
     nursery_stage = fields.Selection([
         ('draft', 'Draft'),
         ('0', 'Seed Selection'),
@@ -246,7 +248,7 @@ class Batchline(models.Model):
     parent_left = fields.Integer('Parent Left', index=True)
     parent_right = fields.Integer('Parent Right', index=True)
     child_ids = fields.One2many('estate.nursery.batchline', 'parent_id', "Contains")
-    batch_id = fields.Many2one('estate.nursery.batch', "Batch")
+    batch_id = fields.Many2one('estate.nursery.batch', "Batch", ondelete="restrict")
     seed_qty = fields.Integer("DO Quantity")
     qty_single = fields.Integer("Single Tone Quantity")
     qty_double = fields.Integer("Double Tone Quantity")
@@ -263,7 +265,8 @@ class Batchline(models.Model):
     location_id = fields.Many2one('stock.location', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
-                                          ('estate_location_type', '=', 'nursery')],
+                                          ('estate_location_type', '=', 'nursery'),
+                                          ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.")
 
     @api.one
