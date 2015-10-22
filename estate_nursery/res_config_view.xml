@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_estate_nursery_configuration" model="ir.ui.view">
+            <field name="name">estate nursery settings</field>
+            <field name="model">estate.config.settings</field>
+            <field name="inherit_id" ref="estate.view_estate_configuration"/>
+            <field name="priority" eval="18"/>
+            <field name="arch" type="xml">
+                <div name="estate_nursery" position="after">
+                    <label for="nursery_stage"/>
+                    <field name="nursery_stage" class="oe_inline"/>
+                </div>
+            </field>
+        </record>
+    </data>
+</openerp>

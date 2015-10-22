@@ -48,7 +48,7 @@
             <field name="target">inline</field>
         </record>
 
-        <menuitem id="menu_estate_configuration" name="Plantation   " parent="base.menu_config"
+        <menuitem id="menu_estate_configuration" name="Plantation" parent="base.menu_config"
             sequence="70" action="action_estate_configuration"/>
 
     </data>

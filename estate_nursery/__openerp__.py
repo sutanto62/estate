@@ -27,7 +27,8 @@
         'templates.xml',
         'views/estate_nursery_view.xml',
         'views/estate_nursery_selection_view.xml',
-        'views/session_workflow.xml'
+        'views/session_workflow.xml',
+        'res_config_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
