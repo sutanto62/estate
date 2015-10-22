@@ -8,8 +8,8 @@
             <field name="priority" eval="18"/>
             <field name="arch" type="xml">
                 <div name="estate_nursery" position="after">
-                    <label for="nursery_stage"/>
-                    <field name="nursery_stage" class="oe_inline"/>
+                    <label for="default_nursery_stage"/>
+                    <field name="default_nursery_stage" class="oe_inline"/>
                 </div>
             </field>
         </record>
