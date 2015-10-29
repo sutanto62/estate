@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_estate_estate,estate.estate,model_estate_estate,,1,0,0,0
+"__export__.ir_rule_activity_category","Estate Activity Category","estate.model_estate_activity_category","estate.group_user","True","True","True","False"
+"__export__.ir_rule_activity","Estate Activity","estate.model_estate_activity","estate.group_user","True","True","True","False"
