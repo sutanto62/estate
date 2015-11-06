@@ -403,12 +403,9 @@ class TransferDetail(models.TransientModel):
             pak_total_bag = pak.rows * pak.ul_qty
             pak_bag_content = pak.qty
         else:
-            pak_row = 1
-            pak_row_bag = 1
-            pak_total_bag = pak_row * pak_row_bag
-            pak_bag_content = 100
+            raise exceptions.Warning('Product %s has no packaging. Contact Administrator.' % product.name)
 
-            pak_content = pak_row * pak_row_bag * pak_bag_content
+        pak_content = pak_row * pak_row_bag * pak_bag_content
 
         item_qty = item.quantity
         serial = 0
