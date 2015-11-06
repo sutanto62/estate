@@ -349,11 +349,14 @@ class TransferDetail(models.TransientModel):
     def do_create_batch(self, item, transfer, lot):
         """Create Lot and Seed Batch per transfer item."""
         date_done = transfer.picking_id.date_done
-        partner =  transfer.picking_id.partner_id
-        product = item.product_id
-        packaging = product.packaging_ids[0]
+        # partner = transfer.picking_id.partner_id
+        # product = item.product_id
 
         serial = self.env['estate.nursery.batch'].search_count([]) + 1
+
+        # Validate Picking Date of Transfer
+        if not date_done:
+            raise exceptions.Warning('Press Cancel button and fill in date of transfer at Additional Info Tab.')
 
         batch_data = {
             'name': "Batch %d" % serial,
@@ -363,7 +366,8 @@ class TransferDetail(models.TransientModel):
             'date_received': date_done,
             'age_seed': transfer.age_seed,
             'qty_received': item.quantity,
-            'picking_id': transfer.picking_id.id
+            'picking_id': transfer.picking_id.id,
+            'state': 'draft'
         }
 
         # print "Create Seed Batch. %s (v: %s, p: %s) is received at %s from %s" % (item.product_id.name,
@@ -387,22 +391,24 @@ class TransferDetail(models.TransientModel):
 
     @api.one
     def do_create_batchline(self, item, batch):
-        """Calculate and create seed bag"""
+        """Calculate and create seed bag. Default if no packaging found is 100 seed/bag."""
         product = item.product_id
-        pak = product.packaging_ids[0]
 
-        if pak:
+        print 'Packaging %d' % len(product.packaging_ids)
+
+        if len(product.packaging_ids) > 0:
+            pak = product.packaging_ids[0] # Always get first packaging
             pak_row = pak.rows
             pak_row_bag = pak.ul_qty
             pak_total_bag = pak.rows * pak.ul_qty
             pak_bag_content = pak.qty
         else:
-            pak_row = 3
-            pak_row_bag = 9
-            pak_total_bag = pak.rows * pak.ul_qty
-            pak_bag_content = 200
+            pak_row = 1
+            pak_row_bag = 1
+            pak_total_bag = pak_row * pak_row_bag
+            pak_bag_content = 100
 
-        pak_content = pak_row * pak_row_bag * pak_bag_content
+            pak_content = pak_row * pak_row_bag * pak_bag_content
 
         item_qty = item.quantity
         serial = 0
