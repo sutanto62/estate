@@ -2,9 +2,9 @@
     <data>
         <record id="base.res_partner_ppks" model="res.partner">
             <field name="name">Pusat Penelitian Kelapa Sawit</field>
-            <field name="is_company">True</field>
-            <field name="supplier">True</field>
-            <field name="active">True</field>
+            <field name="is_company" eval="True"></field>
+            <field name="supplier" eval="True"/>
+            <field name="active" eval="True"/>
             <field name="property_product_pricelist_purchase" ref="purchase.list0"/>
             <field name="property_stock_customer" ref="stock.stock_location_customers"/>
             <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
@@ -12,9 +12,9 @@
 
         <record id="base.res_partner_dami" model="res.partner">
             <field name="name">Dami Mas Sejahtera</field>
-            <field name="is_company">True</field>
-            <field name="supplier">True</field>
-            <field name="active">True</field>
+            <field name="is_company" eval="True"/>
+            <field name="supplier" eval="True"/>
+            <field name="active" eval="True"/>
             <field name="property_product_pricelist_purchase" ref="purchase.list0"/>
             <field name="property_stock_customer" ref="stock.stock_location_customers"/>
             <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
@@ -33,7 +33,7 @@
         <record id="estate_nursery.variety_ten" model="estate.nursery.variety">
             <field name="name">Tenera</field>
             <field name="code">TEN</field>
-            <field name="active">True</field>
+            <field name="active" eval="True"/>
         </record>
 
         <record id="estate_nursery.progeny_ppks540" model="estate.nursery.progeny">
@@ -41,7 +41,7 @@
             <field name="code">P1</field>
             <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_ppks"/>
-            <field name="active">True</field>
+            <field name="active" eval="True"/>
         </record>
 
         <record id="estate_nursery.progeny_damiym" model="estate.nursery.progeny">
@@ -49,7 +49,7 @@
             <field name="code">YM</field>
             <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_dami"/>
-            <field name="active">True</field>
+            <field name="active" eval="True"/>
         </record>
 
         <record id="estate_nursery.progeny_damiam" model="estate.nursery.progeny">
@@ -57,7 +57,7 @@
             <field name="code">AM</field>
             <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_dami"/>
-            <field name="active">True</field>
+            <field name="active" eval="True"/>
         </record>
 
 
@@ -163,14 +163,14 @@
             <field name="name">GLY</field>
             <field name="location_id" ref="stock.stock_location_locations"/>
             <field name="usage">view</field>
-            <field name="scrap_location">False</field>
+            <field name="scrap_location" eval="False"/>
         </record>
         <record id="estate_nursery.location_nursery" model="stock.location">
             <field name="name">Pembibitan Liyodu</field>
             <field name="location_id" ref="estate_nursery.location_estate"/>
             <field name="usage">view</field>
-            <field name="scrap_location">False</field>
-            <field name="estate_location">True</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
             <field name="estate_location_level">2</field>
             <field name="estate_location_type">nursery</field>
         </record>
@@ -178,8 +178,8 @@
             <field name="name">Pre Nursery</field>
             <field name="location_id" ref="estate_nursery.location_nursery"/>
             <field name="usage">view</field>
-            <field name="scrap_location">False</field>
-            <field name="estate_location">True</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
             <field name="estate_location_level">2</field>
             <field name="estate_location_type">nursery</field>
         </record>
@@ -187,8 +187,8 @@
             <field name="name">PN1</field>
             <field name="location_id" ref="estate_nursery.location_prenursery"/>
             <field name="usage">production</field>
-            <field name="scrap_location">False</field>
-            <field name="estate_location">True</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
             <field name="estate_location_level">3</field>
             <field name="estate_location_type">nursery</field>
         </record>
@@ -196,8 +196,8 @@
             <field name="name">PN2</field>
             <field name="location_id" ref="estate_nursery.location_prenursery"/>
             <field name="usage">production</field>
-            <field name="scrap_location">False</field>
-            <field name="estate_location">True</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
             <field name="estate_location_level">3</field>
             <field name="estate_location_type">nursery</field>
         </record>
@@ -205,8 +205,8 @@
             <field name="name">Culling</field>
             <field name="location_id" ref="estate_nursery.location_prenursery"/>
             <field name="usage">inventory</field>
-            <field name="scrap_location">True</field>
-            <field name="estate_location">True</field>
+            <field name="scrap_location" eval="True"/>
+            <field name="estate_location" eval="True"/>
             <field name="estate_location_level">3</field>
             <field name="estate_location_type">nursery</field>
         </record>
