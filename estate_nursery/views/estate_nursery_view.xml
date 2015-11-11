@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <!-- Extend View -->
+        <record model="ir.ui.view" id="view_form_location_inherited">
+            <field name="name">Location - Estate Extension</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <group string="Additional Information" position="after">
+                    <group string="Nursery Location Information">
+                        <field name="stage_id"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+        <!-- Extend Form to include Nursery fields -->
+        <record model="ir.ui.view" id="product_seed_form_inherited">
+            <field name="name">Product - Nursery Extension</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="type" position="after">
+
+                </field>
+                <page string="Sales" position="after">
+                    <page string="Plantation">
+                        <group>
+                            <field name="seed"/>
+                            <field name="variety_id"/>
+                            <field name="progeny_id" domain="[('variety_id','=',variety_id)]"/>
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+
+        <!-- View, Nursery Stage -->
+        <record model="ir.ui.view" id="view_tree_nursery_stage">
+            <field name="name">Nursery Stage Tree</field>
+            <field name="model">estate.nursery.stage</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Stage View">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_tree_nursery_stage">
+            <field name="name">Bag Selection</field>
+            <field name="model">estate.nursery.selectionline</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Stage View">
+                    <field name="qty"/>
+                    <field name="cause_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View, Extend Stock Picking -->
+        <record model="ir.ui.view" id="view_form_selection">
+            <field name="name">Form - Seed Selection</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                <page string="Additional Info" position="after">
+                    <page string="Receiving Selection">
+                        <group string="Seed Packaging">
+                            Quantity Bag/Box
+                            Quantity Seed/Bag
+                        </group>
+                        <group string="Receiving">
+                            Box
+                            Bag/Box | Quantity | Cause | Type
+                        </group>
+                    </page>
+                </page>
+            </field>
+        </record>
+
+        <!-- View, Seed Batch -->
+        <record model="ir.ui.view" id="view_seed_batch_tree">
+            <field name="name">Seed Batch List</field>
+            <field name="model">estate.nursery.batch</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Batch List" colors="red:state in ('draft')">
+                    <field name="name"/>
+                    <field name="variety_id"/>
+                    <field name="progeny_id"/>
+                    <field name="date_received"/>
+                    <field name="qty_received" string="Qty DO" sum="Total"/>
+                    <field name="qty_planted" string="Qty Planted" sum="Total"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form, Seed Batch -->
+        <record id="view_seed_form_batch" model="ir.ui.view" >
+            <field name="name">Seed Batch</field>
+            <field name="model">estate.nursery.batch</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Seed Batch Form">
+                    <header>
+                        <!--
+                        <button name="draft" type="workflow"
+                                string="Submit"
+                                class="oe_highlight"/>
+                        -->
+                        <button name="draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant"/>
+
+                        <button name="confirmed" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant"/>
+
+                        <button name="approved" type="workflow"
+                                string="Approved"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_manager"/>
+                        <field name="state" widget="statusbar"/>
+                        <!--
+                        <button name="action_selection_next" type="object"
+                                string="Next Selection"
+                                states="0,1,2,3,4"
+                                class="oe_highlight"/>
+                        -->
+                    </header>
+                    <group name="top" string="Batch Information">
+                        <group name="top_left">
+                            <field name="name"/>
+                            <field name="date_received"/>
+                            <field name="date_planted" />
+                            <field name="state" invisible="True"/>
+                            <field name="nursery_stage" invisible="True"/>
+                        </group>
+                        <group name="top_right">
+                            <field name="picking_id"/>
+                            <field name="culling_location_id" attrs="{'required': [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Detail Information">
+                            <group name="top" string="Information">
+                                <group name="top_left">
+                                    <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                </group>
+                                <group name="top_right">
+                                    <field name="product_id"/>
+                                    <field name="variety_id"/>
+                                    <field name="progeny_id"/>
+                                    <field name="age_seed"/> month
+
+
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Delivery (Box/Bags)">
+                            <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
+                                context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
+                        </page>
+                        <page string="Additional Information">
+                            <group name="bottom" string="Information">
+                                <field name="comment"/>
+                            </group>
+                        </page>
+                        <page string="Selection">
+                            <field name="selection_ids" attrs="{
+                            'required' : [('state', '=', 'draft')]}"
+                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
+                                   'default_qty_plante': qty_planted}"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- View, Seed Batchline -->
+        <record model="ir.ui.view" id="view_seed_batchline_tree">
+            <field name="name">Seed Batchline</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Batch List" editable='top' colors="red:selection_do_var
+                 &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
+                    <field name="name"/>
+                    <field name="complete_name" string="ID"/>
+                    <field name="seed_qty" string="Qty DO" sum="Qty DO"/>
+                    <field name="qty_single" string="Sgl."/>
+                    <field name="qty_double" string="Dbl."/>
+                    <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal"/>
+                    <field name="percentage_normal" string="% Nor."
+                           groups="estate.group_assistant"/>
+                    <field name="qty_broken" string="Bro."/>
+                    <field name="qty_dead" string="Dd."/>
+                    <field name="qty_fungus" string="Fgs."/>
+                    <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal" />
+                    <field name="percentage_abnormal" string="% Abn."
+                           groups="estate.group_assistant"/>
+                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted"/>
+                    <field name="location_id" string="Loc."/>
+                    <field name="selection_do_var" string="Var DO"
+                           groups="estate.group_assistant"/>
+                    <field name="planting_selection_var" string="Var Plt."
+                           groups="estate.group_assistant"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form, Seed Batchline -->
+        <record model="ir.ui.view" id="view_seed_batchline_form">
+            <field name="name">Seed Batchline</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                <form string="Seed Batchline">
+                    <group>
+                        <field name="name"/>
+                        <field name="complete_name"/>
+                        <field name="parent_id"/>
+                        <field name="seed_qty"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!--view selection line-->
+         <record model="ir.ui.view" id="view_selectionline">
+            <field name="name">Selection line</field>
+            <field name="model">estate.nursery.selectionline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Selection Line">
+                    <field name="cause_id"/>
+                    <field name="qty" string="&#931; Quantity ." sum="Qty" colors="green:qty &gt; 200;"/>
+                    <field name="location_id" />
+                </tree>
+            </field>
+         </record>
+
+        <!-- View, Extend Stock Transfer todo create separate view for next release -->
+        stock.view_stock_enter_transfer_details
+        <record model="ir.ui.view" id="view_form_selection">
+            <field name="name">Enter Transfers Detail Extended</field>
+            <field name="model">stock.transfer_details</field>
+            <field name="inherit_id" ref="stock.view_stock_enter_transfer_details"/>
+            <field name="arch" type="xml">
+                <field name="picking_destination_location_id" position="after">
+                    <group name="top" string="Batch Information">
+                        <field name="age_seed"/> month
+                    </group>
+                </field>
+                <field name="lot_id" position="after">
+                    <!-- Hide field using invisible
+                    <field name="is_seed" invisible="True"/>
+                    <field name="variety_id" string="Var" attrs="{'invisible': [('is_seed','=',False)]}"/>
+                    -->
+                    <field name="variety_id" string="Variety" groups="estate.group_user"/>
+                    <field name="progeny_id" string="Progeny" groups="estate.group_user" domain="[('variety_id','=',variety_id)]"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- View, Batch Planting Form -->
+        <record model="ir.ui.view" id="view_seed_batch_planting_form">
+            <field name="name">Seed Batch Planting</field>
+            <field name="model">estate.nursery.batch</field>
+            <field name="priority">100</field>
+            <field name="arch" type="xml">
+                <form string="Seed Batch Planting Form">
+                    <header>
+                        <button name="action_planted" type="object"
+                                string="Planted"
+                                states="confirmed"
+                                class="oe_highlight"/>
+                    </header>
+                    <group name="top" string="Batch Information">
+                        <group name="top_left">
+                            <field name="name"/>
+                            <field name="date_received" attrs="{'readonly': [('state','!=','draft')], 'required': [('state','!=','draft')]}"/>
+                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','confirmed'))], 'required': [('state','not in',('draft','confirmed'))]}"/>
+                            <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="state"/>
+                        </group>
+                        <group name="top_right">
+                            <field name="product_id"/>
+                            <field name="variety_id"/>
+                            <field name="progeny_id"/>
+                            <field name="age_seed"/> month
+                            <field name="picking_id"/>
+                        </group>
+                    </group>
+                    <group name="bottom" string="Information">
+                        <field name="comment"/>
+                    </group>
+                    <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'confirmed')]}"
+                               context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_planting_tree'}"/>
+                </form>
+            </field>
+        </record>
+
+        <!-- View, Seed Batchline Planting @deprecated -->
+        <record model="ir.ui.view" id="view_seed_batchline_planting_tree">
+            <field name="name">Seed Batchline</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Batch List" editable='top' colors="red:planting_selection_var &lt; 0; red:planting_selection_var &gt; 0">
+                    <field name="name"/>
+                    <field name="complete_name" string="ID"/>
+                    <field name="qty_planted" sum="Total Planted"/>
+                    <field name="location_id"/>
+                    <field name="planting_selection_var" sum="Average Planted" groups="estate.group_assistant"/>
+                    <field name="selection_do_var" invisible="True"/>
+                    <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal" invisible="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--View, Variety -->
+        <record model="ir.ui.view" id="view_seed_variety_form">
+            <field name="name">Seed Variety</field>
+            <field name="model">estate.nursery.variety</field>
+            <field name="arch" type="xml">
+                <form string="Seed Variety">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="comment"/>
+                        </group>
+                    </group>
+
+                </form>
+            </field>
+        </record>
+        <!--set sequance
+        <record forcecreate="1" id="seq_type_id" model="ir.sequence.type">
+            <field name="sequance">sequance</field>
+            <field name="name">name</field>
+        </record>
+        <record forcreate="1" id="seq_id" model="ir.sequence">
+            <field name="sequance">Sequance</field>
+            <field name="name">Name</field>
+            <field name="padding" eval="pading"/>
+            <field name="prefix">prefix</field>
+            <field name="suffix">suffix</field>
+        </record>-->
+
+        <!-- Action -->
+        <record model="ir.actions.act_window" id="action_list_stage">
+            <field name="name">Nursery Stage</field>
+            <field name="res_model">estate.nursery.stage</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.actions.act_window" id="action_list_variety">
+            <field name="name">Seed Variety</field>
+            <field name="res_model">estate.nursery.variety</field>
+            <field name="view_mode">tree,form</field>
+
+        </record>
+        <record model="ir.actions.act_window" id="action_list_progeny">
+            <field name="name">Seed Progeny</field>
+            <field name="res_model">estate.nursery.progeny</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.actions.act_window" id="action_list_receiving_selection">
+            <field name="name">Seed Receiving</field>
+            <field name="res_model">stock.picking</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('product_id.seed','=','True')]</field>
+        </record>
+        <record model="ir.actions.act_window" id="action_list_batch">
+            <field name="name">Seed Batch</field>
+            <field name="res_model">estate.nursery.batch</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Single model, different tree and form view -->
+        <record model="ir.actions.act_window" id="action_list_batch_planting">
+            <field name="name">Planting</field>
+            <field name="res_model">estate.nursery.batch</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="domain">[('state','!=','draft')]</field>
+        </record>
+        <record id="action_list_batch_planting_tree" model="ir.actions.act_window.view">
+            <field eval="0" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_seed_batch_tree"/>
+            <field name="act_window_id" ref="action_list_batch_planting"/>
+        </record>
+        <record id="action_list_batch_planting_form" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_seed_batch_planting_form"/>
+            <field name="act_window_id" ref="action_list_batch_planting"/>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="estate_nursery_menu" name="Nursery" parent="estate.main_estate_menu" sequence="10"/>
+        <menuitem id="nursery_seed_statement" name="Nursery Statement" parent="estate_nursery_menu"
+                  action="action_list_variety" sequence="11"/>
+        <menuitem id="nursery_receiving_selection" name="Seed Receiving" parent="estate_nursery_menu"
+                  action="action_list_receiving_selection" sequence="12" groups="estate.group_user"/>
+        <menuitem id="nursery_seed_batch" name="Seed Batch" parent="estate_nursery_menu"
+                  action="action_list_batch" sequence="13"/>
+        <!--
+        <menuitem id="nursery_seed_batch_planting" name="Seed Planting" parent="estate_nursery_menu"
+                  action="action_list_batch_planting" sequence="14"/>
+        -->
+        <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />
+        <menuitem id="config_seed_variety" name="Seed Variety" parent="estate.estate_master_menu"
+                  action="action_list_variety" groups="estate.group_agronomi"/>
+        <menuitem id="config_seed_progeny" name="Seed Progeny" parent="estate.estate_master_menu"
+                  action="action_list_progeny" groups="estate.group_agronomi"/>
+        <menuitem id="config_nursery_stage" name="Nursery Stage" parent="estate.estate_master_menu"
+                  action="action_list_stage" groups="estate.group_agronomi"/>
+    </data>
+</openerp>

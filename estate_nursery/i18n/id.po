@@ -1,0 +1,942 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* estate_nursery
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20150414\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-10-05 05:04+0000\n"
+"PO-Revision-Date: 2015-10-05 05:04+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "% Abn."
+msgstr "% Abn."
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "% Nor."
+msgstr "% Nor."
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,qty_abnormal:0
+#: field:estate.nursery.selection,qty_abnormal:0
+msgid "Abnormal Seed Quantity"
+msgstr "Jumlah Kecambah Abnormal"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+#: field:estate.nursery.batch,comment:0
+#: field:estate.nursery.condition,comment:0
+#: field:estate.nursery.progeny,comment:0
+#: field:estate.nursery.selection,comment:0
+#: field:estate.nursery.selection_line,comment:0
+#: field:estate.nursery.variety,comment:0
+#: view:stock.location:estate_nursery.view_form_location_inherited
+msgid "Additional Information"
+msgstr "Informasi Tambahan"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+msgid "Approved"
+msgstr "Setuju"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,height_growth_speed:0
+msgid "Average Growth Speed"
+msgstr "Rata-Rata Kecepatan Tumbuh"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_planting_tree
+msgid "Average Planted"
+msgstr "Rata-Rata Ditanam"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,weight_bunch:0
+msgid "Average Weight FBR"
+msgstr "BJR TBS"
+
+#. module: estate_nursery
+#: help:estate.nursery.progeny,height_growth_speed:0
+msgid "Average growth speed per metric/year"
+msgstr "Percepatan Tumbuh (meter/tahun)"
+
+#. module: estate_nursery
+#: help:estate.nursery.progeny,oil_production:0
+msgid "Average oil production per tonne/hectare/year"
+msgstr "Rata-Rata Produksi Minyak (ton/hektar/tahun)"
+
+#. module: estate_nursery
+#: help:estate.nursery.progeny,weight_bunch:0
+msgid "Average weight in kilograms."
+msgstr "BJR (kg)."
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,name:0
+msgid "Bag Number"
+msgstr "No Plastik"
+
+#. module: estate_nursery
+#: selection:estate.nursery.condition,condition_category:0
+msgid "Bag/Plastic"
+msgstr "Plastik"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,condition_id:0
+msgid "Bag/Plastic Condition"
+msgstr "Kondisi Plastik"
+
+#. module: estate_nursery
+#: field:estate.nursery.box,bag_ids:0
+msgid "Bags/Plastics"
+msgstr "Plastik"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,batch_id:0
+#: field:estate.nursery.selection,batch_id:0
+msgid "Batch"
+msgstr "Batch"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_planting_form
+#: view:stock.transfer_details:estate_nursery.view_form_selection
+msgid "Batch Information"
+msgstr "Informasi Batch"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,name:0
+msgid "Batch No"
+msgstr "No Batch"
+
+#. module: estate_nursery
+#: model:ir.actions.act_window,name:estate_nursery.action_list_selection
+msgid "Batch Selection"
+msgstr "Seleksi Batch"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,location_id:0
+msgid "Bedengan/Plot"
+msgstr "Bedengan/Plot"
+
+#. module: estate_nursery
+#: selection:estate.nursery.condition,condition_category:0
+msgid "Box"
+msgstr "Peti"
+
+#. module: estate_nursery
+#: field:estate.nursery.box,condition_id:0
+msgid "Box Condition"
+msgstr "Kondisi Peti"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,box_id:0
+#: field:estate.nursery.box,batch_id:0
+#: field:estate.nursery.box,name:0
+msgid "Box Number"
+msgstr "Nomor Peti"
+
+#. module: estate_nursery
+#: field:estate.nursery.condition,name:0
+msgid "Box/Plastic Condition"
+msgstr "Kondisi Plastik"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Bro."
+msgstr "Rsk."
+
+#. module: estate_nursery
+#: selection:estate.nursery.cause,selection_type:0
+msgid "Broken"
+msgstr "Rusak"
+
+#. module: estate_nursery
+#: field:estate.nursery.condition,broken:0
+msgid "Broken Condition"
+msgstr "Kondisi Rusak"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,qty_broken:0
+msgid "Broken Seed Quantity"
+msgstr "Jumlah Kecambah Rusak"
+
+#. module: estate_nursery
+#: field:estate.nursery.condition,condition_category:0
+msgid "Category"
+msgstr "Kategori"
+
+#. module: estate_nursery
+#: field:estate.nursery.selection_line,cause_id:0
+msgid "Cause"
+msgstr "Penyebab"
+
+#. module: estate_nursery
+#: field:estate.nursery.cause,code:0
+msgid "Cause Abbreviation"
+msgstr "Singkatan"
+
+#. module: estate_nursery
+#: field:estate.nursery.cause,comment:0
+msgid "Cause Description"
+msgstr "Deskripsi"
+
+#. module: estate_nursery
+#: help:estate.nursery.condition,broken:0
+msgid "Condition marked as broken will go to Culling."
+msgstr "Kondisi rusak akan dipindahkan ke Lokasi Pemusnahan."
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+#: selection:estate.nursery.batch,state:0
+msgid "Confirmed"
+msgstr "Periksa"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,child_ids:0
+msgid "Contains"
+msgstr "Berisi"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,create_uid:0
+#: field:estate.nursery.batch,create_uid:0
+#: field:estate.nursery.batchline,create_uid:0
+#: field:estate.nursery.box,create_uid:0
+#: field:estate.nursery.cause,create_uid:0
+#: field:estate.nursery.condition,create_uid:0
+#: field:estate.nursery.progeny,create_uid:0
+#: field:estate.nursery.selection,create_uid:0
+#: field:estate.nursery.selection_line,create_uid:0
+#: field:estate.nursery.stage,create_uid:0
+#: field:estate.nursery.variety,create_uid:0
+msgid "Created by"
+msgstr "Dibuat oleh"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,create_date:0
+#: field:estate.nursery.batch,create_date:0
+#: field:estate.nursery.batchline,create_date:0
+#: field:estate.nursery.box,create_date:0
+#: field:estate.nursery.cause,create_date:0
+#: field:estate.nursery.condition,create_date:0
+#: field:estate.nursery.progeny,create_date:0
+#: field:estate.nursery.selection,create_date:0
+#: field:estate.nursery.selection_line,create_date:0
+#: field:estate.nursery.stage,create_date:0
+#: field:estate.nursery.variety,create_date:0
+msgid "Created on"
+msgstr "Dibuat pada"
+
+#. module: estate_nursery
+#: model:stock.location,name:estate_nursery.location_culling
+msgid "Culling"
+msgstr "Lokasi Pemusnahan"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,culling_location_id:0
+msgid "Culling Location"
+msgstr "Lokasi Pemusnahan"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,seed_qty:0
+#: field:estate.nursery.selection,qty_batch:0
+msgid "DO Quantity"
+msgstr "Jumlah DO"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Dbl."
+msgstr "Dbl."
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Dd."
+msgstr "Dd."
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,qty_dead:0
+msgid "Dead Seed Quantity"
+msgstr "Jumlah Kecambah Mati"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+msgid "Delivery (Box/Bags)"
+msgstr "Pengiriman (Peti/Plastik)"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+msgid "Detail Information"
+msgstr "Detail Information"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+#: selection:estate.nursery.batch,state:0
+msgid "Done"
+msgstr "Selesai"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,qty_double:0
+msgid "Double Tone Quantity"
+msgstr "Jumlah Double Tone"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+#: selection:estate.nursery.batch,state:0
+msgid "Draft"
+msgstr "Draft"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Fgs."
+msgstr "Jmr."
+
+#. module: estate_nursery
+#: help:estate.nursery.batchline,location_id:0
+msgid "Fill in location seed planted."
+msgstr "Isi lokasi tanam."
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,qty_fungus:0
+msgid "Fungus Seed Quantity"
+msgstr "Jumlah Kecambah Berjamur"
+
+#. module: estate_nursery
+#: model:stock.location,name:estate_nursery.location_estate
+msgid "GLY"
+msgstr "GLY"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,age_harvest:0
+msgid "Harvested Age"
+msgstr "Umur Panen"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,id:0
+#: field:estate.nursery.batch,id:0
+#: field:estate.nursery.batchline,id:0
+#: field:estate.nursery.box,id:0
+#: field:estate.nursery.cause,id:0
+#: field:estate.nursery.condition,id:0
+#: field:estate.nursery.progeny,id:0
+#: field:estate.nursery.selection,id:0
+#: field:estate.nursery.selection_line,id:0
+#: field:estate.nursery.stage,id:0
+#: field:estate.nursery.variety,id:0
+msgid "ID"
+msgstr "ID"
+
+#. module: estate_nursery
+#: help:product.template,seed:0
+msgid "Included at Seed Management."
+msgstr "Atur dalam Manajemen Bibit."
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_planting_form
+msgid "Information"
+msgstr "Informasi"
+
+#. module: estate_nursery
+#: model:ir.model,name:estate_nursery.model_stock_location
+msgid "Inventory Locations"
+msgstr "Lokasi Persediaan"
+
+#. module: estate_nursery
+#: model:product.template,name:estate_nursery.seed_dami_product_template
+msgid "Kecambah Dami Mas"
+msgstr "Kecambah Dami Mas"
+
+#. module: estate_nursery
+#: model:product.template,name:estate_nursery.seed_ppks_product_template
+msgid "Kecambah PPKS"
+msgstr "Kecambah PPKS"
+
+#. module: estate_nursery
+#: model:product.template,name:estate_nursery.seed_topaz_product_template
+msgid "Kecambah Topaz"
+msgstr "Kecambah Topaz"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,write_uid:0
+#: field:estate.nursery.batch,write_uid:0
+#: field:estate.nursery.batchline,write_uid:0
+#: field:estate.nursery.box,write_uid:0
+#: field:estate.nursery.cause,write_uid:0
+#: field:estate.nursery.condition,write_uid:0
+#: field:estate.nursery.progeny,write_uid:0
+#: field:estate.nursery.selection,write_uid:0
+#: field:estate.nursery.selection_line,write_uid:0
+#: field:estate.nursery.stage,write_uid:0
+#: field:estate.nursery.variety,write_uid:0
+msgid "Last Updated by"
+msgstr "Terakhir diperbarui oleh"
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,write_date:0
+#: field:estate.nursery.batch,write_date:0
+#: field:estate.nursery.batchline,write_date:0
+#: field:estate.nursery.box,write_date:0
+#: field:estate.nursery.cause,write_date:0
+#: field:estate.nursery.condition,write_date:0
+#: field:estate.nursery.progeny,write_date:0
+#: field:estate.nursery.selection,write_date:0
+#: field:estate.nursery.selection_line,write_date:0
+#: field:estate.nursery.stage,write_date:0
+#: field:estate.nursery.variety,write_date:0
+msgid "Last Updated on"
+msgstr "Terakhir diperbarui pada"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Loc."
+msgstr "Lok."
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,lot_id:0
+msgid "Lot"
+msgstr "Lot"
+
+#. module: estate_nursery
+#: field:estate.nursery.stage,age_maximum:0
+msgid "Maximum Age"
+msgstr "Umur Maksimum"
+
+#. module: estate_nursery
+#: help:estate.nursery.stage,age_maximum:0
+msgid "Maximum age required to be at this stage. 0 is unlimited."
+msgstr "Batas usia maksimum pada tahap ini. 0 berarti tidak dibatasi."
+
+#. module: estate_nursery
+#: field:estate.nursery.stage,age_minimum:0
+msgid "Minimum Age"
+msgstr "Umur Minimum"
+
+#. module: estate_nursery
+#: help:estate.nursery.stage,age_minimum:0
+msgid "Minimum age required to be at this stage. 0 is unlimited."
+msgstr "Umur minimum pada tahap ini. 0 berarti tidak dibatasi."
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,name:0
+#: field:estate.nursery.cause,name:0
+msgid "Name"
+msgstr "Nama"
+
+#. module: estate_nursery
+#: selection:estate.nursery.cause,selection_type:0
+msgid "Normal"
+msgstr "Normal"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,qty_normal:0
+#: field:estate.nursery.selection,qty_normal:0
+msgid "Normal Seed Quantity"
+msgstr "Jumlah Kecambah Normal"
+
+#. module: estate_nursery
+#: model:ir.ui.menu,name:estate_nursery.estate_nursery_menu
+msgid "Nursery"
+msgstr "Pembibitan"
+
+#. module: estate_nursery
+#: view:stock.location:estate_nursery.view_form_location_inherited
+msgid "Nursery Location Information"
+msgstr "Informasi Lokasi Pembibitan"
+
+#. module: estate_nursery
+#: field:estate.nursery.cause,stage_id:0
+#: field:estate.nursery.stage,name:0
+#: model:ir.actions.act_window,name:estate_nursery.action_list_stage
+#: model:ir.ui.menu,name:estate_nursery.config_nursery_stage
+#: field:stock.location,stage_id:0
+msgid "Nursery Stage"
+msgstr "Tahapan Pembibitan"
+
+#. module: estate_nursery
+#: view:estate.nursery.selection_line:estate_nursery.view_tree_nursery_stage
+msgid "Nursery Stage View"
+msgstr "Daftar Tahapan Pembibitan"
+
+#. module: estate_nursery
+#: model:ir.ui.menu,name:estate_nursery.nursery_seed_statement
+msgid "Nursery Statement"
+msgstr "Nursery Statement"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,oil_production:0
+msgid "Oil Production"
+msgstr "Produksi Minyak"
+
+#. module: estate_nursery
+#: model:stock.location,name:estate_nursery.location_prenursery_1
+msgid "PN1"
+msgstr "PN1"
+
+#. module: estate_nursery
+#: model:stock.location,name:estate_nursery.location_prenursery_2
+msgid "PN2"
+msgstr "PN2"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,packaging_id:0
+msgid "Packaging Type"
+msgstr "Tipe Kemasan"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,parent_left:0
+msgid "Parent Left"
+msgstr "Parent Left"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,parent_id:0
+msgid "Parent Package"
+msgstr "Parent Package"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,parent_right:0
+msgid "Parent Right"
+msgstr "Parent Right"
+
+#. module: estate_nursery
+#: model:stock.location,name:estate_nursery.location_nursery
+msgid "Pembibitan Liyodu"
+msgstr "Pembibitan Liyodu"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,picking_id:0
+msgid "Picking"
+msgstr "Gudang Penerimaan"
+
+#. module: estate_nursery
+#: model:ir.model,name:estate_nursery.model_stock_transfer_details
+msgid "Picking wizard"
+msgstr "Bantuan Logistik"
+
+#. module: estate_nursery
+#: model:ir.model,name:estate_nursery.model_stock_transfer_details_items
+msgid "Picking wizard items"
+msgstr "Detail Bantuan Logistik"
+
+#. module: estate_nursery
+#: view:product.template:estate_nursery.product_seed_form_inherited
+msgid "Plantation"
+msgstr "Perkebunan"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_planting_form
+msgid "Planted"
+msgstr "Ditanam"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,date_planted:0
+msgid "Planted Date"
+msgstr "Tanggal Ditanam"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,qty_planted:0
+msgid "Planted Quantity"
+msgstr "Jumlah Ditanam"
+
+#. module: estate_nursery
+#: model:ir.actions.act_window,name:estate_nursery.action_list_batch_planting
+msgid "Planting"
+msgstr "Penanaman"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,active:0
+#: field:estate.nursery.variety,active:0
+msgid "Planting Allowed"
+msgstr "Boleh Ditanam"
+
+#. module: estate_nursery
+#: selection:estate.nursery.cause,selection_type:0
+msgid "Politonne"
+msgstr "Politonne"
+
+#. module: estate_nursery
+#: model:stock.location,name:estate_nursery.location_prenursery
+msgid "Pre Nursery"
+msgstr "Pre Nursery"
+
+#. module: estate_nursery
+#: model:ir.model,name:estate_nursery.model_product_template
+msgid "Product Template"
+msgstr "Product Template"
+
+#. module: estate_nursery
+#: field:product.template,progeny_id:0
+#: view:stock.transfer_details:estate_nursery.view_form_selection
+msgid "Progeny"
+msgstr "Progeny"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,name:0
+msgid "Progeny Name"
+msgstr "Progeny Name"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Qty Abnormal"
+msgstr "Jml Abnormal"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_tree
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Qty DO"
+msgstr "Jml DO"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_planting_tree
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Qty Normal"
+msgstr "Jml Normal"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_tree
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Qty Planted"
+msgstr "Jml Ditanam"
+
+#. module: estate_nursery
+#: field:estate.nursery.selection_line,qty:0
+msgid "Quantity"
+msgstr "Jumlah"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,qty_received:0
+msgid "Quantity Received"
+msgstr "Jumlah Diterima"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,date_received:0
+msgid "Received Date"
+msgstr "Tanggal Diterima"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+msgid "Reject"
+msgstr "Tolak"
+
+#. module: estate_nursery
+#: help:estate.nursery.progeny,age_harvest:0
+msgid "Ripe Age in Month"
+msgstr "Umur TM (bulan)"
+
+#. module: estate_nursery
+#: view:product.template:estate_nursery.product_seed_form_inherited
+msgid "Sales"
+msgstr "Penjualan"
+
+#. module: estate_nursery
+#: model:ir.ui.menu,name:estate_nursery.estate_seed_menu
+msgid "Seed"
+msgstr "Bibit"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,age_seed:0
+#: field:stock.transfer_details,age_seed:0
+msgid "Seed Age"
+msgstr "Umur Bibit"
+
+#. module: estate_nursery
+#: model:product.ul,name:estate_nursery.seed_bag_100
+msgid "Seed Bag 100"
+msgstr "Seed Bag 100"
+
+#. module: estate_nursery
+#: model:product.ul,name:estate_nursery.seed_bag_200
+msgid "Seed Bag 200"
+msgstr "Seed Bag 200"
+
+#. module: estate_nursery
+#: model:ir.actions.act_window,name:estate_nursery.action_list_batch
+#: model:ir.model,name:estate_nursery.model_estate_nursery_batch
+#: model:ir.ui.menu,name:estate_nursery.nursery_seed_batch
+msgid "Seed Batch"
+msgstr "Seed Batch"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+msgid "Seed Batch Form"
+msgstr "Form Batch Kecambah"
+
+#. module: estate_nursery
+#: model:ir.model,name:estate_nursery.model_estate_nursery_batchline
+msgid "Seed Batch Line (Box/Bag)"
+msgstr "Detail Batch (Peti/Plastik)"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_tree
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_planting_tree
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Seed Batch List"
+msgstr "Daftar Batch Bibit"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_planting_form
+msgid "Seed Batch Planting Form"
+msgstr "Form Penanaman Kecambah"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_form
+msgid "Seed Batchline"
+msgstr "Detail Batch"
+
+#. module: estate_nursery
+#: model:product.ul,name:estate_nursery.seed_box
+msgid "Seed Box 60 x 30 x 30"
+msgstr "Seed Box 60 x 30 x 30"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,batchline_ids:0
+msgid "Seed Boxes"
+msgstr "Kotak Kecambah"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Seed Planted"
+msgstr "Kecambah Ditanam"
+
+#. module: estate_nursery
+#: field:product.template,seed:0
+msgid "Seed Product"
+msgstr "Produk Bahan Tanam"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,progeny_id:0
+#: model:ir.actions.act_window,name:estate_nursery.action_list_progeny
+#: model:ir.ui.menu,name:estate_nursery.config_seed_progeny
+#: field:stock.transfer_details_items,progeny_id:0
+msgid "Seed Progeny"
+msgstr "Progeny Kecambah"
+
+#. module: estate_nursery
+#: help:estate.nursery.progeny,active:0
+msgid "Seed Progeny allowed to be planted."
+msgstr "Progeny Kecambah boleh ditanam."
+
+#. module: estate_nursery
+#: field:estate.nursery.bag,qty_seed:0
+#: field:stock.location,qty_seed:0
+msgid "Seed Quantity"
+msgstr "Jumlah Kecambah"
+
+#. module: estate_nursery
+#: model:ir.actions.act_window,name:estate_nursery.action_list_receiving_selection
+#: model:ir.ui.menu,name:estate_nursery.nursery_receiving_selection
+msgid "Seed Receiving"
+msgstr "Penerimaan Kecambah"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Seed Selection"
+msgstr "Seleksi Kecambah/Bibit"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,variety_id:0
+#: field:estate.nursery.progeny,variety_id:0
+#: view:estate.nursery.variety:estate_nursery.view_seed_variety_form
+#: model:ir.actions.act_window,name:estate_nursery.action_list_variety
+#: model:ir.ui.menu,name:estate_nursery.config_seed_variety
+#: field:product.template,variety_id:0
+#: field:stock.transfer_details_items,variety_id:0
+msgid "Seed Variety"
+msgstr "Varietas Kecambah"
+
+#. module: estate_nursery
+#: help:estate.nursery.variety,active:0
+msgid "Seed Variety allowed to be planted."
+msgstr "Varietas Kecambah boleh ditanam."
+
+#. module: estate_nursery
+#: help:product.template,variety_id:0
+msgid "Select Seed Variety."
+msgstr "Pilih Varietas Kecambah."
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,selection_ids:0
+#: field:estate.nursery.selection_line,selection_id:0
+#: model:ir.ui.menu,name:estate_nursery.nursery_seed_selection
+msgid "Selection"
+msgstr "Seleksi"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Selection 1 (MN)"
+msgstr "Seleksi 1 (MN)"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Selection 1 (PN)"
+msgstr "Seleksi 1 (PN)"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Selection 2 (MN)"
+msgstr "Seleksi 2 (MN)"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Selection 2 (PN)"
+msgstr "Seleksi 2 (PN)"
+
+#. module: estate_nursery
+#: selection:estate.nursery.batch,nursery_stage:0
+msgid "Selection 3 (MN)"
+msgstr "Seleksi 3 (MN)"
+
+#. module: estate_nursery
+#: field:estate.nursery.selection,date:0
+msgid "Selection Date"
+msgstr "Tanggal Seleksi"
+
+#. module: estate_nursery
+#: field:estate.nursery.selection,selection_line_ids:0
+msgid "Selection Lines"
+msgstr "Detail Seleksi"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,nursery_stage:0
+msgid "Selection State"
+msgstr "Status Seleksi"
+
+#. module: estate_nursery
+#: field:estate.nursery.cause,selection_type:0
+msgid "Selection Type"
+msgstr "Jenis Seleksi"
+
+#. module: estate_nursery
+#: field:estate.nursery.cause,sequence:0
+#: field:estate.nursery.condition,sequence:0
+#: field:estate.nursery.stage,sequence:0
+msgid "Sequence No"
+msgstr "No Urut"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Sgl."
+msgstr "Sgl."
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,code:0
+#: field:estate.nursery.stage,code:0
+#: field:estate.nursery.variety,code:0
+msgid "Short Name"
+msgstr "Kode"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,qty_single:0
+msgid "Single Tone Quantity"
+msgstr "Jumlah Single Tone"
+
+#. module: estate_nursery
+#: field:estate.nursery.batch,state:0
+msgid "State"
+msgstr "Status"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,supplier_id:0
+msgid "Supplier"
+msgstr "Vendor"
+
+#. module: estate_nursery
+#: field:estate.nursery.batchline,complete_name:0
+msgid "Supplier Packaging ID"
+msgstr "No ID Kemasan Vendor"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_tree
+msgid "Total"
+msgstr "Total"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_planting_tree
+msgid "Total Planted"
+msgstr "Total Ditanam"
+
+#. module: estate_nursery
+#: field:estate.nursery.progeny,height_tree:0
+msgid "Tree Height"
+msgstr "Tinggi Pohon"
+
+#. module: estate_nursery
+#: help:estate.nursery.progeny,code:0
+#: help:estate.nursery.stage,code:0
+#: help:estate.nursery.variety,code:0
+msgid "Use for reporting label purposes."
+msgstr "Digunakan untuk pelaporan."
+
+#. module: estate_nursery
+#: help:product.template,progeny_id:0
+msgid "Value depends on Seed Variety."
+msgstr "Nilai sesuai Varietas Kecambah."
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Var DO"
+msgstr "Var DO"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Var Plt."
+msgstr "Var Tnm."
+
+#. module: estate_nursery
+#: view:stock.transfer_details:estate_nursery.view_form_selection
+msgid "Variety"
+msgstr "Varietas"
+
+#. module: estate_nursery
+#: field:estate.nursery.variety,name:0
+msgid "Variety Name"
+msgstr "Nama Varietas"
+
+#. module: estate_nursery
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_form
+#: view:estate.nursery.batch:estate_nursery.view_seed_batch_planting_form
+#: view:stock.transfer_details:estate_nursery.view_form_selection
+msgid "month"
+msgstr "bulan"
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Σ  Abn."
+msgstr "Σ  Abn."
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_planting_tree
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Σ Nor."
+msgstr "Σ Nor."
+
+#. module: estate_nursery
+#: view:estate.nursery.batchline:estate_nursery.view_seed_batchline_tree
+msgid "Σ Plt."
+msgstr "Σ Tnm."
+
+#. module: stock
+#: view:stock.move:stock.view_move_form
+msgid "Waiting Availability"
+msgstr "Menunggu Kedatangan"
+
+#. module: stock
+#: view:stock.move:stock.view_move_form
+msgid "Partially Available"
+msgstr "Kedatangan Sebagian"
+
+#. module: stock
+#: view:stock.move:stock.view_move_form
+msgid "Ready to Transfer"
+msgstr "Siap Dipindahkan"
+
+#. module: stock
+#: view:stock.move:stock.view_move_form
+msgid "Transferred"
+msgstr "Dipindahkan"

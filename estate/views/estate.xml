@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+
+        <record model="ir.actions.act_window" id="action_list_block">
+            <field name="name">Estate Structure</field>
+            <field name="res_model">stock.location</field>
+            <field name="domain">[('estate_location','=','True')]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_soil">
+            <field name="name">Soil Type</field>
+            <field name="res_model">estate.soil_type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_soil_sub">
+            <field name="name">Soil Sub Type</field>
+            <field name="res_model">estate.soil_sub_type</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_shape">
+            <field name="name">Block Shape</field>
+            <field name="res_model">estate.shape</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_slope">
+            <field name="name">Slope</field>
+            <field name="res_model">estate.slope</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_topography">
+            <field name="name">Topography</field>
+            <field name="res_model">estate.topography</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_row_direction">
+            <field name="name">Row Direction</field>
+            <field name="res_model">estate.row_direction</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_vegetation">
+            <field name="name">Vegetation</field>
+            <field name="res_model">estate.vegetation</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Extend View -->
+        <record model="ir.ui.view" id="view_form_location_inherited">
+            <field name="name">Location - Estate Extension</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                <group string="Additional Information" position="after">
+                    <group string="Estate Location Information">
+                        <field name="estate_location"/>
+                        <field name="estate_location_level"/>
+                        <field name="estate_location_type"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+
+        <menuitem id="main_estate_menu" name="Plantation"/>
+        <menuitem id="estate_config_menu" name="Configuration" parent="main_estate_menu" sequence="100" />
+        <menuitem id="estate_blocking_menu" name="Blocking" parent="estate_config_menu" groups="estate.group_agronomi"/>
+        <menuitem id="estate_block_menu" name="Estate Structure" parent="estate_blocking_menu" action="action_list_block"/>
+        <menuitem id="estate_master_menu" name="Master" parent="estate_config_menu" />
+        <menuitem id="estate_soil_type_menu" name="Soil Type" parent="estate_master_menu" action="action_list_soil"/>
+        <menuitem id="estate_soil_sub_type_menu" name="Soil Sub Type" parent="estate_master_menu" action="action_list_soil_sub"/>
+        <menuitem id="estate_shape_menu" name="Block Shape" parent="estate_master_menu" action="action_list_shape"/>
+        <menuitem id="estate_topography_menu" name="Topography" parent="estate_master_menu" action="action_list_topography"/>
+        <menuitem id="estate_slope_menu" name="Slope (%)" parent="estate_master_menu" action="action_list_slope"/>
+        <menuitem id="estate_vegetation_menu" name="Vegetation" parent="estate_master_menu" action="action_list_vegetation"/>
+        <menuitem id="estate_row_direction_menu" name="Row Direction" parent="estate_master_menu" action="action_list_row_direction"/>
+    </data>
+</openerp>
