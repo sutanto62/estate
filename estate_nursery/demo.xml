@@ -5,7 +5,7 @@
             <field name="is_company" eval="True"></field>
             <field name="supplier" eval="True"/>
             <field name="active" eval="True"/>
-            <field name="property_product_pricelist_purchase" ref="purchase.list0"/>
+            <!--<field name="property_product_pricelist_purchase" ref="purchase.list0"/>-->
             <field name="property_stock_customer" ref="stock.stock_location_customers"/>
             <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
         </record>
@@ -15,7 +15,7 @@
             <field name="is_company" eval="True"/>
             <field name="supplier" eval="True"/>
             <field name="active" eval="True"/>
-            <field name="property_product_pricelist_purchase" ref="purchase.list0"/>
+            <!--<field name="property_product_pricelist_purchase" ref="purchase.list0"/>-->
             <field name="property_stock_customer" ref="stock.stock_location_customers"/>
             <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
         </record>

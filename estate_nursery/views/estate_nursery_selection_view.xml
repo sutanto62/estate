@@ -2,17 +2,173 @@
 
 <openerp>
     <data>
+
+        <!--View,selectionstage-->
+        <record model="ir.ui.view" id="view_tree_nursery_stage">
+            <field name="name">Batch Selection Stage Tree</field>
+            <field name="model">estate.nursery.selectionstage</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Stage View">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--View,selection-->
+        <record model="ir.ui.view" id="view_tree_selection_nursery">
+            <field name="name">Nursery Selection</field>
+            <field name="model">estate.nursery.selection</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery selection View" colors="green:qty_normal">
+                    <field name="selectionstage_id" />
+                    <field name="qty_normal" string="&#931;  Normal." sum="Qty Normal"/>
+                    <field name="qty_abnormal" string="&#931;  Abnormal." sum="Qty Abnormal"/>
+                    <field name="nursery_persentagen" string="% normal. " />
+                    <field name="nursery_persentagea" string="% abnormal."/>
+                    <field name="qty_plant" string="&#931;  PLT." sum="Qty Normal" />
+                    <field name="qty_batch" string="&#931;  DO." />
+                    <field name="date_plant"/>
+                    <field name="nursery_information"/>
+                    <field name="selection_date"/>
+                    <!--<field name="cause_id"/>-->
+                    <field name="comment"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_selection_nursery">
+            <field name="name">Nursery Selection</field>
+            <field name="model">estate.nursery.selection</field>
+            <field name="arch" type="xml">
+                <form String="Nursery selection view">
+                    <header coolspan="10">
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_done" type="workflow"
+                                string="Approved"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_manager"/>
+                        <field name="state" widget="statusbar"/>
+                </header>
+                    <sheet>
+
+                         <div class="oe_title" colors="blue">
+                             <h1>
+                                <label string="Selection For Batch "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                <label string="Selection For "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                <field name="names" class="oe_inline" readonly="1" />
+                             </h1>
+                          </div>
+
+                        <group>
+                            <group>
+                                <field name="batch_id" attrs="{'required': [('state','=','draft')],
+                                'readonly': [('state','!=','draft')]}" domain="[('batch_id','=',batch_id)]"
+                                  invisible="1"/>
+                                <field name="qty_batch" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}"/>
+                                <field name="qty_plant" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}" onchange ="_compute_plannormal"/>
+                                <field name="date_plant" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}"/>
+                            </group>
+
+                            <group coolspan="10">
+                                <field name="selectionstage_id" />
+                                <field name="qty_normal"/>
+                                <field name="qty_abnormal"/>
+                                <field name="qty_plante" invisible="1"/>
+                                <field name="selection_date"/>
+                            </group>
+                        </group>
+
+                        <group>
+                                <notebook>
+                                    <page string="Selection Line">
+                                        <tree>
+                                            <field name="selectionline_ids"/>
+                                        </tree>
+                                    </page>
+
+                                    <page string="Selection Information Detail">
+                                        <form>
+                                            <group coolspan="10">
+                                                <group >
+                                                    <field name="nursery_lapseday"
+                                                           attrs="{'required': [('state','=','draft')],
+                                                    'readonly': [('state','!=','draft')]}"/>
+                                                    <field name="nursery_lapsemonth"
+                                                           attrs="{'required':
+                                                    [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
+                                                    <field name="nursery_information"
+                                                           string="Nursery Date Information"/>
+                                                </group>
+                                                 <group >
+                                                    <field name="nursery_plandate"
+                                                           string="Nursery Planing Date"
+                                                           groups="estate.group_agronomi"/>
+                                                    <field name="nursery_plandatemax"
+                                                           string="Nursery Planing Date Maximum"
+                                                           groups="estate.group_agronomi"/>
+                                                    <field name="nursery_plandatemin"
+                                                           string="Nursery Planing Date Minimum"
+                                                           groups="estate.group_agronomi" />
+                                                </group>
+                                            </group>
+                                        </form>
+                                    </page>
+                                </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--view selection line-->
+         <record model="ir.ui.view" id="view_selectionline">
+            <field name="name">Selection line</field>
+            <field name="model">estate.nursery.selectionline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Selection Line" colors="red:qty ">
+                    <field name="cause_id"/>
+                    <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
+                    <field name="location_id" />
+                </tree>
+            </field>
+         </record>
+
+
+
+
         <!-- ACTION -->
         <record model="ir.actions.act_window" id="action_list_selection">
-            <field name="name">Batch Selection</field>
+            <field name="name">Selection</field>
             <field name="res_model">estate.nursery.selection</field>
             <field name="view_mode">tree,form</field>
+        </record>
+         <record model="ir.actions.act_window" id="action_list_selectionstage">
+            <field name="name">Selection stage</field>
+            <field name="res_model">estate.nursery.selectionstage</field>
+            <field name="view_mode">tree,form,search</field>
         </record>
 
         <!-- MENU -->
         <menuitem id="nursery_seed_selection" name="Selection" parent="estate_nursery_menu"
-                  action="action_list_selection" sequence="15"/>
-
-
+                  action="action_list_selection" sequence="15" />
+        <menuitem id="nursery_line_selection_stage" name="Batch Selection Stage" parent="estate.estate_master_menu"
+                  action="action_list_selectionstage" />
     </data>
 </openerp>

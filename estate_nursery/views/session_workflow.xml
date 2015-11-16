@@ -1,13 +1,13 @@
 <openerp>
     <data>
-
+        <!-- Nursery Batch -->
         <record id="estate_nursery.batch_approval" model="workflow">
             <field name="name">Estate Nursery Batch Workflow</field>
             <field name="osv">estate.nursery.batch</field>
             <field name="on_create">True</field>
         </record>
 
-        <record model="workflow.activity" id="draft">
+        <record model="workflow.activity" id="batch_draft">
             <field name="name">Draft</field>
             <field name="wkf_id" ref="estate_nursery.batch_approval"/>
             <field name="flow_start" eval="True"/>
@@ -15,14 +15,14 @@
             <field name="action">action_draft()</field>
         </record>
 
-        <record model="workflow.activity" id="confirmed">
+        <record model="workflow.activity" id="batch_confirmed">
             <field name="name">Confirmed</field>
             <field name="wkf_id" ref="estate_nursery.batch_approval"/>
             <field name="kind">function</field>
             <field name="action">action_confirmed()</field>
         </record>
 
-        <record model="workflow.activity" id="approved">
+        <record model="workflow.activity" id="batch_approved">
             <field name="name">Approved</field>
             <field name="wkf_id" ref="estate_nursery.batch_approval"/>
             <field name="kind">function</field>
@@ -30,27 +30,29 @@
         </record>
 
         <record model="workflow.transition" id="batch_draft_to_confirmed">
-            <field name="act_from" ref="draft"/>
-            <field name="act_to" ref="confirmed"/>
+            <field name="act_from" ref="batch_draft"/>
+            <field name="act_to" ref="batch_confirmed"/>
             <field name="signal">confirmed</field>
         </record>
 
         <record model="workflow.transition" id="batch_done_to_draft">
-            <field name="act_from" ref="approved"/>
-            <field name="act_to" ref="draft"/>
+            <field name="act_from" ref="batch_approved"/>
+            <field name="act_to" ref="batch_draft"/>
             <field name="signal">draft</field>
         </record>
 
         <record model="workflow.transition" id="batch_confirmed_to_draft">
-            <field name="act_from" ref="confirmed"/>
-            <field name="act_to" ref="draft"/>
+            <field name="act_from" ref="batch_confirmed"/>
+            <field name="act_to" ref="batch_draft"/>
             <field name="signal">draft</field>
         </record>
 
         <record model="workflow.transition" id="batch_confirmed_to_done">
-            <field name="act_from" ref="confirmed"/>
-            <field name="act_to" ref="approved"/>
+            <field name="act_from" ref="batch_confirmed"/>
+            <field name="act_to" ref="batch_approved"/>
             <field name="signal">approved</field>
         </record>
+
+
     </data>
 </openerp>

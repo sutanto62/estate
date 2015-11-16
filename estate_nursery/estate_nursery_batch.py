@@ -31,7 +31,6 @@ class Stage(models.Model):
     Seed nursery has two kind of method. First, single stage. Second, double stage (common).
     """
     _name = 'estate.nursery.stage'
-    _sequence = 'sequence, name'
 
     name = fields.Char("Nursery Stage", required=True)
     code = fields.Char("Short Name", help="Use for reporting label purposes.", size=3)
@@ -84,28 +83,27 @@ class Batch(models.Model):
     _inherits = {'stock.production.lot': 'lot_id'}
 
     name = fields.Char(_("Batch No"))
-    lot_id = fields.Many2one('stock.production.lot', "Lot", ondelete="restrict", domain=[('product_id.seed','=',True)])
+    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
-    date_received = fields.Date("Received Date")
-    date_planted = fields.Date("Planted Date")
+    date_received = fields.Date("Received Date",required=False,readonly=False)
+    date_planted = fields.Date("Planted Date",required=False,readonly=False)
     age_seed = fields.Integer("Seed Age", required=True)
     comment = fields.Text("Additional Information")
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
-    qty_planted = fields.Integer(_("Planted"), compute='_compute_total')
-    batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes"))  # Detailed selection
-    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))  # Detailed selection
+    qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
+    qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
+    batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
+    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))# Detaileld selection
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
-    picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
+    picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
     culling_location_id = fields.Many2one('stock.location', _("Culling Location"),
-                                          help="Select scrap bloc nursery estate location.",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),
-                                                  ('scrap_location', '=', True)])
+                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)])
     nursery_stage = fields.Selection([
         ('draft', 'Draft'),
         ('0', 'Seed Selection'),
@@ -224,13 +222,25 @@ class Batch(models.Model):
         return True
 
     @api.one
-    @api.depends('batchline_ids')
+    @api.depends('batchline_ids','selection_ids')
     def _compute_total(self):
         self.qty_planted = 0
         for item in self.batchline_ids:
             self.qty_planted += item.qty_planted
-        return True
+        if self.selection_ids:
+            for a in self.selection_ids:
+                self.qty_planted -=a.qty_abnormal
 
+        return True
+        self.write({'qty_planted' : self.qty_planted})
+
+    @api.one
+    @api.depends('batchline_ids',)
+    def _compute_total_temp(self):
+        self.qty_planted_temp = 0
+        for item in self.batchline_ids:
+            self.qty_planted_temp += item.qty_planted
+        return True
 
 
 class Batchline(models.Model):

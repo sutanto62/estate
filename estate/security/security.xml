@@ -11,9 +11,9 @@
             <field name="name">Estate Manager</field>
             <field name="implied_ids" eval="[(4, ref('estate.group_user')), (4, ref('estate.group_assistant'))]"/>
         </record>
-        <record id="estate.group_agronomy" model="res.groups">
-            <field name="name">Agronomy</field>
-            <field name="implied_ids" eval="[(4, ref('estate.group_user')), (4, ref('estate.group_assistant')), (4, ref('estate.group_manager'))]"/>
+        <record id="estate.group_agronomi" model="res.groups">
+            <field name="name">Estate Agronomi</field>
+            <field name="implied_ids" eval="[(4, ref('estate.group_manager')),(4, ref('estate.group_user')), (4, ref('estate.group_assistant'))]"/>
         </record>
     </data>
 </openerp>

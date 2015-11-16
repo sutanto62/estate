@@ -53,7 +53,7 @@
 
         <record model="ir.ui.view" id="view_tree_nursery_stage">
             <field name="name">Bag Selection</field>
-            <field name="model">estate.nursery.selection_line</field>
+            <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Stage View">
                     <field name="qty"/>
@@ -141,14 +141,13 @@
                     <group name="top" string="Batch Information">
                         <group name="top_left">
                             <field name="name"/>
-                            <field name="date_received" attrs="{'readonly': [('state','!=','draft')]}"/>
-                            <field name="date_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                            <field name="date_received"/>
+                            <field name="date_planted" />
                             <field name="state" invisible="True"/>
                             <field name="nursery_stage" invisible="True"/>
                         </group>
                         <group name="top_right">
                             <field name="picking_id"/>
-                            <field name="lot_id"/>
                             <field name="culling_location_id" attrs="{'required': [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
                         </group>
                     </group>
@@ -159,7 +158,8 @@
                                     <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                 </group>
                                 <group name="top_right">
                                     <field name="product_id"/>
@@ -178,10 +178,13 @@
                                 <field name="comment"/>
                             </group>
                         </page>
+                        <page string="Selection">
+                            <field name="selection_ids" attrs="{
+                            'required' : [('state', '=', 'draft')]}"
+                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
+                                   'default_qty_plante': qty_planted}"/>
+                        </page>
                     </notebook>
-
-
-
                 </form>
             </field>
         </record>
@@ -233,6 +236,19 @@
             </field>
         </record>
 
+        <!--view selection line-->
+         <record model="ir.ui.view" id="view_selectionline">
+            <field name="name">Selection line</field>
+            <field name="model">estate.nursery.selectionline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Selection Line">
+                    <field name="cause_id"/>
+                    <field name="qty" string="&#931; Quantity ." sum="Qty" colors="green:qty &gt; 200;"/>
+                    <field name="location_id" />
+                </tree>
+            </field>
+         </record>
+
         <!-- View, Extend Stock Transfer todo create separate view for next release -->
         stock.view_stock_enter_transfer_details
         <record model="ir.ui.view" id="view_form_selection">
@@ -272,8 +288,10 @@
                     <group name="top" string="Batch Information">
                         <group name="top_left">
                             <field name="name"/>
-                            <field name="date_received" attrs="{'readonly': [('state','!=','draft')], 'required': [('state','!=','draft')]}"/>
-                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','confirmed'))], 'required': [('state','not in',('draft','confirmed'))]}"/>
+                            <field name="date_received" attrs="{'readonly': [('state','!=','draft')],
+                            'required': [('state','!=','draft')]}"/>
+                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','confirmed'))],
+                             'required': [('state','not in',('draft','confirmed'))]}"/>
                             <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
@@ -314,7 +332,7 @@
             </field>
         </record>
 
-        <!-- Variety -->
+        <!--View, Variety -->
         <record model="ir.ui.view" id="view_seed_variety_form">
             <field name="name">Seed Variety</field>
             <field name="model">estate.nursery.variety</field>
@@ -389,19 +407,19 @@
         <menuitem id="nursery_seed_statement" name="Nursery Statement" parent="estate_nursery_menu"
                   action="action_list_variety" sequence="11"/>
         <menuitem id="nursery_receiving_selection" name="Seed Receiving" parent="estate_nursery_menu"
-                  action="action_list_receiving_selection" sequence="12"/>
+                  action="action_list_receiving_selection" sequence="12" groups="estate.group_user"/>
         <menuitem id="nursery_seed_batch" name="Seed Batch" parent="estate_nursery_menu"
                   action="action_list_batch" sequence="13"/>
         <!--
         <menuitem id="nursery_seed_batch_planting" name="Seed Planting" parent="estate_nursery_menu"
                   action="action_list_batch_planting" sequence="14"/>
         -->
-        <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu"/>
+        <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />
         <menuitem id="config_seed_variety" name="Seed Variety" parent="estate.estate_master_menu"
-                  action="action_list_variety"/>
+                  action="action_list_variety" groups="estate.group_agronomi"/>
         <menuitem id="config_seed_progeny" name="Seed Progeny" parent="estate.estate_master_menu"
-                  action="action_list_progeny"/>
+                  action="action_list_progeny" groups="estate.group_agronomi"/>
         <menuitem id="config_nursery_stage" name="Nursery Stage" parent="estate.estate_master_menu"
-                  action="action_list_stage"/>
+                  action="action_list_stage" groups="estate.group_agronomi"/>
     </data>
 </openerp>
