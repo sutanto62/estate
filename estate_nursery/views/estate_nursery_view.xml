@@ -158,7 +158,8 @@
                                     <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                 </group>
                                 <group name="top_right">
                                     <field name="product_id"/>
@@ -290,8 +291,10 @@
                     <group name="top" string="Batch Information">
                         <group name="top_left">
                             <field name="name"/>
-                            <field name="date_received" attrs="{'readonly': [('state','!=','draft')], 'required': [('state','!=','draft')]}"/>
-                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','confirmed'))], 'required': [('state','not in',('draft','confirmed'))]}"/>
+                            <field name="date_received" attrs="{'readonly': [('state','!=','draft')],
+                            'required': [('state','!=','draft')]}"/>
+                            <field name="date_planted" attrs="{'readonly': [('state','not in',('draft','confirmed'))],
+                             'required': [('state','not in',('draft','confirmed'))]}"/>
                             <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                             <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>

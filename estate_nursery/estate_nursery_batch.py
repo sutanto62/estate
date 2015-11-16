@@ -97,7 +97,7 @@ class Batch(models.Model):
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
-
+    qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))# Detaileld selection
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
@@ -234,6 +234,14 @@ class Batch(models.Model):
 
         return True
         self.write({'qty_planted' : self.qty_planted})
+
+    @api.one
+    @api.depends('batchline_ids',)
+    def _compute_total_temp(self):
+        self.qty_planted_temp = 0
+        for item in self.batchline_ids:
+            self.qty_planted_temp += item.qty_planted
+        return True
 
 
 class Batchline(models.Model):
