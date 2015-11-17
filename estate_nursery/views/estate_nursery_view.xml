@@ -46,10 +46,34 @@
             <field name="arch" type="xml">
                 <tree string="Nursery Stage View">
                     <field name="name"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="sequence"/>
+                    <field name="age_minimum"/>
+                    <field name="age_maximum"/>
                 </tree>
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_form_nursery_stage">
+            <field name="name">Nursery Stage Tree</field>
+            <field name="model">estate.nursery.stage</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Stage View">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="age_minimum"/>
+                            <field name="age_maximum"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
 
         <record model="ir.ui.view" id="view_tree_nursery_stage">
             <field name="name">Bag Selection</field>

@@ -139,7 +139,6 @@ class Selection(models.Model):
             hasil = plante - abn
             self.qty_normal = hasil
             self.qty_plant = hasil
-            print hasil
         return  True
 
     #compute selectionLine
@@ -285,7 +284,6 @@ class Selection(models.Model):
 
              #calculate range date
              if conv_fromdt and conv_plan and conv_planmax and conv_planmin:
-                 # if date_convplany and dmaxy and dminy != loope and loopd and loopc:
                 if date_convfromdtM == date_convplanM:
                     if date_convfromdtD == date_convplanD :
                         self.nursery_information = '2'#pass
@@ -307,7 +305,6 @@ class Selection(models.Model):
 
 class SelectionStage(models.Model):
     _name = 'estate.nursery.selectionstage'
-    #_inherit = 'estate.nursery.selection'
 
     name = fields.Char(string="Selection Stage")
     age_limit_max= fields.Integer(string="Age Max",required=True)
@@ -319,7 +316,7 @@ class SelectionStage(models.Model):
                              ("4","Age Limit min not more than 12")],
                             compute='calculateinfo', default='draft', string="Information" ,
                             readonly=True,required=False)
-    comment = fields.Text(string="Description or Comment")
+    comment = fields.Text(string="Description or command")
     stage_id = fields.Many2one('estate.nursery.stage',"Nursery Stage",)
 
     #Limit age
@@ -355,28 +352,24 @@ class SelectionLine(models.Model):
     _name = 'estate.nursery.selectionline'
 
     qty = fields.Integer("Quantity Abnormal",required=True)
-    qty_abnormal = fields.Integer("Abnormal Quantity",required=False,
-                                  readonly=True,related='selection_id.qty_abnormal',store=True)
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='selection_id.qty_batch',store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
-    comment = fields.Text("Additional Information")
-    selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True)
+    selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
     location_id = fields.Many2one('stock.location', "Bedengan",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
-                                          ('estate_location_type', '=', 'nursery')],
+                                          ('estate_location_type', '=', 'nursery'),('scrap_location', '=', False)],
                                   help="Fill in location seed planted.",required=True)
+    comment = fields.Text("Description")
 
 
 
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""
     _name = 'estate.nursery.cause'
-    #_sequence = 'sequence'
 
     name = fields.Char('Name')
     comment = fields.Text('Cause Description')
     code = fields.Char('Cause Abbreviation', size=3)
     sequence = fields.Integer('Sequence No')
-    selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
     stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage")
