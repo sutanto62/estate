@@ -10,7 +10,80 @@
             <field name="arch" type="xml">
                 <tree string="Nursery Stage View">
                     <field name="name"/>
+                    <field name="stage_id"/>
+                    <field name="info"/>
+                    <field name="age_limit_min"/>
+                    <field name="age_limit_max"/>
+                    <field name="age_selection"/>
+                    <field name="comment"/>
                 </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_nursery_stage">
+            <field name="name">Batch Selection Stage Form</field>
+            <field name="model">estate.nursery.selectionstage</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Stage View">
+                    <group coolspan="10">
+                        <group>
+                            <field name="name"/>
+                            <field name="stage_id"/>
+                            <field name="info"/>
+                        </group>
+                        <group>
+                            <field name="age_limit_min"/>
+                            <field name="age_limit_max"/>
+                            <field name="age_selection"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Selection Description">
+                            <field name="comment" string ="Description or Comment"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <!--View,Selection Cause-->
+        <record model="ir.ui.view" id="view_tree_nursery_cause">
+            <field name="name">Batch Selection Cause Tree</field>
+            <field name="model">estate.nursery.cause</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Stage View">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="sequence"/>
+                    <field name="stage_id"/>
+                    <field name="comment"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_nursery_cause">
+            <field name="name">Batch Selection Cause Form</field>
+            <field name="model">estate.nursery.cause</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Stage View">
+                    <group coolspan="10">
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="stage_id"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <group>
+                        <notebook >
+                            <page string="Cause Description">
+                                <field name="comment" string="Cause Description or Comment"/>
+                            </page>
+                        </notebook>
+                    </group>
+                </form>
             </field>
         </record>
 
@@ -19,7 +92,8 @@
             <field name="name">Nursery Selection</field>
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
-                <tree string="Nursery selection View" colors="green:qty_normal">
+                <tree string="Nursery selection View"
+                      colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
                     <field name="selectionstage_id" />
                     <field name="qty_normal" string="&#931;  Normal." sum="Qty Normal"/>
                     <field name="qty_abnormal" string="&#931;  Abnormal." sum="Qty Abnormal"/>
@@ -30,8 +104,7 @@
                     <field name="date_plant"/>
                     <field name="nursery_information"/>
                     <field name="selection_date"/>
-                    <!--<field name="cause_id"/>-->
-                    <field name="comment"/>
+                    <field name="state" invisible="1"/>
                 </tree>
             </field>
         </record>
@@ -52,7 +125,7 @@
                                 string="Confirmed"
                                 class="oe_highlight"
                                 states="draft"
-                                groups="estate.group_assistant"/>
+                                groups="estate.group_assistant" />
 
                         <button name="signal_done" type="workflow"
                                 string="Approved"
@@ -92,6 +165,7 @@
                                 <field name="qty_abnormal"/>
                                 <field name="qty_plante" invisible="1"/>
                                 <field name="selection_date"/>
+                                <field name="state" invisible="1"/>
                             </group>
                         </group>
 
@@ -99,7 +173,7 @@
                                 <notebook>
                                     <page string="Selection Line">
                                         <tree>
-                                            <field name="selectionline_ids"/>
+                                            <field name="selectionline_ids" />
                                         </tree>
                                     </page>
 
@@ -138,19 +212,44 @@
         </record>
 
         <!--view selection line-->
-         <record model="ir.ui.view" id="view_selectionline">
+         <record model="ir.ui.view" id="view_tree_selectionline">
             <field name="name">Selection line</field>
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
                 <tree string="Seed Selection Line" colors="red:qty ">
                     <field name="cause_id"/>
                     <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
-                    <field name="location_id" />
+                    <field name="location_id"/>
                 </tree>
             </field>
          </record>
 
-
+        <record model="ir.ui.view" id="view_form_selectionline">
+            <field name="name">Selection line</field>
+            <field name="model">estate.nursery.selectionline</field>
+            <field name="arch" type="xml">
+                <form string="Seed Selection Line" colors="red:qty ">
+                    <group>
+                        <group>
+                            <field name="qty_batch"/>
+                            <field name="selection_id" invisible="1"/>
+                            <field name="qty"/>
+                        </group>
+                        <group>
+                            <field name="cause_id"/>
+                            <field name="location_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="Description or Comment">
+                                <field name="comment" string="Description or Comment"/>
+                            </page>
+                        </notebook>
+                    </group>
+                </form>
+            </field>
+         </record>
 
 
         <!-- ACTION -->
@@ -159,10 +258,15 @@
             <field name="res_model">estate.nursery.selection</field>
             <field name="view_mode">tree,form</field>
         </record>
-         <record model="ir.actions.act_window" id="action_list_selectionstage">
+        <record model="ir.actions.act_window" id="action_list_selectionstage">
             <field name="name">Selection stage</field>
             <field name="res_model">estate.nursery.selectionstage</field>
-            <field name="view_mode">tree,form,search</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record model="ir.actions.act_window" id="action_list_selectioncause">
+            <field name="name">Selection Cause</field>
+            <field name="res_model">estate.nursery.cause</field>
+            <field name="view_mode">tree,form</field>
         </record>
 
         <!-- MENU -->
@@ -170,5 +274,7 @@
                   action="action_list_selection" sequence="15" />
         <menuitem id="nursery_line_selection_stage" name="Batch Selection Stage" parent="estate.estate_master_menu"
                   action="action_list_selectionstage" />
+        <menuitem id="nursery_line_selection_cause" name="Batch Selection Cause" parent="estate.estate_master_menu"
+                  action="action_list_selectioncause" />
     </data>
 </openerp>
