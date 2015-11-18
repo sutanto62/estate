@@ -30,7 +30,7 @@ class Selection(models.Model):
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
     presentage_normal = fields.Float("Persentage Normal",digits=(2,2),required=False)
     presentage_abnormal = fields.Float("Persentage Abnormal",digits=(2,2), required=False)
-    selection_date = fields.Date("Selection Date",required=True)
+    selection_date = fields.Date("Selection Date",required=True,)
     selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
     selec = fields.Integer(related='selectionstage_id.age_selection')
     maxa = fields.Integer(related='selectionstage_id.age_limit_max')
@@ -122,6 +122,13 @@ class Selection(models.Model):
             a = self.batch_id.qty_planted - self.qty_plant
 
 
+    # #selection daate validation:
+    # @api.one
+    # @api.depends('selectionstage_id','selection_date')
+    # def _validation(self):
+    #     if self.selectionstage_id:
+    #         self.selection_date.invisible == True
+    #     return True
 
     #compute qtyplant :
     @api.one
@@ -358,7 +365,9 @@ class SelectionLine(models.Model):
     location_id = fields.Many2one('stock.location', "Bedengan",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
-                                          ('estate_location_type', '=', 'nursery'),('scrap_location', '=', False)],
+                                          ('estate_location_type', '=', 'nursery'),
+                                          ('scrap_location', '=', False),
+                                          ],
                                   help="Fill in location seed planted.",required=True)
     comment = fields.Text("Description")
 

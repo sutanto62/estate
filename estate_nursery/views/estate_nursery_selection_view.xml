@@ -11,7 +11,6 @@
                 <tree string="Nursery Stage View">
                     <field name="name"/>
                     <field name="stage_id"/>
-                    <field name="info"/>
                     <field name="age_limit_min"/>
                     <field name="age_limit_max"/>
                     <field name="age_selection"/>
@@ -164,7 +163,8 @@
                                 <field name="qty_normal"/>
                                 <field name="qty_abnormal"/>
                                 <field name="qty_plante" invisible="1"/>
-                                <field name="selection_date"/>
+                                <field name="selection_date"
+                                       attrs="{'invisible': [('selectionstage_id','=',False)]}"/>
                                 <field name="state" invisible="1"/>
                             </group>
                         </group>

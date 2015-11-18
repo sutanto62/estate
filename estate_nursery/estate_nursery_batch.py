@@ -11,7 +11,8 @@ class EstateLocation(models.Model):
     """Extend Location for Nursery Location"""
     _inherit = 'stock.location'
 
-    qty_seed = fields.Integer(string="Seed Quantity")
+
+    qty_seed = fields.Integer(string="Seed Quantity",)
     stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage", ondelete='set null')
 
 
