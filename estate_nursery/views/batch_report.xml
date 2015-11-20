@@ -26,6 +26,11 @@
                             <p t-field="o.culling_location_id"/>
                         </div>
                     </div>
+
+                    <h2 colors="black" >
+                        <span t-if="o.state == 'done'">Selection Information</span>
+                    </h2>
+
                     <table class="table table-condensed">
                         <thead>
                             <tr>
@@ -41,6 +46,7 @@
                                 <th style="width:10%;">Selection Date</th>
                             </tr>
                         </thead>
+
                         <tbody class="selection_tbody">
                             <tr t-foreach="o.selection_ids" t-as="l">
                                 <td style="width:10%;"><span t-field="l.selectionstage_id"/></td>
