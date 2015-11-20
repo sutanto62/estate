@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_selection_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <div class="row">
+                    <h3>Selection_report</h3>
+                </div>
+                </div>
+            </t>
+        </template>
+        <template id="selection_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'estate_nursery.report_selection_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
+
+

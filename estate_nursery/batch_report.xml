@@ -1,0 +1,13 @@
+<openerp>
+    <data>
+        <report
+            id="custom_report_batch"
+            model="estate.nursery.batch"
+            string="Batch report"
+            report_type="qweb-pdf"
+            name="estate_nursery.batch_report"
+            attachment_use="False"
+            file="estate_nursery.batch_report"
+        />
+    </data>
+</openerp>

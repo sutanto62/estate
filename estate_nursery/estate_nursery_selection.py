@@ -14,6 +14,7 @@ class Selection(models.Model):
     _name = 'estate.nursery.selection'
 
     names = fields.Char(related='batch_id.name')
+    partner_id = fields.Many2one('res.partner')
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
@@ -359,16 +360,18 @@ class SelectionLine(models.Model):
     _name = 'estate.nursery.selectionline'
 
     qty = fields.Integer("Quantity Abnormal",required=True)
-    qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='selection_id.qty_batch',store=True)
+    qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
+                               related='selection_id.qty_batch',store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
     location_id = fields.Many2one('stock.location', "Bedengan",
-                                  domain=[('estate_location', '=', True),
-                                          ('estate_location_level', '=', '3'),
-                                          ('estate_location_type', '=', 'nursery'),
-                                          ('scrap_location', '=', False),
-                                          ],
-                                  help="Fill in location seed planted.",required=True)
+                                    domain=[('estate_location', '=', True),
+                                            ('estate_location_level', '=', '3'),
+                                            ('estate_location_type', '=', 'nursery'),
+                                            ('scrap_location', '=', False),
+                                            ],
+                                             help="Fill in location seed planted.",
+                                             required=True,)
     comment = fields.Text("Description")
 
 

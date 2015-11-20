@@ -253,7 +253,7 @@
 
 
         <!-- ACTION -->
-        <record model="ir.actions.act_window" id="action_list_selection">
+        <record model="ir.actions.act_window" id="action_list_selection" >
             <field name="name">Selection</field>
             <field name="res_model">estate.nursery.selection</field>
             <field name="view_mode">tree,form</field>

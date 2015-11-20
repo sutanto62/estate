@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','estate','stock','product'],
+    'depends': ['base','estate','stock','product','report'],
 
     # always loaded
     'data': [
@@ -27,9 +27,13 @@
         'templates.xml',
         'views/estate_nursery_view.xml',
         'views/estate_nursery_selection_view.xml',
+        'views/selection_report.xml',
+        'views/batch_report.xml',
         'views/session_selection_workflow.xml',
         'views/session_workflow.xml',
-        'res_config_view.xml'
+        'res_config_view.xml',
+        'selection_report.xml',
+        'batch_report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

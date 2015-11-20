@@ -83,6 +83,7 @@ class Batch(models.Model):
     _description = "Seed Batch"
     _inherits = {'stock.production.lot': 'lot_id'}
 
+    partner_id = fields.Many2one('res.partner')
     name = fields.Char(_("Batch No"))
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
