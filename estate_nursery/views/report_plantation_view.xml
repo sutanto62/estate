@@ -1,0 +1,34 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_tree_report plantak">
+            <field name="name">Report Plantation</field>
+            <field name="model">estate.nursery.reportplantation</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery selection View">
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_report_plamtation">
+            <field name="name">report plantation</field>
+            <field name="model">estate.nursery.selection</field>
+            <field name="arch" type="xml">
+                <form String="Nursery selection view">
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_reportplantation">
+            <field name="name">Report Plantation</field>
+            <field name="res_model">estate.nursery.reportplantation</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="nursery_line_report_plantation" name="Report Batch and Selection"
+                  parent="estate_nursery_menu"
+                  action="action_list_reportplantation"
+                  sequence="16"
+                />
+
+    </data>
+</openerp>
