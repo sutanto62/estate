@@ -1,19 +1,35 @@
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_tree_report plantak">
+        <record model="ir.ui.view" id="view_tree_report plantation">
             <field name="name">Report Plantation</field>
             <field name="model">estate.nursery.reportplantation</field>
             <field name="arch" type="xml">
                 <tree string="Nursery selection View">
+                    <field name="names"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_form_report_plamtation">
+        <record model="ir.ui.view" id="view_form_report_plantation">
             <field name="name">report plantation</field>
-            <field name="model">estate.nursery.selection</field>
+            <field name="model">estate.nursery.reportplantation</field>
             <field name="arch" type="xml">
                 <form String="Nursery selection view">
+                    <group>
+                        <group >
+                            <field name="names"/>
+                            <field name="partner_id" invisible="1"/>
+                            <field name="report_date"/>
+                        </group>
+                        <group >
+                           <!-- <page string="Batch">
+                                <field name="batch_ids"/>
+                            </page>
+                            <page string="Selection">
+                                <field name="selection_ids"/>
+                            </page>-->
+                        </group>
+                    </group>
                 </form>
             </field>
         </record>

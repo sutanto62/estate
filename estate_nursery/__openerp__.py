@@ -32,9 +32,11 @@
         'views/session_selection_workflow.xml',
         'views/session_workflow.xml',
         'views/report_plantation_view.xml',
+        'views/reportplantation_prenursery_report.xml',
         'res_config_view.xml',
         'selection_report.xml',
-        'batch_report.xml'
+        'batch_report.xml',
+        'reportplantation_prenursery_report.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

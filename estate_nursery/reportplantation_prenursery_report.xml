@@ -1,0 +1,28 @@
+<openerp>
+    <data>
+        <record id="paperformat_reportplantation" model="estate.nursery.reportplantation">
+            <field name="name">Report Plantation Total</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">80</field>
+            <field name="page_width">175</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">3</field>
+            <field name="margin_bottom">3</field>
+            <field name="margin_left">3</field>
+            <field name="margin_right">3</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">3</field>
+            <field name="dpi">80</field>
+        </record>
+        <report
+            id="custom_report_report_plantattion"
+            model="estate.nursery.reportplantation"
+            string="Report Pre Nursery"
+            report_type="qweb-pdf"
+            name="estate_nursery.reportplantation_prenursery_report"
+            attachment_use="False"
+            file="estate_nursery.reportplantation_prenursery_report"
+        />
+    </data>
+</openerp>
