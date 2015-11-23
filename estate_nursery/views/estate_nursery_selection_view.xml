@@ -87,6 +87,68 @@
         </record>
 
         <!--View,selection-->
+        <record id="view_graph_selection_nursery" model ="ir.ui.view">
+            <field name="name">Selection graph</field>
+            <field name="model">estate.nursery.selection</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph" type="bar">
+                       <field name="batch_id"/>
+                       <field name="selectionstage_id"/>
+                       <!--<field name="selectionline_ids"/>-->
+                       <!--<field name="variety"/>-->
+                       <field name="qty_normal" operator="+"/>
+                       <field name="qty_abnormal" operator="+"/>
+                       <field name="selection_date" />
+                       <!--<field name="qty_plant"/>-->
+                   </graph>
+            </field>
+        </record>
+
+        <record id="view_kanban_selection_nursery" model ="ir.ui.view">
+            <field name="name">Selection kanban</field>
+            <field name="model">estate.nursery.selection</field>
+            <field name="arch" type="xml">
+                   <kanban version="7.0" default_group_by="batch_id">
+                       <templates>
+                           <t t-name="kanban-box">
+                               <div class="oe_kanban_vignette">
+                                   <a type="open">
+                                       <img t-acc-src="kanban_image('estate.nursery.selection','gambar',record.id.value)" class="oe_kanban_image"/>
+                                   </a>
+                               </div>
+                               <div class="kanban_details">
+                                   <h4>
+                                       <a type="open">
+                                           <field name="batch_id"/>
+                                       </a>
+                                   </h4>
+                                   <ul>
+                                       <li>
+                                           Variety: <field name="variety"/>
+                                       </li>
+                                       <li>
+                                           Stage : <field name="selectionstage_id"/>
+                                       </li>
+                                       <li>
+                                           DO: <field name="qty_batch"/>
+                                       </li>
+                                       <li>
+                                           Planted: <field name="qty_plant"/>
+                                       </li>
+                                       <li>
+                                           Date planted: <field name="date_plant"/>
+                                       </li>
+                                       <li>
+                                           Selection date : <field name="selection_date"/>
+                                       </li>
+                                   </ul>
+                               </div>
+                           </t>
+                       </templates>
+                   </kanban>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_tree_selection_nursery">
             <field name="name">Nursery Selection</field>
             <field name="model">estate.nursery.selection</field>
@@ -261,7 +323,7 @@
         <record model="ir.actions.act_window" id="action_list_selection" >
             <field name="name">Selection</field>
             <field name="res_model">estate.nursery.selection</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">kanban,tree,form,graph</field>
         </record>
         <record model="ir.actions.act_window" id="action_list_selectionstage">
             <field name="name">Selection stage</field>
