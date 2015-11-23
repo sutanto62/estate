@@ -117,21 +117,6 @@ class Selection(models.Model):
             move.action_done()
         return True
 
-    @api.one
-    @api.depends('batch_id','selectionline_ids')
-    def _temp(self):
-        if self.selectionline_ids:
-            a = self.batch_id.qty_planted - self.qty_plant
-
-
-    # #selection daate validation:
-    # @api.one
-    # @api.depends('selectionstage_id','selection_date')
-    # def _validation(self):
-    #     if self.selectionstage_id:
-    #         self.selection_date.invisible == True
-    #     return True
-
     #compute qtyplant :
     @api.one
     @api.depends('qty_plant','qty_abnormal','batch_id','qty_plante','selectionline_ids')

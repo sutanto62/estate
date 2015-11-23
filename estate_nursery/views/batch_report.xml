@@ -10,7 +10,7 @@
                     </h2>
                     <div class="row">
                         <div class="col-xs-5" t-if="o.state == 'done'">
-                            <strong>Received Date: <p t-field="o.name"/></strong>
+                            <strong>Name Batch : <p t-field="o.name"/></strong>
                             <strong>Received Date: <p t-field="o.date_received"/></strong>
                             <strong>Planted Date: <p t-field="o.date_planted"/></strong>
                         </div>
