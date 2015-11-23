@@ -20,6 +20,8 @@ class Selection(models.Model):
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines")
+    variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
+    stage = fields.Char("Stage",related="selectionstage_id.stage_id.name")
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage")
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
@@ -311,7 +313,7 @@ class SelectionStage(models.Model):
                             compute='calculateinfo', default='draft', string="Information" ,
                             readonly=True,required=False)
     comment = fields.Text(string="Description or command")
-    stage_id = fields.Many2one('estate.nursery.stage',"Nursery Stage",)
+    stage_id = fields.Many2one('estate.nursery.stage',"Nursery Stage",required=True)
 
     #Limit age
     @api.one

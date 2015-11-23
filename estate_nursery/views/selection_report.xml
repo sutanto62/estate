@@ -11,9 +11,17 @@
                         }
                 </style>
                 <div class="page">
-                    <h2 colors="black" >
-                        <span t-if="o.state == 'done'">Selection Information <p t-field="o.names"/></span>
-                    </h2>
+                    <h4 colors="black" >
+                        <span t-if="o.state == 'done'">Selection Information</span>
+                        <table>
+                        <tr>
+                            <td><span t-field="o.names"/></td>
+                            <td>/<span t-field="o.stage"/></td>
+                            <td>/<span t-field="o.variety"/></td>
+                        </tr>
+                    </table>
+                    </h4>
+                    <hr></hr>
                     <div class="row">
                         <div class="col-xs-5" t-if="o.state == 'done'">
                             <strong>Selection Stage:<p t-field="o.selectionstage_id"/></strong>
@@ -39,7 +47,7 @@
                     <h2 colors="black" >
                         <span t-if="o.state == 'done'">Selection Cause</span>
                     </h2>
-
+                    <hr></hr>
 
                     <table class="table table-condensed">
                         <thead>

@@ -93,6 +93,9 @@
             <field name="arch" type="xml">
                 <tree string="Nursery selection View"
                       colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
+                    <field name="batch_id" invisible="1"/>
+                    <field name="variety" invisible="1"/>
+                    <field name="stage" invisible="1"/>
                     <field name="selectionstage_id" />
                     <field name="qty_normal" string="&#931;  Normal." sum="Qty Normal"/>
                     <field name="qty_abnormal" string="&#931;  Abnormal." sum="Qty Abnormal"/>
@@ -162,6 +165,8 @@
                                 <field name="selectionstage_id" />
                                 <field name="qty_normal"/>
                                 <field name="qty_abnormal"/>
+                                <field name="variety" invisible="1"/>
+                                <field name="stage" invisible="1"/>
                                 <field name="qty_plante" invisible="1"/>
                                 <field name="selection_date"
                                        attrs="{'invisible': [('selectionstage_id','=',False)]}"/>
