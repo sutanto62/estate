@@ -42,7 +42,7 @@ class Selection(models.Model):
     nursery_information = fields.Selection([('draft','Draft'),
                                             ('0','untimely'),
                                             ('1','late'),('2','passed'),
-                                            ('3','very late/Not recomend'),('4','very untimely/not recomend')],
+                                            ('3','very late/Not recomend'),('4','very untimely')],
                                            compute='dateinformation', default='draft', string="Information Time" ,
                                            readonly=True,required=False)
     nursery_lapseday = fields.Integer(string="Information Lapse of Day",
