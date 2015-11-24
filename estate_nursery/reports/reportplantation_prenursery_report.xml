@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_plantation_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+
+                    <h2 colors="black">
+                        <span >Rekapitulasi seleksi bibit Pre Nursery</span>
+                    </h2>
+
+                    <div class="row">
+                        <div class="col-xs-5" >
+                            <strong>Report Name: <p t-field="o.names"/></strong>
+                            <strong>Report Date: <p t-field="o.report_date"/></strong>
+                        </div>
+                    </div>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:5%;">Batch No</th>
+                                <th style="width:10%;">Location</th>
+                                <th style="width:4%;">DO</th>
+                                <th style="width:4%;">Planted</th>
+                                <th style="width:10%;">Selection Date</th>
+                                <th style="width:10%;">Selection Stage</th>
+                                <th style="width:10%;">Selection Cause</th>
+                                <th style="width:10%;">Selection Planted</th>
+                                <th style="width:10%;">Comment</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="selection_tbody">
+                            <tr t-foreach="o.selection_ids" t-as="l">
+                                <td style="width:10%;"><span t-field="l.selectionstage_id"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_normal"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_abnormal"/></td>
+                                <td style="width:10%;"><span t-field="l.nursery_persentagen"/></td>
+                                <td style="width:10%;"><span t-field="l.nursery_persentagea"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_plant"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_batch"/></td>
+                                <td style="width:10%;"><span t-field="l.date_plant"/></td>
+                                <td style="width:10%;"><span t-field="l.nursery_information"/></td>
+                                <td style="width:10%;"><span t-field="l.selection_date"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+        <template id="reportplantation_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_plantation_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
