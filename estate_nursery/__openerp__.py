@@ -27,16 +27,16 @@
         'templates.xml',
         'views/estate_nursery_view.xml',
         'views/estate_nursery_selection_view.xml',
-        'views/selection_report.xml',
-        'views/batch_report.xml',
-        'views/session_selection_workflow.xml',
-        'views/session_workflow.xml',
         'views/report_plantation_view.xml',
-        'views/reportplantation_prenursery_report.xml',
+        'reports/selection_report.xml',
+        'reports/batch_report.xml',
+        'reports/reportplantation_prenursery_report.xml',
+        'workflow/session_selection_workflow.xml',
+        'workflow/session_workflow.xml',
         'res_config_view.xml',
         'selection_report.xml',
         'batch_report.xml',
-        'reportplantation_prenursery_report.xml'
+        'reportplantation_prenursery_report.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

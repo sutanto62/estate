@@ -91,15 +91,12 @@
             <field name="name">Selection graph</field>
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
-                   <graph string="Graph" type="bar">
-                       <field name="batch_id"/>
-                       <field name="selectionstage_id"/>
-                       <!--<field name="selectionline_ids"/>-->
-                       <!--<field name="variety"/>-->
-                       <field name="qty_normal" operator="+"/>
-                       <field name="qty_abnormal" operator="+"/>
-                       <field name="selection_date" />
-                       <!--<field name="qty_plant"/>-->
+                   <graph string="Graph Selection stage" type="pivot">
+                       <field name="batch_id" string=" number batch" />
+                       <field name="selectionstage_id" string="stage nursery"/>
+                       <field name="qty_abnormal" type="measure"/>
+                       <field name="qty_plant" type="measure"/>
+                       <field name="qty_batch" string="Quantity DO" type="measure"/>
                    </graph>
             </field>
         </record>
@@ -113,7 +110,7 @@
                            <t t-name="kanban-box">
                                <div class="oe_kanban_vignette">
                                    <a type="open">
-                                       <img t-acc-src="kanban_image('estate.nursery.selection','gambar',record.id.value)" class="oe_kanban_image"/>
+                                       <img t-acc-src="kanban_image('estate.nursery.selection','image',record.id.value)" class="oe_kanban_image"/>
                                    </a>
                                </div>
                                <div class="kanban_details">
@@ -240,7 +237,8 @@
                                 <notebook>
                                     <page string="Selection Line">
                                         <tree>
-                                            <field name="selectionline_ids" />
+                                            <field name="selectionline_ids" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','!=','draft')]}"/>
                                         </tree>
                                     </page>
 

@@ -11,6 +11,8 @@ class ReportPlantation(models.Model):
     names=fields.Char("Report Plantation Name ")
     report_date = fields.Datetime("Report Date",compute="_report_date",readonly=True)
     partner_id = fields.Many2one('res.partner')
+    batch_id= fields.Many2one('estate.nursery.batch')
+    selection_id= fields.Many2one('estate.nursery.selection')
     batch_ids = fields.One2many('estate.nursery.batch', 'reportplan_id', "Report Lines")
     selection_ids = fields.One2many('estate.nursery.selection', 'reportplan_id',"Report Lines")
 

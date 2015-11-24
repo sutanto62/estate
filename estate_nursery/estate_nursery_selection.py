@@ -19,15 +19,16 @@ class Selection(models.Model):
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
-    selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines")
-    variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
-    stage = fields.Char("Stage",related="selectionstage_id.stage_id.name")
+    cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
+    selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
+    variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
+    stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage")
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True)
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
-    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total')
+    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True)
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("plan qty")
@@ -46,7 +47,7 @@ class Selection(models.Model):
                                             ('1','late'),('2','passed'),
                                             ('3','very late/Not recomend'),('4','very untimely')],
                                            compute='dateinformation', default='draft', string="Information Time" ,
-                                           readonly=True,required=False)
+                                           readonly=True,required=False,store=True)
     nursery_lapseday = fields.Integer(string="Information Lapse of Day",
                                       required=False,readonly=True,compute='calculatedays',multi='sums',store=True)
     nursery_lapsemonth = fields.Integer(string="Information Lapse of Month",
@@ -83,6 +84,7 @@ class Selection(models.Model):
         """Approved Selection is planted Seed."""
         self.action_receive()
         self.state = 'done'
+
 
     @api.one
     def action_receive(self):
