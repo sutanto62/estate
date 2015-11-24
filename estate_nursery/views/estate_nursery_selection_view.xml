@@ -238,7 +238,7 @@
                                     <page string="Selection Line">
                                         <tree>
                                             <field name="selectionline_ids" attrs="{'required': [('state','=','draft')],
-                                                'readonly': [('state','!=','draft')]}"/>
+                                                'readonly': [('state','=','done')]}"/>
                                         </tree>
                                     </page>
 
