@@ -154,7 +154,8 @@
                                 class="oe_highlight"
                                 states="confirmed"
                                 groups="estate.group_manager"/>
-                        <field name="state" widget="statusbar"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_colors='{"draft" :"blue","confirm":"blue","done":"blue"}'/>
                         <!--
                         <button name="action_selection_next" type="object"
                                 string="Next Selection"
@@ -165,8 +166,8 @@
                     <group name="top" string="Batch Information">
                         <group name="top_left">
                             <field name="name"/>
-                            <field name="date_received"/>
-                            <field name="date_planted" />
+                            <field name="date_received" />
+                            <field name="date_planted" attrs="{'required': [('state','=','draft')], 'readonly': [('state','=','done')]}"/>
                             <field name="state" invisible="True"/>
                             <field name="nursery_stage" invisible="True"/>
                         </group>
@@ -186,10 +187,14 @@
                                     <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                 </group>
                                 <group name="top_right">
-                                    <field name="product_id"/>
-                                    <field name="variety_id"/>
-                                    <field name="progeny_id"/>
-                                    <field name="age_seed"/> month
+                                    <field name="product_id" attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','=','done')]}"/>
+                                    <field name="variety_id" attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','=','done')]}"/>
+                                    <field name="progeny_id" attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','=','done')]}"/>
+                                    <field name="age_seed" attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','=','done')]}"/> month
                                 </group>
                             </group>
                         </page>

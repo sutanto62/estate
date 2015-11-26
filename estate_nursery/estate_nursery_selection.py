@@ -26,7 +26,7 @@ class Selection(models.Model):
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage")
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
-                                        required=True)
+                                        required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
     qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True)
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)

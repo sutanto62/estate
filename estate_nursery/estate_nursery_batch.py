@@ -90,7 +90,7 @@ class Batch(models.Model):
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
-    date_received = fields.Date("Received Date",required=False,readonly=False)
+    date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
     age_seed = fields.Integer("Seed Age", required=True)
     comment = fields.Text("Additional Information")
@@ -106,7 +106,8 @@ class Batch(models.Model):
     culling_location_id = fields.Many2one('stock.location', _("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)])
+                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True),
+                                                  ])
     nursery_stage = fields.Selection([
         ('draft', 'Draft'),
         ('0', 'Seed Selection'),

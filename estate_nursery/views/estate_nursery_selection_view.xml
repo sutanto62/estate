@@ -176,6 +176,7 @@
             <field name="arch" type="xml">
                 <form String="Nursery selection view">
                     <header coolspan="10">
+
                         <button name="signal_draft" type="workflow"
                                 string="Reject"
                                 class="oe_highlight"
@@ -193,7 +194,9 @@
                                 class="oe_highlight"
                                 states="confirmed"
                                 groups="estate.group_manager"/>
-                        <field name="state" widget="statusbar"/>
+                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,done"
+                               statusbar_color='{"draft":"blue"}'/>
                 </header>
                     <sheet>
 
@@ -221,14 +224,15 @@
                             </group>
 
                             <group coolspan="10">
-                                <field name="selectionstage_id" />
+                                <field name="selectionstage_id" attrs="{'readonly': [('state','=','done')]}" />
                                 <field name="qty_normal"/>
                                 <field name="qty_abnormal"/>
                                 <field name="variety" invisible="1"/>
                                 <field name="stage" invisible="1"/>
                                 <field name="qty_plante" invisible="1"/>
                                 <field name="selection_date"
-                                       attrs="{'invisible': [('selectionstage_id','=',False)]}"/>
+                                       attrs="{'invisible': [('selectionstage_id','=',False)],
+                                 'readonly': [('state','=','done')]}"/>
                                 <field name="state" invisible="1"/>
                             </group>
                         </group>
