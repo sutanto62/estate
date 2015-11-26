@@ -85,7 +85,7 @@ class Batch(models.Model):
 
     partner_id = fields.Many2one('res.partner')
     reportplan_id = fields.Many2one('estate.nursery.reportplantation')
-    name = fields.Char(_("Batch No"))
+    name = fields.Char(_("Batch No"), readonly= True)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
