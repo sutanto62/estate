@@ -1,6 +1,6 @@
 <openerp>
     <data>
-        <record model="ir.ui.view" id="view_tree_report plantation">
+       <record model="ir.ui.view" id="view_tree_report plantation">
             <field name="name">Report Plantation</field>
             <field name="model">estate.nursery.reportplantation</field>
             <field name="arch" type="xml">
@@ -26,20 +26,25 @@
                     </group>
                         <group>
                             <notebook>
-                                <page string="Selection">
-                                    <tree>
-                                    <field name="selection_ids"
-                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery'
-                                       }"/>
-                                    </tree>
+                                <page>
+                                    <!--<tree>-->
+                                        <!--<field name="report_ids" widget="one2many"/>-->
+                                    <!--</tree>-->
                                 </page>
-                                <page string="Batch ">
-                                    <tree>
-                                        <field name="batch_ids"
-                                            context="{'tree_view_ref' : 'estate_nursery.view_batch_tree'
-                                            ,}"/>
-                                    </tree>
-                                </page>
+                                <!--<page string="Selection">-->
+                                    <!--<tree>-->
+                                    <!--<field name="selection_ids" widget="one2many"-->
+                                       <!--context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery'-->
+                                       <!--}"/>-->
+                                    <!--</tree>-->
+                                <!--</page>-->
+                                <!--<page string="Batch ">-->
+                                    <!--<tree>-->
+                                        <!--<field name="batch_ids" widget="one2many"-->
+                                            <!--context="{'tree_view_ref' : 'estate_nursery.view_batch_tree'-->
+                                            <!--,}"/>-->
+                                    <!--</tree>-->
+                                <!--</page>-->
                             </notebook>
                         </group>
 

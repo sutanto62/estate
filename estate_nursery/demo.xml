@@ -154,6 +154,7 @@
         <!--selectionstage-->
         <record id="nursery_stage_1" model="estate.nursery.selectionstage">
             <field name="name">Pre Nursery 1</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
             <field name="age_limit_min">0</field>
             <field name="age_limit_max">1</field>
             <field name="age_selection">1</field>
@@ -162,6 +163,7 @@
         </record>
         <record id="nurserystage_stage_2" model="estate.nursery.selectionstage">
             <field name="name">Pre Nursery 2</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
             <field name="age_limit_min">1</field>
             <field name="age_limit_max">2</field>
             <field name="age_selection">2</field>
@@ -170,6 +172,7 @@
         </record>
         <record id="nurserystage_stage_3" model="estate.nursery.selectionstage">
             <field name="name">Pre Nursery 3</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
             <field name="age_limit_min">2</field>
             <field name="age_limit_max">3</field>
             <field name="age_selection">3</field>
@@ -178,6 +181,7 @@
         </record>
         <record id="nurserystage_stage_4" model="estate.nursery.selectionstage">
             <field name="name">Main Nursery 1</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
             <field name="age_limit_min">6</field>
             <field name="age_limit_max">9</field>
             <field name="age_selection">6</field>
@@ -186,6 +190,7 @@
         </record>
         <record id="nurserystage_stage_5" model="estate.nursery.selectionstage">
             <field name="name">Main Nursery 2</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
             <field name="age_limit_min">9</field>
             <field name="age_limit_max">12</field>
             <field name="age_selection">9</field>
@@ -194,6 +199,7 @@
         </record>
         <record id="nursery_stage_6" model="estate.nursery.selectionstage">
             <field name="name">Main Nursery 3</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
             <field name="age_limit_min">12</field>
             <field name="age_limit_max">12</field>
             <field name="age_selection">12</field>

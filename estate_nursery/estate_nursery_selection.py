@@ -60,7 +60,7 @@ class Selection(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-        ('done', 'Done')], string="State")
+        ('done', 'Done')], string="State",)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
