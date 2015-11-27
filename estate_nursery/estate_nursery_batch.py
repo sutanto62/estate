@@ -108,6 +108,11 @@ class Batch(models.Model):
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True),
                                                   ])
+    kebun_location_id = fields.Many2one('stock.location', _("Estate Location"),
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '1'),
+                                                  ],
+                                        default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
     stage_id=fields.Many2one("estate.nursery.stage")
     # nursery_stage = fields.Selection([
     #     ('draft', 'Draft'),

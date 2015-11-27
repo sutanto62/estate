@@ -187,6 +187,8 @@
                                     <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                 </group>
                                 <group name="top_right">
+                                    <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','=','done')]}"/>
                                     <field name="product_id" attrs="{'required': [('state','=','draft')],
                                     'readonly': [('state','=','done')]}"/>
                                     <field name="variety_id" attrs="{'required': [('state','=','draft')],
@@ -202,17 +204,18 @@
                             <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
                                 context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                         </page>
-                        <page string="Additional Information">
-                            <group name="bottom" string="Information">
-                                <field name="comment"/>
-                            </group>
-                        </page>
                         <page string="Selection">
                             <field name="selection_ids" attrs="{
                             'required' : [('state', '=', 'draft')]}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                    'default_qty_plante': qty_planted}"/>
                         </page>
+                        <page string="Additional Information">
+                            <group name="bottom" string="Information">
+                                <field name="comment"/>
+                            </group>
+                        </page>
+
                     </notebook>
                 </form>
             </field>

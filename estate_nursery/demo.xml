@@ -251,7 +251,7 @@
 
         <!-- stock.location -->
         <record id="estate_nursery.location_estate" model="stock.location">
-            <field name="name">GLY</field>
+            <field name="name">Liyodu Estate</field>
             <field name="location_id" ref="stock.stock_location_locations"/>
             <field name="usage">view</field>
             <field name="scrap_location" eval="False"/>
