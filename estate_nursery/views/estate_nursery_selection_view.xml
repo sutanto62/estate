@@ -206,7 +206,7 @@
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
                                 <label string="Selection For "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
-                                <field name="names" class="oe_inline" readonly="1" />
+                                <field name="name" class="oe_inline" readonly="1" />
                              </h1>
                           </div>
 

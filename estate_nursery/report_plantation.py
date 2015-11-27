@@ -5,18 +5,18 @@ import calendar
 
 
 class ReportPlantation(models.Model):
+    _inherit = "estate.nursery.batch"
 
-    _name = 'estate.nursery.reportplantation'
+    reportline_id= fields.Many2one("estate.nursery.reportline")
 
-    names=fields.Char("Report Plantation Name ")
+class ReportLine(models.Model):
+    _name = "estate.nursery.reportline"
+
+    name=fields.Char("Report Plantation Name ")
     report_date = fields.Datetime("Report Date",compute="_report_date",readonly=True)
-    partner_id = fields.Many2one('res.partner')
-    batch_id= fields.Many2one('estate.nursery.batch')
-    selection_id= fields.Many2one('estate.nursery.selection')
-    batch_ids = fields.One2many('estate.nursery.batch', 'reportplan_id', "Report Lines")
-    selection_ids = fields.One2many('estate.nursery.selection', 'reportplan_id',"Report Lines")
-
+    batch_ids = fields.One2many("estate.nursery.batch","reportline_id","batchs")
     #datetime
+
     @api.one
     @api.depends("report_date")
     def _report_date(self):

@@ -169,7 +169,7 @@
                             <field name="date_received" />
                             <field name="date_planted" attrs="{'required': [('state','=','draft')], 'readonly': [('state','=','done')]}"/>
                             <field name="state" invisible="True"/>
-                            <field name="nursery_stage" invisible="True"/>
+                            <field name="stage_id" invisible="True" readonly="True"/>
                         </group>
                         <group name="top_right">
                             <field name="picking_id"/>

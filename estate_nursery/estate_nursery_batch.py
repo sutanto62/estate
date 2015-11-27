@@ -84,7 +84,6 @@ class Batch(models.Model):
     _inherits = {'stock.production.lot': 'lot_id'}
 
     partner_id = fields.Many2one('res.partner')
-    reportplan_id = fields.Many2one('estate.nursery.reportplantation')
     name = fields.Char(_("Batch No"), readonly= True)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
@@ -92,6 +91,7 @@ class Batch(models.Model):
                                  domain="[('variety_id','=',variety_id)]")
     date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
+    selection_id = fields.Many2one("estate.nursery.selection")
     age_seed = fields.Integer("Seed Age", required=True)
     comment = fields.Text("Additional Information")
     qty_received = fields.Integer("Quantity Received")
@@ -108,16 +108,17 @@ class Batch(models.Model):
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True),
                                                   ])
-    nursery_stage = fields.Selection([
-        ('draft', 'Draft'),
-        ('0', 'Seed Selection'),
-        ('1', 'Seed Planted'),
-        ('2', 'Selection 1 (PN)'),
-        ('3', 'Selection 2 (PN)'),
-        ('4', 'Selection 1 (MN)'),
-        ('5', 'Selection 2 (MN)'),
-        ('6', 'Selection 3 (MN)'),
-        ('done', 'Done')], default='draft', string="Selection State")
+    stage_id=fields.Many2one("estate.nursery.stage")
+    # nursery_stage = fields.Selection([
+    #     ('draft', 'Draft'),
+    #     ('0', 'Seed Selection'),
+    #     ('1', 'Seed Planted'),
+    #     ('2', 'Selection 1 (PN)'),
+    #     ('3', 'Selection 2 (PN)'),
+    #     ('4', 'Selection 1 (MN)'),
+    #     ('5', 'Selection 2 (MN)'),
+    #     ('6', 'Selection 3 (MN)'),
+    #     ('done', 'Done')], default='draft', string="Selection State")
 
     state = fields.Selection([
         ('draft', 'Draft'),

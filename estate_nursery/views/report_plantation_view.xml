@@ -1,61 +1,60 @@
 <openerp>
     <data>
-       <record model="ir.ui.view" id="view_tree_report plantation">
+
+        <!--view , batchids-->
+         <record model="ir.ui.view" id="view_form_report_plantation">
+             <field name="name">report plantation</field>
+             <field name="model">estate.nursery.batch</field>
+             <field name="inherit_id" ref="estate_nursery.view_seed_batch_form"/>
+             <field name="arch" type="xml">
+                 <field name="culling_location_id" position="after">
+                     <field name="reportline_id" string="Choose Report"
+                            attrs="{'invisible': [('state','=','draft')]}"/>
+                 </field>
+             </field>
+         </record>
+
+        <!--view ,reportline -->
+       <record model="ir.ui.view" id="view_tree_report_plantation">
             <field name="name">Report Plantation</field>
-            <field name="model">estate.nursery.reportplantation</field>
+            <field name="model">estate.nursery.reportline</field>
             <field name="arch" type="xml">
-                <tree string="Nursery selection View">
-                    <field name="names"/>
+                <tree string="Nursery Report">
+                    <field name="name"/>
                     <field name="report_date"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_form_report_plantation">
+        <record model="ir.ui.view" id="view_form_report">
             <field name="name">report plantation</field>
-            <field name="model">estate.nursery.reportplantation</field>
+            <field name="model">estate.nursery.reportline</field>
             <field name="arch" type="xml">
-                <form String="Nursery selection view">
-                    <sheet>
+                <form>
                     <group>
+                        <group coolspan="10">
+                            <field name="name"/>
+                        </group>
                         <group>
-                            <field name="names"/>
-                            <field name="partner_id" invisible="1"/>
                             <field name="report_date"/>
                         </group>
                     </group>
-                        <group>
-                            <notebook>
-                                <page>
-                                    <!--<tree>-->
-                                        <!--<field name="report_ids" widget="one2many"/>-->
-                                    <!--</tree>-->
-                                </page>
-                                <!--<page string="Selection">-->
-                                    <!--<tree>-->
-                                    <!--<field name="selection_ids" widget="one2many"-->
-                                       <!--context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery'-->
-                                       <!--}"/>-->
-                                    <!--</tree>-->
-                                <!--</page>-->
-                                <!--<page string="Batch ">-->
-                                    <!--<tree>-->
-                                        <!--<field name="batch_ids" widget="one2many"-->
-                                            <!--context="{'tree_view_ref' : 'estate_nursery.view_batch_tree'-->
-                                            <!--,}"/>-->
-                                    <!--</tree>-->
-                                <!--</page>-->
-                            </notebook>
-                        </group>
-
-                    </sheet>
+                    <group>
+                        <notebook >
+                            <page string="Report line">
+                                <tree>
+                                    <field name="batch_ids" readonly="1"/>
+                                </tree>
+                            </page>
+                        </notebook>
+                    </group>
                 </form>
             </field>
         </record>
 
          <record model="ir.actions.act_window" id="action_list_reportplantation">
             <field name="name">Report Plantation</field>
-            <field name="res_model">estate.nursery.reportplantation</field>
+            <field name="res_model">estate.nursery.reportline</field>
             <field name="view_mode">tree,form</field>
         </record>
 
