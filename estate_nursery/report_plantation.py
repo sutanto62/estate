@@ -5,7 +5,7 @@ import calendar
 
 
 class ReportPlantation(models.Model):
-    _inherit = "estate.nursery.batch"
+    _inherit = "estate.nursery.selection"
 
     reportline_id= fields.Many2one("estate.nursery.reportline")
 
@@ -13,8 +13,16 @@ class ReportLine(models.Model):
     _name = "estate.nursery.reportline"
 
     name=fields.Char("Report Plantation Name ")
+    partner_id=fields.Many2one("res.partner")
     report_date = fields.Datetime("Report Date",compute="_report_date",readonly=True)
-    batch_ids = fields.One2many("estate.nursery.batch","reportline_id","batchs")
+    # batch_ids = fields.One2many("estate.nursery.batch","reportline_id","selection")
+    selection_ids = fields.One2many("estate.nursery.selection","reportline_id","selection")
+    kebun_location_id = fields.Many2one('stock.location',"Estate Location",
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '1'),
+                                                  ],
+                                        default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
+
     #datetime
 
     @api.one

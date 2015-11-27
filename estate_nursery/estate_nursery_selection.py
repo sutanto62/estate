@@ -15,7 +15,6 @@ class Selection(models.Model):
 
     name= fields.Char(related='batch_id.name')
     partner_id = fields.Many2one('res.partner')
-    report_id= fields.Many2one('estate.nursery.reportplantation')
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
