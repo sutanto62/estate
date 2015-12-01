@@ -126,11 +126,24 @@
             <field name="name">Selection normal</field>
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection stage" type="pie">
+                   <graph string="Graph Selection" type="pie">
 
                        <field name="batch_id" string=" number batch" />
                        <!--<field name="qty_abnormal" type="measure"/>-->
-                       <field name="qty_normal" type="measure"/>
+                       <field name="qty_plant" type="measure"/>
+                   </graph>
+            </field>
+        </record>
+
+        <record id="view_graph_selectiondate_nursery" model ="ir.ui.view">
+            <field name="name">Selection normal</field>
+            <field name="model">estate.nursery.selection</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph Selection date" type="pie">
+                       <field name="nursery_information" />
+                       <field name="batch_id" string=" number batch" />
+                       <field name="nursery_lapsemonth" type="measure"/>
+
                    </graph>
             </field>
         </record>

@@ -1,7 +1,7 @@
 <openerp>
     <data>
 
-        <!--view , batchids-->
+        <!--view , selectionids-->
          <record model="ir.ui.view" id="view_form_report_plantation">
              <field name="name">report plantation</field>
              <field name="model">estate.nursery.selection</field>
@@ -9,7 +9,19 @@
              <field name="arch" type="xml">
                  <field name="date_plant" position="after">
                      <field name="reportline_id" string="Choose Report"
-                            attrs="{'invisible': [('state','=','draft')]}"/>
+                            attrs="{'invisible': [('state','=','draft')], 'readonly':[('state','=','done')]}"/>
+                 </field>
+             </field>
+         </record>
+
+        <!--view, selectionlineids-->
+        <record model="ir.ui.view" id="view_form_report_plan">
+             <field name="name">report plantation</field>
+             <field name="model">estate.nursery.selectionline</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_selectionline"/>
+             <field name="arch" type="xml">
+                 <field name="location_id" position="after">
+                     <field name="reportline_id" string="Position Report"/>
                  </field>
              </field>
          </record>
@@ -49,9 +61,9 @@
 
                                 </tree>
                             </page>
-                            <page string="Report selection line" invisible="1">
+                            <page string="Report selection line" invisible="0">
                                 <tree>
-                                    <!--<field name="batch_ids" readonly="1"/>-->
+                                    <field name="selectionline_ids" readonly="1"/>
                                 </tree>
                             </page>
                         </notebook>

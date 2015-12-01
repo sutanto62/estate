@@ -18,6 +18,15 @@
                    ref="estate_nursery.view_graph_selection_normal_nursery"/>
         </record>
 
+        <record model="ir.actions.act_window" id="act_selectiondate_graph">
+            <field name="name">Selection normal</field>
+            <field name="res_model">estate.nursery.selection</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id"
+                   ref="estate_nursery.view_graph_selectiondate_nursery"/>
+        </record>
+
         <record model="ir.actions.act_window" id="act_selectionline_graph">
             <field name="name">Selection Line</field>
             <field name="res_model">estate.nursery.selectionline</field>
@@ -33,26 +42,30 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <form string="Selection Dashboard">
-                    <board style="2-1">
+                    <board style="2-2">
                         <column>
                             <action
                                 string="Group by Batch Abnormal"
                                 name="%(act_selection_graph)d"
                                 height="100"
-                                width="510"/>
+                                width="200"/>
                             <action
-                                string="Group by Batch Normal"
+                                string="Group by Quantity Planted"
                                 name="%(act_selection_normal_graph)d"
                                 height="100"
-                                width="510"/>
-                            <action
+                                width="200"/>
+                        </column>
+                        <column>
+                             <action
                                 string="Group by cause"
                                 name="%(act_selectionline_graph)d"
                                 height="100"
-                                width="510"/>
-                        </column>
-                        <column>
-
+                                width="200"/>
+                             <action
+                                string="Group by Selection Date"
+                                name="%(act_selectiondate_graph)d"
+                                height="100"
+                                width="200"/>
                         </column>
                     </board>
                 </form>
