@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, exceptions, _
+from datetime import datetime, date
+from dateutil.relativedelta import *
+import calendar
 
 # class estate_nursery(models.Model):
 #     _name = 'estate_nursery.estate_nursery'
@@ -91,8 +94,9 @@ class Batch(models.Model):
                                  domain="[('variety_id','=',variety_id)]")
     date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
+    age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
     selection_id = fields.Many2one("estate.nursery.selection")
-    age_seed = fields.Integer("Seed Age", required=True)
+    age_seed = fields.Integer("Seed Age Received", required=True,store=True)
     comment = fields.Text("Additional Information")
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
@@ -114,16 +118,6 @@ class Batch(models.Model):
                                                   ],
                                         default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
     stage_id=fields.Many2one("estate.nursery.stage")
-    # nursery_stage = fields.Selection([
-    #     ('draft', 'Draft'),
-    #     ('0', 'Seed Selection'),
-    #     ('1', 'Seed Planted'),
-    #     ('2', 'Selection 1 (PN)'),
-    #     ('3', 'Selection 2 (PN)'),
-    #     ('4', 'Selection 1 (MN)'),
-    #     ('5', 'Selection 2 (MN)'),
-    #     ('6', 'Selection 3 (MN)'),
-    #     ('done', 'Done')], default='draft', string="Selection State")
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -231,6 +225,32 @@ class Batch(models.Model):
 
         return True
 
+    #computed seed age
+
+    @api.one
+    @api.depends('age_seed','date_planted','age_seed_range')
+    def _compute_age_range(self):
+        res={}
+        fmt = '%Y-%m-%d'
+        today = datetime.now()
+        if self.date_planted :
+            from_date = today
+            to_date = self.date_planted
+            conv_todate = datetime.strptime(str(to_date), fmt)
+            d1 = from_date.month
+            print d1
+            d2 = conv_todate.month
+            rangeyear = conv_todate.year
+            rangeyear1 = from_date.year
+            print rangeyear1
+            rsult = rangeyear - rangeyear1
+            yearresult = rsult * 12
+            ageseed = (d1 + yearresult) - d2
+            self.age_seed_range = ageseed + int(self.age_seed)
+            print self.age_seed_range
+        return res
+
+    #computed seed planted
     @api.one
     @api.depends('batchline_ids','selection_ids')
     def _compute_total(self):

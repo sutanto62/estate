@@ -108,6 +108,20 @@
         </record>
 
         <!-- View, Seed Batch -->
+        <record id="view_graph_batch" model ="ir.ui.view">
+            <field name="name">Selection graph</field>
+            <field name="model">estate.nursery.batch</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph Selection stage" type="pivot">
+                       <field name="name" string=" number batch" />
+                       <field name="selection_id" string="stage nursery"/>
+                       <field name="qty_abnormal" type="measure"/>
+                       <field name="qty_planted" type="measure"/>
+                       <field name="qty_received" string="Quantity DO" type="measure"/>
+                   </graph>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_seed_batch_tree">
             <field name="name">Seed Batch List</field>
             <field name="model">estate.nursery.batch</field>
@@ -180,6 +194,7 @@
                         <page string="Detail Information">
                             <group name="top" string="Information">
                                 <group name="top_left">
+                                    <field name="age_seed_range" attrs="{'readonly': [('state','=','done')]}"/>
                                     <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
@@ -410,7 +425,7 @@
         <record model="ir.actions.act_window" id="action_list_batch">
             <field name="name">Seed Batch</field>
             <field name="res_model">estate.nursery.batch</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,form,graph</field>
         </record>
 
         <!-- Single model, different tree and form view -->

@@ -15,7 +15,7 @@
                         <span t-if="o.state == 'done'">Selection Information</span>
                         <table>
                         <tr>
-                            <td><span t-field="o.names"/></td>
+                            <td><span t-field="o.name"/></td>
                             <td>/<span t-field="o.stage"/></td>
                             <td>/<span t-field="o.variety"/></td>
                         </tr>

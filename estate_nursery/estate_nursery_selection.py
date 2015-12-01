@@ -24,6 +24,7 @@ class Selection(models.Model):
     stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage")
+    age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_range",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
@@ -195,7 +196,6 @@ class Selection(models.Model):
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
             self.nursery_lapsemonth = (d2 + yearresult) - d1
-
         return res
 
     #compute planning date
@@ -348,6 +348,7 @@ class SelectionLine(models.Model):
     """Seed Selection Line"""
     _name = 'estate.nursery.selectionline'
 
+    name=fields.Char(related='selection_id.name')
     qty = fields.Integer("Quantity Abnormal",required=True)
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
                                related='selection_id.qty_batch',store=True)

@@ -226,6 +226,7 @@
             <field name="sequance">0</field>
             <field name="comment">daun melintir</field>
         </record>
+
         <!--
         product.packaging
         depend on: group_stock_packaging = true at stock.config.settings
