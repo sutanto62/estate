@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','estate','stock','product','report'],
+    'depends': ['base','estate','stock','product','report','board'],
 
     # always loaded
     'data': [
@@ -28,6 +28,7 @@
         'views/estate_nursery_view.xml',
         'views/estate_nursery_selection_view.xml',
         'views/report_plantation_view.xml',
+        'views/dashboard_selection.xml',
         'reports/selection_report.xml',
         'reports/batch_report.xml',
         'reports/reportplantation_prenursery_report.xml',

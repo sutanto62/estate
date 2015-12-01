@@ -95,8 +95,9 @@ class Batch(models.Model):
     date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
     age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
-    selection_id = fields.Many2one("estate.nursery.selection")
+    selection_id = fields.Many2one("estate.nursery.selection",store=True)
     age_seed = fields.Integer("Seed Age Received", required=True,store=True)
+    selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count",store=True)
     comment = fields.Text("Additional Information")
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
@@ -225,6 +226,10 @@ class Batch(models.Model):
 
         return True
 
+    @api.depends('selection_ids')
+    def _get_selection_count(self):
+        for r in self:
+            r.selection_count = len(r.selection_ids)
     #computed seed age
 
     @api.one

@@ -113,11 +113,12 @@
             <field name="model">estate.nursery.batch</field>
             <field name="arch" type="xml">
                    <graph string="Graph Selection stage" type="pivot">
-                       <field name="name" string=" number batch" />
-                       <field name="selection_id" string="stage nursery"/>
-                       <field name="qty_abnormal" type="measure"/>
-                       <field name="qty_planted" type="measure"/>
-                       <field name="qty_received" string="Quantity DO" type="measure"/>
+                       <field name="name" string="number batch"/>
+                       <!--<field name="selection_count" string="Selectioncount" type="measure"/>-->
+                       <!--<field name="selection_ids" string="stage nursery"/>-->
+                       <field name="age_seed_range" type="measure"/>
+                       <!--<field name="qty_planted" type="measure"/>-->
+                       <!--<field name="qty_received" string="Quantity DO" type="measure"/>-->
                    </graph>
             </field>
         </record>

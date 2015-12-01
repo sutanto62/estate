@@ -13,7 +13,7 @@ class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
 
-    name= fields.Char(related='batch_id.name')
+    name= fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
@@ -42,6 +42,7 @@ class Selection(models.Model):
     mina = fields.Integer(related='selectionstage_id.age_limit_min')
     comment = fields.Text("Additional Information")
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
+    selectionline_count=fields.Integer("selection Cause",compute="_get_selectionline_count",store=True)
     nursery_information = fields.Selection([('draft','Draft'),
                                             ('0','untimely'),
                                             ('1','late'),('2','passed'),
@@ -65,7 +66,7 @@ class Selection(models.Model):
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
-                                          ,related="batch_id.culling_location_id")
+                                          ,related="batch_id.culling_location_id",store=True)
 
 
     #workflow state
@@ -138,6 +139,12 @@ class Selection(models.Model):
             self.qty_normal = hasil
             self.qty_plant = hasil
         return  True
+
+    #selection count
+    @api.depends('selectionline_ids')
+    def _get_selectionline_count(self):
+        for r in self:
+            r.selectionline_count = len(r.selectionline_ids)
 
     #compute selectionLine
     @api.one
