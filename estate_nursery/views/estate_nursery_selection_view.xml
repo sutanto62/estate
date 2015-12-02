@@ -113,8 +113,8 @@
             <field name="name">Selection abnormal</field>
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection stage" type="pie">
-
+                   <graph string="Graph Selection stage" type="bar">
+                       <field name="selectionstage_id" string="selection stage"/>
                        <field name="batch_id" string=" number batch" />
                        <field name="qty_abnormal" type="measure"/>
                        <field name="qty_normal" type="measure"/>
@@ -127,7 +127,6 @@
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
                    <graph string="Graph Selection" type="pie">
-
                        <field name="batch_id" string=" number batch" />
                        <!--<field name="qty_abnormal" type="measure"/>-->
                        <field name="qty_plant" type="measure"/>
@@ -139,11 +138,11 @@
             <field name="name">Selection normal</field>
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection date" type="pie">
+                   <graph string="Graph Selection date" type="bar">
                        <field name="nursery_information" />
                        <field name="batch_id" string=" number batch" />
+                       <field name="selectionstage_id"/>
                        <field name="nursery_lapsemonth" type="measure"/>
-
                    </graph>
             </field>
         </record>
@@ -336,10 +335,11 @@
             <field name="name">Selection cause</field>
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection stage" type="pie">
+                   <graph string="Graph Selection stage" type="pivot">
                        <field name="selection_id" string="Selection"/>
-                       <field name="cause_id" string="Cause" />
-                       <field name="qty" type="measure"/>
+                       <!--<field name="cause_id" type="row" string="Cause" />-->
+                       <field name="selectionstage" type="row" string="stage"/>
+                       <field name="qty" type="measure"  sum="Qty Abnormal"/>
                    </graph>
             </field>
         </record>
@@ -365,6 +365,7 @@
                         <group>
                             <field name="qty_batch"/>
                             <field name="selection_id" invisible="1"/>
+                            <field name="selectionstage" invisible="1"/>
                             <field name="qty"/>
                         </group>
                         <group>

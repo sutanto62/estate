@@ -99,6 +99,9 @@ class Batch(models.Model):
     age_seed = fields.Integer("Seed Age Received", required=True,store=True)
     selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count",store=True)
     comment = fields.Text("Additional Information")
+    month=fields.Integer("Month Rule",compute="_rule_month",store=True)
+    # total_normal=fields.Integer(compute="amount_all")
+    # total_abnormal=fields.Integer(compute="")
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
@@ -230,6 +233,33 @@ class Batch(models.Model):
     def _get_selection_count(self):
         for r in self:
             r.selection_count = len(r.selection_ids)
+
+    # @api.depends('batch_ids')
+    # def _get_total_normal(self):
+    #     for a in self:
+    #         a.total_normal = len(a.batch_ids.qty_normal)
+    #         print a.total_normal
+
+    @api.one
+    @api.depends('month')
+
+    def _rule_month(self):
+        self.month =int(12)
+
+    # @api.depends('batch_ids','total_normal')
+    # def amount_all(self):
+    #     #~ import ipdb;ipdb.set_trace();
+    #     res = {}
+    #     for batch in self.browse(self):
+    #         res[batch.id] = {
+    #             'total_normal': 0,
+    #         }
+    #         val = 0
+    #         for line in batch.tax_line:
+    #             val += line.qty_normal
+    #         res[batch.id] = val
+    #     return res
+
     #computed seed age
 
     @api.one
@@ -243,16 +273,13 @@ class Batch(models.Model):
             to_date = self.date_planted
             conv_todate = datetime.strptime(str(to_date), fmt)
             d1 = from_date.month
-            print d1
             d2 = conv_todate.month
             rangeyear = conv_todate.year
             rangeyear1 = from_date.year
-            print rangeyear1
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
             ageseed = (d1 + yearresult) - d2
             self.age_seed_range = ageseed + int(self.age_seed)
-            print self.age_seed_range
         return res
 
     #computed seed planted
@@ -295,13 +322,13 @@ class Batchline(models.Model):
     child_ids = fields.One2many('estate.nursery.batchline', 'parent_id', "Contains")
     batch_id = fields.Many2one('estate.nursery.batch', "Batch", ondelete="restrict")
     seed_qty = fields.Integer("DO Quantity")
-    qty_single = fields.Integer("Single Tone Quantity")
-    qty_double = fields.Integer("Double Tone Quantity")
-    qty_broken = fields.Integer("Broken Seed Quantity")
-    qty_dead = fields.Integer("Dead Seed Quantity")
-    qty_fungus = fields.Integer("Fungus Seed Quantity")
-    subtotal_normal = fields.Integer("Normal Seed Quantity", compute='_compute_subtotal')
-    subtotal_abnormal = fields.Integer("Abnormal Seed Quantity", compute='_compute_subtotal')
+    qty_single = fields.Integer("Single Tone Quantity",store=True)
+    qty_double = fields.Integer("Double Tone Quantity",store=True)
+    qty_broken = fields.Integer("Broken Seed Quantity",store=True)
+    qty_dead = fields.Integer("Dead Seed Quantity",store=True)
+    qty_fungus = fields.Integer("Fungus Seed Quantity",store=True)
+    subtotal_normal = fields.Integer("Normal Seed Quantity", compute='_compute_subtotal',store=True)
+    subtotal_abnormal = fields.Integer("Abnormal Seed Quantity", compute='_compute_subtotal',store=True)
     percentage_normal = fields.Float("Normal Ratio", digits=(2,2), compute='_compute_subtotal')
     percentage_abnormal = fields.Float("Abnormal Ratio", digits=(2,2), compute='_compute_subtotal')
     selection_do_var = fields.Integer("Variance", help="Seed selection ratio.", compute='_compute_variance')

@@ -108,17 +108,46 @@
         </record>
 
         <!-- View, Seed Batch -->
-        <record id="view_graph_batch" model ="ir.ui.view">
+         <record id="view_graph_batch" model ="ir.ui.view">
             <field name="name">Selection graph</field>
             <field name="model">estate.nursery.batch</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection stage" type="pivot">
+                   <graph string="Graph Selection stage" type="bar">
                        <field name="name" string="number batch"/>
                        <!--<field name="selection_count" string="Selectioncount" type="measure"/>-->
                        <!--<field name="selection_ids" string="stage nursery"/>-->
-                       <field name="age_seed_range" type="measure"/>
+                       <field name="qty_abnormal" type="measure"/>
+                       <field name="qty_normal" type="measure"/>
                        <!--<field name="qty_planted" type="measure"/>-->
                        <!--<field name="qty_received" string="Quantity DO" type="measure"/>-->
+                   </graph>
+            </field>
+        </record>
+        <record id="view_graph_batchline" model ="ir.ui.view">
+            <field name="name">Selection graph</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph Selection stage" type="bar">
+                       <field name="batch_id" string="number batch"/>
+                       <!--<field name="selection_count" string="Selectioncount" type="measure"/>-->
+                       <!--<field name="selection_ids" string="stage nursery"/>-->
+                       <field name="qty_dead" type="measure"/>
+                       <field name="qty_broken" type="measure"/>
+                       <field name="qty_fungus" type="measure"/>
+                       <!--<field name="qty_planted" type="measure"/>-->
+                       <!--<field name="qty_received" string="Quantity DO" type="measure"/>-->
+                   </graph>
+            </field>
+        </record>
+
+        <record id="view_graph_ageseed_batch" model ="ir.ui.view">
+            <field name="name">Selection graph</field>
+            <field name="model">estate.nursery.batch</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph Selection stage" type="bar">
+                       <field name="name" string="number batch"/>
+                       <field name="age_seed_range" type="measure"/>
+                       <field name="month" type="measure" colors="white"/>
                    </graph>
             </field>
         </record>
@@ -239,6 +268,8 @@
 
 
         <!-- View, Seed Batchline -->
+
+
         <record model="ir.ui.view" id="view_seed_batchline_tree">
             <field name="name">Seed Batchline</field>
             <field name="model">estate.nursery.batchline</field>

@@ -61,7 +61,7 @@ class Selection(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
-        ('done', 'Done')], string="State",)
+        ('done', 'Done')], string="State",store=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
@@ -360,6 +360,7 @@ class SelectionLine(models.Model):
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
                                related='selection_id.qty_batch',store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
+    selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
     location_id = fields.Many2one('stock.location', "Bedengan",
                                     domain=[('estate_location', '=', True),
