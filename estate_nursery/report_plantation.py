@@ -7,11 +7,13 @@ import calendar
 class ReportPlantation(models.Model):
     _inherit = "estate.nursery.selection"
 
-    reportline_id= fields.Many2one("estate.nursery.reportline")
+    reportline_id= fields.Many2one("estate.nursery.reportline",
+                                   default=lambda self: self.reportline_id.search([('name','=','Report Pre Nursery')]))
 class ReportPlan(models.Model):
     _inherit = "estate.nursery.selectionline"
 
-    reportline_id=fields.Many2one("estate.nursery.reportline")
+    reportline_id=fields.Many2one("estate.nursery.reportline",
+                                  default=lambda self: self.reportline_id.search([('name','=','Report Pre Nursery')]))
 
 class ReportLine(models.Model):
     _name = "estate.nursery.reportline"

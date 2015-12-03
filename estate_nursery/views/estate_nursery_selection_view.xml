@@ -139,9 +139,9 @@
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
                    <graph string="Graph Selection date" type="bar">
-                       <field name="nursery_information" />
                        <field name="batch_id" string=" number batch" />
                        <field name="selectionstage_id"/>
+                       <field name="nursery_information" />
                        <field name="nursery_lapsemonth" type="measure"/>
                    </graph>
             </field>

@@ -227,6 +227,17 @@
             <field name="comment">daun melintir</field>
         </record>
 
+        <!--Demo report selection-->
+        <record id="report_selection_1" model="estate.nursery.reportline">
+            <field name="name">Report Pre Nursery</field>
+            <!--<field name="report_date"></field>-->
+            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+        </record>
+        <record id="report_selection_2" model="estate.nursery.reportline">
+            <field name="name">Report Main Nursery</field>
+            <!--<field name="report_date"></field>-->
+            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+        </record>
         <!--
         product.packaging
         depend on: group_stock_packaging = true at stock.config.settings

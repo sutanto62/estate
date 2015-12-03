@@ -23,51 +23,67 @@
                         <span >Detail Batch</span>
                     </h2>
                     <hr></hr>
+                    <!--<table class="table table-condensed">-->
+                        <!--<thead>-->
+                            <!--<tr>-->
+                                <!--<th style="width:5%;">Batch No</th>-->
+                                <!--<th style="width:5%;">Variety</th>-->
+                                <!--<th style="width:4%;">DO</th>-->
+                                <!--<th style="width:4%;">Planted</th>-->
+                                <!--<th style="width:4%;">Abnormal</th>-->
+                                <!--<th style="width:10%;">Selection Stage</th>-->
+                                <!--<th style="width:5%;">Selection Date</th>-->
+                                <!--<th style="width:10%;">Nursery Information</th>-->
+                                <!--<th style="width:10%;">Selection Planted</th>-->
+                                <!--<th style="width:10%;">Comment</th>-->
+                            <!--</tr>-->
+                        <!--</thead>-->
+
+                        <!--<tbody class="selection_tbody">-->
+                            <!--<tr t-foreach="o.selection_ids" t-as="l">-->
+                                <!--<td style="width:5%;"><span t-field="l.name"/></td>-->
+                                <!--<td style="width:5%;"><span t-field="l.variety"/></td>-->
+                                <!--<td style="width:4%;"><span t-field="l.qty_batch"/></td>-->
+                                <!--<td style="width:4%;"><span t-field="l.qty_plant"/></td>-->
+                                <!--<td style="width:4%;"><span t-field="l.qty_abnormal"/></td>-->
+                                <!--<td style="width:10%;"><span t-field="l.selectionstage_id"/></td>-->
+                                <!--<td style="width:5%;"><span t-field="l.selection_date"/></td>-->
+                                <!--<td style="width:10%;"><span t-field="l.nursery_information"/></td>-->
+                            <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
                     <table class="table table-condensed">
                         <thead>
                             <tr>
                                 <th style="width:5%;">Batch No</th>
                                 <th style="width:5%;">Variety</th>
-                                <th style="width:4%;">DO</th>
-                                <th style="width:4%;">Planted</th>
-                                <th style="width:4%;">Abnormal</th>
+                                <th style="width:3%;">DO</th>
+                                <th style="width:3%;">Planted</th>
+                                <th style="width:3%;">Total Abnormal</th>
                                 <th style="width:10%;">Selection Stage</th>
-                                <th style="width:5%;">Selection Date</th>
+                                <th style="width:10%;">Selection Date</th>
                                 <th style="width:10%;">Nursery Information</th>
-                                <th style="width:10%;">Selection Planted</th>
-                                <th style="width:10%;">Comment</th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="selection_tbody">
-                            <tr t-foreach="o.selection_ids" t-as="l">
-                                <td style="width:5%;"><span t-field="l.name"/></td>
-                                <td style="width:5%;"><span t-field="l.variety"/></td>
-                                <td style="width:4%;"><span t-field="l.qty_batch"/></td>
-                                <td style="width:4%;"><span t-field="l.qty_plant"/></td>
-                                <td style="width:4%;"><span t-field="l.qty_abnormal"/></td>
-                                <td style="width:10%;"><span t-field="l.selectionstage_id"/></td>
-                                <td style="width:5%;"><span t-field="l.selection_date"/></td>
-                                <td style="width:10%;"><span t-field="l.nursery_information"/></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table table-condensed">
-                        <thead>
-                            <tr>
-                                <th style="width:5%;">Batch No</th>
                                 <th style="width:10%;">Cause</th>
-                                <th style="width:4%;">Abnormal</th>
+                                <th style="width:3%;">Abnormal</th>
                                 <th style="width:10%;">Location</th>
+                                <th style="width:5%;">Comment</th>
                             </tr>
                         </thead>
 
                         <tbody class="selection_tbody">
                             <tr t-foreach="o.selectionline_ids" t-as="a">
                                 <td style="width:5%;"><span t-field="a.name"/></td>
+                                <td style="width:5%;"><span t-field="a.information_variety"/></td>
+                                <td style="width:3%;"><span t-field="a.DO"/></td>
+                                <td style="width:3%;"><span t-field="a.qty_planted"/></td>
+                                <td style="width:3%;"><span t-field="a.qty_abnormal"/></td>
+                                <td style="width:5%;"><span t-field="a.selectionstage"/></td>
+                                <td style="width:10%;"><span t-field="a.information_date"/></td>
+                                <td style="width:10%;"><span t-field="a.information"/></td>
                                 <td style="width:10%;"><span t-field="a.cause_id"/></td>
-                                <td style="width:4%;"><span t-field="a.qty"/></td>
+                                <td style="width:3%;"><span t-field="a.qty"/></td>
                                 <td style="width:10%;"><span t-field="a.location_id"/></td>
+                                <td style="width:5%;"><span t-field="a.comment"/></td>
                             </tr>
                         </tbody>
                     </table>
