@@ -161,9 +161,12 @@
                                </div>
                                <div class="kanban_details">
                                    <h4>
-                                       <a type="open">
-                                           <field name="batch_id"/>
-                                       </a>
+                                       <li>
+                                        <a type="open">
+
+                                           Selection For <field name="batch_id"/>
+                                        </a>
+                                       </li>
                                    </h4>
                                    <ul>
                                        <li>
@@ -348,7 +351,7 @@
             <field name="name">Selection line</field>
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
-                <tree string="Seed Selection Line" colors="red:qty ">
+                <tree string="Seed Selection Line" colors=  "red:qty ">
                     <field name="cause_id"/>
                     <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
                     <field name="location_id"/>

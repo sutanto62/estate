@@ -1,6 +1,17 @@
 <openerp>
     <data>
-
+        <!--view , batchids-->
+         <record model="ir.ui.view" id="view_form_report_plantation">
+             <field name="name">report plantation</field>
+             <field name="model">estate.nursery.batch</field>
+             <field name="inherit_id" ref="estate_nursery.view_seed_batch_form"/>
+             <field name="arch" type="xml">
+                 <field name="culling_location_id" position="after">
+                     <field name="reportline_id" string="Choose Report"
+                            attrs="{'readonly':[('state','=','done')]}"/>
+                 </field>
+             </field>
+         </record>
         <!--view , selectionids-->
          <record model="ir.ui.view" id="view_form_report_plantation">
              <field name="name">report plantation</field>
@@ -10,18 +21,6 @@
                  <field name="date_plant" position="after">
                      <field name="reportline_id" string="Choose Report"
                             attrs="{'invisible': [('state','=','draft')], 'readonly':[('state','=','done')]}"/>
-                 </field>
-             </field>
-         </record>
-
-        <!--view, selectionlineids-->
-        <record model="ir.ui.view" id="view_form_report_plan">
-             <field name="name">report plantation</field>
-             <field name="model">estate.nursery.selectionline</field>
-             <field name="inherit_id" ref="estate_nursery.view_form_selectionline"/>
-             <field name="arch" type="xml">
-                 <field name="location_id" position="after">
-                     <field name="reportline_id" string="Position Report"/>
                  </field>
              </field>
          </record>
@@ -54,16 +53,16 @@
                         </group>
                     </group>
                     <group>
-                        <notebook >
-                            <page string="Report line">
+                        <notebook>
+                            <page string="Report Batch Line">
                                 <tree>
-                                    <field name="selection_ids" />
+                                    <field name="batch_ids" />
 
                                 </tree>
                             </page>
-                            <page string="Report selection line" invisible="0">
+                            <page string="Report Selection Line">
                                 <tree>
-                                    <field name="selectionline_ids" readonly="1"/>
+                                    <field name="selection_ids" />
                                 </tree>
                             </page>
                         </notebook>

@@ -100,15 +100,14 @@ class Batch(models.Model):
     selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count",store=True)
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
-    # total_normal=fields.Integer(compute="amount_all")
-    # total_abnormal=fields.Integer(compute="")
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
-    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))# Detaileld selection
+    selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))
+    selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
     culling_location_id = fields.Many2one('stock.location', _("Culling Location"),

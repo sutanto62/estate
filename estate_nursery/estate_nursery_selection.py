@@ -360,13 +360,8 @@ class SelectionLine(models.Model):
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
                                related='selection_id.qty_batch',store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
-    DO = fields.Integer(related="selection_id.qty_batch", store=True)
-    information = fields.Selection(related="selection_id.nursery_information",store=True)
-    information_date=fields.Date(related="selection_id.selection_date",store=True)
-    qty_planted = fields.Integer(related="selection_id.qty_plant",store=True)
-    qty_abnormal=fields.Integer(related="selection_id.qty_abnormal",store=True)
-    information_variety=fields.Char(related="selection_id.batch_id.variety_id.name",store=True)
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
+    batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
     location_id = fields.Many2one('stock.location', "Bedengan",
                                     domain=[('estate_location', '=', True),

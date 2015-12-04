@@ -114,12 +114,8 @@
             <field name="arch" type="xml">
                    <graph string="Graph Selection stage" type="bar">
                        <field name="name" string="number batch"/>
-                       <!--<field name="selection_count" string="Selectioncount" type="measure"/>-->
-                       <!--<field name="selection_ids" string="stage nursery"/>-->
                        <field name="qty_abnormal" type="measure"/>
                        <field name="qty_normal" type="measure"/>
-                       <!--<field name="qty_planted" type="measure"/>-->
-                       <!--<field name="qty_received" string="Quantity DO" type="measure"/>-->
                    </graph>
             </field>
         </record>
@@ -129,13 +125,9 @@
             <field name="arch" type="xml">
                    <graph string="Graph Selection stage" type="bar">
                        <field name="batch_id" string="number batch"/>
-                       <!--<field name="selection_count" string="Selectioncount" type="measure"/>-->
-                       <!--<field name="selection_ids" string="stage nursery"/>-->
                        <field name="qty_dead" type="measure"/>
                        <field name="qty_broken" type="measure"/>
                        <field name="qty_fungus" type="measure"/>
-                       <!--<field name="qty_planted" type="measure"/>-->
-                       <!--<field name="qty_received" string="Quantity DO" type="measure"/>-->
                    </graph>
             </field>
         </record>
