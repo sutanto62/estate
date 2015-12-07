@@ -32,12 +32,14 @@
         'reports/selection_report.xml',
         'reports/batch_report.xml',
         'reports/reportplantation_prenursery_report.xml',
+        'reports/reportplantation_prenursery_div.xml',
         'workflow/session_selection_workflow.xml',
         'workflow/session_workflow.xml',
         'res_config_view.xml',
         'selection_report.xml',
         'batch_report.xml',
         'reportplantation_prenursery_report.xml',
+        'reportplantation_div.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

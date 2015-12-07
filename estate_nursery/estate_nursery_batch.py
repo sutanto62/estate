@@ -228,39 +228,20 @@ class Batch(models.Model):
 
         return True
 
+    #count selection
     @api.depends('selection_ids')
     def _get_selection_count(self):
         for r in self:
             r.selection_count = len(r.selection_ids)
 
-    # @api.depends('batch_ids')
-    # def _get_total_normal(self):
-    #     for a in self:
-    #         a.total_normal = len(a.batch_ids.qty_normal)
-    #         print a.total_normal
-
+    # monthrange
     @api.one
     @api.depends('month')
 
     def _rule_month(self):
         self.month =int(12)
 
-    # @api.depends('batch_ids','total_normal')
-    # def amount_all(self):
-    #     #~ import ipdb;ipdb.set_trace();
-    #     res = {}
-    #     for batch in self.browse(self):
-    #         res[batch.id] = {
-    #             'total_normal': 0,
-    #         }
-    #         val = 0
-    #         for line in batch.tax_line:
-    #             val += line.qty_normal
-    #         res[batch.id] = val
-    #     return res
-
     #computed seed age
-
     @api.one
     @api.depends('age_seed','date_planted','age_seed_range')
     def _compute_age_range(self):

@@ -24,6 +24,17 @@
                  </field>
              </field>
          </record>
+        <!--view , selectionlineids-->
+         <record model="ir.ui.view" id="view_form_report_plantation">
+             <field name="name">report plantation</field>
+             <field name="model">estate.nursery.selectionline</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_selectionline"/>
+             <field name="arch" type="xml">
+                 <field name="location_id" position="after">
+                     <field name="reportline_id" string="Choose Report"/>
+                 </field>
+             </field>
+         </record>
 
         <!--view ,reportline -->
        <record model="ir.ui.view" id="view_tree_report_plantation">
@@ -63,6 +74,11 @@
                             <page string="Report Selection Line">
                                 <tree>
                                     <field name="selection_ids" />
+                                </tree>
+                            </page>
+                            <page string="Report Selection Line">
+                                <tree>
+                                    <field name="selectionline_ids" />
                                 </tree>
                             </page>
                         </notebook>

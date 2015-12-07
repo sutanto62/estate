@@ -356,6 +356,7 @@ class SelectionLine(models.Model):
     _name = 'estate.nursery.selectionline'
 
     name=fields.Char(related='selection_id.name')
+    partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True)
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
                                related='selection_id.qty_batch',store=True)
