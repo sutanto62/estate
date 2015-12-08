@@ -357,7 +357,7 @@ class SelectionLine(models.Model):
 
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
-    qty = fields.Integer("Quantity Abnormal",required=True)
+    qty = fields.Integer("Quantity Abnormal",required=True,store=True)
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
                                related='selection_id.qty_batch',store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
@@ -384,4 +384,13 @@ class Cause(models.Model):
     comment = fields.Text('Cause Description')
     code = fields.Char('Cause Abbreviation', size=3)
     sequence = fields.Integer('Sequence No')
+    index=fields.Integer(compute='_compute_index')
     stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage")
+
+    #create sequence
+    @api.one
+    def _compute_index(self):
+        cr, uid, ctx = self.env.args
+        self.index = self._model.search_count(cr, uid, [
+            ('sequence', '<', self.sequence)
+        ], context=ctx) + 1

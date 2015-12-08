@@ -9,7 +9,7 @@ class ReportPlantation(models.Model):
 
     reportline_id= fields.Many2one("estate.nursery.reportline",
                                    default=lambda self: self.reportline_id.search([('name','=','Report Pre Nursery')]))
-class ReportPlantation(models.Model):
+class ReportPlantationline(models.Model):
     _inherit = "estate.nursery.selectionline"
 
     reportline_id= fields.Many2one("estate.nursery.reportline",
@@ -27,6 +27,7 @@ class ReportLine(models.Model):
 
     name=fields.Char("Report Plantation Name ")
     partner_id=fields.Many2one("res.partner")
+    cause_id=fields.Many2one("estate.nursery.cause")
     report_date = fields.Datetime("Report Date",compute="_report_date",readonly=True)
     batch_ids = fields.One2many("estate.nursery.batch","reportline_id","selection")
     selection_ids = fields.One2many("estate.nursery.selection","reportline_id","selection")
@@ -48,7 +49,6 @@ class ReportLine(models.Model):
         self.report_date=today
 
     #total DO
-
     @api.one
     @api.depends("total_do")
 
@@ -56,19 +56,18 @@ class ReportLine(models.Model):
         batchids = self.batch_ids
         total_do = self.total_do
         for item in batchids:
-
             total_do += item.qty_received
             print total_do
+
+    #total planted
     @api.one
-    @api.depends("total_planted","selection_ids")
+    @api.depends("total_planted","batch_ids")
 
     def _get_total_planted(self):
-        selection_ids = self.selection_ids
+        batch_ids = self.batch_ids
         total_planted = self.total_planted
-        for item in selection_ids:
-
-            total_planted += item.qty_plant
-
+        for item in batch_ids:
+            total_planted += item.qty_planted
             print total_planted
 
 

@@ -3,133 +3,199 @@
 <openerp>
     <data>
         <template id="report_plantation_div_document">
-            <div class="page">
-              <t t-call="report.external_layout">
-            <!--First Row-->
-                <div class="row">
-                    <div class="col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-                        <h3>Report Pre Nursery</h3>
-                    </div>
-                </div>
-
-            <!-- SECOND ROW -->
-                <div class="row">
-                    <div class="col-xs-8" style="border-left:1px solid #568eff;">
-                        <h4>Report Detail</h4><br/>
-                            <strong>Report Name: <p t-field="o.name"/></strong>
-                    </div>
-                    <div class="col-xs-2" style="text-align:right;border-left:1px solid #568eff;">
-                        <strong>Report Date: <p t-field="o.report_date"/></strong>
-                        <strong>Estate:<p t-field="o.kebun_location_id"/></strong><br/>
-                    </div>
-                </div>
-                <!-- Third ROW -->
-                <div class="row col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-                    <div class="col-xs-1">Batch No.</div>
-                    <div class="col-xs-1">VARIETY</div>
-                    <div class="col-xs-1">DO</div>
-                    <div class="col-xs-1">PLANTED</div>
-                    <div class="col-xs-3">
-                            <div class="col-xs-4" style="border-left:1px solid #568eff;"><p>Selection Date</p></div>
-                            <div class="col-xs-4" style="border-left:1px solid #568eff;"><p>Selection Stage</p></div>
-                            <div class="col-xs-4" style="border-left:1px solid #568eff;"><p>Selection Information</p></div>
-                    </div>
-                    <div class="col-xs-3">
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">1.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">2.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">3.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">4.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">5.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">6.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">7.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">8.</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">9.</div>
-                    </div>
-                    <div class="col-xs-1">Total Abnormal</div>
-                    <div class="col-xs-1">Comment</div>
-                </div>
-                <!-- Forth ROW -->
-                  <div class="row ">
-                        <t t-foreach="o.batch_ids"  t-as="i">
-                            <div class="col-xs-12">
-                                <div class="col-xs-1" style="border-left:1px solid #568eff;">
-                                    <div><p t-esc="i.name"/></div>
-                                </div>
-                                <div class="col-xs-1" style="border-left:1px solid #568eff;">
-                                    <p t-field="i.variety_id.name"/>
-                                </div>
-                                <div class="col-xs-1" style="border-left:1px solid #568eff;">
-                                    <p t-field="i.qty_received"/>
-                                </div>
-                                <div class="col-xs-1" style="border-left:1px solid #568eff;">
-                                    <p t-field="i.qty_planted"/>
-                                </div>
-                                <div class="col-xs-3" style="border-left:1px solid #568eff;">
-                                    <t t-foreach="i.selection_ids" t-as="a">
-                                            <div class="col-xs-4" style="border-left:1px solid #568eff;">
-                                                <p t-field="a.selection_date"/>
-                                            </div>
-                                            <div class="col-xs-4" style="border-left:1px solid #568eff;">
-                                                <p t-field="a.selectionstage_id.name"/>
-                                            </div>
-                                            <div class="col-xs-4" style="border-left:1px solid #568eff;">
-                                                <p t-field="a.nursery_information"/>
-                                            </div>
-                                    </t>
-                                </div>
-                            <div class="col-xs-3" style="border-left:1px solid #568eff;">
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">1.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">2.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">3.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">4.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">5.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">6.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">7.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">8.</div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">9.</div>
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <!--First Row-->
+                        <div class="row">
+                            <div class="col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
+                                <h3>Report Pre Nursery</h3>
                             </div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">Total Abnormal</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">Comment</div>
                         </div>
-                    </t>
-                </div>
-                <!-- FiftH ROW -->
-                <div class="row col-xs-12">
-                    <div class="col-xs-2" style="text-align:right;border: 1px solid #568eff;">
-                        <p><strong>Total:</strong></p>
-                    </div>
-                    <div class="col-xs-1" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
-                        <p><t t-esc="o.total_do"/></p>
-                    </div>
-                    <div class="col-xs-1" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
-                        <p><t t-esc="o.total_planted"/></p>
-                    </div>
-                    <div class="col-xs-3" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
-                        <div class="col-xs-4" style="border-left:1px solid #568eff;"><p></p></div>
-                        <div class="col-xs-4" style="border-left:1px solid #568eff;"><p></p></div>
-                        <div class="col-xs-4" style="border-left:1px solid #568eff;"><p></p></div>
-                    </div>
-                    <div class="col-xs-3" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">1</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">2</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">3</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">4</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">5</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">6</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">7</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">8</div>
-                            <div class="col-xs-1" style="border-left:1px solid #568eff;">9</div>
-                    </div>
-                    <div class="col-xs-1" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
-                        <p><strong>150.00</strong></p>
-                    </div>
-                    <div class="col-xs-1" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
-                        <p><strong>150.00</strong></p>
-                    </div>
-                </div>
-              </t>
-            </div>
 
+                    <!-- SECOND ROW -->
+                        <div class="row">
+                            <div class="col-xs-8" style="border-left:1px solid #568eff;">
+                                <h4>Report Detail</h4><br/>
+                                    <strong>Report Name: <p t-field="o.name"/></strong>
+                            </div>
+                            <div class="col-xs-2" style="text-align:right;border-left:1px solid #568eff;">
+                                <strong>Report Date: <p t-field="o.report_date"/></strong>
+                                <strong>Estate:<p t-field="o.kebun_location_id"/></strong><br/>
+                            </div>
+                        </div>
+
+                        <!-- Third ROW -->
+                        <div class="row col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
+                            <div class="col-xs-1">Batch No.</div>
+                            <div class="col-xs-1">Variety</div>
+                            <div class="col-xs-1">DO</div>
+                            <div class="col-xs-1">Planted</div>
+                            <div class="col-xs-8">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"><p>Selection Date</p></div>
+                                    <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"><p>Selection Stage</p></div>
+                                    <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"><p>Selection Information</p></div>
+                                    <div class="col-xs-5">
+                                        <div class="col-xs-12">
+                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">1</div>
+                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">2</div>
+                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">3</div>
+                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">4</div>
+                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">5</div>
+                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">6</div>
+                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">7</div>
+                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">8</div>
+                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">9</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2" style="text-align:center;">Total Abnormal</div>
+                                    <div class="col-xs-2" style="text-align:center;">Comment</div>
+                                </div>
+                            </div>
+                        </div>
+
+                      <!-- Forth ROW -->
+                      <div class="row ">
+                            <t t-foreach="o.batch_ids"  t-as="i">
+                                <div class="col-xs-12">
+                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                        <div><p t-esc="i.name"/></div>
+                                    </div>
+                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                        <p t-field="i.variety_id.name"/>
+                                    </div>
+                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                        <p t-field="i.qty_received"/>
+                                    </div>
+                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                        <p t-field="i.qty_planted"/>
+                                    </div>
+                                    <div class="col-xs-8" style="border-left:1px solid #568eff;">
+                                        <t t-foreach="i.selection_ids" t-as="a">
+                                            <div class="col-xs-12">
+                                                <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <span t-field="a.selection_date"/>
+                                                </div>
+                                                <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <span t-field="a.selectionstage_id.name"/>
+                                                </div>
+                                                <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <span t-field="a.nursery_information"/>
+                                                </div>
+                                                <div class="col-xs-5" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <t t-foreach="a.selectionline_ids" t-as="s">
+                                                        <div class="col-xs-12">
+                                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 1">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 2">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 3">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 4">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 5">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 6">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 7">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 8">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                                <t t-if="s.cause_id.sequence == 9">
+                                                                    <span t-field="s.qty"/>
+                                                                </t>
+                                                            </div>
+                                                     </div>
+                                                    </t>
+                                                </div>
+                                                <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <span t-field="a.qty_abnormal"/>
+                                                </div>
+                                                <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <span t-field="a.comment"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Fifth ROW -->
+                    <div class="row col-xs-12">
+                        <div class="col-xs-2" style="text-align:right;border: 1px solid #568eff;">
+                            <p><strong>Total:</strong></p>
+                        </div>
+                        <div class="col-xs-1" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
+                            <span t-field="o.total_do"/>
+                        </div>
+                        <div class="col-xs-1" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
+                            <span t-field="o.total_planted"/>
+                        </div>
+                        <div class="col-xs-8" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
+                            <div class="col-xs-12">
+                                <div class="col-xs-1" ><p></p></div>
+                                <div class="col-xs-1" ><p></p></div>
+                                <div class="col-xs-1" ><p></p></div>
+                                <div class="col-xs-5" style="border-left:0px;">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-2" style="border-left:1px solid #568eff;">
+                                        </div>
+                                        <div class="col-xs-1" style="border-left:1px solid #568eff;">
+
+                                        </div>
+                                        <div class="col-xs-1" style="border-left:1px solid #568eff;">
+
+                                        </div>
+                                        <div class="col-xs-1" style="border-left:1px solid #568eff;">
+
+                                        </div>
+                                        <div class="col-xs-2" style="border-left:1px solid #568eff;">
+
+                                        </div>
+                                        <div class="col-xs-1" style="border-left:1px solid #568eff;">6</div>
+                                        <div class="col-xs-1" style="border-left:1px solid #568eff;">7</div>
+                                        <div class="col-xs-1" style="border-left:1px solid #568eff;">8</div>
+                                        <div class="col-xs-2" style="border-left:1px solid #568eff;">9</div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-2" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
+                                    <span><strong>150.00</strong></span>
+                                </div>
+                                <div class="col-xs-2" style="text-align:right;border: 1px solid #568eff;border-left:0px;">
+                                    <span><strong>150.00</strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
 
         </template>
         <template id="reportplantation_div_report">

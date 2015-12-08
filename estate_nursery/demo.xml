@@ -208,35 +208,81 @@
         </record>
 
         <!--selection cause-->
-        <record id="nursery_cause_3" model="estate.nursery.cause">
-            <field name="name">Steril</field>
-            <field name="code">STR</field>
-            <field name="sequance">0</field>
-            <field name="comment">daun steril</field>
+        <record id="nursery_cause_1" model="estate.nursery.cause">
+            <field name="name">Twisted shoot</field>
+            <field name="code">TWS</field>
+            <field name="sequence">1</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun bengkok</field>
         </record>
         <record id="nursery_cause_2" model="estate.nursery.cause">
-            <field name="name">Kerdil</field>
-            <field name="code">KDL</field>
-            <field name="sequance">0</field>
+            <field name="name">Stunted leaf</field>
+            <field name="code">STL</field>
+            <field name="sequence">2</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
             <field name="comment">daun kerdil</field>
         </record>
-        <record id="nursery_cause_1" model="estate.nursery.cause">
-            <field name="name">Daun Menggulung</field>
+        <record id="nursery_cause_3" model="estate.nursery.cause">
+            <field name="name">Rolled Leaf</field>
             <field name="code">DMG</field>
-            <field name="sequance">0</field>
+            <field name="sequence">3</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
             <field name="comment">daun melintir</field>
         </record>
+        <record id="nursery_cause_4" model="estate.nursery.cause">
+            <field name="name">Narrow  Leaf</field>
+            <field name="code">NRL</field>
+            <field name="sequence">4</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun lalang dan sempit</field>
+        </record>
+        <record id="nursery_cause_5" model="estate.nursery.cause">
+            <field name="name">Accurate Leaf</field>
+            <field name="code">ACT</field>
+            <field name="sequence">5</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun menyempit dan tegak</field>
+        </record>
+        <record id="nursery_cause_6" model="estate.nursery.cause">
+            <field name="name">Crinkled Leaf</field>
+            <field name="code">CRK</field>
+            <field name="sequence">6</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun berkerut/sempit</field>
+        </record>
+        <record id="nursery_cause_7" model="estate.nursery.cause">
+            <field name="name">Chimaera Leaf</field>
+            <field name="code">CHR</field>
+            <field name="sequence">7</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun dengan sirip kuning</field>
+        </record>
+        <record id="nursery_cause_8" model="estate.nursery.cause">
+            <field name="name">HAMA Leaf</field>
+            <field name="code">HMA</field>
+            <field name="sequence">8</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun terkena hama penyakit</field>
+        </record>
+        <record id="nursery_cause_9" model="estate.nursery.cause">
+            <field name="name">Other Cause</field>
+            <field name="code">OTH</field>
+            <field name="sequence">9</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun terkena penyakit yang belum terdeteksi</field>
+        </record>
+
 
         <!--Demo report selection-->
         <record id="report_selection_1" model="estate.nursery.reportline">
             <field name="name">Report Pre Nursery</field>
             <!--<field name="report_date"></field>-->
-            <field name="kebun_location_id" ref="stock.stock_location_locations"/>
+            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
         </record>
         <record id="report_selection_2" model="estate.nursery.reportline">
             <field name="name">Report Main Nursery</field>
             <!--<field name="report_date"></field>-->
-            <field name="kebun_location_id" ref="stock.stock_location_locations"/>
+            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
         </record>
 
         <!--
