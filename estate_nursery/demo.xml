@@ -207,7 +207,7 @@
             <field name="comment">Tahap Main nusery tiga</field>
         </record>
 
-        <!--selection cause-->
+        <!--selection cause, pre nursery-->
         <record id="nursery_cause_1" model="estate.nursery.cause">
             <field name="name">Twisted shoot</field>
             <field name="code">TWS</field>
@@ -272,17 +272,93 @@
             <field name="comment">daun terkena penyakit yang belum terdeteksi</field>
         </record>
 
-
-        <!--Demo report selection-->
-        <record id="report_selection_1" model="estate.nursery.reportline">
-            <field name="name">Report Pre Nursery</field>
-            <!--<field name="report_date"></field>-->
-            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+        <!--demo main nursery-->
+        <record id="nursery_cause_10" model="estate.nursery.cause">
+            <field name="name">Erected leaf</field>
+            <field name="code">ERC</field>
+            <field name="sequence">10</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">daun tumbuh meninggi dan kaku </field>
         </record>
-        <record id="report_selection_2" model="estate.nursery.reportline">
-            <field name="name">Report Main Nursery</field>
-            <!--<field name="report_date"></field>-->
-            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+
+        <record id="nursery_cause_11" model="estate.nursery.cause">
+            <field name="name">Flat top Leaf</field>
+            <field name="code">FLT</field>
+            <field name="sequence">11</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Tajuk daun rata</field>
+        </record>
+
+        <record id="nursery_cause_12" model="estate.nursery.cause">
+            <field name="name">Limp Leaf</field>
+            <field name="code">LMP</field>
+            <field name="sequence">12</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Daun Lemah dan Loyo</field>
+        </record>
+
+        <record id="nursery_cause_13" model="estate.nursery.cause">
+            <field name="name">Juvlenile Leaf</field>
+            <field name="code">FLT</field>
+            <field name="sequence">13</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Anak daun tidak membelah</field>
+        </record>
+
+        <record id="nursery_cause_14" model="estate.nursery.cause">
+            <field name="name">Crown desease Leaf</field>
+            <field name="code">CRD</field>
+            <field name="sequence">14</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Terserang penyakit tajuk</field>
+        </record>
+
+        <record id="nursery_cause_15" model="estate.nursery.cause">
+            <field name="name">Accute pinnate Intersection Leaf</field>
+            <field name="code">API</field>
+            <field name="sequence">15</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Sudut anak daun sangat tajam dengan pelepah</field>
+        </record>
+
+        <record id="nursery_cause_16" model="estate.nursery.cause">
+            <field name="name">Short Leaf lets</field>
+            <field name="code">SLL</field>
+            <field name="sequence">16</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Anak Daun Pendek Pendek</field>
+        </record>
+
+        <record id="nursery_cause_17" model="estate.nursery.cause">
+            <field name="name">Range between leaf Cramped</field>
+            <field name="code">RBLC</field>
+            <field name="sequence">17</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Jarak antar anak daun rapat</field>
+        </record>
+
+        <record id="nursery_cause_18" model="estate.nursery.cause">
+            <field name="name">Range between leaf Longwise</field>
+            <field name="code">RBLC</field>
+            <field name="sequence">17</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Jarak antar anak daun memanjang</field>
+        </record>
+
+        <record id="nursery_cause_19" model="estate.nursery.cause">
+            <field name="name">Chimaera</field>
+            <field name="code">CHMR</field>
+            <field name="sequence">19</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Daun Terkena Penyakit Chimaera</field>
+        </record>
+
+        <record id="nursery_cause_20" model="estate.nursery.cause">
+            <field name="name">Other Cause</field>
+            <field name="code">OC</field>
+            <field name="sequence">20</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Daun TErkena penyakit yang belum terdeteksi</field>
         </record>
 
         <!--
@@ -359,6 +435,19 @@
             <field name="estate_location" eval="True"/>
             <field name="estate_location_level">3</field>
             <field name="estate_location_type">nursery</field>
+        </record>
+
+        <!--Demo report selection-->
+        <record id="report_selection_1" model="estate.nursery.reportline">
+            <field name="name">Report Pre Nursery</field>
+            <!--<field name="report_date"></field>-->
+            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+        </record>
+
+        <record id="report_selection_2" model="estate.nursery.reportline">
+            <field name="name">Report Main Nursery</field>
+            <!--<field name="report_date"></field>-->
+            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
         </record>
 
 

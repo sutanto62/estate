@@ -309,11 +309,11 @@ class Batchline(models.Model):
     qty_fungus = fields.Integer("Fungus Seed Quantity",store=True)
     subtotal_normal = fields.Integer("Normal Seed Quantity", compute='_compute_subtotal',store=True)
     subtotal_abnormal = fields.Integer("Abnormal Seed Quantity", compute='_compute_subtotal',store=True)
-    percentage_normal = fields.Float("Normal Ratio", digits=(2,2), compute='_compute_subtotal')
-    percentage_abnormal = fields.Float("Abnormal Ratio", digits=(2,2), compute='_compute_subtotal')
+    percentage_normal = fields.Float("Normal Ratio", digits=(2,2), compute='_compute_subtotal',store=True)
+    percentage_abnormal = fields.Float("Abnormal Ratio", digits=(2,2), compute='_compute_subtotal',store=True)
     selection_do_var = fields.Integer("Variance", help="Seed selection ratio.", compute='_compute_variance')
     planting_selection_var = fields.Integer("Variance", help="Seed planted ratio", compute='_compute_variance')
-    qty_planted = fields.Integer("Planted Quantity")
+    qty_planted = fields.Integer("Planted Quantity",store=True)
     location_id = fields.Many2one('stock.location', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
