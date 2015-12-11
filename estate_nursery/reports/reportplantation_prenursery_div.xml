@@ -6,14 +6,14 @@
             <t t-call="report.external_layout">
                 <div class="page">
                     <!--First Row-->
-                        <div class="row">
+                        <div class="row col-xs-12">
                             <div class="col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
                                 <h3>Report Pre Nursery</h3>
                             </div>
                         </div>
 
                     <!-- SECOND ROW -->
-                        <div class="row">
+                        <div class="row col-xs-12">
                             <div class="col-xs-8" style="border-left:1px solid #568eff;">
                                 <h4>Report Detail</h4><br/>
                                     <strong>Report Name: <p t-field="o.name"/></strong>

@@ -35,6 +35,7 @@
         'reports/reportplantation_prenursery_div.xml',
         'reports/reportplantation_mainnursery_report.xml',
         'reports/reportplantation_seedreceived.xml',
+        'reports/reportplantation_seedreceived_bag.xml',
         'workflow/session_selection_workflow.xml',
         'workflow/session_workflow.xml',
         'res_config_view.xml',
@@ -43,7 +44,8 @@
         'reportplantation_prenursery_report.xml',
         'reportplantation_div.xml',
         'reportmainnursery_div.xml',
-        'reportplantation_seedreceived.xml'
+        'reportplantation_seedreceived.xml',
+        'reportplantation_seedreceived_bag.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -3,42 +3,33 @@
 <!--Custom report.-->
 <openerp>
     <data>
-        <template id="report_plantation_seedreceived_document">
+        <template id="report_plantation_seedreceived_bag_document">
             <t t-call="report.external_layout">
                 <div class="page">
                     <!--First Row-->
-                        <div class="row">
+                        <div class="row col-xs-12">
                             <div class="col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-                                <h3>Report Seed Received</h3>
+                                <h3>Report Seed Received Bag</h3>
                             </div>
                         </div>
 
                     <!-- SECOND ROW -->
                         <div class="row col-xs-12">
-                            <div class="col-xs-12"><h4>Report Detail</h4><br/>
-                                <div class="row col-xs-6">
-                                    <div class="col-xs-4" style="border-left:1px solid #568eff;">
-                                        <strong>Transportir: </strong>
+                                <h4>Report Detail Bag</h4><br/>
+                                <div class="col-xs-12">
+                                    <div t-field="o.name" class="row " >
                                     </div>
-                                    <div class="col-xs-4" style="border-left:1px solid #568eff;">
-                                        <strong>No DO: </strong>
+                                    <div t-field="o.date_received" class="row ">
                                     </div>
-                                </div>
-                                <div class="row col-xs-6">
-                                    <div t-field="o.picking_id.origin" class="col-xs-4" style="text-align:right;border-left:1px solid #568eff;">
-                                        <strong>No PO: </strong>
-                                    </div>
-                                    <div t-field="o.picking_id.partner_id.name" class="col-xs-4" style="text-align:right;border-left:1px solid #568eff;">
-                                        <span><strong>Nama supplier:</strong></span>
+                                    <div t-field="o.date_planted" class="row ">
                                     </div>
                                 </div>
-                            </div>
                         </div>
 
                         <!-- Third ROW -->
                         <div class="row col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
                             <div class="col-xs-1">Variety</div>
-                            <div class="col-xs-1">No Box</div>
+                            <div class="col-xs-1">No Box/bag</div>
                             <div class="col-xs-1">Seed Received Date</div>
                             <div class="col-xs-1">DO</div>
                             <div class="col-xs-8" style="text-align:center;">Jumlah Butir
@@ -72,7 +63,7 @@
                             </div>
                             <div class="col-xs-1">
                                 <t t-foreach="o.batchline_ids" t-as="l">
-                                    <div t-field="l.parent_id"></div>
+                                    <div t-field="l.name"></div>
                                 </t>
                             </div>
                             <div class="col-xs-1">
@@ -177,10 +168,10 @@
             </t>
         </template>
 
-        <template id="reportplantation_seedreceived_report">
+        <template id="reportplantation_seedreceived_bag_report">
             <t t-call="report.html_container">
                 <t t-foreach="doc_ids" t-as="doc_id">
-                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_plantation_seedreceived_document')"/>
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_plantation_seedreceived_bag_document')"/>
                 </t>
             </t>
         </template>

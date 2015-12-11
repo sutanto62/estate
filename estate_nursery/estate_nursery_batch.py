@@ -455,6 +455,7 @@ class TransferDetail(models.TransientModel):
             pak_row_bag = pak.ul_qty
             pak_total_bag = pak.rows * pak.ul_qty
             pak_bag_content = pak.qty
+            pak_box_content = pak.qty
         else:
             raise exceptions.Warning('Product %s has no packaging. Contact Administrator.' % product.name)
 
