@@ -139,14 +139,14 @@
         <record id="nurserystage_1" model="estate.nursery.stage">
             <field name="name">Pre Nursery</field>
             <field name="code">PN</field>
-            <field name="sequance">0</field>
+            <field name="sequance">1</field>
             <field name="age_minimum">0</field>
             <field name="age_maximum">3</field>
         </record>
         <record id="nurserystage_2" model="estate.nursery.stage">
             <field name="name">Main Nursery</field>
             <field name="code">MN</field>
-            <field name="sequance">0</field>
+            <field name="sequance">2</field>
             <field name="age_minimum">3</field>
             <field name="age_maximum">0</field>
         </record>

@@ -23,7 +23,7 @@ class Selection(models.Model):
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
     stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
-    stage_id = fields.Many2one('estate.nursery.stage',"Stage")
+    stage_id = fields.Many2one('estate.nursery.stage',"Stage",related='selectionstage_id.stage_id')
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_range",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
@@ -375,7 +375,6 @@ class SelectionLine(models.Model):
     comment = fields.Text("Description")
 
 
-
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""
     _name = 'estate.nursery.cause'
@@ -385,7 +384,8 @@ class Cause(models.Model):
     code = fields.Char('Cause Abbreviation', size=3)
     sequence = fields.Integer('Sequence No')
     index=fields.Integer(compute='_compute_index')
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage")
+    selection_id= fields.Many2one('estate.nursery.selection')
+    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",related='selection_id.stage_id')
 
     #create sequence
     @api.one
