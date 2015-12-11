@@ -365,6 +365,7 @@ class TransferDetail(models.TransientModel):
 
     age_seed = fields.Integer("Seed Age")
 
+
     @api.one
     def do_detailed_transfer(self):
         """

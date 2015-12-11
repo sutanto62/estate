@@ -14,15 +14,24 @@
                         </div>
 
                     <!-- SECOND ROW -->
-                        <div class="row col-xs-12">
-                            <div class="col-xs-6" style="border-left:1px solid #568eff;">
-                                <h4>Report Detail</h4><br/>
-                                    <strong>Transportir: </strong>
-                                    <strong>No DO: </strong>
-                            </div>
-                            <div class="col-xs-6" style="text-align:right;border-left:1px solid #568eff;">
-                                <strong>No PO: </strong>
-                                <strong>Nama supplier:</strong><br/>
+                        <div class="row ">
+                            <div class="col-xs-12"><h4>Report Detail</h4><br/>
+                                <div class="row col-xs-6">
+                                    <div class="col-xs-4" style="border-left:1px solid #568eff;">
+                                        <strong>Transportir: </strong>
+                                    </div>
+                                    <div class="col-xs-4" style="border-left:1px solid #568eff;">
+                                        <strong>No DO: </strong>
+                                    </div>
+                                </div>
+                                <div class="row col-xs-6">
+                                    <div t-field="o.picking_id.origin" class="col-xs-4" style="text-align:right;border-left:1px solid #568eff;">
+                                        <strong>No PO: </strong>
+                                    </div>
+                                    <div t-field="o.picking_id.partner_id.name" class="col-xs-4" style="text-align:right;border-left:1px solid #568eff;">
+                                        <span><strong>Nama supplier:</strong></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -36,11 +45,11 @@
                                 <div class="col-xs-12">
                                     <div class="col-xs-5 " style="text-align:center;">Afkir
                                         <div class="col-xs-12">
-                                            <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">Broken</div>
-                                            <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">Dead</div>
-                                            <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">Fungus</div>
-                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">Total</div>
-                                            <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">%</div>
+                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">Broken</div>
+                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">Dead</div>
+                                            <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">Fungus</div>
+                                            <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">Total</div>
+                                            <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">%</div>
                                         </div>
                                     </div>
                                     <div class="col-xs-5" style="text-align:center;">Normal
@@ -62,9 +71,12 @@
                                 <span t-field="o.variety_id.name"/>
                             </div>
                             <div class="col-xs-1">
-                                <!--<t t-foreach="o.batchline_ids" t-as="l">-->
-                                    <!--<span t-field="l.box_id.name"/>-->
-                                <!--</t> --></div>
+                                <t t-foreach="o.batchline_ids" t-as="l">
+                                    <t t-foreach="l.child_ids" t-as="m">
+                                        <span t-field="m.name"/>
+                                    </t>
+                                </t>
+                            </div>
                             <div class="col-xs-1">
                                 <span t-field="o.date_received"/>
                             </div>
@@ -77,44 +89,29 @@
                                     <div class="col-xs-12">
                                         <div class="col-xs-5">
                                             <div class="col-xs-12">
-                                                <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
-                                                    <t t-if="k.child_ids.qty_broken >= 0">
-                                                        <span t-field="k.qty_broken"/>
-                                                    </t>
-                                                    <t t-if="k.child_ids.qty_broken == 0">
-                                                            <p>0</p>
-                                                    </t>
+                                                <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                        <t t-if="k.child_ids.qty_broken >= 0">
+                                                            <span t-field="k.qty_broken"/>
+                                                        </t>
                                                 </div>
-                                                <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
-                                                    <t t-if="k.child_ids.qty_dead>= 0">
+                                                <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <t t-if="k.child_ids.qty_dead >= 0">
                                                         <span t-field="k.qty_dead"/>
-                                                    </t>
-                                                    <t t-if="k.child_ids.qty_dead == 0">
-                                                            <p>0</p>
-                                                    </t>
-                                                </div>
-                                                <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
-                                                    <t t-if="k.child_ids.qty_fungus >= 0">
-                                                        <span t-field="k.qty_fungus"/>
-                                                    </t>
-                                                    <t t-if="k.child_ids.qty_fungus == 0">
-                                                            <p>0</p>
-                                                    </t>
-                                                </div>
-                                                <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
-                                                    <t t-if="k.child_ids.subtotal_abnormal >= 0">
-                                                        <span t-field="k.subtotal_abnormal"/>
-                                                    </t>
-                                                    <t t-if="k.child_ids.subtotal_abnormal == 0">
-                                                            <p>0</p>
                                                     </t>
                                                 </div>
                                                 <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <t t-if="k.child_ids.qty_fungus >= 0">
+                                                        <span t-field="k.qty_fungus"/>
+                                                    </t>
+                                                </div>
+                                                <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
+                                                    <t t-if="k.child_ids.subtotal_abnormal >= 0">
+                                                        <span t-field="k.subtotal_abnormal"/>
+                                                    </t>
+                                                </div>
+                                                <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
                                                     <t t-if="k.child_ids.percentage_abnormal >= 0">
                                                         <span t-field="k.percentage_abnormal"/>
-                                                    </t>
-                                                    <t t-if="k.child_ids.percentage_abnormal == 0">
-                                                            <p>0</p>
                                                     </t>
                                                 </div>
                                             </div>
@@ -125,37 +122,25 @@
                                                     <t t-if="k.child_ids.qty_single >= 0">
                                                         <span t-field="k.qty_single"/>
                                                     </t>
-                                                    <t t-if="k.child_ids.qty_single == 0">
-                                                        <p>0</p>
-                                                    </t>
                                                 </div>
                                                 <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
                                                     <t t-if="k.child_ids.qty_double >= 0">
                                                         <span t-field="k.qty_double"/>
-                                                    </t>
-                                                    <t t-if="k.child_ids.qty_double == 0">
-                                                        <p>0</p>
                                                     </t>
                                                 </div>
                                                 <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
                                                     <t t-if="k.child_ids.subtotal_normal >= 0">
                                                         <span t-field="k.subtotal_normal"/>
                                                     </t>
-                                                    <t t-if="k.child_ids.subtotal_normal == 0">
-                                                        <p>0</p>
-                                                    </t>
                                                 </div>
                                                 <div class="col-xs-3" style="text-align:center; border-left:1px solid #568eff;">
                                                     <t t-if="k.child_ids.percentage_normal >= 0">
                                                         <span t-field="k.percentage_normal"/>
                                                     </t>
-                                                    <t t-if="k.child_ids.percentage_normal == 0">
-                                                        <p>0</p>
-                                                    </t>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-xs-2">
+                                        <div class="col-xs-2" style="text-align:center;">
                                             <span t-field="k.qty_planted"/>
                                         </div>
                                     </div>

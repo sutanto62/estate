@@ -30,12 +30,12 @@
                             <div class="col-xs-1">Variety</div>
                             <div class="col-xs-1">DO</div>
                             <div class="col-xs-1">Planted</div>
-                            <div class="col-xs-8">
-                                <div class="col-xs-12">
+                            <div class="col-xs-8" style="text-align:center;">
+                                <div class="col-xs-12" >
                                     <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"><p>Selection Date</p></div>
                                     <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"><p>Selection Stage</p></div>
                                     <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"><p>Selection Information</p></div>
-                                    <div class="col-xs-5">
+                                    <div class="col-xs-5" style="text-align:center;">
                                         <div class="col-xs-12">
                                             <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">1</div>
                                             <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">2</div>
@@ -57,10 +57,10 @@
                         </div>
 
                       <!-- Forth ROW -->
-                      <div class="row ">
+                      <div class="row col-xs-12" style="border: 1px solid #568eff;">
                             <t t-foreach="o.batch_ids"  t-as="i">
                                 <div class="col-xs-12">
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                    <div class="col-xs-1">
                                         <div><p t-esc="i.name"/></div>
                                     </div>
                                     <div class="col-xs-1" style="border-left:1px solid #568eff;">
