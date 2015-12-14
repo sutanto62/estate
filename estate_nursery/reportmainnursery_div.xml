@@ -7,12 +7,12 @@
             <field name="page_height">600</field>
             <field name="page_width">175</field>
             <field name="orientation">Landscape</field>
-            <field name="margin_top">30</field>
-            <field name="margin_bottom">12</field>
+            <field name="margin_top">50</field>
+            <field name="margin_bottom">15</field>
             <field name="margin_left">3</field>
             <field name="margin_right">3</field>
             <field name="header_line" eval="False"/>
-            <field name="header_spacing">30</field>
+            <field name="header_spacing">40</field>
             <field name="dpi">80</field>
         </record>
         <report

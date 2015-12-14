@@ -6,14 +6,14 @@
             <t t-call="report.external_layout">
                 <div class="page">
                     <!--First Row-->
-                        <div class="row">
+                        <div class="row col-xs-12">
                             <div class="col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
                                 <h3>Report Main Nursery</h3>
                             </div>
                         </div>
 
                     <!-- SECOND ROW -->
-                        <div class="row">
+                        <div class="row col-xs-12">
                             <div class="col-xs-8" style="border-left:1px solid #568eff;">
                                 <h4>Report Detail</h4><br/>
                                     <strong>Report Name: <p t-field="o.name"/></strong>
@@ -63,16 +63,16 @@
                                     <div class="col-xs-1">
                                         <div><p t-esc="i.name"/></div>
                                     </div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                    <div class="col-xs-1" style="text-align:center;border-left:1px solid #568eff;">
                                         <p t-field="i.variety_id.name"/>
                                     </div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                    <div class="col-xs-1" style="text-align:center;border-left:1px solid #568eff;">
                                         <p t-field="i.qty_received"/>
                                     </div>
-                                    <div class="col-xs-1" style="border-left:1px solid #568eff;">
+                                    <div class="col-xs-1" style="text-align:center;border-left:1px solid #568eff;">
                                         <p t-field="i.qty_planted"/>
                                     </div>
-                                    <div class="col-xs-8" style="border-left:1px solid #568eff;">
+                                    <div class="col-xs-8" style="text-align:center;border-left:1px solid #568eff;">
                                         <t t-foreach="i.selection_ids" t-as="a">
                                             <div class="col-xs-12">
                                                 <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
@@ -168,9 +168,21 @@
 
                     <!-- Fifth ROW -->
                     <div class="row col-xs-12" style="border: 1px solid #568eff;">
-                        <div class="col-xs-2" >Total</div>
-                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
+                        <div class="col-xs-2" style="text-align:center;" >Total</div>
+                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                            <t t-set="variable" t-value="0"/>
+                                <t t-foreach="o.batch_ids" t-as="m">
+                                <t t-set="variable" t-value="variable+m.qty_received"/>
+                            </t>
+                            <span><t t-esc="variable"/></span>
+                        </div>
+                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                            <t t-set="variable" t-value="0"/>
+                                <t t-foreach="o.batch_ids" t-as="m">
+                                <t t-set="variable" t-value="variable+m.qty_planted"/>
+                            </t>
+                            <span><t t-esc="variable"/></span>
+                        </div>
                         <div class="col-xs-8">
                             <div class="col-xs-12">
                                 <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
@@ -178,20 +190,162 @@
                                 <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
                                 <div class="col-xs-5">
                                     <div class="col-xs-12">
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;"></div>
-                                        <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;"></div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 10">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 11">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 12">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 13">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 14">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 15">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 16">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 17">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 18">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-1" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 19">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
+                                        <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                            <t t-set="variable" t-value="0"/>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-foreach="k.selectionline_ids" t-as="h">
+                                                        <t t-if="h.cause_id.sequence == 20">
+                                                            <t t-set="variable" t-value="variable+h.qty"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <p><t t-esc="variable"/></p>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;"></div>
+                                <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;">
+                                    <t t-set="variable" t-value="0"/>
+                                     <t t-foreach="o.batch_ids" t-as="a">
+                                         <t t-foreach="a.selection_ids" t-as="k">
+                                             <t t-if="k.selectionstage_id.stage_id.code == 'MN'">
+                                                 <t t-set="variable" t-value="variable+k.qty_abnormal"/>
+                                             </t>
+                                         </t>
+                                     </t>
+                                    <span><t t-esc="variable"/></span>
+                                </div>
                                 <div class="col-xs-2" style="text-align:center; border-left:1px solid #568eff;"></div>
                             </div>
                         </div>
