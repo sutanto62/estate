@@ -321,6 +321,48 @@ class Batchline(models.Model):
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.")
 
+    # @api.one
+    # @api.depends('child_ids','product_id')
+    # def _compute_parent(self,item,batch):
+    #
+    #     product = item.product_id
+    #     if len(product.packaging_ids) > 0:
+    #         pak = product.packaging_ids[0] # Always get first packaging
+    #         pak_box_content = pak.qty
+    #     else:
+    #         raise exceptions.Warning('Product %s has no packaging. Contact Administrator.' % product.name)
+    #
+    #     pak_content = pak_box_content
+    #
+    #     item_qty = item.quantity
+    #     serial = 0
+    #
+    #     # todo recode using recursive call (http://goo.gl/rjRtEs)
+    #
+    #     # Count full box
+    #     box_amount_full = int(item_qty/pak_content)
+    #
+    #     if item_qty % pak_content:
+    #         box_amount_half = 1
+    #     else:
+    #         box_amount_half = 0
+    #
+    #     total_box = box_amount_full + box_amount_half
+    #
+    #     if box_amount_full:
+    #         for i in range(box_amount_full):
+    #             serial += 1
+    #             bag_serial = 0
+    #             box_data = {
+    #                 'name': "%s / Box %d" % (batch.name, serial),
+    #                 'batch_id': batch.id,
+    #                 'packaging_id': pak.id,
+    #                 'batch_id': batch.id,
+    #                 'seed_qty' : pak_box_content
+    #             }
+    #             box = self.env['estate.nursery.batchline'].create(box_data)
+
+
     @api.one
     @api.depends('qty_single', 'qty_double', 'qty_broken', 'qty_dead', 'qty_fungus')
     def _compute_subtotal(self):
@@ -455,7 +497,7 @@ class TransferDetail(models.TransientModel):
             pak_row_bag = pak.ul_qty
             pak_total_bag = pak.rows * pak.ul_qty
             pak_bag_content = pak.qty
-            pak_box_content = pak.qty
+            pak_box_content = pak.ul_qty
         else:
             raise exceptions.Warning('Product %s has no packaging. Contact Administrator.' % product.name)
 
@@ -484,7 +526,8 @@ class TransferDetail(models.TransientModel):
                     'name': "%s / Box %d" % (batch.name, serial),
                     'batch_id': batch.id,
                     'packaging_id': pak.id,
-                    'batch_id': batch.id
+                    'batch_id': batch.id,
+                    'seed_qty': pak_box_content
                 }
                 box = self.env['estate.nursery.batchline'].create(box_data)
                 for d in range(pak_total_bag):

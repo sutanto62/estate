@@ -292,11 +292,11 @@
                                 </div>
                                 <div class="col-xs-2" style="text-align:center;border-left:1px solid #568eff;">
                                      <t t-set="variable" t-value="0"/>
-                                     <t t-foreach="o.batch_ids" t-as="a">
-                                         <t t-foreach="a.selection_ids" t-as="k">
-                                             <t t-set="variable" t-value="variable+k.qty_abnormal"/>
-                                         </t>
-                                     </t>
+                                            <t t-foreach="o.batch_ids" t-as="a">
+                                                <t t-foreach="a.selection_ids" t-as="k">
+                                                    <t t-set="variable" t-value="variable+k.qty_abnormal"/>
+                                                </t>
+                                            </t>
                                     <span><t t-esc="variable"/></span>
                                 </div>
                                 <div class="col-xs-2" style="text-align:center;border-left:1px solid #568eff;">
