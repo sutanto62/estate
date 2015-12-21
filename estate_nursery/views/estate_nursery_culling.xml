@@ -1,0 +1,139 @@
+<openerp>
+    <data>
+        <!--View Tree, Culling -->
+        <record model="ir.ui.view" id="view_tree_culling">
+            <field name="name">Nursery Culling Tree</field>
+            <field name="model">estate.nursery.culling</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Culling View">
+                    <field name="name"/>
+                    <field name="culling_location_id"/>
+                    <field name="culling_date"/>
+                    <field name="quantitytotal_abnormal"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--view form,culling-->
+        <record model="ir.ui.view" id="view_form_culling">
+            <field name="name">Nursery Culling</field>
+            <field name="model">estate.nursery.culling</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Culling View">
+                    <header coolspan="10">
+
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_done" type="workflow"
+                                string="Approved"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_manager"/>
+                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,done"
+                               statusbar_color='{"draft":"blue"}'/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                <label string="Culling "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                <label string="Culling "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                <field name="name" class="oe_inline" readonly="1" />
+                             </h1>
+                         </div>
+
+                        <group coolspan="10">
+                            <group>
+                                <field name="culling_location_id"/>
+                                <field name="culling_date"/>
+                            </group>
+                            <group>
+                                <field name="selection_type"/>
+                                <field name="quantitytotal_abnormal"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Culling line detail">
+                                <field name="cullingline_ids" />
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--view Tree, Culling line-->
+        <record model="ir.ui.view" id="view_tree_nursery_cullingline">
+            <field name="name">Nursery Culling line Tree</field>
+            <field name="model">estate.nursery.cullingline</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Culling line View">
+                    <field name="selection_id" string="Batch No"/>
+                    <field name="qty_planted" string="QTY Planted"/>
+                    <field name="selectionstage_id" String = "Selection stage"/>
+                    <!--<field name="quantity_abnormal"/>-->
+                </tree>
+            </field>
+        </record>
+
+        <!--view form,Cullingline-->
+        <record model="ir.ui.view" id="view_form_nursery_cullingline">
+            <field name="name">Nursery Culling</field>
+            <field name="model">estate.nursery.cullingline</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Culling View">
+                    <group coolspan="10">
+                        <group>
+                            <field name="batch_id"/>
+                            <field name="selection_id" string="Batch and selection"/>
+                            <field name="selectionstage_id"/>
+                        </group>
+                        <group>
+                            <field name="qty_planted"/>
+                            <field name="qty_abnormal_batch" string="Abnormal qty Batch"/>
+                            <field name="qty_abnormal_selection" string="Abnormal qty selection"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Comment/Description">
+                            <field name="comment" />
+                        </page>
+                        <!--<page string="Comment/Description">-->
+                            <!--<field name="batch_ids" />-->
+                        <!--</page>-->
+                        <!--<page string="Comment/Description">-->
+                            <!--<field name="selection_ids" />-->
+                        <!--</page>-->
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <!--Action -->
+        <record model="ir.actions.act_window" id="action_list_culling" >
+            <field name="name">Culling</field>
+            <field name="res_model">estate.nursery.culling</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_search_culling" ref="estate_nursery.view_form_culling"/>
+        </record>
+
+        <!--Menu-->
+        <menuitem id="nursery_Culling"
+                  name="Nursery Culling "
+                  parent="estate_nursery_menu"
+                  action="action_list_culling" sequence="16" />
+    </data>
+</openerp>

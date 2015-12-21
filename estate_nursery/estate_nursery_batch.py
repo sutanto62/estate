@@ -88,6 +88,7 @@ class Batch(models.Model):
 
     partner_id = fields.Many2one('res.partner')
     name = fields.Char(_("Batch No"), readonly= True)
+    # culling_id=fields.Many2one("estate.nursery.culling")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict", domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
@@ -301,6 +302,7 @@ class Batchline(models.Model):
     parent_right = fields.Integer('Parent Right', index=True)
     child_ids = fields.One2many('estate.nursery.batchline', 'parent_id', "Contains")
     batch_id = fields.Many2one('estate.nursery.batch', "Batch", ondelete="restrict")
+    separation_id=fields.Many2one('estate.nursery.separation',"Separation Seed")
     seed_qty = fields.Integer("DO Quantity")
     qty_single = fields.Integer("Single Tone Quantity",store=True)
     qty_double = fields.Integer("Double Tone Quantity",store=True)
@@ -361,8 +363,6 @@ class Batchline(models.Model):
     #                 'seed_qty' : pak_box_content
     #             }
     #             box = self.env['estate.nursery.batchline'].create(box_data)
-
-
     @api.one
     @api.depends('qty_single', 'qty_double', 'qty_broken', 'qty_dead', 'qty_fungus')
     def _compute_subtotal(self):

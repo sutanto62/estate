@@ -89,10 +89,10 @@
                              <tr>
                                  <tbody>
                                      <tr>
-                                         <td/><td/>
-                                         <td><span t-field="o.total_do"/> </td>
-                                         <td/>
-                                         <td><span t-field="o.total_planted"/> </td>
+                                         <!--<td/><td/>-->
+                                         <!--<td><span t-field="o.total_do"/> </td>-->
+                                         <!--<td/>-->
+                                         <!--<td><span t-field="o.total_planted"/> </td>-->
                                      </tr>
                                 </tbody>
                              </tr>

@@ -27,6 +27,7 @@
         'templates.xml',
         'views/estate_nursery_view.xml',
         'views/estate_nursery_selection_view.xml',
+        'views/estate_nursery_culling.xml',
         'views/report_plantation_view.xml',
         'views/dashboard_selection.xml',
         'reports/selection_report.xml',

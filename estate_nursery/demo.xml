@@ -1,5 +1,6 @@
 <openerp>
     <data>
+
         <record id="base.res_partner_ppks" model="res.partner">
             <field name="name">Pusat Penelitian Kelapa Sawit</field>
             <field name="is_company" eval="True"></field>

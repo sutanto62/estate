@@ -46,32 +46,24 @@
 
                                 </tree>
                             </page>
-                            <!--<page string="Report Selection Line">-->
-                                <!--<tree>-->
-                                    <!--<field name="selection_ids" />-->
-                                <!--</tree>-->
-                            <!--</page>-->
-                            <!--<page string="Report Selection Line">-->
-                                <!--<tree>-->
-                                    <!--<field name="selectionline_ids" />-->
-                                <!--</tree>-->
-                            <!--</page>-->
                         </notebook>
                     </group>
                 </form>
             </field>
         </record>
 
-         <record model="ir.actions.act_window" id="action_list_reportplantation">
+        <!--Action-->
+        <record model="ir.actions.act_window" id="action_list_reportplantation">
             <field name="name">Report Plantation</field>
             <field name="res_model">estate.nursery.reportline</field>
             <field name="view_mode">tree,form</field>
         </record>
 
+        <!--Menu-->
         <menuitem id="nursery_line_report_plantation" name="Report Batch and Selection"
                   parent="estate_nursery_menu"
                   action="action_list_reportplantation"
-                  sequence="16"
+                  sequence="17"
                 />
 
     </data>
