@@ -384,8 +384,8 @@ class Cause(models.Model):
     code = fields.Char('Cause Abbreviation', size=3)
     sequence = fields.Integer('Sequence No')
     index=fields.Integer(compute='_compute_index')
-    selection_id= fields.Many2one('estate.nursery.selection')
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",related='selection_id.stage_id')
+    # selection_id= fields.Many2one('estate.nursery.selection')
+    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",)
 
     #create sequence
     @api.one
