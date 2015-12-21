@@ -24,14 +24,14 @@ class Culling(models.Model):
         ('confirmed', 'Confirmed'),
         ('done', 'Done')],string="Culling State")
 
-    @api.one
-    def do_create(self,):
-        serial = self.env['estate.nursery.culling'].search_count([]) + 1
-        cul_data = {
-            'name': "Culling %d" % serial,
-        }
-
-        return self.env['estate.nursery.culling'].create(cul_data)
+    # @api.one
+    # def do_create(self,):
+    #     serial = self.env['estate.nursery.culling'].search_count([]) + 1
+    #     cul_data = {
+    #         'name': "Culling %d" % serial,
+    #     }
+    #
+    #     return self.env['estate.nursery.culling'].create(cul_data)
     #workflow state
 
     @api.one

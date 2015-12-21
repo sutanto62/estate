@@ -1,0 +1,97 @@
+<openerp>
+    <data>
+
+        <!-- Nursery request Planting -->
+        <record id="estate_nursery.request_approval" model="workflow">
+            <field name="name">Estate Nursery Request Planting Workflow</field>
+            <field name="osv">estate.nursery.request</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_draft">
+            <field name="name">Draft</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="flow_start" eval="True"/>
+            <field name="kind">function</field>
+            <field name="action">action_draft()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_cancel">
+            <field name="name">Cancel</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_cancel()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_reject">
+            <field name="name">Reject</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_reject()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_pending">
+            <field name="name">Pending</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_pending()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_confirmed">
+            <field name="name">Confirmed</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_confirmed()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_first_approved">
+            <field name="name">First Approved</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_approved1()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_second_approved">
+            <field name="name">Second Approved</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_approved2()</field>
+        </record>
+
+        <record model="workflow.transition" id="requestdraft_to_confirmed">
+            <field name="act_from" ref="requestp_draft"/>
+            <field name="act_to" ref="requestp_confirmed"/>
+            <field name="signal">signal_confirm</field>
+        </record>
+
+        <record model="workflow.transition" id="requestdone_to_draft">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="request_done_to_reject">
+            <field name="act_from" ref="requestp_reject"/>
+            <field name="act_to" ref="requestp_confirmed"/>
+            <field name="signal">signal_reject</field>
+        </record>
+
+        <!--<record model="workflow.transition" id="request_done_to_pending">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_pending"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="request_confirmed_to_draft">
+            <field name="act_from" ref="request_confirmed"/>
+            <field name="act_to" ref="request_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="request_confirmed_to_done">
+            <field name="act_from" ref="request_confirmed"/>
+            <field name="act_to" ref="request_approved"/>
+            <field name="signal">signal_done</field>
+        </record>-->
+    </data>
+</openerp>
