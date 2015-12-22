@@ -64,34 +64,65 @@
             <field name="signal">signal_confirm</field>
         </record>
 
-        <record model="workflow.transition" id="requestdone_to_draft">
-            <field name="act_from" ref="requestp_first_approved"/>
+        <record model="workflow.transition" id="requestconfirmed_to_cancel">
+            <field name="act_from" ref="requestp_confirmed"/>
+            <field name="act_to" ref="requestp_cancel"/>
+            <field name="signal">signal_cancel</field>
+        </record>
+
+        <record model="workflow.transition" id="requestcancel_to_draft">
+            <field name="act_from" ref="requestp_cancel"/>
             <field name="act_to" ref="requestp_draft"/>
             <field name="signal">signal_draft</field>
         </record>
 
-        <record model="workflow.transition" id="request_done_to_reject">
-            <field name="act_from" ref="requestp_reject"/>
-            <field name="act_to" ref="requestp_confirmed"/>
+        <record model="workflow.transition" id="requestconfirmed_to_first_approved">
+            <field name="act_from" ref="requestp_confirmed"/>
+            <field name="act_to" ref="requestp_first_approved"/>
+            <field name="signal">signal_approved1</field>
+        </record>
+
+        <record model="workflow.transition" id="requestfirstapproved_to_reject">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_reject"/>
             <field name="signal">signal_reject</field>
         </record>
 
-        <!--<record model="workflow.transition" id="request_done_to_pending">
+        <record model="workflow.transition" id="request_reject_to_draft">
+            <field name="act_from" ref="requestp_reject"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="requestfirstapproved_to_second_approved">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_second_approved"/>
+            <field name="signal">signal_approved2</field>
+        </record>
+
+        <record model="workflow.transition" id="requestsecondapproved_to_draft">
+            <field name="act_from" ref="requestp_second_approved"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="requestsecondapproved_to_reject">
+            <field name="act_from" ref="requestp_second_approved"/>
+            <field name="act_to" ref="requestp_reject"/>
+            <field name="signal">signal_reject</field>
+        </record>
+
+        <record model="workflow.transition" id="requestfirstapprove_to_pending">
             <field name="act_from" ref="requestp_first_approved"/>
             <field name="act_to" ref="requestp_pending"/>
-            <field name="signal">signal_draft</field>
+            <field name="signal">signal_pending</field>
         </record>
 
-        <record model="workflow.transition" id="request_confirmed_to_draft">
-            <field name="act_from" ref="request_confirmed"/>
-            <field name="act_to" ref="request_draft"/>
-            <field name="signal">signal_draft</field>
+        <record model="workflow.transition" id="requestpending_to_firstapprove">
+            <field name="act_from" ref="requestp_pending"/>
+            <field name="act_to" ref="requestp_first_approved"/>
+            <field name="signal">signal_approved1</field>
         </record>
 
-        <record model="workflow.transition" id="request_confirmed_to_done">
-            <field name="act_from" ref="request_confirmed"/>
-            <field name="act_to" ref="request_approved"/>
-            <field name="signal">signal_done</field>
-        </record>-->
     </data>
 </openerp>

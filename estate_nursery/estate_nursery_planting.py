@@ -17,7 +17,7 @@ class Requestplanting(models.Model):
 
     name=fields.Char("Request code")
     batch_id=fields.Many2one('estate.nursery.batch',"Batch NO")
-    requestline_ids=fields.One2many('estate.nursery.request','request_id',"RequestLine")
+    requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner')
     picking_id=fields.Many2one('stock.picking', "Picking", readonly=True ,)
     lot_id=fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict", domain=[('product_id.seed','=',True)])
@@ -31,8 +31,8 @@ class Requestplanting(models.Model):
                                         default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
     date_request=fields.Datetime("Date Request",compute="_report_date")
     variety_id=fields.Many2one('estate.nursery.variety')
-    Total_qty_pokok = fields.Integer("Quantity Pokok Bibit")
-    state=([('draft','Draft'),('reject','Rejected'),('cancel','Cancel'),
+    total_qty_pokok = fields.Integer("Quantity Pokok Bibit")
+    state=fields.Selection([('draft','Draft'),('reject','Rejected'),('cancel','Cancel'),
             ('pending','Pending'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval')])
 
