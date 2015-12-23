@@ -8,7 +8,8 @@ class Culling(models.Model):
 
     _name = "estate.nursery.culling"
 
-    name=fields.Char("Culling Name",store=True,)
+    name=fields.Char("Culling Name",)
+    culling_code=fields.Char("LBP")
     cullingline_ids=fields.One2many('estate.nursery.cullingline','culling_id',"Culling")
     culling_date = fields.Date("Culling date",)
     batch_id=fields.Many2one('estate.nursery.batch')
@@ -24,15 +25,11 @@ class Culling(models.Model):
         ('confirmed', 'Confirmed'),
         ('done', 'Done')],string="Culling State")
 
-    # @api.one
-    # def do_create(self,):
-    #     serial = self.env['estate.nursery.culling'].search_count([]) + 1
-    #     cul_data = {
-    #         'name': "Culling %d" % serial,
-    #     }
-    #
-    #     return self.env['estate.nursery.culling'].create(cul_data)
-    #workflow state
+    #sequence
+    def create(self, cr, uid, vals, context=None):
+        vals['culling_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.culling')
+        res=super(Culling, self).create(cr, uid, vals)
+        return res
 
     @api.one
     def action_draft(self):

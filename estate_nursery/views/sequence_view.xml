@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Sequences for request code -->
+        <record id="rsq_code_sequence" model="ir.sequence.type">
+            <field name="name">Seed Request </field>
+            <field name="code">estate.nursery.request</field>
+        </record>
+
+        <record id="seq_request_seed" model="ir.sequence">
+            <field name="name">Seed Request</field>
+            <field name="code">estate.nursery.request</field>
+           <field name="prefix">BPB</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!-- End of Sequence code for request code -->
+
+        <!-- Sequences for culling code -->
+        <record id="cll_code_sequence" model="ir.sequence.type">
+            <field name="name">culling Request </field>
+            <field name="code">estate.nursery.culling</field>
+        </record>
+
+        <record id="seq_request_culling" model="ir.sequence">
+            <field name="name">culling Request</field>
+            <field name="code">estate.nursery.culling</field>
+           <field name="prefix">LBP</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!-- End of Sequence code for culling code -->
+
+        <!-- Sequences for selection code -->
+        <record id="sfb_code_sequence" model="ir.sequence.type">
+            <field name="name">Selection No </field>
+            <field name="code">estate.nursery.selection</field>
+        </record>
+
+        <record id="seq_request_selection" model="ir.sequence">
+            <field name="name">culling Request</field>
+            <field name="code">estate.nursery.selection</field>
+           <field name="prefix">SFB</field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!-- End of Sequence code for culling code -->
+
+    </data>
+</openerp>

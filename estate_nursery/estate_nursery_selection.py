@@ -13,7 +13,9 @@ class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
 
-    name= fields.Char(related='batch_id.name',store=True)
+    name= fields.Char(store=True)
+    selection_code=fields.Char("SFB",store=True)
+    batch_code=fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
@@ -68,6 +70,11 @@ class Selection(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,related="batch_id.culling_location_id",store=True)
 
+    #sequence
+    def create(self, cr, uid, vals, context=None):
+        vals['selection_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.selection')
+        res=super(Selection, self).create(cr, uid, vals)
+        return res
 
     #workflow state
     @api.one

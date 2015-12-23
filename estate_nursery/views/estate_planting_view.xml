@@ -8,9 +8,9 @@
             <field name="arch" type="xml">
                 <tree string="Request planting View"
                       colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
-                    <field name="name" />
-                    <field name="variety_id" />
-                    <field name="total_qty_pokok"/>
+                    <field name="bpb_code" string="Request No" />
+                    <field name="variety_id" string="Variety"/>
+                    <field name="total_qty_pokok" string="Total Quantity"/>
                     <field name="state" invisible="1"/>
                 </tree>
             </field>
@@ -70,7 +70,7 @@
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
                                 <label string="Request Seed For Planting "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
-                                <field name="name" class="oe_inline" readonly="1" />
+                                    <field name="bpb_code" class="oe_inline" readonly="1" />
                              </h1>
                         </div>
 

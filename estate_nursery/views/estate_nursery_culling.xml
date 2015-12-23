@@ -6,10 +6,10 @@
             <field name="model">estate.nursery.culling</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling View">
-                    <field name="name"/>
-                    <field name="culling_location_id"/>
-                    <field name="culling_date"/>
-                    <field name="quantitytotal_abnormal"/>
+                    <field name="culling_code" string="Culling no"/>
+                    <field name="culling_location_id" string="Location culling"/>
+                    <field name="culling_date" string="Culling Date"/>
+                    <field name="quantitytotal_abnormal" string="Quantity Abnormal"/>
                 </tree>
             </field>
         </record>
@@ -49,9 +49,9 @@
                              <h1>
                                 <label string="Culling "
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
-                                <label string="Culling "
+                                <label string="Request For Culling "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
-                                <field name="name" class="oe_inline" readonly="1" />
+                                <field name="culling_code" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
 
@@ -84,7 +84,6 @@
                     <field name="selection_id" string="Batch No"/>
                     <field name="qty_planted" string="QTY Planted"/>
                     <field name="selectionstage_id" String = "Selection stage"/>
-                    <!--<field name="quantity_abnormal"/>-->
                 </tree>
             </field>
         </record>
@@ -111,12 +110,6 @@
                         <page string="Comment/Description">
                             <field name="comment" />
                         </page>
-                        <!--<page string="Comment/Description">-->
-                            <!--<field name="batch_ids" />-->
-                        <!--</page>-->
-                        <!--<page string="Comment/Description">-->
-                            <!--<field name="selection_ids" />-->
-                        <!--</page>-->
                     </notebook>
                 </form>
             </field>
@@ -131,9 +124,8 @@
         </record>
 
         <!--Menu-->
-        <menuitem id="nursery_Culling"
-                  name="Nursery Culling "
-                  parent="estate_nursery_menu"
-                  action="action_list_culling" sequence="16" />
+        <menuitem id="estate_nursery_culling" name="Culling" parent="estate.main_estate_menu" sequence="70"/>
+        <menuitem id="req_seed_cullinging" name="Culling" parent="estate_nursery_culling"
+                  action="action_list_culling" sequence="71"/>
     </data>
 </openerp>

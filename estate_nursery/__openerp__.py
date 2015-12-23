@@ -48,7 +48,8 @@
         'reportplantation_div.xml',
         'reportmainnursery_div.xml',
         'reportplantation_seedreceived.xml',
-        'reportplantation_seedreceived_bag.xml'
+        'reportplantation_seedreceived_bag.xml',
+        'views/sequence_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
