@@ -22,7 +22,7 @@ class Culling(models.Model):
                                           ,related="batch_id.culling_location_id",store=True)
     state= fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
+        ('confirmed', 'Confirmed'),('',''),
         ('done', 'Done')],string="Culling State")
 
     #sequence

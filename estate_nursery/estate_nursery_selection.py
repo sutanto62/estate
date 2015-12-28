@@ -109,7 +109,6 @@ class Selection(models.Model):
     @api.one
     def action_move(self):
 
-
         # Move quantity abnormal seed
         if self.qty_abnormal > 0:
             move_data = {

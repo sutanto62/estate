@@ -11,7 +11,7 @@
                     <field name="bpb_code" string="Request No" />
                     <field name="variety_id" string="Variety"/>
                     <field name="total_qty_pokok" string="Total Quantity"/>
-                    <field name="state" invisible="1"/>
+                    <field name="state" string="Status" invisible="0"/>
                 </tree>
             </field>
         </record>
@@ -26,42 +26,61 @@
                         <button name="signal_draft" type="workflow"
                                 string="Reject"
                                 class="oe_highlight"
-                                states="draft"
+                                states="confirmed,validate1,validate2"
                                 groups="estate.group_assistant"/>
 
                         <button name="signal_confirm" type="workflow"
                                 string="Confirmed"
                                 class="oe_highlight"
-                                states="confirmed"
+                                states="draft"
                                 groups="estate.group_assistant" />
 
                         <button name="signal_approved1" type="workflow"
-                                string="Approved Assistance LC"
+                                string="Approved Kasie"
                                 class="oe_highlight"
-                                states="validate1"
+                                states="confirmed,open"
                                 groups="estate.group_manager"/>
 
                         <button name="signal_approved2" type="workflow"
                                 string="Approved Estate Manager"
                                 class="oe_highlight"
-                                states="validate2"
-                                groups="estate.group_manager"/>
-
-                        <button name="signal_reject" type="workflow"
-                                string="Reject"
-                                class="oe_highlight"
-                                states="reject"
+                                states="validate1,open2"
                                 groups="estate.group_manager"/>
 
                         <button name="signal_pending" type="workflow"
                                 string="Pending"
                                 class="oe_highlight"
+                                states="validate1,"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_pending2" type="workflow"
+                                string="Pending"
+                                class="oe_highlight"
+                                states="validate2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_open_pending" type="workflow"
+                                string="Open Pending"
+                                class="oe_highlight"
                                 states="pending"
                                 groups="estate.group_manager"/>
 
+                        <button name="signal_open_pending2" type="workflow"
+                                string="Open Pending"
+                                class="oe_highlight"
+                                states="pending2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_done" type="workflow"
+                                string="Transfer Planting"
+                                class="oe_highlight"
+                                states="validate2"
+                                groups="estate.group_manager"/>
+
                          <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,validate1,validate2"
-                               statusbar_color='{"draft":"blue"}'/>
+                               statusbar_visible="draft,confirmed,validate1,validate2,done"
+                               statusbar_color='{"draft":"blue","pending":"red","pending2":"red",
+                               "open":"green","open2":"green"}'/>
                     </header>
                     <sheet>
                         <div class="oe_title" colors="blue">
@@ -76,20 +95,27 @@
 
                         <group>
                             <group>
-                                <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                 }"/>
                                 <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}" />
+                                <field name="divisi_location_id" attrs="{'required': [('state','=','draft')],
                                  'readonly': [('state','!=','draft')]}" />
                             </group>
 
                             <group coolspan="10">
-                                <field name="total_qty_pokok"/>
+                                <field name="variety_id" attrs="{'required': [('state','=','draft')],
+                                 }"/>
+                                <field name="total_qty_pokok" readonly="1"/>
                                 <field name="date_request"/>
                             </group>
                         </group>
 
                         <group>
                             <notebook>
+                                <!--<page string="Cause Pending" attrs="{'readonly': [('state','!=','open'),('state','!=','open2')]'invisible': [('state','!=','pending2'),('state','!=','pending')]}">-->
+                                    <!--<tree>-->
+                                        <!--<field name="comment"/>-->
+                                    <!--</tree>-->
+                                <!--</page>-->
                                 <page string="Request's Planting">
                                     <tree>
                                         <field name="requestline_ids" attrs="{'required': [('state','=','draft')],
@@ -109,11 +135,10 @@
             <field name="name">Requestline Planting</field>
             <field name="model">estate.nursery.requestline</field>
             <field name="arch" type="xml">
-                <tree string="Request line View"
-                      colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
+                <tree string="Request line View" colors=  "red:qty_request">
                     <field name="location_id" string="Blok" />
                     <field name="Luas" string="Luas(Ha)"/>
-                    <field name="qty_request" string="Pokok"/>
+                    <field name="qty_request" string="&#931; Quantity Request ." sum="Qty"/>
                     <field name="comment"/>
                 </tree>
             </field>
@@ -128,6 +153,7 @@
                         <group>
                             <group>
                                 <field name="location_id"/>
+                                <field name="request_id" invisible="1"/>
                                 <field name="qty_request"/>
                             </group>
                             <group>

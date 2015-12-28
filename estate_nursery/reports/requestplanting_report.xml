@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_requestplanting_document">
+            <t t-call="report.external_layout">
+                <style>
+                            table, td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+                </style>
+                <div class="page">
+                    <h4 colors="black" >
+                        <span t-if="o.state == 'done'" >Request Planting no :<span t-field="o.bpb_code"/></span>
+                        <table>
+                            <tr>Tanggal :<span t-field="o.date_request"/></tr>
+                            <tr>Kepada  :<span t-field="o.user_id"/></tr>
+                            <tr>
+                                <td><p>Agar Dapat diberikan bibit sesuai jumlah yang tertera pada BPB ini :</p></td>
+                            </tr>
+                    </table>
+                    </h4>
+                    <hr></hr>
+                    <div class="row">
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <p>Kebun : <span t-field="o.kebun_location_id"/></p>
+                            <p>Divisi :<span t-field="o.divisi_location_id"/> </p>
+
+                        </div>
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <p>Jenis Bibit :<span t-field="o.variety_id"/></p>
+                            <p>Quantity Total Pokok :<span t-field="o.total_qty_pokok"/></p>
+                        </div>
+                    </div>
+
+                    <h2 colors="black" >
+                        <span t-if="o.state == 'done'">Request Detail</span>
+                    </h2>
+                    <hr></hr>
+
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:40%;">Blok</th>
+                                <th style="width:10%;">Luas(Ha)</th>
+                                <th style="width:20%;">Pokok</th>
+                                <th style="width:30%;">Keterangan</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="request_tbody">
+                            <tr t-foreach="o.requestline_ids" t-as="l">
+                                <td style="width:40%;"><span t-field="l.location_id"/></td>
+                                <td style="width:10%;"><span t-field="l.Luas"/></td>
+                                <td style="width:20%;"><span t-field="l.qty_request"/></td>
+                                <td style="width:30%;"><span t-field="l.comment"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </template>
+        <template id="requestplanting_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'estate_nursery.report_requestplanting_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
+
+
