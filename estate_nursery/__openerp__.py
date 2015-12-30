@@ -51,7 +51,8 @@
         'reportmainnursery_div.xml',
         'reportplantation_seedreceived.xml',
         'reportplantation_seedreceived_bag.xml',
-        'views/sequence_view.xml'
+        'views/sequence_view.xml',
+        'wizard/req_wiz.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

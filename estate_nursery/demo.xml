@@ -451,6 +451,10 @@
             <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
         </record>
 
+        <!--&lt;!&ndash;Demo Receive&ndash;&gt;-->
+        <!--<record id="receive_request_1" model="estate.nursery.request_receive_wizard">-->
+            <!--<field name="name">RL1</field>-->
+        <!--</record>-->
 
     </data>
 </openerp>

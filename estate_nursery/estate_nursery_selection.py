@@ -106,6 +106,7 @@ class Selection(models.Model):
 
         self.action_move()
         return True
+
     @api.one
     def action_move(self):
 

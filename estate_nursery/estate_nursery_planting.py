@@ -7,6 +7,10 @@ class Planting(models.Model):
     #seed planting
     _name = "estate.nursery.planting"
 
+    name=fields.Char("Planting Code")
+    request_ids=fields.One2many('estate.nursery.request','planting_id',"Request ")
+
+
 class PlantingLine(models.Model):
 
     _name = "estate.nursery.plantingline"
@@ -20,6 +24,7 @@ class Requestplanting(models.Model):
     bpb_code = fields.Char("BPB")
     user_id=fields.Many2one('res.users')
     batch_id=fields.Many2one('estate.nursery.batch',"Batch NO")
+    planting_id=fields.Many2one('estate.nursery.planting')
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner')
     picking_id=fields.Many2one('stock.picking', "Picking", readonly=True ,)
@@ -45,6 +50,13 @@ class Requestplanting(models.Model):
     state=fields.Selection([('draft','Draft'),('open2','Open Pending'),('pending2','Pending'),
             ('pending','Pending'),('confirmed','Confirm'),('open','Open Pending'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Transfered')])
+
+    #getstockonhand
+    def get_quantity_at_location(self,cr,uid,lid,p):
+        ls = ['stock_real','stock_virtual','stock_real_value','stock_virtual_value']
+        move_avail = self.pool.get('stock.location')._product_value(cr,uid,[lid],ls,0,{'product_id':p})
+        print move_avail
+        return move_avail[lid]['stock_real']
 
     #state
     @api.one
