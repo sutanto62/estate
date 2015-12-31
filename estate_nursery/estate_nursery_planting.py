@@ -17,11 +17,15 @@ class PlantingLine(models.Model):
 
 class Requestplanting(models.Model):
     #request seed to plant
+    #delegation purchase order to BPB
     _name = "estate.nursery.request"
+
+    _inherits = {'purchase.order': 'purchase_id'}
 
 
     name=fields.Char("Request code",)
     bpb_code = fields.Char("BPB")
+    purchase_id= fields.Many2one('purchase.order',"Purchase",required=True, ondelete="restrict",)
     user_id=fields.Many2one('res.users')
     batch_id=fields.Many2one('estate.nursery.batch',"Batch NO")
     planting_id=fields.Many2one('estate.nursery.planting')
@@ -49,7 +53,7 @@ class Requestplanting(models.Model):
     total_qty_pokok = fields.Integer("Quantity Pokok Bibit",compute="_compute_total")
     state=fields.Selection([('draft','Draft'),('open2','Open Pending'),('pending2','Pending'),
             ('pending','Pending'),('confirmed','Confirm'),('open','Open Pending'),
-            ('validate1','First Approval'),('validate2','Second Approval'),('done','Transfered')])
+            ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
 
     #getstockonhand
     def get_quantity_at_location(self,cr,uid,lid,p):

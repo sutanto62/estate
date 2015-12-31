@@ -104,6 +104,7 @@
                                  'readonly': [('state','!=','draft')]}" />
                                 <field name="divisi_location_id" attrs="{'required': [('state','=','draft')],
                                  'readonly': [('state','!=','draft')]}" />
+                                <!--<field name="partner_id" string="supplier"/>-->
                             </group>
 
                             <group coolspan="10">
