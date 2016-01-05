@@ -263,8 +263,10 @@
                     <sheet>
                         <group>
                             <group>
+                                <field name="batch_id"/>
                                 <field name="location_id"/>
                                 <field name="request_id" invisible="1"/>
+                                <field name="qty_batch"/>
                                 <field name="qty_request"/>
                             </group>
                             <group>

@@ -410,6 +410,24 @@
             <field name="estate_location_level">2</field>
             <field name="estate_location_type">nursery</field>
         </record>
+        <record id="estate_nursery.location_mainnursery" model="stock.location">
+            <field name="name">Main Nursery</field>
+            <field name="location_id" ref="estate_nursery.location_nursery"/>
+            <field name="usage">view</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
+            <field name="estate_location_level">2</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_cullingtotal" model="stock.location">
+            <field name="name">Culling</field>
+            <field name="location_id" ref="estate_nursery.location_nursery"/>
+            <field name="usage">view</field>
+            <field name="scrap_location" eval="True"/>
+            <field name="estate_location" eval="True"/>
+            <field name="estate_location_level">2</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
         <record id="estate_nursery.location_prenursery_1" model="stock.location">
             <field name="name">PN1</field>
             <field name="location_id" ref="estate_nursery.location_prenursery"/>
@@ -428,9 +446,45 @@
             <field name="estate_location_level">3</field>
             <field name="estate_location_type">nursery</field>
         </record>
-        <record id="estate_nursery.location_culling" model="stock.location">
-            <field name="name">Culling</field>
-            <field name="location_id" ref="estate_nursery.location_prenursery"/>
+        <record id="estate_nursery.location_mainnursery_1" model="stock.location">
+            <field name="name">MN1</field>
+            <field name="location_id" ref="estate_nursery.location_mainnursery"/>
+            <field name="usage">production</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_mainnursery_2" model="stock.location">
+            <field name="name">MN2</field>
+            <field name="location_id" ref="estate_nursery.location_mainnursery"/>
+            <field name="usage">production</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_mainnursery_3" model="stock.location">
+            <field name="name">MN3</field>
+            <field name="location_id" ref="estate_nursery.location_mainnursery"/>
+            <field name="usage">production</field>
+            <field name="scrap_location" eval="False"/>
+            <field name="estate_location" eval="True"/>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_cullinga1" model="stock.location">
+            <field name="name">Culling A1</field>
+            <field name="location_id" ref="estate_nursery.location_cullingtotal"/>
+            <field name="usage">inventory</field>
+            <field name="scrap_location" eval="True"/>
+            <field name="estate_location" eval="True"/>
+            <field name="estate_location_level">3</field>
+            <field name="estate_location_type">nursery</field>
+        </record>
+        <record id="estate_nursery.location_cullinga2" model="stock.location">
+            <field name="name">Culling A2</field>
+            <field name="location_id" ref="estate_nursery.location_cullingtotal"/>
             <field name="usage">inventory</field>
             <field name="scrap_location" eval="True"/>
             <field name="estate_location" eval="True"/>

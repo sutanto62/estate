@@ -231,6 +231,43 @@ class Requestplanting(models.Model):
     #         move.action_done()
     #     return True
 
+    # def _create_stock_moves(self, cr, uid, request, request_lines, picking_id=False, context=None):
+    #     """Creates appropriate stock moves for given order lines, whose can optionally create a
+    #     picking if none is given or no suitable is found, then confirms the moves, makes them
+    #     available, and confirms the pickings.
+    #
+    #     If ``picking_id`` is provided, the stock moves will be added to it, otherwise a standard
+    #     incoming picking will be created to wrap the stock moves (default behavior of the stock.move)
+    #
+    #     Modules that wish to customize the procurements or partition the stock moves over
+    #     multiple stock pickings may override this method and call ``super()`` with
+    #     different subsets of ``order_lines`` and/or preset ``picking_id`` values.
+    #
+    #     :param browse_record order: purchase order to which the order lines belong
+    #     :param list(browse_record) order_lines: purchase order line records for which picking
+    #                                             and moves should be created.
+    #     :param int picking_id: optional ID of a stock picking to which the created stock moves
+    #                            will be added. A new picking will be created if omitted.
+    #     :return: None
+    #     """
+    #     stock_move = self.pool.get('stock.move')
+    #     todo_moves = []
+    #     new_group = self.pool.get("procurement.group").create(cr, uid, {'name': request.name, 'partner_id': request.partner_id.id}, context=context)
+    #
+    #     for request_line in request_lines:
+    #         if request_line.state == 'cancel':
+    #             continue
+    #         if not request_line.product_id:
+    #             continue
+    #
+    #         if request_line.request_id.type in ('product', 'consu'):
+    #             for vals in self._prepare_request_line_move(cr, uid, request, request_lines, picking_id, new_group, context=context):
+    #                 move = stock_move.create(cr, uid, vals, context=context)
+    #                 todo_moves.append(move)
+    #
+    #     todo_moves = stock_move.action_confirm(cr, uid, todo_moves)
+    #     stock_move.force_assign(cr, uid, todo_moves)
+
     #compute selectionLine
     @api.one
     @api.depends('requestline_ids')
@@ -259,16 +296,26 @@ class RequestLine(models.Model):
     _name = "estate.nursery.requestline"
 
     name=fields.Char("Requestline",related='request_id.name')
+    batch_id=fields.Many2one('estate.nursery.batch',)
     request_id=fields.Many2one('estate.nursery.request')
     location_id = fields.Many2one('stock.location', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),
-                                          ('scrap_location', '=', False)],
+                                          ('scrap_location', '=', False)],related='batch_id.batchline_ids.location_id',
                                   help="Fill in location seed planted.")
     Luas = fields.Float("Luas Block",digits=(2,2))
-    qty_request = fields.Integer("Quantity Request")
+    qty_batch=fields.Integer(related='batch_id.qty_planted')
+    qty_request = fields.Integer("Quantity Request" ,compute='validateqty_batch',required=True)
     comment = fields.Text("Decription / Comment")
+
+    @api.one
+    @api.depends('qty_batch','qty_request')
+    def validateqty_batch(self):
+
+        if self.qty_request :
+            if self.qty_request> self.qty_batch:
+                raise exceptions.Warning('Quantity cannot Higger Than Quantity Batch %s. Review you quantity.' % self.batch_id.name)
 
 
 class TrasferSeed(models.Model):
