@@ -1,5 +1,104 @@
 <openerp>
     <data>
+        <!--view , Planting-->
+        <record model="ir.ui.view" id="view_tree_planting">
+            <field name="name">Planting Seed</field>
+            <field name="model">estate.nursery.planting</field>
+            <field name="arch" type="xml">
+                <tree string="Request planting View"
+                      colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
+                    <field name="planting_code" string="Request No" />
+                    <field name="variety_id" string="Variety"/>
+                    <field name="total_qty_pokok" string="Total Quantity"/>
+                    <field name="state" string="Status" invisible="0"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_planting">
+            <field name="name">Planting Seed </field>
+            <field name="model">estate.nursery.planting</field>
+            <field name="arch" type="xml">
+                <form String="Planting view">
+                    <header coolspan="10">
+
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed,validate1,validate2"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Approved Kasie"
+                                class="oe_highlight"
+                                states="confirmed,open"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Approved Estate Manager"
+                                class="oe_highlight"
+                                states="validate1,open2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_done" type="workflow"
+                                string="Validate"
+                                class="oe_highlight"
+                                states="validate2"
+                                groups="estate.group_manager"/>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,validate1,validate2,done"
+                               statusbar_color='{"draft":"blue",}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                <label string="Planting Seed"
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                <label string="Planting Seed For"
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                    <field name="planting_code" class="oe_inline" readonly="1" />
+                             </h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}" />
+                                <field name="divisi_location_id" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}" />
+                                <field name="variety_id" attrs="{'required': [('state','=','draft')],
+                                 }"/>
+                                <field name="total_qty_pokok" readonly="1"/>
+                            </group>
+
+                            <group coolspan="10">
+                                <field name="date_request"/>
+                                <field name="date_received"/>
+                                <field name="date_planted"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <notebook>
+                                <page string="Planting Information">
+                                    <tree>
+                                        <field name="plantingline_ids" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"/>
+                                    </tree>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
         <!--View , Request Planting-->
         <record model="ir.ui.view" id="view_tree_request_planting">
@@ -77,10 +176,10 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
-                        <button name="%(launch_session_wizard)d" type="action"
-                                colors="red"
-                                string="Transfer"
-                                attrs="{'invisible':[('state','!=','done')]}"/>
+                        <!--<button name="(launch_session_wizard)d" type="action"-->
+                                <!--colors="red"-->
+                                <!--string="Transfer"-->
+                                <!--attrs="{'invisible':[('state','!=','done')]}"/>-->
 
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
@@ -125,6 +224,12 @@
                                 <page string="Request's Planting">
                                     <tree>
                                         <field name="requestline_ids" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"/>
+                                    </tree>
+                                </page>
+                                <page string="Batch's Planting">
+                                    <tree>
+                                        <field name="batch_ids" attrs="{
                                                 'readonly': [('state','=','done')]}"/>
                                     </tree>
                                 </page>
@@ -185,9 +290,18 @@
             <field name="view_mode">tree,form</field>
             <field name="view_search_planting" ref="estate_nursery.view_form_request_planting"/>
         </record>
+
+        <record model="ir.actions.act_window" id="action_list_planting" >
+            <field name="name">PLanting Seed</field>
+            <field name="res_model">estate.nursery.planting</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_search_planting" ref="estate_nursery.view_form_planting"/>
+        </record>
         <!--Menu View-->
         <menuitem id="estate_nursery_planting" name="Planting" parent="estate.main_estate_menu" sequence="80"/>
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
                   action="action_list_requestplanting" sequence="81"/>
+        <menuitem id="planting_seed" name="Planting Seed" parent="estate_nursery_planting"
+                  action="action_list_planting" sequence="81"/>
     </data>
 </openerp>

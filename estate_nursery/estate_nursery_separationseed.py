@@ -9,6 +9,7 @@ class SeparationPolytone(models.Model):
     _name = "estate.nursery.separation"
 
     name=fields.Char("Separation polytone Code")
+    separation_code=fields.Char()
     batch_id=fields.Many2one("estate.nursery.batch")
     batchline_ids = fields.One2many('estate.nursery.batchline', 'separation_id', ("Seed Boxes"))
     separation_date=fields.Date("Date of separation polytone")
@@ -32,6 +33,13 @@ class SeparationPolytone(models.Model):
         self.qty_double=0
         for item in self.batchline_ids:
             self.qtytotal_double += item.qty_double
+
+    #sequence
+    def create(self, cr, uid, vals, context=None):
+        vals['separation_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.separation')
+        res=super(SeparationPolytone, self).create(cr, uid, vals)
+        return res
+
 
 class SeparationLine(models.Model):
     _name="estate.nursery.separationline"

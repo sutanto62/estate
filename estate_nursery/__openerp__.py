@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','estate','stock','product','report','board','purchase'],
+    'depends': ['base','estate','stock','product','report','board','purchase','membership'],
 
     # always loaded
     'data': [
@@ -42,6 +42,7 @@
         'workflow/session_selection_workflow.xml',
         'workflow/session_workflow.xml',
         'workflow/session_requestplanting_workflow.xml',
+        'workflow/session_planting_workflow.xml',
         'res_config_view.xml',
         'selection_report.xml',
         'batch_report.xml',
@@ -52,7 +53,7 @@
         'reportplantation_seedreceived.xml',
         'reportplantation_seedreceived_bag.xml',
         'views/sequence_view.xml',
-        'wizard/req_wiz.xml'
+        # 'wizard/req_wiz.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
