@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','estate','stock','product','report','board','purchase','membership'],
+    'depends': ['base','estate','stock','product','report','board','purchase','membership','mrp'],
 
     # always loaded
     'data': [
@@ -41,6 +41,7 @@
         'reports/reportplantation_seedreceived_bag.xml',
         'workflow/session_selection_workflow.xml',
         'workflow/session_workflow.xml',
+        'workflow/session_culling_workflow.xml',
         'workflow/session_requestplanting_workflow.xml',
         'workflow/session_planting_workflow.xml',
         'res_config_view.xml',

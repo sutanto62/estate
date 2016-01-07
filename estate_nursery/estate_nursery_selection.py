@@ -12,6 +12,7 @@ select_category = ([('0','untimely'),('1','late'),('2','pass')])
 class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
+    # _inherits = {'stock.production.lot': 'lot_id'}
 
     name= fields.Char(store=True)
     selection_code=fields.Char("SFB",store=True)
@@ -20,6 +21,7 @@ class Selection(models.Model):
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
+    # "
     cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
@@ -43,7 +45,8 @@ class Selection(models.Model):
     maxa = fields.Integer(related='selectionstage_id.age_limit_max')
     mina = fields.Integer(related='selectionstage_id.age_limit_min')
     comment = fields.Text("Additional Information")
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
+    product_id = fields.Many2one('product.product', "Product",)
+    # related="lot_id.product_id"
     selectionline_count=fields.Integer("selection Cause",compute="_get_selectionline_count",store=True)
     nursery_information = fields.Selection([('draft','Draft'),
                                             ('0','untimely'),
@@ -100,9 +103,11 @@ class Selection(models.Model):
         abnormal = self.qty_abnormal
         selectionlineids = self.selectionline_ids
         for item in selectionlineids:
-            # normal += abnormal
+            # normal -= abnormal
             abnormal += item.qty
-        self.write({'qty_abnormal': self.qty_abnormal, 'qty_normal' : self.qty_normal ,'qty_plant' : self.qty_plant})
+        self.write({'qty_abnormal': self.qty_abnormal, })
+
+        # 'qty_normal' : self.qty_normal ,'qty_plant' : self.qty_plant
 
         self.action_move()
         return True
@@ -136,16 +141,17 @@ class Selection(models.Model):
         abn = self.qty_abnormal
         nrml = self.qty_normal
         plante = int(self.qty_plante)
-        for qtyplanted in self.batch_id:
-            qty_planted = 0
-            src = self.env['estate.nursery.batch'].search([('qty_planted', '=', True),
-                                                  ])
-            src2 = self.env['estate.nursery.selection'].search([('qty_plant','=',True)])
+        # for qtyplanted in self.batch_id:
+        #     qty_planted = 0
+        #     src = self.env['estate.nursery.batch'].search([('qty_planted', '=', True),
+        #                                           ])
+        #     src2 = self.env['estate.nursery.selection'].search([('qty_plant','=',True)])
         if self.selectionline_ids :
             hasil = plante - abn
             self.qty_normal = hasil
             self.qty_plant = hasil
         return  True
+
 
     #selection count
     @api.depends('selectionline_ids')

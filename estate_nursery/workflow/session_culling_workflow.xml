@@ -8,7 +8,7 @@
             <field name="on_create">True</field>
         </record>
 
-        <record model="workflow.activity" id="culling_draft">
+         <record model="workflow.activity" id="culling_draft">
             <field name="name">Draft</field>
             <field name="wkf_id" ref="estate_nursery.culling_approval"/>
             <field name="flow_start" eval="True"/>
@@ -19,39 +19,88 @@
         <record model="workflow.activity" id="culling_confirmed">
             <field name="name">Confirmed</field>
             <field name="wkf_id" ref="estate_nursery.culling_approval"/>
+
+            <field name="split_mode">XOR</field>
             <field name="kind">function</field>
+
             <field name="action">action_confirmed()</field>
         </record>
 
-        <record model="workflow.activity" id="culling_approved">
-            <field name="name">Approved</field>
+        <record model="workflow.activity" id="culling_first_approved">
+            <field name="name">First Approved</field>
             <field name="wkf_id" ref="estate_nursery.culling_approval"/>
+
+            <field name="split_mode">XOR</field>
             <field name="kind">function</field>
+
+            <field name="action">action_approved1()</field>
+
+        </record>
+
+        <record model="workflow.activity" id="culling_second_approved">
+            <field name="name">Second Approved</field>
+            <field name="wkf_id" ref="estate_nursery.culling_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved2()</field>
+        </record>
+
+        <record model="workflow.activity" id="culling_done">
+            <field name="name">Done</field>
+            <field name="wkf_id" ref="estate_nursery.culling_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
             <field name="action">action_approved()</field>
         </record>
 
-        <record model="workflow.transition" id="culling_draft_to_confirmed">
+        <record model="workflow.transition" id="cullingdraft_to_confirmed">
             <field name="act_from" ref="culling_draft"/>
             <field name="act_to" ref="culling_confirmed"/>
             <field name="signal">signal_confirm</field>
         </record>
-
-        <record model="workflow.transition" id="culling_done_to_draft">
-            <field name="act_from" ref="culling_approved"/>
-            <field name="act_to" ref="culling_draft"/>
-            <field name="signal">signal_draft</field>
-        </record>
-
-        <record model="workflow.transition" id="culling_confirmed_to_draft">
+        <record model="workflow.transition" id="cullingconfirmed_to_draft">
             <field name="act_from" ref="culling_confirmed"/>
             <field name="act_to" ref="culling_draft"/>
             <field name="signal">signal_draft</field>
         </record>
-
-        <record model="workflow.transition" id="culling_confirmed_to_done">
+        <record model="workflow.transition" id="culliingconfirmed_to_first_approved">
             <field name="act_from" ref="culling_confirmed"/>
-            <field name="act_to" ref="culling_approved"/>
+            <field name="act_to" ref="culling_first_approved"/>
+            <field name="signal">signal_approved1</field>
+        </record>
+        <record model="workflow.transition" id="plantingfirst_approved_to_draft">
+            <field name="act_from" ref="culling_first_approved"/>
+            <field name="act_to" ref="culling_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="cullingfirstapproved_to_second_approved">
+            <field name="act_from" ref="culling_first_approved"/>
+            <field name="act_to" ref="culling_second_approved"/>
+            <field name="signal">signal_approved2</field>
+        </record>
+
+        <record model="workflow.transition" id="cullingsecond_approved_to_draft">
+            <field name="act_from" ref="culling_second_approved"/>
+            <field name="act_to" ref="culling_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="cullingsecond_approved_to_done">
+            <field name="act_from" ref="culling_second_approved"/>
+            <field name="act_to" ref="culling_done"/>
             <field name="signal">signal_done</field>
         </record>
+
+        <record model="workflow.transition" id="cullingdone_to_draft">
+            <field name="act_from" ref="culling_done"/>
+            <field name="act_to" ref="culling_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
     </data>
 </openerp>

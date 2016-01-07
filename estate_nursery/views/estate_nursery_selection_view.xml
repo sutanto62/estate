@@ -354,7 +354,7 @@
             <field name="name">Selection line</field>
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
-                <tree string="Seed Selection Line" colors=  "red:qty ">
+                <tree string="Seed Selection Line" colors=  "red:qty " editable="top">
                     <field name="cause_id"/>
                     <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
                     <field name="location_id"/>

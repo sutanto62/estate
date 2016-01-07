@@ -25,7 +25,7 @@
                         <button name="signal_draft" type="workflow"
                                 string="Reject"
                                 class="oe_highlight"
-                                states="confirmed"
+                                states="confirmed,approved1,approved2"
                                 groups="estate.group_assistant"/>
 
                         <button name="signal_confirm" type="workflow"
@@ -35,12 +35,25 @@
                                 groups="estate.group_assistant" />
 
                         <button name="signal_done" type="workflow"
-                                string="Approved"
+                                string="Done"
+                                class="oe_highlight"
+                                states="approved2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Estate Kasie"
                                 class="oe_highlight"
                                 states="confirmed"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Estate Manager"
+                                class="oe_highlight"
+                                states="approved1"
                                 groups="estate.group_manager"/>
+
                          <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,done"
+                               statusbar_visible="draft,confirmed,approved1,approved2,done"
                                statusbar_color='{"draft":"blue"}'/>
                     </header>
                     <sheet>
@@ -61,7 +74,6 @@
                                 <field name="culling_date"/>
                             </group>
                             <group>
-                                <field name="selection_type"/>
                                 <field name="quantitytotal_abnormal"/>
                             </group>
                         </group>
@@ -80,40 +92,53 @@
             <field name="name">Nursery Culling line Tree</field>
             <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Culling line View">
-                    <field name="selection_id" string="Batch No"/>
-                    <field name="qty_planted" string="QTY Planted"/>
-                    <field name="selectionstage_id" String = "Selection stage"/>
+                <tree string="Nursery Culling line View" editable="top">
+                    <field name="stockquant_id" string="Stock/Batch"/>
+                    <!--<field name="batch_id" string="Batch No"/>-->
+                    <field name="qty_abnormal" string="Total QTY Abnomal"/>
+                    <!--<field name="selectionstage_id" String = "Selection stage"/>-->
                 </tree>
             </field>
         </record>
 
-        <!--view form,Cullingline-->
-        <record model="ir.ui.view" id="view_form_nursery_cullingline">
-            <field name="name">Nursery Culling</field>
-            <field name="model">estate.nursery.cullingline</field>
-            <field name="arch" type="xml">
-                <form string="Nursery Culling View">
-                    <group coolspan="10">
-                        <group>
-                            <field name="batch_id"/>
-                            <field name="selection_id" string="Batch and selection"/>
-                            <field name="selectionstage_id"/>
-                        </group>
-                        <group>
-                            <field name="qty_planted"/>
-                            <field name="qty_abnormal_batch" string="Abnormal qty Batch"/>
-                            <field name="qty_abnormal_selection" string="Abnormal qty selection"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Comment/Description">
-                            <field name="comment" />
-                        </page>
-                    </notebook>
-                </form>
-            </field>
-        </record>
+        <!--&lt;!&ndash;view form,Cullingline&ndash;&gt;-->
+        <!--<record model="ir.ui.view" id="view_form_nursery_cullingline">-->
+            <!--<field name="name">Nursery Culling</field>-->
+            <!--<field name="model">estate.nursery.cullingline</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<form string="Nursery Culling View">-->
+                    <!--<group coolspan="10">-->
+                        <!--<group>-->
+                            <!--<field name="batch_id"/>-->
+                            <!--<field name="selection_id" string="Batch and selection"/>-->
+                            <!--<field name="selectionstage_id"/>-->
+                        <!--</group>-->
+                        <!--<group>-->
+                            <!--<field name="qty_planted"/>-->
+                            <!--<field name="qty_abnormal_batch" string="Abnormal qty Batch"/>-->
+                            <!--<field name="qty_abnormal_selection" string="Abnormal qty selection"/>-->
+                        <!--</group>-->
+                    <!--</group>-->
+                    <!--<notebook>-->
+                        <!--<page string="Comment/Description">-->
+                            <!--<field name="comment" />-->
+                        <!--</page>-->
+                    <!--</notebook>-->
+                <!--</form>-->
+            <!--</field>-->
+        <!--</record>-->
+
+         <!--&lt;!&ndash;view Tree, Culling line&ndash;&gt;-->
+        <!--<record model="ir.ui.view" id="view_tree_stock_quant">-->
+            <!--<field name="name">Nursery Stock Quant Tree</field>-->
+            <!--<field name="model">estate.nursery.stockquant</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<tree string="Nursery Culling line View" editable="top">-->
+                    <!--<field name="stockquant_id" string="Stock/Batch"/>-->
+                    <!--<field name="qty" string="Total QTY Abnomal"/>-->
+                <!--</tree>-->
+            <!--</field>-->
+        <!--</record>-->
 
         <!--Action -->
         <record model="ir.actions.act_window" id="action_list_culling" >
