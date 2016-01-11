@@ -74,12 +74,14 @@
                                 <field name="culling_date"/>
                             </group>
                             <group>
+                                <field name="location_type" string="Location Loss"/>
                                 <field name="quantitytotal_abnormal"/>
+                                <field name="stockquant_id" string="Stock/Batch"/>
                             </group>
                         </group>
                         <notebook>
                             <page string="Culling line detail">
-                                <field name="cullingline_ids" />
+                                <field name="cullingline_ids"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -94,9 +96,10 @@
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
                     <field name="stockquant_id" string="Stock/Batch"/>
-                    <!--<field name="batch_id" string="Batch No"/>-->
+                    <field name="location_id" string="Location Stock"/>
+                    <field name="lot_id" string="Name Lot"/>
+                    <!--<field name="location_type" string="Location Loss"/>-->
                     <field name="qty_abnormal" string="Total QTY Abnomal"/>
-                    <!--<field name="selectionstage_id" String = "Selection stage"/>-->
                 </tree>
             </field>
         </record>
