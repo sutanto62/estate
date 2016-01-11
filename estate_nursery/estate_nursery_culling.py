@@ -96,37 +96,37 @@ class Culling(models.Model):
         self.action_move()
         return True
 
-    @api.one
-    def action_move(self):
-         location_ids = set()
-         for item in self.cullingline_ids:
-             if item.location_type and item.qty_abnormal > 0: # todo do not include empty quantity location
-                 location_ids.add(item.location_type)
-
-         # Move quantity from culling location to inventory loss
-         for location in location_ids:
-            qty_total_culling = 0
-            trash = self.env['estate.nursery.cullingline'].search([('location_type', '=', location.id),
-                                                                    ('culling_id', '=', self.id)])
-            for i in trash:
-                 qty_total_culling += i.qty_abnormal
-
-            move_data = {
-                    'product_id': self.stockquant_id.lot_id.product_id.id,
-                    'product_uom_qty': self.quantitytotal_abnormal,
-                    'product_uom': self.stockquant_id.lot_id.product_id.uom_id.id,
-                    'name': 'Cullling Abnormal for %s:'%(self.culling_code),
-                    'date_expected': self.culling_date,
-                    'location_id': self.stockquant_id.location_id.id,
-                    'location_dest_id': self.location_type.id,
-                    'state': 'confirmed', # set to done if no approval required
-                    'restrict_lot_id': self.lot_id.id # required by check tracking product
-            }
-
-            move = self.env['stock.move'].create(move_data)
-            move.action_confirm()
-            move.action_done()
-         return True
+    # @api.one
+    # def action_move(self):
+         # location_ids = set()
+         # for item in self.cullingline_ids:
+         #     if item.location_type and item.qty_abnormal > 0: # todo do not include empty quantity location
+         #         location_ids.add(item.location_type)
+         #
+         # # Move quantity from culling location to inventory loss
+         # for location in location_ids:
+         #    qty_total_culling = 0
+         #    trash = self.env['estate.nursery.cullingline'].search([('location_type', '=', location.id),
+         #                                                            ('culling_id', '=', self.id)])
+         #    for i in trash:
+         #         qty_total_culling += i.qty_abnormal
+         #
+         #    move_data = {
+         #            'product_id': self.stockquant_id.lot_id.product_id.id,
+         #            'product_uom_qty': self.quantitytotal_abnormal,
+         #            'product_uom': self.stockquant_id.lot_id.product_id.uom_id.id,
+         #            'name': 'Cullling Abnormal for %s:'%(self.culling_code),
+         #            'date_expected': self.culling_date,
+         #            'location_id': self.stockquant_id.location_id.id,
+         #            'location_dest_id': self.location_type.id,
+         #            'state': 'confirmed', # set to done if no approval required
+         #            'restrict_lot_id': self.lot_id.id # required by check tracking product
+         #    }
+         #
+         #    move = self.env['stock.move'].create(move_data)
+         #    move.action_confirm()
+         #    move.action_done()
+         # return True
 
          # if self.quantitytotal_abnormal > 0:
          #    move_data = {
@@ -161,11 +161,12 @@ class Cullingline(models.Model):
     location_id=fields.Many2one('stock.location',("Quant Location"),related='stockquant_id.location_id')
     stockquant_id=fields.Many2one('stock.quant',
                                   store=True)
+
     # stockquant_id=fields.Many2one('stock.quant',
     #                               store=True,domain=[('location_id.estate_location_type', '=', 'nursery'),
     #                                       ('location_id.scrap_location','=',True),
     #                                       ('location_id.estate_location_level', '=', '3')])
-    qty_abnormal=fields.Integer('Quantity Abnormal')
+    qty_abnormal=fields.Integer('Quantity Abnormal',readonly=True)
 
 
     #search qty stock quant

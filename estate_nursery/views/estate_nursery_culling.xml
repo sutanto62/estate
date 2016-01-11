@@ -95,7 +95,7 @@
             <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
-                    <field name="stockquant_id" string="Stock/Batch"/>
+                    <field name="stockquant_id" string="Stock/Batch" />
                     <field name="location_id" string="Location Stock"/>
                     <field name="lot_id" string="Name Lot"/>
                     <!--<field name="location_type" string="Location Loss"/>-->

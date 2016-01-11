@@ -1,0 +1,106 @@
+<openerp>
+    <data>
+
+        <!-- Nursery request Planting -->
+        <record id="estate_nursery.planting_approval" model="workflow">
+            <field name="name">Estate Nursery Planting Workflow</field>
+            <field name="osv">estate.nursery.planting</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record model="workflow.activity" id="planting_draft">
+            <field name="name">Draft</field>
+            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
+            <field name="flow_start" eval="True"/>
+            <field name="kind">function</field>
+            <field name="action">action_draft()</field>
+        </record>
+
+        <record model="workflow.activity" id="planting_confirmed">
+            <field name="name">Confirmed</field>
+            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_confirmed()</field>
+        </record>
+
+        <record model="workflow.activity" id="planting_first_approved">
+            <field name="name">First Approved</field>
+            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved1()</field>
+
+        </record>
+
+        <record model="workflow.activity" id="planting_second_approved">
+            <field name="name">Second Approved</field>
+            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved2()</field>
+        </record>
+
+        <record model="workflow.activity" id="planting_done">
+            <field name="name">Done</field>
+            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved()</field>
+        </record>
+
+        <record model="workflow.transition" id="plantingdraft_to_confirmed">
+            <field name="act_from" ref="planting_draft"/>
+            <field name="act_to" ref="planting_confirmed"/>
+            <field name="signal">signal_confirm</field>
+        </record>
+        <record model="workflow.transition" id="plantingconfirmed_to_draft">
+            <field name="act_from" ref="planting_confirmed"/>
+            <field name="act_to" ref="planting_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+        <record model="workflow.transition" id="plantingconfirmed_to_first_approved">
+            <field name="act_from" ref="planting_confirmed"/>
+            <field name="act_to" ref="planting_first_approved"/>
+            <field name="signal">signal_approved1</field>
+        </record>
+        <record model="workflow.transition" id="plantingfirst_approved_to_draft">
+            <field name="act_from" ref="planting_first_approved"/>
+            <field name="act_to" ref="planting_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="plantingfirstapproved_to_second_approved">
+            <field name="act_from" ref="planting_first_approved"/>
+            <field name="act_to" ref="planting_second_approved"/>
+            <field name="signal">signal_approved2</field>
+        </record>
+
+        <record model="workflow.transition" id="plantingsecond_approved_to_draft">
+            <field name="act_from" ref="planting_second_approved"/>
+            <field name="act_to" ref="planting_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="plantingsecond_approved_to_done">
+            <field name="act_from" ref="planting_second_approved"/>
+            <field name="act_to" ref="planting_done"/>
+            <field name="signal">signal_done</field>
+        </record>
+
+        <record model="workflow.transition" id="plantingdone_to_draft">
+            <field name="act_from" ref="planting_done"/>
+            <field name="act_to" ref="planting_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+    </data>
+</openerp>
