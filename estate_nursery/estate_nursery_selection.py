@@ -21,7 +21,6 @@ class Selection(models.Model):
     picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
-    # "
     cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
@@ -158,6 +157,7 @@ class Selection(models.Model):
     def _get_selectionline_count(self):
         for r in self:
             r.selectionline_count = len(r.selectionline_ids)
+
 
     #compute selectionLine
     @api.one

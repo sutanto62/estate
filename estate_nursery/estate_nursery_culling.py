@@ -20,8 +20,6 @@ class Culling(models.Model):
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
-    stockquant_lot=fields.Many2one('stock.quant',"Lot",
-                                   domain=[('lot_id','','')])
     stockquant_id=fields.Many2one('stock.quant',
                                   domain=[('location_id.estate_location_type', '=', 'nursery'),
                                           ('location_id.scrap_location','=',True),
@@ -52,13 +50,12 @@ class Culling(models.Model):
 
     #calculate Culling Line
     @api.one
-    @api.depends('cullingline_ids')
+    @api.onchange('cullingline_ids','quantitytotal_abnormal')
     def _compute_total(self):
         self.quantitytotal_abnormal = 0
         for item in self.cullingline_ids:
             self.quantitytotal_abnormal += item.qty_abnormal
         return True
-
 
     @api.one
     def action_draft(self):
@@ -83,7 +80,7 @@ class Culling(models.Model):
     @api.one
     def action_approved(self):
         """Approved Selection is planted Seed."""
-        self.action_receive()
+        # self.action_receive()
         self.state = 'done'
 
     @api.one
@@ -93,7 +90,7 @@ class Culling(models.Model):
         for item in cullinglineids:
             abnormal += item.qty_abnormal
         self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal })
-        self.action_move()
+        # self.action_move()
         return True
 
     # @api.one
@@ -153,29 +150,110 @@ class Cullingline(models.Model):
 
     name=fields.Char("Culling line name",related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
-    stock_id=fields.Many2one('stock.quant')
-    location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Inventory loss'),
-                                                                             ('usage','=','inventory'),
-                                                                             ],store=True)
-    lot_id=fields.Many2one('stock.production.lot',("Lot name"),related='stockquant_id.lot_id')
-    location_id=fields.Many2one('stock.location',("Quant Location"),related='stockquant_id.location_id')
-    stockquant_id=fields.Many2one('stock.quant',
-                                  store=True)
+    batch_id=fields.Many2one('estate.nursery.batch')
+    selection_id=fields.Many2one('estate.nursery.selection',)
+    qty_normal_batch=fields.Integer(readonly=True,store=True)
+    qty_abnormal_batch=fields.Integer(readonly=True,store=True)
+    qty_transplanted=fields.Integer(readonly=True,store=True)
+    qty_abnormal_selection=fields.Integer(readonly=True,store=True)
+    stockquant_id=fields.Many2one('stock.quant')
+    total_seed_DO=fields.Integer(readonly=True,store=True)
+    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '3'),
+                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
+                                          ,store=True,related='batch_id.culling_location_id',readonly=True)
+    qty_abnormal=fields.Integer('Quantity Total Abnormal',compute="_calculate_totalAbnormal",readonly=True,store=True)
 
-    # stockquant_id=fields.Many2one('stock.quant',
-    #                               store=True,domain=[('location_id.estate_location_type', '=', 'nursery'),
-    #                                       ('location_id.scrap_location','=',True),
-    #                                       ('location_id.estate_location_level', '=', '3')])
-    qty_abnormal=fields.Integer('Quantity Abnormal',readonly=True)
+
+    #get qty Transplanted
+    @api.onchange('batch_id','qty_transplanted')
+    def _get_qty_tranplanted(self):
+        self.qty_transplanted=self.batch_id.qty_planted
+        self.write({'qty_transplanted':self.qty_transplanted})
+        print self.qty_transplanted
+
+    #Calculate Total Abnormal
+    @api.one
+    @api.depends('batch_id','qty_abnormal_batch','qty_abnormal_selection')
+    def _calculate_totalAbnormal(self):
+            abnormalbatch=self.qty_abnormal_batch
+            abnormalselection=self.qty_abnormal_selection
+            self.qty_abnormal=abnormalbatch+abnormalselection
+            print self.qty_abnormal
+
+    #get qty normal seed receive perbatch
+    @api.onchange('batch_id','qty_normal_batch')
+    def _get_normal(self):
+            self.qty_normal_batch=self.batch_id.qty_normal
+            self.write({'qty_normal_batch':self.qty_normal_batch})
+            print self.qty_normal_batch
+
+    #get qty abnormal seed receive perbatch
+    @api.onchange('batch_id','qty_abnormal_batch')
+    def _get_abnormal(self):
+            self.qty_abnormal_batch=self.batch_id.qty_abnormal
+            self.write({'qty_abnormal_batch':self.qty_abnormal_batch})
+            print self.qty_abnormal_batch
+
+    #get qty seed receive perbatch
+    @api.onchange('batch_id','total_seed_DO')
+    def _get_receive(self):
+            self.total_seed_DO=self.batch_id.qty_received
+            self.write({'total_seed_DO':self.total_seed_DO})
+            print self.total_seed_DO
+
+    #get qty total selection perbatch
+    @api.onchange('batch_id','qty_abnormal_selection','selection_id')
+    def _getabnormal_selection(self):
+            self.qty_abnormal_selection=self.batch_id.total_selection_abnormal
+            self.write({'qty_abnormal_selection':self.qty_abnormal_selection})
+            print self.qty_abnormal_selection
 
 
-    #search qty stock quant
-    @api.onchange('stockquant_id','qty_abnormal')
-    def ChangeQuantity(self):
-        self.qty_abnormal=self.stockquant_id.qty
-        self.write({'qty_abnormal': self.qty_abnormal, })
-        print self.qty_abnormal
+    # @api.depends('batch_id')
+    # def getbatch(self):
+    #     self.qty_abnormal_selection = 0
+    #     for i in self.batch_id:
+    #         self.qty_abnormal_selection = self.qty_abnormal_selection + self.batch_id.
+    #     return theSum
 
+    # @api.onchange('batch_id','qty_abnormal_selection','selection_ids')
+    # def getValueAbnormal(self):
+    #     if self.batch_id:
+    #         self.qty_abnormal_selection=self.
+
+    # #get value abnormal from batch
+    # @api.one
+    # @api.depends('selection_ids','batch_id')
+    # def _compute_total(self):
+    #     self.qty_planted = 0
+    #     if self.batch_id:
+    #         if self.selection_ids:
+    #             for a in self.selection_ids:
+    #                 self.qty_abnormal_selection +=a.qty_abnormal
+    #                 print self.qty_abnormal_selection
+    #
+    #     return True
+    #     # self.write({'qty_abnormal_selection' : self.qty_abnormal})
+
+    #get abnormal from selection
+    # @api.one
+    # @api.depends('selection_id','batch_id','qty_abnormal_selection')
+    # def _get_value_abnormal(self):
+    #
+    #     res={}
+    #     batch=self.batch_id
+    #     selection=self.selection_id
+    #     if batch and selection:
+    #         getselec=self.env('estate.nursery.selection').search(['qty_abnormal'])
+    #         for r in self:
+    #             r.qty_abnormal_selection = len(r.selectionline_ids)
+    #             # for qtyplanted in self.batch_id:
+        #     qty_planted = 0
+        #     src = self.env['estate.nursery.batch'].search([('qty_planted', '=', True),
+        #                                           ])
+        #     src2 = self.env['estate.nursery.selection'].search([('qty_plant','=',True)])
 
     # @api.one
     # def search_qty_quant(self):

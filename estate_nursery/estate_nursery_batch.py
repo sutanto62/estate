@@ -108,6 +108,7 @@ class Batch(models.Model):
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
+    total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
@@ -264,6 +265,16 @@ class Batch(models.Model):
             ageseed = (d1 + yearresult) - d2
             self.age_seed_range = ageseed + int(self.age_seed)
         return res
+
+    #total selection abnormal
+    @api.one
+    @api.depends("selection_ids",)
+    def _computetot_abnormal(self):
+        self.total_selection_abnormal = 0
+        if self.selection_ids:
+            for a in self.selection_ids:
+                self.total_selection_abnormal += a.qty_abnormal
+        return True
 
     #computed seed planted
     @api.one

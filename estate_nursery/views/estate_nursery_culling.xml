@@ -70,13 +70,11 @@
 
                         <group coolspan="10">
                             <group>
-                                <field name="culling_location_id"/>
+                                <field name="location_type" string="Location Loss"/>
                                 <field name="culling_date"/>
                             </group>
                             <group>
-                                <field name="location_type" string="Location Loss"/>
                                 <field name="quantitytotal_abnormal"/>
-                                <field name="stockquant_id" string="Stock/Batch"/>
                             </group>
                         </group>
                         <notebook>
@@ -95,11 +93,14 @@
             <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
-                    <field name="stockquant_id" string="Stock/Batch" />
-                    <field name="location_id" string="Location Stock"/>
-                    <field name="lot_id" string="Name Lot"/>
-                    <!--<field name="location_type" string="Location Loss"/>-->
+                    <field name="batch_id" string="Batch No"/>
+                    <field name="total_seed_DO" string="Total Kecambah"/>
+                    <field name="qty_normal_batch" string="Normal Batch Receive"/>
+                    <field name="qty_abnormal_batch" string="Abnormal Batch Receive"/>
+                    <field name="qty_abnormal_selection" string="Total Selection Abnormal"/>
+                    <field name="culling_location_id" string="Location Culling"/>
                     <field name="qty_abnormal" string="Total QTY Abnomal"/>
+                    <field name="qty_transplanted" string="Total Trasplanted"/>
                 </tree>
             </field>
         </record>
