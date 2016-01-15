@@ -10,7 +10,8 @@ class Culling(models.Model):
 
     name=fields.Char("Culling Name",)
     culling_code=fields.Char("LBP")
-    cullingline_ids=fields.One2many('estate.nursery.cullingline','culling_id',"Culling")
+    cullingline_ids=fields.One2many('estate.nursery.cullinglinebatch','culling_id',"Culling")
+    cullinglineselection_ids=fields.One2many('estate.nursery.cullinglineselection','culling_id',"Culling Selection")
     culling_date = fields.Date("Culling date",store=True,required=True)
     batch_id=fields.Many2one('estate.nursery.batch')
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True )
@@ -24,12 +25,14 @@ class Culling(models.Model):
                                   domain=[('location_id.estate_location_type', '=', 'nursery'),
                                           ('location_id.scrap_location','=',True),
                                           ('location_id.estate_location_level', '=', '3')],store=True)
-    quantitytotal_abnormal = fields.Integer("Quantity Total Abnormal",compute='_compute_total',store=True)
+    quantitytotal_abnormal = fields.Integer("Quantity Total Abnormal",compute='_compute_total_batch',store=True)
+    quantitytotal_abnormal_selection = fields.Integer("Quantity Total Abnormal selection",compute='_compute_total_selection',store=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True)
+    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='0',required=True)
     state= fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval '),('approved2','Second Approval'),
@@ -50,11 +53,19 @@ class Culling(models.Model):
 
     #calculate Culling Line
     @api.one
-    @api.onchange('cullingline_ids','quantitytotal_abnormal')
-    def _compute_total(self):
+    @api.depends('cullingline_ids')
+    def _compute_total_batch(self):
         self.quantitytotal_abnormal = 0
         for item in self.cullingline_ids:
-            self.quantitytotal_abnormal += item.qty_abnormal
+            self.quantitytotal_abnormal += item.qty_abnormal_batch
+        return True
+
+    @api.one
+    @api.depends('cullinglineselection_ids',)
+    def _compute_total_selection(self):
+        self.quantitytotal_abnormal_selection = 0
+        for a in self.cullinglineselection_ids:
+            self.quantitytotal_abnormal_selection += a.qty_total_abnormal_selection
         return True
 
     @api.one
@@ -143,44 +154,91 @@ class Culling(models.Model):
          #    move.action_done()
          # return True
 
+class CullingLineSelection(models.Model):
 
-class Cullingline(models.Model):
+    _name="estate.nursery.cullinglineselection"
 
-    _name = "estate.nursery.cullingline"
-
-    name=fields.Char("Culling line name",related='culling_id.name')
+    name=fields.Char("Culling Line Name",)
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',)
-    qty_normal_batch=fields.Integer(readonly=True,store=True)
-    qty_abnormal_batch=fields.Integer(readonly=True,store=True)
-    qty_transplanted=fields.Integer(readonly=True,store=True)
-    qty_abnormal_selection=fields.Integer(readonly=True,store=True)
-    stockquant_id=fields.Many2one('stock.quant')
-    total_seed_DO=fields.Integer(readonly=True,store=True)
+    selection_id=fields.Many2one('estate.nursery.selection',related='batch_id.selection_id'
+                                 )
+    selectionstage_id=fields.Many2one('estate.nursery.selectionstage',
+                                      related='selection_id.selectionstage_id',readonly=True)
+    qty_normalbatch=fields.Integer(store=True)
+    qty_normalselection=fields.Integer(store=True)
+    qty_abnormalselection=fields.Integer(store=True)
+    qty_total_abnormal_selection=fields.Integer(store=True)
+    qty_planted_selection=fields.Integer(store=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True,related='batch_id.culling_location_id',readonly=True)
-    qty_abnormal=fields.Integer('Quantity Total Abnormal',compute="_calculate_totalAbnormal",readonly=True,store=True)
+
+    #get qty normal seed receive perbatch
+    @api.onchange('batch_id','qty_normal_batch')
+    def _get_qty_normalbatch(self):
+            self.qty_normalbatch=self.batch_id.qty_normal
+            self.write({'qty_normalbatch':self.qty_normalbatch})
+            print self.qty_normalbatch
+
+    #get qty normal Selection
+    @api.onchange('batch_id','selection_id','qty_normalselection')
+    def _get_qty_abnormalselection(self):
+            self.qty_normalselection=self.selection_id.qty_normal
+            self.write({'qty_normalselection':self.qty_normalselection})
+            print self.qty_normalselection
+
+    #get qty planted Selection
+    @api.onchange('batch_id','selection_id','qty_plantedselection')
+    def _get_planted_selection(self):
+            self.qty_planted_selection=self.selection_id.qty_plant
+            self.write({'qty_planted_selection':self.qty_planted_selection})
+            print self.qty_planted_selection
+
+    #get qty abnormal Selection
+    @api.onchange('batch_id','selection_id','qty_abnormalselection')
+    def _get_abnormalselection(self):
+            self.qty_abnormalselection=self.selection_id.qty_abnormal
+            self.write({'qty_abnormalselection':self.qty_abnormalselection})
+            print self.qty_abnormalselection
+
+    #get qty total abnormal Selection
+    @api.onchange('batch_id','selection_id','qty_total_abnormal_selection')
+    def _get_total_abnormalselection(self):
+            self.qty_total_abnormal_selection=self.selection_id.qty_abnormal
+            self.write({'qty_total_abnormal_selection':self.qty_total_abnormal_selection})
+            print self.qty_total_abnormal_selection
+
+
+class CullinglineBatch(models.Model):
+
+    _name = "estate.nursery.cullinglinebatch"
+
+    name=fields.Char("Culling line name",related='culling_id.name')
+    culling_id=fields.Many2one('estate.nursery.culling')
+    batch_id=fields.Many2one('estate.nursery.batch')
+    selection_id=fields.Many2one('estate.nursery.selection',)
+    qty_normal_batch=fields.Integer(store=True)
+    qty_abnormal_batch=fields.Integer(store=True)
+    qty_transplanted=fields.Integer(store=True)
+    total_qty_abnormal_batch=fields.Integer(store=True)
+    total_seed_DO=fields.Integer(store=True)
+    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '3'),
+                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
+                                          ,store=True,related='batch_id.culling_location_id',readonly=True)
+
 
 
     #get qty Transplanted
     @api.onchange('batch_id','qty_transplanted')
     def _get_qty_tranplanted(self):
-        self.qty_transplanted=self.batch_id.qty_planted
+        self.qty_transplanted=self.batch_id.qty_planted_temp
         self.write({'qty_transplanted':self.qty_transplanted})
         print self.qty_transplanted
-
-    #Calculate Total Abnormal
-    @api.one
-    @api.depends('batch_id','qty_abnormal_batch','qty_abnormal_selection')
-    def _calculate_totalAbnormal(self):
-            abnormalbatch=self.qty_abnormal_batch
-            abnormalselection=self.qty_abnormal_selection
-            self.qty_abnormal=abnormalbatch+abnormalselection
-            print self.qty_abnormal
 
     #get qty normal seed receive perbatch
     @api.onchange('batch_id','qty_normal_batch')
@@ -203,12 +261,19 @@ class Cullingline(models.Model):
             self.write({'total_seed_DO':self.total_seed_DO})
             print self.total_seed_DO
 
-    #get qty total selection perbatch
-    @api.onchange('batch_id','qty_abnormal_selection','selection_id')
-    def _getabnormal_selection(self):
-            self.qty_abnormal_selection=self.batch_id.total_selection_abnormal
-            self.write({'qty_abnormal_selection':self.qty_abnormal_selection})
-            print self.qty_abnormal_selection
+    #Total qty abnormal seed batch
+    @api.onchange('batch_id','total_qty_abnormal_batch')
+    def _get_abnormal_total(self):
+            self.total_qty_abnormal_batch=self.batch_id.qty_abnormal
+            self.write({'qty_abnormal_batch':self.total_qty_abnormal_batch})
+            print  self.total_qty_abnormal_batch
+
+    # #get qty total selection perbatch
+    # @api.onchange('batch_id','qty_abnormal_selection','selection_id')
+    # def _getabnormal_selection(self):
+    #         self.qty_abnormal_selection=self.batch_id.total_selection_abnormal
+    #         self.write({'qty_abnormal_selection':self.qty_abnormal_selection})
+    #         print self.qty_abnormal_selection
 
 
     # @api.depends('batch_id')

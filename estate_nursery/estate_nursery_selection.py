@@ -14,7 +14,7 @@ class Selection(models.Model):
     _name = 'estate.nursery.selection'
     # _inherits = {'stock.production.lot': 'lot_id'}
 
-    name= fields.Char(store=True)
+    name= fields.Char(related='batch_id.name',store=True)
     selection_code=fields.Char("SFB",store=True)
     batch_code=fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')

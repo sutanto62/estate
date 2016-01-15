@@ -207,17 +207,15 @@
                     <field name="selection_code" string="Selection No"/>
                     <field name="variety" invisible="1"/>
                     <field name="stage" invisible="1"/>
+                    <field name="selection_date"/>
                     <field name="selectionstage_id" />
+                    <field name="qty_batch" string="&#931;  DO." />
                     <field name="qty_normal" string="&#931;  Normal." sum="Qty Normal"/>
                     <field name="qty_abnormal" string="&#931;  Abnormal." sum="Qty Abnormal"/>
                     <field name="nursery_persentagen" string="% normal. " />
                     <field name="nursery_persentagea" string="% abnormal."/>
                     <field name="qty_plant" string="&#931;  PLT." sum="Qty Normal" />
-                    <field name="qty_batch" string="&#931;  DO." />
-                    <field name="date_plant"/>
                     <field name="nursery_information"/>
-                    <field name="selection_date"/>
-                    <field name="selectionline_ids"/>
                     <field name="state" invisible="1"/>
                 </tree>
             </field>

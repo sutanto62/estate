@@ -70,16 +70,22 @@
 
                         <group coolspan="10">
                             <group>
+                                <field name="selectionform" string="Select Type "/>
                                 <field name="location_type" string="Location Loss"/>
                                 <field name="culling_date"/>
                             </group>
                             <group>
-                                <field name="quantitytotal_abnormal"/>
+                                <field name="quantitytotal_abnormal" attrs="{'invisible':[('selectionform','!=', '1')]}"/>
+                                <field name="quantitytotal_abnormal_selection"
+                                       attrs="{'invisible':[('selectionform','!=', '2')]}"/>
                             </group>
                         </group>
                         <notebook>
-                            <page string="Culling line detail">
-                                <field name="cullingline_ids"/>
+                            <page string="Culling Line Batch detail" attrs="{'invisible':[('selectionform','!=', '1')]}">
+                                <field name="cullingline_ids" />
+                            </page>
+                            <page string="Culling Line Selection detail" attrs="{'invisible':[('selectionform','!=', '2')]}" >
+                                <field name="cullinglineselection_ids" />
                             </page>
                         </notebook>
                     </sheet>
@@ -87,19 +93,38 @@
             </field>
         </record>
 
-        <!--view Tree, Culling line-->
+         <!--view Tree, Culling line selection-->
+        <record model="ir.ui.view" id="view_tree_nursery_cullinglineselection">
+            <field name="name">Nursery Culling line selection Tree</field>
+            <field name="model">estate.nursery.cullinglineselection</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Culling line View" editable="top">
+                    <field name="batch_id" string="Batch No"/>
+                    <field name="selection_id" string="Selection No" domain="[('batch_id','=',batch_id)]"/>
+                    <field name="selectionstage_id" String="Selection Stage"/>
+                    <field name="qty_normalbatch" string="&#931;Nor Batch "/>
+                    <field name="qty_abnormalselection" string="&#931;Abn Selection"/>
+                    <field name="qty_normalselection" string="&#931;Nor Selection"/>
+                    <field name="culling_location_id" string="Location Culling"/>
+                    <field name="qty_total_abnormal_selection" string="&#931; QTY Abnomal"/>
+                    <field name="qty_planted_selection" string="&#931; QTY Planted"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!--view Tree, Culling line batch-->
         <record model="ir.ui.view" id="view_tree_nursery_cullingline">
             <field name="name">Nursery Culling line Tree</field>
-            <field name="model">estate.nursery.cullingline</field>
+            <field name="model">estate.nursery.cullinglinebatch</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
                     <field name="batch_id" string="Batch No"/>
                     <field name="total_seed_DO" string="Total Kecambah"/>
-                    <field name="qty_normal_batch" string="Normal Batch Receive"/>
                     <field name="qty_abnormal_batch" string="Abnormal Batch Receive"/>
-                    <field name="qty_abnormal_selection" string="Total Selection Abnormal"/>
+                    <field name="qty_normal_batch" string="Normal Batch Receive"/>
                     <field name="culling_location_id" string="Location Culling"/>
-                    <field name="qty_abnormal" string="Total QTY Abnomal"/>
+                    <field name="total_qty_abnormal_batch" string="Total QTY Abnomal"/>
                     <field name="qty_transplanted" string="Total Trasplanted"/>
                 </tree>
             </field>
