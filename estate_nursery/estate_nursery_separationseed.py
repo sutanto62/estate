@@ -4,56 +4,81 @@ from dateutil.relativedelta import *
 import calendar
 
 
-class SeparationPolytone(models.Model):
+class PemisahanPolytone(models.Model):
 
     _name = "estate.nursery.separation"
 
     name=fields.Char("Separation polytone Code")
     separation_code=fields.Char()
-    batch_id=fields.Many2one("estate.nursery.batch")
-    batchline_ids = fields.One2many('estate.nursery.batchline', 'separation_id', ("Seed Boxes"))
     separation_date=fields.Date("Date of separation polytone")
-    date_received=fields.Date("Date received seed ", related='batch_id.date_received')
-    variety_id=fields.Many2one("variety type ",)
-    qtytotal_single=fields.Integer(compute='_compute_single')
-    qtytotal_double=fields.Integer()
-    qty_total=fields.Integer(related='batch_id.qty_normal')
-    qty_lastsaldo=fields.Integer()
-    comment=fields.Text("Add Comment And Description")
+    separationline_ids=fields.One2many('estate.nursery.separationln','separation_id',"Separation Line")
+    qty_total=fields.Integer("Total Seed ")
+    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '3'),
+                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
+                                          ,store=True)
+    state=fields.Selection([('draft','Draft'),
+        ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
+        ('done', 'Done')],string="Separation State")
 
-    @api.one
-    @api.depends('batchline_ids',)
-    def _compute_single(self):
-        self.qty_single=0
-        for item in self.batchline_ids:
-            self.qtytotal_single += item.qty_single
-    @api.one
-    @api.depends('batchline_ids',)
-    def _compute_double(self):
-        self.qty_double=0
-        for item in self.batchline_ids:
-            self.qtytotal_double += item.qty_double
-
-    #sequence
+    #Sequence separation code
     def create(self, cr, uid, vals, context=None):
         vals['separation_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.separation')
-        res=super(SeparationPolytone, self).create(cr, uid, vals)
+        res=super(PemisahanPolytone, self).create(cr, uid, vals)
         return res
 
+    #state for Culling
+    @api.one
+    def action_draft(self):
+        """Set Selection State to Draft."""
+        self.state = 'draft'
 
-class SeparationLine(models.Model):
-    _name="estate.nursery.separationline"
+    @api.one
+    def action_confirmed(self):
+        """Set Selection state to Confirmed."""
+        self.state = 'confirmed'
 
-    name=fields.Char()
-    separation_id = fields.Many2one('estate.nursery.separation')
-    location_id=fields.Many2one('stock.location', "Bedengan/Plot",
-                                  domain=[('estate_location', '=', True),
-                                          ('estate_location_level', '=', '3'),
-                                          ('estate_location_type', '=', 'nursery'),
-                                          ('scrap_location', '=', False)],
-                                  help="Fill in location seed planted.")
+    @api.one
+    def action_approved1(self):
+        """Set Selection state to Confirmed."""
+        self.state = 'approved1'
+
+    @api.one
+    def action_approved2(self):
+        """Set Selection state to Confirmed."""
+        self.state = 'approved2'
+
+    @api.one
+    def action_approved(self):
+        """Approved Selection is planted Seed."""
+        # self.action_receive()
+        self.state = 'done'
+
+    # @api.one
+    # def action_receive(self):
+
+
+
+class PemisahanLine(models.Model):
+
+    _name="estate.nursery.separationln"
+
+    name=fields.Char(related='separation_id.name')
+    separation_id=fields.Many2one('estate.nursery.separation')
+    # batch_id=fields.Many2one('estate.nursery.batch')
+    # location_id=fields.Many2one('stock.location', "Bedengan/Plot",
+    #                               domain=[('estate_location', '=', True),
+    #                                       ('estate_location_level', '=', '3'),
+    #                                       ('estate_location_type', '=', 'nursery'),
+    #                                       ('scrap_location', '=', False)],
+    #                               help="Fill in location seed planted.")
+    qty_planted=fields.Integer()
     qty_single=fields.Integer()
     qty_double=fields.Integer()
-    qty_normal=fields.Integer(related='separation_id.batch_id.qty_normal')
+    qty_normal_double=fields.Integer("Normal Double Seed",store=True)
+    qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True)
+    total_lastsaldo=fields.Integer()
+
 
 

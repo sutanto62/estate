@@ -105,6 +105,8 @@ class Batch(models.Model):
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
+    qty_single= fields.Integer("single Seed Quantity")
+    qty_double = fields.Integer("Double Seed Quantity")
     qty_abnormal = fields.Integer("Abnormal Seed Quantity")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
@@ -154,8 +156,10 @@ class Batch(models.Model):
         self.qty_abnormal = 0
         for item in self.batchline_ids:
             self.qty_normal += item.subtotal_normal
+            self.qty_single += item.qty_single
+            self.qty_double += item.qty_double
             self.qty_abnormal += item.subtotal_abnormal
-        self.write({'nursery_stage': '0' , 'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
+        self.write({'nursery_stage': '0' ,'qty_single':self.qty_single,'qty_double':self.qty_double ,'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
 
         self.action_planted()
 

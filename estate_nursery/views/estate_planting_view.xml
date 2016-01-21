@@ -176,11 +176,6 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
-                        <!--<button name="(launch_session_wizard)d" type="action"-->
-                                <!--colors="red"-->
-                                <!--string="Transfer"-->
-                                <!--attrs="{'invisible':[('state','!=','done')]}"/>-->
-
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
                                statusbar_color='{"draft":"blue","pending":"red","pending2":"red",
@@ -227,12 +222,12 @@
                                                 'readonly': [('state','=','done')]}"/>
                                     </tree>
                                 </page>
-                                <page string="Batch's Planting">
-                                    <tree>
-                                        <field name="batch_ids" attrs="{
-                                                'readonly': [('state','=','done')]}"/>
-                                    </tree>
-                                </page>
+                                <!--<page string="Batch's Planting">-->
+                                    <!--<tree>-->
+                                        <!--<field name="batch_ids" attrs="{-->
+                                                <!--'readonly': [('state','=','done')]}"/>-->
+                                    <!--</tree>-->
+                                <!--</page>-->
                             </notebook>
                         </group>
                     </sheet>
@@ -246,42 +241,13 @@
             <field name="name">Requestline Planting</field>
             <field name="model">estate.nursery.requestline</field>
             <field name="arch" type="xml">
-                <tree string="Request line View" colors=  "red:qty_request">
+                <tree string="Request line View" colors="red:qty_request" editable="top">
+                    <field name="batch_id" string="No Batch"/>
                     <field name="location_id" string="Blok" />
                     <field name="Luas" string="Luas(Ha)"/>
                     <field name="qty_request" string="&#931; Quantity Request ." sum="Qty"/>
                     <field name="comment"/>
                 </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="view_form_requestline_planting">
-            <field name="name">Request line Planting</field>
-            <field name="model">estate.nursery.requestline</field>
-            <field name="arch" type="xml">
-                <form String="Request Line view">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="batch_id"/>
-                                <field name="location_id"/>
-                                <field name="request_id" invisible="1"/>
-                                <field name="qty_batch"/>
-                                <field name="qty_request"/>
-                            </group>
-                            <group>
-                                <field name="Luas"/>
-                            </group>
-                        </group>
-                        <group>
-                            <notebook>
-                                <page string="Comment And Description">
-                                    <field name="comment"/>
-                                </page>
-                            </notebook>
-                        </group>
-                    </sheet>
-                </form>
             </field>
         </record>
 

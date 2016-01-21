@@ -9,7 +9,7 @@
                     <field name="culling_code" string="Culling no"/>
                     <field name="culling_location_id" string="Location culling"/>
                     <field name="culling_date" string="Culling Date"/>
-                    <field name="quantitytotal_abnormal" string="Quantity Abnormal"/>
+                    <field name="total_quantityabnormal_temp" string="Quantity Abnormal"/>
                 </tree>
             </field>
         </record>
@@ -75,8 +75,9 @@
                                 <field name="culling_date"/>
                             </group>
                             <group>
-                                <field name="quantitytotal_abnormal" attrs="{'invisible':[('selectionform','!=', '1')]}"/>
-                                <field name="quantitytotal_abnormal_selection"
+                                <field name="quantitytotal_abnormal" string="Total Quantity Abnormal Batch"
+                                       attrs="{'invisible':[('selectionform','!=', '1')]}"/>
+                                <field name="total_quantityabnormal_temp" string="Total All Abnormal"
                                        attrs="{'invisible':[('selectionform','!=', '2')]}"/>
                             </group>
                         </group>
@@ -84,8 +85,8 @@
                             <page string="Culling Line Batch detail" attrs="{'invisible':[('selectionform','!=', '1')]}">
                                 <field name="cullingline_ids" />
                             </page>
-                            <page string="Culling Line Selection detail" attrs="{'invisible':[('selectionform','!=', '2')]}" >
-                                <field name="cullinglineselection_ids" />
+                            <page string="Culling Line All detail" attrs="{'invisible':[('selectionform','!=', '2')]}">
+                                <field name="cullinglineall_ids" />
                             </page>
                         </notebook>
                     </sheet>
@@ -93,81 +94,43 @@
             </field>
         </record>
 
-         <!--view Tree, Culling line selection-->
-        <record model="ir.ui.view" id="view_tree_nursery_cullinglineselection">
-            <field name="name">Nursery Culling line selection Tree</field>
-            <field name="model">estate.nursery.cullinglineselection</field>
+        <!--view Tree, Culling line All-->
+        <record model="ir.ui.view" id="view_tree_nursery_cullinglineall">
+            <field name="name">Nursery Culling line all Tree</field>
+            <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
-                    <field name="batch_id" string="Batch No"/>
-                    <field name="selection_id" string="Selection No" domain="[('batch_id','=',batch_id)]"/>
-                    <field name="selectionstage_id" String="Selection Stage"/>
-                    <field name="qty_normalbatch" string="&#931;Nor Batch "/>
-                    <field name="qty_abnormalselection" string="&#931;Abn Selection"/>
-                    <field name="qty_normalselection" string="&#931;Nor Selection"/>
+                    <field name="selection_id" string="Batch No" domain="[('flagcul','=','0')]"/>
+                    <field name="status"/>
+                    <field name="total_seed_dobatch" string="&#931;DO Batch "/>
+                    <field name="allqty_abnormal_batch" string="&#931;Abn Batch"/>
+                    <field name="allqty_normal_batch" string="&#931;Nor Batch"/>
+                    <field name="selectionstage_id" string="Selection Stage"/>
+                    <field name="qty_abnormal_selection" string="&#931;Abn Selection"/>
+                    <field name="qty_normal_selection" string="&#931;Nor Selection"/>
                     <field name="culling_location_id" string="Location Culling"/>
-                    <field name="qty_total_abnormal_selection" string="&#931; QTY Abnomal"/>
-                    <field name="qty_planted_selection" string="&#931; QTY Planted"/>
+                    <field name="total_abnormal" string="&#931; Pemusnahan"/>
+                    <field name="total_transplanted" string="&#931; Transplanted"/>
                 </tree>
             </field>
         </record>
 
-
         <!--view Tree, Culling line batch-->
-        <record model="ir.ui.view" id="view_tree_nursery_cullingline">
+        <record model="ir.ui.view" id="view_tree_nursery_cullinglinebatch">
             <field name="name">Nursery Culling line Tree</field>
             <field name="model">estate.nursery.cullinglinebatch</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
                     <field name="batch_id" string="Batch No"/>
-                    <field name="total_seed_DO" string="Total Kecambah"/>
-                    <field name="qty_abnormal_batch" string="Abnormal Batch Receive"/>
-                    <field name="qty_normal_batch" string="Normal Batch Receive"/>
+                    <field name="total_seed_DO" string="&#931; Kecambah"/>
+                    <field name="qty_abnormal_batch" string="&#931;Abn Batch Receive"/>
+                    <field name="qty_normal_batch" string="&#931;Nor Batch Receive"/>
                     <field name="culling_location_id" string="Location Culling"/>
-                    <field name="total_qty_abnormal_batch" string="Total QTY Abnomal"/>
-                    <field name="qty_transplanted" string="Total Trasplanted"/>
+                    <field name="total_qty_abnormal_batch" string="&#931; QTY Abnomal"/>
+                    <field name="qty_transplanted" string="&#931; Trasplanted"/>
                 </tree>
             </field>
         </record>
-
-        <!--&lt;!&ndash;view form,Cullingline&ndash;&gt;-->
-        <!--<record model="ir.ui.view" id="view_form_nursery_cullingline">-->
-            <!--<field name="name">Nursery Culling</field>-->
-            <!--<field name="model">estate.nursery.cullingline</field>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<form string="Nursery Culling View">-->
-                    <!--<group coolspan="10">-->
-                        <!--<group>-->
-                            <!--<field name="batch_id"/>-->
-                            <!--<field name="selection_id" string="Batch and selection"/>-->
-                            <!--<field name="selectionstage_id"/>-->
-                        <!--</group>-->
-                        <!--<group>-->
-                            <!--<field name="qty_planted"/>-->
-                            <!--<field name="qty_abnormal_batch" string="Abnormal qty Batch"/>-->
-                            <!--<field name="qty_abnormal_selection" string="Abnormal qty selection"/>-->
-                        <!--</group>-->
-                    <!--</group>-->
-                    <!--<notebook>-->
-                        <!--<page string="Comment/Description">-->
-                            <!--<field name="comment" />-->
-                        <!--</page>-->
-                    <!--</notebook>-->
-                <!--</form>-->
-            <!--</field>-->
-        <!--</record>-->
-
-         <!--&lt;!&ndash;view Tree, Culling line&ndash;&gt;-->
-        <!--<record model="ir.ui.view" id="view_tree_stock_quant">-->
-            <!--<field name="name">Nursery Stock Quant Tree</field>-->
-            <!--<field name="model">estate.nursery.stockquant</field>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<tree string="Nursery Culling line View" editable="top">-->
-                    <!--<field name="stockquant_id" string="Stock/Batch"/>-->
-                    <!--<field name="qty" string="Total QTY Abnomal"/>-->
-                <!--</tree>-->
-            <!--</field>-->
-        <!--</record>-->
 
         <!--Action -->
         <record model="ir.actions.act_window" id="action_list_culling" >

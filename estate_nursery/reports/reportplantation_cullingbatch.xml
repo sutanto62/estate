@@ -2,13 +2,13 @@
 <!--Custom report.-->
 <openerp>
     <data>
-        <template id="report_culling_document">
+        <template id="report_culling_batch_document">
             <t t-call="report.external_layout">
                 <div class="page">
                     <!--First Row-->
                         <div class="row col-xs-12" style="font-family: times; background-color:#568eff;border: 1px solid #568eff;color:#ffffff; font-size:20pt;">
                             <div class="col-xs-12" >
-                                <p>Report Berita Acara Pemusnahan Bibit</p>
+                                <p>Report Berita Acara Pemusnahan Kecambah</p>
                             </div>
                         </div>
 
@@ -69,27 +69,6 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">Selection Stage</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">QTY Abnormal Selection</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">QTY Normal Selection</p></td>
-                                    </tr>
-                                </table>
-                            </div>
                             <div class="col-xs-2">
                                 <table>
                                     <tr>
@@ -115,7 +94,7 @@
 
                       <!-- Forth ROW -->
                       <div class="row col-xs-12" style="border: 1px solid #568eff;">
-                          <t t-foreach="o.cullinglineall_ids"  t-as="i">
+                          <t t-foreach="o.cullingline_ids"  t-as="i">
                                 <div class="col-xs-12">
                                     <div class="col-xs-1">
                                         <div>
@@ -130,7 +109,7 @@
                                         <div>
                                             <table>
                                                 <tr>
-                                                    <td><p t-esc="i.total_seed_dobatch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
+                                                    <td><p t-esc="i.total_seed_DO" style="text-align:right;font-family: times; font-size:14pt;"/></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -139,7 +118,7 @@
                                         <div>
                                             <table>
                                                 <tr>
-                                                    <td><p t-esc="i.allqty_abnormal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
+                                                    <td><p t-esc="i.qty_abnormal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -148,34 +127,7 @@
                                         <div>
                                             <table>
                                                 <tr>
-                                                    <td><p t-esc="i.allqty_normal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:center;border-left:1px solid #568eff;">
-                                         <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.selectionstage_id.name" style="text-align:left;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.qty_abnormal_selection" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.qty_normal_selection" style="text-align:right;font-family: times; font-size:14pt;"/></td>
+                                                    <td><p t-esc="i.qty_normal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -193,7 +145,7 @@
                                         <div>
                                             <table>
                                                 <tr>
-                                                    <td><p t-esc="i.total_abnormal" style="text-align:right;font-family: times; font-size:14pt;"/></td>
+                                                    <td><p t-esc="i.total_qty_abnormal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -202,7 +154,7 @@
                                         <div>
                                             <table>
                                                 <tr>
-                                                    <td><p t-esc="i.total_transplanted" style="text-align:right;font-family: times; font-size:14pt;"/></td>
+                                                    <td><p t-esc="i.qty_transplanted" style="text-align:right;font-family: times; font-size:14pt;"/></td>
                                                 </tr>
                                             </table>
                                         </div>
@@ -230,8 +182,8 @@
                                     <tr>
                                         <td>
                                             <t t-set="variable" t-value="0"/>
-                                            <t t-foreach="o.cullinglineall_ids" t-as="m">
-                                                <t t-set="variable" t-value="variable+m.total_abnormal"/>
+                                            <t t-foreach="o.cullingline_ids" t-as="m">
+                                                <t t-set="variable" t-value="variable+m.total_qty_abnormal_batch"/>
                                             </t>
                                             <b t-esc="variable" style="text-align:right;font-family: times; font-size:14pt;"/>
                                         </td>
@@ -244,10 +196,10 @@
             </t>
         </template>
 
-        <template id="reportculling_div_report">
+        <template id="report_culling_batch_div_report">
             <t t-call="report.html_container">
                 <t t-foreach="doc_ids" t-as="doc_id">
-                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_culling_document')"/>
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_culling_batch_document')"/>
                 </t>
             </t>
         </template>

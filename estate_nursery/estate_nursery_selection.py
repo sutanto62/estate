@@ -35,6 +35,9 @@ class Selection(models.Model):
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("plan qty")
+    qty_abn_batch=fields.Integer(related='batch_id.qty_abnormal')
+    qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
+    qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
     presentage_normal = fields.Float("Persentage Normal",digits=(2,2),required=False)
     presentage_abnormal = fields.Float("Persentage Abnormal",digits=(2,2), required=False)
@@ -44,8 +47,7 @@ class Selection(models.Model):
     maxa = fields.Integer(related='selectionstage_id.age_limit_max')
     mina = fields.Integer(related='selectionstage_id.age_limit_min')
     comment = fields.Text("Additional Information")
-    product_id = fields.Many2one('product.product', "Product",)
-    # related="lot_id.product_id"
+    product_id = fields.Many2one('product.product', "Product",related="lot_id.product_id")
     selectionline_count=fields.Integer("selection Cause",compute="_get_selectionline_count",store=True)
     nursery_information = fields.Selection([('draft','Draft'),
                                             ('0','untimely'),
@@ -62,6 +64,8 @@ class Selection(models.Model):
     nursery_plandatemin = fields.Char('Planning Date min',readonly=True,compute="calculateplandatemin",visible=True)
     nursery_persentagen = fields.Float(digit=(2.2),compute='computepersentage')
     nursery_persentagea = fields.Float(digit=(2.2),compute='computepersentage')
+    flagcul=fields.Selection([('-1','Reject'),('0','new'),('1','approval1'),('2','approval2')]
+                             ,string="Flag",store=True,default='0')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -102,11 +106,8 @@ class Selection(models.Model):
         abnormal = self.qty_abnormal
         selectionlineids = self.selectionline_ids
         for item in selectionlineids:
-            # normal -= abnormal
             abnormal += item.qty
         self.write({'qty_abnormal': self.qty_abnormal, })
-
-        # 'qty_normal' : self.qty_normal ,'qty_plant' : self.qty_plant
 
         self.action_move()
         return True
@@ -114,15 +115,26 @@ class Selection(models.Model):
     @api.one
     def action_move(self):
 
-        # Move quantity abnormal seed
-        if self.qty_abnormal > 0:
+        location_ids = set()
+        for item in self.selectionline_ids:
+            if item.location_id and item.qty > 0: # todo do not include empty quantity location
+                location_ids.add(item.location_id)
+
+        for location in location_ids:
+            qty_total_abnormal = 0
+            qty = self.env['estate.nursery.selectionline'].search([('location_id', '=', location.id),
+                                                                   ('selection_id', '=', self.id)
+                                                                   ])
+            for i in qty:
+                qty_total_abnormal += i.qty
+
             move_data = {
                 'product_id': self.batch_id.product_id.id,
-                'product_uom_qty': self.qty_abnormal,
+                'product_uom_qty': qty_total_abnormal,
                 'product_uom': self.batch_id.product_id.uom_id.id,
                 'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
                 'date_expected': self.date_plant,
-                'location_id': self.picking_id.location_dest_id.id,
+                'location_id': location.id,
                 'location_dest_id': self.culling_location_id.id,
                 'state': 'confirmed', # set to done if no approval required
                 'restrict_lot_id': self.lot_id.id # required by check tracking product
@@ -131,7 +143,25 @@ class Selection(models.Model):
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()
             move.action_done()
-        return True
+
+        # # Move quantity abnormal seed
+        # if self.qty_abnormal > 0:
+        #     move_data = {
+        #         'product_id': self.batch_id.product_id.id,
+        #         'product_uom_qty': self.qty_abnormal,
+        #         'product_uom': self.batch_id.product_id.uom_id.id,
+        #         'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
+        #         'date_expected': self.date_plant,
+        #         'location_id': self.picking_id.location_dest_id.id,
+        #         'location_dest_id': self.culling_location_id.id,
+        #         'state': 'confirmed', # set to done if no approval required
+        #         'restrict_lot_id': self.lot_id.id # required by check tracking product
+        #     }
+        #
+        #     move = self.env['stock.move'].create(move_data)
+        #     move.action_confirm()
+        #     move.action_done()
+        # return True
 
     #compute qtyplant :
     @api.one
@@ -398,7 +428,7 @@ class Cause(models.Model):
     sequence = fields.Integer('Sequence No')
     index=fields.Integer(compute='_compute_index')
     # selection_id= fields.Many2one('estate.nursery.selection')
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",)
+    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",store=True)
 
     #create sequence
     @api.one
@@ -407,3 +437,10 @@ class Cause(models.Model):
         self.index = self._model.search_count(cr, uid, [
             ('sequence', '<', self.sequence)
         ], context=ctx) + 1
+
+    # #change stage_id
+    # @api.one
+    # @api.onchange('stage_id')
+    # def change_stage_id(self):
+    #     if stage_id:
+    #

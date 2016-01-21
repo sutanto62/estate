@@ -1,5 +1,122 @@
 <openerp>
     <data>
 
+        <record model="ir.ui.view" id="view_tree_separation_polytone">
+            <field name="name">Separation Polytone</field>
+            <field name="model">estate.nursery.separation</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery separation View">
+                    <field name="separation_code" string="Separation No"/>
+                    <field name="separation_date"/>
+                    <field name="qty_total" string="&#931;  Saldo Total."/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_separation_nursery">
+            <field name="name">Separation Polytone</field>
+            <field name="model">estate.nursery.separation</field>
+            <field name="arch" type="xml">
+                <form String="Nursery separation View">
+                    <header coolspan="10">
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed,approved1,approved2"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_done" type="workflow"
+                                string="Done"
+                                class="oe_highlight"
+                                states="approved2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Estate Kasie"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Estate Manager"
+                                class="oe_highlight"
+                                states="approved1"
+                                groups="estate.group_manager"/>
+
+                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,approved1,approved2,done"
+                               statusbar_color='{"draft":"blue"}'/>
+                    </header>
+                    <sheet>
+                         <div class="oe_title" colors="blue">
+                             <h1>
+                                 <label string="Separation For  "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                 <label string="Separation  "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <field name="separation_code" class="oe_inline" readonly="1" />
+                             </h1>
+                         </div>
+
+                        <group>
+                            <group>
+                                <field name="separation_date"/>
+                            </group>
+
+                            <group coolspan="10">
+                                <field name="culling_location_id" />
+                                <field name="qty_total"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <notebook>
+                                <page string="Separation Line">
+                                        <field name="separationline_ids"/>
+                                    </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_separationline_polytone">
+            <field name="name">Separation Line Polytone</field>
+            <field name="model">estate.nursery.separationln</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Separation Line View"
+                      colors="red" editable="top">
+                    <!--<field name="batch_id" string="Batch No" />-->
+                    <!--<field name="location_id" />-->
+                    <field name="qty_planted" string="&#931; Planted"/>
+                    <field name="qty_single" string="&#931; Batch single"/>
+                    <field name="qty_double" string="&#931; Batch Double"/>
+                    <field name="qty_normal_double" string="Nor Separation"/>
+                    <field name="qty_abnormal_double" string="Abn Separation"/>
+                    <field name="total_lastsaldo" string="Abn Separation"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- ACTION -->
+        <record model="ir.actions.act_window" id="action_list_separation" >
+            <field name="name">Separation</field>
+            <field name="res_model">estate.nursery.separation</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_search_selection" ref="estate_nursery.view_form_separation_nursery"/>
+        </record>
+
+        <!-- MENU -->
+        <menuitem id="nursery_seed_separation"
+                  name="Separation"
+                  parent="estate_nursery_menu"
+                  action="action_list_separation" sequence="16" />
     </data>
 </openerp>

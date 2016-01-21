@@ -55,7 +55,7 @@
                     <field name="name"/>
                     <field name="code"/>
                     <field name="sequence"/>
-                    <field name="stage_id"/>
+                    <field name="stage_id" />
                     <field name="comment"/>
                 </tree>
             </field>
@@ -341,7 +341,6 @@
             <field name="arch" type="xml">
                    <graph string="Graph Selection stage" type="pivot">
                        <field name="selection_id" string="Selection"/>
-                       <!--<field name="cause_id" type="row" string="Cause" />-->
                        <field name="selectionstage" type="row" string="stage"/>
                        <field name="qty" type="measure"  sum="Qty Abnormal"/>
                    </graph>
@@ -353,41 +352,13 @@
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
                 <tree string="Seed Selection Line" colors=  "red:qty " editable="top">
-                    <field name="cause_id"/>
+                    <field name="cause_id" />
                     <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
                     <field name="location_id"/>
+                    <field name="comment" string="Add Description/Comment"/>
                 </tree>
             </field>
          </record>
-
-        <record model="ir.ui.view" id="view_form_selectionline">
-            <field name="name">Selection line</field>
-            <field name="model">estate.nursery.selectionline</field>
-            <field name="arch" type="xml">
-                <form string="Seed Selection Line" colors="red:qty ">
-                    <group>
-                        <group>
-                            <field name="qty_batch"/>
-                            <field name="selection_id" invisible="1"/>
-                            <field name="selectionstage" invisible="1"/>
-                            <field name="qty"/>
-                        </group>
-                        <group>
-                            <field name="cause_id"/>
-                            <field name="location_id"/>
-                        </group>
-                    </group>
-                    <group>
-                        <notebook>
-                            <page string="Description or Comment">
-                                <field name="comment" string="Description or Comment"/>
-                            </page>
-                        </notebook>
-                    </group>
-                </form>
-            </field>
-         </record>
-
 
         <!-- ACTION -->
         <record model="ir.actions.act_window" id="action_list_selection" >

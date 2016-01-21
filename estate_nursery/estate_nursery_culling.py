@@ -8,42 +8,32 @@ class Culling(models.Model):
 
     _name = "estate.nursery.culling"
 
-    name=fields.Char("Culling Name",)
+    name=fields.Char("Culling Name")
     culling_code=fields.Char("LBP")
+    partner_id=fields.Many2one('res.partner')
+    cullinglineall_ids=fields.One2many('estate.nursery.cullingline','culling_id',"Culling")
     cullingline_ids=fields.One2many('estate.nursery.cullinglinebatch','culling_id',"Culling")
-    cullinglineselection_ids=fields.One2many('estate.nursery.cullinglineselection','culling_id',"Culling Selection")
     culling_date = fields.Date("Culling date",store=True,required=True)
-    batch_id=fields.Many2one('estate.nursery.batch')
-    picking_id = fields.Many2one('stock.picking', "Picking", readonly=True )
     location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Inventory loss'),
                                                                              ('usage','=','inventory'),
                                                                              ],store=True,required=True)
-    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
-                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     stockquant_id=fields.Many2one('stock.quant',
                                   domain=[('location_id.estate_location_type', '=', 'nursery'),
                                           ('location_id.scrap_location','=',True),
                                           ('location_id.estate_location_level', '=', '3')],store=True)
     quantitytotal_abnormal = fields.Integer("Quantity Total Abnormal",compute='_compute_total_batch',store=True)
-    quantitytotal_abnormal_selection = fields.Integer("Quantity Total Abnormal selection",compute='_compute_total_selection',store=True)
+    total_quantityabnormal_temp=fields.Integer(compute='_compute_total_abnormal',store=True)
+    total_qtyabnormal=fields.Integer(store=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True)
-    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='0',required=True)
+    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='2',required=True)
     state= fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval '),('approved2','Second Approval'),
         ('done', 'Done')],string="Culling State")
-
-    # #auto datetime
-    # @api.one
-    # @api.depends("culling_date")
-    # def _culling_date(self):
-    #     today = datetime.now()
-    #     self.culling_date=today
 
     #Auto Generated Code of culling
     def create(self, cr, uid, vals, context=None):
@@ -61,13 +51,14 @@ class Culling(models.Model):
         return True
 
     @api.one
-    @api.depends('cullinglineselection_ids',)
-    def _compute_total_selection(self):
-        self.quantitytotal_abnormal_selection = 0
-        for a in self.cullinglineselection_ids:
-            self.quantitytotal_abnormal_selection += a.qty_total_abnormal_selection
+    @api.depends('cullinglineall_ids')
+    def _compute_total_abnormal(self):
+        self.total_quantityabnormal_temp = 0
+        for a in self.cullinglineall_ids:
+            self.total_quantityabnormal_temp += a.qty_abnormal_selection
         return True
 
+    #state for Culling
     @api.one
     def action_draft(self):
         """Set Selection State to Draft."""
@@ -91,126 +82,204 @@ class Culling(models.Model):
     @api.one
     def action_approved(self):
         """Approved Selection is planted Seed."""
-        # self.action_receive()
+        self.action_receive()
         self.state = 'done'
 
     @api.one
     def action_receive(self):
-        abnormal = self.quantitytotal_abnormal
-        cullinglineids = self.cullingline_ids
-        for item in cullinglineids:
-            abnormal += item.qty_abnormal
-        self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal })
-        # self.action_move()
+        abnormal = self.total_quantityabnormal_temp
+        abnormalbatch = self.quantitytotal_abnormal
+        cullinglineids = self.cullinglineall_ids
+        batchlineids = self.cullingline_ids
+        if self.selectionform == '1':
+            for itembatch in batchlineids:
+                abnormalbatch += itembatch.total_qty_abnormal_batch
+            self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal })
+            self.action_move()
+        elif self.selectionform == '2':
+            for item in cullinglineids:
+                abnormal += item.qty_abnormal_selection
+            self.write({'total_quantityabnormal_temp': self.total_quantityabnormal_temp })
+            self.action_move()
         return True
 
-    # @api.one
-    # def action_move(self):
-         # location_ids = set()
-         # for item in self.cullingline_ids:
-         #     if item.location_type and item.qty_abnormal > 0: # todo do not include empty quantity location
-         #         location_ids.add(item.location_type)
-         #
-         # # Move quantity from culling location to inventory loss
-         # for location in location_ids:
-         #    qty_total_culling = 0
-         #    trash = self.env['estate.nursery.cullingline'].search([('location_type', '=', location.id),
-         #                                                            ('culling_id', '=', self.id)])
-         #    for i in trash:
-         #         qty_total_culling += i.qty_abnormal
-         #
-         #    move_data = {
-         #            'product_id': self.stockquant_id.lot_id.product_id.id,
-         #            'product_uom_qty': self.quantitytotal_abnormal,
-         #            'product_uom': self.stockquant_id.lot_id.product_id.uom_id.id,
-         #            'name': 'Cullling Abnormal for %s:'%(self.culling_code),
-         #            'date_expected': self.culling_date,
-         #            'location_id': self.stockquant_id.location_id.id,
-         #            'location_dest_id': self.location_type.id,
-         #            'state': 'confirmed', # set to done if no approval required
-         #            'restrict_lot_id': self.lot_id.id # required by check tracking product
-         #    }
-         #
-         #    move = self.env['stock.move'].create(move_data)
-         #    move.action_confirm()
-         #    move.action_done()
-         # return True
+    # Move quantity from culling location to inventory loss
+    @api.one
+    def action_move(self):
+        if self.selectionform == '1' :
+             location_ids = set()
+             for itembatch in self.cullingline_ids:
+                 if itembatch.culling_location_id and itembatch.total_qty_abnormal_batch > 0:
+                     location_ids.add(itembatch.culling_location_id)
 
-         # if self.quantitytotal_abnormal > 0:
-         #    move_data = {
-         #        'product_id': self.stockquant_id.lot_id.product_id.id,
-         #        'product_uom_qty': self.quantitytotal_abnormal,
-         #        'product_uom': self.stockquant_id.lot_id.product_id.uom_id.id,
-         #        'name': 'Cullling Abnormal.%s:'%(self.culling_code),
-         #        'date_expected': self.culling_date,
-         #        'location_id': self.stockquant_id.lot_id.id,
-         #        'location_dest_id': self.location_type.id,
-         #        'state': 'confirmed', # set to done if no approval required
-         #        'restrict_lot_id': self.lot_id.id # required by check tracking product
-         #    }
-         #
-         #    move = self.env['stock.move'].create(move_data)
-         #    move.action_confirm()
-         #    move.action_done()
-         # return True
+                 for locationbatch in location_ids:
+                    qty_total_cullingbatch = 0
 
-class CullingLineSelection(models.Model):
+                    trash = self.env['estate.nursery.cullinglinebatch'].search([('culling_location_id', '=', locationbatch.id),
+                                                                        ('culling_id', '=', self.id)])
+                    for i in trash:
+                        qty_total_cullingbatch += i.total_qty_abnormal_batch
 
-    _name="estate.nursery.cullinglineselection"
+                 move_data = {
+                        'product_id': itembatch.product_id.id,
+                        'product_uom_qty': qty_total_cullingbatch,
+                        'product_uom': itembatch.product_id.uom_id.id,
+                        'name': 'Culling Abnormal for %s:'%(self.culling_code),
+                        'date_expected': self.culling_date,
+                        'location_id': locationbatch.id,
+                        'location_dest_id': self.location_type.id,
+                        'state': 'confirmed', # set to done if no approval required
+                        'restrict_lot_id': itembatch.lot_id.id # required by check tracking product
+                 }
+                 print(move_data)
+                 move = self.env['stock.move'].create(move_data)
+                 move.action_confirm()
+                 move.action_done()
+             return True
 
-    name=fields.Char("Culling Line Name",)
+        elif self.selectionform == '2':
+             location_ids = set()
+             for item in self.cullinglineall_ids:
+                 if item.culling_location_id and item.total_abnormal > 0:
+                     location_ids.add(item.culling_location_id)
+                 for location in location_ids:
+                    qty_total_culling = 0
+                    trash = self.env['estate.nursery.cullingline'].search([('culling_location_id', '=', location.id),
+                                                                        ('culling_id', '=', self.id)])
+                    for i in trash:
+                        qty_total_culling += i.qty_abnormal_selection
+
+                 move_data = {
+                        'product_id': item.product_id.id,
+                        'product_uom_qty': qty_total_culling,
+                        'product_uom': item.product_id.uom_id.id,
+                        'name': 'Culling Abnormal for %s:'%(self.culling_code),
+                        'date_expected': self.culling_date,
+                        'location_id': location.id,
+                        'location_dest_id': self.location_type.id,
+                        'state': 'confirmed', # set to done if no approval required
+                        'restrict_lot_id': item.lot_id.id # required by check tracking product
+                 }
+                 print(move_data)
+                 move = self.env['stock.move'].create(move_data)
+                 move.action_confirm()
+                 move.action_done()
+             return True
+
+
+class CullingLine(models.Model):
+    _name="estate.nursery.cullingline"
+
+
+    name=fields.Char(related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',related='batch_id.selection_id'
+    selection_id=fields.Many2one('estate.nursery.selection',
                                  )
+    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
+                             domain=[('product_id.seed','=',True)],related='selection_id.batch_id.lot_id')
+    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     selectionstage_id=fields.Many2one('estate.nursery.selectionstage',
                                       related='selection_id.selectionstage_id',readonly=True)
-    qty_normalbatch=fields.Integer(store=True)
-    qty_normalselection=fields.Integer(store=True)
-    qty_abnormalselection=fields.Integer(store=True)
-    qty_total_abnormal_selection=fields.Integer(store=True)
-    qty_planted_selection=fields.Integer(store=True)
+    testflag=fields.Selection(related='selection_id.flagcul')
+    status=fields.Boolean()
+    allqty_normal_batch=fields.Integer()
+    allqty_abnormal_batch=fields.Integer()
+    allqty_transplanted=fields.Integer()
+    qty_normal_selection=fields.Integer()
+    qty_abnormal_selection=fields.Integer(related='selection_id.qty_abnormal')
+    total_transplanted=fields.Integer()
+    total_abnormal=fields.Integer(store=True,compute='_get_total_abnormal')
+    total_seed_dobatch=fields.Integer()
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
-                                          ,store=True,related='batch_id.culling_location_id',readonly=True)
+                                          ,store=True,related='selection_id.culling_location_id',readonly=True)
 
-    #get qty normal seed receive perbatch
-    @api.onchange('batch_id','qty_normal_batch')
-    def _get_qty_normalbatch(self):
-            self.qty_normalbatch=self.batch_id.qty_normal
-            self.write({'qty_normalbatch':self.qty_normalbatch})
-            print self.qty_normalbatch
+    #Validation to set flag in selection id
+    @api.one
+    @api.onchange('selection_id','testflag')
+    def test(self):
+        flag = self.selection_id.flagcul
+        state = self.culling_id.state
+        if self.culling_id:
+            if self.culling_id.state == 'confirmed':
+                self.status = True
+
+
+        # if self.selection_id :
+        #         flag='2'
+        #         self.write({'flagcul' : flag})
+        #         if  flag== '1':
+        #             self.status = True
+        #         elif flag== '2':
+        #             self.status = True
+        # return {'value': {'flagcul':flag}}
+
+        # elif self.selection_id == True and state == 'confirmed':
+        #         flag='1'
+        #         self.write({'flagcul' : flag})
+        #         if  flag== '1':
+        #             self.status = True
+        # print flag
+    # @api.onchange('selection_id','culling_id')
+    # def change_flag(self):
+    #     flag = self.selection_id.flagcul
+    #     print flag
+    #     if self.selection_id==True:
+    #         flag = '1'
+    #         self.write({'flagcul' : flag})
+    #         print flag
+
+
+
+
+
+
+    #get qty total do batch
+    @api.onchange('selection_id','total_seed_dobatch')
+    def _get_total_seed_dobatch(self):
+        self.total_seed_dobatch=self.selection_id.qty_batch
+        self.write({'total_seed_dobatch':self.total_seed_dobatch})
+        print self.total_seed_dobatch
+
+    #get qty normal batch
+    @api.onchange('selection_id','allqty_normal_batch')
+    def _get_total_allnormal_dobatch(self):
+        self.allqty_normal_batch=self.selection_id.qty_nor_batch
+        self.write({'allqty_normal_batch':self.allqty_normal_batch})
+        print self.allqty_normal_batch
 
     #get qty normal Selection
-    @api.onchange('batch_id','selection_id','qty_normalselection')
+    @api.onchange('batch_id','selection_id','qty_normal_selection')
     def _get_qty_abnormalselection(self):
-            self.qty_normalselection=self.selection_id.qty_normal
-            self.write({'qty_normalselection':self.qty_normalselection})
-            print self.qty_normalselection
+            self.qty_normal_selection=self.selection_id.qty_normal
+            self.write({'qty_normal_selection':self.qty_normal_selection})
+            print self.qty_normal_selection
 
-    #get qty planted Selection
-    @api.onchange('batch_id','selection_id','qty_plantedselection')
-    def _get_planted_selection(self):
-            self.qty_planted_selection=self.selection_id.qty_plant
-            self.write({'qty_planted_selection':self.qty_planted_selection})
-            print self.qty_planted_selection
+    #get qty abnormal batch
+    @api.onchange('selection_id','allqty_abnormal_batch')
+    def _get_total_allabnormal_dobatch(self):
+        self.allqty_abnormal_batch=self.selection_id.qty_abn_batch
+        self.write({'allqty_abnormal_batch':self.allqty_abnormal_batch})
+        print self.allqty_abnormal_batch
 
-    #get qty abnormal Selection
-    @api.onchange('batch_id','selection_id','qty_abnormalselection')
-    def _get_abnormalselection(self):
-            self.qty_abnormalselection=self.selection_id.qty_abnormal
-            self.write({'qty_abnormalselection':self.qty_abnormalselection})
-            print self.qty_abnormalselection
+    #get qty Planted
+    @api.onchange('selection_id','total_transplanted')
+    def _get_total_allplanted(self):
+        self.total_transplanted=self.selection_id.qty_tpr_batch
+        self.write({'total_transplanted':self.total_transplanted})
+        print self.total_transplanted
 
-    #get qty total abnormal Selection
-    @api.onchange('batch_id','selection_id','qty_total_abnormal_selection')
-    def _get_total_abnormalselection(self):
-            self.qty_total_abnormal_selection=self.selection_id.qty_abnormal
-            self.write({'qty_total_abnormal_selection':self.qty_total_abnormal_selection})
-            print self.qty_total_abnormal_selection
-
+    #get  total qty abnormal
+    @api.one
+    @api.depends('qty_abnormal_selection','allqty_abnormal_batch','total_abnormal')
+    def _get_total_abnormal(self):
+        abnormalbatch=self.allqty_abnormal_batch
+        abnormalselection=self.qty_abnormal_selection
+        self.total_abnormal=abnormalselection+abnormalbatch
+        print self.total_abnormal
 
 class CullinglineBatch(models.Model):
 
@@ -219,19 +288,19 @@ class CullinglineBatch(models.Model):
     name=fields.Char("Culling line name",related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',)
-    qty_normal_batch=fields.Integer(store=True)
-    qty_abnormal_batch=fields.Integer(store=True)
+    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
+                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
+    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
+    qty_normal_batch=fields.Integer()
+    qty_abnormal_batch=fields.Integer(related='batch_id.qty_abnormal')
     qty_transplanted=fields.Integer(store=True)
-    total_qty_abnormal_batch=fields.Integer(store=True)
+    total_qty_abnormal_batch=fields.Integer(store=True,compute='_get_abnormal_total')
     total_seed_DO=fields.Integer(store=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True,related='batch_id.culling_location_id',readonly=True)
-
-
 
     #get qty Transplanted
     @api.onchange('batch_id','qty_transplanted')
@@ -247,13 +316,6 @@ class CullinglineBatch(models.Model):
             self.write({'qty_normal_batch':self.qty_normal_batch})
             print self.qty_normal_batch
 
-    #get qty abnormal seed receive perbatch
-    @api.onchange('batch_id','qty_abnormal_batch')
-    def _get_abnormal(self):
-            self.qty_abnormal_batch=self.batch_id.qty_abnormal
-            self.write({'qty_abnormal_batch':self.qty_abnormal_batch})
-            print self.qty_abnormal_batch
-
     #get qty seed receive perbatch
     @api.onchange('batch_id','total_seed_DO')
     def _get_receive(self):
@@ -262,109 +324,12 @@ class CullinglineBatch(models.Model):
             print self.total_seed_DO
 
     #Total qty abnormal seed batch
-    @api.onchange('batch_id','total_qty_abnormal_batch')
+    @api.one
+    @api.depends('batch_id','total_qty_abnormal_batch')
     def _get_abnormal_total(self):
-            self.total_qty_abnormal_batch=self.batch_id.qty_abnormal
-            self.write({'qty_abnormal_batch':self.total_qty_abnormal_batch})
+            total_abnormal = self.qty_abnormal_batch
+            self.total_qty_abnormal_batch = total_abnormal
             print  self.total_qty_abnormal_batch
-
-    # #get qty total selection perbatch
-    # @api.onchange('batch_id','qty_abnormal_selection','selection_id')
-    # def _getabnormal_selection(self):
-    #         self.qty_abnormal_selection=self.batch_id.total_selection_abnormal
-    #         self.write({'qty_abnormal_selection':self.qty_abnormal_selection})
-    #         print self.qty_abnormal_selection
-
-
-    # @api.depends('batch_id')
-    # def getbatch(self):
-    #     self.qty_abnormal_selection = 0
-    #     for i in self.batch_id:
-    #         self.qty_abnormal_selection = self.qty_abnormal_selection + self.batch_id.
-    #     return theSum
-
-    # @api.onchange('batch_id','qty_abnormal_selection','selection_ids')
-    # def getValueAbnormal(self):
-    #     if self.batch_id:
-    #         self.qty_abnormal_selection=self.
-
-    # #get value abnormal from batch
-    # @api.one
-    # @api.depends('selection_ids','batch_id')
-    # def _compute_total(self):
-    #     self.qty_planted = 0
-    #     if self.batch_id:
-    #         if self.selection_ids:
-    #             for a in self.selection_ids:
-    #                 self.qty_abnormal_selection +=a.qty_abnormal
-    #                 print self.qty_abnormal_selection
-    #
-    #     return True
-    #     # self.write({'qty_abnormal_selection' : self.qty_abnormal})
-
-    #get abnormal from selection
-    # @api.one
-    # @api.depends('selection_id','batch_id','qty_abnormal_selection')
-    # def _get_value_abnormal(self):
-    #
-    #     res={}
-    #     batch=self.batch_id
-    #     selection=self.selection_id
-    #     if batch and selection:
-    #         getselec=self.env('estate.nursery.selection').search(['qty_abnormal'])
-    #         for r in self:
-    #             r.qty_abnormal_selection = len(r.selectionline_ids)
-    #             # for qtyplanted in self.batch_id:
-        #     qty_planted = 0
-        #     src = self.env['estate.nursery.batch'].search([('qty_planted', '=', True),
-        #                                           ])
-        #     src2 = self.env['estate.nursery.selection'].search([('qty_plant','=',True)])
-
-    # @api.one
-    # def search_qty_quant(self):
-    #     location_stockids = set()
-    #     for qty in self.stockquant_id:
-    #         qty=0
-    #         stock=self.env['stock.quant'].browse([('location_id.estate_location_type','=','nursery'),('qty','=',True)])
-    #         print stock
-
-    # related='stockquant_id.lot_id.qty',relation='stock.quant',store=True
-
-# class StockQuant(models.Model):
-#
-#     _name="estate.nursery.stock"
-#     _inherits = {'stock.quant':'stockquant_id'}
-#
-#     name=fields.Char("Quant name",compute="_get_name")
-#     stockquant_id = fields.Many2one('stock.quant')
-#     qty=fields.Integer(compute="_get_qty",select=True,readonly=True)
-#     product_id= fields.Many2one('product.product', 'Product', required=True, ondelete="restrict", readonly=True, select=True),
-#     location_id= fields.Many2one('stock.location', 'Location', required=True, ondelete="restrict", readonly=True, select=True, auto_join=True),
-#     package_id= fields.Many2one('stock.quant.package', string='Package', help="The package containing this quant", readonly=True, select=True),
-#
-#
-#     def _get_name(self, cr, uid, ids, name, args, context=None):
-#         """ Forms complete name of location from parent location to child location.
-#         @return: Dictionary of values
-#         """
-#         res = {}
-#         for q in self.browse(cr, uid, ids, context=context):
-#
-#             res[q.id] = q.product_id.code or ''
-#             if q.lot_id:
-#                 res[q.id] = q.lot_id.name
-#             res[q.id] += ': ' + q.product_id.uom_id.name
-#         return res
-#
-#     def _get_qty(self,cr,uid,ids,qty,args,context=None):
-#
-#         res={}
-#         for a in self.browse(cr,uid,ids,context=context):
-#             res[a.id]= a.product_id.code or ''
-#             if a.lot_id :
-#                 res[a.id] = a.lot_id.name
-#             res[a.id] += ":" + str(a.qty)
-#         return res
 
 
 

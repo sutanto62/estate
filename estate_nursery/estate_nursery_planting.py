@@ -296,26 +296,26 @@ class RequestLine(models.Model):
     _name = "estate.nursery.requestline"
 
     name=fields.Char("Requestline",related='request_id.name')
-    batch_id=fields.Many2one('estate.nursery.batch',)
+    batch_id=fields.Many2one('estate.nursery.batch',required=True)
     request_id=fields.Many2one('estate.nursery.request')
     location_id = fields.Many2one('stock.location', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),
-                                          ('scrap_location', '=', False)],related='batch_id.batchline_ids.location_id',
+                                          ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.")
     Luas = fields.Float("Luas Block",digits=(2,2))
     qty_batch=fields.Integer(related='batch_id.qty_planted')
-    qty_request = fields.Integer("Quantity Request" ,compute='validateqty_batch',required=True)
+    qty_request = fields.Integer("Quantity Request",required=True)
     comment = fields.Text("Decription / Comment")
 
-    @api.one
-    @api.depends('qty_batch','qty_request')
-    def validateqty_batch(self):
-
-        if self.qty_request :
-            if self.qty_request> self.qty_batch:
-                raise exceptions.Warning('Quantity cannot Higger Than Quantity Batch %s. Review you quantity.' % self.batch_id.name)
+    # @api.one
+    # @api.depends('qty_batch','qty_request')
+    # def validateqty_batch(self):
+    #
+    #     if self.qty_request :
+    #         if self.qty_request > self.qty_batch:
+    #             raise exceptions.Warning('Quantity cannot Higger Than Quantity Batch %s. Review you quantity.' % self.batch_id.name)
 
 
 class TrasferSeed(models.Model):

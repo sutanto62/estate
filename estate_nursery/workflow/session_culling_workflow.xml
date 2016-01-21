@@ -67,12 +67,12 @@
             <field name="act_to" ref="culling_draft"/>
             <field name="signal">signal_draft</field>
         </record>
-        <record model="workflow.transition" id="culliingconfirmed_to_first_approved">
+        <record model="workflow.transition" id="cullingconfirmed_to_first_approved">
             <field name="act_from" ref="culling_confirmed"/>
             <field name="act_to" ref="culling_first_approved"/>
             <field name="signal">signal_approved1</field>
         </record>
-        <record model="workflow.transition" id="plantingfirst_approved_to_draft">
+        <record model="workflow.transition" id="cullingfirst_approved_to_draft">
             <field name="act_from" ref="culling_first_approved"/>
             <field name="act_to" ref="culling_draft"/>
             <field name="signal">signal_draft</field>
