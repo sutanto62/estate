@@ -1,9 +1,9 @@
 <openerp>
     <data>
-        <!-- Nursery Separation-->
+        <!-- Nursery cleavage-->
         <record id="estate_nursery.separation_approval" model="workflow">
             <field name="name">Estate Nursery Separation Workflow</field>
-            <field name="osv">estate.nursery.separation</field>
+            <field name="osv">estate.nursery.cleavage</field>
             <field name="on_create">True</field>
         </record>
 

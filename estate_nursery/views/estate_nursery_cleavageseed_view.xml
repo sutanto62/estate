@@ -1,9 +1,9 @@
 <openerp>
     <data>
 
-        <record model="ir.ui.view" id="view_tree_separation_polytone">
+        <record model="ir.ui.view" id="view_tree_cleavage_polytone">
             <field name="name">Separation Polytone</field>
-            <field name="model">estate.nursery.separation</field>
+            <field name="model">estate.nursery.cleavage</field>
             <field name="arch" type="xml">
                 <tree string="Nursery separation View">
                     <field name="separation_code" string="Separation No"/>
@@ -13,9 +13,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_form_separation_nursery">
+        <record model="ir.ui.view" id="view_form_cleavage_nursery">
             <field name="name">Separation Polytone</field>
-            <field name="model">estate.nursery.separation</field>
+            <field name="model">estate.nursery.cleavage</field>
             <field name="arch" type="xml">
                 <form String="Nursery separation View">
                     <header coolspan="10">
@@ -74,14 +74,13 @@
                                 <field name="qty_total"/>
                             </group>
                         </group>
-
-                        <group>
                             <notebook>
-                                <page string="Separation Line">
-                                        <field name="separationline_ids"/>
-                                    </page>
+                                    <page string="Cleavage Line">
+                                        <tree>
+                                            <field name="pemisahanline_ids"/>
+                                        </tree>
+                                     </page>
                             </notebook>
-                        </group>
                     </sheet>
                 </form>
             </field>
@@ -89,12 +88,11 @@
 
         <record model="ir.ui.view" id="view_tree_separationline_polytone">
             <field name="name">Separation Line Polytone</field>
-            <field name="model">estate.nursery.separationln</field>
+            <field name="model">estate.nursery.cleavageln</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Separation Line View"
-                      colors="red" editable="top">
-                    <!--<field name="batch_id" string="Batch No" />-->
-                    <!--<field name="location_id" />-->
+                <tree string="Nursery Separation Line View" editable="top">
+                    <field name="batch_id" string="Batch No" />
+                    <field name="location_id" />
                     <field name="qty_planted" string="&#931; Planted"/>
                     <field name="qty_single" string="&#931; Batch single"/>
                     <field name="qty_double" string="&#931; Batch Double"/>
@@ -108,9 +106,9 @@
         <!-- ACTION -->
         <record model="ir.actions.act_window" id="action_list_separation" >
             <field name="name">Separation</field>
-            <field name="res_model">estate.nursery.separation</field>
+            <field name="res_model">estate.nursery.cleavage</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_search_selection" ref="estate_nursery.view_form_separation_nursery"/>
+            <field name="view_search_selection" ref="estate_nursery.view_form_cleavage_nursery"/>
         </record>
 
         <!-- MENU -->

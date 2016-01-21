@@ -6,12 +6,12 @@ import calendar
 
 class PemisahanPolytone(models.Model):
 
-    _name = "estate.nursery.separation"
+    _name = "estate.nursery.cleavage"
 
     name=fields.Char("Separation polytone Code")
     separation_code=fields.Char()
     separation_date=fields.Date("Date of separation polytone")
-    separationline_ids=fields.One2many('estate.nursery.separationln','separation_id',"Separation Line")
+    pemisahanline_ids=fields.One2many('estate.nursery.cleavageln','cleavage_id',"separation line")
     qty_total=fields.Integer("Total Seed ")
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
@@ -58,21 +58,19 @@ class PemisahanPolytone(models.Model):
     # @api.one
     # def action_receive(self):
 
-
-
 class PemisahanLine(models.Model):
 
-    _name="estate.nursery.separationln"
+    _name="estate.nursery.cleavageln"
 
-    name=fields.Char(related='separation_id.name')
-    separation_id=fields.Many2one('estate.nursery.separation')
-    # batch_id=fields.Many2one('estate.nursery.batch')
-    # location_id=fields.Many2one('stock.location', "Bedengan/Plot",
-    #                               domain=[('estate_location', '=', True),
-    #                                       ('estate_location_level', '=', '3'),
-    #                                       ('estate_location_type', '=', 'nursery'),
-    #                                       ('scrap_location', '=', False)],
-    #                               help="Fill in location seed planted.")
+    name=fields.Char(related='cleavage_id.name')
+    cleavage_id=fields.Many2one('estate.nursery.cleavage')
+    batch_id=fields.Many2one('estate.nursery.batch')
+    location_id=fields.Many2one('stock.location', "Bedengan/Plot",
+                                  domain=[('estate_location', '=', True),
+                                          ('estate_location_level', '=', '3'),
+                                          ('estate_location_type', '=', 'nursery'),
+                                          ('scrap_location', '=', False)],
+                                  help="Fill in location seed planted.")
     qty_planted=fields.Integer()
     qty_single=fields.Integer()
     qty_double=fields.Integer()
