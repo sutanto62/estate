@@ -25,7 +25,7 @@
                         <button name="signal_draft" type="workflow"
                                 string="Reject"
                                 class="oe_highlight"
-                                states="confirmed,approved1,approved2"
+                                states="confirmed,approved1,approved2,approved3"
                                 groups="estate.group_assistant"/>
 
                         <button name="signal_confirm" type="workflow"
@@ -37,7 +37,7 @@
                         <button name="signal_done" type="workflow"
                                 string="Done"
                                 class="oe_highlight"
-                                states="approved2"
+                                states="approved3"
                                 groups="estate.group_manager"/>
 
                         <button name="signal_approved1" type="workflow"
@@ -52,8 +52,15 @@
                                 states="approved1"
                                 groups="estate.group_manager"/>
 
+                        <button name="signal_approved3" type="workflow"
+                                string="Direktur"
+                                class="oe_highlight"
+                                states="approved2"
+                                groups="estate.group_manager"/>
+
+
                          <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,approved1,approved2,done"
+                               statusbar_visible="draft,confirmed,approved1,approved2,approved3,done"
                                statusbar_color='{"draft":"blue"}'/>
                     </header>
                     <sheet>
@@ -121,7 +128,7 @@
             <field name="model">estate.nursery.cullinglinebatch</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="top">
-                    <field name="batch_id" string="Batch No"/>
+                    <field name="batch_id" string="Batch No" />
                     <field name="total_seed_DO" string="&#931; Kecambah"/>
                     <field name="qty_abnormal_batch" string="&#931;Abn Batch Receive"/>
                     <field name="qty_normal_batch" string="&#931;Nor Batch Receive"/>

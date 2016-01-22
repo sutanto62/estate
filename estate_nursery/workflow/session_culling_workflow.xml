@@ -47,6 +47,16 @@
             <field name="action">action_approved2()</field>
         </record>
 
+        <record model="workflow.activity" id="culling_third_approved">
+            <field name="name">Second Approved</field>
+            <field name="wkf_id" ref="estate_nursery.culling_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved3()</field>
+        </record>
+
         <record model="workflow.activity" id="culling_done">
             <field name="name">Done</field>
             <field name="wkf_id" ref="estate_nursery.culling_approval"/>
@@ -84,14 +94,26 @@
             <field name="signal">signal_approved2</field>
         </record>
 
+        <record model="workflow.transition" id="cullingsecondapproved_to_third_approved">
+            <field name="act_from" ref="culling_second_approved"/>
+            <field name="act_to" ref="culling_third_approved"/>
+            <field name="signal">signal_approved3</field>
+        </record>
+
         <record model="workflow.transition" id="cullingsecond_approved_to_draft">
             <field name="act_from" ref="culling_second_approved"/>
             <field name="act_to" ref="culling_draft"/>
             <field name="signal">signal_draft</field>
         </record>
 
-        <record model="workflow.transition" id="cullingsecond_approved_to_done">
-            <field name="act_from" ref="culling_second_approved"/>
+        <record model="workflow.transition" id="cullingthird_approved_to_draft">
+            <field name="act_from" ref="culling_third_approved"/>
+            <field name="act_to" ref="culling_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="cullingthird_approved_to_done">
+            <field name="act_from" ref="culling_third_approved"/>
             <field name="act_to" ref="culling_done"/>
             <field name="signal">signal_done</field>
         </record>

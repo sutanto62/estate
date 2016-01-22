@@ -56,9 +56,9 @@
                     <sheet>
                          <div class="oe_title" colors="blue">
                              <h1>
-                                 <label string="Separation For  "
+                                 <label string="Cleavage Seed For"
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
-                                 <label string="Separation  "
+                                 <label string="Cleavage Seed For Batch "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
                                  <field name="separation_code" class="oe_inline" readonly="1" />
                              </h1>
@@ -66,18 +66,18 @@
 
                         <group>
                             <group>
-                                <field name="separation_date"/>
+                                <field name="separation_date" string="Cleavage Date"/>
                             </group>
 
                             <group coolspan="10">
-                                <field name="culling_location_id" />
-                                <field name="qty_total"/>
+                                <field name="culling_location_id" string="Culling location"/>
+                                <field name="qty_total" string="Quantity Total"/>
                             </group>
                         </group>
                             <notebook>
                                     <page string="Cleavage Line">
                                         <tree>
-                                            <field name="pemisahanline_ids"/>
+                                            <field name="cleavageline_ids"/>
                                         </tree>
                                      </page>
                             </notebook>
@@ -86,19 +86,19 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_tree_separationline_polytone">
+        <record model="ir.ui.view" id="view_tree_cleavageline_polytone">
             <field name="name">Separation Line Polytone</field>
             <field name="model">estate.nursery.cleavageln</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Separation Line View" editable="top">
+                <tree string="Nursery cleavage Line View" editable="top">
                     <field name="batch_id" string="Batch No" />
-                    <field name="location_id" />
                     <field name="qty_planted" string="&#931; Planted"/>
                     <field name="qty_single" string="&#931; Batch single"/>
                     <field name="qty_double" string="&#931; Batch Double"/>
                     <field name="qty_normal_double" string="Nor Separation"/>
                     <field name="qty_abnormal_double" string="Abn Separation"/>
-                    <field name="total_lastsaldo" string="Abn Separation"/>
+                    <field name="location_id" string="Location To"/>
+                    <field name="total_lastsaldo" string="Total Last Saldo"/>
                 </tree>
             </field>
         </record>

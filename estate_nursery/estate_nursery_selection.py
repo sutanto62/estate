@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, exceptions
+from openerp.exceptions import ValidationError
 from datetime import datetime, date
 from dateutil.relativedelta import *
 import calendar
@@ -170,11 +171,6 @@ class Selection(models.Model):
         abn = self.qty_abnormal
         nrml = self.qty_normal
         plante = int(self.qty_plante)
-        # for qtyplanted in self.batch_id:
-        #     qty_planted = 0
-        #     src = self.env['estate.nursery.batch'].search([('qty_planted', '=', True),
-        #                                           ])
-        #     src2 = self.env['estate.nursery.selection'].search([('qty_plant','=',True)])
         if self.selectionline_ids :
             hasil = plante - abn
             self.qty_normal = hasil

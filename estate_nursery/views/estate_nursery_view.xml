@@ -247,12 +247,18 @@
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                    'default_qty_plante': qty_planted}"/>
                         </page>
+
+                        <page string="Information Cleveage Seed" >
+                            <group name="bottom" string="Information">
+                                <field name="cleavage_id"/>
+                            </group>
+                        </page>
+
                         <page string="Additional Information">
                             <group name="bottom" string="Information">
                                 <field name="comment"/>
                             </group>
                         </page>
-
                     </notebook>
                 </form>
             </field>

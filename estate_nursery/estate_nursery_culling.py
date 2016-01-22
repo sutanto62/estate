@@ -1,6 +1,7 @@
 from openerp import models, fields, api, exceptions
 from datetime import datetime, date
 from dateutil.relativedelta import *
+from openerp.exceptions import ValidationError
 import calendar
 
 
@@ -29,10 +30,10 @@ class Culling(models.Model):
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True)
-    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='2',required=True)
+    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='1',required=True)
     state= fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),('approved1','First Approval '),('approved2','Second Approval'),
+        ('confirmed', 'Confirmed'),('approved1','First Approval '),('approved2','Second Approval'),('approved3','Third Approval'),
         ('done', 'Done')],string="Culling State")
 
     #Auto Generated Code of culling
@@ -80,6 +81,11 @@ class Culling(models.Model):
         self.state = 'approved2'
 
     @api.one
+    def action_approved3(self):
+        """Set Selection state to Confirmed."""
+        self.state = 'approved3'
+
+    @api.one
     def action_approved(self):
         """Approved Selection is planted Seed."""
         self.action_receive()
@@ -108,25 +114,28 @@ class Culling(models.Model):
     def action_move(self):
         if self.selectionform == '1' :
              location_ids = set()
+             batch_ids = set()
              for itembatch in self.cullingline_ids:
-                 if itembatch.culling_location_id and itembatch.total_qty_abnormal_batch > 0:
+                 if itembatch.culling_location_id and itembatch.batch_id and itembatch.total_qty_abnormal_batch > 0:
                      location_ids.add(itembatch.culling_location_id)
+                     batch_ids.add(itembatch.batch_id)
 
-                 for locationbatch in location_ids:
+                 for locationbatch in batch_ids:
+
                     qty_total_cullingbatch = 0
 
-                    trash = self.env['estate.nursery.cullinglinebatch'].search([('culling_location_id', '=', locationbatch.id),
+                    trash = self.env['estate.nursery.cullinglinebatch'].search([('batch_id', '=', locationbatch.id),
                                                                         ('culling_id', '=', self.id)])
                     for i in trash:
-                        qty_total_cullingbatch += i.total_qty_abnormal_batch
+                        qty_total_cullingbatch = i.total_qty_abnormal_batch
 
                  move_data = {
                         'product_id': itembatch.product_id.id,
-                        'product_uom_qty': qty_total_cullingbatch,
+                        'product_uom_qty': itembatch.total_qty_abnormal_batch,
                         'product_uom': itembatch.product_id.uom_id.id,
-                        'name': 'Culling Abnormal for %s:'%(self.culling_code),
+                        'name': 'Culling Abnormal Kecambah for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
-                        'location_id': locationbatch.id,
+                        'location_id': itembatch.culling_location_id.id,
                         'location_dest_id': self.location_type.id,
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': itembatch.lot_id.id # required by check tracking product
@@ -139,27 +148,31 @@ class Culling(models.Model):
 
         elif self.selectionform == '2':
              location_ids = set()
+             selection_ids= set()
              for item in self.cullinglineall_ids:
-                 if item.culling_location_id and item.total_abnormal > 0:
+                 if  item.batch_id and item.culling_location_id and item.total_abnormal > 0:
                      location_ids.add(item.culling_location_id)
-                 for location in location_ids:
-                    qty_total_culling = 0
-                    trash = self.env['estate.nursery.cullingline'].search([('culling_location_id', '=', location.id),
-                                                                        ('culling_id', '=', self.id)])
-                    for i in trash:
-                        qty_total_culling += i.qty_abnormal_selection
+                     selection_ids.add(item.selection_id)
+
+                 for batchitem in selection_ids:
+                     qty_batch = 0
+                     batch = self.env['estate.nursery.cullingline'].search([('selection_id','=',batchitem.id),
+                                                                        ('culling_id','=',self.id)])
+
+                     for b in batch:
+                         qty_batch = b.qty_abnormal_selection
 
                  move_data = {
                         'product_id': item.product_id.id,
-                        'product_uom_qty': qty_total_culling,
+                        'product_uom_qty': item.qty_abnormal_selection,
                         'product_uom': item.product_id.uom_id.id,
-                        'name': 'Culling Abnormal for %s:'%(self.culling_code),
+                        'name': 'Culling Abnormal Bibit for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
-                        'location_id': location.id,
+                        'location_id': item.culling_location_id.id,
                         'location_dest_id': self.location_type.id,
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': item.lot_id.id # required by check tracking product
-                 }
+                        }
                  print(move_data)
                  move = self.env['stock.move'].create(move_data)
                  move.action_confirm()
@@ -174,11 +187,11 @@ class CullingLine(models.Model):
     name=fields.Char(related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',
+    selection_id=fields.Many2one('estate.nursery.selection',domain="[('qty_abnormal','>',0)]"
                                  )
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='selection_id.batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
+    product_id = fields.Many2one('product.product', "Product", related="selection_id.lot_id.product_id")
     selectionstage_id=fields.Many2one('estate.nursery.selectionstage',
                                       related='selection_id.selectionstage_id',readonly=True)
     testflag=fields.Selection(related='selection_id.flagcul')
@@ -287,7 +300,7 @@ class CullinglineBatch(models.Model):
 
     name=fields.Char("Culling line name",related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
-    batch_id=fields.Many2one('estate.nursery.batch')
+    batch_id=fields.Many2one('estate.nursery.batch',domain="[('qty_abnormal','>',0)]")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")

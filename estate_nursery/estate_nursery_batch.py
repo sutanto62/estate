@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime, date
+from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
 import calendar
 
@@ -89,6 +90,7 @@ class Batch(models.Model):
     partner_id = fields.Many2one('res.partner')
     name = fields.Char(_("Batch No"), readonly= True)
     culling_id=fields.Many2one("estate.nursery.culling")
+    cleavage_id=fields.Many2one("estate.nursery.cleavage",)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
@@ -106,8 +108,8 @@ class Batch(models.Model):
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
     qty_single= fields.Integer("single Seed Quantity")
-    qty_double = fields.Integer("Double Seed Quantity")
-    qty_abnormal = fields.Integer("Abnormal Seed Quantity")
+    qty_double=fields.Integer("Double Seed Quantity",)
+    qty_abnormal=fields.Integer("Abnormal Seed Quantity")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
@@ -236,6 +238,10 @@ class Batch(models.Model):
 
         return True
 
+    #set constraint to date received to date planted
+    # @api.constrains('date_received','date_planted')
+    # def _set_constraint(self):
+
     #count selection
     @api.depends('selection_ids')
     def _get_selection_count(self):
@@ -282,7 +288,7 @@ class Batch(models.Model):
 
     #computed seed planted
     @api.one
-    @api.depends('batchline_ids','selection_ids')
+    @api.depends('batchline_ids','selection_ids','cleavage_id')
     def _compute_total(self):
         self.qty_planted = 0
         for item in self.batchline_ids:
@@ -290,6 +296,7 @@ class Batch(models.Model):
         if self.selection_ids:
             for a in self.selection_ids:
                 self.qty_planted -=a.qty_abnormal
+        # elif self.
 
         return True
         self.write({'qty_planted' : self.qty_planted})
