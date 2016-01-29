@@ -109,12 +109,69 @@ class Selection(models.Model):
         for item in selectionlineids:
             abnormal += item.qty
         self.write({'qty_abnormal': self.qty_abnormal, })
-
         self.action_move()
         return True
 
     @api.one
     def action_move(self):
+
+        # location_ids = set()
+        # for item in self.selectionline_ids:
+        #     if item.location_id and item.qty > 0: # todo do not include empty quantity location
+        #         location_ids.add(item.location_id)
+        #
+        # for location in location_ids:
+        #     qty_total_abnormal = 0
+        #     qty = self.env['estate.nursery.selectionline'].search([('location_id', '=', location.id),
+        #                                                            ('selection_id', '=', self.id)
+        #                                                            ])
+        #     for i in qty:
+        #         qty_total_abnormal += i.qty
+        #     koefisient = 1
+        #
+        #     move_data = {
+        #         'location_id': location.id,
+        #         'product_uom_qty': qty_total_abnormal,
+        #         'product_uos_qty': qty_total_abnormal/koefisient,
+        #         'state': 'confirmed',
+        #         'scrapped': True,
+        #         'location_dest_id': self.culling_location_id.id,
+        #         'restrict_lot_id': self.lot_id.id,
+        #         'restrict_partner_id': self.partner_id.id,
+        #         }
+        #
+        #     move = self.env['stock.move'].create(move_data)
+        #     move.action_confirm()
+        #     move.action_scrap()
+        # selection_ids = set()
+        # for item in self.selectionline_ids:
+        #     if item.selection_id and item.batch_id and item.qty > 0: # todo do not include empty quantity location
+        #         selection_ids.add(item.selection_id,item.location_id,item.batch_id)
+        #
+        # for location in selection_ids:
+        #     qty_total_abnormal = 0
+        #     qty = self.env['estate.nursery.selectionline'].search([('batch_id', '=', location.id),
+        #                                                            ('selection_id', '=', self.id),
+        #                                                            ('location_id','=',location.id)
+        #                                                            ])
+        #     for i in qty:
+        #         qty_total_abnormal += i.qty
+        #
+        #     move_data = {
+        #         'product_id': self.batch_id.product_id.id,
+        #         'product_uom_qty': qty_total_abnormal,
+        #         'product_uom': self.batch_id.product_id.uom_id.id,
+        #         'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
+        #         'date_expected': self.date_plant,
+        #         'location_id': location.id,
+        #         'location_dest_id': self.culling_location_id.id,
+        #         'state': 'confirmed', # set to done if no approval required
+        #         'restrict_lot_id': self.lot_id.id # required by check tracking product
+        #     }
+        #
+        #     move = self.env['stock.move'].create(move_data)
+        #     move.action_confirm()
+        #     move.action_done()
 
         location_ids = set()
         for item in self.selectionline_ids:
@@ -177,6 +234,20 @@ class Selection(models.Model):
             self.qty_plant = hasil
         return  True
 
+    # #constraint Date for selection and date planted
+    # @api.multi
+    # @api.constrains('selection_date','date_plant')
+    # def _check_date(self):
+    #     for obj in self:
+    #         start_date = obj.date_plant
+    #         end_date = obj.selection_date
+    #
+    #         if start_date and end_date:
+    #             DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
+    #             from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
+    #             to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
+    #             if to_dt < from_dt:
+    #                  raise ValidationError("Planted Date Should be Greater than Received Date!" )
 
     #selection count
     @api.depends('selectionline_ids')
@@ -362,6 +433,42 @@ class SelectionStage(models.Model):
     comment = fields.Text(string="Description or command")
     stage_id = fields.Many2one('estate.nursery.stage',"Nursery Stage",required=True)
 
+    #constraint Age Limit and age selection
+    @api.multi
+    @api.constrains("age_limit_max","age_limit_min","age_selection")
+    def _check_date(self):
+        for obj in self:
+            maxa =self.age_limit_max
+            mina=self.age_limit_min
+            limitmax = self.age_limit_max
+            limitmin = 1
+            limit=[1,2,3,4,5,6,7,8,9,10,11,12]
+            for a in limit:
+                limitmax = a
+            if maxa and mina:
+                if self.age_selection >= maxa:
+                    raise ValidationError("Age selection not more than age limit max!" )
+                elif self.age_selection <= mina:
+                    raise ValidationError("Age selection should be Greater Than Age limit min!" )
+
+    #constraint Age Limit min max and age selection
+    @api.multi
+    @api.constrains("age_limit_max","age_limit_min","age_selection")
+    def _check_date(self):
+        for obj in self:
+            maxa =self.age_limit_max
+            mina=self.age_limit_min
+            limitmax = self.age_limit_max
+            limitmin = 1
+            limit=[1,2,3,4,5,6,7,8,9,10,11,12]
+            for a in limit:
+                limitmax = a
+            if maxa and mina:
+                if maxa >= limitmax:
+                    raise ValidationError("Age Limit min not more than 12!" )
+                elif mina < limitmin:
+                    raise ValidationError("Age Limit min not less than 1!" )
+
     #Limit age
     @api.one
     @api.depends("age_limit_max","age_limit_min","age_selection","info",)
@@ -387,9 +494,6 @@ class SelectionStage(models.Model):
             elif mina < limitmin:
                 self.info="3"
 
-
-
-
 class SelectionLine(models.Model):
     """Seed Selection Line"""
     _name = 'estate.nursery.selectionline'
@@ -413,6 +517,33 @@ class SelectionLine(models.Model):
                                              required=True,)
     comment = fields.Text("Description")
 
+    # #search location in batch
+    # @api.one
+    # def search_location(self):
+    #     batch_ids=set()
+    #     for item in self.location_id:
+    #         if item.location_id and item.qty > 0: # todo do not include empty quantity location
+    #             location_ids.add(item.location_id)
+    #
+    #     for location in location_ids:
+    #         qty_total_abnormal = 0
+    #         qty = self.env['estate.nursery.selectionline'].search([('location_id', '=', location.id),
+    #                                                                ('selection_id', '=', self.id)
+    #                                                                ])
+    #         for i in qty:
+    #             qty_total_abnormal += i.qty
+
+
+    #constraint Age Limit min max and age selection
+    @api.multi
+    @api.constrains("qty","qty_batch")
+    def _check_constraint_qty(self):
+        for obj in self:
+            qty_selection =self.qty
+            qty_batch=self.qty_batch
+            if qty_selection:
+                if qty_selection > qty_batch:
+                    raise ValidationError("Quantity Abnormal Not More Than Quantity Batch!" )
 
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""
@@ -434,9 +565,3 @@ class Cause(models.Model):
             ('sequence', '<', self.sequence)
         ], context=ctx) + 1
 
-    # #change stage_id
-    # @api.one
-    # @api.onchange('stage_id')
-    # def change_stage_id(self):
-    #     if stage_id:
-    #

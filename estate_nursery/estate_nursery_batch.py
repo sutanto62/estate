@@ -238,10 +238,36 @@ class Batch(models.Model):
 
         return True
 
-    #set constraint to date received to date planted
-    # @api.constrains('date_received','date_planted')
-    # def _set_constraint(self):
+    # set constraint to date received to date planted
+    @api.multi
+    @api.constrains('date_received','date_planted')
+    def _check_date(self):
+        for obj in self:
+            start_date = obj.date_received
+            end_date = obj.date_planted
 
+            if start_date and end_date:
+                DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
+                from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
+                to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
+
+                if to_dt < from_dt:
+                     raise ValidationError("Planted Date Should be Greater than Received Date!" )
+    #in v7
+    # @api.one
+    # def _check_date(self, cr, uid, ids, context=None):
+    #    for obj in self.browse(cr, uid, ids):
+    #     start_date = obj.date_received
+    #     end_date = obj.date_planted
+    #
+    #     if start_date and end_date:
+    #         DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
+    #         from_dt = datetime.datetime.strptime(start_date, DATETIME_FORMAT)
+    #         to_dt = datetime.datetime.strptime(end_date, DATETIME_FORMAT)
+    #
+    #         if to_dt < from_dt:
+    #             return False
+    # _constraints = [(_check_date, 'End Date Should be Greater than Start Date!', ['start_date','end_date']),]
     #count selection
     @api.depends('selection_ids')
     def _get_selection_count(self):

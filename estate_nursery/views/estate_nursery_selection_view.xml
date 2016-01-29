@@ -128,7 +128,6 @@
             <field name="arch" type="xml">
                    <graph string="Graph Selection" type="pie">
                        <field name="batch_id" string=" number batch" />
-                       <!--<field name="qty_abnormal" type="measure"/>-->
                        <field name="qty_plant" type="measure"/>
                    </graph>
             </field>
@@ -351,12 +350,39 @@
             <field name="name">Selection line</field>
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
-                <tree string="Seed Selection Line" colors=  "red:qty " editable="top">
+                <tree string="Seed Selection Line" colors="red:qty" editable="top">
                     <field name="cause_id" />
                     <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
-                    <field name="location_id"/>
+                    <field name="location_id" domain="[('location_id','=',batch_id)]"/>
                     <field name="comment" string="Add Description/Comment"/>
                 </tree>
+            </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_form_selectionline">
+            <field name="name">Selection line</field>
+            <field name="model">estate.nursery.selectionline</field>
+            <field name="arch" type="xml">
+                <form string="Seed Selection Line">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="cause_id" />
+                                <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
+                            </group>
+                            <group coolspan="10">
+                                <field name="location_id"/>
+                            </group>
+                        </group>
+                        <group>
+                            <notebook>
+                                <page string="Add Description/Comment">
+                                    <field name="comment" string="Add Description/Comment"/>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
             </field>
          </record>
 

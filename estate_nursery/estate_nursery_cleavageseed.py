@@ -11,14 +11,15 @@ class PemisahanPolytone(models.Model):
 
     name=fields.Char("Separation polytone Code")
     separation_code=fields.Char()
-    separation_date=fields.Date("Date of separation polytone")
+    separation_date=fields.Date("Date of separation polytone",required=True)
     cleavageline_ids=fields.One2many('estate.nursery.cleavageln','cleavage_id',"separation line")
+    stock_quant = fields.Many2one('stock.quant')
     qty_total=fields.Integer("Total All Seed ",compute="_compute_total_batch")
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
-                                          ,store=True)
+                                          ,store=True,required=True)
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
         ('done', 'Done')],string="Separation State")
@@ -65,23 +66,48 @@ class PemisahanPolytone(models.Model):
         # self.action_receive()
         self.state = 'done'
 
-    # @api.one
-    # def action_receive(self):
-    #     abnormal = self.total_quantityabnormal_temp
-    #     abnormalbatch = self.quantitytotal_abnormal
-    #     cullinglineids = self.cullinglineall_ids
-    #     batchlineids = self.cullingline_ids
-    #     if self.selectionform == '1':
-    #         for itembatch in batchlineids:
-    #             abnormalbatch += itembatch.total_qty_abnormal_batch
-    #         self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal })
-    #         self.action_move()
-    #     elif self.selectionform == '2':
-    #         for item in cullinglineids:
-    #             abnormal += item.qty_abnormal_selection
-    #         self.write({'total_quantityabnormal_temp': self.total_quantityabnormal_temp })
-    #         self.action_move()
-    #     return True
+    @api.one
+    def action_receive(self):
+        pemisahan = self.qty_total
+        cleavagelineids = self.cleavageline
+        for itembatch in cleavagelineids:
+            pemisahan += itembatch.total_lastsaldo
+        self.write({'qty_total': self.qty_total })
+        self.action_move()
+
+    @api.one
+    def action_move(self):
+        batch_ids = set()
+        for itembatch in self.cleavageline_ids:
+            if  itembatch.batch_id and itembatch.total_lastsaldo > 0:
+                batch_ids.add(itembatch.batch_id)
+
+        for batchpisah in batch_ids:
+
+            qty_total_cullingbatch = 0
+
+            trash = self.env['estate.nursery.cleavageln'].search([('batch_id', '=', batchpisah.id),
+                                                                        ('cleavage_id', '=', self.id)])
+            for i in trash:
+                qty_total_cleavagebatch = i.total_lastsaldo
+
+            move_data = {
+                        'product_id': itembatch.product_id.id,
+                        'product_uom_qty': itembatch.total_lastsaldo,
+                        'product_uom': itembatch.product_id.uom_id.id,
+                        'name': 'Cleveage Abnormal Kecambah  %s for %s:'%(self.separation_code,itembatch.product_id.display_name),
+                        'date_expected': self.separation_date,
+                        'location_id': itembatch.location_id.id,
+                        'location_dest_id': self.location_type.id,
+                        'state': 'confirmed', # set to done if no approval required
+                        'restrict_lot_id': itembatch.lot_id.id # required by check tracking product
+                 }
+            move = self.env['stock.move'].create(move_data)
+            move.action_confirm()
+            move.action_done()
+        return True
+
+
 
 class PemisahanLine(models.Model):
 
@@ -109,25 +135,29 @@ class PemisahanLine(models.Model):
     def _get_value_planted(self):
        self.qty_planted=self.batch_id.qty_planted
        self.write({'qty_planted':self.qty_planted})
+
     #get quantity Single
     @api.onchange('qty_single','batch_id')
     def _get_value_single(self):
        self.qty_single=self.batch_id.qty_single
        self.write({'qty_single':self.qty_single})
+
     #get quantity Double
     @api.onchange('qty_double','batch_id')
     def _get_value_double(self):
        self.qty_double=self.batch_id.qty_double
        self.write({'qty_double':self.qty_double})
+
     #calculate normal double
+    @api.multi
     @api.constrains('qty_double','qty_normal_double')
     def constraint_normal_double(self):
         double = self.qty_double
         max_double = self.qty_double * int(2)
-        for hit in self.qty_normal_double :
-            if  hit.qty_normal_double > max_double:
-                raise ValidationError("Your Qty normal more than Maximal Double: %s" % hit.qty_normal_double)
-        return True
+        for obj in self :
+            if  self.qty_normal_double > max_double:
+                raise ValidationError("Your Qty normal more than Maximal Double: %s" % obj.qty_normal_double)
+
     #compute Total Double after cleavage seed
     @api.one
     @api.depends('qty_normal_double','qty_planted','qty_double')
@@ -136,6 +166,7 @@ class PemisahanLine(models.Model):
         double = self.qty_double
         total = (self.qty_planted-self.qty_double)+self.qty_normal_double
         self.total_lastsaldo=total
+
     #compute Total Abnormal Double
     @api.one
     @api.depends('qty_normal_double','qty_double')

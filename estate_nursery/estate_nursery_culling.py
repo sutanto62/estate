@@ -97,11 +97,13 @@ class Culling(models.Model):
         abnormalbatch = self.quantitytotal_abnormal
         cullinglineids = self.cullinglineall_ids
         batchlineids = self.cullingline_ids
+
         if self.selectionform == '1':
             for itembatch in batchlineids:
                 abnormalbatch += itembatch.total_qty_abnormal_batch
             self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal })
             self.action_move()
+
         elif self.selectionform == '2':
             for item in cullinglineids:
                 abnormal += item.qty_abnormal_selection
@@ -117,15 +119,16 @@ class Culling(models.Model):
              batch_ids = set()
              for itembatch in self.cullingline_ids:
                  if itembatch.culling_location_id and itembatch.batch_id and itembatch.total_qty_abnormal_batch > 0:
-                     location_ids.add(itembatch.culling_location_id)
-                     batch_ids.add(itembatch.batch_id)
+                     # location_ids.add(itembatch.culling_location_id)
+                     batch_ids.add(itembatch.batch_id.culling_location_id)
 
                  for locationbatch in batch_ids:
 
                     qty_total_cullingbatch = 0
 
                     trash = self.env['estate.nursery.cullinglinebatch'].search([('batch_id', '=', locationbatch.id),
-                                                                        ('culling_id', '=', self.id)])
+                                                                        ('culling_id', '=', self.id),
+                                                                                ('culling_location_id','=',locationbatch.id)])
                     for i in trash:
                         qty_total_cullingbatch = i.total_qty_abnormal_batch
 
@@ -181,7 +184,9 @@ class Culling(models.Model):
 
 
 class CullingLine(models.Model):
+
     _name="estate.nursery.cullingline"
+
 
 
     name=fields.Char(related='culling_id.name')
@@ -204,6 +209,7 @@ class CullingLine(models.Model):
     total_transplanted=fields.Integer()
     total_abnormal=fields.Integer(store=True,compute='_get_total_abnormal')
     total_seed_dobatch=fields.Integer()
+    picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),

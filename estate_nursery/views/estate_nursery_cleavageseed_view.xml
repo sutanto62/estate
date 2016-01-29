@@ -91,8 +91,10 @@
             <field name="model">estate.nursery.cleavageln</field>
             <field name="arch" type="xml">
                 <tree string="Nursery cleavage Line View" editable="top">
-                    <field name="batch_id" string="Batch No" />
-                    <field name="qty_planted" string="&#931; Planted"/>
+                    <field name="batch_id" string="Batch No" domain="[('qty_double','>',0),('selection_count','>=',3)]"/>
+                    <!--('selection_count','>=',3)-->
+                    <!--,('age_seed_range','>',3)-->
+                    <field name="qty_planted" string="&#931; Planted" />
                     <field name="qty_single" string="&#931; Batch single"/>
                     <field name="qty_double" string="&#931; Batch Double"/>
                     <field name="qty_normal_double" string="Nor Separation"/>
