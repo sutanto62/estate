@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- View - Monthly Plan -->
+        <record model="ir.ui.view" id="view_monthly_plan_kanban">
+            <field name="name">Monthly Plan Form</field>
+            <field name="model">estate.plan.monthly</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <h1><field name="complete_name"/></h1>
+                            <ul>
+                                <li><field name="name"/></li>
+                                <li>Y: <field name="date_year"/></li>
+                                <li>M: <field name="date_month"/></li>
+                            </ul>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_monthly_plan_tree">
+            <field name="name">Monthly Plan Tree</field>
+            <field name="model">estate.plan.monthly</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="date_year" invisible="True"/>
+                    <field name="date_month" invisible="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_monthly_plan_form">
+            <field name="name">Monthly Plan Form</field>
+            <field name="model">estate.plan.monthly</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group name="top">
+                            <group name="top_left">
+                                <field name="name"/>
+                                <field name="complete_name"/>
+                                <field name="date_effective"/>
+                            </group>
+                            <group name="top_right">
+                                <field name="estate_location_level"/>
+                                <field name="estate_location_type"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- View: Activity Plan -->
+        <record model="ir.ui.view" id="view_monthly_activity_tree">
+            <field name="name">Monthly Activity Tree</field>
+            <field name="model">estate.plan.activity</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="plan_id"/>
+                    <field name="name"/>
+                    <field name="activity_id"/>
+                    <field name="location_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_monthly_activity_search">
+            <field name="name">Monthly Activity (Search)</field>
+            <field name="model">estate.plan.activity</field>
+            <field name="mode">primary</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter name="filter_monthly" string="Monthly"
+                            filter_domain="[('plan_id', '=', '4')]"/>
+                    <group string="Group By">
+                        <filter name="by_account" string="Account"
+                                context="{'group_by': ['account_expense_id','activity_id']}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_monthly_activity_form">
+            <field name="name">Monthly Activity Form</field>
+            <field name="model">estate.plan.activity</field>
+            <field name="priority" eval="2"/>
+            <field name="search_view_id" ref="view_monthly_activity_search"/>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group name="activity">
+                            <field name="plan_id"/>
+                            <field name="name"/>
+                            <field name="activity_id"/>
+                            <field name="location_id"/>
+                            <field name="account_expense_id"/>
+                        </group>
+                        <group name="material" string="Material">
+                            <field name="material_ids"/>
+                        </group>
+                        <group name="labour" string="Labour">
+                            <field name="labour_ids"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_monthly_activities_form">
+            <field name="name">Monthly Activities Form</field>
+            <field name="model">estate.plan.activities</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="activity_id"/>
+                        </group>
+                        <field name="location_ids"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_material_tree">
+            <field name="name">Material Tree</field>
+            <field name="model">estate.plan.material</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="product_id"/>
+                    <field name="qty_standard"/>
+                    <field name="uom_usage_id"/>
+                    <field name="qty"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_labour_tree">
+            <field name="name">Labour Tree</field>
+            <field name="model">estate.plan.labour</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="labour_type_id"/>
+                    <field name="qty"/>
+                    <field name="wages"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+        <!-- View - Activity Category -->
+        <record id="view_activity_category_tree" model="ir.ui.view">
+            <field name="name">Estate Activity Category</field>
+            <field name="model">estate.activity.category</field>
+            <field name="priority">2</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree toolbar="True" string="Activity Category">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_activity_category_config_tree" model="ir.ui.view">
+            <field name="name">Activity Category Configuration</field>
+            <field name="model">estate.activity.category</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <tree string="Activity Categories" colors="blue:type=='view'" >
+                    <field name="sequence" invisible="True"/>
+                    <field name="type" invisible="True"/>
+                    <field name="complete_name" string="Activity Category"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Action -->
+
+        <!--
+        Action Window #1.   action_list_activity_by_category (estate.activity.category, tree)
+        Action Window #2.   action_list_activity_tree (estate.activity, tree form)
+        Values              ir_activity_category_open
+
+        Action Window #1 open a tree view in which open second filtered tree view evaluate by values.
+        Values record should be placed after these two actions.
+        -->
+        <record id="action_list_activity_by_category" model="ir.actions.act_window">
+            <field name="name">Activity by Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">estate.activity.category</field>
+            <field name="domain">[('parent_id','=',False)]</field>
+            <field name="view_type">tree</field>
+            <field name="view_id" ref="view_activity_category_tree"/>
+            <field name="help" type="html">
+              <p>
+                Here is a list of all your activity classified by category. You
+                can click a category to get the list of all activities linked to
+                this category or to a child of this category.
+              </p>
+            </field>
+        </record>
+
+        <record id="action_list_activity_tree" model="ir.actions.act_window">
+            <field name="name">Activities</field>
+            <field name="res_model">estate.activity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'activity_category_id': active_id, 'search_default_filter_category': active_id}</field>
+        </record>
+
+        <record id="ir_activity_category_open" model="ir.values">
+            <field eval="'tree_but_open'" name="key2"/>
+            <field eval="'estate.activity.category'" name="model"/>
+            <field name="name">Activity by Category</field>
+            <field eval="'ir.actions.act_window,%d'%action_list_activity_tree" name="value"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_monthly_plan">
+            <field name="name">Action Estate Plan Monthly</field>
+            <field name="res_model">estate.plan.monthly</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">tree</field>
+            <field name="view_id" ref="view_monthly_plan_tree"/>
+        </record>
+
+        <record id="action_monthly_plan_config" model="ir.actions.act_window">
+            <field name="name">Monthly Activity</field>
+            <field name="res_model">estate.plan.monthly</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_list_monthly_activity_tree" model="ir.actions.act_window">
+            <field name="name">Activities by Month</field>
+            <field name="res_model">estate.plan.activity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_by_account': 1}</field>
+        </record>
+
+        <record id="ir_monthly_plan_open" model="ir.values">
+            <field eval="'tree_but_open'" name="key2"/>
+            <field eval="'estate.plan.monthly'" name="model"/>
+            <field name="name">Activity by Month</field>
+            <field eval="'ir.actions.act_window,%d'%action_list_monthly_activity_tree" name="value"/>
+        </record>
+
+        <!--
+        <record model="ir.actions.act_window.view" id="action_monthly_plan_list">
+            <field name="res_model">estate.plan.activity</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_monthly_activity_tree"/>
+            <field name="act_window_id" ref="action_monthly_plan"/>
+        </record>
+        -->
+        <!--
+        <record model="ir.actions.act_window.view" id="action_monthly_plan_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_monthly_plan_tree"/>
+            <field name="act_window_id" ref="action_contacts"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_monthly_plan_form">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_monthly_plan_form"/>
+            <field name="act_window_id" ref="action_contacts"/>
+        </record>
+        -->
+
+        <!-- Menu -->
+        <menuitem id="estate_rkt_menu" name="Planning" parent="estate.main_estate_menu" sequence="90"/>
+        <menuitem id="estate_block_activity_category"
+                  parent="estate_rkt_menu"
+                  action="action_list_activity_by_category"/>
+        <menuitem id="estate_plan_monthly_menu" name="Monthly Planning"
+                  parent="estate_rkt_menu"
+                  action="action_monthly_plan"/>
+        <menuitem id="estate_monthly_plan_config" name="Monthly Plan"
+                  parent="estate.estate_blocking_menu"
+                  action="action_monthly_plan_config"/>
+        <menuitem id="estate_plan_monthly_activity_config" name="Activity Plan by Month"
+                  parent="estate.estate_blocking_menu"
+                  action="action_list_monthly_activity_tree"/>
+    </data>
+</openerp>

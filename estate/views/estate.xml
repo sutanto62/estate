@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!-- View Search -->
+        <record id="search_view_estate_parameter" model="ir.ui.view">
+            <field name="name">Estate Parameter</field>
+            <field name="model">estate.parameter.value</field>
+            <field name="arch" type="xml">
+                <search string="Parameter">
+                    <group expand='1' string='Group by...'>
+                        <filter name="group_parameter" string='Parameter' domain="[]" context="{'group_by' : 'parameter_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
         <!-- View Tree: Estate Structure -->
         <record model="ir.ui.view" id="view_form_location_inherited">
@@ -18,33 +30,82 @@
             </field>
         </record>
 
-        <!--
-        View Tree: Activity By Category. Open to non-technical user. Action on record will open Activity Tree.
-        -->
-        <record id="view_activity_category_tree" model="ir.ui.view">
-            <field name="name">Estate Activity Category</field>
-            <field name="model">estate.activity.category</field>
-            <field name="priority">2</field>
-            <field name="field_parent">child_ids</field>
+        <!-- View: Block -->
+        <record id="view_tree_block_config" model="ir.ui.view">
+            <field name="name">Block Configuration</field>
+            <field name="model">estate.block.template</field>
+            <field name="priority">1</field>
             <field name="arch" type="xml">
-                <tree toolbar="True" string="Activity Category">
-                    <field name="name"/>
+                <tree string="Estate Block"
+                      default_order="complete_name"
+                      colors="blue:usage=='view';darkred:usage=='internal'">
+                    <field name="complete_name"/>
+                    <field name="estate_location_type"/>
+                    <field name="estate_location_level"/>
+                    <field name="usage"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
                 </tree>
             </field>
         </record>
 
-        <!--
-        View Tree: Activity Category Configuration (default view for object estate.activity.category)
-        -->
-        <record id="view_activity_category_config_tree" model="ir.ui.view">
-            <field name="name">Activity Category Configuration</field>
-            <field name="model">estate.activity.category</field>
+        <record id="view_form_block_config" model="ir.ui.view">
+            <field name="name">Block Configuration Form</field>
+            <field name="model">estate.block.template</field>
             <field name="priority">1</field>
             <field name="arch" type="xml">
-                <tree string="Activity Categories" colors="blue:type=='view'" >
-                    <field name="sequence" invisible="True"/>
-                    <field name="type" invisible="True"/>
-                    <field name="complete_name" string="Activity Category"/>
+                <form string="Block">
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name"/></h1>
+                        <label for="location_id" class="oe_edit_only"/>
+                        <h2><field name="location_id"/></h2>
+
+                        <group string="Location">
+                            <field name="estate_location" required="True"/>
+                            <field name="estate_location_level" required="True"/>
+                            <field name="estate_location_type" required="True"/>
+                        </group>
+
+                        <group string="Areal Statement" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
+                            <field name="planted_year_id"
+                                   attrs="{'invisible': [('estate_location_level','in', ('1','2'))]}"/>
+                            <field name="qty_tree"/>
+                            <field name="qty_tree_immature"/>
+                            <field name="qty_tree_mature_normal"/>
+                            <field name="qty_tree_mature_abnormal"/>
+                        </group>
+
+                        <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
+                            <field name="is_smallholder"/>
+                            <field name="partner_id"/>
+                        </group>
+
+                        <field name="block_parameter_ids"
+                               attrs="{'invisible': [('estate_location_level','in', ('1','2'))]}"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_block_parameter_tree">
+            <field name="name">Block Parameter Tree</field>
+            <field name="model">estate.block.parameter</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="parameter_id"/>
+                    <field name="parameter_value_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_parameter_config_tree">
+            <field name="name">Block Parameter Config Tree</field>
+            <field name="model">estate.parameter.value</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
                 </tree>
             </field>
         </record>
@@ -99,7 +160,6 @@
             </field>
         </record>
 
-        <!-- View Search: Activity -->
         <record id="view_activity_config_search" model="ir.ui.view">
             <field name="name">Activity Configuration (Search)</field>
             <field name="model">estate.activity</field>
@@ -138,6 +198,8 @@
             </field>
         </record>
 
+
+
         <record id="view_activity_config_tree_2" model="ir.ui.view">
             <field name="name">Activity Configuration</field>
             <field name="model">estate.activity</field>
@@ -154,52 +216,10 @@
         </record>
 
         <!-- Action -->
-        <record model="ir.actions.act_window" id="action_list_block">
-            <field name="name">Estate Structure</field>
-            <field name="res_model">stock.location</field>
+        <record model="ir.actions.act_window" id="action_list_block_estate">
+            <field name="name">Estate Structure (Block)</field>
+            <field name="res_model">estate.block.template</field>
             <field name="domain">[('estate_location','=','True')]</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_soil">
-            <field name="name">Soil Type</field>
-            <field name="res_model">estate.soil_type</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_soil_sub">
-            <field name="name">Soil Sub Type</field>
-            <field name="res_model">estate.soil_sub_type</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_shape">
-            <field name="name">Block Shape</field>
-            <field name="res_model">estate.shape</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_slope">
-            <field name="name">Slope</field>
-            <field name="res_model">estate.slope</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_topography">
-            <field name="name">Topography</field>
-            <field name="res_model">estate.topography</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_row_direction">
-            <field name="name">Row Direction</field>
-            <field name="res_model">estate.row_direction</field>
-            <field name="view_mode">tree,form</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_vegetation">
-            <field name="name">Vegetation</field>
-            <field name="res_model">estate.vegetation</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -209,54 +229,38 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <!-- action for open child of Activity by Category -->
-        <record id="action_list_activity_tree" model="ir.actions.act_window">
-            <field name="name">Activities</field>
-            <field name="res_model">estate.activity</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'activity_category_id': active_id, 'search_default_filter_category': active_id}</field>
-        </record>
-
         <record id="action_list_activity_config" model="ir.actions.act_window">
             <field name="name">Activities</field>
             <field name="res_model">estate.activity</field>
             <field name="view_mode">tree,form</field>
         </record>
+        
+        <record model="ir.actions.act_window" id="action_list_parameter_config">
+            <field name="name">Parameter</field>
+            <field name="res_model">estate.parameter.value</field>
+            <field name="priority">1</field>
+            <field name="context">{"search_default_group_parameter": 1}</field>
+            <field name="search_view_id" ref="search_view_estate_parameter"/>
+            <field name="view_mode">tree,form</field>
+        </record>
 
         <!-- todo action open Activity By Category -->
-        <record id="action_list_activity_by_category" model="ir.actions.act_window">
-            <field name="name">Activity by Category</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">estate.activity.category</field>
-            <field name="domain">[('parent_id','=',False)]</field>
-            <field name="view_type">tree</field>
-            <field name="view_id" ref="view_activity_category_tree"/>
-            <field name="help" type="html">
-              <p>
-                Here is a list of all your activity classified by category. You
-                can click a category to get the list of all activities linked to
-                this category or to a child of this category.
-              </p>
-            </field>
-        </record>
 
-        <!-- Open Activity Config Tree from Activity by Category Tree -->
-        <record id="ir_activity_category_open" model="ir.values">
-            <field eval="'tree_but_open'" name="key2"/>
-            <field eval="'estate.activity.category'" name="model"/>
-            <field name="name">Activity by Category</field>
-            <field eval="'ir.actions.act_window,%d'%action_list_activity_tree" name="value"/>
-        </record>
 
         <!-- Menu -->
         <menuitem id="main_estate_menu" name="Plantation"/>
-        <menuitem id="estate_rkt_menu" name="Planning" parent="main_estate_menu" sequence="90"/>
-        <menuitem id="estate_block_activity_category"
-                  parent="estate_rkt_menu"
-                  action="action_list_activity_by_category"/>
+
         <menuitem id="estate_config_menu" name="Configuration" parent="main_estate_menu" sequence="100"/>
-        <menuitem id="estate_blocking_menu" name="Estate" parent="estate_config_menu" groups="base.group_no_one"/>
-        <menuitem id="estate_block_menu" name="Structure" parent="estate_blocking_menu" action="action_list_block" groups="base.group_no_one"/>
+
+        <menuitem id="estate_blocking_menu"
+                  name="Estate"
+                  parent="estate_config_menu"
+                  groups="base.group_no_one"/>
+
+        <menuitem id="estate_estate_block_menu" name="Block Structure"
+                  parent="estate_blocking_menu"
+                  action="action_list_block_estate"
+                  groups="base.group_no_one"/>
         <menuitem id="estate_activity_category" name="Activity Category"
                   parent="estate_blocking_menu"
                   action="action_list_activity_category_config"
@@ -265,35 +269,13 @@
                   parent="estate_blocking_menu"
                   action="action_list_activity_config"
                   groups="base.group_no_one"/>
-        <menuitem id="estate_master_menu" name="Field Parameter"
+
+        <menuitem id="estate_master_menu" name="Configuration"
                   parent="estate_config_menu"
                   groups="base.group_no_one"/>
-        <menuitem id="estate_soil_type_menu" name="Soil Type"
+        <menuitem id="estate_parameter_menu" name="Parameter"
                   parent="estate_master_menu"
-                  action="action_list_soil"
-                  groups="base.group_no_one"/>
-        <menuitem id="estate_soil_sub_type_menu" name="Soil Sub Type" parent="estate_master_menu"
-                  action="action_list_soil_sub"
-                  groups="base.group_no_one"/>
-        <menuitem id="estate_shape_menu" name="Block Shape"
-                  parent="estate_master_menu"
-                  action="action_list_shape"
-                  groups="base.group_no_one"/>
-        <menuitem id="estate_topography_menu" name="Topography"
-                  parent="estate_master_menu"
-                  action="action_list_topography"
-                  groups="base.group_no_one"/>
-        <menuitem id="estate_slope_menu" name="Slope (%)"
-                  parent="estate_master_menu"
-                  action="action_list_slope"
-                  groups="base.group_no_one"/>
-        <menuitem id="estate_vegetation_menu" name="Vegetation"
-                  parent="estate_master_menu"
-                  action="action_list_vegetation"
-                  groups="base.group_no_one"/>
-        <menuitem id="estate_row_direction_menu" name="Row Direction"
-                  parent="estate_master_menu"
-                  action="action_list_row_direction"
+                  action="action_list_parameter_config"
                   groups="base.group_no_one"/>
     </data>
 </openerp>

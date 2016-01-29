@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+"estate_planning_monthly_user","Estate Plan Monthly User","estate_planning.model_estate_plan_monthly","estate.group_user","True","True","True","False"

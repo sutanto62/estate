@@ -1,3 +1,2 @@
-__author__ = 'cayadi'
-
 import estate
+import estate_product
