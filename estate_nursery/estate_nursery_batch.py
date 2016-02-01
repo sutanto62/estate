@@ -42,6 +42,7 @@ class Stage(models.Model):
     sequence = fields.Integer("Sequence No")
     age_minimum = fields.Integer("Minimum Age", help="Minimum age required to be at this stage. 0 is unlimited.")
     age_maximum = fields.Integer("Maximum Age", help="Maximum age required to be at this stage. 0 is unlimited.")
+    selectionstage_id =fields.Many2one("estate.nursery.selectionstage")
 
 
 class Variety(models.Model):
@@ -110,9 +111,12 @@ class Batch(models.Model):
     qty_single= fields.Integer("single Seed Quantity")
     qty_double=fields.Integer("Double Seed Quantity",)
     qty_abnormal=fields.Integer("Abnormal Seed Quantity")
+    qty_normal_double=fields.Integer("Normal After Cleveage")
+    qty_abnormal_double=fields.Integer("Abnormal After Double")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
+    cleavageln_ids=fields.One2many('estate.nursery.cleavageln','batch_id',readonly=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
@@ -253,21 +257,7 @@ class Batch(models.Model):
 
                 if to_dt < from_dt:
                      raise ValidationError("Planted Date Should be Greater than Received Date!" )
-    #in v7
-    # @api.one
-    # def _check_date(self, cr, uid, ids, context=None):
-    #    for obj in self.browse(cr, uid, ids):
-    #     start_date = obj.date_received
-    #     end_date = obj.date_planted
-    #
-    #     if start_date and end_date:
-    #         DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
-    #         from_dt = datetime.datetime.strptime(start_date, DATETIME_FORMAT)
-    #         to_dt = datetime.datetime.strptime(end_date, DATETIME_FORMAT)
-    #
-    #         if to_dt < from_dt:
-    #             return False
-    # _constraints = [(_check_date, 'End Date Should be Greater than Start Date!', ['start_date','end_date']),]
+
     #count selection
     @api.depends('selection_ids')
     def _get_selection_count(self):
@@ -314,7 +304,7 @@ class Batch(models.Model):
 
     #computed seed planted
     @api.one
-    @api.depends('batchline_ids','selection_ids','cleavage_id')
+    @api.depends('batchline_ids','selection_ids','cleavageln_ids')
     def _compute_total(self):
         self.qty_planted = 0
         for item in self.batchline_ids:
@@ -322,10 +312,20 @@ class Batch(models.Model):
         if self.selection_ids:
             for a in self.selection_ids:
                 self.qty_planted -=a.qty_abnormal
-        # elif self.
+        elif self.cleavageln_ids:
+            for b in self.cleavageln_ids:
+                self.qty_planted = b.total_lastsaldo
+            # if self.selection_ids:
+            #     for c in self.selection_ids:
+            #         self.qty_planted -= c.qty_abnormal
 
-        return True
-        self.write({'qty_planted' : self.qty_planted})
+        # return True
+        # self.write({'qty_planted' : self.qty_planted})
+
+    # @api.one
+    # def _compute_separation(self):
+
+
 
     @api.one
     @api.depends('batchline_ids',)

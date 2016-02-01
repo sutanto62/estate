@@ -162,6 +162,7 @@
             <field name="info">Draft</field>
             <field name="comment">Tahap Pre nusery satu</field>
         </record>
+
         <record id="nurserystage_stage_2" model="estate.nursery.selectionstage">
             <field name="name">Pre Nursery 2</field>
             <field name="stage_id" ref="estate_nursery.nurserystage_1"/>

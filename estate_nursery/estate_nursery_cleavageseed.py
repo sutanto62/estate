@@ -82,14 +82,14 @@ class PemisahanPolytone(models.Model):
             if  itembatch.batch_id and itembatch.total_lastsaldo > 0:
                 batch_ids.add(itembatch.batch_id)
 
-        for batchpisah in batch_ids:
+            for batchpisah in batch_ids:
 
-            qty_total_cullingbatch = 0
+                qty_total_cullingbatch = 0
 
-            trash = self.env['estate.nursery.cleavageln'].search([('batch_id', '=', batchpisah.id),
+                trash = self.env['estate.nursery.cleavageln'].search([('batch_id', '=', batchpisah.id),
                                                                         ('cleavage_id', '=', self.id)])
-            for i in trash:
-                qty_total_cleavagebatch = i.total_lastsaldo
+                for i in trash:
+                    qty_total_cleavagebatch = i.total_lastsaldo
 
             move_data = {
                         'product_id': itembatch.product_id.id,
@@ -127,7 +127,7 @@ class PemisahanLine(models.Model):
     qty_double=fields.Integer(related='batch_id.qty_double')
     qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
-    total_lastsaldo=fields.Integer(readonly=True,compute="_compute_subtotal")
+    total_lastsaldo=fields.Integer(readonly=True,compute="_compute_subtotal",store=True)
 
 
     #get quantity Planted

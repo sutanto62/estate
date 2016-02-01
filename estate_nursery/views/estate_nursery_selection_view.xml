@@ -295,7 +295,8 @@
                                     <page string="Selection Line">
                                         <tree>
                                             <field name="selectionline_ids" attrs="{'required': [('state','=','draft')],
-                                                'readonly': [('state','=','done')]}"/>
+                                                'readonly': [('state','=','done')]}"
+                                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_selectionline'}"/>
                                         </tree>
                                     </page>
 
@@ -351,9 +352,9 @@
             <field name="model">estate.nursery.selectionline</field>
             <field name="arch" type="xml">
                 <tree string="Seed Selection Line" colors="red:qty" editable="top">
-                    <field name="cause_id" />
+                    <field name="cause_id"/>
                     <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
-                    <field name="location_id" domain="[('location_id','=',batch_id)]"/>
+                    <field name="location_id"/>
                     <field name="comment" string="Add Description/Comment"/>
                 </tree>
             </field>

@@ -27,7 +27,7 @@ class Selection(models.Model):
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
     stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
-    stage_id = fields.Many2one('estate.nursery.stage',"Stage",related='selectionstage_id.stage_id')
+    stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_range",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
@@ -249,6 +249,14 @@ class Selection(models.Model):
     #             if to_dt < from_dt:
     #                  raise ValidationError("Planted Date Should be Greater than Received Date!" )
 
+
+    #onchange Stage id
+    @api.one
+    @api.onchange('stage_id','selectionstage_id')
+    def _changestage_id(self):
+        self.stage_id=self.selectionstage_id.stage_id
+        self.write({'stage_id':self.stage_id})
+
     #selection count
     @api.depends('selectionline_ids')
     def _get_selectionline_count(self):
@@ -446,9 +454,9 @@ class SelectionStage(models.Model):
             for a in limit:
                 limitmax = a
             if maxa and mina:
-                if self.age_selection >= maxa:
+                if self.age_selection > maxa:
                     raise ValidationError("Age selection not more than age limit max!" )
-                elif self.age_selection <= mina:
+                elif self.age_selection < mina:
                     raise ValidationError("Age selection should be Greater Than Age limit min!" )
 
     #constraint Age Limit min max and age selection
@@ -464,7 +472,7 @@ class SelectionStage(models.Model):
             for a in limit:
                 limitmax = a
             if maxa and mina:
-                if maxa >= limitmax:
+                if maxa > limitmax:
                     raise ValidationError("Age Limit min not more than 12!" )
                 elif mina < limitmin:
                     raise ValidationError("Age Limit min not less than 1!" )
@@ -503,7 +511,8 @@ class SelectionLine(models.Model):
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
                                related='selection_id.qty_batch',store=True)
-    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
+    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True
+                               )
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
@@ -516,23 +525,6 @@ class SelectionLine(models.Model):
                                              help="Fill in location seed planted.",
                                              required=True,)
     comment = fields.Text("Description")
-
-    # #search location in batch
-    # @api.one
-    # def search_location(self):
-    #     batch_ids=set()
-    #     for item in self.location_id:
-    #         if item.location_id and item.qty > 0: # todo do not include empty quantity location
-    #             location_ids.add(item.location_id)
-    #
-    #     for location in location_ids:
-    #         qty_total_abnormal = 0
-    #         qty = self.env['estate.nursery.selectionline'].search([('location_id', '=', location.id),
-    #                                                                ('selection_id', '=', self.id)
-    #                                                                ])
-    #         for i in qty:
-    #             qty_total_abnormal += i.qty
-
 
     #constraint Age Limit min max and age selection
     @api.multi
@@ -554,8 +546,8 @@ class Cause(models.Model):
     code = fields.Char('Cause Abbreviation', size=3)
     sequence = fields.Integer('Sequence No')
     index=fields.Integer(compute='_compute_index')
-    # selection_id= fields.Many2one('estate.nursery.selection')
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",store=True)
+    selection_id= fields.Many2one('estate.nursery.selection')
+    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",store=True,related='selection_id.stage_id')
 
     #create sequence
     @api.one
