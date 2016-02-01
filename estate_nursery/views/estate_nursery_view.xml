@@ -247,12 +247,12 @@
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                    'default_qty_plante': qty_planted}"/>
                         </page>
-                        <page string="Tes pemisahan">
-                            <field name="cleavage_ids" attrs="{
-                            'required' : [('state', '=', 'draft')]}"
-                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
-                                   'default_qty_plante': qty_planted}"/>
-                        </page>
+                        <!--<page string="Tes pemisahan">-->
+                            <!--<field name="cleavage_ids" attrs="{-->
+                            <!--'required' : [('state', '=', 'draft')]}"-->
+                                   <!--context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',-->
+                                   <!--'default_qty_plante': qty_planted}"/>-->
+                        <!--</page>-->
 
                         <page string="Information Cleavage Seed" >
                             <group name="bottom" string="Information Cleavage Seed ">

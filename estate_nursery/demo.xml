@@ -429,6 +429,7 @@
             <field name="estate_location_level">2</field>
             <field name="estate_location_type">nursery</field>
         </record>
+
         <record id="estate_nursery.location_cullingloss" model="stock.location">
             <field name="name">Culling Loss</field>
             <field name="location_id" ref="estate_nursery.location_nursery"/>
@@ -439,6 +440,19 @@
             <field name="location_id" ref="estate_nursery.location_cullingloss"/>
             <field name="usage">inventory</field>
         </record>
+
+        <record id="estate_nursery.location_virtual_separation" model="stock.location">
+            <field name="name">Virtual Separation</field>
+            <field name="location_id" ref="estate_nursery.location_nursery"/>
+            <field name="usage">view</field>
+        </record>
+
+        <record id="estate_nursery.virtual_separation" model="stock.location">
+            <field name="name">Virtual separation 01 </field>
+            <field name="location_id" ref="estate_nursery.location_virtual_separation"/>
+            <field name="usage">inventory</field>
+        </record>
+
         <record id="estate_nursery.location_prenursery_1" model="stock.location">
             <field name="name">PN1</field>
             <field name="location_id" ref="estate_nursery.location_prenursery"/>

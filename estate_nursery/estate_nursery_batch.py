@@ -212,7 +212,7 @@ class Batch(models.Model):
                 'product_uom': self.lot_id.product_id.uom_id.id,
                 'name': 'Planted: %s' % self.lot_id.product_id.display_name,
                 'date_expected': self.date_planted,
-                'location_id': self.picking_id.location_dest_id.id,
+                'location_id': self.picking_id.location_dest_id.id,#Harus di tanyakan
                 'location_dest_id': location.id,
                 'state': 'confirmed', # set to done if no approval required
                 'restrict_lot_id': self.lot_id.id # required by check tracking product
@@ -314,12 +314,12 @@ class Batch(models.Model):
                 self.qty_planted -=a.qty_abnormal
         elif self.cleavageln_ids:
             for b in self.cleavageln_ids:
-                self.qty_planted = b.total_lastsaldo
+                self.qty_planted -= b.total_lastsaldo
             # if self.selection_ids:
             #     for c in self.selection_ids:
             #         self.qty_planted -= c.qty_abnormal
 
-        # return True
+        return True
         # self.write({'qty_planted' : self.qty_planted})
 
     # @api.one
