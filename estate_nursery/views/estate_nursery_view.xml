@@ -242,34 +242,34 @@
                                 context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                         </page>
                         <page string="Selection">
-                            <field name="selection_ids" attrs="{
+                            <field name="selection_ids" string="Create Selection" attrs="{
                             'required' : [('state', '=', 'draft')]}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                    'default_qty_plante': qty_planted}"/>
                         </page>
-                        <!--<page string="Tes pemisahan">-->
-                            <!--<field name="cleavage_ids" attrs="{-->
-                            <!--'required' : [('state', '=', 'draft')]}"-->
-                                   <!--context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',-->
-                                   <!--'default_qty_plante': qty_planted}"/>-->
-                        <!--</page>-->
-
-                        <page string="Information Cleavage Seed" >
-                            <group name="bottom" string="Information Cleavage Seed ">
-                                <group>
-                                    <field name="qty_double" string="Quantity Double" readonly="1"/>
-                                    <field name="qty_single" string="Quantity Single" readonly="1"/>
-                                </group>
-                                <group coolspan="10">
-                                    <field name="qty_normal_double" string="Quantity Normal Cleavage"/>
-                                    <field name="qty_abnormal_double" string="Quantity Abnormal Cleavage"/>
-                                </group>
-
-                                <field name="cleavageln_ids" domain="[('batch_id','=',batch_id)]"
-                                       context="{'tree_view_ref' : 'estate_nursery.iew_tree_cleavageline_polytone'}"
-                                        />
-                            </group>
+                        <page string="Cleavage Polytone">
+                            <field name="cleavage_ids" string="Create Cleavage Polytone" attrs="{
+                            'required' : [('state', '=', 'draft')]}"
+                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_cleavage_polytone',
+                                   'default_qty_plante': qty_planted}"/>
                         </page>
+
+                        <!--<page string="Information Cleavage Seed" >-->
+                            <!--<group name="bottom" string="Information Cleavage Seed ">-->
+                                <!--<group>-->
+                                    <!--<field name="qty_double" string="Quantity Double" readonly="1"/>-->
+                                    <!--<field name="qty_single" string="Quantity Single" readonly="1"/>-->
+                                <!--</group>-->
+                                <!--<group coolspan="10">-->
+                                    <!--<field name="qty_normal_double" string="Quantity Normal Cleavage"/>-->
+                                    <!--<field name="qty_abnormal_double" string="Quantity Abnormal Cleavage"/>-->
+                                <!--</group>-->
+
+                                <!--<field name="cleavageln_ids" domain="[('batch_id','=',batch_id)]"-->
+                                       <!--context="{'tree_view_ref' : 'estate_nursery.iew_tree_cleavageline_polytone'}"-->
+                                        <!--/>-->
+                            <!--</group>-->
+                        <!--</page>-->
 
                         <page string="Additional Information">
                             <group name="bottom" string="Information">

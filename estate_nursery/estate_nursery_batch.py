@@ -91,7 +91,7 @@ class Batch(models.Model):
     partner_id = fields.Many2one('res.partner')
     name = fields.Char(_("Batch No"), readonly= True)
     culling_id=fields.Many2one("estate.nursery.culling")
-    cleavage_id=fields.Many2one("estate.nursery.cleavage",)
+    # cleavage_id=fields.Many2one("estate.nursery.cleavage",)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
@@ -116,6 +116,7 @@ class Batch(models.Model):
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
+    cleavage_ids=fields.One2many('estate.nursery.cleavage','batch_id')
     cleavageln_ids=fields.One2many('estate.nursery.cleavageln','batch_id',readonly=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))

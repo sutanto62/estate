@@ -58,8 +58,9 @@
                              <h1>
                                  <label string="Cleavage Seed For"
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
-                                 <label string="Cleavage Seed For Batch "
+                                 <label string="Cleavage Seed For "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <field name="name" class="oe_inline" readonly="1"/>
                                  <field name="separation_code" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
@@ -67,10 +68,14 @@
                         <group>
                             <group>
                                 <field name="separation_date" string="Cleavage Date"/>
+                                <field name="qty_plante" string="Quantity Last planted"/>
+                                <field name="batch_id" string="Nobatch"  attrs="{'required': [('state','=','draft')],
+                                'readonly': [('state','!=','draft')]}" domain="[('batch_id','=',batch_id)]" invisible='1'/>
                             </group>
 
                             <group coolspan="10">
                                 <field name="culling_location_id" string="Culling location"/>
+                                <field name="location_id" string="Batch Location"/>
                                 <field name="qty_total" string="Quantity Total"/>
                             </group>
                         </group>

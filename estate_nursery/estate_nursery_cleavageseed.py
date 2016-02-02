@@ -9,22 +9,19 @@ class PemisahanPolytone(models.Model):
 
     _name = "estate.nursery.cleavage"
 
-    name=fields.Char("Separation polytone Code")
+    name=fields.Char("Separation polytone Code",related='batch_id.name')
+    batch_id=fields.Many2one('estate.nursery.batch')
     separation_code=fields.Char()
     separation_date=fields.Date("Date of separation polytone",required=True)
     cleavageline_ids=fields.One2many('estate.nursery.cleavageln','cleavage_id',"separation line")
     stock_quant = fields.Many2one('stock.quant')
+    qty_plante=fields.Integer(readonly=True)
     qty_total=fields.Integer("Total All Seed ",compute="_compute_total_batch")
-    qty_abnormal=fields.Integer
+    qty_abnormal=fields.Integer(readonly=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
-                                          ,store=True,required=True)
-    location_id = fields.Many2one('stock.location',("Location Batch"),
-                                          domain=[('estate_location', '=', True),
-                                                  ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery')]
                                           ,store=True,required=True)
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),

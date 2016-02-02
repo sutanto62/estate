@@ -267,7 +267,7 @@
                             <group>
                                 <field name="batch_id" attrs="{'required': [('state','=','draft')],
                                 'readonly': [('state','!=','draft')]}" domain="[('batch_id','=',batch_id)]"
-                                  invisible="1"/>
+                                  invisible="0"/>
                                 <field name="qty_batch" attrs="{'required': [('state','=','draft')],
                                  'readonly': [('state','!=','draft')]}"/>
                                 <field name="qty_plant" attrs="{'required': [('state','=','draft')],
