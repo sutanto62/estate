@@ -108,8 +108,8 @@ class Batch(models.Model):
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity")
-    qty_single= fields.Integer("single Seed Quantity")
-    qty_double=fields.Integer("Double Seed Quantity",)
+    qty_single= fields.Integer("single Seed Quantity",compute='_compute_single')
+    qty_double=fields.Integer("Double Seed Quantity",compute='_compute_double')
     qty_abnormal=fields.Integer("Abnormal Seed Quantity")
     qty_normal_double=fields.Integer("Normal After Cleveage")
     qty_abnormal_double=fields.Integer("Abnormal After Double")
@@ -303,24 +303,44 @@ class Batch(models.Model):
                 self.total_selection_abnormal += a.qty_abnormal
         return True
 
+    #get single qty
+    @api.one
+    @api.depends("batchline_ids",)
+    def _compute_single(self):
+        self.qty_single = 0
+        if self.batchline_ids:
+            for a in self.batchline_ids:
+                self.qty_single += a.qty_single
+        return True
+
+    #get double qty
+    @api.one
+    @api.depends("batchline_ids",)
+    def _compute_double(self):
+        self.qty_double = 0
+        if self.batchline_ids:
+            for a in self.batchline_ids:
+                self.qty_double += a.qty_double
+        return True
+
+
     #computed seed planted
     @api.one
     @api.depends('batchline_ids','selection_ids','cleavageln_ids')
     def _compute_total(self):
         self.qty_planted = 0
-        for item in self.batchline_ids:
-            self.qty_planted += item.qty_planted
-        if self.selection_ids:
-            for a in self.selection_ids:
-                self.qty_planted -=a.qty_abnormal
-        elif self.cleavageln_ids:
-            for b in self.cleavageln_ids:
-                self.qty_planted -= b.total_lastsaldo
-            # if self.selection_ids:
-            #     for c in self.selection_ids:
-            #         self.qty_planted -= c.qty_abnormal
-
+        if self.batchline_ids:
+            for item in self.batchline_ids:
+                self.qty_planted += item.qty_planted
+            if self.selection_ids:
+                for a in self.selection_ids:
+                    self.qty_planted -=a.qty_abnormal
+            elif self.cleavage_ids:
+                for b in self.cleavage_ids:
+                    self.qty_planted = b.qty_total
+                    self.write({'qty_planted' : self.qty_planted})
         return True
+        
         # self.write({'qty_planted' : self.qty_planted})
 
     # @api.one

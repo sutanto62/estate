@@ -115,64 +115,6 @@ class Selection(models.Model):
     @api.one
     def action_move(self):
 
-        # location_ids = set()
-        # for item in self.selectionline_ids:
-        #     if item.location_id and item.qty > 0: # todo do not include empty quantity location
-        #         location_ids.add(item.location_id)
-        #
-        # for location in location_ids:
-        #     qty_total_abnormal = 0
-        #     qty = self.env['estate.nursery.selectionline'].search([('location_id', '=', location.id),
-        #                                                            ('selection_id', '=', self.id)
-        #                                                            ])
-        #     for i in qty:
-        #         qty_total_abnormal += i.qty
-        #     koefisient = 1
-        #
-        #     move_data = {
-        #         'location_id': location.id,
-        #         'product_uom_qty': qty_total_abnormal,
-        #         'product_uos_qty': qty_total_abnormal/koefisient,
-        #         'state': 'confirmed',
-        #         'scrapped': True,
-        #         'location_dest_id': self.culling_location_id.id,
-        #         'restrict_lot_id': self.lot_id.id,
-        #         'restrict_partner_id': self.partner_id.id,
-        #         }
-        #
-        #     move = self.env['stock.move'].create(move_data)
-        #     move.action_confirm()
-        #     move.action_scrap()
-        # selection_ids = set()
-        # for item in self.selectionline_ids:
-        #     if item.selection_id and item.batch_id and item.qty > 0: # todo do not include empty quantity location
-        #         selection_ids.add(item.selection_id,item.location_id,item.batch_id)
-        #
-        # for location in selection_ids:
-        #     qty_total_abnormal = 0
-        #     qty = self.env['estate.nursery.selectionline'].search([('batch_id', '=', location.id),
-        #                                                            ('selection_id', '=', self.id),
-        #                                                            ('location_id','=',location.id)
-        #                                                            ])
-        #     for i in qty:
-        #         qty_total_abnormal += i.qty
-        #
-        #     move_data = {
-        #         'product_id': self.batch_id.product_id.id,
-        #         'product_uom_qty': qty_total_abnormal,
-        #         'product_uom': self.batch_id.product_id.uom_id.id,
-        #         'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
-        #         'date_expected': self.date_plant,
-        #         'location_id': location.id,
-        #         'location_dest_id': self.culling_location_id.id,
-        #         'state': 'confirmed', # set to done if no approval required
-        #         'restrict_lot_id': self.lot_id.id # required by check tracking product
-        #     }
-        #
-        #     move = self.env['stock.move'].create(move_data)
-        #     move.action_confirm()
-        #     move.action_done()
-
         location_ids = set()
         for item in self.selectionline_ids:
             if item.location_id and item.qty > 0: # todo do not include empty quantity location

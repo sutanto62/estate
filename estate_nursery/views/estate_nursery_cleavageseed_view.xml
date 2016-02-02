@@ -8,6 +8,8 @@
                 <tree string="Nursery separation View">
                     <field name="separation_code" string="Separation No"/>
                     <field name="separation_date"/>
+                    <field name="qty_singlebatch" string="Quantity Single"/>
+                    <field name="qty_doublebatch" string="Quantity Double"/>
                     <field name="qty_total" string="&#931;  Saldo Total."/>
                 </tree>
             </field>
@@ -69,13 +71,11 @@
                             <group>
                                 <field name="separation_date" string="Cleavage Date"/>
                                 <field name="qty_plante" string="Quantity Last planted"/>
-                                <field name="batch_id" string="Nobatch"  attrs="{'required': [('state','=','draft')],
-                                'readonly': [('state','!=','draft')]}" domain="[('batch_id','=',batch_id)]" invisible='1'/>
+                                <field name="qty_doublebatch" string="Quantity Last planted"/>
+                                <field name="qty_singlebatch" string="Quantity Last planted"/>
                             </group>
-
                             <group coolspan="10">
                                 <field name="culling_location_id" string="Culling location"/>
-                                <field name="location_id" string="Batch Location"/>
                                 <field name="qty_total" string="Quantity Total"/>
                             </group>
                         </group>
@@ -96,7 +96,8 @@
             <field name="model">estate.nursery.cleavageln</field>
             <field name="arch" type="xml">
                 <tree string="Nursery cleavage Line View" editable="top">
-                    <field name="batch_id" string="Batch No" domain="[('qty_double','>',0),('selection_count','>=',3)]"/>
+                    <!--<field name="batch_id" string="Batch No" />-->
+                    <!--domain="[('qty_double','>',0),('selection_count','>=',3)]"-->
                     <!--('selection_count','>=',3)-->
                     <!--,('age_seed_range','>',3)-->
                     <field name="qty_planted" string="&#931; Planted" />

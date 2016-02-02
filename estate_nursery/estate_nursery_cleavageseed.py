@@ -11,13 +11,17 @@ class PemisahanPolytone(models.Model):
 
     name=fields.Char("Separation polytone Code",related='batch_id.name')
     batch_id=fields.Many2one('estate.nursery.batch')
+    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
+                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
+    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     separation_code=fields.Char()
     separation_date=fields.Date("Date of separation polytone",required=True)
     cleavageline_ids=fields.One2many('estate.nursery.cleavageln','cleavage_id',"separation line")
     stock_quant = fields.Many2one('stock.quant')
     qty_plante=fields.Integer(readonly=True)
+    qty_singlebatch=fields.Integer()
+    qty_doublebatch=fields.Integer()
     qty_total=fields.Integer("Total All Seed ",compute="_compute_total_batch")
-    qty_abnormal=fields.Integer(readonly=True)
     culling_location_id = fields.Many2one('stock.location',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
@@ -33,13 +37,36 @@ class PemisahanPolytone(models.Model):
         res=super(PemisahanPolytone, self).create(cr, uid, vals)
         return res
 
+    # #compute qtyplant :
+    # @api.one
+    # @api.depends('qty_total','qty_plant','qty_plante','cleavageline_ids')
+    # def _compute_plannormal(self):
+    #     plante = self.qty_plante
+    #     if self.cleavageline_ids :
+    #         plante = self.qty_total
+    #         self.qty_plant=plante
+    #     return  True
+
+    #get quantity Single
+    @api.onchange('qty_singlebatch','batch_id')
+    def _get_value_single(self):
+       self.qty_singlebatch=self.batch_id.qty_single
+       self.write({'qty_singlebatch':self.qty_singlebatch})
+
+    #get quantity Double
+    @api.onchange('qty_doublebatch','batch_id')
+    def _get_value_double(self):
+       self.qty_doublebatch=self.batch_id.qty_double
+       self.write({'qty_doublebatch':self.qty_doublebatch})
+
     #Calculate cleavage ids.
     @api.one
     @api.depends('cleavageline_ids')
     def _compute_total_batch(self):
         self.qty_total = 0
-        for item in self.cleavageline_ids:
-            self.qty_total += item.total_lastsaldo
+        if self.cleavageline_ids:
+            for item in self.cleavageline_ids:
+                self.qty_total += item.total_lastsaldo
         return True
 
     #state for Culling
@@ -82,55 +109,55 @@ class PemisahanPolytone(models.Model):
     def action_move(self):
         batch_ids = set()
         for itembatch in self.cleavageline_ids:
-            if  itembatch.batch_id and itembatch.total_lastsaldo > 0:
-                batch_ids.add(itembatch.batch_id)
+            if  itembatch.location_id and itembatch.total_lastsaldo > 0:
+                batch_ids.add(itembatch.location_id)
 
             for batchpisah in batch_ids:
 
                 qty_total_cullingbatch = 0
 
-                trash = self.env['estate.nursery.cleavageln'].search([('batch_id', '=', batchpisah.id),
+                trash = self.env['estate.nursery.cleavageln'].search([('location_id', '=', batchpisah.id),
                                                                         ('cleavage_id', '=', self.id)])
                 for i in trash:
                     qty_total_cleavagebatch = i.total_lastsaldo
 
             move_data = {
-                        'product_id': itembatch.product_id.id,
+                        'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': itembatch.total_lastsaldo,
-                        'product_uom': itembatch.product_id.uom_id.id,
-                        'name': 'Cleveage Abnormal Kecambah  %s for %s:'%(self.separation_code,itembatch.product_id.display_name),
+                        'product_uom': self.batch_id.product_id.uom_id.id,
+                        'name': 'Cleveage Normal Kecambah  %s for %s:'%(self.separation_code,self.batch_id.name),
                         'date_expected': self.separation_date,
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': itembatch.location_id.id,
                         'state': 'confirmed', # set to done if no approval required
-                        'restrict_lot_id': itembatch.lot_id.id # required by check tracking product
+                        'restrict_lot_id': self.lot_id.id # required by check tracking product
                  }
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()
             move.action_done()
 
-            if  itembatch.batch_id and itembatch.qty_abnormal_double > 0:
-                batch_ids.add(itembatch.batch_id)
+            if  itembatch.location_id and itembatch.qty_abnormal_double > 0:
+                batch_ids.add(itembatch.location_id)
 
             for batchpisah in batch_ids:
 
                 qty_total_cullingbatch = 0
 
-                trash = self.env['estate.nursery.cleavageln'].search([('batch_id', '=', batchpisah.id),
+                trash = self.env['estate.nursery.cleavageln'].search([('location_id', '=', batchpisah.id),
                                                                         ('cleavage_id', '=', self.id)])
                 for i in trash:
                     qty_total_cleavagebatch = i.qty_abnormal_double
 
             move_data = {
-                        'product_id': itembatch.product_id.id,
+                        'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': itembatch.qty_abnormal_double,
-                        'product_uom': itembatch.product_id.uom_id.id,
-                        'name': 'Cleveage Abnormal Kecambah  %s for %s:'%(self.separation_code,itembatch.product_id.display_name),
+                        'product_uom': self.batch_id.product_id.uom_id.id,
+                        'name': 'Cleveage Abnormal Kecambah  %s for %s:'%(self.separation_code,self.batch_id.name),
                         'date_expected': self.separation_date,
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': self.culling_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
-                        'restrict_lot_id': itembatch.lot_id.id # required by check tracking product
+                        'restrict_lot_id': self.lot_id.id # required by check tracking product
                  }
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()
@@ -145,10 +172,7 @@ class PemisahanLine(models.Model):
 
     name=fields.Char(related='cleavage_id.name')
     cleavage_id=fields.Many2one('estate.nursery.cleavage')
-    batch_id=fields.Many2one('estate.nursery.batch')
-    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
-                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
+    batch_id=fields.Many2one('estate.nursery.batch',)
     location_id=fields.Many2one('stock.location', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
@@ -160,29 +184,30 @@ class PemisahanLine(models.Model):
                                                                              ],store=True,required=True,
                                   default=lambda self: self.location_type.search([('name','=','Virtual Separation')]))
     qty_planted=fields.Integer()
-    qty_single=fields.Integer(related='batch_id.qty_single')
-    qty_double=fields.Integer(related='batch_id.qty_double')
+    qty_single=fields.Integer()
+    qty_double=fields.Integer()
     qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
     total_lastsaldo=fields.Integer(readonly=True,compute="_compute_subtotal",store=True)
 
 
+
     #get quantity Planted
-    @api.onchange('qty_planted','batch_id')
+    @api.onchange('qty_planted','cleavage_id')
     def _get_value_planted(self):
-       self.qty_planted=self.batch_id.qty_planted
+       self.qty_planted=self.cleavage_id.qty_plante
        self.write({'qty_planted':self.qty_planted})
 
     #get quantity Single
-    @api.onchange('qty_single','batch_id')
+    @api.onchange('qty_single','cleavage_id')
     def _get_value_single(self):
-       self.qty_single=self.batch_id.qty_single
+       self.qty_single=self.cleavage_id.qty_singlebatch
        self.write({'qty_single':self.qty_single})
 
     #get quantity Double
-    @api.onchange('qty_double','batch_id')
+    @api.onchange('qty_double','cleavage_id')
     def _get_value_double(self):
-       self.qty_double=self.batch_id.qty_double
+       self.qty_double=self.cleavage_id.qty_doublebatch
        self.write({'qty_double':self.qty_double})
 
     #calculate normal double

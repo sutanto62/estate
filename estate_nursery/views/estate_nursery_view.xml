@@ -249,9 +249,9 @@
                         </page>
                         <page string="Cleavage Polytone">
                             <field name="cleavage_ids" string="Create Cleavage Polytone" attrs="{
-                            'required' : [('state', '=', 'draft')]}"
+                            'required' : [('state', '=', 'draft')],}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_cleavage_polytone',
-                                   'default_qty_plante': qty_planted}"/>
+                                   'default_qty_plante': qty_planted }"/>
                         </page>
 
                         <!--<page string="Information Cleavage Seed" >-->
