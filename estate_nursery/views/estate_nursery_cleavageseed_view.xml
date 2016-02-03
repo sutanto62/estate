@@ -8,6 +8,7 @@
                 <tree string="Nursery separation View">
                     <field name="separation_code" string="Separation No"/>
                     <field name="separation_date"/>
+                    <field name="qty_plante"/>
                     <field name="qty_singlebatch" string="Quantity Single"/>
                     <field name="qty_doublebatch" string="Quantity Double"/>
                     <field name="qty_total" string="&#931;  Saldo Total."/>
@@ -69,20 +70,24 @@
 
                         <group>
                             <group>
-                                <field name="separation_date" string="Cleavage Date"/>
-                                <field name="qty_plante" string="Quantity Last planted"/>
-                                <field name="qty_doublebatch" string="Quantity Last planted"/>
-                                <field name="qty_singlebatch" string="Quantity Last planted"/>
+                                <field name="separation_date" string="Cleavage Date" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}"/>
+                                <field name="qty_plante" string="Quantity Last planted" invisible="1"/>
+                                <field name="qty_doublebatch" string="Quantity Last planted" invisible="1"/>
+                                <field name="qty_singlebatch" string="Quantity Last planted" invisible="1"/>
                             </group>
                             <group coolspan="10">
-                                <field name="culling_location_id" string="Culling location"/>
-                                <field name="qty_total" string="Quantity Total"/>
+                                <field name="culling_location_id" string="Culling location"
+                                        attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}"/>
+                                <field name="qty_total" string="Quantity Total" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}"/>
                             </group>
                         </group>
                             <notebook>
                                     <page string="Cleavage Line">
                                         <tree>
-                                            <field name="cleavageline_ids"/>
+                                            <field name="cleavageline_ids" attrs="{'readonly': [('state','=','done')]}"/>
                                         </tree>
                                      </page>
                             </notebook>

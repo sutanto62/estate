@@ -103,7 +103,7 @@ class Batch(models.Model):
     age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
     selection_id = fields.Many2one("estate.nursery.selection",store=True)
     age_seed = fields.Integer("Seed Age Received", required=True,store=True)
-    selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count",store=True)
+    selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count",)
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
     qty_received = fields.Integer("Quantity Received")
@@ -134,6 +134,9 @@ class Batch(models.Model):
                                                   ],
                                         default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
     stage_id=fields.Many2one("estate.nursery.stage")
+    status =fields.Boolean("Status test",)
+
+    _defaults = {'default_status': False}
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -349,6 +352,13 @@ class Batch(models.Model):
             self.qty_planted_temp += item.qty_planted
         return True
 
+    #Set flag to show cleavage Seed
+    @api.one
+    @api.onchange('selection_count','status')
+    def test(self):
+        flag = self.selection_count
+        if self.selection_count >= 3:
+                self.status = True
 
 class Batchline(models.Model):
     """Batch Line to record seed selection and planting by box/bag."""
