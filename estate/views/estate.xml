@@ -77,7 +77,8 @@
 
                         <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
                             <field name="is_smallholder"/>
-                            <field name="partner_id"/>
+                            <field name="partner_id" attrs="{'invisible': [('is_smallholder','=', False)]}"/>
+                            <field name="company_id" attrs="{'invisible': [('is_smallholder','=', True  )]}"/>
                         </group>
 
                         <field name="block_parameter_ids"

@@ -1,0 +1,21 @@
+id,name,scrap_location,usage,estate_location,estate_location_level,estate_location_type,location_id/id,comment
+stock.stock_virtual_plantation,Plantation,False,Production,False,,,stock.stock_location_locations_virtual,Production for plantation.
+stock.stock_virtual_cleaving,Cleaving,False,Inventory,False,,,stock.stock_location_locations_virtual,Cleaving location. Normal seed goes back to Nursery. Abnormal seed goes to Culling location.
+stock.stock_main_estate,LYD,False,Production,True,Estate,Planted,stock.stock_virtual_plantation,
+stock.stock_nursery,Nursery,False,Inventory,True,Division,Nursery,stock.stock_main_estate,
+stock.stock_pre_nursery,Pre Nursery,False,Production,True,Division,Nursery,stock.stock_nursery,
+stock.stock_pn_1,PN 1,False,Production,True,Block,Nursery,stock.stock_pre_nursery,
+stock.stock_pn_2,PN 2,False,Production,True,Block,Nursery,stock.stock_pre_nursery,
+stock.stock_pn_3,PN 3,False,Production,True,Block,Nursery,stock.stock_pre_nursery,
+stock.stock_main_nursery,Main Nursery,False,Production,True,Division,Nursery,stock.stock_nursery,
+stock.stock_mn_1,MN 1,False,Production,True,Block,Nursery,stock.stock_main_nursery,
+stock.stock_culling_1,Culling 1,True,Inventory,True,Block,Nursery,stock.stock_location_scrapped,
+stock.stock_culling_2,Culling 2,True,Inventory,True,Block,Nursery,stock.stock_location_scrapped,
+stock.stock_division_1,Division 1,False,Production,True,Division,Planted,stock.stock_main_estate,
+stock.stock_block_1,Block 1,False,Production,True,Block,Planted,stock.stock_division_1,
+stock.stock_block_2,Block 2,False,Production,True,Block,Planted,stock.stock_division_1,
+stock.stock_block_3,Block 3,False,Production,True,Block,Planted,stock.stock_division_1,
+stock.stock_division_2,Division 2,False,Production,True,Division,Planted,stock.stock_main_estate,
+stock.stock_block_4,Block 4,False,Production,True,Block,Planted,stock.stock_division_2,
+stock.stock_block_5,Block 5,False,Production,True,Block,Planted,stock.stock_division_2,
+stock.stock_block_6,Block 6,False,Production,True,Block,Planted,stock.stock_division_2,
