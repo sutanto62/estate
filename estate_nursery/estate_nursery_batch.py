@@ -326,27 +326,20 @@ class Batch(models.Model):
 
     #computed seed planted
     @api.one
-    @api.depends('batchline_ids','selection_ids','cleavageln_ids')
+    @api.depends('batchline_ids','selection_ids','cleavage_ids')
     def _compute_total(self):
         self.qty_planted = 0
         if self.batchline_ids:
             for item in self.batchline_ids:
                 self.qty_planted += item.qty_planted
-            if self.selection_ids:
-                for a in self.selection_ids:
-                    self.qty_planted -=a.qty_abnormal
-            elif self.cleavage_ids:
+            if self.cleavage_ids :
                 for b in self.cleavage_ids:
                     self.qty_planted = b.qty_total
-                    self.write({'qty_planted' : self.qty_planted})
+            elif self.selection_ids:
+                for a in self.selection_ids:
+                    self.qty_planted -=a.qty_abnormal
         return True
-        
-        # self.write({'qty_planted' : self.qty_planted})
-
-    # @api.one
-    # def _compute_separation(self):
-
-
+        self.write({'qty_planted' : self.qty_planted})
 
     @api.one
     @api.depends('batchline_ids',)
