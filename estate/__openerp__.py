@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock'],
+    'depends': ['base', 'stock', 'hr'],
 
     # always loaded
     'data': [
@@ -27,6 +27,8 @@
         'security/ir.model.access.csv',
         'templates.xml',
         'views/estate.xml',
+        'views/estate_activity_view.xml',
+        'views/estate_hr_view.xml',
         'res_config_view.xml',
         'security/security.xml'
     ],
