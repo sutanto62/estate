@@ -8,7 +8,8 @@ class ReportPlantation(models.Model):
     _inherit = "estate.nursery.selection"
 
     reportline_id= fields.Many2one("estate.nursery.reportline",
-                                   default=lambda self: self.reportline_id.search([('name','=','Report Pre Nursery')]))
+                                   default=lambda self: self.reportline_id.search([('name','=','Report Pre Nursery')])
+                                   )
 class ReportPlantationline(models.Model):
     _inherit = "estate.nursery.selectionline"
 
@@ -20,7 +21,6 @@ class ReportplanBatch(models.Model):
 
     reportline_id= fields.Many2one("estate.nursery.reportline",
                                    default=lambda self: self.reportline_id.search([('name','=','Report Pre Nursery')]))
-
 
 class ReportLine(models.Model):
     _name = "estate.nursery.reportline"

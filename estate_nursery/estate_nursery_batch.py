@@ -91,7 +91,6 @@ class Batch(models.Model):
     partner_id = fields.Many2one('res.partner')
     name = fields.Char(_("Batch No"), readonly= True)
     culling_id=fields.Many2one("estate.nursery.culling")
-    # cleavage_id=fields.Many2one("estate.nursery.cleavage",)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
@@ -102,8 +101,9 @@ class Batch(models.Model):
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
     age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
     selection_id = fields.Many2one("estate.nursery.selection",store=True)
-    age_seed = fields.Integer("Seed Age Received", required=True,store=True)
-    selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count",)
+    age_seed = fields.Integer("Seed Age Received",required=True)
+    age_seed_grow=fields.Integer("Seed Age",compute='age_grow_up')
+    selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count")
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
     qty_received = fields.Integer("Quantity Received")
@@ -116,8 +116,8 @@ class Batch(models.Model):
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
-    cleavage_ids=fields.One2many('estate.nursery.cleavage','batch_id')
-    cleavageln_ids=fields.One2many('estate.nursery.cleavageln','batch_id',readonly=True)
+    cleaving_ids=fields.One2many('estate.nursery.cleaving','batch_id')
+    cleavingln_ids=fields.One2many('estate.nursery.cleavingln','batch_id',readonly=True)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
@@ -134,9 +134,10 @@ class Batch(models.Model):
                                                   ],
                                         default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
     stage_id=fields.Many2one("estate.nursery.stage")
-    status =fields.Boolean("Status test",)
+    status =fields.Boolean("Status test")
+    status_age=fields.Boolean("Status age")
 
-    _defaults = {'default_status': False}
+
 
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -262,11 +263,49 @@ class Batch(models.Model):
                 if to_dt < from_dt:
                      raise ValidationError("Planted Date Should be Greater than Received Date!" )
 
+    # set constraint to Quantity not more than quantity DO
+    @api.multi
+    @api.constrains('batchline_ids')
+    def _check_quantity(self):
+        for obj in self.batchline_ids:
+            seed_qty = obj.seed_qty
+            qty_single = obj.qty_single
+            qty_double = obj.qty_double
+            qty_fungus = obj.qty_fungus
+            qty_broken = obj.qty_broken
+            qty_dead = obj.qty_dead
+            qty_planted = obj.qty_planted
+
+            if seed_qty and qty_single and qty_double and qty_fungus and qty_broken and qty_dead and qty_planted:
+                if seed_qty < qty_single:
+                    raise ValidationError("Planted Should be Greater than Quantity Single!")
+                elif seed_qty < qty_double:
+                    raise ValidationError("Planted Should be Greater than Quantity Double!")
+                elif seed_qty < qty_fungus:
+                    raise ValidationError("Planted Should be Greater than Quantity Fungus!")
+                elif seed_qty < qty_broken:
+                    raise ValidationError("Planted Should be Greater than Quantity Broken!")
+                elif seed_qty < qty_dead:
+                    raise ValidationError("Planted Should be Greater than Quantity Dead!")
+                elif seed_qty < qty_planted:
+                    raise ValidationError("Planted Should be Greater than Quantity Planted!")
+
     #count selection
+    @api.one
     @api.depends('selection_ids')
     def _get_selection_count(self):
         for r in self:
             r.selection_count = len(r.selection_ids)
+
+    #age grow up
+    @api.one
+    @api.depends('selection_count','age_seed','age_seed_grow')
+    def age_grow_up(self):
+        res={}
+        if self.selection_count or self.age_seed:
+            hitung = self.age_seed + self.selection_count
+            self.age_seed_grow= hitung
+        return res
 
     # monthrange
     @api.one
@@ -292,8 +331,12 @@ class Batch(models.Model):
             rangeyear1 = from_date.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
-            ageseed = (d1 + yearresult) - d2
-            self.age_seed_range = ageseed + int(self.age_seed)
+            if yearresult == 0 :
+                ageseed = (d2-d1)
+                self.age_seed_range = ageseed + int(self.age_seed)
+            elif yearresult > 0:
+                ageseed = (d1 + yearresult) - d2
+                self.age_seed_range = ageseed + int(self.age_seed)
         return res
 
     #total selection abnormal
@@ -329,20 +372,42 @@ class Batch(models.Model):
 
     #computed seed planted
     @api.one
-    @api.depends('batchline_ids','selection_ids','cleavage_ids')
+    @api.depends('batchline_ids','selection_ids','cleaving_ids')
     def _compute_total(self):
+        temp={}
         self.qty_planted = 0
-        if self.batchline_ids:
+        # if self.cleaving_ids :
+        #     for b in self.cleaving_ids:
+        #         self.qty_planted = b.qty_total
+            # if self.selection_ids:
+            #     for a in self.selection_ids:
+            #         self.qty_planted -=a.qty_abnormal
+        if self.cleaving_ids:
+            for a in self.cleaving_ids:
+                self.qty_planted = a.qty_total
+        elif self.batchline_ids:
             for item in self.batchline_ids:
                 self.qty_planted += item.qty_planted
-            if self.cleavage_ids :
-                for b in self.cleavage_ids:
-                    self.qty_planted = b.qty_total
-            elif self.selection_ids:
+            if self.selection_ids:
                 for a in self.selection_ids:
                     self.qty_planted -=a.qty_abnormal
+
+
+# for c in  self.selection_ids:
+                    #     self.qty_planted -= c.qty_abnormal
+                    #     print self.qty_planted
+
+            # if self.cleaving_ids :
+            #     for b in self.cleaving_ids:
+            #         self.qty_planted = b.qty_total
+            # elif self.selection_ids:
+            #     for a in self.selection_ids:
+            #         self.qty_planted -=a.qty_abnormal
+            # elif self.selection_ids and self.cleaving_ids:
+            #     for c in self.selection_ids:
+            #         self.qty_planted -= c.qty_abnormal
         return True
-        self.write({'qty_planted' : self.qty_planted})
+        # self.write({'qty_planted' : self.qty_planted})
 
     @api.one
     @api.depends('batchline_ids',)
@@ -352,13 +417,24 @@ class Batch(models.Model):
             self.qty_planted_temp += item.qty_planted
         return True
 
-    #Set flag to show cleavage Seed
+    #Set flag to show cleaving Seed
     @api.one
     @api.onchange('selection_count','status')
-    def test(self):
+    def _change_flag_selection(self):
         flag = self.selection_count
-        if self.selection_count >= 3:
-                self.status = True
+        if self.selection_count >= 4:
+            self.status = True
+        return True
+
+    @api.one
+    @api.onchange('age_seed_grow','status_age','status','selection_count')
+    def _change_flag_age(self):
+        flag = self.age_seed_grow
+        if self.age_seed_grow >= 3 :
+            self.status_age = True
+            if self.status == True:
+                self.status_age = False
+        return False
 
 class Batchline(models.Model):
     """Batch Line to record seed selection and planting by box/bag."""

@@ -15,6 +15,7 @@ class Selection(models.Model):
     _name = 'estate.nursery.selection'
     # _inherits = {'stock.production.lot': 'lot_id'}
 
+    id = fields.Integer()
     name= fields.Char(related='batch_id.name',store=True)
     selection_code=fields.Char("SFB",store=True)
     batch_code=fields.Char(related='batch_id.name',store=True)
@@ -28,7 +29,7 @@ class Selection(models.Model):
     stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
-    age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_range",store=True)
+    age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
@@ -144,25 +145,6 @@ class Selection(models.Model):
             move.action_confirm()
             move.action_done()
 
-        # # Move quantity abnormal seed
-        # if self.qty_abnormal > 0:
-        #     move_data = {
-        #         'product_id': self.batch_id.product_id.id,
-        #         'product_uom_qty': self.qty_abnormal,
-        #         'product_uom': self.batch_id.product_id.uom_id.id,
-        #         'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
-        #         'date_expected': self.date_plant,
-        #         'location_id': self.picking_id.location_dest_id.id,
-        #         'location_dest_id': self.culling_location_id.id,
-        #         'state': 'confirmed', # set to done if no approval required
-        #         'restrict_lot_id': self.lot_id.id # required by check tracking product
-        #     }
-        #
-        #     move = self.env['stock.move'].create(move_data)
-        #     move.action_confirm()
-        #     move.action_done()
-        # return True
-
     #compute qtyplant :
     @api.one
     @api.depends('qty_plant','qty_abnormal','batch_id','qty_plante','selectionline_ids')
@@ -176,21 +158,20 @@ class Selection(models.Model):
             self.qty_plant = hasil
         return  True
 
-    # #constraint Date for selection and date planted
-    # @api.multi
-    # @api.constrains('selection_date','date_plant')
-    # def _check_date(self):
-    #     for obj in self:
-    #         start_date = obj.date_plant
-    #         end_date = obj.selection_date
-    #
-    #         if start_date and end_date:
-    #             DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
-    #             from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
-    #             to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
-    #             if to_dt < from_dt:
-    #                  raise ValidationError("Planted Date Should be Greater than Received Date!" )
+    #constraint Date for selection and date planted
+    @api.multi
+    @api.constrains('selection_date','date_plant')
+    def _check_date(self):
+        for obj in self:
+            start_date = obj.date_plant
+            end_date = obj.selection_date
 
+            if start_date and end_date:
+                DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
+                from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
+                to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
+                if to_dt < from_dt:
+                     raise ValidationError("Selection Date Should be Greater than Planted Date!" )
 
     #onchange Stage id
     @api.one
@@ -451,8 +432,7 @@ class SelectionLine(models.Model):
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
-    qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,
-                               related='selection_id.qty_batch',store=True)
+    qty_batch = fields.Integer("DO Quantity",store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True
                                )
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
@@ -468,15 +448,26 @@ class SelectionLine(models.Model):
                                              required=True,)
     comment = fields.Text("Description")
 
-    #constraint Age Limit min max and age selection
+    #get quantity DO
+    @api.onchange('qty_batch','selection_id')
+    def _get_value_do(self):
+       self.qty_batch=self.selection_id.qty_batch
+       self.write({'qty_batch':self.qty_batch})
+
+    #constraint Quantity Limit min max and age selection
     @api.multi
-    @api.constrains("qty","qty_batch")
+    @api.constrains('qty','qty_batch')
     def _check_constraint_qty(self):
+
         for obj in self:
-            qty_selection =self.qty
-            qty_batch=self.qty_batch
-            if qty_selection:
-                if qty_selection > qty_batch:
+            qty_selection =obj.qty
+            qty_batch=obj.qty_batch
+
+            if qty_selection and qty_batch:
+                fromqty = qty_selection
+                toqty = qty_batch
+
+                if fromqty > toqty:
                     raise ValidationError("Quantity Abnormal Not More Than Quantity Batch!" )
 
 class Cause(models.Model):

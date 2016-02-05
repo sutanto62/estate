@@ -5,19 +5,20 @@ from openerp.exceptions import ValidationError
 import calendar
 
 
-class PemisahanPolytone(models.Model):
+class CleavingPolytone(models.Model):
 
-    _name = "estate.nursery.cleavage"
+    _name = "estate.nursery.cleaving"
 
-    name=fields.Char("Separation polytone Code",related='batch_id.name')
+    name=fields.Char("Cleaving polytone Code",related='batch_id.name')
     batch_id=fields.Many2one('estate.nursery.batch')
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
-    separation_code=fields.Char()
-    separation_date=fields.Date("Date of separation polytone",required=True)
-    cleavageline_ids=fields.One2many('estate.nursery.cleavageln','cleavage_id',"separation line")
+    cleaving_code=fields.Char()
+    cleaving_date=fields.Date("Date of Cleaving polytone",required=True)
+    cleavingline_ids=fields.One2many('estate.nursery.cleavingln','cleaving_id',"Cleaving line")
     stock_quant = fields.Many2one('stock.quant')
+    qty_plantedbatch=fields.Integer(related='batch_id.qty_planted')
     qty_plante=fields.Integer(readonly=True)
     qty_singlebatch=fields.Integer()
     qty_doublebatch=fields.Integer()
@@ -29,12 +30,12 @@ class PemisahanPolytone(models.Model):
                                           ,store=True,required=True)
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
-        ('done', 'Done')],string="Separation State")
+        ('done', 'Done')],string="Cleaving State")
 
-    #Sequence separation code
+    #Sequence cleaving code
     def create(self, cr, uid, vals, context=None):
-        vals['separation_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.separation')
-        res=super(PemisahanPolytone, self).create(cr, uid, vals)
+        vals['cleaving_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.cleaving')
+        res=super(CleavingPolytone, self).create(cr, uid, vals)
         return res
 
     # #compute qtyplant :
@@ -61,11 +62,11 @@ class PemisahanPolytone(models.Model):
 
     #Calculate cleavage ids.
     @api.one
-    @api.depends('cleavageline_ids')
+    @api.depends('cleavingline_ids')
     def _compute_total_batch(self):
         self.qty_total = 0
-        if self.cleavageline_ids:
-            for item in self.cleavageline_ids:
+        if self.cleavingline_ids:
+            for item in self.cleavingline_ids:
                 self.qty_total += item.total_lastsaldo
         return True
 
@@ -99,7 +100,7 @@ class PemisahanPolytone(models.Model):
     @api.one
     def action_receive(self):
         pemisahan = self.qty_total
-        cleavagelineids = self.cleavageline_ids
+        cleavagelineids = self.cleavingline_ids
         for itembatch in cleavagelineids:
             pemisahan += itembatch.total_lastsaldo
         self.write({'qty_total': self.qty_total })
@@ -108,7 +109,7 @@ class PemisahanPolytone(models.Model):
     @api.one
     def action_move(self):
         batch_ids = set()
-        for itembatch in self.cleavageline_ids:
+        for itembatch in self.cleavingline_ids:
             if  itembatch.location_id and itembatch.total_lastsaldo > 0:
                 batch_ids.add(itembatch.location_id)
 
@@ -116,8 +117,8 @@ class PemisahanPolytone(models.Model):
 
                 qty_total_cullingbatch = 0
 
-                trash = self.env['estate.nursery.cleavageln'].search([('location_id', '=', batchpisah.id),
-                                                                        ('cleavage_id', '=', self.id)])
+                trash = self.env['estate.nursery.cleavingln'].search([('location_id', '=', batchpisah.id),
+                                                                        ('cleaving_id', '=', self.id)])
                 for i in trash:
                     qty_total_cleavagebatch = i.total_lastsaldo
 
@@ -125,8 +126,8 @@ class PemisahanPolytone(models.Model):
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': itembatch.total_lastsaldo,
                         'product_uom': self.batch_id.product_id.uom_id.id,
-                        'name': 'Cleveage Normal Kecambah  %s for %s:'%(self.separation_code,self.batch_id.name),
-                        'date_expected': self.separation_date,
+                        'name': 'Cleveage Normal Kecambah  %s for %s:'%(self.cleaving_code,self.batch_id.name),
+                        'date_expected': self.cleaving_date,
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': itembatch.location_id.id,
                         'state': 'confirmed', # set to done if no approval required
@@ -143,8 +144,8 @@ class PemisahanPolytone(models.Model):
 
                 qty_total_cullingbatch = 0
 
-                trash = self.env['estate.nursery.cleavageln'].search([('location_id', '=', batchpisah.id),
-                                                                        ('cleavage_id', '=', self.id)])
+                trash = self.env['estate.nursery.cleavingln'].search([('location_id', '=', batchpisah.id),
+                                                                        ('cleaving_id', '=', self.id)])
                 for i in trash:
                     qty_total_cleavagebatch = i.qty_abnormal_double
 
@@ -152,8 +153,8 @@ class PemisahanPolytone(models.Model):
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': itembatch.qty_abnormal_double,
                         'product_uom': self.batch_id.product_id.uom_id.id,
-                        'name': 'Cleveage Abnormal Kecambah  %s for %s:'%(self.separation_code,self.batch_id.name),
-                        'date_expected': self.separation_date,
+                        'name': 'Cleaving Abnormal Kecambah  %s for %s:'%(self.cleaving_code,self.batch_id.name),
+                        'date_expected': self.cleaving_date,
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': self.culling_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
@@ -166,12 +167,12 @@ class PemisahanPolytone(models.Model):
 
 
 
-class PemisahanLine(models.Model):
+class CleavingLine(models.Model):
 
-    _name="estate.nursery.cleavageln"
+    _name="estate.nursery.cleavingln"
 
-    name=fields.Char(related='cleavage_id.name')
-    cleavage_id=fields.Many2one('estate.nursery.cleavage')
+    name=fields.Char(related='cleaving_id.name')
+    cleaving_id=fields.Many2one('estate.nursery.cleaving')
     batch_id=fields.Many2one('estate.nursery.batch',)
     location_id=fields.Many2one('stock.location', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
@@ -193,21 +194,21 @@ class PemisahanLine(models.Model):
 
 
     #get quantity Planted
-    @api.onchange('qty_planted','cleavage_id')
+    @api.onchange('qty_planted','cleaving_id')
     def _get_value_planted(self):
-       self.qty_planted=self.cleavage_id.qty_plante
+       self.qty_planted=self.cleaving_id.qty_plante
        self.write({'qty_planted':self.qty_planted})
 
     #get quantity Single
-    @api.onchange('qty_single','cleavage_id')
+    @api.onchange('qty_single','cleaving_id')
     def _get_value_single(self):
-       self.qty_single=self.cleavage_id.qty_singlebatch
+       self.qty_single=self.cleaving_id.qty_singlebatch
        self.write({'qty_single':self.qty_single})
 
     #get quantity Double
-    @api.onchange('qty_double','cleavage_id')
+    @api.onchange('qty_double','cleaving_id')
     def _get_value_double(self):
-       self.qty_double=self.cleavage_id.qty_doublebatch
+       self.qty_double=self.cleaving_id.qty_doublebatch
        self.write({'qty_double':self.qty_double})
 
     #calculate normal double

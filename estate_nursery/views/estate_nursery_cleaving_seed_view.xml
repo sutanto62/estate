@@ -1,14 +1,14 @@
 <openerp>
     <data>
 
-        <record model="ir.ui.view" id="view_tree_cleavage_polytone">
-            <field name="name">Separation Polytone</field>
-            <field name="model">estate.nursery.cleavage</field>
+        <record model="ir.ui.view" id="view_tree_cleaving_polytone">
+            <field name="name">Cleaving Polytone</field>
+            <field name="model">estate.nursery.cleaving</field>
             <field name="arch" type="xml">
-                <tree string="Nursery separation View">
-                    <field name="separation_code" string="Separation No"/>
-                    <field name="separation_date"/>
-                    <field name="qty_plante"/>
+                <tree string="Nursery Cleaving Tree View">
+                    <field name="cleaving_code" string="Cleaving ID"/>
+                    <field name="cleaving_date"/>
+                    <field name="qty_plante" string="Quantity Planted"/>
                     <field name="qty_singlebatch" string="Quantity Single"/>
                     <field name="qty_doublebatch" string="Quantity Double"/>
                     <field name="qty_total" string="&#931;  Saldo Total."/>
@@ -16,11 +16,11 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_form_cleavage_nursery">
-            <field name="name">Separation Polytone</field>
-            <field name="model">estate.nursery.cleavage</field>
+        <record model="ir.ui.view" id="view_form_cleaving_nursery">
+            <field name="name">Cleaving Polytone</field>
+            <field name="model">estate.nursery.cleaving</field>
             <field name="arch" type="xml">
-                <form String="Nursery separation View">
+                <form String="Nursery cleaving View">
                     <header coolspan="10">
                         <button name="signal_draft" type="workflow"
                                 string="Reject"
@@ -59,35 +59,34 @@
                     <sheet>
                          <div class="oe_title" colors="blue">
                              <h1>
-                                 <label string="Cleavage Seed For"
+                                 <label string="Cleaving Seed For"
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
-                                 <label string="Cleavage Seed For "
+                                 <label string="Cleaving Seed For "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
                                  <field name="name" class="oe_inline" readonly="1"/>
-                                 <field name="separation_code" class="oe_inline" readonly="1" />
+                                 <field name="cleaving_code" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
 
                         <group>
                             <group>
-                                <field name="separation_date" string="Cleavage Date" attrs="{'required': [('state','=','draft')],
-                                 'readonly': [('state','!=','draft')]}"/>
+                                <field name="id" invisible="1"/>
+                                <field name="cleaving_date" string="Cleaving Date" attrs="{'readonly': [('state','=','done')]}"/>
                                 <field name="qty_plante" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_doublebatch" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_singlebatch" string="Quantity Last planted" invisible="1"/>
                             </group>
                             <group coolspan="10">
                                 <field name="culling_location_id" string="Culling location"
-                                        attrs="{'required': [('state','=','draft')],
-                                 'readonly': [('state','!=','draft')]}"/>
+                                        attrs="{'readonly': [('state','=','done')]}"/>
                                 <field name="qty_total" string="Quantity Total" attrs="{'required': [('state','=','draft')],
                                  'readonly': [('state','!=','draft')]}"/>
                             </group>
                         </group>
                             <notebook>
-                                    <page string="Cleavage Line">
+                                    <page string="Cleaving Line">
                                         <tree>
-                                            <field name="cleavageline_ids" attrs="{'readonly': [('state','=','done')]}"/>
+                                            <field name="cleavingline_ids" attrs="{'readonly': [('state','=','done')]}"/>
                                         </tree>
                                      </page>
                             </notebook>
@@ -96,16 +95,16 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_tree_cleavageline_polytone">
-            <field name="name">Separation Line Polytone</field>
-            <field name="model">estate.nursery.cleavageln</field>
+        <record model="ir.ui.view" id="view_tree_cleavingline_polytone">
+            <field name="name">Cleaving Line Polytone</field>
+            <field name="model">estate.nursery.cleavingln</field>
             <field name="arch" type="xml">
-                <tree string="Nursery cleavage Line View" editable="top">
+                <tree string="Nursery cleaving Line View" editable="top">
                     <field name="qty_planted" string="&#931; Planted" />
                     <field name="qty_single" string="&#931; Batch single"/>
                     <field name="qty_double" string="&#931; Batch Double"/>
-                    <field name="qty_normal_double" string="Nor Separation"/>
-                    <field name="qty_abnormal_double" string="Abn Separation"/>
+                    <field name="qty_normal_double" string="Nor Cleaving"/>
+                    <field name="qty_abnormal_double" string="Abn Cleaving"/>
                     <field name="location_type" string="Location virtual" readonly="1"/>
                     <field name="location_id" string="Location To"/>
                     <field name="total_lastsaldo" string="Total Last Saldo"/>
@@ -114,17 +113,17 @@
         </record>
 
         <!-- ACTION -->
-        <record model="ir.actions.act_window" id="action_list_separation" >
-            <field name="name">Separation</field>
-            <field name="res_model">estate.nursery.cleavage</field>
+        <record model="ir.actions.act_window" id="action_list_cleaving" >
+            <field name="name">Cleaving</field>
+            <field name="res_model">estate.nursery.cleaving</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_search_selection" ref="estate_nursery.view_form_cleavage_nursery"/>
+            <field name="view_search_selection" ref="estate_nursery.view_form_cleaving_nursery"/>
         </record>
 
         <!-- MENU -->
-        <menuitem id="nursery_seed_separation"
-                  name="Separation"
+        <menuitem id="nursery_seed_cleaving"
+                  name="Cleaving"
                   parent="estate_nursery_menu"
-                  action="action_list_separation" sequence="16" />
+                  action="action_list_cleaving" sequence="16" />
     </data>
 </openerp>

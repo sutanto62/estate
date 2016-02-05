@@ -2,15 +2,15 @@
 <openerp>
     <data>
         <!-- Sequences for separation code -->
-        <record id="spr_code_sequence" model="ir.sequence.type">
-            <field name="name">Seed Separation </field>
-            <field name="code">estate.nursery.cleavage</field>
+        <record id="clv_code_sequence" model="ir.sequence.type">
+            <field name="name">Seed Cleaving</field>
+            <field name="code">estate.nursery.cleaving</field>
         </record>
 
-        <record id="seq_separation_seed" model="ir.sequence">
-            <field name="name">Seed Separation</field>
-            <field name="code">estate.nursery.cleavage</field>
-            <field name="prefix">SEP</field>
+        <record id="seq_cleaving_seed" model="ir.sequence">
+            <field name="name">Seed Cleaving</field>
+            <field name="code">estate.nursery.cleaving</field>
+            <field name="prefix">CLV</field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -66,7 +66,7 @@
         </record>
 
         <record id="seq_request_selection" model="ir.sequence">
-            <field name="name">culling Request</field>
+            <field name="name">Selection No</field>
             <field name="code">estate.nursery.selection</field>
            <field name="prefix">SFB</field>
             <field name="padding">3</field>
