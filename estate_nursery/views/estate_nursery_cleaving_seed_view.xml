@@ -8,9 +8,10 @@
                 <tree string="Nursery Cleaving Tree View">
                     <field name="cleaving_code" string="Cleaving ID"/>
                     <field name="cleaving_date"/>
-                    <field name="qty_plante" string="Quantity Planted"/>
-                    <field name="qty_singlebatch" string="Quantity Single"/>
+                    <field name="qty_plantedbatch" string="Quantity Planted"/>
                     <field name="qty_doublebatch" string="Quantity Double"/>
+                    <field name="qty_normal" string="Quantity Normal"/>
+                    <field name="qty_abnormal" string="Quantity Abnormal"/>
                     <field name="qty_total" string="&#931;  Saldo Total."/>
                 </tree>
             </field>
@@ -62,9 +63,10 @@
                                  <label string="Cleaving Seed For"
                                        attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
                                  <label string="Cleaving Seed For "
-                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}">
+                                     <field name="cleaving_code" class="oe_inline" readonly="1" />
+                                 </label>
                                  <field name="name" class="oe_inline" readonly="1"/>
-                                 <field name="cleaving_code" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
 
@@ -72,13 +74,16 @@
                             <group>
                                 <field name="id" invisible="1"/>
                                 <field name="cleaving_date" string="Cleaving Date" attrs="{'readonly': [('state','=','done')]}"/>
-                                <field name="qty_plante" string="Quantity Last planted" invisible="1"/>
+                                <field name="qty_plante" string="Quantity Last planted" invisible="0"/>
                                 <field name="qty_doublebatch" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_singlebatch" string="Quantity Last planted" invisible="1"/>
                             </group>
+
                             <group coolspan="10">
                                 <field name="culling_location_id" string="Culling location"
                                         attrs="{'readonly': [('state','=','done')]}"/>
+                                <field name="location_type" string="Location Type"
+                                        attrs="{'readonly': [('state','=','done')]}" invisible="1"/>
                                 <field name="qty_total" string="Quantity Total" attrs="{'required': [('state','=','draft')],
                                  'readonly': [('state','!=','draft')]}"/>
                             </group>
@@ -86,7 +91,8 @@
                             <notebook>
                                     <page string="Cleaving Line">
                                         <tree>
-                                            <field name="cleavingline_ids" attrs="{'readonly': [('state','=','done')]}"/>
+                                            <field name="cleavingline_ids" attrs="{'readonly': [('state','=','done')]}"
+                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_cleavingline_polytone'}"/>
                                         </tree>
                                      </page>
                             </notebook>
@@ -99,7 +105,7 @@
             <field name="name">Cleaving Line Polytone</field>
             <field name="model">estate.nursery.cleavingln</field>
             <field name="arch" type="xml">
-                <tree string="Nursery cleaving Line View" editable="top">
+                <tree string="Nursery cleaving Line View" editable="bottom">
                     <field name="qty_planted" string="&#931; Planted" />
                     <field name="qty_single" string="&#931; Batch single"/>
                     <field name="qty_double" string="&#931; Batch Double"/>
@@ -107,7 +113,7 @@
                     <field name="qty_abnormal_double" string="Abn Cleaving"/>
                     <field name="location_type" string="Location virtual" readonly="1"/>
                     <field name="location_id" string="Location To"/>
-                    <field name="total_lastsaldo" string="Total Last Saldo"/>
+                    <!--<field name="total_lastsaldo" string="Total Last Saldo"/>-->
                 </tree>
             </field>
         </record>

@@ -167,10 +167,8 @@ class Batch(models.Model):
         self.qty_abnormal = 0
         for item in self.batchline_ids:
             self.qty_normal += item.subtotal_normal
-            self.qty_single += item.qty_single
-            self.qty_double += item.qty_double
             self.qty_abnormal += item.subtotal_abnormal
-        self.write({'nursery_stage': '0' ,'qty_single':self.qty_single,'qty_double':self.qty_double ,'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
+        self.write({'nursery_stage': '0' ,'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
 
         self.action_planted()
 
@@ -265,7 +263,7 @@ class Batch(models.Model):
 
     # set constraint to Quantity not more than quantity DO
     @api.multi
-    @api.constrains('batchline_ids')
+    @api.constrains('batchline_ids','seed_qty','qty_single','qty_double','qty_fungus','qty_broken','qty_dead')
     def _check_quantity(self):
         for obj in self.batchline_ids:
             seed_qty = obj.seed_qty
@@ -361,12 +359,13 @@ class Batch(models.Model):
 
     #get double qty
     @api.one
-    @api.depends("batchline_ids",)
+    @api.depends("batchline_ids")
     def _compute_double(self):
         self.qty_double = 0
         if self.batchline_ids:
-            for a in self.batchline_ids:
-                self.qty_double += a.qty_double
+            for item in self.batchline_ids:
+                self.qty_double += item.qty_double
+                print self.qty_double
         return True
 
 
@@ -376,36 +375,21 @@ class Batch(models.Model):
     def _compute_total(self):
         temp={}
         self.qty_planted = 0
-        # if self.cleaving_ids :
-        #     for b in self.cleaving_ids:
-        #         self.qty_planted = b.qty_total
-            # if self.selection_ids:
-            #     for a in self.selection_ids:
-            #         self.qty_planted -=a.qty_abnormal
-        if self.cleaving_ids:
-            for a in self.cleaving_ids:
-                self.qty_planted = a.qty_total
-        elif self.batchline_ids:
+        if self.batchline_ids:
             for item in self.batchline_ids:
                 self.qty_planted += item.qty_planted
             if self.selection_ids:
                 for a in self.selection_ids:
                     self.qty_planted -=a.qty_abnormal
-
-
-# for c in  self.selection_ids:
-                    #     self.qty_planted -= c.qty_abnormal
-                    #     print self.qty_planted
-
-            # if self.cleaving_ids :
-            #     for b in self.cleaving_ids:
-            #         self.qty_planted = b.qty_total
-            # elif self.selection_ids:
-            #     for a in self.selection_ids:
-            #         self.qty_planted -=a.qty_abnormal
-            # elif self.selection_ids and self.cleaving_ids:
-            #     for c in self.selection_ids:
-            #         self.qty_planted -= c.qty_abnormal
+            if self.cleaving_ids :
+                # for total in self.batchline_ids:
+                for totalcleaving in self.cleaving_ids:
+                    self.qty_planted -= totalcleaving.qty_doublebatch
+                    # self.qty_planted += totalcleaving.qty_normal
+                    # self.qty_planted += total.qty_normal
+                    print self.qty_planted
+                    # for b in self.cleaving_ids:
+                    #     self.qty_planted += a.qty_normal
         return True
         # self.write({'qty_planted' : self.qty_planted})
 
