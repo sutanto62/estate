@@ -11,6 +11,9 @@ class CleavingPolytone(models.Model):
 
     name=fields.Char("Cleaving polytone Code",related='batch_id.name')
     batch_id=fields.Many2one('estate.nursery.batch',"Batch")
+    partner_id=fields.Many2one('res.partner')
+    variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
+    progeny = fields.Char("Seed Progeny",related="batch_id.progeny_id.name")
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
@@ -161,7 +164,7 @@ class CleavingPolytone(models.Model):
 
             for batchpisah in batch_ids:
 
-                qty_total_cullingbatch = 0
+                qty_total_cleveagebatch = 0
 
                 trash = self.env['estate.nursery.cleavingln'].search([('location_id', '=', batchpisah.id),
                                                                         ('cleaving_id', '=', self.id)])
@@ -188,7 +191,7 @@ class CleavingPolytone(models.Model):
 
             for batchpisah in batch_ids:
 
-                qty_total_cullingbatch = 0
+                qty_total_cleveagebatch = 0
 
                 trash = self.env['estate.nursery.cleavingln'].search([('location_id', '=', batchpisah.id),
                                                                         ('cleaving_id', '=', self.id)])
@@ -235,9 +238,7 @@ class CleavingLine(models.Model):
     qty_double=fields.Integer(required=True)
     qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
-    # total_lastsaldo=fields.Integer(readonly=True,compute="_compute_subtotal",store=True)
-
-
+    comment=fields.Text("Description or Comment")
     # get quantity Planted
     @api.onchange('qty_planted','cleaving_id')
     def _get_value_planted(self):

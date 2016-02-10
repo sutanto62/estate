@@ -74,7 +74,7 @@
                             <group>
                                 <field name="id" invisible="1"/>
                                 <field name="cleaving_date" string="Cleaving Date" attrs="{'readonly': [('state','=','done')]}"/>
-                                <field name="qty_plante" string="Quantity Last planted" invisible="0"/>
+                                <field name="qty_plante" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_doublebatch" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_singlebatch" string="Quantity Last planted" invisible="1"/>
                             </group>
@@ -113,7 +113,7 @@
                     <field name="qty_abnormal_double" string="Abn Cleaving"/>
                     <field name="location_type" string="Location virtual" readonly="1"/>
                     <field name="location_id" string="Location To"/>
-                    <!--<field name="total_lastsaldo" string="Total Last Saldo"/>-->
+                    <field name="comment" string="Description or Comment"/>
                 </tree>
             </field>
         </record>
