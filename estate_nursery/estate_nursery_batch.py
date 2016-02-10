@@ -382,12 +382,13 @@ class Batch(models.Model):
                 for a in self.selection_ids:
                     self.qty_planted -=a.qty_abnormal
             if self.cleaving_ids :
-                # for total in self.batchline_ids:
                 for totalcleaving in self.cleaving_ids:
                     self.qty_planted -= totalcleaving.qty_doublebatch
-                    # self.qty_planted += totalcleaving.qty_normal
-                    # self.qty_planted += total.qty_normal
                     print self.qty_planted
+                if self.cleaving_ids.qty_normal:
+                    for totalnormal in self.cleaving_ids:
+                        self.qty_planted += totalnormal.qty_normal
+                        print self.qty_planted
                     # for b in self.cleaving_ids:
                     #     self.qty_planted += a.qty_normal
         return True
