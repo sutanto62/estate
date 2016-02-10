@@ -1,0 +1,7 @@
+id,name,mandatory,level
+estate.parameter_soil,Soil Type,True,Block
+estate.parameter_vegetation,Vegetation,False,Block
+estate.parameter_topography,Topography,False,Block
+estate.parameter_slope_percentage,Slope,False,Block
+estate.parameter_block_shape,Shape,False,Block
+estate.parameter_row_direction,Row Direction,False,Block

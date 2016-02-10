@@ -1,0 +1,13 @@
+id,parameter_id/id,name
+estate.parameter_value_mineral,estate.parameter_soil,Mineral
+estate.parameter_value_gambut,estate.parameter_soil,Gambut
+estate.parameter_value_pasir,estate.parameter_soil,Pasir
+estate.parameter_value_flat,estate.parameter_topography,Datar
+estate.parameter_value_hilly,estate.parameter_topography,Berbukit
+estate.parameter_value_wave,estate.parameter_topography,Bergelombang
+estate.parameter_value_regular,estate.parameter_block_shape,Regular
+estate.parameter_value_irregular,estate.parameter_block_shape,Iregular
+estate.parameter_value_forest,estate.parameter_vegetation,Hutan
+estate.parameter_value_thatch,estate.parameter_vegetation,Lalang
+estate.parameter_value_ns,estate.parameter_row_direction,Utara Selatan
+estate.parameter_value_we,estate.parameter_row_direction,Barat Timur

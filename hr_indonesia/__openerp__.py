@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Estate",
+    'name': "Employee (Indonesia)",
 
     'summary': """
-        Manage Oil Palm Plantation.""",
+        Employee Status, Tax, Insurance.""",
 
     'description': """
         Long description of module's purpose
@@ -15,27 +15,21 @@
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Uncategorized',
+    'category': 'Human Resources',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','stock'],
+    'depends': ['base','hr'],
 
     # always loaded
     'data': [
-        'security/security.xml',
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'templates.xml',
-        'views/estate.xml',
-        'res_config_view.xml',
-        'security/security.xml'
+        'views/hr_indonesia_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
-        'data/demo.xml',
-        'data/stock.location.csv',
-        'data/estate.block.template.csv',
-        'data/estate.parameter.csv',
-        'data/estate.parameter.value.csv'
+        'demo.xml',
+        'data/hr.employee.csv',
     ],
 }

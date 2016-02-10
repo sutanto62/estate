@@ -15,23 +15,6 @@ class EstateLocation(models.Model):
                                             "Planted: location for planting. "
                                             "Emplacement: location for non-planting/nursery.")
 
-    # @deprecated - move to Estate Block
-    estate_area_planted = fields.Float(string="Planted Area")
-    estate_area_unplanted = fields.Float(string="Unplanted Area")
-    estate_area_emplacement = fields.Float(string="Emplacement Area")
-    estate_soil_type = fields.Many2one('estate.soil_type', string="Soil Type")
-    estate_soil_subtype = fields.Many2one('estate.soil_sub_type', string="Soil Sub Type")
-    estate_vegetation = fields.Many2one('estate.vegetation', string="Early Vegetation")
-    estate_topography = fields.Many2one('estate.topography', string="Topography Type")
-    estate_slope_percentage = fields.Many2one('estate.slope', string="Slope Percentage")
-    estate_shape = fields.Selection([('1', 'Regular Shape'),('2','Irregular Shape')], string="Block Shape")
-    estate_row_direction = fields.Many2one('estate.row_direction', string="Row Direction")
-    estate_leaf_analysis = fields.Boolean(string="Leaf Analysis")
-    estate_closing_block = fields.Boolean(string="Closing Block")
-    estate_date_closing = fields.Date(string="Date Closing")
-    estate_amount_plant = fields.Integer(string="Amount of Planted Tree")
-    estate_amount_sph = fields.Integer(string="Stand per Hectare")
-
 class ActivityCategory(models.Model):
     _name = 'estate.activity.category'
     _parent_store = True
@@ -135,9 +118,8 @@ class EstateBlockTemplate(models.Model):
 
     is_smallholder = fields.Boolean("Smallholder Area",
                              help="Check this box to mark Block as Smallholder area.")
-    partner_id = fields.Many2one('res.partner', "Owner", domain="[('is_company', '=', 'true')]",
-                                 help="Define child elements owner if childs has no owner. "
-                                 "Child able to overide parent's owner partner.")
+    company_id = fields.Many2one('res.company', "Company",
+                                 help="Based on Consession License.")
     leaf_analysis = fields.Boolean("Leaf Analysis", help="Set true if leaf analysis has been done.")
     soil_analysis = fields.Boolean("Soil Analysis", help="Set true if soil analysis has been done.")
     date_planted = fields.Date("Planted Date")
@@ -150,11 +132,13 @@ class EstateBlockTemplate(models.Model):
     block_ids = fields.One2many('estate.block', 'block_template_id', "Block Variants")
     block_parameter_ids = fields.One2many('estate.block.parameter', 'block_id', "Block Parameter",
                                           help="Define block parameter")
+    closing = fields.Boolean("Closing Block", help="Land clearing has been finished.")
 
     # Set default value embedded object (stock location)
     _defaults = {
         'estate_location': 'true',
-        'estate_location_type': 'planted'
+        'estate_location_type': 'planted',
+        'usage': 'production'
     }
 
 class EstateBlock(models.Model):
