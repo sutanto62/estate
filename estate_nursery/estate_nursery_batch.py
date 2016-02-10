@@ -123,16 +123,17 @@ class Batch(models.Model):
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
-    culling_location_id = fields.Many2one('stock.location', _("Culling Location"),
+    culling_location_id = fields.Many2one('estate.block.template', _("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True),
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', True),
                                                   ])
-    kebun_location_id = fields.Many2one('stock.location', _("Estate Location"),
+    kebun_location_id = fields.Many2one('estate.block.template', _("Estate Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '1'),
                                                   ],
-                                        default=lambda self: self.kebun_location_id.search([('name','=','Liyodu Estate')]))
+                                        default=lambda self: self.kebun_location_id.search([('name','=','LYD')]))
     stage_id=fields.Many2one("estate.nursery.stage")
     status =fields.Boolean("Status test")
     status_age=fields.Boolean("Status age")
@@ -199,12 +200,12 @@ class Batch(models.Model):
         location_ids = set()
         for item in self.batchline_ids:
             if item.location_id and item.qty_planted > 0: # todo do not include empty quantity location
-                location_ids.add(item.location_id)
+                location_ids.add(item.location_id.inherit_location_id)
 
         # Move quantity normal seed
         for location in location_ids:
             qty_total_planted = 0
-            bags = self.env['estate.nursery.batchline'].search([('location_id', '=', location.id),
+            bags = self.env['estate.nursery.batchline'].search([('location_id.inherit_location_id', '=', location.id),
                                                                    ('batch_id', '=', self.id)])
             for i in bags:
                 qty_total_planted += i.qty_planted
@@ -447,7 +448,7 @@ class Batchline(models.Model):
     selection_do_var = fields.Integer("Variance", help="Seed selection ratio.", compute='_compute_variance')
     planting_selection_var = fields.Integer("Variance", help="Seed planted ratio", compute='_compute_variance')
     qty_planted = fields.Integer("Planted Quantity",store=True)
-    location_id = fields.Many2one('stock.location', "Bedengan/Plot",
+    location_id = fields.Many2one('estate.block.template', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),

@@ -6,7 +6,6 @@ import calendar
 class Planting(models.Model):
     #seed planting
     _name = "estate.nursery.planting"
-    _inherits = {'stock.production.lot': 'lot_id'}
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
@@ -19,13 +18,13 @@ class Planting(models.Model):
                                  related="request_id.variety_id",readonly=True)
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
-    kebun_location_id = fields.Many2one('stock.location',"Estate Location",
+    kebun_location_id = fields.Many2one('estate.block.template',"Estate Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '1'),
                                                   ],
                                         default=lambda self: self.kebun_location_id.search
                                         ([('name','=','Liyodu Estate')]))
-    divisi_location_id = fields.Many2one('stock.location',"Divisi Location",
+    divisi_location_id = fields.Many2one('estate.block.template',"Divisi Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '2'),
                                                   ],
@@ -122,13 +121,13 @@ class Requestplanting(models.Model):
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],)
     product_id=fields.Many2one('product.product', "Product", related="lot_id.product_id")
-    kebun_location_id = fields.Many2one('stock.location',"Estate Location",
+    kebun_location_id = fields.Many2one('estate.block.template',"Estate Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '1'),
                                                   ],
                                         default=lambda self: self.kebun_location_id.search
                                         ([('name','=','Liyodu Estate')]))
-    divisi_location_id = fields.Many2one('stock.location',"Divisi Location",
+    divisi_location_id = fields.Many2one('estate.block.template',"Divisi Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '2'),
                                                   ],

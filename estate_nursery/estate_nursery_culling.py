@@ -25,10 +25,11 @@ class Culling(models.Model):
     quantitytotal_abnormal = fields.Integer("Quantity Total Abnormal",compute='_compute_total_batch',store=True)
     total_quantityabnormal_temp=fields.Integer(compute='_compute_total_abnormal',store=True)
     total_qtyabnormal=fields.Integer(store=True)
-    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+    culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', True)]
                                           ,store=True)
     selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='1',required=True)
     state= fields.Selection([
@@ -120,7 +121,7 @@ class Culling(models.Model):
              for itembatch in self.cullingline_ids:
                  if itembatch.culling_location_id and itembatch.batch_id and itembatch.total_qty_abnormal_batch > 0:
                      # location_ids.add(itembatch.culling_location_id)
-                     batch_ids.add(itembatch.batch_id.culling_location_id)
+                     batch_ids.add(itembatch.batch_id.culling_location_id.inherit_location_id)
 
                  for locationbatch in batch_ids:
 
@@ -210,7 +211,7 @@ class CullingLine(models.Model):
     total_abnormal=fields.Integer(store=True,compute='_get_total_abnormal')
     total_seed_dobatch=fields.Integer()
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
-    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+    culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
@@ -315,10 +316,11 @@ class CullinglineBatch(models.Model):
     qty_transplanted=fields.Integer(store=True)
     total_qty_abnormal_batch=fields.Integer(store=True,compute='_get_abnormal_total')
     total_seed_DO=fields.Integer(store=True)
-    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+    culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', True)]
                                           ,store=True,related='batch_id.culling_location_id',readonly=True)
 
     #get qty Transplanted

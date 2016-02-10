@@ -28,7 +28,7 @@ class CleavingPolytone(models.Model):
     qty_abnormal=fields.Integer("Quantity Abnormal",compute="_compute_total_abnormal")
     qty_total=fields.Integer("Total All Seed ",compute="_compute_subtotal")
     qty_normal=fields.Integer("Quantity Normal",compute="_compute_total_normal")
-    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+    culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
@@ -131,11 +131,11 @@ class CleavingPolytone(models.Model):
         location_ids = set()
         for item in self.cleavingline_ids:
             if item.location_id and item.qty_double > 0: # todo do not include empty quantity location
-                location_ids.add(item.location_id)
+                location_ids.add(item.location_id.inherit_location_id)
 
         for location in location_ids:
             qty_total_double = 0
-            qty = self.env['estate.nursery.cleavingln'].search([('location_id', '=', location.id),
+            qty = self.env['estate.nursery.cleavingln'].search([('location_id.inherit_location_id', '=', location.id),
                                                                    ('cleaving_id', '=', self.id)
                                                                    ])
             for i in qty:
@@ -160,13 +160,13 @@ class CleavingPolytone(models.Model):
         batch_ids = set()
         for itembatch in self.cleavingline_ids:
             if  itembatch.location_id and itembatch.qty_normal_double > 0:
-                batch_ids.add(itembatch.location_id)
+                batch_ids.add(itembatch.location_id.inherit_location_id)
 
             for batchpisah in batch_ids:
 
                 qty_total_cleveagebatch = 0
 
-                trash = self.env['estate.nursery.cleavingln'].search([('location_id', '=', batchpisah.id),
+                trash = self.env['estate.nursery.cleavingln'].search([('location_id.inherit_location_id', '=', batchpisah.id),
                                                                         ('cleaving_id', '=', self.id)])
                 for i in trash:
                     qty_total_cleavagebatch = i.qty_normal_double
@@ -178,7 +178,7 @@ class CleavingPolytone(models.Model):
                         'name': 'Cleveage Normal Kecambah  %s for %s:'%(self.cleaving_code,self.batch_id.name),
                         'date_expected': self.cleaving_date,
                         'location_id': itembatch.location_type.id,
-                        'location_dest_id': itembatch.location_id.id,
+                        'location_dest_id': itembatch.location_id.inherit_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': self.lot_id.id # required by check tracking product
                  }
@@ -187,13 +187,13 @@ class CleavingPolytone(models.Model):
             move.action_done()
 
             if  itembatch.location_id and itembatch.qty_abnormal_double > 0:
-                batch_ids.add(itembatch.location_id)
+                batch_ids.add(itembatch.location_id.inherit_location_id)
 
             for batchpisah in batch_ids:
 
                 qty_total_cleveagebatch = 0
 
-                trash = self.env['estate.nursery.cleavingln'].search([('location_id', '=', batchpisah.id),
+                trash = self.env['estate.nursery.cleavingln'].search([('location_id.inherit_location_id', '=', batchpisah.id),
                                                                         ('cleaving_id', '=', self.id)])
                 for i in trash:
                     qty_total_cleavagebatch = i.qty_abnormal_double
@@ -205,7 +205,7 @@ class CleavingPolytone(models.Model):
                         'name': 'Cleaving Abnormal Kecambah  %s for %s:'%(self.cleaving_code,self.batch_id.name),
                         'date_expected': self.cleaving_date,
                         'location_id': itembatch.location_type.id,
-                        'location_dest_id': self.culling_location_id.id,
+                        'location_dest_id': self.culling_location_id.inherit_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': self.lot_id.id # required by check tracking product
                  }
@@ -223,16 +223,16 @@ class CleavingLine(models.Model):
     name=fields.Char(related='cleaving_id.name')
     cleaving_id=fields.Many2one('estate.nursery.cleaving')
     batch_id=fields.Many2one('estate.nursery.batch',)
-    location_id=fields.Many2one('stock.location', "Bedengan/Plot",
+    location_id=fields.Many2one('estate.block.template', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.",required=True)
-    location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Virtual Separation'),
+    location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Cleaving'),
                                                                              ('usage','=','inventory'),
                                                                              ],store=True,required=True,
-                                  default=lambda self: self.location_type.search([('name','=','Virtual Separation')]))
+                                  default=lambda self: self.location_type.search([('name','=','Cleaving')]))
     qty_planted=fields.Integer(required=True)
     qty_single=fields.Integer(required=True)
     qty_double=fields.Integer(required=True)

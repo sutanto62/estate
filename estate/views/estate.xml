@@ -39,6 +39,7 @@
                 <tree string="Estate Block"
                       default_order="complete_name"
                       colors="blue:usage=='view';darkred:usage=='internal'">
+                    <field name="inherit_location_id"/>
                     <field name="complete_name"/>
                     <field name="estate_location_type"/>
                     <field name="estate_location_level"/>

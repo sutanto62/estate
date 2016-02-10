@@ -72,10 +72,11 @@ class Selection(models.Model):
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done')], string="State",store=True)
-    culling_location_id = fields.Many2one('stock.location',("Culling Location"),
+    culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', True)]
                                           ,related="batch_id.culling_location_id",store=True)
 
     #sequence
@@ -119,11 +120,11 @@ class Selection(models.Model):
         location_ids = set()
         for item in self.selectionline_ids:
             if item.location_id and item.qty > 0: # todo do not include empty quantity location
-                location_ids.add(item.location_id)
+                location_ids.add(item.location_id.inherit_location_id)
 
         for location in location_ids:
             qty_total_abnormal = 0
-            qty = self.env['estate.nursery.selectionline'].search([('location_id', '=', location.id),
+            qty = self.env['estate.nursery.selectionline'].search([('location_id.inherit_location_id', '=', location.id),
                                                                    ('selection_id', '=', self.id)
                                                                    ])
             for i in qty:
@@ -136,7 +137,7 @@ class Selection(models.Model):
                 'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
                 'date_expected': self.date_plant,
                 'location_id': location.id,
-                'location_dest_id': self.culling_location_id.id,
+                'location_dest_id': self.culling_location_id.inherit_location_id.id,
                 'state': 'confirmed', # set to done if no approval required
                 'restrict_lot_id': self.lot_id.id # required by check tracking product
             }
@@ -395,9 +396,7 @@ class SelectionStage(models.Model):
             for a in limit:
                 limitmax = a
             if maxa and mina:
-                if maxa > limitmax:
-                    raise ValidationError("Age Limit min not more than 12!" )
-                elif mina < limitmin:
+                if mina < limitmin:
                     raise ValidationError("Age Limit min not less than 1!" )
 
     #Limit age
@@ -438,7 +437,7 @@ class SelectionLine(models.Model):
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
-    location_id = fields.Many2one('stock.location', "Bedengan",
+    location_id = fields.Many2one('estate.block.template', "Bedengan",
                                     domain=[('estate_location', '=', True),
                                             ('estate_location_level', '=', '3'),
                                             ('estate_location_type', '=', 'nursery'),
