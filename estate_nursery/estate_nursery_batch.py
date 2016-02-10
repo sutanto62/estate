@@ -384,13 +384,9 @@ class Batch(models.Model):
             if self.cleaving_ids :
                 for totalcleaving in self.cleaving_ids:
                     self.qty_planted -= totalcleaving.qty_doublebatch
-                    print self.qty_planted
                 if self.cleaving_ids.qty_normal:
                     for totalnormal in self.cleaving_ids:
                         self.qty_planted += totalnormal.qty_normal
-                        print self.qty_planted
-                    # for b in self.cleaving_ids:
-                    #     self.qty_planted += a.qty_normal
         return True
         # self.write({'qty_planted' : self.qty_planted})
 
