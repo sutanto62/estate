@@ -19,14 +19,15 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','product','estate_nursery'],
+    'depends': ['base','product','estate_nursery','estate'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'templates.xml',
         'views/sequence_view_planting.xml',
-        'estate_nursery_planting.py',
+        'views/estate_planting_view.xml'
+
     ],
     # only loaded in demonstration mode
     'demo': [
