@@ -266,10 +266,10 @@
             <field name="view_search_planting" ref="estate_nursery.view_form_planting"/>
         </record>
         <!--Menu View-->
-        <menuitem id="estate_nursery_planting" name="Planting" parent="estate.main_estate_menu" sequence="80"/>
+        <menuitem id="estate_nursery_planting" name="Planting" parent="estate.main_estate_menu" sequence="100"/>
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
-                  action="action_list_requestplanting" sequence="81"/>
+                  action="action_list_requestplanting" sequence="101"/>
         <menuitem id="planting_seed" name="Planting Seed" parent="estate_nursery_planting"
-                  action="action_list_planting" sequence="81"/>
+                  action="action_list_planting" sequence="101"/>
     </data>
 </openerp>
