@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- View Tree: Team -->
+        <record model="ir.ui.view" id="view_tree_estate_team">
+            <field name="name">Estate Team Tree</field>
+            <field name="model">estate.hr.team</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_team_form">
+            <field name="name">Estate Team Form</field>
+            <field name="model">estate.hr.team</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="date_effective"/>
+                            <field name="employee_id"/>
+                        </group>
+                        <field name="member_ids"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.ui.view" id="view_member_tree">
+            <field name="name">Member Tree</field>
+            <field name="model">estate.hr.member</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="employee_id"/>
+                    <field name="contract_type" readonly="True"/>
+                    <field name="contract_period" readonly="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_estate_team">
+            <field name="name">Estate Team</field>
+            <field name="res_model">estate.hr.team</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="estate_estate_team_menu" name="Estate Team"
+                  parent="estate_blocking_menu"
+                  action="action_list_estate_team"
+                  groups="base.group_no_one"/>
+
+    </data>
+</openerp>
