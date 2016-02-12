@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <!--
+    <data noupdate="1">
+        &lt;!&ndash; After installation of the module, open the related menu &ndash;&gt;
+        <record id="action_client_hr_menu" model="ir.actions.client">
+            <field name="name">Open HR Menu</field>
+            <field name="tag">reload</field>
+            <field name="params" eval="{'menu_id': ref('menu_hr_root')}"/>
+        </record>
+        <record id="base.open_menu" model="ir.actions.todo">
+            <field name="action_id" ref="action_client_hr_menu"/>
+            <field name="state">open</field>
+        </record>
+    </data>
+    -->
+
+    <data>
+        <record id="view_estate_configuration" model="ir.ui.view">
+            <field name="name">estate settings</field>
+            <field name="model">estate.config.settings</field>
+            <field name="arch" type="xml">
+                <form string="Configure Plantation" class="oe_form_configuration">
+                    <header>
+                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                    </header>
+                    <separator string="Plantation"/>
+                    <group name="nursery_grp">
+                        <label for="id" string="Nursery Management"/>
+                        <div name="nursery">
+                            <div name="estate_nursery">
+                                <field name="module_estate_nursery" class="oe_inline"/>
+                                <label for="module_estate_nursery"/>
+                            </div>
+                        </div>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_estate_configuration" model="ir.actions.act_window">
+            <field name="name">Configure Estate</field>
+            <field name="res_model">estate.config.settings</field>
+            <field name="view_id" ref="view_estate_configuration"/>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+        </record>
+
+        <menuitem id="menu_estate_configuration" name="Plantation" parent="base.menu_config"
+            sequence="70" action="action_estate_configuration"/>
+
+    </data>
+</openerp>
