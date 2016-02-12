@@ -263,6 +263,7 @@
             <field name="res_model">estate.nursery.planting</field>
             <field name="view_mode">tree,form</field>
         </record>
+        
         <!--Menu View-->
         <menuitem id="estate_nursery_planting" name="Planting" parent="estate.main_estate_menu" sequence="80"/>
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
