@@ -56,7 +56,10 @@ class EstateBlockTemplate(models.Model):
                                     help="Area for office and housing.")
     area_unplanted = fields.Float("Unplanted Area (ha)",
                                   help="GIS Area minus Planted area.")
-
+    qty_sph_standard = fields.Integer(compute="_get_stand_hectare", string="Standard stand per hectare",
+                                      store=True, help="Average stand per hectare by topography.")
+    qty_sph_do = fields.Integer(compute="_get_stand_hectare", string="Stand per hectare",
+                                store=True, help="Average stand per hectare planted.")
     is_smallholder = fields.Boolean("Smallholder Area",
                              help="Check this box to mark Block as Smallholder area.")
     company_id = fields.Many2one('res.company', "Company",
@@ -81,6 +84,16 @@ class EstateBlockTemplate(models.Model):
         'estate_location_type': 'planted',
         'usage': 'production'
     }
+
+    @api.one
+    @api.depends('block_parameter_ids', 'qty_tree')
+    def _get_stand_hectare(self):
+        if self.block_parameter_ids:
+            # Set as based on topography parameter value
+            self.qty_sph_standard = 126
+        else:
+            # Set default (based on stand per hectare default value)
+            self.qty_sph_standard = 130
 
 class EstateBlock(models.Model):
     _name = 'estate.block'
@@ -129,3 +142,22 @@ class PlantedYear(models.Model):
     _name = 'estate.planted.year'
 
     name = fields.Char("Planted Year")
+
+class StandPerHectare(models.Model):
+    """Stand per hectare by regional. Parameter value constrains to topography parameter (hard coded).
+    """
+    _name = 'estate.stand.hectare'
+
+    name = fields.Char("Name")
+    qty = fields.Integer("Stand Per Hectare")
+    default = fields.Boolean("Set as default for new Block", help="Set True to make new block using this stand per hectare.")
+    parameter_value_id = fields.Many2one('estate.parameter.value', "Topography",
+                                         domain="[('parameter_id.id', '=', 'estate.parameter_topography')]")
+
+    @api.onchange('default')
+    def _onchange_default(self):
+        """Only one default stand per hectare allowed.
+        """
+        records = self.env['estate.stand.hectare'].search([('id', '!=', self.id)])
+        for rec in records:
+            rec.default = 'False'

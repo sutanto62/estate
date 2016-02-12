@@ -9,7 +9,7 @@ stock.stock_pn_2,PN 2,False,Internal Location,True,Block,Nursery,stock.stock_pre
 stock.stock_pn_3,PN 3,False,Internal Location,True,Block,Nursery,stock.stock_pre_nursery,
 stock.stock_main_nursery,Main Nursery,False,Internal Location,True,Division,Nursery,stock.stock_nursery,
 stock.stock_mn_1,MN 1,False,Internal Location,True,Block,Nursery,stock.stock_main_nursery,
-stock.stock_culling_1,Culling 1,Internal Location,True,Block,Nursery,stock.stock_location_scrapped,
+stock.stock_culling_1,Culling 1,True,Internal Location,True,Block,Nursery,stock.stock_location_scrapped,
 stock.stock_culling_2,Culling 2,True,Internal Location,True,Block,Nursery,stock.stock_location_scrapped,
 stock.stock_division_1,Division 1,False,Internal Location,True,Division,Planted,stock.stock_main_estate,
 stock.stock_block_1,Block 1,False,Internal Location,True,Block,Planted,stock.stock_division_1,

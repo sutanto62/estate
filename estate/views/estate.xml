@@ -73,6 +73,7 @@
                             <field name="qty_tree_immature"/>
                             <field name="qty_tree_mature_normal"/>
                             <field name="qty_tree_mature_abnormal"/>
+                            <field name="qty_sph_standard"/>
                         </group>
 
                         <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">

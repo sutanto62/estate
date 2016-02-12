@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'hr'],
+    'depends': ['base', 'stock', 'hr', 'hr_indonesia'],
 
     # always loaded
     'data': [
@@ -38,6 +38,7 @@
         'data/stock.location.csv',
         'data/estate.block.template.csv',
         'data/estate.parameter.csv',
-        'data/estate.parameter.value.csv'
+        'data/estate.parameter.value.csv',
+        'data/estate.stand.hectare.csv'
     ],
 }
