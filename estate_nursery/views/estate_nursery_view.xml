@@ -527,11 +527,20 @@
                   action="action_list_batch_planting" sequence="14"/>
         -->
         <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />
-        <menuitem id="config_seed_variety" name="Seed Variety" parent="estate.estate_master_menu"
-                  action="action_list_variety" groups="estate.group_agronomi"/>
-        <menuitem id="config_seed_progeny" name="Seed Progeny" parent="estate.estate_master_menu"
-                  action="action_list_progeny" groups="estate.group_agronomi"/>
-        <menuitem id="config_nursery_stage" name="Nursery Stage" parent="estate.estate_master_menu"
-                  action="action_list_stage" groups="estate.group_agronomi"/>
+        <menuitem id="config_seed_variety"
+                  name="Seed Variety"
+                  parent="estate.estate_master_menu"
+                  action="action_list_variety"
+                  groups="estate.group_agronomi"/>
+        <menuitem id="config_seed_progeny"
+                  name="Seed Progeny"
+                  parent="estate.estate_master_menu"
+                  action="action_list_progeny"
+                  groups="estate.group_agronomi"/>
+        <menuitem id="config_nursery_stage"
+                  name="Nursery Stage"
+                  parent="estate.estate_master_menu"
+                  action="action_list_stage"
+                  groups="estate.group_agronomi"/>
     </data>
 </openerp>

@@ -150,6 +150,7 @@
         <menuitem id="req_seed_culling"
                   name="Culling"
                   parent="estate_nursery_menu"
-                  action="action_list_culling" sequence="18"/>
+                  action="action_list_culling" sequence="18"
+                  groups="estate.group_manager"/>
     </data>
 </openerp>

@@ -87,7 +87,6 @@ class CleavingPolytone(models.Model):
         if self.cleavingline_ids:
             total = (self.qty_plante-self.qty_doublebatch)+self.qty_normal
             self.qty_total=total
-            print self.qty_total
         return True
 
     #state for Culling
@@ -236,6 +235,8 @@ class CleavingLine(models.Model):
     qty_planted=fields.Integer(required=True)
     qty_single=fields.Integer(required=True)
     qty_double=fields.Integer(required=True)
+    # qty_persentage_normal=fields.Integer('Persentage Normal',store=True,compute='_compute_persentage')
+    # qty_persentage_abnormal=fields.Integer('Persentage Abnormal',store=True,compute='_compute_persentage')
     qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
     comment=fields.Text("Description or Comment")
@@ -267,7 +268,7 @@ class CleavingLine(models.Model):
             if  self.qty_normal_double > max_double:
                 raise ValidationError("Your Qty normal more than Maximal Double: %s" % obj.qty_normal_double)
 
-    #compute Total Abnormal Double
+    #Compute Total Abnormal Double
     @api.one
     @api.depends('qty_normal_double','qty_double')
     def _compute_abnormal(self):
@@ -277,4 +278,16 @@ class CleavingLine(models.Model):
             self.qty_abnormal_double=totalabnormal
         return True
 
-
+    #Compute Persentage Abnormal After Cleaving
+    # @api.one
+    # @api.depends('qty_normal_double','qty_abnormal_double')
+    # def _compute_persentage(self):
+    #     total= int(self.qty_normal_double)+int(self.qty_abnormal_double)
+    #     print total
+    #     if self.qty_normal_double and self.qty_abnormal_double:
+    #         pnormal =float(self.qty_normal_double)/float(total)*float(100.00)
+    #         pabnormal =float(self.qty_abnormal_double)/float(total)*float(100.00)
+    #         print pnormal
+    #         print pabnormal
+    #         self.qty_persentage_normal = pnormal
+    #         self.qty_persentage_abnormal = pabnormal

@@ -1,5 +1,19 @@
 <openerp>
     <data>
+        <!--view Graph Cleaving line-->
+        <record id="view_graph_cleaving_nursery" model ="ir.ui.view">
+            <field name="name">graph cleaving abnormal</field>
+            <field name="model">estate.nursery.cleavingln</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph Cleaving Abnormal Seed" type="pivot">
+                       <field name="cleaving_id" string="Selection"/>
+                       <field name="qty_normal_double" type="measure" string="Qty Normal"/>
+                       <field name="qty_abnormal_double" type="measure"  sum="Qty Abnormal"/>
+                   </graph>
+            </field>
+        </record>
+
+        <!-- Cleaving Tree And Form View -->
 
         <record model="ir.ui.view" id="view_tree_cleaving_polytone">
             <field name="name">Cleaving Polytone</field>
@@ -130,6 +144,7 @@
         <menuitem id="nursery_seed_cleaving"
                   name="Cleaving"
                   parent="nursery_seed_batch"
-                  action="action_list_cleaving" sequence="16" />
+                  action="action_list_cleaving" sequence="16"
+                  groups="estate.group_manager"/>
     </data>
 </openerp>

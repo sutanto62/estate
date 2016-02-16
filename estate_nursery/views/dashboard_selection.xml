@@ -1,5 +1,14 @@
 <openerp>
     <data>
+         <record model="ir.actions.act_window" id="act_cleaving_graph">
+            <field name="name">Cleaving abnormal</field>
+            <field name="res_model">estate.nursery.cleavingln</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id"
+                   ref="estate_nursery.view_graph_cleaving_nursery"/>
+        </record>
+
         <record model="ir.actions.act_window" id="act_selection_graph">
             <field name="name">Selection abnormal</field>
             <field name="res_model">estate.nursery.selection</field>
@@ -129,14 +138,14 @@
                                 width="200"/>
                         </column>
                         <column>
-                            <action
-                                string="Group by seed DO batch"
-                                name="%(act_ageseed_batch_graph)d"
-                                height="100"
-                                width="200"/>
                              <action
                                 string="Group by Double Abnormal Seed"
                                 name="%(act_double_batch_graph)d"
+                                height="100"
+                                width="200"/>
+                               <action
+                                string="Group by Abnormal Cleaving Seed"
+                                name="%(act_cleaving_graph)d"
                                 height="100"
                                 width="200"/>
                         </column>
@@ -154,6 +163,7 @@
           <field name="usage">menu</field>
           <field name="view_id" ref="board_selection_form"/>
         </record>
+
         <record model="ir.actions.act_window" id="open_board_batch">
           <field name="name">batch Dashboard</field>
           <field name="res_model">board.board</field>

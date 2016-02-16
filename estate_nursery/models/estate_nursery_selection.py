@@ -202,10 +202,10 @@ class Selection(models.Model):
     def computepersentage(self):
         d3 = int(self.qty_normal)+int(self.qty_abnormal)
         if self.qty_abnormal and self.qty_normal:
-            d1 =float(self.qty_normal)/float(d3)*float(100.00)
-            d2 =float(self.qty_abnormal)/float(d3)*float(100.00)
-            self.nursery_persentagea = d2
-            self.nursery_persentagen = d1
+            pnormal =float(self.qty_normal)/float(d3)*float(100.00)
+            pabnormal =float(self.qty_abnormal)/float(d3)*float(100.00)
+            self.nursery_persentagea = pnormal
+            self.nursery_persentagen = pabnormal
 
     #compute lapseday
     @api.one
