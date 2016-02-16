@@ -90,10 +90,12 @@
                         </group>
                         <notebook>
                             <page string="Culling Line Batch detail" attrs="{'invisible':[('selectionform','!=', '1')]}">
-                                <field name="cullingline_ids" />
+                                <field name="cullingline_ids" attrs="{'readonly':[('state','=', 'done')]}"
+                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglinebatch'}"/>
                             </page>
                             <page string="Culling Line All detail" attrs="{'invisible':[('selectionform','!=', '2')]}">
-                                <field name="cullinglineall_ids" />
+                                <field name="cullinglineall_ids" attrs="{'readonly':[('state','=', 'done')]}"
+                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglineall'}"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -106,12 +108,9 @@
             <field name="name">Nursery Culling line all Tree</field>
             <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Culling line View" editable="top">
+                <tree string="Nursery Culling line View" editable="bottom">
                     <field name="selection_id" string="Batch No" domain="[('flagcul','=','0')]"/>
                     <field name="status"/>
-                    <field name="total_seed_dobatch" string="&#931;DO Batch "/>
-                    <field name="allqty_abnormal_batch" string="&#931;Abn Batch"/>
-                    <field name="allqty_normal_batch" string="&#931;Nor Batch"/>
                     <field name="selectionstage_id" string="Selection Stage"/>
                     <field name="qty_abnormal_selection" string="&#931;Abn Selection"/>
                     <field name="qty_normal_selection" string="&#931;Nor Selection"/>
@@ -127,8 +126,8 @@
             <field name="name">Nursery Culling line Tree</field>
             <field name="model">estate.nursery.cullinglinebatch</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Culling line View" editable="top">
-                    <field name="batch_id" string="Batch No" />
+                <tree string="Nursery Culling line View" editable="bottom">
+                    <field name="batch_id" string="Batch No"/>
                     <field name="total_seed_DO" string="&#931; Kecambah"/>
                     <field name="qty_abnormal_batch" string="&#931;Abn Batch Receive"/>
                     <field name="qty_normal_batch" string="&#931;Nor Batch Receive"/>
@@ -148,8 +147,9 @@
         </record>
 
         <!--Menu-->
-        <menuitem id="estate_nursery_culling" name="Culling" parent="estate.main_estate_menu" sequence="70"/>
-        <menuitem id="req_seed_cullinging" name="Culling" parent="estate_nursery_culling"
-                  action="action_list_culling" sequence="71"/>
+        <menuitem id="req_seed_culling"
+                  name="Culling"
+                  parent="estate_nursery_menu"
+                  action="action_list_culling" sequence="18"/>
     </data>
 </openerp>

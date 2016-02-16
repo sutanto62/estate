@@ -194,16 +194,16 @@
 
                         <group>
                             <group>
-                                <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
-                                 'readonly': [('state','!=','draft')]}" />
-                                <field name="divisi_location_id" attrs="{'required': [('state','=','draft')],
-                                 'readonly': [('state','!=','draft')]}" />
+                                <field name="kebun_location_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}" />
+                                <field name="divisi_location_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}" />
                                 <!--<field name="partner_id" string="supplier"/>-->
                             </group>
 
                             <group coolspan="10">
-                                <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                 }"/>
+                                <field name="variety_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}"/>
                                 <field name="total_qty_pokok" readonly="1"/>
                                 <field name="date_request"/>
                             </group>
@@ -211,23 +211,13 @@
 
                         <group>
                             <notebook>
-                                <!--<page string="Cause Pending" attrs="{'readonly': [('state','!=','open'),('state','!=','open2')]'invisible': [('state','!=','pending2'),('state','!=','pending')]}">-->
-                                    <!--<tree>-->
-                                        <!--<field name="comment"/>-->
-                                    <!--</tree>-->
-                                <!--</page>-->
                                 <page string="Request's Planting">
                                     <tree>
                                         <field name="requestline_ids" attrs="{'required': [('state','=','draft')],
-                                                'readonly': [('state','=','done')]}"/>
+                                                'readonly': [('state','=','done')]}"
+                                                 context="{'tree_view_ref' : 'estate_planting.view_tree_requestline_planting'}"/>
                                     </tree>
                                 </page>
-                                <!--<page string="Batch's Planting">-->
-                                    <!--<tree>-->
-                                        <!--<field name="batch_ids" attrs="{-->
-                                                <!--'readonly': [('state','=','done')]}"/>-->
-                                    <!--</tree>-->
-                                <!--</page>-->
                             </notebook>
                         </group>
                     </sheet>
@@ -242,8 +232,7 @@
             <field name="model">estate.nursery.requestline</field>
             <field name="arch" type="xml">
                 <tree string="Request line View" colors="red:qty_request" editable="top">
-                    <field name="batch_id" string="No Batch"/>
-                    <field name="location_id" string="Blok" />
+                    <field name="inherit_location_id" string="Blok" />
                     <field name="Luas" string="Luas(Ha)"/>
                     <field name="qty_request" string="&#931; Quantity Request ." sum="Qty"/>
                     <field name="comment"/>
@@ -265,10 +254,10 @@
         </record>
         
         <!--Menu View-->
-        <menuitem id="estate_nursery_planting" name="Planting" parent="estate.main_estate_menu" sequence="80"/>
+        <menuitem id="estate_nursery_planting" name="Planting" parent="estate_nursery_menu" sequence="80"/>
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
-                  action="action_list_requestplanting" sequence="81"/>
-        <menuitem id="planting_seed" name="Planting Seed" parent="estate_nursery_planting"
-                  action="action_list_planting" sequence="81"/>
+                  action="action_list_requestplanting" sequence="19"/>
+        <menuitem id="planting_seed" name="Seed Delivery Order" parent="estate_nursery_planting"
+                  action="action_list_planting" sequence="20"/>
     </data>
 </openerp>

@@ -31,7 +31,7 @@ class Culling(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', True)]
                                           ,store=True)
-    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='1',required=True)
+    selectionform=fields.Selection([('0','None'),('1','Batch'),('2','Selection')],default='0',required=True)
     state= fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval '),('approved2','Second Approval'),('approved3','Third Approval'),
@@ -59,6 +59,22 @@ class Culling(models.Model):
         for a in self.cullinglineall_ids:
             self.total_quantityabnormal_temp += a.qty_abnormal_selection
         return True
+
+    @api.onchange('selection_id','state','flag','culling_id')
+    def set_flag(self):
+        selection_ids = set()
+        for item in self.cullingline_ids:
+            if item.selection_id:
+                selection_ids.add(item.selection_id)
+        for selection in selection_ids:
+            res=self.env['estate.nursery.cullingline'].search([('selection_id','=',selection.id)])
+            res2=self.env['estate.nursery.selection'].search([('selection_id','=',selection.id),('state','=','done')])
+        if self.cullingline_ids:
+          if res:
+              for b in res2:
+                v = {'flag': True}
+                return {'value': v}
+        return {}
 
     #state for Culling
     @api.one
@@ -139,7 +155,7 @@ class Culling(models.Model):
                         'product_uom': itembatch.product_id.uom_id.id,
                         'name': 'Culling Abnormal Kecambah for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
-                        'location_id': itembatch.culling_location_id.id,
+                        'location_id': itembatch.culling_location_id.inherit_location_id.id,
                         'location_dest_id': self.location_type.id,
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': itembatch.lot_id.id # required by check tracking product
@@ -155,7 +171,7 @@ class Culling(models.Model):
              selection_ids= set()
              for item in self.cullinglineall_ids:
                  if  item.batch_id and item.culling_location_id and item.total_abnormal > 0:
-                     location_ids.add(item.culling_location_id)
+                     location_ids.add(item.culling_location_id.inherit_location_id)
                      selection_ids.add(item.selection_id)
 
                  for batchitem in selection_ids:
@@ -172,7 +188,7 @@ class Culling(models.Model):
                         'product_uom': item.product_id.uom_id.id,
                         'name': 'Culling Abnormal Bibit for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
-                        'location_id': item.culling_location_id.id,
+                        'location_id': item.culling_location_id.inherit_location_id.id,
                         'location_dest_id': self.location_type.id,
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': item.lot_id.id # required by check tracking product
@@ -184,6 +200,7 @@ class Culling(models.Model):
              return True
 
 
+
 class CullingLine(models.Model):
 
     _name="estate.nursery.cullingline"
@@ -193,7 +210,7 @@ class CullingLine(models.Model):
     name=fields.Char(related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',domain="[('qty_abnormal','>',0)]"
+    selection_id=fields.Many2one('estate.nursery.selection',domain="[('qty_abnormal','>',0),('flag','=',False)]"
                                  )
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='selection_id.batch_id.lot_id')
@@ -227,35 +244,15 @@ class CullingLine(models.Model):
             if self.culling_id.state == 'confirmed':
                 self.status = True
 
-
-        # if self.selection_id :
-        #         flag='2'
-        #         self.write({'flagcul' : flag})
-        #         if  flag== '1':
-        #             self.status = True
-        #         elif flag== '2':
-        #             self.status = True
-        # return {'value': {'flagcul':flag}}
-
-        # elif self.selection_id == True and state == 'confirmed':
-        #         flag='1'
-        #         self.write({'flagcul' : flag})
-        #         if  flag== '1':
-        #             self.status = True
-        # print flag
-    # @api.onchange('selection_id','culling_id')
-    # def change_flag(self):
-    #     flag = self.selection_id.flagcul
-    #     print flag
-    #     if self.selection_id==True:
-    #         flag = '1'
-    #         self.write({'flagcul' : flag})
-    #         print flag
-
-
-
-
-
+    @api.constrains('selection_id','culling_id','status')
+    def set_constraint(self):
+        # res=self.env['estate.nursery.culling'].search(['state','=','done'])
+        # res2=self.env['estate.nursery.cullingline'].search(['status','=',True])
+        res = self.search([('status','=',True)])
+        print res
+        if self:
+            if res:
+                raise ValidationError("Not choose more than one!" )
 
     #get qty total do batch
     @api.onchange('selection_id','total_seed_dobatch')

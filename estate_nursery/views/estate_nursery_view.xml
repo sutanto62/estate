@@ -109,21 +109,22 @@
 
         <!-- View, Seed Batch -->
          <record id="view_graph_batch" model ="ir.ui.view">
-            <field name="name">Selection graph</field>
+            <field name="name">diffrent normal and abnormal graph</field>
             <field name="model">estate.nursery.batch</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection stage" type="bar">
+                   <graph string="Graph Selection stage" type="pivot">
                        <field name="name" string="number batch"/>
                        <field name="qty_abnormal" type="measure"/>
                        <field name="qty_normal" type="measure"/>
                    </graph>
             </field>
         </record>
+
         <record id="view_graph_batchline" model ="ir.ui.view">
-            <field name="name">Selection graph</field>
+            <field name="name">Abnormal seed graph</field>
             <field name="model">estate.nursery.batchline</field>
             <field name="arch" type="xml">
-                   <graph string="Graph Selection stage" type="bar">
+                   <graph string="Graph Selection stage" type="pivot">
                        <field name="batch_id" string="number batch"/>
                        <field name="qty_dead" type="measure"/>
                        <field name="qty_broken" type="measure"/>
@@ -132,8 +133,21 @@
             </field>
         </record>
 
+        <record id="view_graph_double_batchline" model ="ir.ui.view">
+            <field name="name">Seed double graph</field>
+            <field name="model">estate.nursery.batchline</field>
+            <field name="arch" type="xml">
+                   <graph string="Graph Selection stage" type="pivot">
+                       <field name="batch_id" string="number batch"/>
+                       <field name="seed_qty" type="measure"/>
+                       <field name="qty_double" type="measure"/>
+                       <field name="qty_single" type="measure"/>
+                   </graph>
+            </field>
+        </record>
+
         <record id="view_graph_ageseed_batch" model ="ir.ui.view">
-            <field name="name">Selection graph</field>
+            <field name="name">age seed graph</field>
             <field name="model">estate.nursery.batch</field>
             <field name="arch" type="xml">
                    <graph string="Graph Selection stage" type="bar">
@@ -489,13 +503,25 @@
         </record>
 
         <!-- Menu -->
-        <menuitem id="estate_nursery_menu" name="Nursery" parent="estate.main_estate_menu" sequence="10"/>
-        <menuitem id="nursery_seed_statement" name="Nursery Statement" parent="estate_nursery_menu"
-                  action="action_list_variety" sequence="11"/>
-        <menuitem id="nursery_receiving_selection" name="Seed Receiving" parent="estate_nursery_menu"
-                  action="action_list_receiving_selection" sequence="12" groups="estate.group_user"/>
-        <menuitem id="nursery_seed_batch" name="Seed Batch" parent="estate_nursery_menu"
-                  action="action_list_batch" sequence="13"/>
+        <menuitem id="estate_nursery_menu"
+                  name="Nursery"
+                  parent="estate.main_estate_menu"
+                  sequence="10"/>
+        <menuitem id="nursery_seed_statement"
+                  name="Nursery Statement"
+                  parent="estate_nursery_menu"
+                  action="action_list_variety"
+                  sequence="11"/>
+        <menuitem id="nursery_receiving_selection"
+                  name="Seed Receiving"
+                  parent="estate_nursery_menu"
+                  action="action_list_receiving_selection"
+                  sequence="12"
+                  groups="estate.group_user"/>
+        <menuitem id="nursery_seed_batch" name="Seed Batch"
+                  parent="estate_nursery_menu"
+                  action="action_list_batch"
+                  sequence="13"/>
         <!--
         <menuitem id="nursery_seed_batch_planting" name="Seed Planting" parent="estate_nursery_menu"
                   action="action_list_batch_planting" sequence="14"/>

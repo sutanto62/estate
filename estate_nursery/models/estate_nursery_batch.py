@@ -6,10 +6,6 @@ from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
 import calendar
 
-# class estate_nursery(models.Model):
-#     _name = 'estate_nursery.estate_nursery'
-
-#     name = fields.Char()
 
 class EstateLocation(models.Model):
     """Extend Location for Nursery Location"""
@@ -96,7 +92,7 @@ class Batch(models.Model):
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
-    request_id = fields.Many2one('estate.nursery.request')
+    # request_id = fields.Many2one('estate.nursery.request')
     date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
     age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
@@ -389,7 +385,6 @@ class Batch(models.Model):
                     for totalnormal in self.cleaving_ids:
                         self.qty_planted += totalnormal.qty_normal
         return True
-        # self.write({'qty_planted' : self.qty_planted})
 
     @api.one
     @api.depends('batchline_ids',)

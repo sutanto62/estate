@@ -30,6 +30,8 @@
         'views/estate_nursery_culling.xml',
         'views/estate_nursery_cleaving_seed_view.xml',
         'views/report_plantation_view.xml',
+        'views/sequence_view_planting.xml',
+        'views/estate_planting_view.xml',
         'views/dashboard_selection.xml',
         'reports/selection_report.xml',
         'reports/batch_report.xml',

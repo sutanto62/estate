@@ -129,7 +129,7 @@
         <!-- MENU -->
         <menuitem id="nursery_seed_cleaving"
                   name="Cleaving"
-                  parent="estate_nursery_menu"
+                  parent="nursery_seed_batch"
                   action="action_list_cleaving" sequence="16" />
     </data>
 </openerp>

@@ -61,7 +61,7 @@
 
         <!--Menu-->
         <menuitem id="nursery_line_report_plantation" name="Report Batch and Selection"
-                  parent="estate_nursery_menu"
+                  parent="nursery_seed_batch"
                   action="action_list_reportplantation"
                   sequence="17"
                 />

@@ -41,8 +41,6 @@ class Selection(models.Model):
     qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
     qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
-    presentage_normal = fields.Float("Persentage Normal",digits=(2,2),required=False)
-    presentage_abnormal = fields.Float("Persentage Abnormal",digits=(2,2), required=False)
     selection_date = fields.Date("Selection Date",required=True,)
     selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
     selec = fields.Integer(related='selectionstage_id.age_selection')
@@ -64,10 +62,11 @@ class Selection(models.Model):
     nursery_plandate = fields.Char('Planning Date',readonly=True,compute="calculateplandate",visible=True)
     nursery_plandatemax = fields.Char('Planning Date max',readonly=True,compute="calculateplandatemax",visible=True)
     nursery_plandatemin = fields.Char('Planning Date min',readonly=True,compute="calculateplandatemin",visible=True)
-    nursery_persentagen = fields.Float(digit=(2.2),compute='computepersentage')
-    nursery_persentagea = fields.Float(digit=(2.2),compute='computepersentage')
+    nursery_persentagen = fields.Float('Nursery Persentage Normal',digit=(2.2),compute='computepersentage',store=True)
+    nursery_persentagea = fields.Float('Nursery Persentage Abnormal',digit=(2.2),compute='computepersentage',store=True)
     flagcul=fields.Selection([('-1','Reject'),('0','new'),('1','approval1'),('2','approval2')]
                              ,string="Flag",store=True,default='0')
+    flag=fields.Boolean()
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -201,12 +200,10 @@ class Selection(models.Model):
     @api.one
     @api.depends('qty_batch','qty_normal','qty_abnormal')
     def computepersentage(self):
-        d1 = self.nursery_persentagen
-        d2 = self.nursery_persentagea
         d3 = int(self.qty_normal)+int(self.qty_abnormal)
         if self.qty_abnormal and self.qty_normal:
-            d1 =float(self.qty_normal)/float(self.qty_batch)*float(100.00)
-            d2 =float(self.qty_abnormal)/float(self.qty_batch)*float(100.00)
+            d1 =float(self.qty_normal)/float(d3)*float(100.00)
+            d2 =float(self.qty_abnormal)/float(d3)*float(100.00)
             self.nursery_persentagea = d2
             self.nursery_persentagen = d1
 

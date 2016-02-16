@@ -63,6 +63,15 @@
                    ref="estate_nursery.view_graph_batchline"/>
         </record>
 
+        <record model="ir.actions.act_window" id="act_double_batch_graph">
+            <field name="name">Double Seed Batch</field>
+            <field name="res_model">estate.nursery.batchline</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">graph</field>
+            <field name="view_id"
+                   ref="estate_nursery.view_graph_double_batchline"/>
+        </record>
+
         <record model="ir.ui.view" id="board_selection_form">
             <field name="name">Selection Dashboard </field>
             <field name="model">board.board</field>
@@ -82,6 +91,7 @@
                                 height="100"
                                 width="200"/>
                         </column>
+
                         <column>
                              <action
                                 string="Group by cause"
@@ -122,6 +132,11 @@
                             <action
                                 string="Group by seed DO batch"
                                 name="%(act_ageseed_batch_graph)d"
+                                height="100"
+                                width="200"/>
+                             <action
+                                string="Group by Double Abnormal Seed"
+                                name="%(act_double_batch_graph)d"
                                 height="100"
                                 width="200"/>
                         </column>

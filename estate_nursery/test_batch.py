@@ -1,6 +1,6 @@
 from unittest import TestCase
+
 from estate_nursery_batch import Batch
-from estate_nursery_selection import SelectionStage
 
 __author__ = 'odoo'
 
