@@ -522,10 +522,7 @@
                   parent="estate_nursery_menu"
                   action="action_list_batch"
                   sequence="13"/>
-        <!--
-        <menuitem id="nursery_seed_batch_planting" name="Seed Planting" parent="estate_nursery_menu"
-                  action="action_list_batch_planting" sequence="14"/>
-        -->
+
         <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />
         <menuitem id="config_seed_variety"
                   name="Seed Variety"

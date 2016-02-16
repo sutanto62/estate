@@ -240,6 +240,7 @@ class CleavingLine(models.Model):
     qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
     comment=fields.Text("Description or Comment")
+    
     # get quantity Planted
     @api.onchange('qty_planted','cleaving_id')
     def _get_value_planted(self):
