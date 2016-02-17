@@ -6,42 +6,32 @@ import calendar
 
 class Planting(models.Model):
     #seed planting
-    _name = "estate.nursery.planting"
+    _name = "estate.nursery.seeddo"
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
-    request_id=fields.Many2one('estate.nursery.request')
+    request_ids=fields.One2many('estate.nursery.request','planting_id','Request Line')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
-    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict",
-                                 related="request_id.variety_id",readonly=True)
+    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
-    kebun_location_id = fields.Many2one('estate.block.template',"Estate Location",
+    seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),
                                           domain=[('estate_location', '=', True),
-                                                  ('estate_location_level', '=', '1'),
-                                                  ],
-                                        default=lambda self: self.kebun_location_id.search
-                                        ([('name','=','Liyodu Estate')]))
-    divisi_location_id = fields.Many2one('estate.block.template',"Divisi Location",
-                                          domain=[('estate_location', '=', True),
-                                                  ('estate_location_level', '=', '2'),
-                                                  ],
-                                        default=lambda self: self.divisi_location_id.search
-                                        ([('name','=','Pembibitan Liyodu')]))
-    plantingline_ids=fields.One2many('estate.nursery.plantingline','planting_id',"Planting line")
-    date_received = fields.Date("Received Date",required=False,readonly=True)
-    date_request = fields.Date(related="request_id.date_request")
-    date_planted = fields.Date("Planted Date",required=False,readonly=False)
+                                                  ('estate_location_level', '=', '3'),
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', False),
+                                                  ])
+    date_request = fields.Date('Date Seed Delivery Order')
     total_qty_pokok= fields.Date("Total Pokok")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
 
     #sequence
     def create(self, cr, uid, vals, context=None):
-        vals['planting_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.planting')
+        vals['planting_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.seeddo')
         res=super(Planting, self).create(cr, uid, vals)
         return res
 
@@ -83,22 +73,6 @@ class Planting(models.Model):
     #
     #     return True
 
-class PlantingLine(models.Model):
-
-    _name = "estate.nursery.plantingline"
-    _description = "Planting Line (Blok)"
-    _parent_store = True
-    _parent_name = "parent_id"
-    _parent_order = "name"
-
-
-    name=fields.Char("PlantingLine")
-    parent_id = fields.Many2one('estate.nursery.plantingline', "Parent Package", ondelete="restrict")
-    parent_left = fields.Integer('Parent Left', index=True)
-    parent_right = fields.Integer('Parent Right', index=True)
-    child_ids = fields.One2many('estate.nursery.plantingline', 'parent_id', "Contains")
-    planting_id=fields.Many2one("estate.nursery.planting")
-
 class Requestplanting(models.Model):
     #request seed to plant
     #delegation purchase order to BPB
@@ -111,7 +85,7 @@ class Requestplanting(models.Model):
     bpb_code = fields.Char("BPB")
     user_id=fields.Many2one('res.users')
     batch_id=fields.Many2one('estate.nursery.batch')
-    planting_id=fields.Many2one('estate.nursery.planting')
+    planting_id=fields.Many2one('estate.nursery.seeddo')
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner',required=True, ondelete="restrict",
                                default=lambda self: self.partner_id.search
@@ -129,7 +103,7 @@ class Requestplanting(models.Model):
                                                   ],
                                         default=lambda self: self.divisi_location_id.search
                                         ([('name','=','Division 1')]))
-    date_request=fields.Date("Date Request",compute="_report_date")
+    date_request=fields.Date("Date Request")
     variety_id=fields.Many2one('estate.nursery.variety',required=True,
                                default=lambda self: self.variety_id.search
                                         ([('name','=','Dura')]))
@@ -210,12 +184,12 @@ class Requestplanting(models.Model):
         res=super(Requestplanting, self).create(cr, uid, vals)
         return res
 
-    #datetime
-    @api.one
-    @api.depends("date_request")
-    def _report_date(self):
-        today = datetime.now()
-        self.date_request=today
+    # #datetime
+    # @api.one
+    # @api.depends("date_request")
+    # def _report_date(self):
+    #     today = datetime.now()
+    #     self.date_request=today
 
 
 class RequestLine(models.Model):

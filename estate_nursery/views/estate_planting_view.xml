@@ -1,9 +1,9 @@
 <openerp>
     <data>
         <!--view , Planting-->
-        <record model="ir.ui.view" id="view_tree_planting">
+        <record model="ir.ui.view" id="view_tree_seeddo">
             <field name="name">Planting Seed</field>
-            <field name="model">estate.nursery.planting</field>
+            <field name="model">estate.nursery.seeddo</field>
             <field name="arch" type="xml">
                 <tree string="Request planting View"
                       colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
@@ -15,9 +15,9 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_form_planting">
+        <record model="ir.ui.view" id="view_form_seeddo">
             <field name="name">Planting Seed </field>
-            <field name="model">estate.nursery.planting</field>
+            <field name="model">estate.nursery.seeddo</field>
             <field name="arch" type="xml">
                 <form String="Planting view">
                     <header coolspan="10">
@@ -66,31 +66,23 @@
                                     <field name="planting_code" class="oe_inline" readonly="1" />
                              </h1>
                         </div>
-
                         <group>
                             <group>
-                                <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
-                                 'readonly': [('state','!=','draft')]}" />
-                                <field name="divisi_location_id" attrs="{'required': [('state','=','draft')],
-                                 'readonly': [('state','!=','draft')]}" />
-                                <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                 }"/>
+                                <field name="seed_location_id" string="Seed Location" required="True"/>
+                                <field name="date_request"/>
+                            </group>
+                            <group coolspan="10">
+                                <field name="variety_id" string="Variety"/>
                                 <field name="total_qty_pokok" readonly="1"/>
                             </group>
-
-                            <group coolspan="10">
-                                <field name="date_request"/>
-                                <field name="date_received"/>
-                                <field name="date_planted"/>
-                            </group>
                         </group>
-
                         <group>
                             <notebook>
                                 <page string="Planting Information">
                                     <tree>
-                                        <field name="plantingline_ids" attrs="{'required': [('state','=','draft')],
-                                                'readonly': [('state','=','done')]}"/>
+                                        <field name="request_ids" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_request_planting'}"/>
                                     </tree>
                                 </page>
                             </notebook>
@@ -108,7 +100,9 @@
                 <tree string="Request planting View"
                       colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
                     <field name="bpb_code" string="Request No" />
-                    <field name="variety_id" string="Variety"/>
+                    <field name="date_request"/>
+                    <field name="kebun_location_id" string="Estate"/>
+                    <field name="divisi_location_id" string="Variety"/>
                     <field name="total_qty_pokok" string="Total Quantity"/>
                     <field name="state" string="Status" invisible="0"/>
                 </tree>
@@ -205,7 +199,7 @@
                                 <field name="variety_id" attrs="{'required': [('state','!=','draft')],
                                  'readonly': [('state','=','done')]}"/>
                                 <field name="total_qty_pokok" readonly="1"/>
-                                <field name="date_request"/>
+                                <field name="date_request" string="BPB Date Request"/>
                             </group>
                         </group>
 
@@ -247,9 +241,9 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_list_planting" >
+        <record model="ir.actions.act_window" id="action_list_seeddo" >
             <field name="name">PLanting Seed</field>
-            <field name="res_model">estate.nursery.planting</field>
+            <field name="res_model">estate.nursery.seeddo</field>
             <field name="view_mode">tree,form</field>
         </record>
         
@@ -258,6 +252,6 @@
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
                   action="action_list_requestplanting" sequence="19"/>
         <menuitem id="planting_seed" name="Seed Delivery Order" parent="estate_nursery_planting"
-                  action="action_list_planting" sequence="20"/>
+                  action="action_list_seeddo" sequence="20"/>
     </data>
 </openerp>

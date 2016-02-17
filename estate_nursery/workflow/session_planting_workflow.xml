@@ -1,10 +1,10 @@
 <openerp>
     <data>
 
-        <!-- Nursery request Planting -->
+        <!-- Nursery request Seed Do -->
         <record id="estate_nursery.planting_approval" model="workflow">
             <field name="name">Estate Nursery Planting Workflow</field>
-            <field name="osv">estate.nursery.planting</field>
+            <field name="osv">estate.nursery.seeddo</field>
             <field name="on_create">True</field>
         </record>
 
