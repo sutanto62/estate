@@ -1,5 +1,16 @@
 <openerp>
     <data>
+        <record model="ir.ui.view" id="view_form_request_seed">
+             <field name="name">Request Seed</field>
+             <field name="model">estate.nursery.request</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_request_planting"/>
+             <field name="arch" type="xml">
+                 <field name="date_request" position="after">
+                     <field name="seeddoline_id" string="Request"/>
+                 </field>
+             </field>
+         </record>
+
         <!--view , Planting-->
         <record model="ir.ui.view" id="view_tree_seeddo">
             <field name="name">Planting Seed</field>
@@ -67,10 +78,13 @@
                              </h1>
                         </div>
                         <group>
+
                             <group>
                                 <field name="seed_location_id" string="Seed Location" required="True"/>
                                 <field name="date_request"/>
+                                <field name="lot_id"/>
                             </group>
+
                             <group coolspan="10">
                                 <field name="variety_id" string="Variety"/>
                                 <field name="total_qty_pokok" readonly="1"/>
@@ -80,8 +94,7 @@
                             <notebook>
                                 <page string="Planting Information">
                                     <tree>
-                                        <field name="request_ids" attrs="{'required': [('state','=','draft')],
-                                                'readonly': [('state','=','done')]}"
+                                        <field name="request_ids" readonly="1"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_request_planting'}"/>
                                     </tree>
                                 </page>

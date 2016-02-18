@@ -10,14 +10,12 @@ class Planting(models.Model):
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
-    request_ids=fields.One2many('estate.nursery.request','planting_id','Request Line')
+    request_ids=fields.One2many('estate.nursery.request','seeddoline_id','Request Line')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
-    picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
+    picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
-    progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
-                                 domain="[('variety_id','=',variety_id)]")
     seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
@@ -85,7 +83,6 @@ class Requestplanting(models.Model):
     bpb_code = fields.Char("BPB")
     user_id=fields.Many2one('res.users')
     batch_id=fields.Many2one('estate.nursery.batch')
-    planting_id=fields.Many2one('estate.nursery.seeddo')
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner',required=True, ondelete="restrict",
                                default=lambda self: self.partner_id.search
@@ -191,6 +188,10 @@ class Requestplanting(models.Model):
     #     today = datetime.now()
     #     self.date_request=today
 
+class SeedDoLine(models.Model):
+    _inherit = "estate.nursery.request"
+
+    seeddoline_id= fields.Many2one("estate.nursery.seeddo")
 
 class RequestLine(models.Model):
     _name = "estate.nursery.requestline"

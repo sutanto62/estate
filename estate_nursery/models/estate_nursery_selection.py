@@ -173,6 +173,19 @@ class Selection(models.Model):
                 if to_dt < from_dt:
                      raise ValidationError("Selection Date Should be Greater than Planted Date!" )
 
+    @api.one
+    @api.onchange('state','flag')
+    def _change_flag(self):
+        res={}
+        for obj in self:
+            # if self.state != 'done' :
+            #     self.flag == False
+            if self.state == 'done' :
+                self.flag == True
+
+        return res
+
+
     #onchange Stage id
     @api.one
     @api.onchange('stage_id','selectionstage_id')
@@ -204,8 +217,8 @@ class Selection(models.Model):
         if self.qty_abnormal and self.qty_normal:
             pnormal =float(self.qty_normal)/float(d3)*float(100.00)
             pabnormal =float(self.qty_abnormal)/float(d3)*float(100.00)
-            self.nursery_persentagea = pnormal
-            self.nursery_persentagen = pabnormal
+            self.nursery_persentagea = pabnormal
+            self.nursery_persentagen = pnormal
 
     #compute lapseday
     @api.one
