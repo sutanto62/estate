@@ -92,16 +92,36 @@
                         </group>
                         <group>
                             <notebook>
-                                <page string="Planting Information">
+                                <page string="Seed DO Information">
                                     <tree>
                                         <field name="request_ids" readonly="1"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_request_planting'}"/>
+                                    </tree>
+                                </page>
+                                <page string="Seed DO Result">
+                                    <tree>
+                                        <field name="seedline_ids" attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : [('state', '=', 'done')],'invisible' : [('state', '=', 'draft')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_seedline'}"/>
                                     </tree>
                                 </page>
                             </notebook>
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_seedline">
+            <field name="name">Seed Line</field>
+            <field name="model">estate.nursery.seedline</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Line View" editable="bottom">
+                    <field name="request_id" string="Request No" />
+                    <field name="qty_transfer" string="Quantity Transfer" required="1"/>
+                    <field name="result_transfer" string="Total Quantity" readonly="1"/>
+                </tree>
             </field>
         </record>
 

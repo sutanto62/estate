@@ -173,17 +173,16 @@ class Selection(models.Model):
                 if to_dt < from_dt:
                      raise ValidationError("Selection Date Should be Greater than Planted Date!" )
 
-    @api.one
-    @api.onchange('state','flag')
-    def _change_flag(self):
-        res={}
-        for obj in self:
-            # if self.state != 'done' :
-            #     self.flag == False
-            if self.state == 'done' :
-                self.flag == True
-
-        return res
+    # @api.one
+    # @api.onchange('state','flag')
+    # def _change_flag(self):
+    #     res={}
+    #     for obj in self:
+    #         # if self.state != 'done' :
+    #         #     self.flag == False
+    #         if self.state == 'done' :
+    #             self.flag == True
+    #     return res
 
 
     #onchange Stage id

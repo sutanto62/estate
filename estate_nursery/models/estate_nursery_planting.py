@@ -11,6 +11,7 @@ class Planting(models.Model):
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
     request_ids=fields.One2many('estate.nursery.request','seeddoline_id','Request Line')
+    seedline_ids=fields.One2many('estate.nursery.seedline','planting_id','Seed Request Line')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
@@ -24,6 +25,7 @@ class Planting(models.Model):
                                                   ])
     date_request = fields.Date('Date Seed Delivery Order')
     total_qty_pokok= fields.Date("Total Pokok")
+    request_count=fields.Integer("Count Request Line", compute="_get_request_count")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
 
@@ -71,6 +73,41 @@ class Planting(models.Model):
     #
     #     return True
 
+    #count selection
+    @api.one
+    @api.depends('request_ids')
+    def _get_request_count(self):
+        for r in self:
+            r.request_count = len(r.request_ids)
+
+    #calculate Result SPB
+    @api.one
+    @api.depends('qty_transfer','qty_result','requestline_ids')
+    def calculate_qty_result(self):
+        self.qty_result=0
+        if self.requestline_ids:
+            for obj in self.seedline_ids:
+                obj.qty_request -= self.qty_transfer
+                self.qty_result = obj.qty_request
+                print  self.qty_result
+        return True
+
+class SeedLine(models.Model):
+    _name = "estate.nursery.seedline"
+
+    name=fields.Char()
+    request_id = fields.Many2one('estate.nursery.request')
+    planting_id= fields.Many2one('estate.nursery.seeddo')
+    qty_request=fields.Integer("Quantity Seed Transfer",related='request_id.total_qty_pokok')
+    qty_transfer=fields.Integer("Quantity Seed Transfer")
+    result_transfer=fields.Integer("Quantity Result")
+
+
+
+
+
+
+
 class Requestplanting(models.Model):
     #request seed to plant
     #delegation purchase order to BPB
@@ -108,7 +145,7 @@ class Requestplanting(models.Model):
     total_qty_pokok = fields.Integer("Quantity Pokok Bibit",compute="_compute_total")
     state=fields.Selection([('draft','Draft'),('open2','Open Pending'),('pending2','Pending'),
             ('pending','Pending'),('confirmed','Confirm'),('open','Open Pending'),
-            ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
+            ('validate1','First Approval'),('validate2','Second Approval'),('done','Draft To SPB')])
 
     #state
     @api.one
@@ -187,6 +224,8 @@ class Requestplanting(models.Model):
     # def _report_date(self):
     #     today = datetime.now()
     #     self.date_request=today
+
+
 
 class SeedDoLine(models.Model):
     _inherit = "estate.nursery.request"
