@@ -80,17 +80,6 @@ class Planting(models.Model):
         for r in self:
             r.request_count = len(r.request_ids)
 
-    #calculate Result SPB
-    @api.one
-    @api.depends('qty_transfer','qty_result','requestline_ids')
-    def calculate_qty_result(self):
-        self.qty_result=0
-        if self.requestline_ids:
-            for obj in self.seedline_ids:
-                obj.qty_request -= self.qty_transfer
-                self.qty_result = obj.qty_request
-                print  self.qty_result
-        return True
 
 class SeedLine(models.Model):
     _name = "estate.nursery.seedline"
@@ -102,11 +91,15 @@ class SeedLine(models.Model):
     qty_transfer=fields.Integer("Quantity Seed Transfer")
     result_transfer=fields.Integer("Quantity Result")
 
-
-
-
-
-
+    #calculate Result SPB
+    @api.one
+    @api.depends('qty_transfer','qty_result','qty_request')
+    def calculate_qty_result(self):
+        if self.qty_transfer:
+            hasil = self.qty_request-self.qty_transfer
+            self.qty_result= hasil
+            print  self.qty_result
+        return True
 
 class Requestplanting(models.Model):
     #request seed to plant

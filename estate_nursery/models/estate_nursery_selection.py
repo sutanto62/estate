@@ -183,8 +183,6 @@ class Selection(models.Model):
     #         if self.state == 'done' :
     #             self.flag == True
     #     return res
-
-
     #onchange Stage id
     @api.one
     @api.onchange('stage_id','selectionstage_id')
