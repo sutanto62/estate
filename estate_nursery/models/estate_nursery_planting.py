@@ -23,6 +23,8 @@ class Planting(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', False),
                                                   ])
+    batch_planted_ids= fields.One2many('estate.batch.parameter', 'batch_id', "Batch Parameter",
+                                          help="Define batch parameter")
     date_request = fields.Date('Date Seed Delivery Order')
     total_qty_pokok= fields.Date("Total Pokok")
     request_count=fields.Integer("Count Request Line", compute="_get_request_count")
@@ -239,6 +241,49 @@ class RequestLine(models.Model):
     Luas = fields.Float("Luas Block",digits=(2,2),related='inherit_location_id.area_planted',readonly=True)
     qty_request = fields.Integer("Quantity Request",required=True)
     comment = fields.Text("Decription / Comment")
+
+class RepositorySeed(models.TransientModel):
+
+    _name = 'repository.seed.batch'
+
+    name=fields.Char()
+    comment=fields.Char()
+
+
+    def act_cancel(self, cr, uid, ids, context=None):
+        #self.unlink(cr, uid, ids, context)
+        return {'type':'ir.actions.act_window_close' }
+
+    def act_destroy(self, *args):
+        return {'type':'ir.actions.act_window_close' }
+
+class EstateSPB(models.Model):
+    _name = 'estate.spb'
+    _inherits = {'estate.nursery.seeddo': 'seed_template_id'}
+
+    seed_template_id = fields.Many2one('estate.nursery.seeddo', "Batch Template")
+    parameter_value_ids = fields.Many2many('estate.bpb.value', id1='batch_id', id2='val_id',
+                                           string="Parameter Value")
+
+class ParameterValue(models.Model):
+    """Selection value for Parameter.
+    """
+    _name = 'estate.bpb.value'
+
+    name = fields.Char('Value', translate=True, required=True)
+    parameter_id = fields.Many2one('estate.nursery.request', "Parameter", ondelete='restrict')
+
+class BatchParameter(models.Model):
+    """Parameter of Batch.
+    """
+    _name = 'estate.batch.parameter'
+
+    parameter_id = fields.Many2one('estate.nursery.request', "BPB", ondelete='restrict')
+    total_qty_pokok = fields.Integer('Qty Request', related='parameter_id.total_qty_pokok')
+    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch/Lot")
+    parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
+                                         domain="[('parameter_id', '=', parameter_id)]",
+                                         ondelete='restrict')
 
 
 class TrasferSeed(models.Model):
