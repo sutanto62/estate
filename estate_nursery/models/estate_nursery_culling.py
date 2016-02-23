@@ -114,17 +114,19 @@ class Culling(models.Model):
         abnormalbatch = self.quantitytotal_abnormal
         cullinglineids = self.cullinglineall_ids
         batchlineids = self.cullingline_ids
-
+        serial = self.env['estate.nursery.request'].search_count([]) + 1
         if self.selectionform == '1':
             for itembatch in batchlineids:
                 abnormalbatch += itembatch.total_qty_abnormal_batch
-            self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal })
+            self.write({'quantitytotal_abnormal': self.quantitytotal_abnormal,
+                        'name': "Cleaving Seed  %d" % serial })
             self.action_move()
 
         elif self.selectionform == '2':
             for item in cullinglineids:
                 abnormal += item.qty_abnormal_selection
-            self.write({'total_quantityabnormal_temp': self.total_quantityabnormal_temp })
+            self.write({'total_quantityabnormal_temp': self.total_quantityabnormal_temp,
+                        'name': "Cleaving Seed  %d" % serial })
             self.action_move()
         return True
 

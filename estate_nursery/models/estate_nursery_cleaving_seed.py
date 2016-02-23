@@ -213,8 +213,6 @@ class CleavingPolytone(models.Model):
             move.action_done()
         return True
 
-
-
 class CleavingLine(models.Model):
 
     _name="estate.nursery.cleavingln"
@@ -235,8 +233,6 @@ class CleavingLine(models.Model):
     qty_planted=fields.Integer(required=True)
     qty_single=fields.Integer(required=True)
     qty_double=fields.Integer(required=True)
-    # qty_persentage_normal=fields.Integer('Persentage Normal',store=True,compute='_compute_persentage')
-    # qty_persentage_abnormal=fields.Integer('Persentage Abnormal',store=True,compute='_compute_persentage')
     qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
     comment=fields.Text("Description or Comment")

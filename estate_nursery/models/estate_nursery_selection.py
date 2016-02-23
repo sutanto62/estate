@@ -41,7 +41,7 @@ class Selection(models.Model):
     qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
     qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
-    selection_date = fields.Date("Selection Date",required=True,)
+    selection_date = fields.Date("Selection Date",required=True,store=True)
     selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
     selec = fields.Integer(related='selectionstage_id.age_selection')
     maxa = fields.Integer(related='selectionstage_id.age_limit_max')
@@ -107,6 +107,7 @@ class Selection(models.Model):
         normal = self.qty_normal
         abnormal = self.qty_abnormal
         selectionlineids = self.selectionline_ids
+        serial = self.env['estate.nursery.selection'].search_count([]) + 1
         for item in selectionlineids:
             abnormal += item.qty
         self.write({'qty_abnormal': self.qty_abnormal, })
@@ -134,7 +135,7 @@ class Selection(models.Model):
                 'product_uom_qty': qty_total_abnormal,
                 'product_uom': self.batch_id.product_id.uom_id.id,
                 'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
-                'date_expected': self.date_plant,
+                'date_expected': self.nursery_plandate,
                 'location_id': location.id,
                 'location_dest_id': self.culling_location_id.inherit_location_id.id,
                 'state': 'confirmed', # set to done if no approval required
@@ -173,16 +174,6 @@ class Selection(models.Model):
                 if to_dt < from_dt:
                      raise ValidationError("Selection Date Should be Greater than Planted Date!" )
 
-    # @api.one
-    # @api.onchange('state','flag')
-    # def _change_flag(self):
-    #     res={}
-    #     for obj in self:
-    #         # if self.state != 'done' :
-    #         #     self.flag == False
-    #         if self.state == 'done' :
-    #             self.flag == True
-    #     return res
     #onchange Stage id
     @api.one
     @api.onchange('stage_id','selectionstage_id')

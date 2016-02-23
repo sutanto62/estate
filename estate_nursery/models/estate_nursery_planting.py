@@ -10,7 +10,7 @@ class Planting(models.Model):
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
-    request_ids=fields.One2many('estate.nursery.request','seeddoline_id','Request Line')
+    # request_ids=fields.One2many('estate.nursery.request','seeddoline_id','Request Line')
     seedline_ids=fields.One2many('estate.nursery.seedline','planting_id','Seed Request Line')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
@@ -27,7 +27,6 @@ class Planting(models.Model):
                                           help="Define batch parameter")
     date_request = fields.Date('Date Seed Delivery Order')
     total_qty_pokok= fields.Date("Total Pokok")
-    request_count=fields.Integer("Count Request Line", compute="_get_request_count")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
 
@@ -61,9 +60,12 @@ class Planting(models.Model):
     @api.one
     def action_approved(self):
         """Approved Planting is done."""
-        # self.action_receive()
+        self.action_receive()
         self.state = 'done'
-
+    @api.one
+    def action_receive(self):
+         serial = self.env['estate.nursery.request'].search_count([]) + 1
+         self.write({'name':"SPB %d" %serial})
     # @api.one
     # def action_receive(self):
     #     qty_req = self.total_qty_pokok
@@ -75,12 +77,12 @@ class Planting(models.Model):
     #
     #     return True
 
-    #count selection
-    @api.one
-    @api.depends('request_ids')
-    def _get_request_count(self):
-        for r in self:
-            r.request_count = len(r.request_ids)
+    # #count selection
+    # @api.one
+    # @api.depends('request_ids')
+    # def _get_request_count(self):
+    #     for r in self:
+    #         r.request_count = len(r.request_ids)
 
 
 class SeedLine(models.Model):
@@ -190,11 +192,11 @@ class Requestplanting(models.Model):
     def action_receive(self):
         qty_req = self.total_qty_pokok
         requestlineids = self.requestline_ids
+        serial = self.env['estate.nursery.request'].search_count([]) + 1
 
         for item in requestlineids:
             qty_req += item.qty_request
-        self.write({'total_qty_pokok': self.total_qty_pokok})
-
+        self.write({'total_qty_pokok': self.total_qty_pokok,'name': "Request Seed  %d" % serial,})
         return True
 
     #compute RequestLine
@@ -222,10 +224,10 @@ class Requestplanting(models.Model):
 
 
 
-class SeedDoLine(models.Model):
-    _inherit = "estate.nursery.request"
-
-    seeddoline_id= fields.Many2one("estate.nursery.seeddo")
+# class SeedDoLine(models.Model):
+#     _inherit = "estate.nursery.request"
+#
+#     seeddoline_id= fields.Many2one("estate.nursery.seeddo")
 
 class RequestLine(models.Model):
     _name = "estate.nursery.requestline"
@@ -278,12 +280,30 @@ class BatchParameter(models.Model):
     """
     _name = 'estate.batch.parameter'
 
-    parameter_id = fields.Many2one('estate.nursery.request', "BPB", ondelete='restrict')
-    total_qty_pokok = fields.Integer('Qty Request', related='parameter_id.total_qty_pokok')
-    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch/Lot")
+    bpb_many2many=fields.Many2many('estate.nursery.request','bpb_spb_rel','request_id','val_id','BPB Form')
+    total_qty_pokok = fields.Integer('Qty Request', compute="calculate_qty")
+    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch/Lot",
+                               domain=[('qty_planted','>',0),('selection_count','>', 6)])
+    from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','batch_id', "From Location",
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '3'),
+                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('scrap_location', '=', False),
+                                                  ])
+    qty_difference=fields.Integer('Quantity Difference')
+    qty_result=fields.Integer('Quantity Result')
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
                                          domain="[('parameter_id', '=', parameter_id)]",
                                          ondelete='restrict')
+    @api.one
+    @api.depends('bpb_many2many')
+    def calculate_qty(self):
+        if self.bpb_many2many:
+            for item in self.bpb_many2many:
+                self.total_qty_pokok += item.total_qty_pokok
+        print self.total_qty_pokok
+
+
 
 
 class TrasferSeed(models.Model):
