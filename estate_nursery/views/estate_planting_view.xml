@@ -93,19 +93,48 @@
                         </group>
                         <group>
                             <notebook>
-                                <page string="Select Multiple BPB">
+                                <page string="BPB Information">
                                      <group>
-                                        <field name="batch_planted_ids" string="Select Multiple BPB"/>
+                                        <field name="batch_planted_ids" string="Information For BPB"/>
                                     </group>
                                 </page>
-                                <page string="Seed DO Transportir">
-                                    <tree>
-                                        <field name="seedline_ids" attrs="{
+                                 <page string="Seed DO Detail Transportir">
+                                    <group>
+                                        <group>
+                                             <field name="estate_vehicle_id" string="Code Vehicle" required="1"
+                                                     attrs="{'readonly': [('state','=','done')]}"/>
+                                             <field name="driver_estate_id" string="Driver" readonly="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="no_vehicle" string="No Vehicle" readonly="1"/>
+                                            <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
+                                        </group>
+                                    </group>
+                                </page>
+                                <page string="Tranportir Activity Information">
+                                    <group>
+                                        <field name="activityline_ids" attrs="{
                                         'required' : [('state', '=', 'confirmed')],
                                         'readonly' : [('state', '=', 'done')],
                                         'invisible' : ['|',('state', '=', 'draft')]}"
-                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_seedline'}"/>
-                                    </tree>
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_activityline'}"/>
+                                    </group>
+                                    <group class="oe_subtotal_footer oe_right">
+                                        <field name="expense" widget="monetary" readonly="1"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                            <div class="oe_subtotal_footer_separator oe_inline">
+                                                <label for="amount_total"/>
+                                                    <button name="button_dummy" states="draft"
+                                            string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                            </div>
+                                        <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"
+                                            widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
+                                    </group>
+                                </page>
+                                <page string="Additional Information">
+                                    <group>
+                                        <field name="comment"/>
+                                    </group>
                                 </page>
                             </notebook>
                         </group>
@@ -130,14 +159,17 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_tree_seedline">
-            <field name="name">Seed Line</field>
-            <field name="model">estate.nursery.seedline</field>
+        <record model="ir.ui.view" id="view_tree_activityline">
+            <field name="name">Activity Line</field>
+            <field name="model">estate.nursery.activityline</field>
             <field name="arch" type="xml">
-                <tree string="Seed Line View" editable="bottom">
-                    <field name="request_id" string="Request No" />
-                    <field name="qty_transfer" string="Quantity Transfer" required="1"/>
-                    <field name="result_transfer" string="Total Quantity" readonly="1"/>
+                <tree string="Activity Line View" editable="bottom">
+                    <field name="activity_id" string="Activity no" />
+                    <field name="product_type_id" string="Product UoM" />
+                    <field name="qty_product" string="Quantity" />
+                    <field name="price" string="Price/product" required="1"/>
+                    <field name="transportactivity_expense_id"/>
+                    <field name="result_price" string="Total Price" readonly="1"/>
                 </tree>
             </field>
         </record>

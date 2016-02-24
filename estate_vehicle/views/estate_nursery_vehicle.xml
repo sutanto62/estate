@@ -1,0 +1,18 @@
+<openerp>
+    <data>
+        <!-- View Tree: Estate Structure -->
+        <record model="ir.ui.view" id="view_form_vehicle_inherited">
+            <field name="name">Vehicle - Extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+                <group string="Additional Properties" position="before">
+                    <group string="Vehicle Information">
+                        <field name="no_vehicle"/>
+                        <field name="vehicle_type"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+    </data>
+</openerp>

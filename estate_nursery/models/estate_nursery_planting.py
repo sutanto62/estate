@@ -10,8 +10,12 @@ class Planting(models.Model):
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
-    # request_ids=fields.One2many('estate.nursery.request','seeddoline_id','Request Line')
-    seedline_ids=fields.One2many('estate.nursery.seedline','planting_id','Seed Request Line')
+    estate_vehicle_id= fields.Many2one('fleet.vehicle','Estate Vehicle')
+    driver_estate_id = fields.Many2one(related="estate_vehicle_id.driver_id",readonly=True)
+    vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')],
+                                    related="estate_vehicle_id.vehicle_type")
+    no_vehicle = fields.Char(related="estate_vehicle_id.no_vehicle")
+    activityline_ids=fields.One2many('estate.nursery.activityline','seeddo_id','Information Activity Transportir')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
@@ -23,10 +27,13 @@ class Planting(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', False),
                                                   ])
-    batch_planted_ids= fields.One2many('estate.batch.parameter', 'batch_id', "Batch Parameter",
+    batch_planted_ids= fields.One2many('estate.batch.parameter','batch_id', "Batch Parameter",
                                           help="Define batch parameter")
     date_request = fields.Date('Date Seed Delivery Order')
     total_qty_pokok= fields.Date("Total Pokok")
+    expense = fields.Integer("Amount Expense",compute="_amount_all")
+    amount_total=fields.Integer("Total Expense")
+    comment=fields.Text("Additional Information")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
 
@@ -84,25 +91,47 @@ class Planting(models.Model):
     #     for r in self:
     #         r.request_count = len(r.request_ids)
 
+    #Compute Amount ALL
+    @api.one
+    @api.depends('activityline_ids')
+    def _amount_all(self):
+        if self.activityline_ids:
+            for price in self.activityline_ids:
+                self.expense += price.result_price
+        return True
 
-class SeedLine(models.Model):
-    _name = "estate.nursery.seedline"
+    @api.onchange('amount_total','expense')
+    def change_total(self):
+        self.amount_total = self.expense
+        self.write({'amount_total':self.amount_total})
+        print self.amount_total
+
+class ActivityLine(models.Model):
+    _name = "estate.nursery.activityline"
 
     name=fields.Char()
-    request_id = fields.Many2one('estate.nursery.request')
-    planting_id= fields.Many2one('estate.nursery.seeddo')
-    qty_request=fields.Integer("Quantity Seed Transfer",related='request_id.total_qty_pokok')
-    qty_transfer=fields.Integer("Quantity Seed Transfer")
-    result_transfer=fields.Integer("Quantity Result")
+    seeddo_id=fields.Many2one('estate.nursery.seeddo')
+    activity_id=fields.Many2one('estate.activity')
+    product_type_id=fields.Many2one('product.uom')
+    price=fields.Float("Price/Quantity")
+    qty_product=fields.Integer("Quantity Product Transfer")
+    transportactivity_expense_id = fields.Many2one('account.account', "Expense Account",
+                                         help="This account will be used for invoices to value expenses")
+    result_price=fields.Float("Quantity Result",compute="calculate_price")
 
-    #calculate Result SPB
     @api.one
-    @api.depends('qty_transfer','qty_result','qty_request')
-    def calculate_qty_result(self):
-        if self.qty_transfer:
-            hasil = self.qty_request-self.qty_transfer
-            self.qty_result= hasil
-            print  self.qty_result
+    def change_name(self):
+        serial=self.env['estate.nursery.activityline'].search_count([])+ 1
+        self.write({'name':"Activity %d" % serial})
+
+    @api.one
+    @api.depends('qty_product','price')
+    def calculate_price(self):
+        price=float(self.price)
+        product=int(self.qty_product)
+        if self.qty_product and self.price:
+            result=price*product
+            self.result_price=result
         return True
 
 class Requestplanting(models.Model):

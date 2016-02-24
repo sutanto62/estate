@@ -9,7 +9,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Your Company",
+    'author': "Palma Group",
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','estate','stock','product','report','board','purchase','membership','mrp'],
+    'depends': ['base','estate','stock','product','report','board','purchase','membership','mrp','estate_vehicle'],
 
     # always loaded
     'data': [
