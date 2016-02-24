@@ -311,8 +311,8 @@ class BatchParameter(models.Model):
 
     bpb_many2many=fields.Many2many('estate.nursery.request','bpb_spb_rel','request_id','val_id','BPB Form')
     total_qty_pokok = fields.Integer('Qty Request', compute="calculate_qty")
-    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch/Lot",
-                               domain=[('qty_planted','>',0),('selection_count','>', 6)])
+    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",
+                               domain=[('qty_planted','>',0),('seed_age','>', 6)])
     from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','batch_id', "From Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),

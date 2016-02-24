@@ -273,17 +273,18 @@
                                 <field name="qty_plant" attrs="{'required': [('state','=','draft')]}" readonly="1"
                                        onchange ="_compute_plannormal"/>
                                 <field name="date_plant" attrs="{'required': [('state','=','draft')]}" readonly="1"/>
+                                <field name="flag_recovery"/>
                             </group>
 
                             <group coolspan="10">
                                 <field name="selectionstage_id" attrs="{'readonly': [('state','=','done')]}"
                                        options="{'no_create_edit': True}"/>
                                 <field name="qty_normal"/>
-                                <field name="qty_abnormal"/>
+                                <field name="qty_abnormal" string="Quantity Abnormal" attrs="{'invisible':[('flag_recovery','!=', False)]}"/>
+                                <field name="qty_recoveryabn" string="Quantity Abnormal" attrs="{'invisible':[('flag_recovery','!=', True)]}"/>
                                 <field name="variety" invisible="1"/>
                                 <field name="stage" invisible="1"/>
                                 <field name="qty_plante" invisible="1"/>
-                                <field name="flag"/>
                                 <field name="selection_date"
                                        attrs="{'invisible': [('selectionstage_id','=',False)],
                                  'readonly': [('state','=','done')]}"/>
@@ -298,6 +299,14 @@
                                             <field name="selectionline_ids" attrs="{'required': [('state','=','draft')],
                                                 'readonly': [('state','=','done')]}"
                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selectionline'}"/>
+                                        </tree>
+                                    </page>
+
+                                    <page string="Selection Recovery Line" attrs="{'invisible':[('flag_recovery','!=', True)]}">
+                                        <tree>
+                                            <field name="recoverytemp_ids" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"
+                                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_recoverytempline'}"/>
                                         </tree>
                                     </page>
 
@@ -347,6 +356,18 @@
                    </graph>
             </field>
         </record>
+
+        <record model="ir.ui.view" id="view_tree_recoverytempline">
+            <field name="name">Recovery line</field>
+            <field name="model">estate.nursery.recoverytemp</field>
+            <field name="arch" type="xml">
+                <tree string="Seed Selection Recovery Line" colors="red:qty_abn_recovery" editable="bottom">
+                    <field name="qty_abn_recovery" string="&#931; Qty Seed Recovery"/>
+                    <field name="location_id" options="{'no_create_edit': True}"/>
+                    <field name="comment" string="Add Description/Comment"/>
+                </tree>
+            </field>
+         </record>
 
          <record model="ir.ui.view" id="view_tree_selectionline">
             <field name="name">Selection line</field>

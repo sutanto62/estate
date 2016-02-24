@@ -25,6 +25,7 @@ class Selection(models.Model):
                              domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
     cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
+    recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
     stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
@@ -37,6 +38,8 @@ class Selection(models.Model):
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("plan qty")
+    qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery")
+    qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,compute='compute_total_recovery')
     qty_abn_batch=fields.Integer(related='batch_id.qty_abnormal')
     qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
     qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
@@ -66,7 +69,7 @@ class Selection(models.Model):
     nursery_persentagea = fields.Float('Nursery Persentage Abnormal',digit=(2.2),compute='computepersentage',store=True)
     flagcul=fields.Selection([('-1','Reject'),('0','new'),('1','approval1'),('2','approval2')]
                              ,string="Flag",store=True,default='0')
-    flag=fields.Boolean()
+    flag_recovery=fields.Boolean("is Recovery ?")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -77,6 +80,10 @@ class Selection(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', True)]
                                           ,related="batch_id.culling_location_id",store=True)
+    location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Cleaving'),
+                                                                             ('usage','=','inventory'),
+                                                                             ],store=True,required=True,
+                                  default=lambda self: self.location_type.search([('name','=','Cleaving')]))
 
     #sequence
     def create(self, cr, uid, vals, context=None):
@@ -107,10 +114,13 @@ class Selection(models.Model):
         normal = self.qty_normal
         abnormal = self.qty_abnormal
         selectionlineids = self.selectionline_ids
-        serial = self.env['estate.nursery.selection'].search_count([]) + 1
-        for item in selectionlineids:
-            abnormal += item.qty
-        self.write({'qty_abnormal': self.qty_abnormal, })
+        if self.selectionline_ids:
+            for item in selectionlineids:
+                abnormal += item.qty
+        if self.recoverytemp_ids:
+            for qty in self.recoverytemp_ids:
+                self.qty_recovery += qty.qty_abn_recovery
+        self.write({'qty_abnormal': self.qty_abnormal,'qty_recovery':self.qty_recovery })
         self.action_move()
         return True
 
@@ -146,18 +156,61 @@ class Selection(models.Model):
             move.action_confirm()
             move.action_done()
 
+        recovery_ids = set()
+        for item in self.recoverytemp_ids:
+            if item.location_id and item.qty_abn_recovery > 0: # todo do not include empty quantity location
+                recovery_ids.add(item.location_id.inherit_location_id)
+
+        for location in recovery_ids:
+            qty_total_abnormal_recovery = 0
+            qty = self.env['estate.nursery.recoverytemp'].search([('location_id.inherit_location_id', '=', location.id),
+                                                                   ('selection_id', '=', self.id)
+                                                                   ])
+            for i in qty:
+                qty_total_abnormal_recovery += i.qty_abn_recovery
+
+            move_data = {
+                'product_id': self.batch_id.product_id.id,
+                'product_uom_qty': qty_total_abnormal_recovery,
+                'product_uom': self.batch_id.product_id.uom_id.id,
+                'name': 'Selection Abnormal Recovery .%s: %s'%(self.selectionstage_id.name,
+                                                               self.lot_id.product_id.display_name),
+                'date_expected': self.nursery_plandate,
+                'location_id': location.id,
+                'location_dest_id': self.location_type.id,
+                'state': 'confirmed', # set to done if no approval required
+                'restrict_lot_id': self.lot_id.id # required by check tracking product
+            }
+
+            move = self.env['stock.move'].create(move_data)
+            move.action_confirm()
+            move.action_done()
+
     #compute qtyplant :
     @api.one
-    @api.depends('qty_plant','qty_abnormal','batch_id','qty_plante','selectionline_ids')
+    @api.depends('qty_plant','qty_abnormal','qty_plante','selectionline_ids','recoverytemp_ids','qty_recoveryabn')
     def _compute_plannormal(self):
         abn = self.qty_abnormal
         nrml = self.qty_normal
         plante = int(self.qty_plante)
-        if self.selectionline_ids :
-            hasil = plante - abn
-            self.qty_normal = hasil
-            self.qty_plant = hasil
+        if self.flag_recovery == True:
+            if self.selectionline_ids and self.recoverytemp_ids:
+                result = plante - self.qty_recoveryabn
+                self.qty_normal = result
+                self.qty_plant = result
+        if self.flag_recovery == False:
+            if self.selectionline_ids :
+                result = plante - abn
+                self.qty_normal = result
+                self.qty_plant = result
         return  True
+
+    #compute abnormal and recovery :
+    @api.one
+    @api.depends('qty_recovery','qty_abnormal','qty_recoveryabn')
+    def compute_total_recovery(self):
+        result = self.qty_abnormal + self.qty_recovery
+        self.qty_recoveryabn = result
 
     #constraint Date for selection and date planted
     @api.multi
@@ -195,6 +248,15 @@ class Selection(models.Model):
         self.qty_abnormal = 0
         for item in self.selectionline_ids:
             self.qty_abnormal += item.qty
+        return True
+
+    #compute recoveryLine
+    @api.one
+    @api.depends('recoverytemp_ids')
+    def _compute_total_recovery(self):
+        self.qty_recovery = 0
+        for item in self.recoverytemp_ids:
+            self.qty_recovery += item.qty_abn_recovery
         return True
 
     #compute persentage
@@ -486,4 +548,21 @@ class Cause(models.Model):
         self.index = self._model.search_count(cr, uid, [
             ('sequence', '<', self.sequence)
         ], context=ctx) + 1
+
+class TempRecovery(models.Model):
+
+    _name ="estate.nursery.recoverytemp"
+
+    name=fields.Char(related="selection_id.name")
+    qty_abn_recovery=fields.Integer("Abnormal Recovery",required=True)
+    selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
+    location_id = fields.Many2one('estate.block.template', "Bedengan",
+                                    domain=[('estate_location', '=', True),
+                                            ('estate_location_level', '=', '3'),
+                                            ('estate_location_type', '=', 'nursery'),
+                                            ('scrap_location', '=', False),
+                                            ],
+                                             help="Fill in location seed planted.",
+                                             required=True,)
+    comment = fields.Text("Description")
 

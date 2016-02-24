@@ -377,7 +377,7 @@ class Batch(models.Model):
                 self.qty_planted += item.qty_planted
             if self.selection_ids:
                 for a in self.selection_ids:
-                    self.qty_planted -=a.qty_abnormal
+                    self.qty_planted -=a.qty_recoveryabn
             if self.cleaving_ids :
                 for totalcleaving in self.cleaving_ids:
                     self.qty_planted -= totalcleaving.qty_doublebatch

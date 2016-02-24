@@ -152,9 +152,9 @@
                     <field name="bpb_many2many" widget="many2many_tags" options="{'no_create_edit': True}"/>
                     <field name="total_qty_pokok"/>
                     <field name="from_location_id"  widget="many2many_tags" options="{'no_create_edit': True}"/>
+                    <field name="batch_id" widget="many2many_tags" options="{'no_create_edit': True}"/>
                     <field name="qty_difference"/>
                     <field name="qty_result"/>
-                    <!--<field name="batch_id" widget="many2many_tags" options="{'no_create_edit': True}"/>-->
                 </tree>
             </field>
         </record>

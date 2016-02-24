@@ -144,7 +144,7 @@ class CleavingPolytone(models.Model):
                 'product_id': self.batch_id.product_id.id,
                 'product_uom_qty': qty_total_double,
                 'product_uom': self.batch_id.product_id.uom_id.id,
-                'name': 'Selection Abnormal.%s: %s'%(self.cleaving_code,self.batch_id.name),
+                'name': 'Selection Cleaving Abnormal.%s: %s'%(self.cleaving_code,self.batch_id.name),
                 'date_expected': self.cleaving_date,
                 'location_id': location.id,
                 'location_dest_id':self.location_type.id,
@@ -174,7 +174,7 @@ class CleavingPolytone(models.Model):
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': qty_total_cleavagebatch,
                         'product_uom': self.batch_id.product_id.uom_id.id,
-                        'name': 'Cleveage Normal Kecambah  %s for %s:'%(self.cleaving_code,self.batch_id.name),
+                        'name': 'Cleaving Normal Seed  %s for %s:'%(self.cleaving_code,self.batch_id.name),
                         'date_expected': self.cleaving_date,
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': itembatch.location_id.inherit_location_id.id,
@@ -201,7 +201,7 @@ class CleavingPolytone(models.Model):
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': itembatch.qty_abnormal_double,
                         'product_uom': self.batch_id.product_id.uom_id.id,
-                        'name': 'Cleaving Abnormal Kecambah  %s for %s:'%(self.cleaving_code,self.batch_id.name),
+                        'name': 'Cleaving Abnormal Seed  %s for %s:'%(self.cleaving_code,self.batch_id.name),
                         'date_expected': self.cleaving_date,
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': self.culling_location_id.inherit_location_id.id,
@@ -274,17 +274,3 @@ class CleavingLine(models.Model):
             totalabnormal= maxdouble-int(self.qty_normal_double)
             self.qty_abnormal_double=totalabnormal
         return True
-
-    #Compute Persentage Abnormal After Cleaving
-    # @api.one
-    # @api.depends('qty_normal_double','qty_abnormal_double')
-    # def _compute_persentage(self):
-    #     total= int(self.qty_normal_double)+int(self.qty_abnormal_double)
-    #     print total
-    #     if self.qty_normal_double and self.qty_abnormal_double:
-    #         pnormal =float(self.qty_normal_double)/float(total)*float(100.00)
-    #         pabnormal =float(self.qty_abnormal_double)/float(total)*float(100.00)
-    #         print pnormal
-    #         print pabnormal
-    #         self.qty_persentage_normal = pnormal
-    #         self.qty_persentage_abnormal = pabnormal
