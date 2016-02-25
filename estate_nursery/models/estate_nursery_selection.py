@@ -117,10 +117,7 @@ class Selection(models.Model):
         if self.selectionline_ids:
             for item in selectionlineids:
                 abnormal += item.qty
-        if self.recoverytemp_ids:
-            for qty in self.recoverytemp_ids:
-                self.qty_recovery += qty.qty_abn_recovery
-        self.write({'qty_abnormal': self.qty_abnormal,'qty_recovery':self.qty_recovery })
+        self.write({'qty_abnormal': self.qty_abnormal, })
         self.action_move()
         return True
 
