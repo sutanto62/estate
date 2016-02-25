@@ -89,7 +89,7 @@ class CleavingPolytone(models.Model):
             self.qty_total=total
         return True
 
-    #state for Culling
+    #state for Cleaving
     @api.one
     def action_draft(self):
         """Set Selection State to Draft."""
@@ -112,7 +112,7 @@ class CleavingPolytone(models.Model):
 
     @api.one
     def action_approved(self):
-        """Approved Selection is planted Seed."""
+        """Approved Selection Cleaving is Planted Seed."""
         self.action_receive()
         self.state = 'done'
 

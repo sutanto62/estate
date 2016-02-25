@@ -272,6 +272,7 @@
                                 <field name="qty_batch" attrs="{'required': [('state','=','draft')]}" readonly="1"/>
                                 <field name="qty_plant" attrs="{'required': [('state','=','draft')]}" readonly="1"
                                        onchange ="_compute_plannormal"/>
+                                <field name="qty_plante"/>
                                 <field name="date_plant" attrs="{'required': [('state','=','draft')]}" readonly="1"/>
                                 <field name="flag_recovery"/>
                             </group>
@@ -284,7 +285,6 @@
                                 <field name="qty_recoveryabn" string="Quantity Abnormal" attrs="{'invisible':[('flag_recovery','!=', True)]}"/>
                                 <field name="variety" invisible="1"/>
                                 <field name="stage" invisible="1"/>
-                                <field name="qty_plante" invisible="1"/>
                                 <field name="selection_date"
                                        attrs="{'invisible': [('selectionstage_id','=',False)],
                                  'readonly': [('state','=','done')]}"/>

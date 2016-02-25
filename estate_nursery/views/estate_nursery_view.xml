@@ -232,9 +232,10 @@
                         <page string="Detail Information">
                             <group name="top" string="Information">
                                 <group name="top_left">
-                                    <field name="age_seed_grow" readonly="1"
-                                           attrs="{'invisible': [('age_seed_range','=',True)]}"/>
-                                    <field name="age_seed_range" readonly="1" attrs="{'invisible': [('age_seed_range','=',0)]}"/>
+                                    <field name="age_seed_grow" string="Seed Age" readonly="1"
+                                           attrs="{'invisible': [('age_seed_range','>',0)]}"/>
+                                    <field name="age_seed_range" string="Seed Age" readonly="1"
+                                           attrs="{'invisible': [('age_seed_range','=',0)]}"/>
                                     <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_double" invisible="1"/>
@@ -269,13 +270,19 @@
                                    'default_qty_plante': qty_planted}"/>
                         </page>
 
-                        <page string="Cleaving Polytone">
+                        <page string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
                             <field name="cleaving_ids" string="Create Cleaving Polytone" attrs="{
-                            'invisible' : [('qty_double', '=',0)],'readonly' : ['|',('status','=',True),
+                            'readonly' : ['|',('status','=',True),
                             ('selection_count','!=',3),('status_age','!=',True)]}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
                                    'default_qty_plante': qty_planted }"/>
                         </page>
+
+                        <!--<page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">-->
+                            <!--<field name="recovery_ids" string="Create Recovery Seed"-->
+                                   <!--context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',-->
+                                   <!--'default_qty_plante': qty_planted }"/>-->
+                        <!--</page>-->
 
                         <page string="Additional Information">
                             <group name="bottom" string="Information">

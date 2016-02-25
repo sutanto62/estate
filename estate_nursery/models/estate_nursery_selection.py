@@ -33,8 +33,8 @@ class Selection(models.Model):
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
-    qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
-    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True)
+    qty_normal = fields.Integer("Normal Seed Quantity",digit=(2.2),compute="_compute_plannormal",store=True)
+    qty_abnormal = fields.Integer("Abnormal Seed Quantity",digit=(2.2),compute='_compute_total',store=True)
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("plan qty")
