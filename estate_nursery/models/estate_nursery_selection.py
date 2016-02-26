@@ -33,13 +33,13 @@ class Selection(models.Model):
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
-    qty_normal = fields.Integer("Normal Seed Quantity",digit=(2.2),compute="_compute_plannormal",store=True)
-    qty_abnormal = fields.Integer("Abnormal Seed Quantity",digit=(2.2),compute='_compute_total',store=True)
+    qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
+    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True)
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("plan qty")
     qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery")
-    qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,compute='compute_total_recovery')
+    qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,digit=(2.2),compute='compute_total_recovery')
     qty_abn_batch=fields.Integer(related='batch_id.qty_abnormal')
     qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
     qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
@@ -95,6 +95,7 @@ class Selection(models.Model):
     @api.one
     def action_draft(self):
         """Set Selection State to Draft."""
+        self.write({'qty_normal': self.qty_normal})
         self.state = 'draft'
 
     @api.one
@@ -117,7 +118,7 @@ class Selection(models.Model):
         if self.selectionline_ids:
             for item in selectionlineids:
                 abnormal += item.qty
-        self.write({'qty_abnormal': self.qty_abnormal, })
+        self.write({'qty_abnormal': self.qty_abnormal})
         self.action_move()
         return True
 
@@ -185,29 +186,28 @@ class Selection(models.Model):
 
     #compute qtyplant :
     @api.one
-    @api.depends('qty_plant','qty_abnormal','qty_plante','selectionline_ids','recoverytemp_ids','qty_recoveryabn')
+    @api.depends('qty_plant','qty_abnormal','flag_recovery','qty_plante','selectionline_ids','recoverytemp_ids','qty_recoveryabn')
     def _compute_plannormal(self):
-        abn = self.qty_abnormal
-        nrml = self.qty_normal
         plante = int(self.qty_plante)
         if self.flag_recovery == True:
             if self.selectionline_ids and self.recoverytemp_ids:
-                result = plante - self.qty_recoveryabn
-                self.qty_normal = result
-                self.qty_plant = result
+                self.qty_normal = plante - self.qty_recoveryabn
+                self.qty_plant = plante - self.qty_recoveryabn
         if self.flag_recovery == False:
             if self.selectionline_ids :
-                result = plante - abn
-                self.qty_normal = result
-                self.qty_plant = result
-        return  True
+                self.qty_normal = plante - self.qty_abnormal
+                self.qty_plant = plante - self.qty_abnormal
+
+    @api.onchange('qty_normal')
+    def onchange_normal(self):
+        if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
+            self.write({'qty_normal' : self.qty_normal})
 
     #compute abnormal and recovery :
     @api.one
     @api.depends('qty_recovery','qty_abnormal','qty_recoveryabn')
     def compute_total_recovery(self):
-        result = self.qty_abnormal + self.qty_recovery
-        self.qty_recoveryabn = result
+        self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
 
     #constraint Date for selection and date planted
     @api.multi
@@ -237,7 +237,6 @@ class Selection(models.Model):
         for r in self:
             r.selectionline_count = len(r.selectionline_ids)
 
-
     #compute selectionLine
     @api.one
     @api.depends('selectionline_ids')
@@ -258,14 +257,12 @@ class Selection(models.Model):
 
     #compute persentage
     @api.one
-    @api.depends('qty_batch','qty_normal','qty_abnormal')
+    @api.depends('qty_normal','qty_recoveryabn')
     def computepersentage(self):
-        d3 = int(self.qty_normal)+int(self.qty_abnormal)
-        if self.qty_abnormal and self.qty_normal:
-            pnormal =float(self.qty_normal)/float(d3)*float(100.00)
-            pabnormal =float(self.qty_abnormal)/float(d3)*float(100.00)
-            self.nursery_persentagea = pabnormal
-            self.nursery_persentagen = pnormal
+        total = self.qty_normal+self.qty_recoveryabn
+        if total:
+            self.nursery_persentagea =float(self.qty_recoveryabn)/float(total)*100.00
+            self.nursery_persentagen =float(self.qty_normal)/float(total)*100.00
 
     #compute lapseday
     @api.one
@@ -427,17 +424,10 @@ class SelectionStage(models.Model):
     @api.constrains("age_limit_max","age_limit_min","age_selection")
     def _check_date(self):
         for obj in self:
-            maxa =self.age_limit_max
-            mina=self.age_limit_min
-            limitmax = self.age_limit_max
-            limitmin = 1
-            limit=[1,2,3,4,5,6,7,8,9,10,11,12]
-            for a in limit:
-                limitmax = a
-            if maxa and mina:
-                if self.age_selection > maxa:
+            if self.age_limit_min and self.age_limit_max:
+                if self.age_selection > self.age_limit_max:
                     raise ValidationError("Age selection not more than age limit max!" )
-                elif self.age_selection < mina:
+                elif self.age_selection < self.age_limit_min:
                     raise ValidationError("Age selection should be Greater Than Age limit min!" )
 
     #constraint Age Limit min max and age selection
@@ -445,15 +435,9 @@ class SelectionStage(models.Model):
     @api.constrains("age_limit_max","age_limit_min","age_selection")
     def _check_date(self):
         for obj in self:
-            maxa =self.age_limit_max
-            mina=self.age_limit_min
-            limitmax = self.age_limit_max
             limitmin = 1
-            limit=[1,2,3,4,5,6,7,8,9,10,11,12]
-            for a in limit:
-                limitmax = a
-            if maxa and mina:
-                if mina < limitmin:
+            if self.age_limit_max and self.age_limit_min:
+                if self.age_limit_min < limitmin:
                     raise ValidationError("Age Limit min not less than 1!" )
 
     #Limit age
@@ -465,9 +449,9 @@ class SelectionStage(models.Model):
         limitmax = self.age_limit_max
         limitmin = 1
         limit=[1,2,3,4,5,6,7,8,9,10,11,12]
-        for a in limit:
-            limitmax = a
-        if maxa and mina :
+        for item in limit:
+            self.age_limit_max = item
+        if self.age_limit_max and self.age_limit_min :
             if maxa == limitmax:
                 self.info = "2"
                 if self.age_selection >= maxa:
