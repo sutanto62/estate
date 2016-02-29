@@ -107,13 +107,15 @@ class Batch(models.Model):
     qty_single= fields.Integer("single Seed Quantity",compute='_compute_single')
     qty_double=fields.Integer("Double Seed Quantity",compute='_compute_double')
     qty_abnormal=fields.Integer("Abnormal Seed Quantity")
-    qty_normal_double=fields.Integer("Normal After Cleveage")
+    qty_normal_double=fields.Integer("Normal After Cleaving")
     qty_abnormal_double=fields.Integer("Abnormal After Double")
+    qty_recovery= fields.Integer(compute="_compute_recovery")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
     cleaving_ids=fields.One2many('estate.nursery.cleaving','batch_id')
     cleavingln_ids=fields.One2many('estate.nursery.cleavingln','batch_id',readonly=True)
+    recovery_ids=fields.One2many('estate.nursery.recovery','batch_id','Recovery')
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
@@ -254,7 +256,6 @@ class Batch(models.Model):
                 DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
                 from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
                 to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
-
                 if to_dt < from_dt:
                      raise ValidationError("Planted Date Should be Greater than Received Date!" )
 
@@ -336,7 +337,7 @@ class Batch(models.Model):
 
     #total selection abnormal
     @api.one
-    @api.depends("selection_ids",)
+    @api.depends("selection_ids")
     def _computetot_abnormal(self):
         self.total_selection_abnormal = 0
         if self.selection_ids:
@@ -344,9 +345,18 @@ class Batch(models.Model):
                 self.total_selection_abnormal += a.qty_abnormal
         return True
 
+    #get Qty Recovery
+    @api.one
+    @api.depends("selection_ids")
+    def _compute_recovery(self):
+        self.qty_recovery=0
+        if self.selection_ids:
+            for recovery in self.selection_ids:
+                self.qty_recovery += recovery.qty_recovery
+        return True
     #get single qty
     @api.one
-    @api.depends("batchline_ids",)
+    @api.depends("batchline_ids")
     def _compute_single(self):
         self.qty_single = 0
         if self.batchline_ids:

@@ -120,10 +120,10 @@
             <field name="model">estate.nursery.cleavingln</field>
             <field name="arch" type="xml">
                 <tree string="Nursery cleaving Line View" editable="bottom">
-                    <field name="qty_planted" string="&#931; Planted" />
-                    <field name="qty_single" string="&#931; Batch single"/>
-                    <field name="qty_double" string="&#931; Batch Double"/>
-                    <field name="qty_normal_double" string="Nor Cleaving"/>
+                    <field name="qty_planted" string="&#931; Planted" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="qty_single" string="&#931; Batch single" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="qty_double" string="&#931; Batch Double" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="qty_normal_double" string="Nor Cleaving" />
                     <field name="qty_abnormal_double" string="Abn Cleaving"/>
                     <field name="location_type" string="Location virtual" readonly="1"/>
                     <field name="location_id" string="Location To" options="{'no_create_edit': True}"/>

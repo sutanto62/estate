@@ -239,6 +239,7 @@
                                     <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_double" invisible="1"/>
+                                    <field name="qty_recovery" invisible="1"/>
                                     <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
                                     <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
@@ -278,11 +279,11 @@
                                    'default_qty_plante': qty_planted }"/>
                         </page>
 
-                        <!--<page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">-->
-                            <!--<field name="recovery_ids" string="Create Recovery Seed"-->
-                                   <!--context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',-->
-                                   <!--'default_qty_plante': qty_planted }"/>-->
-                        <!--</page>-->
+                        <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">
+                            <field name="recovery_ids" string="Create Recovery Seed"
+                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
+                                   'default_qty_plante': qty_planted, 'default_selection_id' : selection_ids }"/>
+                        </page>
 
                         <page string="Additional Information">
                             <group name="bottom" string="Information">
@@ -305,7 +306,7 @@
                 <tree string="Seed Batch List" editable='top' colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
                     <field name="name"/>
                     <field name="complete_name" string="ID"/>
-                    <field name="seed_qty" string="Qty DO" sum="Qty DO"/>
+                    <field name="seed_qty" string="Qty DO" sum="Qty DO" readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="qty_single" string="Sgl."/>
                     <field name="qty_double" string="Dbl."/>
                     <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal"/>

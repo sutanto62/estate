@@ -219,7 +219,6 @@ class CullingLine(models.Model):
     product_id = fields.Many2one('product.product', "Product", related="selection_id.lot_id.product_id")
     selectionstage_id=fields.Many2one('estate.nursery.selectionstage',
                                       related='selection_id.selectionstage_id',readonly=True)
-    testflag=fields.Selection(related='selection_id.flagcul')
     status=fields.Boolean()
     allqty_normal_batch=fields.Integer()
     allqty_abnormal_batch=fields.Integer()
@@ -236,15 +235,15 @@ class CullingLine(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True,related='selection_id.culling_location_id',readonly=True)
 
-    #Validation to set flag in selection id
-    @api.one
-    @api.onchange('selection_id','testflag')
-    def test(self):
-        flag = self.selection_id.flagcul
-        state = self.culling_id.state
-        if self.culling_id:
-            if self.culling_id.state == 'confirmed':
-                self.status = True
+    # #Validation to set flag in selection id
+    # @api.one
+    # @api.onchange('selection_id','testflag')
+    # def test(self):
+    #     flag = self.selection_id.flagcul
+    #     state = self.culling_id.state
+    #     if self.culling_id:
+    #         if self.culling_id.state == 'confirmed':
+    #             self.status = True
 
     @api.constrains('selection_id','culling_id','status')
     def set_constraint(self):

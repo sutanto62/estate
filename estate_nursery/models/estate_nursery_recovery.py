@@ -11,32 +11,27 @@ class NurseryRecovery(models.Model):
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
-    selection_id=fields.Many2one('estate.nursery.selection',"Selection")
+    selection_id=fields.Many2one('estate.nursery.selection',"Selection",domain=[('batch_id','=',3),
+                                                                                ('flag_recovery','=',True)])
     batch_id= fields.Many2one('estate.nursery.batch')
     partner_id=fields.Many2one('res.partner')
+    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
+                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
+    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     recovery_date=fields.Date("Recovery Date")
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",related="selection_id.qty_recovery")
     qty_plant=fields.Integer()
-    qty_normal=fields.Integer()
+    qty_normal=fields.Integer(compute="_compute_total")
     qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_total_abnormal")
-    qty_plante=fields.Integer("Quantity Plant")
-    qty_total=fields.Integer()
+    qty_plante=fields.Integer("Quantity Planted Batch")
+    qty_total = fields.Integer( "Result Quantity",compute="_compute_total")
     culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', True)]
                                           ,store=True,required=True)
-
-    location_id = fields.Many2one('estate.block.template', "Bedengan",
-                                    domain=[('estate_location', '=', True),
-                                            ('estate_location_level', '=', '3'),
-                                            ('estate_location_type', '=', 'nursery'),
-                                            ('scrap_location', '=', False),
-                                            ],
-                                             help="Fill in location seed planted.",
-                                             required=True,)
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
         ('done', 'Transfere to Batch')],string="Recovery State")
@@ -55,6 +50,17 @@ class NurseryRecovery(models.Model):
             for item in self.recovery_line_ids:
                 self.qty_abnormal += item.qty_abnormal
         return True
+
+    #Compute Seed
+    @api.one
+    @api.depends('qty_abnormal','qty_plante','qty_recovery')
+    def _compute_total(self):
+        if self.recovery_line_ids:
+            self.qty_normal= int(self.qty_recovery)-self.qty_abnormal
+        if self.qty_normal:
+            self.qty_total = int(self.qty_plante) + self.qty_normal
+
+
 
     #state for Cleaving
     @api.one
@@ -82,6 +88,71 @@ class NurseryRecovery(models.Model):
         """Approved Selection is planted Seed to batch."""
         # self.action_receive()
         self.state = 'done'
+    @api.one
+    def action_receive(self):
+        normal = self.qty_normal
+        cleavagelineids = self.cleavingline_ids
+        for itembatch in cleavagelineids:
+            normal += itembatch.qty_normal_double
+        self.write({'qty_normal': self.qty_normal })
+        self.action_move()
+
+    @api.one
+    def action_move(self):
+        location_ids = set()
+        for item in self.recovery_line_ids:
+            if item.location_id and item.qty_abnormal > 0: # todo do not include empty quantity location
+                location_ids.add(item.location_id.inherit_location_id)
+
+        for location in location_ids:
+            qty_total_abnormal_recovery = 0
+            qty = self.env['estate.nursery.recoveryline'].search([('location_id.inherit_location_id', '=', location.id),
+                                                                   ('recovery_id', '=', self.id)
+                                                                   ])
+            for i in qty:
+                qty_total_abnormal_recovery += i.qty_abnormal
+
+            move_data = {
+                'product_id': self.batch_id.product_id.id,
+                'product_uom_qty': qty_total_abnormal_recovery,
+                'product_uom': self.batch_id.product_id.uom_id.id,
+                'name': 'Selection Recovery Abnormal.%s: %s'%(self.recovery_code,self.batch_id.name),
+                'date_expected': self.recovery_date,
+                'location_id': item.location_type.id,
+                'location_dest_id':self.culling_location_id.id,
+                'state': 'confirmed', # set to done if no approval required
+                'restrict_lot_id': self.lot_id.id # required by check tracking product
+            }
+            move = self.env['stock.move'].create(move_data)
+            move.action_confirm()
+            move.action_done()
+
+
+        batch_ids = set()
+        for itembatch in self.recovery_line_ids:
+            if  itembatch.location_id and itembatch.qty_abnormal > 0:
+                batch_ids.add(itembatch.location_id.inherit_location_id)
+
+            for batchrecovery in batch_ids:
+
+                trash = self.env['estate.nursery.cleavingln'].search([('location_id.inherit_location_id', '=', batchrecovery.id),
+                                                                        ('cleaving_id', '=', self.id)])
+
+            move_data = {
+                        'product_id': self.batch_id.product_id.id,
+                        'product_uom_qty': self.qty_normal,
+                        'product_uom': self.batch_id.product_id.uom_id.id,
+                        'name': 'Move Normal Seed  %s for %s:'%(self.recovery_code,self.batch_id.name),
+                        'date_expected': self.recovery_date,
+                        'location_id': itembatch.location_type.id,
+                        'location_dest_id': itembatch.location_id.inherit_location_id.id,
+                        'state': 'confirmed', # set to done if no approval required
+                        'restrict_lot_id': self.lot_id.id # required by check tracking product
+                 }
+            move = self.env['stock.move'].create(move_data)
+            move.action_confirm()
+            move.action_done()
+        return True
 
 class RecoveryLine(models.Model):
 
@@ -89,12 +160,18 @@ class RecoveryLine(models.Model):
 
     name=fields.Char()
     recovery_seed_id=fields.Many2one('estate.nursery.recovery')
-    cause_id=fields.Many2one('estate.nursery.cause')
     qty_abnormal=fields.Integer("Quantity Abnormal")
     location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Cleaving'),
                                                                              ('usage','=','inventory'),
                                                                              ],store=True,required=True,
                                   default=lambda self: self.location_type.search([('name','=','Cleaving')]))
-
+    location_id = fields.Many2one('estate.block.template', "Bedengan",
+                                    domain=[('estate_location', '=', True),
+                                            ('estate_location_level', '=', '3'),
+                                            ('estate_location_type', '=', 'nursery'),
+                                            ('scrap_location', '=', False),
+                                            ],
+                                             help="Fill in location seed planted.",
+                                             required=True,)
 
 

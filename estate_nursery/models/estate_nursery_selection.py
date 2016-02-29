@@ -26,8 +26,6 @@ class Selection(models.Model):
     cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
-    variety = fields.Char("Seed Variety",related="batch_id.variety_id.name",store=True)
-    stage = fields.Char("Stage",related="selectionstage_id.stage_id.name",store=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
@@ -67,8 +65,6 @@ class Selection(models.Model):
     nursery_plandatemin = fields.Char('Planning Date min',readonly=True,compute="calculateplandatemin",visible=True)
     nursery_persentagen = fields.Float('Nursery Persentage Normal',digit=(2.2),compute='computepersentage',store=True)
     nursery_persentagea = fields.Float('Nursery Persentage Abnormal',digit=(2.2),compute='computepersentage',store=True)
-    flagcul=fields.Selection([('-1','Reject'),('0','new'),('1','approval1'),('2','approval2')]
-                             ,string="Flag",store=True,default='0')
     flag_recovery=fields.Boolean("is Recovery ?")
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -208,6 +204,19 @@ class Selection(models.Model):
     @api.depends('qty_recovery','qty_abnormal','qty_recoveryabn')
     def compute_total_recovery(self):
         self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
+
+    #get selection stage id for recovery :
+    @api.one
+    @api.onchange('flag_recovery','selectionstage_id')
+    def onchange_flag(self):
+        stage=self.env['estate.nursery.selectionstage'].search([('stage_id','=',self.selectionstage_id.stage_id.id)])
+        print stage
+
+        # if self.selectionstage_id:
+        #     self.flag_recovery ==
+        # if self.selectionstage_id:
+        #     for item in self.selectionstage_id:
+
 
     #constraint Date for selection and date planted
     @api.multi
@@ -473,7 +482,7 @@ class SelectionLine(models.Model):
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
     qty_batch = fields.Integer("DO Quantity",store=True)
-    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True
+    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,domain=[('stage_id','=',2)]
                                )
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
@@ -493,6 +502,17 @@ class SelectionLine(models.Model):
     def _get_value_do(self):
        self.qty_batch=self.selection_id.qty_batch
        self.write({'qty_batch':self.qty_batch})
+
+    # #get id cause
+    # @api.one
+    # @api.onchange('selection_id','cause_id','stage_id')
+    # def _get_id_cause(self):
+    #     cause=self.env['estate.nursery.selection'].search[('selection_id','=',self.selection_id.stage_id.id)]
+    #
+    #     if self.selection_id:
+    #         for item in self.selection_id:
+    #             self.cause_id.stage_id = item.cause
+    #     print cause
 
     #constraint Quantity Limit min max and age selection
     @api.multi
@@ -519,8 +539,7 @@ class Cause(models.Model):
     code = fields.Char('Cause Abbreviation', size=3)
     sequence = fields.Integer('Sequence No')
     index=fields.Integer(compute='_compute_index')
-    selection_id= fields.Many2one('estate.nursery.selection')
-    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",store=True,related='selection_id.stage_id')
+    stage_id = fields.Many2one('estate.nursery.stage', "Nursery Stage",store=True)
 
     #create sequence
     @api.one
@@ -529,6 +548,7 @@ class Cause(models.Model):
         self.index = self._model.search_count(cr, uid, [
             ('sequence', '<', self.sequence)
         ], context=ctx) + 1
+
 
 class TempRecovery(models.Model):
 

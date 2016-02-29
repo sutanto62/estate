@@ -118,10 +118,10 @@ class CleavingPolytone(models.Model):
 
     @api.one
     def action_receive(self):
-        normal = self.qty_normal
+        self.qty_normal = 0
         cleavagelineids = self.cleavingline_ids
         for itembatch in cleavagelineids:
-            normal += itembatch.qty_normal_double
+            self.qty_normal += itembatch.qty_normal_double
         self.write({'qty_normal': self.qty_normal })
         self.action_move()
 
@@ -230,10 +230,10 @@ class CleavingLine(models.Model):
                                                                              ('usage','=','inventory'),
                                                                              ],store=True,required=True,
                                   default=lambda self: self.location_type.search([('name','=','Cleaving')]))
-    qty_planted=fields.Integer(required=True)
-    qty_single=fields.Integer(required=True)
-    qty_double=fields.Integer(required=True)
-    qty_normal_double=fields.Integer("Normal Double Seed",store=True,required=True)
+    qty_planted=fields.Integer()
+    qty_single=fields.Integer()
+    qty_double=fields.Integer()
+    qty_normal_double=fields.Integer("Normal Double Seed",store=True)
     qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
     comment=fields.Text("Description or Comment")
 
