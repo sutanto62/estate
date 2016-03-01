@@ -385,9 +385,13 @@ class Batch(models.Model):
         if self.batchline_ids:
             for item in self.batchline_ids:
                 self.qty_planted += item.qty_planted
+            if self.recovery_ids:
+                for qty_recovery in self.recovery_ids:
+                    self.qty_planted += qty_recovery.qty_normal
+                    print self.qty_planted
             if self.selection_ids:
-                for a in self.selection_ids:
-                    self.qty_planted -=a.qty_recoveryabn
+                for qty_selection in self.selection_ids:
+                    self.qty_planted -= qty_selection.qty_recoveryabn
             if self.cleaving_ids :
                 for totalcleaving in self.cleaving_ids:
                     self.qty_planted -= totalcleaving.qty_doublebatch

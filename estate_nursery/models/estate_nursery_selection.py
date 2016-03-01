@@ -431,7 +431,7 @@ class SelectionStage(models.Model):
     #constraint Age Limit and age selection
     @api.multi
     @api.constrains("age_limit_max","age_limit_min","age_selection")
-    def _check_date(self):
+    def _check_limitmax(self):
         for obj in self:
             if self.age_limit_min and self.age_limit_max:
                 if self.age_selection > self.age_limit_max:
@@ -442,7 +442,7 @@ class SelectionStage(models.Model):
     #constraint Age Limit min max and age selection
     @api.multi
     @api.constrains("age_limit_max","age_limit_min","age_selection")
-    def _check_date(self):
+    def _check_limitmin(self):
         for obj in self:
             limitmin = 1
             if self.age_limit_max and self.age_limit_min:

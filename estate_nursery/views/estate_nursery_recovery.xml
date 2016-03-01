@@ -71,11 +71,10 @@
 
                         <group>
                             <group>
-                                <field name="selection_id" string="Selection"
-                                       />
+                                <field name="selection_many2many"  widget="many2many_tags"  options="{'no_create_edit': True}" string="Selection"/>
                                 <field name="recovery_date" string="Recovery Date" attrs="{'readonly': [('state','=','done')]}"/>
                                 <field name="qty_plante" string="Quantity Last planted" invisible="0" readonly="1"/>
-                                <field name="qty_recovery" string="Quantity Recovery " invisible="0" />
+                                <field name="qty_recovery" readonly="1" string="Quantity Recovery " invisible="0">{‘readonly_by_pass’: True}</field>
                                 <field name="qty_normal" string="Quantity Normal" />
                                 <field name="qty_abnormal" string="Quantity Abnormal " invisible="0"/>
                             </group>

@@ -11,18 +11,20 @@ class NurseryRecovery(models.Model):
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
-    selection_id=fields.Many2one('estate.nursery.selection',"Selection",domain=[('batch_id','=',3),
-                                                                                ('flag_recovery','=',True)])
-    batch_id= fields.Many2one('estate.nursery.batch')
+    selection_many2many=fields.Many2many('estate.nursery.selection','selection_recovery_rel','selection_id','val_id','Selection Form',
+                                         domain="[('batch_id','=',6),('flag_recovery','=',True)]")
+    # selection_id=fields.Many2one('estate.nursery.selection',"Selection",
+    #                              domain="[('batch_id','=',6),('flag_recovery','=',True)]")
+    batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     recovery_date=fields.Date("Recovery Date")
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
-    qty_recovery= fields.Integer("Quantity Recovery",related="selection_id.qty_recovery")
+    qty_recovery= fields.Integer("Quantity Recovery",compute="_compute_qty_recovery")
     qty_plant=fields.Integer()
-    qty_normal=fields.Integer(compute="_compute_total")
+    qty_normal=fields.Integer(compute="_compute_total",store=True)
     qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_total_abnormal")
     qty_plante=fields.Integer("Quantity Planted Batch")
     qty_total = fields.Integer( "Result Quantity",compute="_compute_total")
@@ -51,6 +53,16 @@ class NurseryRecovery(models.Model):
                 self.qty_abnormal += item.qty_abnormal
         return True
 
+    @api.one
+    @api.depends('selection_many2many')
+    def _compute_qty_recovery(self):
+        self.qty_recovery = 0
+        if self.selection_many2many:
+            for qty in self.selection_many2many:
+                self.qty_recovery += qty.qty_recovery
+                print self.qty_recovery
+        return True
+
     #Compute Seed
     @api.one
     @api.depends('qty_abnormal','qty_plante','qty_recovery')
@@ -60,7 +72,11 @@ class NurseryRecovery(models.Model):
         if self.qty_normal:
             self.qty_total = int(self.qty_plante) + self.qty_normal
 
-
+    # @api.one
+    # @api.onchange('selection_id')
+    # def change_selection_id:
+    #     if
+    #     for selectionid in :
 
     #state for Cleaving
     @api.one
@@ -86,15 +102,15 @@ class NurseryRecovery(models.Model):
     @api.one
     def action_approved(self):
         """Approved Selection is planted Seed to batch."""
-        # self.action_receive()
+        self.action_receive()
         self.state = 'done'
+
     @api.one
     def action_receive(self):
-        normal = self.qty_normal
-        cleavagelineids = self.cleavingline_ids
-        for itembatch in cleavagelineids:
-            normal += itembatch.qty_normal_double
-        self.write({'qty_normal': self.qty_normal })
+        self.qty_abnormal = 0
+        for itembatch in self.recovery_line_ids:
+            self.qty_abnormal += itembatch.qty_abnormal
+        self.write({'qty_abnormal': self.qty_abnormal })
         self.action_move()
 
     @api.one
@@ -107,7 +123,7 @@ class NurseryRecovery(models.Model):
         for location in location_ids:
             qty_total_abnormal_recovery = 0
             qty = self.env['estate.nursery.recoveryline'].search([('location_id.inherit_location_id', '=', location.id),
-                                                                   ('recovery_id', '=', self.id)
+                                                                   ('recovery_seed_id', '=', self.id)
                                                                    ])
             for i in qty:
                 qty_total_abnormal_recovery += i.qty_abnormal
@@ -135,8 +151,8 @@ class NurseryRecovery(models.Model):
 
             for batchrecovery in batch_ids:
 
-                trash = self.env['estate.nursery.cleavingln'].search([('location_id.inherit_location_id', '=', batchrecovery.id),
-                                                                        ('cleaving_id', '=', self.id)])
+                trash = self.env['estate.nursery.recoveryline'].search([('location_id.inherit_location_id', '=', batchrecovery.id),
+                                                                        ('recovery_seed_id', '=', self.id)])
 
             move_data = {
                         'product_id': self.batch_id.product_id.id,
