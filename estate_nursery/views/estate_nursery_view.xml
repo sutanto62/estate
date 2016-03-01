@@ -266,7 +266,7 @@
 
                         <page string="Selection">
                             <field name="selection_ids" string="Create Selection" attrs="{
-                            'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '>', 6)]}"
+                            'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '>=', 6)]}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                    'default_qty_plante': qty_planted}"/>
                         </page>
@@ -280,7 +280,8 @@
                         </page>
 
                         <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">
-                            <field name="recovery_ids" string="Create Recovery Seed"
+                            <field name="recovery_ids" string="Create Recovery Seed" attrs="{
+                            'readonly' : ['|',('selection_count','=',6)]}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
                                    'default_qty_plante': qty_planted}"/>
                         </page>

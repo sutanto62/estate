@@ -203,7 +203,11 @@ class Selection(models.Model):
     @api.one
     @api.depends('qty_recovery','qty_abnormal','qty_recoveryabn')
     def compute_total_recovery(self):
-        self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
+        self.qty_recoveryabn = 0
+        if self.qty_abnormal and self.qty_recovery:
+            self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
+        elif self.qty_abnormal:
+            self.qty_recoveryabn = self.qty_abnormal
 
     #get selection stage id for recovery :
     @api.one

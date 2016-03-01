@@ -257,10 +257,9 @@ class CleavingLine(models.Model):
     #calculate normal double
     @api.multi
     @api.constrains('qty_double','qty_normal_double')
-    def constraint_normal_double(self):
+    def _check_normal_double(self):
         double = self.qty_double
         max_double = int(double) * int(2)
-        print max_double
         for obj in self :
             if  self.qty_normal_double > max_double:
                 raise ValidationError("Your Qty normal more than Maximal Double: %s" % obj.qty_normal_double)
@@ -271,6 +270,5 @@ class CleavingLine(models.Model):
     def _compute_abnormal(self):
         if self.qty_normal_double:
             maxdouble=int(self.qty_double)*int(2)
-            totalabnormal= maxdouble-int(self.qty_normal_double)
-            self.qty_abnormal_double=totalabnormal
+            self.qty_abnormal_double= maxdouble-int(self.qty_normal_double)
         return True

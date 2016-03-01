@@ -289,6 +289,20 @@
                             </group>
                         </group>
 
+                        <group coolspan="10" string="Detail Information" attrs="{'invisible':[('state','!=','done')]}">
+                            <group>
+                                <field name="qty_abnormal" string="Quantity Afkir"/>
+                                <field name="qty_recovery" attrs="{'invisible':[('flag_recovery','=', False)]}"
+                                                    string="Quantity Seed Recovery"/>
+                            </group>
+                            <group>
+                                <field name="qty_recoveryabn" string="Total Quantity Abnormal"
+                                                    attrs="{'invisible':[('flag_recovery','=', False)]}"/>
+                                <field name="qty_normal" string="Quantity Normal"
+                                                    attrs="{'invisible':[('state','=','done')]}"/>
+                            </group>
+                        </group>
+
                         <group>
                             <notebook>
                                 <page string="Abnormal Information">
@@ -307,22 +321,6 @@
                                                 'readonly': [('state','=','done')]}"
                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_recoverytempline'}"/>
                                         </tree>
-                                    </page>
-
-                                    <page string="Detail Information" attrs="{'invisible':[('state','!=','done')]}">
-                                        <group coolspan="10">
-                                            <group>
-                                                <field name="qty_abnormal" string="Quantity Afkir"/>
-                                                <field name="qty_recovery" attrs="{'invisible':[('flag_recovery','=', False)]}"
-                                                    string="Quantity Seed Recovery"/>
-                                            </group>
-                                            <group>
-                                                <field name="qty_recoveryabn" string="Total Quantity Abnormal"
-                                                    attrs="{'invisible':[('flag_recovery','=', False)]}"/>
-                                                <field name="qty_normal" string="Quantity Normal"
-                                                    attrs="{'invisible':[('state','=','done')]}"/>
-                                            </group>
-                                        </group>
                                     </page>
 
                                     <page string="Information Time Detail" attrs="{'invisible':[('state','!=','done')]}">

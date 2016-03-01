@@ -12,9 +12,8 @@ class NurseryRecovery(models.Model):
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
     selection_many2many=fields.Many2many('estate.nursery.selection','selection_recovery_rel','selection_id','val_id','Selection Form',
-                                         domain="[('batch_id','=',6),('flag_recovery','=',True)]")
-    # selection_id=fields.Many2one('estate.nursery.selection',"Selection",
-    #                              domain="[('batch_id','=',6),('flag_recovery','=',True)]")
+                                         domain="[('flag_recovery','=',True)]")
+    # ('batch_id','=',batch_id)
     batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
@@ -24,8 +23,8 @@ class NurseryRecovery(models.Model):
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",compute="_compute_qty_recovery")
     qty_plant=fields.Integer()
-    qty_normal=fields.Integer(compute="_compute_total",store=True)
-    qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_total_abnormal")
+    qty_normal=fields.Integer(compute="_compute_total_normal",store=True)
+    qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_abnormal")
     qty_plante=fields.Integer("Quantity Planted Batch")
     qty_total = fields.Integer( "Result Quantity",compute="_compute_total")
     culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
@@ -45,34 +44,28 @@ class NurseryRecovery(models.Model):
         return res
 
     @api.one
-    @api.depends('recovery_line_ids')
-    def _compute_total_abnormal(self):
-        self.qty_abnormal = 0
-        if self.recovery_line_ids:
-            for item in self.recovery_line_ids:
-                self.qty_abnormal += item.qty_abnormal
-        return True
-
-    @api.one
     @api.depends('selection_many2many')
     def _compute_qty_recovery(self):
         self.qty_recovery = 0
         if self.selection_many2many:
             for qty in self.selection_many2many:
                 self.qty_recovery += qty.qty_recovery
-                print self.qty_recovery
         return True
 
     #Compute Seed
     @api.one
-    @api.depends('qty_abnormal','qty_plante','qty_recovery')
-    def _compute_total(self):
+    @api.depends('qty_normal','qty_plante','qty_recovery')
+    def _compute_abnormal(self):
         if self.recovery_line_ids:
-            self.qty_normal= int(self.qty_recovery)-self.qty_abnormal
-        if self.qty_normal:
+            self.qty_abnormal= int(self.qty_recovery)-self.qty_normal
+
+    @api.one
+    @api.depends('qty_normal','qty_plante')
+    def _compute_total(self):
+        if self.qty_normal and self.qty_plante:
             self.qty_total = int(self.qty_plante) + self.qty_normal
 
-    # @api.one
+
     # @api.onchange('selection_id')
     # def change_selection_id:
     #     if
@@ -107,10 +100,10 @@ class NurseryRecovery(models.Model):
 
     @api.one
     def action_receive(self):
-        self.qty_abnormal = 0
+        self.qty_normal = 0
         for itembatch in self.recovery_line_ids:
-            self.qty_abnormal += itembatch.qty_abnormal
-        self.write({'qty_abnormal': self.qty_abnormal })
+            self.qty_normal += itembatch.qty_normal
+        self.write({'qty_normal':self.qty_normal})
         self.action_move()
 
     @api.one
@@ -135,7 +128,7 @@ class NurseryRecovery(models.Model):
                 'name': 'Selection Recovery Abnormal.%s: %s'%(self.recovery_code,self.batch_id.name),
                 'date_expected': self.recovery_date,
                 'location_id': item.location_type.id,
-                'location_dest_id':self.culling_location_id.id,
+                'location_dest_id':self.culling_location_id.inherit_location_id.id,
                 'state': 'confirmed', # set to done if no approval required
                 'restrict_lot_id': self.lot_id.id # required by check tracking product
             }
@@ -170,12 +163,21 @@ class NurseryRecovery(models.Model):
             move.action_done()
         return True
 
+    @api.one
+    @api.depends('recovery_line_ids')
+    def _compute_total_normal(self):
+        if self.recovery_line_ids:
+            for item in self.recovery_line_ids:
+                self.qty_normal += item.qty_normal
+        return True
+
 class RecoveryLine(models.Model):
 
     _name ='estate.nursery.recoveryline'
 
     name=fields.Char()
     recovery_seed_id=fields.Many2one('estate.nursery.recovery')
+    qty_normal=fields.Integer("Quantity Normal",required=True)
     qty_abnormal=fields.Integer("Quantity Abnormal")
     location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Cleaving'),
                                                                              ('usage','=','inventory'),
@@ -189,5 +191,9 @@ class RecoveryLine(models.Model):
                                             ],
                                              help="Fill in location seed planted.",
                                              required=True,)
-
+    @api.one
+    @api.onchange('qty_abnormal')
+    def change_abnormal(self):
+        self.qty_abnormal = self.recovery_seed_id.qty_abnormal
+        self.write({'qty_abnormal' : self.qty_abnormal})
 
