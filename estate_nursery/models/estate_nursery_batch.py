@@ -372,13 +372,12 @@ class Batch(models.Model):
         if self.batchline_ids:
             for item in self.batchline_ids:
                 self.qty_double += item.qty_double
-                print self.qty_double
         return True
 
 
     #computed seed planted
     @api.one
-    @api.depends('batchline_ids','selection_ids','cleaving_ids')
+    @api.depends('batchline_ids','selection_ids','cleaving_ids','recovery_ids')
     def _compute_total(self):
         temp={}
         self.qty_planted = 0
@@ -395,9 +394,9 @@ class Batch(models.Model):
                     for totalnormal in self.cleaving_ids:
                         self.qty_planted += totalnormal.qty_normal
             if self.recovery_ids:
-                for qty_recovery in self.recovery_ids:
-                    self.qty_planted += qty_recovery.qty_normal
-                    print qty_recovery.qty_normal
+                if self.recovery_ids.qty_normal:
+                    for qty_recovery in self.recovery_ids:
+                        self.qty_planted += qty_recovery.qty_normal
         return True
 
     @api.one

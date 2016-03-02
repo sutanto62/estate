@@ -264,9 +264,9 @@
                                 context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                         </page>
 
-                        <page string="Selection">
+                        <page string="Selection" attrs="{'readonly' : [('selection_count', '=', 6)]}">
                             <field name="selection_ids" string="Create Selection" attrs="{
-                            'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '>=', 6)]}"
+                            'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '=', 6)]}"
                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                    'default_qty_plante': qty_planted}"/>
                         </page>

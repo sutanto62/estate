@@ -58,6 +58,7 @@ class NurseryRecovery(models.Model):
     def _compute_abnormal(self):
         if self.recovery_line_ids:
             self.qty_abnormal= int(self.qty_recovery)-self.qty_normal
+        return True
 
     @api.one
     @api.depends('qty_normal','qty_plante')
