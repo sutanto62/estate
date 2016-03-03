@@ -7,12 +7,13 @@ import calendar
 class Planting(models.Model):
     #seed planting
     _name = "estate.nursery.seeddo"
+    _description = "Seed Delivery Order"
     _inherit = ['mail.thread']
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
-    estate_vehicle_id= fields.Many2one('fleet.vehicle','Estate Vehicle')
-    driver_estate_id = fields.Many2one(related="estate_vehicle_id.driver_id",readonly=True)
+    estate_vehicle_id= fields.Many2one('fleet.vehicle','Estate Vehicle',track_visibility='onchange')
+    driver_estate_id = fields.Many2one(related="estate_vehicle_id.driver_id",readonly=True,track_visibility='onchange')
     vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')],
                                     related="estate_vehicle_id.vehicle_type")
     no_vehicle = fields.Char(related="estate_vehicle_id.no_vehicle")
@@ -22,7 +23,7 @@ class Planting(models.Model):
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
-    seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),
+    seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
@@ -31,8 +32,8 @@ class Planting(models.Model):
     batch_planted_ids= fields.One2many('estate.batch.parameter','batch_id', "Batch Parameter",
                                           help="Define batch parameter")
     date_request = fields.Date('Date Seed Delivery Order',required=True)
-    total_qty_pokok= fields.Date("Total Pokok")
-    expense = fields.Integer("Amount Expense",compute="_amount_all")
+    total_qty_pokok= fields.Date("Total Pokok",track_visibility='onchange')
+    expense = fields.Integer("Amount Expense",compute="_amount_all",track_visibility='onchange')
     amount_total=fields.Integer("Total Expense")
     comment=fields.Text("Additional Information")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
@@ -139,6 +140,7 @@ class Requestplanting(models.Model):
     #request seed to plant
     #delegation purchase order to BPB
     _name = "estate.nursery.request"
+    _description = "Request Purchase Seed"
     _inherit = ['mail.thread']
 
     # _inherits = {'purchase.order': 'purchase_id',}
@@ -151,26 +153,26 @@ class Requestplanting(models.Model):
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner',required=True, ondelete="restrict",
                                default=lambda self: self.partner_id.search
-                                        ([('name','=','Dami Mas Sejahtera')]))
+                                        ([('name','=','Dami Mas Sejahtera')]),track_visibility='onchange')
     picking_id=fields.Many2one('stock.picking', "Picking", readonly=True ,)
-    kebun_location_id = fields.Many2one('estate.block.template',"Estate Location",
+    kebun_location_id = fields.Many2one('estate.block.template',"Estate Location",track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '1'),
                                                   ],
                                         default=lambda self: self.kebun_location_id.search
                                         ([('name','=','LYD')]))
-    divisi_location_id = fields.Many2one('estate.block.template',"Divisi Location",
+    divisi_location_id = fields.Many2one('estate.block.template',"Divisi Location",track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '2'),
                                                   ],
                                         default=lambda self: self.divisi_location_id.search
                                         ([('name','=','Division 1')]))
-    date_request=fields.Date("Date Request")
-    variety_id=fields.Many2one('estate.nursery.variety',required=True,
+    date_request=fields.Date("Date Request",track_visibility='onchange')
+    variety_id=fields.Many2one('estate.nursery.variety',required=True,track_visibility='onchange',
                                default=lambda self: self.variety_id.search
                                         ([('name','=','Dura')]))
     comment=fields.Text("Cause Pending")
-    total_qty_pokok = fields.Integer("Quantity Pokok Bibit",compute="_compute_total")
+    total_qty_pokok = fields.Integer("Quantity Pokok Bibit",compute="_compute_total",track_visibility='onchange')
     state=fields.Selection([('draft','Draft'),('open2','Open Pending'),('pending2','Pending'),
             ('pending','Pending'),('confirmed','Confirm'),('open','Open Pending'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Draft To SPB')])
@@ -310,19 +312,21 @@ class BatchParameter(models.Model):
     """Parameter of Batch.
     """
     _name = 'estate.batch.parameter'
+    _inherit=['mail.thread']
 
     bpb_many2many=fields.Many2many('estate.nursery.request','bpb_spb_rel','request_id','val_id','BPB Form')
-    total_qty_pokok = fields.Integer('Qty Request', compute="calculate_qty")
+    total_qty_pokok = fields.Integer('Qty Request', compute="calculate_qty",track_visibility='onchange')
     batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",
-                               domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_grow','>=', 6)])
+                               domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_grow','>=', 6)],
+                               track_visibility='onchange')
     from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','batch_id', "From Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', False),
                                                   ])
-    qty_difference=fields.Integer('Quantity Difference')
-    qty_result=fields.Integer('Quantity Result')
+    qty_difference=fields.Integer('Quantity Difference',track_visibility='onchange')
+    qty_result=fields.Integer('Quantity Result',track_visibility='onchange')
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
                                          domain="[('parameter_id', '=', parameter_id)]",
                                          ondelete='restrict')

@@ -19,7 +19,10 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','estate','stock','product','report','board','purchase','membership','mrp','estate_vehicle','readonly_bypass'],
+    'depends': ['base','mail','estate','stock','product',
+                'report','board',
+                'purchase','membership','mrp',
+                'estate_vehicle','readonly_bypass','smile_audit','estate_planning'],
 
     # always loaded
     'data': [

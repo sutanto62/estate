@@ -234,14 +234,14 @@
                                 <group name="top" string="Information">
                                     <group name="top_left">
                                         <field name="age_seed_grow" string="Seed Age" readonly="1"
-                                               attrs="{'invisible': [('age_seed_range','>',0)]}"/>
+                                               attrs="{'invisible': [('age_seed_range','>',0)]}" />
                                         <field name="age_seed_range" string="Seed Age" readonly="1"
-                                               attrs="{'invisible': [('age_seed_range','=',0)]}"/>
+                                               attrs="{'invisible': [('age_seed_range','=',0)]}" />
                                         <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                        <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}" />
                                         <field name="qty_double" invisible="1"/>
                                         <field name="qty_recovery" invisible="1"/>
-                                        <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}" />
                                         <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
                                         <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                     </group>
@@ -265,8 +265,8 @@
                                     context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                             </page>
 
-                            <page string="Selection" attrs="{'readonly' : [('selection_count', '=', 6)]}">
-                                <field name="selection_ids" string="Create Selection" attrs="{
+                            <page string="Selection" attrs="{'readonly' : [('selection_count', '>', 6)]}">
+                                <field name="selection_ids"  string="Create Selection" attrs="{
                                 'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '=', 6)]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                        'default_qty_plante': qty_planted}"/>

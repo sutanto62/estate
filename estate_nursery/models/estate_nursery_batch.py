@@ -96,24 +96,24 @@ class Batch(models.Model):
     age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
     selection_id = fields.Many2one("estate.nursery.selection",store=True)
     age_seed = fields.Integer("Seed Age Received",required=True)
-    age_seed_grow=fields.Integer("Seed Age",compute='age_grow_up')
+    age_seed_grow=fields.Integer("Seed Age",compute='age_grow_up',track_visibility='onchange')
     selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count")
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
     qty_received = fields.Integer("Quantity Received")
-    qty_normal = fields.Integer("Normal Seed Quantity")
+    qty_normal = fields.Integer("Normal Seed Quantity",track_visibility='onchange')
     qty_single= fields.Integer("single Seed Quantity",compute='_compute_single')
     qty_double=fields.Integer("Double Seed Quantity",compute='_compute_double')
-    qty_abnormal=fields.Integer("Abnormal Seed Quantity")
+    qty_abnormal=fields.Integer("Abnormal Seed Quantity",track_visibility='onchange')
     qty_normal_double=fields.Integer("Normal After Cleaving")
     qty_abnormal_double=fields.Integer("Abnormal After Double")
     qty_recovery= fields.Integer(compute="_compute_recovery")
     qty_planted = fields.Integer(_("Planted"), compute='_compute_total',store=True)
     qty_planted_temp = fields.Integer(_("Planted"), compute='_compute_total_temp',store=True)
     total_selection_abnormal=fields.Integer(compute="_computetot_abnormal",store=True)
-    cleaving_ids=fields.One2many('estate.nursery.cleaving','batch_id')
+    cleaving_ids=fields.One2many('estate.nursery.cleaving','batch_id',)
     cleavingln_ids=fields.One2many('estate.nursery.cleavingln','batch_id',readonly=True)
-    recovery_ids=fields.One2many('estate.nursery.recovery','batch_id','Recovery')
+    recovery_ids=fields.One2many('estate.nursery.recovery','batch_id','Recovery',)
     batchline_ids = fields.One2many('estate.nursery.batchline', 'batch_id', _("Seed Boxes")) # Detailed selection
     selection_ids = fields.One2many('estate.nursery.selection', 'batch_id', _("Selection"))
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'batch_id', _("Selectionline"))# Detaileld selection
@@ -133,9 +133,6 @@ class Batch(models.Model):
     stage_id=fields.Many2one("estate.nursery.stage")
     status =fields.Boolean("Status test")
     status_age=fields.Boolean("Status age")
-
-
-
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -168,7 +165,6 @@ class Batch(models.Model):
         self.write({'nursery_stage': '0' ,'qty_normal': self.qty_normal, 'qty_abnormal': self.qty_abnormal})
 
         self.action_planted()
-
         return True
 
     @api.one
@@ -180,6 +176,16 @@ class Batch(models.Model):
     @api.one
     def action_create_selection(self):
         print "Create Selection for batch %s" % self.name
+
+    # todo create traciking for selection
+    # def create(self, cr, uid, vals, context=None):
+    #     if vals.get('name','/')=='/':
+    #         vals['name'] = self.pool.get('ir.sequence').get(cr, uid, 'estate.nursery.selection', context=context) or '/'
+    #     context = dict(context or {}, mail_create_nolog=True)
+    #     selection =  super(Batch, self).create(cr, uid, vals, context=context)
+    #     serial = self.selection_ids.selectionstage_id.name
+    #     self.message_post(cr, uid, [selection], body="Selection Done %s" %serial , context=context)
+    #     return selection
 
     @api.one
     def action_planted(self):

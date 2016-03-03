@@ -15,11 +15,12 @@ select_category = ([('0','untimely'),('1','late'),('2','pass')])
 class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
+    _description = "Seed Batch Selection"
     _inherit = ['mail.thread']
     # _inherits = {'stock.production.lot': 'lot_id'}
 
     id = fields.Integer()
-    name= fields.Char(related='batch_id.name',store=True)
+    name= fields.Char(related='batch_id.name',store=True, track_visibility='onchange')
     selection_code=fields.Char("SFB",store=True)
     batch_code=fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')
@@ -32,13 +33,13 @@ class Selection(models.Model):
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
-    selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",
+    selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
-    qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True)
-    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True)
+    qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
+    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
-    qty_plante = fields.Integer("plan qty")
+    qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange')
     qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery")
     qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,digit=(2.2),compute='compute_total_recovery')
     qty_abn_batch=fields.Integer(related='batch_id.qty_abnormal')
@@ -184,7 +185,6 @@ class Selection(models.Model):
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()
             move.action_done()
-
 
     #compute fucntion
     #compute qtyplant :
@@ -503,6 +503,7 @@ class SelectionStage(models.Model):
 class SelectionLine(models.Model):
     """Seed Selection Line"""
     _name = 'estate.nursery.selectionline'
+    _inherit = ['mail.thread']
 
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
@@ -560,6 +561,7 @@ class SelectionLine(models.Model):
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""
     _name = 'estate.nursery.cause'
+    _inherit = ['mail.thread']
 
     name = fields.Char('Name')
     comment = fields.Text('Cause Description')

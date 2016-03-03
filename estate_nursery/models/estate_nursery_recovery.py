@@ -24,10 +24,10 @@ class NurseryRecovery(models.Model):
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",compute="_compute_qty_recovery")
     qty_plant=fields.Integer()
-    qty_normal=fields.Integer(compute="_compute_total_normal",store=True)
-    qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_abnormal")
-    qty_plante=fields.Integer("Quantity Planted Batch")
-    qty_total = fields.Integer( "Result Quantity",compute="_compute_total")
+    qty_normal=fields.Integer(compute="_compute_total_normal",store=True, track_visibility='onchange')
+    qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_abnormal" , track_visibility='onchange')
+    qty_plante=fields.Integer("Quantity Seed Planted Batch" , track_visibility='onchange')
+    qty_total = fields.Integer( "Result Quantity",compute="_compute_total", track_visibility='onchange')
     culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
