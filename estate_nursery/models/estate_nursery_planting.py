@@ -101,6 +101,7 @@ class Planting(models.Model):
             for price in self.activityline_ids:
                 self.expense += price.result_price
         return True
+
     #Onchange FOR ALL
     @api.onchange('amount_total','expense')
     def change_total(self):
@@ -108,9 +109,18 @@ class Planting(models.Model):
         self.write({'amount_total':self.amount_total})
 
     #Contraint For ALL
-    # @api.one
-    # @api.constrains
-    #
+    @api.one
+    @api.constrains('batch_planted_ids')
+    def _constrains_parameter_bpb(self):
+        if self.batch_planted_ids:
+            temp={}
+            for bpb in self.batch_planted_ids:
+                bpb_value_name = bpb.bpb_many2many.name
+                if bpb_value_name in temp.values():
+                    error_msg = "Request Seed \"%s\" is set more than once " % bpb_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[bpb.id] = bpb_value_name
+            return temp
 
 class ActivityLine(models.Model):
     _name = "estate.nursery.activityline"
