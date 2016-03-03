@@ -32,9 +32,13 @@ class Selection(models.Model):
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
+
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
-                                        required=True,default=lambda self: self.selectionstage_id.search([('name','=','Pre Nursery 1')]))
+                                        required=True,
+                                        default=lambda self: self.selectionstage_id.search([
+                                            ('name','=','Pre Nursery 1')]))
+
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
     qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
@@ -46,6 +50,7 @@ class Selection(models.Model):
     qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
     qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
+
     selection_date = fields.Date("Selection Date",required=True,store=True)
     selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
     selec = fields.Integer(related='selectionstage_id.age_selection')
@@ -60,6 +65,7 @@ class Selection(models.Model):
                                             ('3','very late/Not recomend'),('4','very untimely')],
                                            compute='dateinformation', default='draft', string="Information Time" ,
                                            readonly=True,required=False,store=True)
+
     nursery_lapseday = fields.Integer(string="Information Lapse of Day",
                                       required=False,readonly=True,compute='calculatedays',multi='sums',store=True)
     nursery_lapsemonth = fields.Integer(string="Information Lapse of Month",
@@ -69,6 +75,7 @@ class Selection(models.Model):
     nursery_plandatemin = fields.Char('Planning Date min',readonly=True,compute="calculateplandatemin",visible=True)
     nursery_persentagen = fields.Float('Nursery Persentage Normal',digit=(2.2),compute='computepersentage',store=True)
     nursery_persentagea = fields.Float('Nursery Persentage Abnormal',digit=(2.2),compute='computepersentage',store=True)
+
     flag_recovery=fields.Boolean("is Recovery ?")
     state = fields.Selection([
         ('draft', 'Draft'),

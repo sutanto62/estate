@@ -101,12 +101,16 @@ class Planting(models.Model):
             for price in self.activityline_ids:
                 self.expense += price.result_price
         return True
-
+    #Onchange FOR ALL
     @api.onchange('amount_total','expense')
     def change_total(self):
         self.amount_total = self.expense
         self.write({'amount_total':self.amount_total})
-        print self.amount_total
+
+    #Contraint For ALL
+    # @api.one
+    # @api.constrains
+    #
 
 class ActivityLine(models.Model):
     _name = "estate.nursery.activityline"
@@ -330,15 +334,22 @@ class BatchParameter(models.Model):
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
                                          domain="[('parameter_id', '=', parameter_id)]",
                                          ondelete='restrict')
+
+    #Compute Quantity from BPB
     @api.one
     @api.depends('bpb_many2many')
     def calculate_qty(self):
         if self.bpb_many2many:
             for item in self.bpb_many2many:
                 self.total_qty_pokok += item.total_qty_pokok
-        print self.total_qty_pokok
 
-
+    #onchange field
+    @api.one
+    @api.onchange('qty_result','qty_difference','total_qty_pokok ')
+    def onchange_qty_result(self):
+        if self.total_qty_pokok:
+            self.qty_result = self.total_qty_pokok - self.qty_difference
+            self.write({'qty_result' : self.qty_result})
 
 
 class TrasferSeed(models.Model):
