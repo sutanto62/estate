@@ -7,6 +7,7 @@ import calendar
 class Planting(models.Model):
     #seed planting
     _name = "estate.nursery.seeddo"
+    _inherit = ['mail.thread']
 
     name=fields.Char("Planting Code")
     planting_code=fields.Char("Planting Code")
@@ -138,6 +139,7 @@ class Requestplanting(models.Model):
     #request seed to plant
     #delegation purchase order to BPB
     _name = "estate.nursery.request"
+    _inherit = ['mail.thread']
 
     # _inherits = {'purchase.order': 'purchase_id',}
 

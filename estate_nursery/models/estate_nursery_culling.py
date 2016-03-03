@@ -8,6 +8,7 @@ import calendar
 class Culling(models.Model):
 
     _name = "estate.nursery.culling"
+    _inherit = ['mail.thread']
 
     name=fields.Char("Culling Name")
     culling_code=fields.Char("LBP")

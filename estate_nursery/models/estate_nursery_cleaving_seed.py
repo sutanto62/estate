@@ -8,6 +8,7 @@ import calendar
 class CleavingPolytone(models.Model):
 
     _name = "estate.nursery.cleaving"
+    _inherit = ['mail.thread']
 
     name=fields.Char("Cleaving polytone Code",related='batch_id.name')
     batch_id=fields.Many2one('estate.nursery.batch',"Batch")

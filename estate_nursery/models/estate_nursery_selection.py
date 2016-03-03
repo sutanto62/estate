@@ -11,9 +11,11 @@ import calendar
 select_category = ([('0','untimely'),('1','late'),('2','pass')])
 
 
+
 class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
+    _inherit = ['mail.thread']
     # _inherits = {'stock.production.lot': 'lot_id'}
 
     id = fields.Integer()

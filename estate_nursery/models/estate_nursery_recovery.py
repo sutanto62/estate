@@ -8,6 +8,7 @@ import calendar
 class NurseryRecovery(models.Model):
 
     _name ='estate.nursery.recovery'
+    _inherit = ['mail.thread']
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()

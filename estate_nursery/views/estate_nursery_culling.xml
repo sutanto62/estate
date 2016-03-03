@@ -88,16 +88,22 @@
                                        attrs="{'invisible':[('selectionform','!=', '2')]}"/>
                             </group>
                         </group>
-                        <notebook>
-                            <page string="Culling Line Batch detail" attrs="{'invisible':[('selectionform','!=', '1')]}">
-                                <field name="cullingline_ids" attrs="{'readonly':[('state','=', 'done')]}"
-                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglinebatch'}"/>
-                            </page>
-                            <page string="Culling Line All detail" attrs="{'invisible':[('selectionform','!=', '2')]}">
-                                <field name="cullinglineall_ids" attrs="{'readonly':[('state','=', 'done')]}"
-                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglineall'}"/>
-                            </page>
-                        </notebook>
+                        <group>
+                            <notebook>
+                                <page string="Culling Line Batch detail" attrs="{'invisible':[('selectionform','!=', '1')]}">
+                                    <field name="cullingline_ids" attrs="{'readonly':[('state','=', 'done')]}"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglinebatch'}"/>
+                                </page>
+                                <page string="Culling Line All detail" attrs="{'invisible':[('selectionform','!=', '2')]}">
+                                    <field name="cullinglineall_ids" attrs="{'readonly':[('state','=', 'done')]}"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglineall'}"/>
+                                </page>
+                            </notebook>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
                     </sheet>
                 </form>
             </field>

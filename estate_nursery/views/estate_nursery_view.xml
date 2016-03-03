@@ -228,70 +228,72 @@
                             <field name="culling_location_id" attrs="{'required': [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Detail Information">
-                            <group name="top" string="Information">
-                                <group name="top_left">
-                                    <field name="age_seed_grow" string="Seed Age" readonly="1"
-                                           attrs="{'invisible': [('age_seed_range','>',0)]}"/>
-                                    <field name="age_seed_range" string="Seed Age" readonly="1"
-                                           attrs="{'invisible': [('age_seed_range','=',0)]}"/>
-                                    <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                    <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                    <field name="qty_double" invisible="1"/>
-                                    <field name="qty_recovery" invisible="1"/>
-                                    <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                    <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                    <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+                    <group>
+                        <notebook>
+                            <page string="Detail Information">
+                                <group name="top" string="Information">
+                                    <group name="top_left">
+                                        <field name="age_seed_grow" string="Seed Age" readonly="1"
+                                               attrs="{'invisible': [('age_seed_range','>',0)]}"/>
+                                        <field name="age_seed_range" string="Seed Age" readonly="1"
+                                               attrs="{'invisible': [('age_seed_range','=',0)]}"/>
+                                        <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_double" invisible="1"/>
+                                        <field name="qty_recovery" invisible="1"/>
+                                        <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+                                    </group>
+                                    <group name="top_right">
+                                        <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"/>
+                                        <field name="product_id" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"/>
+                                        <field name="variety_id" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"/>
+                                        <field name="progeny_id" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"/>
+                                        <field name="age_seed" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"/> month
+                                        <field name="selection_count" invisible="1"/>
+                                    </group>
                                 </group>
-                                <group name="top_right">
-                                    <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','=','done')]}"/>
-                                    <field name="product_id" attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','=','done')]}"/>
-                                    <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','=','done')]}"/>
-                                    <field name="progeny_id" attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','=','done')]}"/>
-                                    <field name="age_seed" attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','=','done')]}"/> month
-                                    <field name="selection_count" invisible="1"/>
+                            </page>
+                            <page string="Delivery (Box/Bags)">
+                                <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
+                                    context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
+                            </page>
+
+                            <page string="Selection" attrs="{'readonly' : [('selection_count', '=', 6)]}">
+                                <field name="selection_ids" string="Create Selection" attrs="{
+                                'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '=', 6)]}"
+                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
+                                       'default_qty_plante': qty_planted}"/>
+                            </page>
+
+                            <page string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
+                                <field name="cleaving_ids" string="Create Cleaving Polytone" attrs="{
+                                'readonly' : ['|',('status','=',True),
+                                ('selection_count','!=',3),('status_age','!=',True)]}"
+                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
+                                       'default_qty_plante': qty_planted }"/>
+                            </page>
+
+                            <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">
+                                <field name="recovery_ids" string="Create Recovery Seed" attrs="{
+                                'readonly' : ['|',('selection_count','=',6)]}"
+                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
+                                       'default_qty_plante': qty_planted}"/>
+                            </page>
+
+                            <page string="Additional Information">
+                                <group name="bottom" string="Information">
+                                    <field name="comment"/>
                                 </group>
-                            </group>
-                        </page>
-                        <page string="Delivery (Box/Bags)">
-                            <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
-                                context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
-                        </page>
-
-                        <page string="Selection" attrs="{'readonly' : [('selection_count', '=', 6)]}">
-                            <field name="selection_ids" string="Create Selection" attrs="{
-                            'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '=', 6)]}"
-                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
-                                   'default_qty_plante': qty_planted}"/>
-                        </page>
-
-                        <page string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
-                            <field name="cleaving_ids" string="Create Cleaving Polytone" attrs="{
-                            'readonly' : ['|',('status','=',True),
-                            ('selection_count','!=',3),('status_age','!=',True)]}"
-                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
-                                   'default_qty_plante': qty_planted }"/>
-                        </page>
-
-                        <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">
-                            <field name="recovery_ids" string="Create Recovery Seed" attrs="{
-                            'readonly' : ['|',('selection_count','=',6)]}"
-                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
-                                   'default_qty_plante': qty_planted}"/>
-                        </page>
-
-                        <page string="Additional Information">
-                            <group name="bottom" string="Information">
-                                <field name="comment"/>
-                            </group>
-                        </page>
-                    </notebook>
+                            </page>
+                        </notebook>
+                    </group>
                 </form>
             </field>
         </record>

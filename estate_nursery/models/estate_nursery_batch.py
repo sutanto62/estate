@@ -76,7 +76,6 @@ class Condition(models.Model):
     sequence = fields.Integer("Sequence No")
     comment = fields.Text("Additional Information")
 
-
 class Batch(models.Model):
     """Delegation Inheritance Product for Seed Batch. Created from Transfer."""
     _name = 'estate.nursery.batch'
