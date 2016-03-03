@@ -80,6 +80,7 @@ class Batch(models.Model):
     """Delegation Inheritance Product for Seed Batch. Created from Transfer."""
     _name = 'estate.nursery.batch'
     _description = "Seed Batch"
+    _inherit=['mail.thread']
     _inherits = {'stock.production.lot': 'lot_id'}
 
     partner_id = fields.Many2one('res.partner')
