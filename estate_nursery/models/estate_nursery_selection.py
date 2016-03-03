@@ -10,6 +10,7 @@ import calendar
 
 select_category = ([('0','untimely'),('1','late'),('2','pass')])
 
+
 class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
@@ -137,8 +138,9 @@ class Selection(models.Model):
             move_data = {
                 'product_id': self.batch_id.product_id.id,
                 'product_uom_qty': qty_total_abnormal,
+                'origin':self.batch_id.name,
                 'product_uom': self.batch_id.product_id.uom_id.id,
-                'name': 'Selection Abnormal.%s: %s'%(self.selectionstage_id.name,self.lot_id.product_id.display_name),
+                'name': 'Selection Abnormal %s: %s'%(self.selectionstage_id.name,self.batch_id.name),
                 'date_expected': self.nursery_plandate,
                 'location_id': location.id,
                 'location_dest_id': self.culling_location_id.inherit_location_id.id,
@@ -167,8 +169,9 @@ class Selection(models.Model):
                 'product_id': self.batch_id.product_id.id,
                 'product_uom_qty': qty_total_abnormal_recovery,
                 'product_uom': self.batch_id.product_id.uom_id.id,
-                'name': 'Selection Abnormal Recovery .%s: %s'%(self.selectionstage_id.name,
-                                                               self.lot_id.product_id.display_name),
+                'origin':self.batch_id.name,
+                'name': 'Selection Abnormal Recovery %s: %s'%(self.selectionstage_id.name,
+                                                               self.batch_id.name),
                 'date_expected': self.nursery_plandate,
                 'location_id': location.id,
                 'location_dest_id': self.location_type.id,
@@ -180,6 +183,8 @@ class Selection(models.Model):
             move.action_confirm()
             move.action_done()
 
+
+    #compute fucntion
     #compute qtyplant :
     @api.one
     @api.depends('qty_plant','qty_abnormal','flag_recovery','qty_plante','selectionline_ids','recoverytemp_ids','qty_recoveryabn')
@@ -194,10 +199,6 @@ class Selection(models.Model):
                 self.qty_normal = plante - self.qty_abnormal
                 self.qty_plant = plante - self.qty_abnormal
 
-    @api.onchange('qty_normal')
-    def onchange_normal(self):
-        if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
-            self.write({'qty_normal' : self.qty_normal})
 
     #compute abnormal and recovery :
     @api.one
@@ -209,18 +210,38 @@ class Selection(models.Model):
         elif self.qty_abnormal:
             self.qty_recoveryabn = self.qty_abnormal
 
+    #onchange Fucntion
     #get selection stage id for recovery :
+    # todo do change stage id in cause_id for selection line
     @api.one
-    @api.onchange('flag_recovery','selectionstage_id')
-    def onchange_flag(self):
-        stage=self.env['estate.nursery.selectionstage'].search([('stage_id','=',self.selectionstage_id.stage_id.id)])
-        print stage
+    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
+    def onchange_stage(self):
+        #stage=self.env['estate.nursery.selection'].search([('cause_id','=',self.selectionstage_id.stage_id.id)]).name
+        #stage = self.search([('stage_id', '=', self.selectionstage_id.stage_id)])[2].name
+        #print stage
+        if self.selectionstage_id:
+            for cause in self.selectionline_ids:
+                cause.cause_id.stage_id = self.stage_id
+                print cause.cause_id.stage_id
+        #print stage
+
+    #onchange Stage id
+    @api.one
+    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
+    def _changestage_id(self):
+        self.stage_id=self.selectionstage_id.stage_id
+        self.write({'stage_id':self.stage_id})
+
 
         # if self.selectionstage_id:
         #     self.flag_recovery ==
         # if self.selectionstage_id:
         #     for item in self.selectionstage_id:
 
+    @api.onchange('qty_normal')
+    def onchange_normal(self):
+        if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
+            self.write({'qty_normal' : self.qty_normal})
 
     #constraint Date for selection and date planted
     @api.multi
@@ -237,13 +258,6 @@ class Selection(models.Model):
                 if to_dt < from_dt:
                      raise ValidationError("Selection Date Should be Greater than Planted Date!" )
 
-    #onchange Stage id
-    @api.one
-    @api.onchange('stage_id','selectionstage_id')
-    def _changestage_id(self):
-        self.stage_id=self.selectionstage_id.stage_id
-        self.write({'stage_id':self.stage_id})
-
     #selection count
     @api.depends('selectionline_ids')
     def _get_selectionline_count(self):
@@ -258,6 +272,7 @@ class Selection(models.Model):
         for item in self.selectionline_ids:
             self.qty_abnormal += item.qty
         return True
+
 
     #compute recoveryLine
     @api.one
@@ -478,6 +493,11 @@ class SelectionStage(models.Model):
             elif mina < limitmin:
                 self.info="3"
 
+    @api.one
+    def test(self):
+        cari=self.browse['estate.nursery.selectionstage'].search(['stage_id'])
+        print cari[0]
+
 class SelectionLine(models.Model):
     """Seed Selection Line"""
     _name = 'estate.nursery.selectionline'
@@ -486,8 +506,7 @@ class SelectionLine(models.Model):
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
     qty_batch = fields.Integer("DO Quantity",store=True)
-    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,domain=[('stage_id','=',2)]
-                               )
+    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
@@ -506,6 +525,8 @@ class SelectionLine(models.Model):
     def _get_value_do(self):
        self.qty_batch=self.selection_id.qty_batch
        self.write({'qty_batch':self.qty_batch})
+
+
 
     # #get id cause
     # @api.one

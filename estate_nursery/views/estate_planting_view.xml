@@ -83,7 +83,7 @@
                                 <field name="seed_location_id"
                                        string="Seed Location" required="True" options="{'no_create_edit': True}"/>
                                 <field name="date_request"/>
-                                <field name="lot_id" options="{'no_create_edit': True}"/>
+                                <!--<field name="lot_id" options="{'no_create_edit': True}"/>-->
                             </group>
 
                             <group coolspan="10">
@@ -164,7 +164,7 @@
             <field name="model">estate.nursery.activityline</field>
             <field name="arch" type="xml">
                 <tree string="Activity Line View" editable="bottom">
-                    <field name="activity_id" string="Activity no" />
+                    <field name="activity_id" string="Activity" />
                     <field name="product_type_id" string="Product UoM" />
                     <field name="qty_product" string="Quantity" />
                     <field name="price" string="Price/product" required="1"/>
@@ -281,7 +281,7 @@
                                 <field name="variety_id" attrs="{'required': [('state','!=','draft')],
                                  'readonly': [('state','=','done')]}"/>
                                 <field name="total_qty_pokok" readonly="1"/>
-                                <field name="date_request" string="BPB Date Request"/>
+                                <field name="date_request" string="BPB Date Request" required="1"/>
                             </group>
                         </group>
 
