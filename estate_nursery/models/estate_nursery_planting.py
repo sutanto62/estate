@@ -108,7 +108,8 @@ class Planting(models.Model):
         self.amount_total = self.expense
         self.write({'amount_total':self.amount_total})
 
-    #Contraint For ALL
+    #Constraint For ALL
+    #Constraint bpb choose not more than 1
     @api.one
     @api.constrains('batch_planted_ids')
     def _constrains_parameter_bpb(self):

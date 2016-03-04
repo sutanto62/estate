@@ -218,55 +218,6 @@ class Selection(models.Model):
             self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
         elif self.qty_abnormal:
             self.qty_recoveryabn = self.qty_abnormal
-
-    #onchange Fucntion
-    #get selection stage id for recovery :
-    # todo do change stage id in cause_id for selection line
-    @api.one
-    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
-    def onchange_stage(self):
-        #stage=self.env['estate.nursery.selection'].search([('cause_id','=',self.selectionstage_id.stage_id.id)]).name
-        #stage = self.search([('stage_id', '=', self.selectionstage_id.stage_id)])[2].name
-        #print stage
-        if self.selectionstage_id:
-            for cause in self.selectionline_ids:
-                cause.cause_id.stage_id = self.stage_id
-                print cause.cause_id.stage_id
-        #print stage
-
-    #onchange Stage id
-    @api.one
-    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
-    def _changestage_id(self):
-        self.stage_id=self.selectionstage_id.stage_id
-        self.write({'stage_id':self.stage_id})
-
-
-        # if self.selectionstage_id:
-        #     self.flag_recovery ==
-        # if self.selectionstage_id:
-        #     for item in self.selectionstage_id:
-
-    @api.onchange('qty_normal')
-    def onchange_normal(self):
-        if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
-            self.write({'qty_normal' : self.qty_normal})
-
-    #constraint Date for selection and date planted
-    @api.multi
-    @api.constrains('selection_date','date_plant')
-    def _check_date(self):
-        for obj in self:
-            start_date = obj.date_plant
-            end_date = obj.selection_date
-
-            if start_date and end_date:
-                DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
-                from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
-                to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
-                if to_dt < from_dt:
-                     raise ValidationError("Selection Date Should be Greater than Planted Date!" )
-
     #selection count
     @api.depends('selectionline_ids')
     def _get_selectionline_count(self):
@@ -440,6 +391,63 @@ class Selection(models.Model):
                          self.nursery_information = '4'# very untimely
                 return True
 
+    #onchange Fucntion
+    #get selection stage id for recovery :
+    # todo do change stage id in cause_id for selection line
+    @api.one
+    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
+    def onchange_stage(self):
+        #stage=self.env['estate.nursery.selection'].search([('cause_id','=',self.selectionstage_id.stage_id.id)]).name
+        #stage = self.search([('stage_id', '=', self.selectionstage_id.stage_id)])[2].name
+        #print stage
+        if self.selectionstage_id:
+            for cause in self.selectionline_ids:
+                cause.cause_id.stage_id = self.stage_id
+                print cause.cause_id.stage_id
+        #print stage
+
+    #onchange Stage id
+    @api.one
+    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
+    def _changestage_id(self):
+        self.stage_id=self.selectionstage_id.stage_id
+        self.write({'stage_id':self.stage_id})
+
+    @api.onchange('qty_normal')
+    def onchange_normal(self):
+        if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
+            self.write({'qty_normal' : self.qty_normal})
+
+    #constraint Date for selection and date planted
+    @api.multi
+    @api.constrains('selection_date','date_plant')
+    def _check_date(self):
+        for obj in self:
+            start_date = obj.date_plant
+            end_date = obj.selection_date
+
+            if start_date and end_date:
+                DATETIME_FORMAT = "%Y-%m-%d"  ## Set your date format here
+                from_dt = datetime.strptime(start_date, DATETIME_FORMAT)
+                to_dt = datetime.strptime(end_date, DATETIME_FORMAT)
+                if to_dt < from_dt:
+                     raise ValidationError("Selection Date Should be Greater than Planted Date!" )
+
+    #constraint Quantity abnormal and plantedselection
+    @api.multi
+    @api.constrains('qty_abnormal','qty_plante')
+    def _check_constraint_qty(self):
+
+        for obj in self:
+            qty_selection =obj.qty_abnormal
+            qty_batch=obj.qty_plante
+
+            if qty_selection and qty_batch:
+                if qty_selection > qty_batch:
+                    error_msg="Quantity abnormal %s is set more than Quantity Planted %s " %(qty_selection,qty_batch)
+                    raise exceptions.ValidationError(error_msg)
+
+
 class SelectionStage(models.Model):
     _name = 'estate.nursery.selectionstage'
 
@@ -534,6 +542,7 @@ class SelectionLine(models.Model):
     @api.onchange('qty_batch','selection_id')
     def _get_value_do(self):
        self.qty_batch=self.selection_id.qty_batch
+       print self.qty_batch
        self.write({'qty_batch':self.qty_batch})
 
 
@@ -548,22 +557,6 @@ class SelectionLine(models.Model):
     #         for item in self.selection_id:
     #             self.cause_id.stage_id = item.cause
     #     print cause
-
-    #constraint Quantity Limit min max and age selection
-    @api.multi
-    @api.constrains('qty','qty_batch')
-    def _check_constraint_qty(self):
-
-        for obj in self:
-            qty_selection =obj.qty
-            qty_batch=obj.qty_batch
-
-            if qty_selection and qty_batch:
-                fromqty = qty_selection
-                toqty = qty_batch
-
-                if fromqty > toqty:
-                    raise ValidationError("Quantity Abnormal Not More Than Quantity Batch!" )
 
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""

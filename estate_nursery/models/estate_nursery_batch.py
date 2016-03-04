@@ -290,6 +290,22 @@ class Batch(models.Model):
                 elif seed_qty < qty_planted:
                     raise ValidationError("Planted Should be Greater than Quantity Planted!")
 
+    #Constraint to selection stage more than 1
+    @api.one
+    @api.constrains('selection_ids')
+    def _constrains_selectionstage_selection(self):
+        if self.selection_ids:
+            temp={}
+            for stage in self.selection_ids:
+                stage_value_name = stage.selectionstage_id.name
+                if stage_value_name in temp.values():
+                    error_msg = "Selection Stage Seed \"%s\" is set more than once " % stage_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[stage.id] = stage_value_name
+            return temp
+
+
+
     #count selection
     @api.one
     @api.depends('selection_ids')
