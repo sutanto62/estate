@@ -61,51 +61,67 @@ class Culling(models.Model):
             self.total_quantityabnormal_temp += a.qty_abnormal_selection
         return True
 
-    @api.onchange('selection_id','state','flag','culling_id')
-    def set_flag(self):
-        selection_ids = set()
-        for item in self.cullingline_ids:
-            if item.selection_id:
-                selection_ids.add(item.selection_id)
-        for selection in selection_ids:
-            res=self.env['estate.nursery.cullingline'].search([('selection_id','=',selection.id)])
-            res2=self.env['estate.nursery.selection'].search([('selection_id','=',selection.id),('state','=','done')])
+    #Constraint to Cleaving Choose Selection not more than 1
+    @api.one
+    @api.constrains('cullinglineall_ids')
+    def _constrains_choose_selection(self):
+        if self.cullinglineall_ids:
+            temp={}
+            for selection in self.cullinglineall_ids:
+                selection_value_name = selection.selection_id.name
+                stage_selection_name = selection.selectionstage_id.name
+                if selection_value_name in temp.values():
+                    error_msg = "Selection Abnormal Selection Seed \"%s\" is set more than once " % stage_selection_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[selection.id] = selection_value_name
+            return temp
+
+    #Constraint to Cleaving Choose Batch not more than 1
+    @api.one
+    @api.constrains('cullingline_ids')
+    def _constrains_choose_batch(self):
         if self.cullingline_ids:
-          if res:
-              for b in res2:
-                v = {'flag': True}
-                return {'value': v}
-        return {}
+            temp={}
+            for batch in self.cullingline_ids:
+                batch_value_name = batch.batch_id.name
+                if batch_value_name in temp.values():
+                    error_msg = "Selection Abnormal Batch Seed \"%s\" is set more than once " % batch_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[batch.id] = batch_value_name
+            return temp
+
 
     #state for Culling
     @api.one
     def action_draft(self):
-        """Set Selection State to Draft."""
+        """Set Culling State to Draft."""
         self.state = 'draft'
 
     @api.one
     def action_confirmed(self):
-        """Set Selection state to Confirmed."""
+        """Set Culling state to Confirmed."""
         self.state = 'confirmed'
 
     @api.one
     def action_approved1(self):
-        """Set Selection state to Confirmed."""
+        """Set Culling state to Confirmed."""
         self.state = 'approved1'
 
     @api.one
     def action_approved2(self):
-        """Set Selection state to Confirmed."""
+        """Set Culling state to Confirmed."""
         self.state = 'approved2'
 
     @api.one
     def action_approved3(self):
-        """Set Selection state to Confirmed."""
+        """Set Culling state to Confirmed."""
         self.state = 'approved3'
 
     @api.one
     def action_approved(self):
-        """Approved Selection is planted Seed."""
+        """Approved Culling Seed."""
+        serial = self.env['estate.nursery.culling'].search_count([]) + 1
+        self.write({'name':"Culling Seed  %d" %serial})
         self.action_receive()
         self.state = 'done'
 
@@ -208,19 +224,16 @@ class CullingLine(models.Model):
 
     _name="estate.nursery.cullingline"
 
-
-
     name=fields.Char(related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',domain="[('qty_abnormal','>',0),('flag','=',False)]"
+    selection_id=fields.Many2one('estate.nursery.selection',domain="[('qty_abnormal','>',0)]"
                                  )
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='selection_id.batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="selection_id.lot_id.product_id")
     selectionstage_id=fields.Many2one('estate.nursery.selectionstage',
                                       related='selection_id.selectionstage_id',readonly=True)
-    status=fields.Boolean()
     allqty_normal_batch=fields.Integer()
     allqty_abnormal_batch=fields.Integer()
     allqty_transplanted=fields.Integer()
@@ -236,53 +249,32 @@ class CullingLine(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True,related='selection_id.culling_location_id',readonly=True)
 
-    # #Validation to set flag in selection id
-    # @api.one
-    # @api.onchange('selection_id','testflag')
-    # def test(self):
-    #     flag = self.selection_id.flagcul
-    #     state = self.culling_id.state
-    #     if self.culling_id:
-    #         if self.culling_id.state == 'confirmed':
-    #             self.status = True
-
-    @api.constrains('selection_id','culling_id','status')
-    def set_constraint(self):
-        # res=self.env['estate.nursery.culling'].search(['state','=','done'])
-        # res2=self.env['estate.nursery.cullingline'].search(['status','=',True])
-        res = self.search([('status','=',True)])
-        print res
-        if self:
-            if res:
-                raise ValidationError("Not choose more than one!" )
-
     #get qty total do batch
     @api.onchange('selection_id','total_seed_dobatch')
     def _get_total_seed_dobatch(self):
         self.total_seed_dobatch=self.selection_id.qty_batch
         self.write({'total_seed_dobatch':self.total_seed_dobatch})
-        print self.total_seed_dobatch
+
 
     #get qty normal batch
     @api.onchange('selection_id','allqty_normal_batch')
     def _get_total_allnormal_dobatch(self):
         self.allqty_normal_batch=self.selection_id.qty_nor_batch
         self.write({'allqty_normal_batch':self.allqty_normal_batch})
-        print self.allqty_normal_batch
+
 
     #get qty normal Selection
     @api.onchange('batch_id','selection_id','qty_normal_selection')
     def _get_qty_abnormalselection(self):
             self.qty_normal_selection=self.selection_id.qty_normal
             self.write({'qty_normal_selection':self.qty_normal_selection})
-            print self.qty_normal_selection
+
 
     #get qty abnormal batch
     @api.onchange('selection_id','allqty_abnormal_batch')
     def _get_total_allabnormal_dobatch(self):
         self.allqty_abnormal_batch=self.selection_id.qty_abn_batch
         self.write({'allqty_abnormal_batch':self.allqty_abnormal_batch})
-        print self.allqty_abnormal_batch
 
     #get qty Planted
     @api.onchange('selection_id','total_transplanted')
@@ -298,7 +290,7 @@ class CullingLine(models.Model):
         abnormalbatch=self.allqty_abnormal_batch
         abnormalselection=self.qty_abnormal_selection
         self.total_abnormal=abnormalselection+abnormalbatch
-        print self.total_abnormal
+
 
 class CullinglineBatch(models.Model):
 
@@ -327,21 +319,20 @@ class CullinglineBatch(models.Model):
     def _get_qty_tranplanted(self):
         self.qty_transplanted=self.batch_id.qty_planted_temp
         self.write({'qty_transplanted':self.qty_transplanted})
-        print self.qty_transplanted
+
 
     #get qty normal seed receive perbatch
     @api.onchange('batch_id','qty_normal_batch')
     def _get_normal(self):
             self.qty_normal_batch=self.batch_id.qty_normal
             self.write({'qty_normal_batch':self.qty_normal_batch})
-            print self.qty_normal_batch
+
 
     #get qty seed receive perbatch
     @api.onchange('batch_id','total_seed_DO')
     def _get_receive(self):
             self.total_seed_DO=self.batch_id.qty_received
             self.write({'total_seed_DO':self.total_seed_DO})
-            print self.total_seed_DO
 
     #Total qty abnormal seed batch
     @api.one
@@ -349,7 +340,6 @@ class CullinglineBatch(models.Model):
     def _get_abnormal_total(self):
             total_abnormal = self.qty_abnormal_batch
             self.total_qty_abnormal_batch = total_abnormal
-            print  self.total_qty_abnormal_batch
 
 
 

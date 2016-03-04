@@ -304,8 +304,6 @@ class Batch(models.Model):
                 temp[stage.id] = stage_value_name
             return temp
 
-
-
     #count selection
     @api.one
     @api.depends('selection_ids')

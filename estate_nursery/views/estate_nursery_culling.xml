@@ -77,11 +77,11 @@
 
                         <group coolspan="10">
                             <group>
-                                <field name="selectionform" string="Select Type "/>
-                                <field name="location_type" string="Location Loss"/>
-                                <field name="culling_date"/>
+                                <field name="selectionform" string="Select Type"/>
+                                <field name="culling_date" string="Culling Date"/>
                             </group>
                             <group>
+                                <field name="location_type" string="Location Loss" options="{'no_create_edit': True}"/>
                                 <field name="quantitytotal_abnormal" string="Total Quantity Abnormal Batch"
                                        attrs="{'invisible':[('selectionform','!=', '1')]}"/>
                                 <field name="total_quantityabnormal_temp" string="Total All Abnormal"
@@ -115,14 +115,13 @@
             <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="bottom">
-                    <field name="selection_id" string="Batch No" domain="[('flagcul','=','0')]"/>
-                    <field name="status"/>
-                    <field name="selectionstage_id" string="Selection Stage"/>
+                    <field name="selection_id" string="Selection Seed " options="{'no_create_edit': True}"/>
+                    <field name="selectionstage_id" invisible="1" string="Selection Stage" />
                     <field name="qty_abnormal_selection" string="&#931;Abn Selection"/>
-                    <field name="qty_normal_selection" string="&#931;Nor Selection"/>
+                    <field name="qty_normal_selection" readonly="1" string="&#931;Nor Selection">{‘readonly_by_pass’: True}</field>
                     <field name="culling_location_id" string="Location Culling"/>
                     <field name="total_abnormal" string="&#931; Pemusnahan"/>
-                    <field name="total_transplanted" string="&#931; Transplanted"/>
+                    <field name="total_transplanted" readonly="1" string="&#931; Transplanted">{‘readonly_by_pass’: True}</field>
                 </tree>
             </field>
         </record>
@@ -133,13 +132,19 @@
             <field name="model">estate.nursery.cullinglinebatch</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="bottom">
-                    <field name="batch_id" string="Batch No"/>
-                    <field name="total_seed_DO" string="&#931; Kecambah"/>
-                    <field name="qty_abnormal_batch" string="&#931;Abn Batch Receive"/>
-                    <field name="qty_normal_batch" string="&#931;Nor Batch Receive"/>
-                    <field name="culling_location_id" string="Location Culling"/>
-                    <field name="total_qty_abnormal_batch" string="&#931; QTY Abnomal"/>
-                    <field name="qty_transplanted" string="&#931; Trasplanted"/>
+                    <field name="batch_id" string="Batch No" options="{'no_create_edit': True}"/>
+                    <field name="total_seed_DO" readonly="1" string="&#931; Kecambah">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="qty_abnormal_batch" readonly="1" string="&#931;Abn Batch Receive">
+                        {‘readonly_by_pass’: True}{‘readonly_by_pass’: True}</field>
+                    <field name="qty_normal_batch" readonly="1" string="&#931;Nor Batch Receive">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="culling_location_id" readonly="1" string="Location Culling">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="total_qty_abnormal_batch" readonly="1" string="&#931; QTY Abnomal">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="qty_transplanted" readonly="1" string="&#931; Trasplanted">
+                        {‘readonly_by_pass’: True}</field>
                 </tree>
             </field>
         </record>

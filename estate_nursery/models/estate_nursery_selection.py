@@ -20,7 +20,7 @@ class Selection(models.Model):
     # _inherits = {'stock.production.lot': 'lot_id'}
 
     id = fields.Integer()
-    name= fields.Char(related='batch_id.name',store=True, track_visibility='onchange')
+    name= fields.Char(store=True, track_visibility='onchange')
     selection_code=fields.Char("SFB",store=True)
     batch_code=fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')
@@ -113,6 +113,9 @@ class Selection(models.Model):
     @api.one
     def action_approved(self):
         """Approved Selection is planted Seed."""
+        stage = self.selectionstage_id.name
+        batch = self.batch_id.name
+        self.write({'name':"Selection %s for %s" %(stage,batch)})
         self.action_receive()
         self.state = 'done'
 
@@ -444,7 +447,7 @@ class Selection(models.Model):
 
             if qty_selection and qty_batch:
                 if qty_selection > qty_batch:
-                    error_msg="Quantity abnormal %s is set more than Quantity Planted %s " %(qty_selection,qty_batch)
+                    error_msg="Quantity Abnormal %s is set more than Quantity Planted %s " %(qty_selection,qty_batch)
                     raise exceptions.ValidationError(error_msg)
 
 
@@ -510,10 +513,6 @@ class SelectionStage(models.Model):
             elif mina < limitmin:
                 self.info="3"
 
-    @api.one
-    def test(self):
-        cari=self.browse['estate.nursery.selectionstage'].search(['stage_id'])
-        print cari[0]
 
 class SelectionLine(models.Model):
     """Seed Selection Line"""
@@ -524,7 +523,7 @@ class SelectionLine(models.Model):
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
     qty_batch = fields.Integer("DO Quantity",store=True)
-    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True)
+    cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,track_visibility='onchange')
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)

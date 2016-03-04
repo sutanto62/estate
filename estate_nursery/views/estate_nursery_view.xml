@@ -224,8 +224,10 @@
                             <field name="status_age" invisible="1" context="{'default_status' : False}"/>
                         </group>
                         <group name="top_right">
-                            <field name="picking_id"/>
-                            <field name="culling_location_id" attrs="{'required': [('state','=','draft')], 'readonly': [('state','!=','draft')]}"/>
+                            <field name="picking_id" />
+                            <field name="culling_location_id"
+                                   attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','!=','draft')]}" options="{'no_create_edit': True}"/>
                         </group>
                     </group>
                     <group>
@@ -247,13 +249,13 @@
                                     </group>
                                     <group name="top_right">
                                         <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}"/>
+                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="product_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}"/>
+                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}"/>
+                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="progeny_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}"/>
+                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="age_seed" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}"/> month
                                         <field name="selection_count" invisible="1"/>
@@ -326,7 +328,7 @@
                     <field name="percentage_abnormal" string="% Abn."
                            groups="estate.group_assistant"/>
                     <field name="qty_planted" string="&#931; Plt." sum="Qty Planted"/>
-                    <field name="location_id" string="Loc."/>
+                    <field name="location_id" string="Loc." options="{'no_create_edit': True}"/>
                     <field name="selection_do_var" string="Var DO"
                            groups="estate.group_assistant"/>
                     <field name="planting_selection_var" string="Var Plt."
