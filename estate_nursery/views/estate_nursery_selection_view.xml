@@ -88,23 +88,19 @@
         </record>
 
         <!--View,selection-->
-        <record id="view_search_selection" model ="ir.ui.view">
+        <record id="view_search_selection_stage_id" model ="ir.ui.view">
             <field name="name">Selection Search</field>
             <field name="model">estate.nursery.selection</field>
             <field name="arch" type="xml">
                   <search>
-                      <field name="name"/>
-                      <field name="selectionstage_id"/>
-                      <field name="cause_id"/>
-                      <field name="qty_abnormal"/>
-                      <filter name="selectionstage_id" string="Selection stage"
-                            domain="[('selectionstage_id', '=', uid)]"/>
-                      <filter name="name" string="Selection"
-                            domain="[('name', '=', uid]"/>
-                      <filter name="cause_id" string="Selection Cause"
-                            domain="[('cause_id', '=', uid)]"/>
-                      <filter name="qty_abnormal" string="Abnormal"
-                            domain="[('qty_abnormal', '>', 0)]"/>
+                        <field name="selectionstage_id"
+                            filter_domain="[('selectionstage_id', 'ilike', self)]"/>
+                        <filter name="filter_category" string="Category"
+                            filter_domain="[('selectionstage_id', 'child_of', self.name)]"/>
+                        <group string="Group By">
+                            <filter name="by_category" string="Category"
+                                context="{'group_by': 'selectionstage_id'}"/>
+                        </group>
                   </search>
             </field>
         </record>
@@ -115,7 +111,6 @@
             <field name="arch" type="xml">
                    <graph string="Graph Selection stage" type="pivot">
                        <field name="selectionstage_id" string="selection stage"/>
-                       <!--<field name="batch_id" string=" number batch" />-->
                        <field name="qty_normal" type="measure"/>
                        <field name="qty_abnormal" type="measure"/>
                        <field name="nursery_persentagen" type="measure"/>
@@ -219,6 +214,7 @@
         <record model="ir.ui.view" id="view_form_selection_nursery">
             <field name="name">Nursery Selection</field>
             <field name="model">estate.nursery.selection</field>
+            <field name="search_view_id" ref="view_search_selection_stage_id"/>
             <field name="arch" type="xml">
                 <form String="Nursery selection view">
                     <header coolspan="10">
@@ -431,8 +427,8 @@
         <record model="ir.actions.act_window" id="action_list_selection" >
             <field name="name">Selection</field>
             <field name="res_model">estate.nursery.selection</field>
-            <field name="view_mode">graph,kanban,tree,form</field>
-            <field name="view_search_selection" ref="estate_nursery.view_form_selection_nursery"/>
+            <field name="view_mode">tree,kanban,graph,form</field>
+            <field name="context">{'search_default_by_category': 1}</field>
         </record>
         <record model="ir.actions.act_window" id="action_list_selectionstage">
             <field name="name">Selection stage</field>

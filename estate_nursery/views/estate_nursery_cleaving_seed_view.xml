@@ -13,6 +13,23 @@
             </field>
         </record>
 
+
+        <!--Search View -->
+        <record id="view_search_cleaving" model ="ir.ui.view">
+            <field name="name">Cleaving Search</field>
+            <field name="model">estate.nursery.cleaving</field>
+            <field name="arch" type="xml">
+                  <search string="Cleaving">
+                      <filter name="group_cleaving_id" string="Cleaving Date"
+                              icon="terp-partner" context="{'group_by':'cleaving_date'}"/>
+                      <group string="Group By">
+                        <filter name="by_Date" string="Cleaving Date"
+                                context="{'group_by': 'cleaving_date'}"/>
+                      </group>
+                  </search>
+            </field>
+        </record>
+
         <!-- Cleaving Tree And Form View -->
 
         <record model="ir.ui.view" id="view_tree_cleaving_polytone">
@@ -141,7 +158,8 @@
             <field name="name">Cleaving</field>
             <field name="res_model">estate.nursery.cleaving</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_search_selection" ref="estate_nursery.view_form_cleaving_nursery"/>
+            <field name="context">{'search_default_group_cleaving_id': 1}</field>
+            <field name="view_search_cleaving" ref="estate_nursery.view_form_cleaving_nursery"/>
         </record>
 
         <!-- MENU -->

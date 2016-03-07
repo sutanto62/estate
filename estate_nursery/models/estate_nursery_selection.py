@@ -98,6 +98,14 @@ class Selection(models.Model):
         res=super(Selection, self).create(cr, uid, vals)
         return res
 
+    #Search Selection Stage ID
+    def search_selectionstage(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context is None:
+            context = {}
+        if context.get('search_default_filter_selection'):
+            args.append((('selectionstage_id', 'child_of', context['search_default_filter_selection'])))
+        return super(Selection, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+
     #workflow state
     @api.one
     def action_draft(self):
