@@ -17,16 +17,13 @@ class Selection(models.Model):
     _name = 'estate.nursery.selection'
     _description = "Seed Batch Selection"
     _inherit = ['mail.thread']
-    # _inherits = {'stock.production.lot': 'lot_id'}
+    _inherits = {'estate.nursery.batch': 'batch_id'}
 
     id = fields.Integer()
     name= fields.Char(store=True, track_visibility='onchange')
     selection_code=fields.Char("SFB",store=True)
     batch_code=fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')
-    picking_id= fields.Many2one('stock.picking', "Picking",related="batch_id.picking_id")
-    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
-                             domain=[('product_id.seed','=',True)],related="batch_id.lot_id")
     cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
@@ -57,7 +54,6 @@ class Selection(models.Model):
     maxa = fields.Integer(related='selectionstage_id.age_limit_max')
     mina = fields.Integer(related='selectionstage_id.age_limit_min')
     comment = fields.Text("Additional Information")
-    product_id = fields.Many2one('product.product', "Product",related="lot_id.product_id")
     selectionline_count=fields.Integer("selection Cause",compute="_get_selectionline_count",store=True)
     nursery_information = fields.Selection([('draft','Draft'),
                                             ('0','untimely'),
@@ -166,7 +162,7 @@ class Selection(models.Model):
                 'location_id': location.id,
                 'location_dest_id': self.culling_location_id.inherit_location_id.id,
                 'state': 'confirmed', # set to done if no approval required
-                'restrict_lot_id': self.lot_id.id # required by check tracking product
+                'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
             }
 
             move = self.env['stock.move'].create(move_data)
@@ -197,7 +193,7 @@ class Selection(models.Model):
                 'location_id': location.id,
                 'location_dest_id': self.location_type.id,
                 'state': 'confirmed', # set to done if no approval required
-                'restrict_lot_id': self.lot_id.id # required by check tracking product
+                'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
             }
 
             move = self.env['stock.move'].create(move_data)

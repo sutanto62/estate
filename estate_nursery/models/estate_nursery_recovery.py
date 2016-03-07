@@ -9,17 +9,14 @@ class NurseryRecovery(models.Model):
 
     _name ='estate.nursery.recovery'
     _inherit = ['mail.thread']
+    _inherits =  {'estate.nursery.batch': 'batch_id'}
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
     selection_many2many=fields.Many2many('estate.nursery.selection','selection_recovery_rel','selection_id','val_id','Selection Form',
                                          domain="[('flag_recovery','=',True)]")
-    # ('batch_id','=',batch_id)
     batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
-    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
-                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     recovery_date=fields.Date("Recovery Date")
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",compute="_compute_qty_recovery")
@@ -158,7 +155,7 @@ class NurseryRecovery(models.Model):
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': itembatch.location_id.inherit_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
-                        'restrict_lot_id': self.lot_id.id # required by check tracking product
+                        'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
                  }
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()

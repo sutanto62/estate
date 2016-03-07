@@ -15,9 +15,6 @@ class CleavingPolytone(models.Model):
     partner_id=fields.Many2one('res.partner')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
     progeny = fields.Char("Seed Progeny",related="batch_id.progeny_id.name")
-    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
-                             domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     cleaving_code=fields.Char()
     cleaving_date=fields.Date("Date of Cleaving polytone",required=True)
     cleavingline_ids=fields.One2many('estate.nursery.cleavingln','cleaving_id',"Cleaving line")
@@ -150,7 +147,7 @@ class CleavingPolytone(models.Model):
                 'location_id': location.id,
                 'location_dest_id':self.location_type.id,
                 'state': 'confirmed', # set to done if no approval required
-                'restrict_lot_id': self.lot_id.id # required by check tracking product
+                'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
             }
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()
@@ -180,7 +177,7 @@ class CleavingPolytone(models.Model):
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': itembatch.location_id.inherit_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
-                        'restrict_lot_id': self.lot_id.id # required by check tracking product
+                        'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
                  }
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()

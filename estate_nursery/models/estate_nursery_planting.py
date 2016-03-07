@@ -340,8 +340,6 @@ class BatchParameter(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', False),
                                                   ])
-    qty_difference=fields.Integer('Quantity Difference',track_visibility='onchange')
-    qty_result=fields.Integer('Quantity Result',track_visibility='onchange')
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
                                          domain="[('parameter_id', '=', parameter_id)]",
                                          ondelete='restrict')
@@ -354,16 +352,45 @@ class BatchParameter(models.Model):
             for item in self.bpb_many2many:
                 self.total_qty_pokok += item.total_qty_pokok
 
+class TransferSeed(models.TransientModel):
+
+    _name = "estate.nursery.transfer"
+
+    # @api.one
+    # def do_detailed_transfer(self):
+    #     """
+    #     Extend stock transfer wizard to create stock move and lot.
+    #     """
+    #     date_done = self.picking_id.date_done
+    #
+    #     # Iterate through transfer detail item
+    #     for item in self.item_ids:
+    #         if item.product_id.seed:
+    #             if date_done or item.variety_id or item.progeny_id:
+    #                 lot_new = self.do_create_lot(item.product_id)
+    #                 item.write({'lot_id': lot_new[0].id})
+    #                 batch = self.do_create_batch(item, self, lot_new[0])
+    #                 self.do_create_batchline(item, batch[0])
+    #             else:
+    #                 raise exceptions.Warning('Required Date of Transfer, Variety and Progeny.')
+    #         super(TransferSeed, self).do_detailed_transfer()
+    #
+    #     return True
+
+
+
+class DetailTransferSeed(models.TransientModel):
+
+    _inherit= "estate.nursery.transfer"
+
+    qty_difference=fields.Integer('Quantity Difference',track_visibility='onchange')
+    qty_result=fields.Integer('Quantity Result',track_visibility='onchange')
+
+
     #onchange field
-    @api.one
-    @api.onchange('qty_result','qty_difference','total_qty_pokok ')
-    def onchange_qty_result(self):
-        if self.total_qty_pokok:
-            self.qty_result = self.total_qty_pokok - self.qty_difference
-            self.write({'qty_result' : self.qty_result})
-
-
-class TrasferSeed(models.Model):
-
-    _name = "estate.nursery.trasfer"
-
+    # @api.one
+    # @api.onchange('qty_result','qty_difference','total_qty_pokok ')
+    # def onchange_qty_result(self):
+    #     if self.total_qty_pokok:
+    #         self.qty_result = self.total_qty_pokok - self.qty_difference
+    #         self.write({'qty_result' : self.qty_result})
