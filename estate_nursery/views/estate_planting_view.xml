@@ -63,6 +63,8 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
+                        <button name="%(launch_seddo_wizard)d" type="action" string="Transfer"/>
+
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
                                statusbar_color='{"draft":"blue",}'/>
@@ -81,7 +83,7 @@
 
                             <group>
                                 <field name="seed_location_id"
-                                       string="Seed Location" required="True" options="{'no_create_edit': True}"/>
+                                       string="Seed to  Location" required="True" options="{'no_create_edit': True}"/>
                                 <field name="date_request"/>
                                 <field name="lot_id" options="{'no_create_edit': True}"/>
                             </group>
@@ -93,24 +95,24 @@
                         </group>
                         <group>
                             <notebook>
-                                <page string="BPB Information">
-                                     <group>
+                                    <page string="BPB Information">
                                         <field name="batch_planted_ids" string="Information For BPB"/>
-                                    </group>
-                                </page>
-                                 <page string="Seed DO Detail Transportir">
-                                    <group>
+                                    </page>
+
+                                    <page string="Seed DO Detail Transportir">
                                         <group>
-                                             <field name="estate_vehicle_id" string="Code Vehicle" required="1"
+                                            <group>
+                                                <field name="estate_vehicle_id" string="Code Vehicle" required="1"
                                                      attrs="{'readonly': [('state','=','done')]}"/>
-                                             <field name="driver_estate_id" string="Driver" readonly="1"/>
+                                                <field name="driver_estate_id" string="Driver" readonly="1"/>
+                                            </group>
+
+                                            <group>
+                                                <field name="no_vehicle" string="No Vehicle" readonly="1"/>
+                                                <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
+                                            </group>
                                         </group>
-                                        <group>
-                                            <field name="no_vehicle" string="No Vehicle" readonly="1"/>
-                                            <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
-                                        </group>
-                                    </group>
-                                </page>
+                                    </page>
                                 <page string="Tranportir Activity Information">
                                     <group>
                                         <field name="activityline_ids" attrs="{
@@ -157,8 +159,6 @@
                     <field name="total_qty_pokok"/>
                     <field name="from_location_id"  widget="many2many_tags" options="{'no_create_edit': True}"/>
                     <field name="batch_id" widget="many2many_tags" options="{'no_create_edit': True}"/>
-                    <!--<field name="qty_difference"/>-->
-                    <!--<field name="qty_result"/>-->
                 </tree>
             </field>
         </record>
@@ -323,6 +323,10 @@
                 </tree>
             </field>
         </record>
+
+
+
+
 
         <!--Action-->
         <record model="ir.actions.act_window" id="action_list_requestplanting" >

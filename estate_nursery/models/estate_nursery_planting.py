@@ -14,23 +14,25 @@ class Planting(models.Model):
     planting_code=fields.Char("Planting Code")
     estate_vehicle_id= fields.Many2one('fleet.vehicle','Estate Vehicle',track_visibility='onchange')
     driver_estate_id = fields.Many2one(related="estate_vehicle_id.driver_id",readonly=True,track_visibility='onchange')
-    vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')],
-                                    related="estate_vehicle_id.vehicle_type")
-    no_vehicle = fields.Char(related="estate_vehicle_id.no_vehicle")
     activityline_ids=fields.One2many('estate.nursery.activityline','seeddo_id','Information Activity Transportir')
+    batch_planted_ids= fields.One2many('estate.batch.parameter','batch_id', "Batch Parameter",
+                                          help="Define batch parameter")
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
+
     seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
                                                   ('scrap_location', '=', False),
                                                   ])
-    batch_planted_ids= fields.One2many('estate.batch.parameter','batch_id', "Batch Parameter",
-                                          help="Define batch parameter")
+
+    vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')],
+                                    related="estate_vehicle_id.vehicle_type")
+    no_vehicle = fields.Char(related="estate_vehicle_id.no_vehicle")
     date_request = fields.Date('Date Seed Delivery Order',required=True)
     total_qty_pokok= fields.Date("Total Pokok",track_visibility='onchange')
     expense = fields.Integer("Amount Expense",compute="_amount_all",track_visibility='onchange')
@@ -54,6 +56,8 @@ class Planting(models.Model):
     @api.one
     def action_confirmed(self):
         """Set Planting state to Confirmed."""
+        serial = self.env['estate.nursery.request'].search_count([]) + 1
+        self.write({'name':"SPB %d" %serial})
         self.state = 'confirmed'
 
     @api.one
@@ -69,12 +73,25 @@ class Planting(models.Model):
     @api.one
     def action_approved(self):
         """Approved Planting is done."""
-        self.action_receive()
+        # self.action_receive()
         self.state = 'done'
-    @api.one
-    def action_receive(self):
-         serial = self.env['estate.nursery.request'].search_count([]) + 1
-         self.write({'name':"SPB %d" %serial})
+
+    # @api.cr_uid_ids_context
+    # def do_enter_transfer_details(self, cr, uid, seeddo, context=None):
+    #     if not context:
+    #         context = {}
+    #
+    #     context.update({
+    #         'active_model': self._name,
+    #         'active_ids': seeddo,
+    #         'active_id': len(seeddo) and seeddo[0] or False
+    #     })
+    #
+    #     created_id = self.pool['estate.nursery.transfer'].create(cr, uid, {'seeddo_id': len(seeddo) and seeddo[0] or False}, context)
+    #     return self.pool['estate.nursery.transfer'].wizard_view(cr, uid, created_id, context)
+    # @api.one
+    # def action_receive(self):
+    #
     # @api.one
     # def action_receive(self):
     #     qty_req = self.total_qty_pokok
@@ -263,21 +280,10 @@ class Requestplanting(models.Model):
         res=super(Requestplanting, self).create(cr, uid, vals)
         return res
 
-    # #datetime
-    # @api.one
-    # @api.depends("date_request")
-    # def _report_date(self):
-    #     today = datetime.now()
-    #     self.date_request=today
 
-
-
-# class SeedDoLine(models.Model):
-#     _inherit = "estate.nursery.request"
-#
-#     seeddoline_id= fields.Many2one("estate.nursery.seeddo")
 
 class RequestLine(models.Model):
+
     _name = "estate.nursery.requestline"
 
     name=fields.Char("Requestline",related='request_id.name')
@@ -352,45 +358,4 @@ class BatchParameter(models.Model):
             for item in self.bpb_many2many:
                 self.total_qty_pokok += item.total_qty_pokok
 
-class TransferSeed(models.TransientModel):
 
-    _name = "estate.nursery.transfer"
-
-    # @api.one
-    # def do_detailed_transfer(self):
-    #     """
-    #     Extend stock transfer wizard to create stock move and lot.
-    #     """
-    #     date_done = self.picking_id.date_done
-    #
-    #     # Iterate through transfer detail item
-    #     for item in self.item_ids:
-    #         if item.product_id.seed:
-    #             if date_done or item.variety_id or item.progeny_id:
-    #                 lot_new = self.do_create_lot(item.product_id)
-    #                 item.write({'lot_id': lot_new[0].id})
-    #                 batch = self.do_create_batch(item, self, lot_new[0])
-    #                 self.do_create_batchline(item, batch[0])
-    #             else:
-    #                 raise exceptions.Warning('Required Date of Transfer, Variety and Progeny.')
-    #         super(TransferSeed, self).do_detailed_transfer()
-    #
-    #     return True
-
-
-
-class DetailTransferSeed(models.TransientModel):
-
-    _inherit= "estate.nursery.transfer"
-
-    qty_difference=fields.Integer('Quantity Difference',track_visibility='onchange')
-    qty_result=fields.Integer('Quantity Result',track_visibility='onchange')
-
-
-    #onchange field
-    # @api.one
-    # @api.onchange('qty_result','qty_difference','total_qty_pokok ')
-    # def onchange_qty_result(self):
-    #     if self.total_qty_pokok:
-    #         self.qty_result = self.total_qty_pokok - self.qty_difference
-    #         self.write({'qty_result' : self.qty_result})
