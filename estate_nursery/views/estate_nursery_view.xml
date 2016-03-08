@@ -312,7 +312,9 @@
             <field name="name">Seed Batchline</field>
             <field name="model">estate.nursery.batchline</field>
             <field name="arch" type="xml">
-                <tree string="Seed Batch List" editable='top' colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
+                <tree string="Seed Batch List"
+                      create="false" editable='top'
+                      colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
                     <field name="name"/>
                     <field name="complete_name" string="ID"/>
                     <field name="seed_qty" string="Qty DO" sum="Qty DO" readonly="1">{‘readonly_by_pass’: True}</field>

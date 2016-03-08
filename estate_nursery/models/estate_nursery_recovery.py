@@ -13,8 +13,7 @@ class NurseryRecovery(models.Model):
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
-    selection_many2many=fields.Many2many('estate.nursery.selection','selection_recovery_rel','selection_id','val_id','Selection Form',
-                                         domain="[('flag_recovery','=',True)]")
+    selection_id=fields.Many2one('estate.nursery.selection','Selection',domain=[('stage_id','=', 2 )])
     batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
     recovery_date=fields.Date("Recovery Date")
@@ -42,11 +41,11 @@ class NurseryRecovery(models.Model):
         return res
 
     @api.one
-    @api.depends('selection_many2many')
+    @api.depends('selection_id')
     def _compute_qty_recovery(self):
         self.qty_recovery = 0
-        if self.selection_many2many:
-            for qty in self.selection_many2many:
+        if self.selection_id:
+            for qty in self.selection_id:
                 self.qty_recovery += qty.qty_recovery
         return True
 
@@ -64,11 +63,6 @@ class NurseryRecovery(models.Model):
         if self.qty_normal and self.qty_plante:
             self.qty_total = int(self.qty_plante) + self.qty_normal
 
-
-    # @api.onchange('selection_id')
-    # def change_selection_id:
-    #     if
-    #     for selectionid in :
 
     #state for Cleaving
     @api.one

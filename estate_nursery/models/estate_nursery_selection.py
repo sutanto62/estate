@@ -210,6 +210,9 @@ class Selection(models.Model):
             if self.selectionline_ids and self.recoverytemp_ids:
                 self.qty_normal = plante - self.qty_recoveryabn
                 self.qty_plant = plante - self.qty_recoveryabn
+            elif self.recoverytemp_ids:
+                self.qty_normal = plante - self.qty_recoveryabn
+                self.qty_plant = plante - self.qty_recoveryabn
         if self.flag_recovery == False:
             if self.selectionline_ids :
                 self.qty_normal = plante - self.qty_abnormal
@@ -223,8 +226,11 @@ class Selection(models.Model):
         self.qty_recoveryabn = 0
         if self.qty_abnormal and self.qty_recovery:
             self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
+        elif self.qty_recovery:
+            self.qty_recoveryabn = self.qty_recovery
         elif self.qty_abnormal:
             self.qty_recoveryabn = self.qty_abnormal
+
     #selection count
     @api.depends('selectionline_ids')
     def _get_selectionline_count(self):
