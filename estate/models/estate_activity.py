@@ -27,7 +27,9 @@ class Activity(models.Model):
     parent_left = fields.Integer("Parent Left",	index=True)
     parent_right = fields.Integer("Parent Right", index=True)
     child_ids = fields.One2many('estate.activity', 'parent_id', "Child Activities")
+    uom_id = fields.Many2one('product.uom', string="Basic Unit of Measurements")
     standard_price = fields.Float('Standard Price')
+
 
     @api.one
     @api.depends('name', 'parent_id')
