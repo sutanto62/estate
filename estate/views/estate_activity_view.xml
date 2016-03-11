@@ -14,6 +14,7 @@
                     </group>
                     <group>
                         <group name="detail" string="Detail">
+                            <field name="standard_price"/>
                             <field name="code"/>
                             <field name="type"/>
                         </group>

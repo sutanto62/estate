@@ -6,7 +6,7 @@ class Activity(models.Model):
     _name = 'estate.activity'
     _parent_store = True
     _parent_name = 'parent_id'
-    _order = 'sequence'
+    _order = 'complete_name'
     _rec_name = 'complete_name' # alternate display record name
 
     name = fields.Char("Name", required=True, help="Create unique activity name.")
@@ -27,6 +27,7 @@ class Activity(models.Model):
     parent_left = fields.Integer("Parent Left",	index=True)
     parent_right = fields.Integer("Parent Right", index=True)
     child_ids = fields.One2many('estate.activity', 'parent_id', "Child Activities")
+    standard_price = fields.Float('Standard Price')
 
     @api.one
     @api.depends('name', 'parent_id')

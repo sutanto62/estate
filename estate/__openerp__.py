@@ -35,6 +35,7 @@
     # only loaded in demonstration mode
     'demo': [
         'data/demo.xml',
+        'data/estate.activity.csv',
         'data/stock.location.csv',
         'data/estate.block.template.csv',
         'data/estate.parameter.csv',
