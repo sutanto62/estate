@@ -1,2 +1,4 @@
 import estate
 import estate_product
+import estate_activity
+import estate_hr

@@ -1,0 +1,5 @@
+"id","name","type","parent_id/id","standard_price"
+"estate.activity_1","All","View","",
+"estate.activity_2","Merumput","View","estate.activity_1",
+"estate.activity_3","Pengendalian Piringan Manual","Normal","estate.activity_2", 20
+"estate.activity_4","Pengendalian Piringan Chemist","Normal","estate.activity_2", 10.5

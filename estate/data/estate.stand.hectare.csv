@@ -1,0 +1,4 @@
+id,name,qty,parameter_value_id/id,default
+estate.stand_136,136 Stand/Hectare,136,estate.parameter_value_flat,True
+estate.stand_130_wave,130 Stand/Hectare,130,estate.parameter_value_hilly,False
+estate.stand_130_hilly,130 Stand/Hectare,130,estate.parameter_value_wave,False

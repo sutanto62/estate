@@ -15,65 +15,6 @@ class EstateLocation(models.Model):
                                             "Planted: location for planting. "
                                             "Emplacement: location for non-planting/nursery.")
 
-class ActivityCategory(models.Model):
-    _name = 'estate.activity.category'
-    _parent_store = True
-    _parent_name = 'parent_id'
-    _order = 'sequence'
-    _rec_name = 'complete_name' # alternate display record name
-
-    name = fields.Char("Category Name", required=True,
-                       help="Group of activities which has same characteristics")
-    complete_name = fields.Char("Complete Name", compute="_complete_name", store=True)
-    code = fields.Char("Category Code")
-    type = fields.Selection([('view', "View"),
-                             ('normal', "Normal")], "Type",
-                            required=True,
-                            help="Normal category contains activities.")
-    activity_income_categ_id = fields.Many2one('account.account', "Income Account",
-                                         help="This account will be used for invoices to value sales.")
-    activity_expense_categ_id = fields.Many2one('account.account', "Expense Account",
-                                         help="This account will be used for invoices to value expenses")
-    comment = fields.Text("Additional Information")
-    sequence = fields.Integer("Sequence", help="Keep category in order as plantation stages.") # todo set as parent_left at create
-    parent_id = fields.Many2one('estate.activity.category', "Parent Category", ondelete='restrict')
-    parent_left = fields.Integer("Parent Left",	index=True)
-    parent_right = fields.Integer("Parent Right", index=True)
-    child_ids = fields.One2many('estate.activity.category', 'parent_id', "Child Category")
-    activity_ids = fields.One2many('estate.activity', 'activity_category_id', "Activity")
-
-    @api.one
-    @api.depends('name', 'parent_id')
-    def _complete_name(self):
-        """ Forms complete name of location from parent category to child category.
-        """
-        if self.parent_id:
-            self.complete_name = self.parent_id.complete_name + ' / ' + self.name
-        else:
-            self.complete_name = self.name
-
-        return True
-
-class Activity(models.Model):
-    _name = 'estate.activity'
-
-    name = fields.Char("Activity Name", required=True)
-    code = fields.Char("Activity Code")
-    sequence = fields.Integer("Sequence", help="Keep activity in order.") # todo set as parent_left at create
-    activity_category_id = fields.Many2one('estate.activity.category', "Activity Category",
-                                           required=True, domain="[('type', '=', 'normal')]") # todo add domain type=normal
-    activity_income_id = fields.Many2one('account.account', "Income Account",
-                                         help="This account will be used for invoices to value sales.")
-    activity_expense_id = fields.Many2one('account.account', "Expense Account",
-                                         help="This account will be used for invoices to value expenses")
-
-    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
-        if context is None:
-            context = {}
-        if context.get('search_default_filter_category'):
-            args.append((('activity_category_id', 'child_of', context['search_default_filter_category'])))
-        return super(Activity, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
-
 class LabourType(models.Model):
     _name = 'estate.labour.type'
 
@@ -115,7 +56,10 @@ class EstateBlockTemplate(models.Model):
                                     help="Area for office and housing.")
     area_unplanted = fields.Float("Unplanted Area (ha)",
                                   help="GIS Area minus Planted area.")
-
+    qty_sph_standard = fields.Integer(compute="_get_stand_hectare", string="Standard stand per hectare",
+                                      store=True, help="Average stand per hectare by topography.")
+    qty_sph_do = fields.Integer(compute="_get_stand_hectare", string="Stand per hectare",
+                                store=True, help="Average stand per hectare planted.")
     is_smallholder = fields.Boolean("Smallholder Area",
                              help="Check this box to mark Block as Smallholder area.")
     company_id = fields.Many2one('res.company', "Company",
@@ -140,6 +84,16 @@ class EstateBlockTemplate(models.Model):
         'estate_location_type': 'planted',
         'usage': 'production'
     }
+
+    @api.one
+    @api.depends('block_parameter_ids', 'qty_tree')
+    def _get_stand_hectare(self):
+        if self.block_parameter_ids:
+            # Set as based on topography parameter value
+            self.qty_sph_standard = 126
+        else:
+            # Set default (based on stand per hectare default value)
+            self.qty_sph_standard = 130
 
 class EstateBlock(models.Model):
     _name = 'estate.block'
@@ -188,3 +142,22 @@ class PlantedYear(models.Model):
     _name = 'estate.planted.year'
 
     name = fields.Char("Planted Year")
+
+class StandPerHectare(models.Model):
+    """Stand per hectare by regional. Parameter value constrains to topography parameter (hard coded).
+    """
+    _name = 'estate.stand.hectare'
+
+    name = fields.Char("Name")
+    qty = fields.Integer("Stand Per Hectare")
+    default = fields.Boolean("Set as default for new Block", help="Set True to make new block using this stand per hectare.")
+    parameter_value_id = fields.Many2one('estate.parameter.value', "Topography",
+                                         domain="[('parameter_id.id', '=', 'estate.parameter_topography')]")
+
+    @api.onchange('default')
+    def _onchange_default(self):
+        """Only one default stand per hectare allowed.
+        """
+        records = self.env['estate.stand.hectare'].search([('id', '!=', self.id)])
+        for rec in records:
+            rec.default = 'False'
