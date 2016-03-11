@@ -29,7 +29,7 @@ class Planting(models.Model):
                                     related="estate_vehicle_id.vehicle_type")
     no_vehicle = fields.Char(related="estate_vehicle_id.no_vehicle")
     date_request = fields.Date('Date Seed Delivery Order',required=True)
-    total_qty_pokok= fields.Date("Total Pokok",track_visibility='onchange')
+    total_qty_pokok= fields.Integer("Total Pokok",compute="compute_total_qty_pokok",track_visibility='onchange')
     expense = fields.Integer("Amount Expense",compute="_amount_all",track_visibility='onchange')
     amount_total = fields.Integer('Total Amount Transportir')
     comment=fields.Text("Additional Information")
@@ -115,13 +115,14 @@ class Planting(models.Model):
                 self.expense += price.result_price
         return True
 
-    # @api.one
-    # @api.depends('batch_planted_ids')
-    # def compute_total_qty_pokok(self):
-    #     if self.batch_planted_ids:
-    #         for qty in self.batch_planted_ids:
-    #             self.total_qty_pokok += qty.total_qty_pokok
-    #             print self.total_qty_pokok
+    #compute Qty Planted transplanting
+    @api.one
+    @api.depends('batch_planted_ids')
+    def compute_total_qty_pokok(self):
+        if self.batch_planted_ids:
+            for qty in self.batch_planted_ids:
+                self.total_qty_pokok += qty.total_qty_pokok
+                print self.total_qty_pokok
 
     #Onchange FOR ALL
     @api.onchange('amount_total','expense')
@@ -153,8 +154,8 @@ class ActivityLine(models.Model):
     seeddo_id=fields.Many2one('estate.nursery.seeddo')
     activity_id=fields.Many2one('estate.activity')
     product_type_id=fields.Many2one('product.uom')
-    price=fields.Float("Price/Quantity")
-    qty_product=fields.Integer("Quantity Product Transfer",related='activity_id.standard_price')
+    price=fields.Float("Price/Quantity" , readonly=True)
+    qty_product=fields.Integer("Quantity Product Transfer")
     transportactivity_expense_id = fields.Many2one('account.account', "Expense Account",
                                          help="This account will be used for invoices to value expenses")
     result_price=fields.Float("Quantity Result",compute="calculate_price")
@@ -163,6 +164,16 @@ class ActivityLine(models.Model):
     def change_name(self):
         serial=self.env['estate.nursery.activityline'].search_count([])+ 1
         self.write({'name':"Activity %d" % serial})
+
+    # @api.one
+    # @api.onchange('product_type_id','activity_id')
+    # def change_product_type_id(self):
+    #     self.product_type_id = self.activity_id.
+    @api.one
+    @api.onchange('activity_id','price')
+    def change_price(self):
+        self.price = self.activity_id.standard_price
+        self.write({'price' : self.price})
 
     @api.one
     @api.depends('qty_product','price')
@@ -286,7 +297,19 @@ class Requestplanting(models.Model):
         res=super(Requestplanting, self).create(cr, uid, vals)
         return res
 
-
+    #constraint for location division select more than one in 1 spb
+    @api.one
+    @api.constrains('requestline_ids')
+    def _constrains_requestline(self):
+        if self.requestline_ids:
+            temp={}
+            for division in self.requestline_ids:
+                division_value_name = division.inherit_location_id.name
+                if division_value_name in temp.values():
+                    error_msg = "Division for Block \"%s\" is set more than once " % division_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[division.id] = division_value_name
+            return temp
 
 class RequestLine(models.Model):
 
@@ -305,19 +328,22 @@ class RequestLine(models.Model):
     comment = fields.Text("Decription / Comment")
 
 
-    #constraint
+    #constraint qty Request not moree than standard qty sph
     @api.one
-    @api.constrains('qty_request')
+    @api.constrains('qty_request','inherit_location_id')
     def check_qty_request(self):
+        qty_standard = self.inherit_location_id.qty_sph_standard
+        qty_do = self.inherit_location_id.qty_sph_do
         if self.qty_request:
-            temp={}
-            if self.qty_request > self.inherit_location_id.qty_sph_standard:
-                error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 126 " % self.inherit_location_id
-                raise exceptions.ValidationError(error_msg)
-            if self.qty_request > self.inherit_location_id.qty_sph_do:
-                error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 130 " % self.inherit_location_id
-                raise exceptions.ValidationError(error_msg)
-            return temp
+            if self.inherit_location_id.qty_sph_standard:
+                if self.qty_request > qty_standard:
+                    error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 126 " % self.inherit_location_id.name
+                    raise exceptions.ValidationError(error_msg)
+            elif self.inherit_location_id.qty_sph_do:
+                if self.qty_request > qty_do:
+                    error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 130 " % self.inherit_location_id.name
+                    raise exceptions.ValidationError(error_msg)
+            return True
 
     #onchange
     # @api.one
@@ -366,7 +392,7 @@ class BatchParameter(models.Model):
 
     bpb_id=fields.Many2one('estate.nursery.request','BPB Form')
     variety_id=fields.Many2one('estate.nursery.variety',related='bpb_id.variety_id',readonly=True)
-    total_qty_pokok = fields.Integer('Qty Request',related="bpb_id.total_qty_pokok",track_visibility='onchange')
+    total_qty_pokok = fields.Integer('Qty Request',track_visibility='onchange',readonly=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",
                                domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_grow','>=', 6)],
                                track_visibility='onchange')
@@ -385,5 +411,12 @@ class BatchParameter(models.Model):
     def onchange_variety_id(self):
         self.variety_id = self.bpb_id.variety_id
         self.write({'variety_id':self.variety_id})
+
+    #onchange total qty pokok
+    @api.one
+    @api.onchange('bpb_id','total_qty_pokok')
+    def onchange_total_qty_pokok(self):
+        self.total_qty_pokok = self.bpb_id.total_qty_pokok
+        self.write({'total_qty_pokok' : self.total_qty_pokok})
 
 
