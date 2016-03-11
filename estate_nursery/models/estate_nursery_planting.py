@@ -154,7 +154,7 @@ class ActivityLine(models.Model):
     activity_id=fields.Many2one('estate.activity')
     product_type_id=fields.Many2one('product.uom')
     price=fields.Float("Price/Quantity")
-    qty_product=fields.Integer("Quantity Product Transfer")
+    qty_product=fields.Integer("Quantity Product Transfer",related='activity_id.standard_price')
     transportactivity_expense_id = fields.Many2one('account.account', "Expense Account",
                                          help="This account will be used for invoices to value expenses")
     result_price=fields.Float("Quantity Result",compute="calculate_price")
@@ -303,6 +303,29 @@ class RequestLine(models.Model):
     Luas = fields.Float("Luas Block",digits=(2,2),related='inherit_location_id.area_planted',readonly=True)
     qty_request = fields.Integer("Quantity Request",required=True)
     comment = fields.Text("Decription / Comment")
+
+
+    #constraint
+    @api.one
+    @api.constrains('qty_request')
+    def check_qty_request(self):
+        if self.qty_request:
+            temp={}
+            if self.qty_request > self.inherit_location_id.qty_sph_standard:
+                error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 126 " % self.inherit_location_id
+                raise exceptions.ValidationError(error_msg)
+            if self.qty_request > self.inherit_location_id.qty_sph_do:
+                error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 130 " % self.inherit_location_id
+                raise exceptions.ValidationError(error_msg)
+            return temp
+
+    #onchange
+    # @api.one
+    # @api.onechange('qty_request','inherit_location_id')
+    # def onchange_qty_request(self):
+    #     if self.inherit_location_id:
+    #         self.qty_request = 0
+    #         self.qty_request += self.inherit_location_id.
 
 class RepositorySeed(models.TransientModel):
 
