@@ -267,7 +267,7 @@
                                     context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                             </page>
 
-                            <page string="Selection" attrs="{'readonly' : [('selection_count', '>', 6)]}">
+                            <page string="Selection" attrs="{'readonly' : [('selection_count', '>', 6)],'invisible' : [('state','!=','done')]}">
                                 <field name="selection_ids"  string="Create Selection" attrs="{
                                 'required' : [('state', '=', 'draft')],'readonly' : [('selection_count', '>', 6)]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',

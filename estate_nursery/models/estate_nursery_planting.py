@@ -8,6 +8,7 @@ class Planting(models.Model):
     #seed planting
     _name = "estate.nursery.seeddo"
     _description = "Seed Delivery Order"
+    # _inherits = {'estate.nursery.batch' : 'batch_id'}
     _inherit = ['mail.thread']
 
     name=fields.Char("Planting Code")
@@ -15,28 +16,22 @@ class Planting(models.Model):
     estate_vehicle_id= fields.Many2one('fleet.vehicle','Estate Vehicle',track_visibility='onchange')
     driver_estate_id = fields.Many2one(related="estate_vehicle_id.driver_id",readonly=True,track_visibility='onchange')
     activityline_ids=fields.One2many('estate.nursery.activityline','seeddo_id','Information Activity Transportir')
-    batch_planted_ids= fields.One2many('estate.batch.parameter','batch_id', "Batch Parameter",
+    batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
                                           help="Define batch parameter")
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
-    lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
-                             domain=[('product_id.seed','=',True)])
-    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
-
     seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),
+                                                  ('estate_location_type', '=', 'planted'),
                                                   ('scrap_location', '=', False),
                                                   ])
-
     vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')],
                                     related="estate_vehicle_id.vehicle_type")
     no_vehicle = fields.Char(related="estate_vehicle_id.no_vehicle")
     date_request = fields.Date('Date Seed Delivery Order',required=True)
     total_qty_pokok= fields.Date("Total Pokok",track_visibility='onchange')
     expense = fields.Integer("Amount Expense",compute="_amount_all",track_visibility='onchange')
-    amount_total=fields.Integer("Total Expense")
+    amount_total = fields.Integer('Total Amount Transportir')
     comment=fields.Text("Additional Information")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
@@ -76,19 +71,20 @@ class Planting(models.Model):
         # self.action_receive()
         self.state = 'done'
 
-    # @api.cr_uid_ids_context
-    # def do_enter_transfer_details(self, cr, uid, seeddo, context=None):
-    #     if not context:
-    #         context = {}
-    #
-    #     context.update({
-    #         'active_model': self._name,
-    #         'active_ids': seeddo,
-    #         'active_id': len(seeddo) and seeddo[0] or False
-    #     })
-    #
-    #     created_id = self.pool['estate.nursery.transfer'].create(cr, uid, {'seeddo_id': len(seeddo) and seeddo[0] or False}, context)
-    #     return self.pool['estate.nursery.transfer'].wizard_view(cr, uid, created_id, context)
+    @api.cr_uid_ids_context
+    def do_enter_transfer_details(self, cr, uid, seeddo, context=None):
+        if not context:
+            context = {}
+
+        context.update({
+            'active_model': self._name,
+            'active_ids': seeddo,
+            'active_id': len(seeddo) and seeddo[0] or False
+        })
+
+        created_id = self.pool['estate.nursery.transfer'].create(cr, uid, {'seeddo_id': len(seeddo) and seeddo[0] or False}, context)
+        return self.pool['estate.nursery.transfer'].wizard_view(cr, uid, created_id, context)
+
     # @api.one
     # def action_receive(self):
     #
@@ -112,12 +108,20 @@ class Planting(models.Model):
 
     #Compute Amount ALL
     @api.one
-    @api.depends('activityline_ids')
+    @api.depends('activityline_ids','expense')
     def _amount_all(self):
         if self.activityline_ids:
             for price in self.activityline_ids:
                 self.expense += price.result_price
         return True
+
+    # @api.one
+    # @api.depends('batch_planted_ids')
+    # def compute_total_qty_pokok(self):
+    #     if self.batch_planted_ids:
+    #         for qty in self.batch_planted_ids:
+    #             self.total_qty_pokok += qty.total_qty_pokok
+    #             print self.total_qty_pokok
 
     #Onchange FOR ALL
     @api.onchange('amount_total','expense')
@@ -133,15 +137,17 @@ class Planting(models.Model):
         if self.batch_planted_ids:
             temp={}
             for bpb in self.batch_planted_ids:
-                bpb_value_name = bpb.bpb_many2many.name
+                bpb_value_name = bpb.bpb_id.name
                 if bpb_value_name in temp.values():
                     error_msg = "Request Seed \"%s\" is set more than once " % bpb_value_name
                     raise exceptions.ValidationError(error_msg)
                 temp[bpb.id] = bpb_value_name
             return temp
 
+
 class ActivityLine(models.Model):
     _name = "estate.nursery.activityline"
+    _inherits = {'estate.activity' : 'activity_id'}
 
     name=fields.Char()
     seeddo_id=fields.Many2one('estate.nursery.seeddo')
@@ -335,12 +341,14 @@ class BatchParameter(models.Model):
     _name = 'estate.batch.parameter'
     _inherit=['mail.thread']
 
-    bpb_many2many=fields.Many2many('estate.nursery.request','bpb_spb_rel','request_id','val_id','BPB Form')
-    total_qty_pokok = fields.Integer('Qty Request', compute="calculate_qty",track_visibility='onchange')
+    bpb_id=fields.Many2one('estate.nursery.request','BPB Form')
+    variety_id=fields.Many2one('estate.nursery.variety',related='bpb_id.variety_id',readonly=True)
+    total_qty_pokok = fields.Integer('Qty Request',related="bpb_id.total_qty_pokok",track_visibility='onchange')
     batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",
                                domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_grow','>=', 6)],
                                track_visibility='onchange')
-    from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','batch_id', "From Location",
+    seeddo_id=fields.Many2one('estate.nursery.seeddo')
+    from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','val_id', "From Location",
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
@@ -349,13 +357,10 @@ class BatchParameter(models.Model):
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
                                          domain="[('parameter_id', '=', parameter_id)]",
                                          ondelete='restrict')
-
-    #Compute Quantity from BPB
-    @api.one
-    @api.depends('bpb_many2many')
-    def calculate_qty(self):
-        if self.bpb_many2many:
-            for item in self.bpb_many2many:
-                self.total_qty_pokok += item.total_qty_pokok
+    #onchange variety id
+    @api.onchange('variety_id')
+    def onchange_variety_id(self):
+        self.variety_id = self.bpb_id.variety_id
+        self.write({'variety_id':self.variety_id})
 
 

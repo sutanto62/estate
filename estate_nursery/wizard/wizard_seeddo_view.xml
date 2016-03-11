@@ -36,7 +36,7 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="True">
-                    <field name="seddo_id" options="{'no_create_edit': True}"/>
+                    <field name="seeddo_id" options="{'no_create_edit': True}"/>
                     <field name="qty_request"/>
                     <field name="qty_difference"/>
                     <field name="qty_result"/>
@@ -44,7 +44,7 @@
             </field>
         </record>
 
-        <act_window id="launch_seddo_wizard"
+        <act_window id="launch_seeddo_wizard"
                     name="Transfer Seed"
                     src_model="estate.nursery.seeddo"
                     res_model="estate.nursery.transfer"

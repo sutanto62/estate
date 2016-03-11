@@ -11,6 +11,7 @@ _logger	=	logging.getLogger(__name__)
 class TransferSeed(models.TransientModel):
 
     _name = 'estate.nursery.transfer'
+    _inherit = ['stock.transfer_details']
 
     date_transfer=fields.Date("Date Transfer")
     transferline_ids=fields.One2many("estate.nursery.transferline",'transfer_id','Detail Transfer')
@@ -54,10 +55,19 @@ class TransferSeedLine(models.TransientModel):
     def _default_session(self):
         return self.env['estate.nursery.seeddo'].browse(self._context.get('active_id'))
 
-    seddo_id = fields.Many2one('estate.nursery.seeddo',
+    seeddo_id = fields.Many2one('estate.nursery.seeddo',
         string="Session", required=True, default=_default_session)
     qty_request = fields.Integer("Quantity Request")
     transfer_id = fields.Many2one('estate.nursery.transfer')
+
+    @api.one
+    def get_qty_request(self):
+        self.qty_request = 0
+        if self.seeddo_id:
+            for item in self.seeddo_id:
+                self.qty_request += item.batch_planted_ids.total_qty_pokok
+
+        return  True
 
 class DetailTransferSeed(models.TransientModel):
 

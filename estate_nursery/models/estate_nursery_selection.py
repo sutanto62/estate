@@ -22,7 +22,6 @@ class Selection(models.Model):
     selection_code=fields.Char("SFB",store=True)
     batch_code=fields.Char(related='batch_id.name',store=True)
     partner_id = fields.Many2one('res.partner')
-    cause_id= fields.Many2one('estate.nursery.cause',related="selectionline_ids.cause_id",store=True)
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
@@ -47,7 +46,6 @@ class Selection(models.Model):
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
 
     selection_date = fields.Date("Selection Date",required=True,store=True)
-    selection_type = fields.Selection([('0', 'Broken'),('1', 'Normal'),('2', 'Politonne')], "Selection Type")
     selec = fields.Integer(related='selectionstage_id.age_selection')
     maxa = fields.Integer(related='selectionstage_id.age_limit_max')
     mina = fields.Integer(related='selectionstage_id.age_limit_min')
@@ -568,7 +566,6 @@ class SelectionLine(models.Model):
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""
     _name = 'estate.nursery.cause'
-    _inherit = ['mail.thread']
 
     name = fields.Char('Name')
     comment = fields.Text('Cause Description')
@@ -584,6 +581,12 @@ class Cause(models.Model):
         self.index = self._model.search_count(cr, uid, [
             ('sequence', '<', self.sequence)
         ], context=ctx) + 1
+
+    # #onchange stage_id
+    # @api.onchange
+    # def onchange_stage_id(self):
+    #     self.stage_id=self.selection_id.stage_id
+    #     self.write({'stage_id':self.stage_id})
 
 
 class TempRecovery(models.Model):
