@@ -316,7 +316,7 @@
                       create="false" editable='top'
                       colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
                     <field name="name"/>
-                    <field name="complete_name" string="ID"/>
+                    <field name="flag_bag" invisible="1"/>
                     <field name="seed_qty" string="Qty DO" sum="Qty DO" readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="qty_single" string="Sgl."/>
                     <field name="qty_double" string="Dbl."/>

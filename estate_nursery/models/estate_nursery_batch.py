@@ -263,34 +263,7 @@ class Batch(models.Model):
                 if to_dt < from_dt:
                      raise ValidationError("Planted Date Should be Greater than Received Date!" )
 
-    # set constraint to Quantity not more than quantity DO
-    @api.multi
-    @api.constrains('batchline_ids','seed_qty','qty_single','qty_double','qty_fungus','qty_broken','qty_dead')
-    def _check_quantity(self):
-        for obj in self.batchline_ids:
-            seed_qty = obj.seed_qty
-            qty_single = obj.qty_single
-            qty_double = obj.qty_double
-            qty_fungus = obj.qty_fungus
-            qty_broken = obj.qty_broken
-            qty_dead = obj.qty_dead
-            qty_planted = obj.qty_planted
-
-            if seed_qty and qty_single and qty_double and qty_fungus and qty_broken and qty_dead and qty_planted:
-                if seed_qty < qty_single:
-                    raise ValidationError("Planted Should be Greater than Quantity Single!")
-                elif seed_qty < qty_double:
-                    raise ValidationError("Planted Should be Greater than Quantity Double!")
-                elif seed_qty < qty_fungus:
-                    raise ValidationError("Planted Should be Greater than Quantity Fungus!")
-                elif seed_qty < qty_broken:
-                    raise ValidationError("Planted Should be Greater than Quantity Broken!")
-                elif seed_qty < qty_dead:
-                    raise ValidationError("Planted Should be Greater than Quantity Dead!")
-                elif seed_qty < qty_planted:
-                    raise ValidationError("Planted Should be Greater than Quantity Planted!")
-
-    #Constraint to selection stage more than 1
+    # Constraint to selection stage more than 1
     @api.one
     @api.constrains('selection_ids')
     def _constrains_selectionstage_selection(self):
@@ -303,6 +276,59 @@ class Batch(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[stage.id] = stage_value_name
             return temp
+
+    # set constraint to Quantity in batch line not more than quantity DO
+    @api.multi
+    @api.constrains('batchline_ids','seed_qty','qty_single','qty_double','qty_fungus','qty_broken','qty_dead')
+    def _check_quantity_batchline(self):
+        batchlinebag = self.env['estate.nursery.batchline'].search([('flag_bag', '=', True),
+                                                                   ('batch_id', '=', self.id)])
+        if batchlinebag:
+            for obj in batchlinebag:
+                seed_qty = obj.seed_qty
+                qty_single = obj.qty_single
+                qty_double = obj.qty_double
+                qty_fungus = obj.qty_fungus
+                qty_broken = obj.qty_broken
+                qty_dead = obj.qty_dead
+                qty_planted = obj.qty_planted
+
+                if seed_qty < qty_single:
+                        raise ValidationError("Quantity Single Should be Greater than Planted !")
+
+                elif seed_qty < qty_double:
+                        raise ValidationError("Quantity Double Should be Greater than Planted !")
+                elif seed_qty < qty_fungus:
+                        raise ValidationError("Quantity Fungus Should be Greater than Planted !")
+                elif seed_qty < qty_broken:
+                        raise ValidationError("Quantity Broken Should be Greater than Planted !")
+                elif seed_qty < qty_dead:
+                        raise ValidationError("Quantity Dead Should be Greater than Planted !")
+                elif seed_qty < qty_planted:
+                        raise ValidationError("Quantity Planted Should be Greater than Planted !")
+            return True
+
+    # Constraint for not variance after selection
+    @api.one
+    @api.constrains('batchline_ids','flag_bag','selection_do_var','planting_selection_var')
+    def check_qty_variance(self):
+        batchlinebag = self.env['estate.nursery.batchline'].search([('flag_bag', '=', True),
+                                                                   ('batch_id', '=', self.id)])
+        if batchlinebag:
+            for obj in batchlinebag:
+                varselec = obj.selection_do_var
+                varplanting = obj.planting_selection_var
+
+                if varselec :
+                        if varselec > 1:
+                            error_msg = "Selection Variance \"%d\" Quantity is Different between Selection and DO  " % varselec
+                            raise exceptions.ValidationError(error_msg)
+                if varplanting:
+                        if varplanting > 1:
+                            error_msg = "Planting Variance \"%d\" Quantity is Different between Planting,Do or Selection " % varplanting
+                            raise exceptions.ValidationError(error_msg)
+            return True
+
 
     #count selection
     @api.one
@@ -480,7 +506,7 @@ class Batchline(models.Model):
                                           ('estate_location_type', '=', 'nursery'),
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.")
-
+    flag_bag= fields.Boolean('Bag or box ?')
     @api.one
     @api.depends('qty_single', 'qty_double', 'qty_broken', 'qty_dead', 'qty_fungus')
     def _compute_subtotal(self):
@@ -500,6 +526,7 @@ class Batchline(models.Model):
         """Compute variance of received and planted."""
         self.selection_do_var = (self.subtotal_normal + self.subtotal_abnormal) - self.seed_qty
         self.planting_selection_var = self.qty_planted - self.subtotal_normal
+
 
 class Box(models.Model):
     """Deprecated. Use Batchline."""
@@ -645,7 +672,8 @@ class TransferDetail(models.TransientModel):
                     'batch_id': batch.id,
                     'packaging_id': pak.id,
                     'batch_id': batch.id,
-                    'seed_qty': pak_box_content
+                    'seed_qty': pak_box_content,
+                    'flag_bag' : 1
                 }
                 box = self.env['estate.nursery.batchline'].create(box_data)
                 for d in range(pak_total_bag):
@@ -655,7 +683,8 @@ class TransferDetail(models.TransientModel):
                         'batch_id': batch.id,
                         'packaging_id': pak.id,
                         'parent_id': box.id,
-                        'seed_qty': pak_bag_content
+                        'seed_qty': pak_bag_content,
+                        'flag_bag' : 1
                     }
                     self.env['estate.nursery.batchline'].create(bag_data)
 
@@ -682,7 +711,8 @@ class TransferDetail(models.TransientModel):
                         'batch_id': batch.id,
                         'packaging_id': pak.id,
                         'parent_id': box.id,
-                        'seed_qty': pak_bag_content
+                        'seed_qty': pak_bag_content,
+                        'flag_bag' : 1
                     }
                     self.env['estate.nursery.batchline'].create(bag_data)
 
@@ -694,7 +724,8 @@ class TransferDetail(models.TransientModel):
                     'batch_id': batch.id,
                     'packaging_id': pak.id,
                     'parent_id': box.id,
-                    'seed_qty': seed_qty % pak_bag_content
+                    'seed_qty': seed_qty % pak_bag_content,
+                    'flag_bag' : 1
                 }
                 self.env['estate.nursery.batchline'].create(bag_data)
 

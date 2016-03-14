@@ -13,7 +13,8 @@ class NurseryRecovery(models.Model):
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
-    selection_id=fields.Many2one('estate.nursery.selection','Selection',domain=[('stage_id','=', 2 )])
+    selection_id=fields.Many2one('estate.nursery.selection','Selection',domain=[('stage_id','=', 2 ),
+                                                                                ('flag_recovery','=',1)])
     batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
     recovery_date=fields.Date("Recovery Date")
