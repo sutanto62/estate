@@ -204,7 +204,7 @@ class CleavingPolytone(models.Model):
                         'location_id': itembatch.location_type.id,
                         'location_dest_id': self.culling_location_id.inherit_location_id.id,
                         'state': 'confirmed', # set to done if no approval required
-                        'restrict_lot_id': self.lot_id.id # required by check tracking product
+                        'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
                  }
             move = self.env['stock.move'].create(move_data)
             move.action_confirm()
@@ -258,9 +258,10 @@ class CleavingLine(models.Model):
     def _check_normal_double(self):
         double = self.qty_double
         max_double = int(double) * int(2)
-        for obj in self :
-            if  self.qty_normal_double > max_double:
-                raise ValidationError("Your Qty normal more than Maximal Double: %s" % obj.qty_normal_double)
+        if self.qty_normal_double:
+            for obj in self :
+                if  self.qty_normal_double > max_double:
+                    raise ValidationError("Your Qty normal more than Maximal Double: %s" % obj.qty_normal_double)
 
     #Compute Total Abnormal Double
     @api.one

@@ -290,22 +290,27 @@ class Batch(models.Model):
                 qty_double = obj.qty_double
                 qty_fungus = obj.qty_fungus
                 qty_broken = obj.qty_broken
+                qty_normal = obj.subtotal_normal
+                qty_abnormal = obj.subtotal_abnormal
                 qty_dead = obj.qty_dead
                 qty_planted = obj.qty_planted
 
                 if seed_qty < qty_single:
-                        raise ValidationError("Quantity Single Should be Greater than Planted !")
-
+                        raise ValidationError("Quantity Single Should be Greater than Seed DO !")
+                elif qty_abnormal > qty_planted:
+                        raise ValidationError("Quantity Total Abnormal not matched with Quantity Planted")
+                elif qty_normal > qty_planted:
+                        raise ValidationError("Quantity Total Normal not matched with Quantity Planted")
                 elif seed_qty < qty_double:
-                        raise ValidationError("Quantity Double Should be Greater than Planted !")
+                        raise ValidationError("Quantity Double Should be Greater than Seed DO !")
                 elif seed_qty < qty_fungus:
-                        raise ValidationError("Quantity Fungus Should be Greater than Planted !")
+                        raise ValidationError("Quantity Fungus Should be Greater than Seed DO !")
                 elif seed_qty < qty_broken:
-                        raise ValidationError("Quantity Broken Should be Greater than Planted !")
+                        raise ValidationError("Quantity Broken Should be Greater than Seed DO !")
                 elif seed_qty < qty_dead:
-                        raise ValidationError("Quantity Dead Should be Greater than Planted !")
+                        raise ValidationError("Quantity Dead Should be Greater than Seed DO !")
                 elif seed_qty < qty_planted:
-                        raise ValidationError("Quantity Planted Should be Greater than Planted !")
+                        raise ValidationError("Quantity Planted Should be Greater than Seed DO !")
             return True
 
     # Constraint for not variance after selection
