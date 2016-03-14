@@ -1,15 +1,5 @@
 <openerp>
     <data>
-        <!--<record model="ir.ui.view" id="view_forms_request_seed">-->
-             <!--<field name="name">Request Seed</field>-->
-             <!--<field name="model">estate.nursery.request</field>-->
-             <!--<field name="inherit_id" ref="estate_nursery.view_form_request_planting"/>-->
-             <!--<field name="arch" type="xml">-->
-                 <!--<field name="date_request" position="after">-->
-                     <!--<field name="seeddoline_id" string="Request"/>-->
-                 <!--</field>-->
-             <!--</field>-->
-         <!--</record>-->
 
         <!--view , Planting-->
         <record model="ir.ui.view" id="view_tree_seeddo">
@@ -94,24 +84,22 @@
                         </group>
                         <group>
                             <notebook>
-                                    <page string="BPB Information">
-                                        <field name="batch_planted_ids" string="Information For BPB"/>
-                                    </page>
+                                <page string="BPB Information">
+                                        <field name="batch_planted_ids" string="Information For BPB"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : [('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_batch_parameter_tree'}"/>
+                                </page>
 
-                                    <page string="Seed DO Detail Transportir">
-                                        <group>
-                                            <group>
-                                                <field name="estate_vehicle_id" string="Code Vehicle" required="1"
-                                                     attrs="{'readonly': [('state','=','done')]}"/>
-                                                <field name="driver_estate_id" string="Driver" readonly="1"/>
-                                            </group>
+                                <page string="Seed DO Detail Transportir">
+                                        <field name="dotransportir_ids"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : [('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_dotransportir'}"/>
+                                </page>
 
-                                            <group>
-                                                <field name="no_vehicle" string="No Vehicle" readonly="1"/>
-                                                <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
-                                            </group>
-                                        </group>
-                                    </page>
                                 <page string="Tranportir Activity Information">
                                         <field name="activityline_ids" attrs="{
                                         'required' : [('state', '=', 'confirmed')],
@@ -129,11 +117,13 @@
                                             widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
                                     </group>
                                 </page>
+
                                 <page string="Additional Information">
                                     <group>
                                         <field name="comment"/>
                                     </group>
                                 </page>
+
                             </notebook>
                         </group>
                         <div class="oe_chatter">
@@ -161,13 +151,29 @@
             </field>
         </record>
 
+        <!--View,Detail Transportir-->
+        <record model="ir.ui.view" id="view_tree_dotransportir">
+            <field name="name">Detail Transportir Line</field>
+            <field name="model">estate.nursery.dotransportir</field>
+            <field name="arch" type="xml">
+                <tree string="Detail Transportir View" editable="bottom">
+                    <field name="estate_vehicle_id" string="Code Vehicle" required="1"
+                           options="{'no_create_edit': True}"/>
+                    <field name="driver_estate_id" string="Driver" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="no_vehicle" string="No Vehicle" readonly="1"/>
+                    <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--view, Activity Line-->
         <record model="ir.ui.view" id="view_tree_activityline">
             <field name="name">Activity Line</field>
             <field name="model">estate.nursery.activityline</field>
             <field name="arch" type="xml">
                 <tree string="Activity Line View" editable="bottom">
-                    <field name="activity_id" string="Activity" />
-                    <field name="product_type_id" string="Product UoM" />
+                    <field name="activity_id" string="Activity"  options="{'no_create_edit': True}"/>
+                    <field name="product_type_id" string="Product UoM">{‘readonly_by_pass’: True}</field>
                     <field name="qty_product" string="Quantity" />
                     <field name="price" string="Price/product" required="1">{‘readonly_by_pass’: True}</field>
                     <field name="transportactivity_expense_id"/>
