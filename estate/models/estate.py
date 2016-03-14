@@ -49,12 +49,12 @@ class EstateBlockTemplate(models.Model):
 
     inherit_location_id = fields.Many2one('stock.location', required=True, ondelete="restrict")
     batch_id = fields.Many2one('estate.nursery.batch', "Seed Source")
-    area_gis = fields.Float("GIS Area (ha)", (18, 6), help="Closing block area.")
-    area_planted = fields.Float("Planted Area (ha)", (18, 6),
+    area_gis = fields.Float("GIS Area (ha)", digits=(18, 6), help="Closing block area.")
+    area_planted = fields.Float("Planted Area (ha)", digits=(18, 6),
                                 help="Calculated based on stand per hectare.")
-    area_emplacement = fields.Float("Emplacement Area (ha)",
+    area_emplacement = fields.Float("Emplacement Area (ha)", digits=(18, 6),
                                     help="Area for office and housing.")
-    area_unplanted = fields.Float("Unplanted Area (ha)",
+    area_unplanted = fields.Float("Unplanted Area (ha)", digits=(18, 6),
                                   help="GIS Area minus Planted area.")
     qty_sph_standard = fields.Integer(compute="_get_stand_hectare", string="Standard stand per hectare",
                                       store=True, help="Average stand per hectare by topography.")
