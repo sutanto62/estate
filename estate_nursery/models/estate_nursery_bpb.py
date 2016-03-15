@@ -137,12 +137,12 @@ class RequestLine(models.Model):
 
     name=fields.Char("Requestline",related='request_id.name')
     request_id=fields.Many2one('estate.nursery.request')
-    inherit_location_id = fields.Many2one('estate.block.template', "Block",
-                                  domain=[('estate_location', '=', True),
-                                          ('estate_location_level', '=', '2'),
-                                          ('estate_location_type', '=', 'planted'),
-                                          ('scrap_location', '=', False)],
-                                  help="Fill in location seed planted.",)
+    inherit_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
+                                          domain=[('estate_location', '=', True),
+                                                  ('estate_location_level', '=', '3'),
+                                                  ('estate_location_type', '=', 'planted'),
+                                                  ('scrap_location', '=', False),
+                                                  ])
     Luas = fields.Float("Luas Block",digits=(2,2),related='inherit_location_id.area_planted',readonly=True)
     qty_request = fields.Integer("Quantity Request",required=True)
     comment = fields.Text("Decription / Comment")

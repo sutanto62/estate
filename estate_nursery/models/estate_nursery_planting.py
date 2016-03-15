@@ -18,12 +18,6 @@ class Planting(models.Model):
     batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
                                           help="Define batch parameter")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
-    seed_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
-                                          domain=[('estate_location', '=', True),
-                                                  ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'planted'),
-                                                  ('scrap_location', '=', False),
-                                                  ])
     date_request = fields.Date('Date Seed Delivery Order',required=True)
     total_qty_pokok= fields.Integer("Total Pokok",compute="compute_total_qty_pokok",track_visibility='onchange')
     expense = fields.Integer("Amount Expense",compute="_amount_all",track_visibility='onchange')

@@ -109,7 +109,7 @@
                         </group>
                         <group>
                             <notebook>
-                                    <page string="Cleaving Line">
+                                    <page string="Recovery Line">
                                         <tree>
                                             <field name="recovery_line_ids" attrs="{'readonly': [('state','=','done')]}"
                                                     context="{'tree_view_ref' : 'estate_nursery.view_tree_recoveryline_seed'}"/>

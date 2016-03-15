@@ -456,6 +456,17 @@ class Batch(models.Model):
             self.qty_planted_temp += item.qty_planted
         return True
 
+    # on change report after change stage
+    @api.one
+    @api.onchange('reportline_id','selection_ids')
+    def _change_report_stage(self):
+        selection = self.env['estate.nursery.selection'].search([('stage_id', '=', 2),
+                                                                   ('batch_id', '=', self.id)])
+        if selection :
+            self.reportline_id.id = 2
+            print self.reportline_id
+        self.write({'reportline_id' : self.reportline_id})
+
     #Set flag to show cleaving Seed
     @api.one
     @api.onchange('selection_count','status')
