@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from json import dumps, loads, JSONEncoder, JSONDecoder
+
 from openerp import models, fields, api, exceptions
 from openerp.exceptions import ValidationError
 from datetime import datetime, date
 from dateutil.relativedelta import *
+import json
 import calendar
+import logging
 
 
 
@@ -24,14 +28,14 @@ class Selection(models.Model):
     partner_id = fields.Many2one('res.partner')
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
-    batch_id = fields.Many2one('estate.nursery.batch', "Batch",)
+    batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade')
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
 
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,
                                         default=lambda self: self.selectionstage_id.search([
-                                            ('name','=','Pre Nursery 1')]))
+                                            ('name','=','Pre Nursery 1')]),store=True)
 
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
     qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
@@ -401,26 +405,12 @@ class Selection(models.Model):
                 return True
 
     #onchange Fucntion
-    #get selection stage id for recovery :
-    # todo do change stage id in cause_id for selection line
-    @api.one
-    @api.onchange('stage_id','selectionstage_id','selectionline_ids')
-    def onchange_stage(self):
-        #stage=self.env['estate.nursery.selection'].search([('cause_id','=',self.selectionstage_id.stage_id.id)]).name
-        #stage = self.search([('stage_id', '=', self.selectionstage_id.stage_id)])[2].name
-        #print stage
-        if self.selectionstage_id:
-            for cause in self.selectionline_ids:
-                cause.cause_id.stage_id = self.stage_id
-                print cause.cause_id.stage_id
-        #print stage
 
     #onchange Stage id
     @api.one
     @api.onchange('stage_id','selectionstage_id','selectionline_ids')
     def _changestage_id(self):
         self.stage_id=self.selectionstage_id.stage_id
-        self.write({'stage_id':self.stage_id})
 
     @api.onchange('qty_normal')
     def onchange_normal(self):
@@ -525,6 +515,7 @@ class SelectionLine(models.Model):
     _name = 'estate.nursery.selectionline'
     _inherit = ['mail.thread']
 
+
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
@@ -532,6 +523,7 @@ class SelectionLine(models.Model):
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,track_visibility='onchange')
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
+    stage_a_id=fields.Many2one('estate.nursery.stage')
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
     location_id = fields.Many2one('estate.block.template', "Bedengan",
                                     domain=[('estate_location', '=', True),
@@ -547,21 +539,18 @@ class SelectionLine(models.Model):
     @api.onchange('qty_batch','selection_id')
     def _get_value_do(self):
        self.qty_batch=self.selection_id.qty_batch
-       print self.qty_batch
-       self.write({'qty_batch':self.qty_batch})
 
+    #Domain cause with stage id in selection form
+    @api.onchange('stage_a_id','selection_id','cause_id')
+    def _get_value_do(self):
+        # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
+        self.stage_a_id=self.selection_id.stage_id
+        if self:
+            return {
+                'domain': {'cause_id': [('stage_id.id', '=',self.stage_a_id.id)]},
+            }
+        return True
 
-
-    # #get id cause
-    # @api.one
-    # @api.onchange('selection_id','cause_id','stage_id')
-    # def _get_id_cause(self):
-    #     cause=self.env['estate.nursery.selection'].search[('selection_id','=',self.selection_id.stage_id.id)]
-    #
-    #     if self.selection_id:
-    #         for item in self.selection_id:
-    #             self.cause_id.stage_id = item.cause
-    #     print cause
 
 class Cause(models.Model):
     """Selection Cause (normal, afkir, etc)."""
@@ -582,12 +571,6 @@ class Cause(models.Model):
             ('sequence', '<', self.sequence)
         ], context=ctx) + 1
 
-    # #onchange stage_id
-    # @api.onchange
-    # def onchange_stage_id(self):
-    #     self.stage_id=self.selection_id.stage_id
-    #     self.write({'stage_id':self.stage_id})
-
 
 class TempRecovery(models.Model):
 
@@ -605,4 +588,11 @@ class TempRecovery(models.Model):
                                              help="Fill in location seed planted.",
                                              required=True,)
     comment = fields.Text("Description")
+
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
 

@@ -136,7 +136,7 @@ class RequestLine(models.Model):
     _name = "estate.nursery.requestline"
 
     name=fields.Char("Requestline",related='request_id.name')
-    request_id=fields.Many2one('estate.nursery.request')
+    request_id=fields.Many2one('estate.nursery.request',ondelete='cascade')
     inherit_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
