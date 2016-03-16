@@ -39,6 +39,7 @@ class Stage(models.Model):
     age_minimum = fields.Integer("Minimum Age", help="Minimum age required to be at this stage. 0 is unlimited.")
     age_maximum = fields.Integer("Maximum Age", help="Maximum age required to be at this stage. 0 is unlimited.")
     selectionstage_id =fields.Many2one("estate.nursery.selectionstage")
+    cause_id = fields.Many2one('estate.nursery.cause')
 
 class Variety(models.Model):
     """Seed Variety"""
@@ -279,7 +280,7 @@ class Batch(models.Model):
 
     # set constraint to Quantity in batch line not more than quantity DO
     @api.multi
-    @api.constrains('batchline_ids','seed_qty','qty_single','qty_double','qty_fungus','qty_broken','qty_dead')
+    @api.constrains('batchline_ids')
     def _check_quantity_batchline(self):
         batchlinebag = self.env['estate.nursery.batchline'].search([('flag_bag', '=', True),
                                                                    ('batch_id', '=', self.id)])
@@ -315,7 +316,7 @@ class Batch(models.Model):
 
     # Constraint for not variance after selection
     @api.one
-    @api.constrains('batchline_ids','flag_bag','selection_do_var','planting_selection_var')
+    @api.constrains('batchline_ids')
     def check_qty_variance(self):
         batchlinebag = self.env['estate.nursery.batchline'].search([('flag_bag', '=', True),
                                                                    ('batch_id', '=', self.id)])
