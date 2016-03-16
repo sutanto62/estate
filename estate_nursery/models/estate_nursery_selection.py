@@ -542,7 +542,7 @@ class SelectionLine(models.Model):
 
     #Domain cause with stage id in selection form
     @api.onchange('stage_a_id','selection_id','cause_id')
-    def _get_value_do(self):
+    def _change_domain_causeid(self):
         # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
         self.stage_a_id=self.selection_id.stage_id
         if self:
