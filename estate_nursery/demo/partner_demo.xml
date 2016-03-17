@@ -1,0 +1,122 @@
+<openerp>
+    <data>
+        <!--Demo Data User -->
+
+        <record id="estate_nursery.partner_demo1" model="res.partner">
+            <field name="name">Cayadi Sutanto</field>
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+            <field name="customer" eval="False"/>
+            <field name="email">cayadi.sutanto@palmagroup.co.id</field>
+            <field name="street">Jl.HR.Rasuna Said Kav b 8</field>
+            <field name="city">Jakarta</field>
+            <field name="zip">12050</field>
+            <field name="country_id" ref="base.be"/>
+        </record>
+
+        <record id="estate_nursery.partner_demo2" model="res.partner">
+            <field name="name">Probo Sukmohadi Widodo</field>
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+            <field name="customer" eval="False"/>
+            <field name="email">probo.sukmohadi@palmagroup.co.id</field>
+            <field name="street">Jl.HR.Rasun Said Kav b 8</field>
+            <field name="city">Jakarta</field>
+            <field name="zip">12050</field>
+            <field name="country_id" ref="base.be"/>
+        </record>
+
+        <record id="estate_nursery.partner_demo3" model="res.partner">
+            <field name="name">Andrie Firdaus</field>
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+            <field name="customer" eval="False"/>
+            <field name="email">andrie.firdaus@palmagroup.co.id</field>
+            <field name="street">Jl.HR.Rasuna Said Kav b 8</field>
+            <field name="city">Jakarta</field>
+            <field name="zip">12050</field>
+            <field name="country_id" ref="base.be"/>
+        </record>
+
+        <record id="estate_nursery.partner_demo4" model="res.partner">
+            <field name="name">Agus Prabowo</field>
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+            <field name="customer" eval="False"/>
+            <field name="email">agus.prabowo@palmagroup.co.id</field>
+            <field name="street">Jl.HR.Rasuna Said Kav b 8</field>
+            <field name="city">Jakarta</field>
+            <field name="zip">12050</field>
+            <field name="country_id" ref="base.be"/>
+        </record>
+
+        <!--and Partner Company-->
+
+        <record id="estate_nursery.main_partner1" model="res.partner">
+            <field name="name">Tri Palma Nusantara</field>
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+            <field name="street">Jl. Ak Duhe No 513 A</field>
+            <field name="city">Gorontalo</field>
+            <field name="zip">13524</field>
+            <field name="phone">+62 435 880111</field>
+            <field name="email">info@palmagroup.co.id</field>
+            <field name="website">www.tripalmagroup.com</field>
+            <field name="image" type="base64" file="estate_nursery/static/img/palma.jpg"/>
+        </record>
+
+        <record id="estate_nursery.main_company1" model="res.company">
+            <field name="name">Palma Group</field>
+        </record>
+
+
+        <!--Username and Password Demo -->
+        <record id="estate_nursery.user_demo1" model="res.users">
+            <field name="partner_id" ref="estate_nursery.partner_demo1"/>
+            <field name="login">cayadi</field>
+            <field name="password">cayadi</field>
+            <field name="signature">--Mr Cayadi Sutanto</field>
+            <!--<field name="company_id" ref="estate_nursery.main_company2"/>-->
+            <field name="groups_id" eval="[(6,0,[ ref('estate.group_agronomi')])]"/>
+            <field name="image" type="base64" file="estate_nursery/static/img/cayadi.jpg"/>
+        </record>
+
+        <record id="estate_nursery.user_demo2" model="res.users">
+            <field name="partner_id" ref="estate_nursery.partner_demo2"/>
+            <field name="login">probo</field>
+            <field name="password">probo</field>
+            <field name="signature">--Mr Probo Sukmohadi Widodo</field>
+            <!--<field name="company_id" ref="estate_nursery.main_company2"/>-->
+            <field name="groups_id" eval="[(6,0,[ref('estate.group_agronomi')])]"/>
+            <field name="image" type="base64" file="estate_nursery/static/img/probo.jpg"/>
+        </record>
+
+        <record id="estate_nursery.user_demo3" model="res.users">
+            <field name="partner_id" ref="estate_nursery.partner_demo3"/>
+            <field name="login">andri</field>
+            <field name="password">andri</field>
+            <field name="signature">--Mr Andrie Firdaus</field>
+            <!--<field name="company_id" ref="estate_nursery.main_company2"/>-->
+            <field name="groups_id" eval="[(6,0,[ref('estate.group_user')])]"/>
+            <field name="image" type="base64" file="estate_nursery/static/img/andri.jpg"/>
+        </record>
+
+        <record id="estate_nursery.user_demo4" model="res.users">
+            <field name="partner_id" ref="estate_nursery.partner_demo4"/>
+            <field name="login">agus</field>
+            <field name="password">agus</field>
+            <field name="signature">--Mr Agus Prabowo</field>
+            <!--<field name="company_id" ref="estate_nursery.main_company2"/>-->
+            <field name="groups_id" eval="[(6,0,[ref('estate.group_manager')])]"/>
+            <field name="image" type="base64" file="estate_nursery/static/img/agus.jpg"/>
+        </record>
+
+        <record model="res.partner" id="estate_nursery.partner_root1">
+            <field name="email">mahroza.pradana@palmagroup.co.id</field>
+            <field name="tz">Europe/Brussels</field>
+            <field name="image" type="base64" file="estate_nursery/static/img/oza.jpg"/>
+        </record>
+
+        <!-- new rate for demo transactions in multi currency -->
+        <record id="estate_nursery.rateIDRbis" model="res.currency.rate">
+            <field name="rate">1.5289</field>
+            <field name="currency_id" ref="estate_nursery.indonesia"/>
+            <field eval="time.strftime('%Y-06-06')" name="name"/>
+        </record>
+    </data>
+</openerp>

@@ -538,7 +538,8 @@ class SelectionLine(models.Model):
     #get quantity DO
     @api.onchange('qty_batch','selection_id')
     def _get_value_do(self):
-       self.qty_batch=self.selection_id.qty_batch
+        self.qty_batch=self.selection_id.qty_batch
+        self.write({'qty_batch' : self.qty_batch})
 
     #Domain cause with stage id in selection form
     @api.onchange('stage_a_id','selection_id','cause_id')

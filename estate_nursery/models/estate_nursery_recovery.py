@@ -118,6 +118,7 @@ class NurseryRecovery(models.Model):
             move_data = {
                 'product_id': self.batch_id.product_id.id,
                 'product_uom_qty': qty_total_abnormal_recovery,
+                'origin':self.recovery_code,
                 'product_uom': self.batch_id.product_id.uom_id.id,
                 'name': 'Selection Recovery Abnormal.%s: %s'%(self.recovery_code,self.batch_id.name),
                 'date_expected': self.recovery_date,
@@ -144,6 +145,7 @@ class NurseryRecovery(models.Model):
             move_data = {
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': self.qty_normal,
+                        'origin':self.recovery_code,
                         'product_uom': self.batch_id.product_id.uom_id.id,
                         'name': 'Move Normal Seed  %s for %s:'%(self.recovery_code,self.batch_id.name),
                         'date_expected': self.recovery_date,

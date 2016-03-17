@@ -141,6 +141,7 @@ class CleavingPolytone(models.Model):
             move_data = {
                 'product_id': self.batch_id.product_id.id,
                 'product_uom_qty': qty_total_double,
+                'origin':self.batch_id.name,
                 'product_uom': self.batch_id.product_id.uom_id.id,
                 'name': 'Selection Cleaving Abnormal.%s: %s'%(self.cleaving_code,self.batch_id.name),
                 'date_expected': self.cleaving_date,
@@ -171,6 +172,7 @@ class CleavingPolytone(models.Model):
             move_data = {
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': qty_total_cleavagebatch,
+                        'origin':self.cleaving_code,
                         'product_uom': self.batch_id.product_id.uom_id.id,
                         'name': 'Cleaving Normal Seed  %s for %s:'%(self.cleaving_code,self.batch_id.name),
                         'date_expected': self.cleaving_date,
@@ -198,6 +200,7 @@ class CleavingPolytone(models.Model):
             move_data = {
                         'product_id': self.batch_id.product_id.id,
                         'product_uom_qty': itembatch.qty_abnormal_double,
+                        'origin':self.cleaving_code,
                         'product_uom': self.batch_id.product_id.uom_id.id,
                         'name': 'Cleaving Abnormal Seed  %s for %s:'%(self.cleaving_code,self.batch_id.name),
                         'date_expected': self.cleaving_date,

@@ -1,0 +1,57 @@
+<openerp>
+    <data>
+        <!-- Currencies -->
+        <record id="estate_nursery.indonesia" model="res.currency">
+            <field name="name">IND</field>
+            <field name="symbol">Rp</field>
+            <field name="rounding">0.01</field>
+            <field name="accuracy">4</field>
+        </record>
+
+        <record id="estate_nursery.rateIDR" model="res.currency.rate">
+            <field name="rate">1.0</field>
+            <field name="currency_id" ref="estate_nursery.indonesia"/>
+            <field eval="time.strftime('%Y-01-01')" name="name"/>
+        </record>
+
+        <record id="estate_nursery.main_partner1" model="res.partner" context="{'default_is_company': True}">
+            <field name="name">Tripalma Nusantara</field>
+            <field name="company_id" eval="None"/>
+            <field name="image" type="base64" file="estate_nursery/static/img/palma.jpg"/>
+            <field name="customer" eval="False"/>
+            <field name="is_company" eval="True"/>
+            <field name="street">Jl Hj Rasuna Said</field>
+            <field name="city">Jakarta</field>
+            <field name="zip">12050</field>
+            <field name="phone">+62 21 5220335</field>
+            <field name="email">info@palmagroup.com</field>
+            <field name="website">www.palmagroup.com</field>
+        </record>
+
+        <!-- Basic Company  -->
+        <record id="estate_nursery.main_company1" model="res.company">
+            <field name="name">Palma Group</field>
+            <field name="partner_id" ref="estate_nursery.main_partner1"/>
+            <field name="rml_header1">Menjadi Inspirasi Perkebunan Indonesia</field>
+            <field name="currency_id" ref="estate_nursery.indonesia"/>
+            <field name="street">Jl.HR.Rasuna Said Kav b 8</field>
+            <field name="city">Jakarta</field>
+            <field name="zip">12050</field>
+            <field name="phone">+62 21 5220335</field>
+            <field name="email">info@palmagroup.co.id</field>
+            <field name="website">www.palmagroup.com</field>
+            <field name="image" type="base64" file="estate_nursery/static/img/palma.jpg"/>
+        </record>
+
+        <record model="res.partner" id="estate_nursery.partner_root1">
+            <field name="name">Mahroza Pradana</field>
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+            <field name="customer" eval="False"/>
+            <field name="email">mahroza.pradana@palmagroup.co.id</field>
+        </record>
+
+        <record id="estate_nursery.main_partner1" model="res.partner">
+            <field name="company_id" ref="estate_nursery.main_company1"/>
+        </record>
+    </data>
+</openerp>

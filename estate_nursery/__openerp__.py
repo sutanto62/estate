@@ -26,6 +26,7 @@
 
     # always loaded
     'data': [
+        'demo/partner_data.xml',
         'security/ir.model.access.csv',
         'templates.xml',
         'views/estate_nursery_view.xml',
@@ -72,6 +73,7 @@
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo.xml',
+        'demo/demo.xml',
+        'demo/partner_demo.xml'
     ],
 }

@@ -270,7 +270,7 @@
                             </group>
 
                             <group coolspan="10">
-                                <field name="stage_id" invisible="1"/>
+                                <field name="stage_id" invisible="0"/>
                                 <field name="qty_batch" attrs="{'required': [('state','=','draft')]}" readonly="1"/>
                                 <field name="qty_plante" string="Quantity Planted Batch"
                                        attrs="{'invisible': [('state','!=','done')]}" readonly="1">
