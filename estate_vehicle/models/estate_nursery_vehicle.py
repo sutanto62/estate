@@ -11,8 +11,10 @@ class NurseryVehicle(models.Model):
 
     _inherit="fleet.vehicle"
 
-    no_vehicle=fields.Char('')
+
+    no_vehicle=fields.Char('No Vehicle')
     vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
+    employee_driver_id=fields.Many2one('hr.employee')
 
 
 
