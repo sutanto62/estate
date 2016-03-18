@@ -12,10 +12,17 @@
                 </style>
                 <div class="page">
                     <h4 colors="black" >
-                        <span t-if="o.state == 'done'" >Request Planting no :<span t-field="o.bpb_code"/></span>
+                        <p style="text-align:center;font-family: times;" t-if="o.state == 'done'" >REQUEST PLANTING SEED</p>
+                        <hr/>
+                        <p style="text-align:center;font-family: times;" t-field="o.bpb_code"/>
                         <table>
-                            <tr>Tanggal :<span t-field="o.date_request"/></tr>
-                            <tr>Kepada  :<span t-field="o.user_id"/></tr>
+                            <tr>Tanggal <span>:</span> <span t-field="o.date_request"/></tr>
+                            <br/>
+                            <tr>
+                                <td>Kepada  <span>:</span> <span t-field="o.employee_id"/></td>
+                                <br/>
+                            </tr>
+                            <br/>
                             <tr>
                                 <td><p>Agar Dapat diberikan bibit sesuai jumlah yang tertera pada BPB ini :</p></td>
                             </tr>
@@ -51,7 +58,7 @@
 
                         <tbody class="request_tbody">
                             <tr t-foreach="o.requestline_ids" t-as="l">
-                                <td style="width:40%;"><span t-field="l.location_id"/></td>
+                                <td style="width:40%;"><span t-field="l.inherit_location_id"/></td>
                                 <td style="width:10%;"><span t-field="l.Luas"/></td>
                                 <td style="width:20%;"><span t-field="l.qty_request"/></td>
                                 <td style="width:30%;"><span t-field="l.comment"/></td>
