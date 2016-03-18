@@ -281,7 +281,7 @@
                                        onchange ="_compute_plannormal"/>
                                 <field name="flag_recovery"
                                        attrs="{'readonly': [('state','=','done')],
-                                       'invisible':['|',('stage_id','!=', 2),('state','=','done')]}"/>
+                                       'invisible':['|',('stage_id','not in',('selectionstage_id','=',4)),('state','=','done')]}"/>
                             </group>
                         </group>
 

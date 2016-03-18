@@ -29,7 +29,7 @@ class Selection(models.Model):
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade')
-    stage_id = fields.Many2one('estate.nursery.stage',"Stage",)
+    stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True)
 
     age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
@@ -42,7 +42,7 @@ class Selection(models.Model):
     date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange')
-    qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery")
+    qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery",store=True)
     qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,digit=(2.2),compute='compute_total_recovery')
     qty_abn_batch=fields.Integer(related='batch_id.qty_abnormal')
     qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
@@ -412,6 +412,7 @@ class Selection(models.Model):
     def _changestage_id(self):
         self.stage_id=self.selectionstage_id.stage_id
 
+    #onchange qty Normal
     @api.onchange('qty_normal')
     def onchange_normal(self):
         if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
@@ -519,7 +520,7 @@ class SelectionLine(models.Model):
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
-    qty_batch = fields.Integer("DO Quantity",store=True)
+    qty_batch = fields.Integer("DO Quantity",store=True,related='selection_id.qty_batch')
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,track_visibility='onchange')
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
@@ -534,12 +535,6 @@ class SelectionLine(models.Model):
                                              help="Fill in location seed planted.",
                                              required=True,)
     comment = fields.Text("Description")
-
-    #get quantity DO
-    @api.onchange('qty_batch','selection_id')
-    def _get_value_do(self):
-        self.qty_batch=self.selection_id.qty_batch
-        self.write({'qty_batch' : self.qty_batch})
 
     #Domain cause with stage id in selection form
     @api.onchange('stage_a_id','selection_id','cause_id')
