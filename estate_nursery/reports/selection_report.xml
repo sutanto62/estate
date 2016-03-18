@@ -16,8 +16,8 @@
                         <table>
                         <tr>
                             <td><span t-field="o.name"/></td>
-                            <td>/<span t-field="o.stage"/></td>
-                            <td>/<span t-field="o.variety"/></td>
+                            <td>/<span t-field="o.stage_id"/></td>
+                            <td>/<span t-field="o.variety_id"/></td>
                         </tr>
                     </table>
                     </h4>
