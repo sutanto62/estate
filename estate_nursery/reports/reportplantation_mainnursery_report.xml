@@ -8,7 +8,7 @@
                     <!--First Row-->
                         <div class="row col-xs-12" style="font-family: times; background-color:#568eff;border: 1px solid #568eff;color:#ffffff; font-size:20pt;">
                             <div class="col-xs-12" >
-                                <p>Report Main Nursery</p>
+                                <p style="text-align:center;font-family: times;">Report Main Nursery</p>
                             </div>
 
                         </div>
@@ -255,7 +255,7 @@
                                                         <table>
                                                             <t t-if="a.selectionstage_id.stage_id.code == 'MN'">
                                                                 <tr>
-                                                                    <td><p t-field="a.selection.stage_id.name" style="text-align:left;font-family: times; font-size:14pt;"/></td>
+                                                                    <td><p t-field="a.selectionstage_id.stage_id.name" style="text-align:left;font-family: times; font-size:14pt;"/></td>
                                                                 </tr>
                                                             </t>
                                                         </table>

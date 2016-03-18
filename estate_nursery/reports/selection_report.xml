@@ -11,15 +11,15 @@
                         }
                 </style>
                 <div class="page">
+                    <h2 style="text-align:center;font-family: times;" t-if="o.state == 'done'">Selection Information</h2>
                     <h4 colors="black" >
-                        <span t-if="o.state == 'done'">Selection Information</span>
-                        <table>
-                        <tr>
-                            <td><span t-field="o.name"/></td>
-                            <td>/<span t-field="o.stage_id"/></td>
-                            <td>/<span t-field="o.variety_id"/></td>
-                        </tr>
-                    </table>
+                        <table style="text-align:center;font-family: times;">
+                            <tr>
+                                <td><span t-field="o.name"/></td>
+                                <td>/<span t-field="o.stage_id"/></td>
+                                <td>/<span t-field="o.variety_id"/></td>
+                            </tr>
+                        </table>
                     </h4>
                     <hr></hr>
                     <div class="row">
