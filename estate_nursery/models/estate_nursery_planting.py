@@ -139,13 +139,28 @@ class TransportirDetail(models.Model):
 
     _name = 'estate.nursery.dotransportir'
 
-
     seeddo_id = fields.Many2one('estate.nursery.seeddo')
     estate_vehicle_id= fields.Many2one('fleet.vehicle','Estate Vehicle',track_visibility='onchange')
+    driver_internal_id=fields.Many2one(related='estate_vehicle_id.employee_driver_id',readonly=True,track_visibility='onchange')
     driver_estate_id = fields.Many2one(related='estate_vehicle_id.driver_id',readonly=True,track_visibility='onchange')
+    driver=fields.Char('Driver')
     vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
     no_vehicle = fields.Char('No Vehicle Transportir')
 
+    #onchange Driver Transportir external and internal
+    @api.one
+    @api.onchange('driver_internal_id','vehicle_type','driver_estate_id','estate_vehicle_id','driver')
+    def onchange_driver(self):
+        type = self.estate_vehicle_id.vehicle_type
+
+        if self.estate_vehicle_id:
+            if type == '1':
+                self.driver=self.driver_internal_id.name
+            elif type == '2':
+                self.driver=self.driver_estate_id.name
+            else :
+                self.driver=self.driver_estate_id.name
+        return True
 
     #onchange detail vehicle
     @api.one
@@ -154,7 +169,7 @@ class TransportirDetail(models.Model):
         if self.estate_vehicle_id:
             self.vehicle_type = self.estate_vehicle_id.vehicle_type
             self.no_vehicle = self.estate_vehicle_id.no_vehicle
-        self.write({'vehicle_type' : self.vehicle_type,'no_vehicle' : self.no_vehicle})
+
 
 class ActivityLine(models.Model):
     _name = "estate.nursery.activityline"
@@ -179,7 +194,7 @@ class ActivityLine(models.Model):
     @api.onchange('product_type_id','activity_id')
     def change_product_type_id(self):
         self.product_type_id = self.activity_id.uom_id.id
-        self.write({'product_type_id' : self.product_type_id})
+
 
     @api.one
     @api.onchange('activity_id','price')
