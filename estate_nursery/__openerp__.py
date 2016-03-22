@@ -49,6 +49,7 @@
         'reports/reportplantation_culling.xml',
         'reports/reportplantation_cullingbatch.xml',
         'reports/reportplantation_cleaving.xml',
+        'reports/reportplantation_seeddo.xml',
         'workflow/session_selection_workflow.xml',
         'workflow/session_cleaving_workflow.xml',
         'workflow/session_workflow.xml',
@@ -68,6 +69,7 @@
         'config_reports/reportmainnursery_div.xml',
         'config_reports/reportplantation_seedreceived.xml',
         'config_reports/reportplantation_seedreceived_bag.xml',
+        'config_reports/reportplantation_seed_do.xml',
         'views/sequence_view.xml',
         'wizard/wizard_seeddo_view.xml'
     ],
