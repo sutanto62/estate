@@ -9,7 +9,7 @@
                     <!--First Row-->
                         <div class="row col-xs-12">
                             <div class="col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-                                <h3>Report Seed Received Bag</h3>
+                                <p style="text-align:center;font-family: times;">Report Seed Received Bag</p>
                             </div>
                         </div>
 

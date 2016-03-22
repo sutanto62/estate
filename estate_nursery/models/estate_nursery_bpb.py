@@ -18,6 +18,7 @@ class Requestplanting(models.Model):
     name=fields.Char("Request code")
     bpb_code = fields.Char("BPB")
     user_id=fields.Many2one('res.users')
+    employee_id= fields.Many2one('hr.employee')
     batch_id=fields.Many2one('estate.nursery.batch')
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner',required=True, ondelete="restrict",
@@ -143,7 +144,7 @@ class RequestLine(models.Model):
                                                   ('estate_location_type', '=', 'planted'),
                                                   ('scrap_location', '=', False),
                                                   ])
-    Luas = fields.Float("Luas Block",digits=(2,2),related='inherit_location_id.area_planted',readonly=True)
+    large_area = fields.Float("Luas Block",digits=(2,2),related='inherit_location_id.area_planted',readonly=True)
     qty_request = fields.Integer("Quantity Request",required=True)
     comment = fields.Text("Decription / Comment")
 
