@@ -5,8 +5,8 @@
         <template id="report_batch_document">
             <t t-call="report.external_layout">
                 <div class="page">
-                    <h2 colors="black" >
-                        <span t-if="o.state == 'done'">Batch Information</span>
+                    <h2 colors="black" t-if="o.state == 'done'" style="text-align:center;font-family: times;">
+                        Batch Information
                     </h2>
                     <div class="row">
                         <div class="col-xs-5" t-if="o.state == 'done'">
@@ -37,8 +37,8 @@
                                 <th style="width:10%;">Selection Stage</th>
                                 <th style="width:10%;">Normal</th>
                                 <th style="width:10%;">Abnormal</th>
-                                <th style="width:10%;">% Normal</th>
-                                <th style="width:10%;">% Abnormal</th>
+                                <th style="width:10%;">% NOR</th>
+                                <th style="width:10%;">% ABN</th>
                                 <th style="width:10%;">Planted</th>
                                 <th style="width:10%;">DO</th>
                                 <th style="width:10%;">Planted Date</th>
