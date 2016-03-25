@@ -12,7 +12,8 @@ class Planting(models.Model):
     _inherit = ['mail.thread']
 
     name=fields.Char("Planting Code")
-    planting_code=fields.Char("Planting Code")
+    seeddo_code=fields.Char("Seed Delivery Code")
+    partner_id=fields.Many2one('res.partner')
     dotransportir_ids = fields.One2many('estate.nursery.dotransportir','seeddo_id','InformationTransportir')
     activityline_ids=fields.One2many('estate.nursery.activityline','seeddo_id','Information Activity Transportir')
     batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
@@ -28,7 +29,7 @@ class Planting(models.Model):
 
     #sequence
     def create(self, cr, uid, vals, context=None):
-        vals['planting_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.seeddo')
+        vals['seeddo_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.nursery.seeddo')
         res=super(Planting, self).create(cr, uid, vals)
         return res
 
@@ -212,36 +213,6 @@ class ActivityLine(models.Model):
             self.result_price=result
         return True
 
-class RepositorySeed(models.TransientModel):
-
-    _name = 'repository.seed.batch'
-
-    name=fields.Char()
-    comment=fields.Char()
-
-
-    def act_cancel(self, cr, uid, ids, context=None):
-        #self.unlink(cr, uid, ids, context)
-        return {'type':'ir.actions.act_window_close' }
-
-    def act_destroy(self, *args):
-        return {'type':'ir.actions.act_window_close' }
-
-class EstateSPB(models.Model):
-    _name = 'estate.spb'
-    _inherits = {'estate.nursery.seeddo': 'seed_template_id'}
-
-    seed_template_id = fields.Many2one('estate.nursery.seeddo', "Batch Template")
-    parameter_value_ids = fields.Many2many('estate.bpb.value', id1='batch_id', id2='val_id',
-                                           string="Parameter Value")
-
-class ParameterValue(models.Model):
-    """Selection value for Parameter.
-    """
-    _name = 'estate.bpb.value'
-
-    name = fields.Char('Value', translate=True, required=True)
-    parameter_id = fields.Many2one('estate.nursery.request', "Parameter", ondelete='restrict')
 
 class BatchParameter(models.Model):
     """Parameter of Batch.
@@ -265,11 +236,6 @@ class BatchParameter(models.Model):
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
                                          domain="[('parameter_id', '=', parameter_id)]",
                                          ondelete='restrict')
-    #onchange variety id
-    @api.onchange('variety_id')
-    def onchange_variety_id(self):
-        self.variety_id = self.bpb_id.variety_id
-        self.write({'variety_id':self.variety_id})
 
     #onchange total qty pokok
     @api.one

@@ -277,6 +277,7 @@ class Batch(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[stage.id] = stage_value_name
             return temp
+    #Constraint to recovery choose selection not more than 1
 
     # set constraint to Quantity in batch line not more than quantity DO
     @api.multi
@@ -298,7 +299,7 @@ class Batch(models.Model):
 
                 if seed_qty < qty_single:
                         raise ValidationError("Quantity Single Should be Greater than Seed DO !")
-                elif qty_abnormal > qty_planted:
+                elif qty_abnormal > seed_qty:
                         raise ValidationError("Quantity Total Abnormal not matched with Quantity Planted")
                 elif qty_normal > qty_planted:
                         raise ValidationError("Quantity Total Normal not matched with Quantity Planted")
@@ -356,7 +357,6 @@ class Batch(models.Model):
     # monthrange
     @api.one
     @api.depends('month')
-
     def _rule_month(self):
         self.month =int(12)
 
@@ -404,6 +404,7 @@ class Batch(models.Model):
             for recovery in self.selection_ids:
                 self.qty_recovery += recovery.qty_recovery
         return True
+
     #get single qty
     @api.one
     @api.depends("batchline_ids")
@@ -659,7 +660,7 @@ class TransferDetail(models.TransientModel):
             pak_row_bag = pak.ul_qty
             pak_total_bag = pak.rows * pak.ul_qty
             pak_bag_content = pak.qty
-            pak_box_content = pak.ul_qty
+            pak_box_content = pak.qty * pak_total_bag #salah harusnya di isi dengan jumlah looping seed.
         else:
             raise exceptions.Warning('Product %s has no packaging. Contact Administrator.' % product.name)
 
@@ -679,6 +680,7 @@ class TransferDetail(models.TransientModel):
             box_amount_half = 0
 
         total_box = box_amount_full + box_amount_half
+        print total_box
 
         if box_amount_full:
             for i in range(box_amount_full):
@@ -688,11 +690,9 @@ class TransferDetail(models.TransientModel):
                     'name': "%s / Box %d" % (batch.name, serial),
                     'batch_id': batch.id,
                     'packaging_id': pak.id,
-                    'batch_id': batch.id,
-                    'seed_qty': pak_box_content,
-                    'flag_bag' : 1
                 }
                 box = self.env['estate.nursery.batchline'].create(box_data)
+
                 for d in range(pak_total_bag):
                     bag_serial += 1
                     bag_data = {
@@ -711,7 +711,6 @@ class TransferDetail(models.TransientModel):
             bag_serial = 0
             seed_qty = item_qty % pak_content
             bag_amount_full = int(seed_qty/pak_bag_content)
-
             box_data = {
                 'name': "%s / Box %d" % (batch.name, serial),
                 'batch_id': batch.id,

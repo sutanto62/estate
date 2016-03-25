@@ -247,13 +247,13 @@ class CleavingLine(models.Model):
     @api.onchange('qty_single','cleaving_id')
     def _get_value_single(self):
        self.qty_single=self.cleaving_id.qty_singlebatch
-       self.write({'qty_single':self.qty_single})
+
 
     #get quantity Double
     @api.onchange('qty_double','cleaving_id')
     def _get_value_double(self):
        self.qty_double=self.cleaving_id.qty_doublebatch
-       self.write({'qty_double':self.qty_double})
+
 
     #calculate normal double
     @api.multi

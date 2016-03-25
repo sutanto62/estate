@@ -50,8 +50,6 @@ class TransferSeedLine(models.TransientModel):
 
     _name="estate.nursery.transferline"
 
-    _inherits = {'estate.nursery.transfer' : 'transfer_id'}
-
     def _default_session(self):
         return self.env['estate.nursery.seeddo'].browse(self._context.get('active_id'))
 

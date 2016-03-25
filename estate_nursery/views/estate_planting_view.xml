@@ -169,7 +169,7 @@
             <field name="arch" type="xml">
                 <tree string="Activity Line View" editable="bottom">
                     <field name="activity_id" string="Activity"  options="{'no_create_edit': True}"/>
-                    <field name="product_type_id" string="Product UoM"/>
+                    <field name="product_type_id" string="Product UoM">{‘readonly_by_pass’: True}</field>
                     <field name="qty_product" string="Quantity" />
                     <field name="price" string="Price/product" required="1">{‘readonly_by_pass’: True}</field>
                     <field name="transportactivity_expense_id"/>
