@@ -94,10 +94,9 @@ class Batch(models.Model):
                                  domain="[('variety_id','=',variety_id)]")
     date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
-    age_seed_range=fields.Integer("Seed age",readonly=True,compute="_compute_age_range",store=True)
+    age_seed_range=fields.Integer("Seed age",readonly=True,store=True,track_visibility='onchange')
     selection_id = fields.Many2one("estate.nursery.selection",store=True)
     age_seed = fields.Integer("Seed Age Received",required=True)
-    age_seed_grow=fields.Integer("Seed Age",compute='age_grow_up',track_visibility='onchange')
     selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count")
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
@@ -134,6 +133,8 @@ class Batch(models.Model):
     stage_id=fields.Many2one("estate.nursery.stage")
     status =fields.Boolean("Status test")
     status_age=fields.Boolean("Status age")
+    month=fields.Integer()
+    date_selection=fields.Date()
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -277,7 +278,20 @@ class Batch(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[stage.id] = stage_value_name
             return temp
-    #Constraint to recovery choose selection not more than 1
+
+    #Constraint to date selection  not more than selection older
+    @api.one
+    @api.constrains('selection_ids')
+    def _constrains_date_selection(self):
+        if self.selection_ids:
+            temp={}
+            for date in self.selection_ids:
+                date_value_name = date.selection_date
+                if date_value_name < temp.values():
+                    error_msg = "Selection Date  is set more than Selection Older "
+                    raise exceptions.ValidationError(error_msg)
+                temp[date.id] = date_value_name
+            return temp
 
     # set constraint to Quantity in batch line not more than quantity DO
     @api.multi
@@ -344,46 +358,11 @@ class Batch(models.Model):
         for r in self:
             r.selection_count = len(r.selection_ids)
 
-    #age grow up
-    @api.one
-    @api.depends('selection_count','age_seed','age_seed_grow')
-    def age_grow_up(self):
-        res={}
-        if self.selection_count or self.age_seed:
-            hitung = self.age_seed + self.selection_count
-            self.age_seed_grow= hitung
-        return res
-
     # monthrange
     @api.one
     @api.depends('month')
     def _rule_month(self):
         self.month =int(12)
-
-    #computed seed age
-    @api.one
-    @api.depends('age_seed','date_planted','age_seed_range')
-    def _compute_age_range(self):
-        res={}
-        fmt = '%Y-%m-%d'
-        today = datetime.now()
-        if self.date_planted :
-            from_date = today
-            to_date = self.date_planted
-            conv_todate = datetime.strptime(str(to_date), fmt)
-            d1 = from_date.month
-            d2 = conv_todate.month
-            rangeyear = conv_todate.year
-            rangeyear1 = from_date.year
-            rsult = rangeyear - rangeyear1
-            yearresult = rsult * 12
-            if yearresult == 0 :
-                ageseed = (d2-d1)
-                self.age_seed_range = ageseed + int(self.age_seed)
-            elif yearresult > 0:
-                ageseed = (d1 + yearresult) - d2
-                self.age_seed_range = ageseed + int(self.age_seed)
-        return res
 
     #total selection abnormal
     @api.one
@@ -479,14 +458,50 @@ class Batch(models.Model):
         return True
 
     @api.one
-    @api.onchange('age_seed_grow','status_age','status','selection_count')
+    @api.onchange('age_seed_range','status_age','status','selection_count')
     def _change_flag_age(self):
-        flag = self.age_seed_grow
-        if self.age_seed_grow >= 3 :
+        flag = self.age_seed_range
+        if self.age_seed_range >= 3 :
             self.status_age = True
             if self.status == True:
                 self.status_age = False
         return False
+
+    #computed age seed from cleaving,selection,recovery selection
+    @api.multi
+    @api.onchange('month','selection_ids','cleaving_ids','recovery_ids','age_seed','date_planted','age_seed_range')
+    def _compute_age_total(self):
+        fmt = '%Y-%m-%d'
+        today = datetime.now()
+        if self.selection_ids or self.cleaving_ids or self.recovery_ids or self.date_planted:
+            if self.date_planted :
+                from_date = today
+                to_date = self.date_planted
+                conv_todate = datetime.strptime(str(to_date), fmt)
+                d1 = from_date.month
+                d2 = conv_todate.month
+                rangeyear = conv_todate.year
+                rangeyear1 = from_date.year
+                rsult = rangeyear - rangeyear1
+                yearresult = rsult * 12
+                if yearresult == 0 :
+                    ageseed = (d2-d1)
+                    self.age_seed_range = ageseed + int(self.age_seed)
+                elif yearresult > 0:
+                    ageseed = (d1 + yearresult) - d2
+                    self.age_seed_range = ageseed + int(self.age_seed)
+            if self.selection_ids:
+                for date in self.selection_ids:
+                    date_selection = date.selection_date
+                from_date = self.date_planted
+                conv_fromdate = datetime.strptime(str(from_date), fmt)
+                conv_todate = datetime.strptime(str(date_selection), fmt)
+                date_conv_tomonth = conv_todate.month
+                date_conv_frommonth = conv_fromdate.month
+                self.month=date_conv_tomonth-date_conv_frommonth
+                self.date_selection=date_selection
+                self.age_seed_range += self.month
+                print self.month
 
 class Batchline(models.Model):
     """Batch Line to record seed selection and planting by box/bag."""

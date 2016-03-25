@@ -31,7 +31,7 @@ class Selection(models.Model):
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade')
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True)
 
-    age_seed = fields.Integer("Seed Age",related="batch_id.age_seed_grow",store=True)
+    age_seed = fields.Integer("Seed Age",store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,
                                         default=lambda self: self.selectionstage_id.search([
@@ -39,7 +39,7 @@ class Selection(models.Model):
 
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
     qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
-    date_plant = fields.Date("Planted Date",required=False,readonly=True,related='batch_id.date_planted',store=True)
+    date_plant = fields.Date("Planted Date",required=False,readonly=True,store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange')
     qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery",store=True)
@@ -404,7 +404,10 @@ class Selection(models.Model):
                          self.nursery_information = '4'# very untimely
                 return True
 
-    #onchange Fucntion
+    #onchange age seed
+    @api.onchange('age_seed')
+    def _change_age_seed(self):
+        self.age_seed = self.batch_id.age_seed_range
 
     #onchange Stage id
     @api.one

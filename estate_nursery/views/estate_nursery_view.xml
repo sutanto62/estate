@@ -235,10 +235,9 @@
                             <page string="Detail Information">
                                 <group name="top" string="Information">
                                     <group name="top_left">
-                                        <field name="age_seed_grow" string="Seed Age" readonly="1"
-                                               attrs="{'invisible': [('age_seed_range','>',0)]}" />
-                                        <field name="age_seed_range" string="Seed Age" readonly="1"
-                                               attrs="{'invisible': [('age_seed_range','=',0)]}" />
+                                        <field name="age_seed_range" string="Seed Age" readonly="1"/>
+                                        <field name="month"/>
+                                        <field name="date_selection"/>
                                         <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
                                         <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}" />
                                         <field name="qty_double" invisible="1"/>
@@ -271,15 +270,15 @@
                                 <field name="selection_ids"  string="Create Selection" attrs="{
                                 'required' : [('state', '=', 'draft')]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
-                                       'default_qty_plante': qty_planted}"/>
+                                       'default_qty_plante': qty_planted,'default_date_plant': date_planted}"/>
                             </page>
 
                             <page string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
                                 <field name="cleaving_ids" string="Create Cleaving Polytone" attrs="{
                                 'readonly' : ['|',('status','=',True),
-                                ('selection_count','!=',3),('status_age','!=',True)]}"
+                                ('age_seed_range','!=',3),('status_age','!=',True)]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
-                                       'default_qty_plante': qty_planted }"/>
+                                       'default_qty_plante': qty_planted,'default_date_selection' : date_selection }"/>
                             </page>
 
                             <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">
