@@ -265,7 +265,7 @@
                                 <field name="date_plant" attrs="{'required': [('state','=','draft')]}" readonly="1"/>
                                 <field name="selection_date"
                                        attrs="{'invisible': [('selectionstage_id','=',False)],
-                                 'readonly': [('state','!=','draft')]}"/>
+                                 'readonly': [('state','=','done')]}"/>
                                  <field name="age_seed" readonly="1"/>
 
                             </group>

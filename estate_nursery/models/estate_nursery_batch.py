@@ -568,6 +568,7 @@ class Batchline(models.Model):
     child_ids = fields.One2many('estate.nursery.batchline', 'parent_id', "Contains")
     batch_id = fields.Many2one('estate.nursery.batch', "Batch", ondelete="restrict")
     separation_id=fields.Many2one('estate.nursery.separation',"Separation Seed")
+    total_qty_parent=fields.Integer("DO Quantity")
     seed_qty = fields.Integer("DO Quantity")
     qty_single = fields.Integer("Single Tone Quantity",store=True)
     qty_double = fields.Integer("Double Tone Quantity",store=True)
@@ -723,7 +724,8 @@ class TransferDetail(models.TransientModel):
             pak_row_bag = pak.ul_qty
             pak_total_bag = pak.rows * pak.ul_qty
             pak_bag_content = pak.qty
-            pak_box_content = pak.qty * pak_total_bag #salah harusnya di isi dengan jumlah looping seed.
+            pak_box_content = pak.qty * pak_total_bag #content box full
+
         else:
             raise exceptions.Warning('Product %s has no packaging. Contact Administrator.' % product.name)
 
@@ -736,6 +738,7 @@ class TransferDetail(models.TransientModel):
 
         # Count full box
         box_amount_full = int(item_qty/pak_content)
+        pak_box_half_content = (item_qty % pak_content)
 
         if item_qty % pak_content:
             box_amount_half = 1
@@ -753,6 +756,7 @@ class TransferDetail(models.TransientModel):
                     'name': "%s / Box %d" % (batch.name, serial),
                     'batch_id': batch.id,
                     'packaging_id': pak.id,
+                    'total_qty_parent' : pak_box_content
                 }
                 box = self.env['estate.nursery.batchline'].create(box_data)
 
@@ -778,6 +782,7 @@ class TransferDetail(models.TransientModel):
                 'name': "%s / Box %d" % (batch.name, serial),
                 'batch_id': batch.id,
                 'packaging_id': pak.id,
+                'total_qty_parent' : pak_box_half_content
             }
             box = self.env['estate.nursery.batchline'].create(box_data)
 

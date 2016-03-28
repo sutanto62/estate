@@ -237,12 +237,12 @@
                                     <group name="top_left">
                                         <field name="age_seed_range" string="Seed Age" readonly="1"/>
                                         <field name="age_seed_planted" string="Seed Age Planted" readonly="1" invisible="0"/>
-                                        <field name="qty_received" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                        <field name="qty_normal" attrs="{'readonly': [('state','!=','draft')]}" />
+                                        <field name="qty_received" readonly="1"/>
+                                        <field name="qty_normal" readonly="1"/>
                                         <field name="qty_double" invisible="1"/>
                                         <field name="qty_recovery" invisible="1"/>
-                                        <field name="qty_abnormal" attrs="{'readonly': [('state','!=','draft')]}" />
-                                        <field name="qty_planted_temp" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                        <field name="qty_abnormal" readonly="1"/>
+                                        <field name="qty_planted_temp" readonly="1">{‘readonly_by_pass’: True}</field>
                                         <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
                                     </group>
                                     <group name="top_right">
@@ -262,7 +262,7 @@
                             </page>
                             <page string="Delivery (Box/Bags)">
                                 <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
-                                    context="{'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
+                                    context="{'flag_bag': True,'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                             </page>
 
                             <page string="Selection" attrs="{'readonly' : ['|',('selection_count', 'like', 6),('selection_count', '>', 6)],'invisible' : [('state','!=','done')]}">
@@ -303,7 +303,19 @@
         </record>
 
 
-        <!-- View, Seed Batchline -->
+        <!--&lt;!&ndash; View, Seed Batchline &ndash;&gt;-->
+        <!--<record id="view_search_batchline" model ="ir.ui.view">-->
+            <!--<field name="name">Batchline Search</field>-->
+            <!--<field name="model">estate.nursery.batchline</field>-->
+            <!--<field name="arch" type="xml">-->
+                  <!--<search>-->
+                        <!--<group string="Group By">-->
+                            <!--<filter name="by_category" string="Category"-->
+                                <!--context="{'group_by': 'flag_bag'}"/>-->
+                        <!--</group>-->
+                  <!--</search>-->
+            <!--</field>-->
+        <!--</record>-->
 
 
         <record model="ir.ui.view" id="view_seed_batchline_tree">
@@ -312,10 +324,12 @@
             <field name="arch" type="xml">
                 <tree string="Seed Batch List"
                       create="false" editable='top'
-                      colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0">
+                      colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0 ,
+                      blue:flag_bag = 0 ">
                     <field name="name"/>
                     <field name="flag_bag" invisible="1"/>
-                    <field name="seed_qty" string="Qty DO" sum="Qty DO" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="total_qty_parent" attrs="{'invisible' : [('flag_bag','=',True)]}" string="Qty Box" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="seed_qty" attrs="{'invisible' : [('flag_bag','=',False)]}" string="Qty DO" sum="Qty DO" readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="qty_single" string="Sgl."/>
                     <field name="qty_double" string="Dbl."/>
                     <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal"/>
