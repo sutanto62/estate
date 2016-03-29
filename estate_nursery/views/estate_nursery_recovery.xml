@@ -19,7 +19,7 @@
             <field name="name">Recovery Seed Tree</field>
             <field name="model">estate.nursery.recovery</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Recovery Tree View">
+                <tree string="Nursery Recovery Tree View" delete="false">
                     <field name="recovery_code" string="Recovery ID"/>
                     <field name="recovery_date"/>
                     <field name="qty_recovery" string="QTY Selection Abnormal"/>

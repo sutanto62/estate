@@ -242,8 +242,8 @@
                                         <field name="qty_double" invisible="1"/>
                                         <field name="qty_recovery" invisible="1"/>
                                         <field name="qty_abnormal" readonly="1"/>
-                                        <field name="qty_planted_temp" readonly="1">{‘readonly_by_pass’: True}</field>
-                                        <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="1"/>
+                                        <field name="qty_planted_temp" invisible="1" readonly="1">{‘readonly_by_pass’: True}</field>
+                                        <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="0"/>
                                     </group>
                                     <group name="top_right">
                                         <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
@@ -324,8 +324,7 @@
             <field name="arch" type="xml">
                 <tree string="Seed Batch List"
                       create="false" editable='top'
-                      colors="red:selection_do_var &lt; 0 or planting_selection_var &lt; 0 or location_id &lt; 0 ,
-                      blue:flag_bag = 0 ">
+                      colors="blue:flag_bag!=True,black:flag_bag!=False" delete="false">
                     <field name="name"/>
                     <field name="flag_bag" invisible="1"/>
                     <field name="total_qty_parent" attrs="{'invisible' : [('flag_bag','=',True)]}" string="Qty Box" readonly="1">{‘readonly_by_pass’: True}</field>
@@ -490,22 +489,26 @@
             <field name="res_model">estate.nursery.stage</field>
             <field name="view_mode">tree,form</field>
         </record>
+
         <record model="ir.actions.act_window" id="action_list_variety">
             <field name="name">Seed Variety</field>
             <field name="res_model">estate.nursery.variety</field>
             <field name="view_mode">tree,form</field>
         </record>
+
         <record model="ir.actions.act_window" id="action_list_progeny">
             <field name="name">Seed Progeny</field>
             <field name="res_model">estate.nursery.progeny</field>
             <field name="view_mode">tree,form</field>
         </record>
+
         <record model="ir.actions.act_window" id="action_list_receiving_selection">
             <field name="name">Seed Receiving</field>
             <field name="res_model">stock.picking</field>
             <field name="view_mode">tree,form</field>
             <field name="domain">[('product_id.seed','=','True')]</field>
         </record>
+
         <record model="ir.actions.act_window" id="action_list_batch">
             <field name="name">Seed Batch</field>
             <field name="res_model">estate.nursery.batch</field>
@@ -520,12 +523,14 @@
             <field name="view_mode">form,tree</field>
             <field name="domain">[('state','!=','draft')]</field>
         </record>
+
         <record id="action_list_batch_planting_tree" model="ir.actions.act_window.view">
             <field eval="0" name="sequence"/>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="view_seed_batch_tree"/>
             <field name="act_window_id" ref="action_list_batch_planting"/>
         </record>
+
         <record id="action_list_batch_planting_form" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
             <field name="view_mode">form</field>
@@ -538,17 +543,19 @@
                   name="Nursery"
                   parent="estate.main_estate_menu"
                   sequence="10"/>
+
         <menuitem id="nursery_seed_statement"
                   name="Nursery Statement"
                   parent="estate_nursery_menu"
-                  action="action_list_variety"
                   sequence="11"/>
+
         <menuitem id="nursery_receiving_selection"
                   name="Seed Receiving"
                   parent="estate_nursery_menu"
                   action="action_list_receiving_selection"
                   sequence="12"
                   groups="estate.group_user"/>
+
         <menuitem id="nursery_seed_batch" name="Seed Batch"
                   parent="estate_nursery_menu"
                   action="action_list_batch"
