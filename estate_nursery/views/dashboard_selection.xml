@@ -175,12 +175,13 @@
 
         <!--menu view-->
         <menuitem
-            name="Selection Dashboard" parent="base.menu_reporting_dashboard"
+            name="Selection Dashboard" parent="nursery_seed_statement"
             action="open_board_selection"
             sequence="1"
             id="menu_board_selection" icon="terp-graph"/>
+
         <menuitem
-            name="Batch Dashboard" parent="base.menu_reporting_dashboard"
+            name="Batch Dashboard" parent="nursery_seed_statement"
             action="open_board_batch"
             sequence="2"
             id="menu_board_batch" icon="terp-graph"/>

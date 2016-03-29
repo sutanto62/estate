@@ -224,7 +224,7 @@ class BatchParameter(models.Model):
     variety_id=fields.Many2one('estate.nursery.variety',related='bpb_id.variety_id',readonly=True)
     total_qty_pokok = fields.Integer('Qty Request',track_visibility='onchange',readonly=True)
     batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",
-                               domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_grow','>=', 6)],
+                               domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_range','>=', 6)],
                                track_visibility='onchange')
     seeddo_id=fields.Many2one('estate.nursery.seeddo')
     from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','val_id', "From Location",
