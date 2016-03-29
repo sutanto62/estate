@@ -18,7 +18,7 @@
                                 <table>
 
                                     <thead>
-                                        <td><p style="font-family: times; font-size:20pt;">Report Detail</p></td>
+                                        <td><h3 style="font-family: times; font-size:15pt;">Pada Hari ini &#160;<span t-field="o.cleaving_date" style="font-family: times; font-size:14pt;"/>&#160; Telah di lakukan pemisahan bibit polytones dengan data sebagai berikut: </h3></td>
                                     </thead>
 
                                     <tbody>
@@ -28,8 +28,8 @@
                                         </tr>
 
                                         <tr>
-                                            <td><b style="font-family: times; font-size:15pt;">Cleaving Date :</b></td>
-                                            <td><p t-field="o.cleaving_date" style="font-family: times; font-size:15pt;"/></td>
+                                            <td><b style="font-family: times; font-size:15pt;">Planted Date :</b></td>
+                                            <td><p t-field="o.date_planted" style="font-family: times; ont-size:15pt;"/></td>
                                         </tr>
 
                                         <tr>
