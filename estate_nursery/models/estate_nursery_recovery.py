@@ -16,11 +16,12 @@ class NurseryRecovery(models.Model):
     selection_id=fields.Many2one('estate.nursery.selection','Selection')
     batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
-    recovery_date=fields.Date("Recovery Date")
-    date_planted = fields.Date("Date Planted")
+    recovery_date=fields.Date("Recovery Date",store=True)
+    date_planted = fields.Date("Date Planted",store=True,readonly=True)
     age_seed_recovery = fields.Integer("Age Seed Recovery",store=True)
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",compute="_compute_qty_recovery")
+    qty_selec_recovery=fields.Integer("Quantity Selection recovery",readonly=True)
     qty_plant=fields.Integer()
     qty_normal=fields.Integer(compute="_compute_total_normal",store=True, track_visibility='onchange')
     qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_abnormal" , track_visibility='onchange')
@@ -65,6 +66,16 @@ class NurseryRecovery(models.Model):
         if self.qty_normal and self.qty_plante:
             self.qty_total = int(self.qty_plante) + self.qty_normal
 
+    #constraint for Quantity normal set nor more than quanity recovery
+    @api.constrains('qty_normal','qty_selec_recovery')
+    def _constraint_qty_normal(self):
+        recoveryline = self.env['estate.nursery.recoveryline'].search([('recovery_seed_id', '=', self.id)])
+        if recoveryline:
+            for obj in recoveryline:
+                seed_qty = obj.qty_normal
+
+                if seed_qty > self.qty_selec_recovery:
+                        raise ValidationError("Quantity Normal Not More Than Seed Recovery !")
 
     #state for Cleaving
     @api.one
@@ -168,6 +179,7 @@ class NurseryRecovery(models.Model):
                 self.qty_normal += item.qty_normal
         return True
 
+
     @api.onchange('age_seed_recovery','recovery_date','date_planted')
     def change_age_seed(self):
         fmt = '%Y-%m-%d'
@@ -176,10 +188,10 @@ class NurseryRecovery(models.Model):
             to_date = self.date_planted
             conv_fromdate=datetime.strptime(str(from_date),fmt)
             conv_todate = datetime.strptime(str(to_date), fmt)
-            d1 = from_date.month
+            d1 = conv_fromdate.month
             d2 = conv_todate.month
             rangeyear = conv_todate.year
-            rangeyear1 = from_date.year
+            rangeyear1 = conv_fromdate.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
             if yearresult == 0 :
@@ -188,6 +200,13 @@ class NurseryRecovery(models.Model):
             elif yearresult > 0:
                     ageseed = (d1 + yearresult) - d2
                     self.age_seed_recovery = ageseed
+
+    @api.onchange('qty_selec_recovery','selection_id')
+    def _onchange_recovery_selection(self):
+        if self.selection_id:
+            self.qty_selec_recovery = self.selection_id.qty_recovery
+
+
 
 class RecoveryLine(models.Model):
 
@@ -210,8 +229,8 @@ class RecoveryLine(models.Model):
                                              help="Fill in location seed planted.",
                                              required=True,)
     @api.one
-    @api.onchange('qty_abnormal')
+    @api.onchange('qty_abnormal','recovery_seed_id')
     def change_abnormal(self):
-        self.qty_abnormal = self.recovery_seed_id.qty_abnormal
-        self.write({'qty_abnormal' : self.qty_abnormal})
+        if self.qty_normal :
+            self.qty_abnormal = self.recovery_seed_id.qty_abnormal
 
