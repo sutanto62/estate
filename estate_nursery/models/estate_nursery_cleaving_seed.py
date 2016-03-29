@@ -15,7 +15,7 @@ class CleavingPolytone(models.Model):
     partner_id=fields.Many2one('res.partner')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
     progeny = fields.Char("Seed Progeny",related="batch_id.progeny_id.name")
-    date_planted = fields.Date('Date Planted')
+    date_planted = fields.Date('Date Planted',store=True,readonly=True)
     age_seed_clv =fields.Integer('age_seed_clv',store=True)
     cleaving_code=fields.Char()
     cleaving_date=fields.Date("Date of Cleaving polytone",required=True)
@@ -62,10 +62,10 @@ class CleavingPolytone(models.Model):
             to_date = self.date_planted
             conv_fromdate=datetime.strptime(str(from_date),fmt)
             conv_todate = datetime.strptime(str(to_date), fmt)
-            d1 = from_date.month
+            d1 = conv_fromdate.month
             d2 = conv_todate.month
             rangeyear = conv_todate.year
-            rangeyear1 = from_date.year
+            rangeyear1 = conv_fromdate.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
             if yearresult == 0 :

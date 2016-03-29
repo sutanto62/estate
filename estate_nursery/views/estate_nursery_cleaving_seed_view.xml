@@ -37,7 +37,7 @@
             <field name="model">estate.nursery.cleaving</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Cleaving Tree View">
-                    <field name="cleaving_code" string="Cleaving ID"/>
+                    <field name="cleaving_code" string="Cleaving ID" delete="false"/>
                     <field name="cleaving_date"/>
                     <field name="qty_plantedbatch" string="Quantity Planted"/>
                     <field name="qty_doublebatch" string="Quantity Double"/>
@@ -104,6 +104,7 @@
                         <group>
                             <group>
                                 <field name="id" invisible="1"/>
+                                <field name="date_planted"/>
                                 <field name="cleaving_date" string="Cleaving Date" attrs="{'readonly': [('state','=','done')]}"/>
                                 <field name="qty_plante" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_doublebatch" string="Quantity Last planted" invisible="1"/>
