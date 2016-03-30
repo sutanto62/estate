@@ -45,7 +45,6 @@
         'reports/reportplantation_prenursery_div.xml',
         'reports/reportplantation_mainnursery_report.xml',
         'reports/reportplantation_seedreceived.xml',
-        'reports/reportplantation_seedreceived_bag.xml',
         'reports/reportplantation_culling.xml',
         'reports/reportplantation_cullingbatch.xml',
         'reports/reportplantation_cleaving.xml',
@@ -68,7 +67,6 @@
         'config_reports/reportplantation_div.xml',
         'config_reports/reportmainnursery_div.xml',
         'config_reports/reportplantation_seedreceived.xml',
-        'config_reports/reportplantation_seedreceived_bag.xml',
         'config_reports/reportplantation_seed_do.xml',
         'views/sequence_view.xml',
         'wizard/wizard_seeddo_view.xml'
