@@ -533,7 +533,6 @@ class SelectionLine(models.Model):
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
-    qty_batch = fields.Integer("DO Quantity",store=True,related='selection_id.qty_batch')
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,track_visibility='onchange')
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)

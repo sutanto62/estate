@@ -406,7 +406,6 @@
                         <group>
                             <group>
                                 <field name="cause_id" />
-                                <field name="qty_batch"/>
                                 <field name="stage_a_id"/>
                                 <field name="qty" string="&#931; Quantity Abnormal ." sum="Qty" />
                             </group>
