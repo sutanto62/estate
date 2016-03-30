@@ -38,6 +38,7 @@
         'views/sequence_view_planting.xml',
         'views/estate_planting_view.xml',
         'views/dashboard_selection.xml',
+        'views/inherit_blocktemplate.xml',
         'reports/selection_report.xml',
         'reports/batch_report.xml',
         'reports/requestplanting_report.xml',

@@ -1,0 +1,15 @@
+<openerp>
+    <data>
+        <!--view inherit stage estate block template-->
+         <record model="ir.ui.view" id="view_form_inherit_block_template">
+             <field name="name">Inherit Block Template</field>
+             <field name="model">estate.block.template</field>
+             <field name="inherit_id" ref="estate.view_form_block_config"/>
+             <field name="arch" type="xml">
+                 <field name="estate_location_type" position="after">
+                     <field name="stage_id" string="Stage Nursery" options="{'no_create_edit': True}" attrs="{'invisible' : [('estate_location_type','!=','nursery')]}"/>
+                 </field>
+             </field>
+         </record>
+    </data>
+</openerp>
