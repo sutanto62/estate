@@ -185,7 +185,7 @@
                             <tbody class="selection_tbody">
                                 <tr t-foreach="o.batch_planted_ids" t-as="c" style="font-family: times; font-size:8pt;">
                                     <td style="width:50%;"><span t-field="c.variety_id"/></td>
-                                    <td style="width:50%;"><span t-field="c.batch_id.age_seed_grow"/></td>
+                                    <td style="width:50%;"><span t-field="c.batch_id.age_seed_range"/></td>
                                 </tr>
                             </tbody>
                         </table>
