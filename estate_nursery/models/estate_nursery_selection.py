@@ -549,13 +549,14 @@ class SelectionLine(models.Model):
     comment = fields.Text("Description")
 
     #Domain cause with stage id in selection form
-    @api.onchange('stage_a_id','selection_id','cause_id')
+    @api.onchange('stage_a_id','selection_id','cause_id','location_id')
     def _change_domain_causeid(self):
         # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
         self.stage_a_id=self.selection_id.stage_id
         if self:
             return {
-                'domain': {'cause_id': [('stage_id.id', '=',self.stage_a_id.id)]},
+                'domain': {'cause_id': [('stage_id.id', '=',self.stage_a_id.id)],
+                           'location_id': [('stage_id.id','=',self.stage_a_id.id)]},
             }
         return True
 
@@ -591,6 +592,7 @@ class TempRecovery(models.Model):
                                     domain=[('estate_location', '=', True),
                                             ('estate_location_level', '=', '3'),
                                             ('estate_location_type', '=', 'nursery'),
+                                            ('stage_id','=',3),
                                             ('scrap_location', '=', False),
                                             ],
                                              help="Fill in location seed planted.",

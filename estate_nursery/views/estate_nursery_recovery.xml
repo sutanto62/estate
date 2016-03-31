@@ -94,7 +94,7 @@
                             <group coolspan="10">
                                 <field name="culling_location_id" string="Culling location"
                                         attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
-                                <field name="qty_selec_recovery" string="QTY Selection Recovery" readonly="1"/>
+                                <field name="qty_selec_recovery" string="QTY Selection Recovery" readonly="1">{‘readonly_by_pass’: True}</field>
                                 <field name="qty_total" string="Quantity Total" attrs="{'required': [('state','=','draft')],
                                  'readonly': [('state','!=','draft')]}"/>
                             </group>

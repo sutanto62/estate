@@ -231,6 +231,7 @@ class BatchParameter(models.Model):
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'nursery'),
+                                                  ('stage_id','=',4),
                                                   ('scrap_location', '=', False),
                                                   ])
     parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
