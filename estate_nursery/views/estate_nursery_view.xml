@@ -269,7 +269,8 @@
                                 <field name="selection_ids"  string="Create Selection" attrs="{
                                 'required' : [('state', '=', 'draft')]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
-                                       'default_qty_plante': qty_planted,'default_date_plant': date_planted}"/>
+                                       'default_qty_plante': qty_planted,'default_date_plant': date_planted,
+                                       'default_age_seed': age_seed_range}"/>
                             </page>
 
                             <page string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
@@ -277,14 +278,16 @@
                                 'readonly' : ['|',('status','=',True),
                                 ('age_seed_range','!=',3),('status_age','!=',True)]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
-                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted}"/>
+                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
+                                       'default_age_seed_clv' : age_seed_range}"/>
                             </page>
 
-                            <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery', '=',0)]}">
+                            <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery','=',0)]}">
                                 <field name="recovery_ids" string="Create Recovery Seed" attrs="{
                                 'readonly' : ['|',('selection_count','=',6)]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
-                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted}"/>
+                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted
+                                       'default_age_seed_recovery' : age_seed_range}"/>
                             </page>
 
                             <page string="Additional Information">
