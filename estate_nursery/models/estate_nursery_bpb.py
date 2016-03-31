@@ -34,6 +34,7 @@ class Requestplanting(models.Model):
     divisi_location_id = fields.Many2one('estate.block.template',"Divisi Location",track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '2'),
+                                                  ('estate_location_type','=','planted')
                                                   ],
                                         default=lambda self: self.divisi_location_id.search
                                         ([('name','=','Division 1')]))

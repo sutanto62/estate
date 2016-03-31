@@ -256,6 +256,10 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
+                        <button name="%(action_list_seeddo)d"
+                                type='action' string='Create SPB'
+                                states='validate2' groups="estate.group_manager"/>
+
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
                                statusbar_color='{"draft":"blue","pending":"red","pending2":"red",

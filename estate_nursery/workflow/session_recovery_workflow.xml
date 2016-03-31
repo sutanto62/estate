@@ -1,6 +1,6 @@
 <openerp>
     <data>
-        <!-- Nursery cleaving-->
+        <!-- Nursery Recovery-->
         <record id="estate_nursery.recovery_approval" model="workflow">
             <field name="name">Estate Nursery Recovery Workflow</field>
             <field name="osv">estate.nursery.recovery</field>

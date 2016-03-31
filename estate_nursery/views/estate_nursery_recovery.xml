@@ -2,7 +2,7 @@
     <data>
 
          <!--Search , Recovery-->
-        <record id="view_search_selection" model ="ir.ui.view">
+        <record id="view_search_recovery" model ="ir.ui.view">
             <field name="name">Recovery Search</field>
             <field name="model">estate.nursery.recovery</field>
             <field name="arch" type="xml">

@@ -187,24 +187,48 @@
                                 string="Submit"
                                 class="oe_highlight"/>
                         -->
-                        <button name="draft" type="workflow"
+                        <button name="signal_draft" type="workflow"
                                 string="Reject"
                                 class="oe_highlight"
                                 states="confirmed"
                                 groups="estate.group_assistant"/>
 
-                        <button name="confirmed" type="workflow"
+                        <button name="signal_confirmed" type="workflow"
                                 string="Confirmed"
                                 class="oe_highlight"
                                 states="draft"
                                 groups="estate.group_assistant"/>
 
-                        <button name="approved" type="workflow"
+                        <button name="signal_approved" type="workflow"
                                 string="Approved"
                                 class="oe_highlight"
                                 states="confirmed"
                                 groups="estate.group_manager"/>
+
+                        <button name="%(action_list_transfermn)d"
+                                type='action' string='Transfer Seed PtM'
+                                states='done' groups="estate.group_manager"/>
+
+                        <!--<button name="signal_selection_batch" type="workflow"-->
+                                <!--string="Selection"-->
+                                <!--class="oe_highlight"-->
+                                <!--states="done,cleaving,recovery"-->
+                                <!--groups="estate.group_manager"/>-->
+
+                        <!--<button name="signal_cleaving" type="workflow"-->
+                                <!--string="Cleaving"-->
+                                <!--class="oe_highlight"-->
+                                <!--states="selection"-->
+                                <!--groups="estate.group_manager"/>-->
+
+                        <!--<button name="signal_recovery" type="workflow"-->
+                                <!--string="Recovery"-->
+                                <!--class="oe_highlight"-->
+                                <!--states="selection"-->
+                                <!--groups="estate.group_manager"/>-->
+
                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,done"
                                statusbar_colors='{"draft" :"blue","confirm":"blue","done":"blue"}'/>
                         <!--
                         <button name="action_selection_next" type="object"
@@ -265,7 +289,8 @@
                                     context="{'flag_bag': True,'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
                             </page>
 
-                            <page string="Selection" attrs="{'readonly' : ['|',('selection_count', 'like', 6),('selection_count', '>', 6)],'invisible' : [('state','!=','done')]}">
+                            <page string="Selection" attrs="{'readonly' : ['|',('selection_count', 'like', 6),('selection_count', '>', 6)],
+                            'invisible' : [('state','!=','done')]}">
                                 <field name="selection_ids"  string="Create Selection" attrs="{
                                 'required' : [('state', '=', 'draft')]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
@@ -286,7 +311,7 @@
                                 <field name="recovery_ids" string="Create Recovery Seed" attrs="{
                                 'readonly' : ['|',('selection_count','=',6)]}"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
-                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted
+                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
                                        'default_age_seed_recovery' : age_seed_range}"/>
                             </page>
 

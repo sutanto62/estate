@@ -6,10 +6,8 @@ import calendar
 
 
 class inherit_blocktemplate():
+    #inherit stage_id to location for search location where stage_id
 
     _inherit='estate.block.template'
 
     stage_id=fields.Many2one('estate.nursery.stage','Stage Nursery')
-
-
-

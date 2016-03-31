@@ -7,6 +7,7 @@
             <field name="on_create">True</field>
         </record>
 
+
         <record model="workflow.activity" id="batch_draft">
             <field name="name">Draft</field>
             <field name="wkf_id" ref="estate_nursery.batch_approval"/>
@@ -18,6 +19,7 @@
         <record model="workflow.activity" id="batch_confirmed">
             <field name="name">Confirmed</field>
             <field name="wkf_id" ref="estate_nursery.batch_approval"/>
+            <field name="split_mode">XOR</field>
             <field name="kind">function</field>
             <field name="action">action_confirmed()</field>
         </record>
@@ -25,32 +27,92 @@
         <record model="workflow.activity" id="batch_approved">
             <field name="name">Approved</field>
             <field name="wkf_id" ref="estate_nursery.batch_approval"/>
+            <field name="split_mode">XOR</field>
             <field name="kind">function</field>
             <field name="action">action_approved()</field>
         </record>
 
+        <record model="workflow.activity" id="batch_selection">
+            <field name="name">Selection</field>
+            <field name="wkf_id" ref="estate_nursery.batch_approval"/>
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+            <field name="action">action_selection_batch()</field>
+        </record>
+
+         <record model="workflow.activity" id="batch_recovery">
+            <field name="name">Recovery</field>
+            <field name="wkf_id" ref="estate_nursery.batch_approval"/>
+             <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+            <field name="action">action_recovery()</field>
+         </record>
+
+         <record model="workflow.activity" id="batch_cleaving">
+            <field name="name">Cleaving</field>
+            <field name="wkf_id" ref="estate_nursery.batch_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_cleaving()</field>
+         </record>
+
         <record model="workflow.transition" id="batch_draft_to_confirmed">
             <field name="act_from" ref="batch_draft"/>
             <field name="act_to" ref="batch_confirmed"/>
-            <field name="signal">confirmed</field>
-        </record>
-
-        <record model="workflow.transition" id="batch_done_to_draft">
-            <field name="act_from" ref="batch_approved"/>
-            <field name="act_to" ref="batch_draft"/>
-            <field name="signal">draft</field>
-        </record>
-
-        <record model="workflow.transition" id="batch_confirmed_to_draft">
-            <field name="act_from" ref="batch_confirmed"/>
-            <field name="act_to" ref="batch_draft"/>
-            <field name="signal">draft</field>
+            <field name="signal">signal_confirmed</field>
         </record>
 
         <record model="workflow.transition" id="batch_confirmed_to_done">
             <field name="act_from" ref="batch_confirmed"/>
             <field name="act_to" ref="batch_approved"/>
-            <field name="signal">approved</field>
+            <field name="signal">signal_approved</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_done_to_selection">
+            <field name="act_from" ref="batch_approved"/>
+            <field name="act_to" ref="batch_selection"/>
+            <field name="signal">signal_selection_batch</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_selection_to_recovery">
+            <field name="act_from" ref="batch_selection"/>
+            <field name="act_to" ref="batch_recovery"/>
+            <field name="signal">signal_recovery</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_recovery_to_selection">
+            <field name="act_from" ref="batch_recovery"/>
+            <field name="act_to" ref="batch_selection"/>
+            <field name="signal">signal_selection_batch</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_recovery_to_approved">
+            <field name="act_from" ref="batch_recovery"/>
+            <field name="act_to" ref="batch_approved"/>
+            <field name="signal">signal_approved</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_selection_to_cleaving">
+            <field name="act_from" ref="batch_selection"/>
+            <field name="act_to" ref="batch_cleaving"/>
+            <field name="signal">signal_cleaving</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_cleaving_to_approved">
+            <field name="act_from" ref="batch_cleaving"/>
+            <field name="act_to" ref="batch_approved"/>
+            <field name="signal">signal_approved</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_cleaving_to_selection">
+            <field name="act_from" ref="batch_cleaving"/>
+            <field name="act_to" ref="batch_selection"/>
+            <field name="signal">signal_selection_batch</field>
+        </record>
+
+        <record model="workflow.transition" id="batch_confirmed_to_draft">
+            <field name="act_from" ref="batch_confirmed"/>
+            <field name="act_to" ref="batch_draft"/>
+            <field name="signal">signal_draft</field>
         </record>
 
 

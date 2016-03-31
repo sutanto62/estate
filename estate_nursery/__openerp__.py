@@ -34,11 +34,13 @@
         'views/estate_nursery_culling.xml',
         'views/estate_nursery_cleaving_seed_view.xml',
         'views/estate_nursery_recovery.xml',
+        'views/estate_nursery_transfermn.xml',
         'views/report_plantation_view.xml',
         'views/sequence_view_planting.xml',
         'views/estate_planting_view.xml',
         'views/dashboard_selection.xml',
         'views/inherit_blocktemplate.xml',
+
         'reports/selection_report.xml',
         'reports/batch_report.xml',
         'reports/requestplanting_report.xml',
@@ -50,6 +52,7 @@
         'reports/reportplantation_cullingbatch.xml',
         'reports/reportplantation_cleaving.xml',
         'reports/reportplantation_seeddo.xml',
+
         'workflow/session_selection_workflow.xml',
         'workflow/session_cleaving_workflow.xml',
         'workflow/session_workflow.xml',
@@ -57,7 +60,9 @@
         'workflow/session_requestplanting_workflow.xml',
         'workflow/session_planting_workflow.xml',
         'workflow/session_recovery_workflow.xml',
+        'workflow/session_transfertomn_workflow.xml',
         'res_config_view.xml',
+
         'config_reports/selection_report.xml',
         'config_reports/batch_report.xml',
         'config_reports/report_cleaving.xml',
