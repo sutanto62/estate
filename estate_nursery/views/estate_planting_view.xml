@@ -53,8 +53,13 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
-                        <button name="do_enter_transfer_details" states="assigned,partially_available"
-                                string="Transfer" groups="stock.group_stock_user" type="object" class="oe_highlight"/>
+                        <button name="%(custom_report_seeddo)d"
+                                type='action' string='Print SPB' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+
+                        <button name="%(launch_seeddo_wizard)d" states="done"
+                                string="Transfer Seed" groups="estate.group_manager"
+                                type="action" class="oe_highlight"/>
 
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
@@ -259,6 +264,10 @@
                         <button name="%(action_list_seeddo)d"
                                 type='action' string='Create SPB'
                                 states='validate2' groups="estate.group_manager"/>
+
+                        <button name="%(custom_report_request)d"
+                                type='action' string='Print BPB' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
 
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"

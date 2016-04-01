@@ -11,7 +11,7 @@ _logger	=	logging.getLogger(__name__)
 class TransferSeed(models.TransientModel):
 
     _name = 'estate.nursery.transfer'
-    _inherit = ['stock.transfer_details']
+    # _inherit = ['stock.transfer_details']
 
     date_transfer=fields.Date("Date Transfer")
     transferline_ids=fields.One2many("estate.nursery.transferline",'transfer_id','Detail Transfer')

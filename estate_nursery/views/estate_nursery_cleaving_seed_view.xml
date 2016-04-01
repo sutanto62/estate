@@ -84,7 +84,11 @@
                                 states="approved1"
                                 groups="estate.group_manager"/>
 
-                         <field name="state" widget="statusbar"
+                        <button name="%(custom_report_cleaving_batch)d"
+                                type='action' string='Transfer Seed PtM' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+
+                        <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,approved1,approved2,done"
                                statusbar_color='{"draft":"blue"}'/>
                     </header>

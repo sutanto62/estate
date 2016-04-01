@@ -75,7 +75,9 @@
         'config_reports/reportplantation_seedreceived.xml',
         'config_reports/reportplantation_seed_do.xml',
         'views/sequence_view.xml',
-        'wizard/wizard_seeddo_view.xml'
+
+        'wizard/wizard_seeddo_view.xml',
+        'wizard/wizard_transfermn_view.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

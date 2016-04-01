@@ -8,13 +8,17 @@ import calendar
 class TransferStocktoMn(models.Model):
 
     _name='estate.nursery.transfermn'
-    _inherit = ['mail.thread']
+    _inherits = {'estate.nursery.batch' : 'batch_id'}
+    _inherit = ['mail.thread',]
+
+    def _default_session(self):
+        return self.env['estate.nursery.batch'].browse(self._context.get('active_id'))
 
     name=fields.Char()
     transfermn_code=fields.Char()
-    batch_id=fields.Many2one('estate.nursery.batch')
+    batch_id=fields.Many2one('estate.nursery.batch',string="Batch No", required=True, default=_default_session)
     partner_id = fields.Many2one('res.partner')
-    qty_move =fields.Integer()
+    qty_move =fields.Integer('Quantity Move',compute="_compute_total_normal")
     location_mn_id = fields.Many2one('estate.block.template', "Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
@@ -81,7 +85,7 @@ class TransferStocktoMn(models.Model):
                                                                    ('transfermn_id', '=', self.id)
                                                                    ])
             for i in qty:
-                qty_total_normal += i.qty
+                qty_total_normal += i.qty_move
 
             move_data = {
                 'product_id': self.batch_id.product_id.id,
@@ -116,7 +120,7 @@ class TransferStocktoMn(models.Model):
         if self.transfermnline_ids:
            for qtymove in self.transfermnline_ids:
                qty_move = qtymove.qty_move
-               if qty_move < self.batch_id.qty_planted:
+               if qty_move > self.batch_id.qty_planted:
                     error_msg = "Quantity Move  is set not more than Quantity Planted in Batch "
                     raise exceptions.ValidationError(error_msg)
         return True

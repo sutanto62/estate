@@ -11,3 +11,4 @@ class inherit_blocktemplate():
     _inherit='estate.block.template'
 
     stage_id=fields.Many2one('estate.nursery.stage','Stage Nursery')
+
