@@ -12,8 +12,6 @@ import logging
 
 
 
-select_category = ([('0','untimely'),('1','late'),('2','pass')])
-
 class Selection(models.Model):
     """Seed Selection"""
     _name = 'estate.nursery.selection'
@@ -21,14 +19,17 @@ class Selection(models.Model):
     _inherit = ['mail.thread']
     _inherits = {'estate.nursery.batch': 'batch_id'}
 
-    id = fields.Integer()
+
+    def _default_session(self):
+        return self.env['estate.nursery.batch'].browse(self._context.get('active_id'))
+
     name= fields.Char(store=True, track_visibility='onchange')
     selection_code=fields.Char("SFB",store=True)
-    batch_code=fields.Char(related='batch_id.name',store=True)
+    batch_code=fields.Char(related='batch_id.name',store=True,)
     partner_id = fields.Many2one('res.partner')
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
-    batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade')
+    batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade',default=_default_session)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True)
 
     age_seed = fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
@@ -39,7 +40,7 @@ class Selection(models.Model):
 
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
     qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
-    date_plant = fields.Date("Planted Date",required=False,readonly=True,store=True)
+    date_plant = fields.Date("Planted Date",required=False,readonly=True,store=True,)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
     qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange')
     qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery",store=True)

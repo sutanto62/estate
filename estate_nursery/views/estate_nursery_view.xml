@@ -208,12 +208,10 @@
                         <button name="%(reportplantation_seedreceived_batch)d"
                                 string="Print Seed Receive" states="done" type="action" icon="gtk-print"/>
 
-                        <button name="%(launch_transfermn_wizard)d"
-                                type='action' string='Transfer Seed PtM'
-                                states='done' groups="estate.group_manager"/>
-
                         <button name="%(action_list_transfermn)d"
-                                string="Request Mn" states="done" type="action" />
+                                string="Request Mn"
+                                attrs="{'invisible':['&amp;',('state','!=','done'),('age_seed_range','&lt;',3),('selection_count','&lt;',3)]}"
+                                type="action" />
 
 
                         <!--<button name="signal_selection_batch" type="workflow"-->

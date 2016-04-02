@@ -57,10 +57,6 @@
                                 type='action' string='Print SPB' icon="gtk-print"
                                 states='done' groups="estate.group_manager"/>
 
-                        <button name="%(launch_seeddo_wizard)d" states="done"
-                                string="Transfer Seed" groups="estate.group_manager"
-                                type="action" class="oe_highlight"/>
-
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
                                statusbar_color='{"draft":"blue",}'/>

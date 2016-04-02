@@ -30,7 +30,7 @@ class TransferStocktoMn(models.Model):
 
     date_transfer = fields.Date('Date Transfer Mn',required=True)
 
-    state = fields.Selection([
+    state_tf= fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done')], string="State",store=True)
