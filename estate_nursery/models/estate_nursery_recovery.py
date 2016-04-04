@@ -11,10 +11,16 @@ class NurseryRecovery(models.Model):
     _inherit = ['mail.thread']
     _inherits =  {'estate.nursery.batch': 'batch_id'}
 
+    def _default_session(self):
+        return self.env['estate.nursery.batch'].browse(self._context.get('active_id'))
+
+    # def _default_selection(self):
+    #     return self.env['estate.nursery.selection'].browse(self._context.get('selection_id'))
+
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
     selection_id=fields.Many2one('estate.nursery.selection','Selection')
-    batch_id= fields.Many2one('estate.nursery.batch','batch')
+    batch_id= fields.Many2one('estate.nursery.batch','batch',default=_default_session)
     partner_id=fields.Many2one('res.partner')
     recovery_date=fields.Date("Recovery Date",store=True)
     date_planted = fields.Date("Date Planted",store=True,readonly=True)
@@ -36,6 +42,18 @@ class NurseryRecovery(models.Model):
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
         ('done', 'Transfere to Batch')],string="Recovery State")
+
+    # #Domain cause with stage id in selection form
+    # @api.onchange('batch_id','selection_id')
+    # def _change_domain_causeid(self):
+    #     # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
+    #     self.selection_id=self.batch_id.selection_id
+    #     if self:
+    #         return {
+    #             'domain': {'selection_id': [('batch_id.id','=',self.selection_id.id)]},
+    #         }
+    #     return True
+
 
     #Sequence Recovery code
     def create(self, cr, uid, vals, context=None):

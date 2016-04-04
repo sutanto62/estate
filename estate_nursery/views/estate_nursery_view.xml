@@ -210,9 +210,8 @@
 
                         <button name="%(action_list_transfermn)d"
                                 string="Request Mn"
-                                attrs="{'invisible':['&amp;',('state','!=','done'),('age_seed_range','&lt;',3),('selection_count','&lt;',3)]}"
+                                attrs="{'invisible':[('state','!=','done'),('age_seed_range','&lt;',3),('selection_count','&lt;',3)]}"
                                 type="action" />
-
 
                         <!--<button name="signal_selection_batch" type="workflow"-->
                                 <!--string="Selection"-->

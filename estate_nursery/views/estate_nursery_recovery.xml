@@ -85,6 +85,7 @@
 
                         <group>
                             <group>
+                                <field name="batch_id" invisible="1"/>
                                 <field name="selection_id"  required="1" options="{'no_create_edit': True}" string="Selection"
                                        domain="[('qty_recovery','>',0),('flag_recovery','=',1)]"/>
                                 <field name="date_planted"/>
