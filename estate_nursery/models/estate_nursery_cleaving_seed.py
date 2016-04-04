@@ -83,15 +83,6 @@ class CleavingPolytone(models.Model):
 
     @api.one
     @api.depends('cleavingline_ids')
-    def _compute_total_abnormal(self):
-        self.qty_abnormal = 0
-        if self.cleavingline_ids:
-            for item in self.cleavingline_ids:
-                self.qty_abnormal += item.qty_abnormal_double
-        return True
-
-    @api.one
-    @api.depends('cleavingline_ids')
     def _compute_total_normal(self):
         self.qty_normal = 0
         if self.cleavingline_ids:
@@ -99,12 +90,19 @@ class CleavingPolytone(models.Model):
                 self.qty_normal += item.qty_normal_double
         return True
 
+    #Compute Total Abnormal Double
+    @api.one
+    @api.depends('qty_normal','qty_doublebatch','qty_abnormal')
+    def _compute_total_abnormal(self):
+        if self.qty_normal:
+            maxdouble=int(self.qty_doublebatch)*int(2)
+            self.qty_abnormal= maxdouble-int(self.qty_normal)
+        return True
+
     #compute Total Double after cleavage seed
     @api.one
     @api.depends('qty_normal','qty_plante','qty_doublebatch','qty_total','cleavingline_ids')
     def _compute_subtotal(self):
-        normald = self.qty_normal
-        double = self.qty_doublebatch
         if self.cleavingline_ids:
             total = (self.qty_plante-self.qty_doublebatch)+self.qty_normal
             self.qty_total=total
@@ -208,7 +206,7 @@ class CleavingPolytone(models.Model):
             move.action_confirm()
             move.action_done()
 
-            if  itembatch.location_id and itembatch.qty_abnormal_double > 0:
+            if  itembatch.location_id and self.qty_abnormal > 0:
                 batch_ids.add(itembatch.location_id.inherit_location_id)
 
             for batchpisah in batch_ids:
@@ -217,12 +215,10 @@ class CleavingPolytone(models.Model):
 
                 trash = self.env['estate.nursery.cleavingln'].search([('location_id.inherit_location_id', '=', batchpisah.id),
                                                                         ('cleaving_id', '=', self.id)])
-                for i in trash:
-                    qty_total_cleavagebatch = i.qty_abnormal_double
 
             move_data = {
                         'product_id': self.batch_id.product_id.id,
-                        'product_uom_qty': itembatch.qty_abnormal_double,
+                        'product_uom_qty': self.qty_abnormal,
                         'origin':self.cleaving_code,
                         'product_uom': self.batch_id.product_id.uom_id.id,
                         'name': 'Cleaving Abnormal Seed  %s for %s:'%(self.cleaving_code,self.batch_id.name),
@@ -259,7 +255,6 @@ class CleavingLine(models.Model):
     qty_single=fields.Integer()
     qty_double=fields.Integer()
     qty_normal_double=fields.Integer("Normal Double Seed",store=True)
-    qty_abnormal_double=fields.Integer("Abnormal Double Seed",store=True,compute='_compute_abnormal')
     comment=fields.Text("Description or Comment")
 
     # get quantity Planted
@@ -290,11 +285,4 @@ class CleavingLine(models.Model):
                 if  self.qty_normal_double > max_double:
                     raise ValidationError("Your Qty normal more than Maximal Double: %s" % obj.qty_normal_double)
 
-    #Compute Total Abnormal Double
-    @api.one
-    @api.depends('qty_normal_double','qty_double')
-    def _compute_abnormal(self):
-        if self.qty_normal_double:
-            maxdouble=int(self.qty_double)*int(2)
-            self.qty_abnormal_double= maxdouble-int(self.qty_normal_double)
-        return True
+
