@@ -307,6 +307,20 @@ class Batch(models.Model):
                 temp[stage.id] = stage_value_name
             return temp
 
+    #constraint to recovery if step recovery selec not more than 1 for recovery
+    @api.one
+    @api.constrains('recovery_ids')
+    def _constrains_step_selection(self):
+        if self.recovery_ids:
+            temp={}
+            for step in self.recovery_ids:
+                step_value_name = step.step_id.name
+                if step_value_name in temp.values():
+                    error_msg = "Recovery Step Seed \"%s\" is set more than once " % step_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[step.id] = step_value_name
+            return temp
+
     #Constraint to date selection  not more than selection older
     @api.one
     @api.constrains('selection_ids')
@@ -429,12 +443,18 @@ class Batch(models.Model):
 
     #get Qty Recovery
     @api.one
-    @api.depends("selection_ids")
+    @api.depends('selection_ids','recovery_ids')
     def _compute_recovery(self):
         self.qty_recovery=0
         if self.selection_ids:
             for recovery in self.selection_ids:
                 self.qty_recovery += recovery.qty_recovery
+            if self.recovery_ids:
+                for item_recovery in self.recovery_ids:
+                    self.qty_recovery -= item_recovery.qty_normal
+                if self.recovery_ids.qty_dead:
+                    for totalnormal in self.recovery_ids:
+                        self.qty_recovery -= totalnormal.qty_dead
         return True
 
     #get single qty
@@ -489,6 +509,7 @@ class Batch(models.Model):
         for item in self.batchline_ids:
             self.qty_planted_temp += item.qty_planted
         return True
+
 
     # on change report after change stage
     @api.one

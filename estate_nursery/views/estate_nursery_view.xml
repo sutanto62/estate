@@ -46,7 +46,6 @@
             <field name="arch" type="xml">
                 <tree string="Nursery Stage View">
                     <field name="name"/>
-                    <field name="name"/>
                     <field name="code"/>
                     <field name="sequence"/>
                     <field name="age_minimum"/>
@@ -69,6 +68,35 @@
                             <field name="sequence"/>
                             <field name="age_minimum"/>
                             <field name="age_maximum"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- View, Nursery Step Recovery -->
+        <record model="ir.ui.view" id="view_tree_nursery_step">
+            <field name="name">Nursery Step Recovery</field>
+            <field name="model">estate.nursery.steprecovery</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Step View">
+                    <field name="name"/>
+                    <field name="stage_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_nursery_step">
+            <field name="name">Nursery Step Tree</field>
+            <field name="model">estate.nursery.steprecovery</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Step View">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                             <field name="stage_id"/>
                         </group>
                     </group>
                 </form>
@@ -265,29 +293,38 @@
                                     <group name="top_left">
                                         <field name="age_seed_range" string="Seed Age" readonly="1"/>
                                         <field name="age_seed_planted" string="Seed Age Planted" readonly="1" invisible="0"/>
-                                        <field name="qty_received" readonly="1"/>
-                                        <field name="qty_normal" readonly="1"/>
-                                        <field name="qty_double" invisible="1"/>
-                                        <field name="qty_recovery" invisible="1"/>
-                                        <field name="qty_abnormal" readonly="1"/>
                                         <field name="qty_planted_temp" invisible="1" readonly="1">{‘readonly_by_pass’: True}</field>
-                                        <field name="qty_planted" attrs="{'readonly': [('state','!=','draft')]}" invisible="0"/>
+                                         <field name="age_seed" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"/>
                                     </group>
                                     <group name="top_right">
-                                        <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="product_id" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="variety_id" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="progeny_id" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
-                                        <field name="age_seed" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}"/> month
                                         <field name="selection_count" invisible="1"/>
                                     </group>
                                 </group>
+
+                                <group name="bottom" string="Information Quantity Seed">
+                                     <group name="bottom_left">
+                                         <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                         <field name="qty_received" string="Received Seed Quantity" readonly="1"/>
+                                         <field name="qty_normal" readonly="1"/>
+                                         <field name="qty_abnormal" readonly="1"/>
+                                    </group>
+                                    <group name="bottom_right">
+                                        <field name="qty_single" string="Single Seed Quantity" readonly="1"/>
+                                        <field name="qty_double"  readonly="1" invisible="0"/>
+                                        <field name="qty_planted"  string="Planted Seed Quantity" attrs="{'readonly': [('state','!=','draft')]}" invisible="0"/>
+                                        <field name="qty_recovery" string="Recovery Seed Quantity" invisible="0"/>
+                                    </group>
+                                </group>
                             </page>
+
                             <page string="Delivery (Box/Bags)">
                                 <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
                                     context="{'flag_bag': True,'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
@@ -312,11 +349,10 @@
                             </page>
 
                             <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery','=',0)]}">
-                                <field name="recovery_ids" string="Create Recovery Seed" attrs="{
-                                'readonly' : ['|',('selection_count','=',6)]}"
+                                <field name="recovery_ids" string="Create Recovery Seed"
                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
                                        'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
-                                       'default_age_seed_recovery' : age_seed_range}"/>
+                                       'default_age_seed_recovery' : age_seed_range,'default_qty_recovery': qty_recovery}"/>
                             </page>
 
                             <page string="Additional Information">
@@ -507,6 +543,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="action_list_step">
+            <field name="name">Nursery Step</field>
+            <field name="res_model">estate.nursery.steprecovery</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record model="ir.actions.act_window" id="action_list_variety">
             <field name="name">Seed Variety</field>
             <field name="res_model">estate.nursery.variety</field>
@@ -584,15 +626,23 @@
                   parent="estate.estate_master_menu"
                   action="action_list_variety"
                   groups="estate.group_agronomi"/>
+
         <menuitem id="config_seed_progeny"
                   name="Seed Progeny"
                   parent="estate.estate_master_menu"
                   action="action_list_progeny"
                   groups="estate.group_agronomi"/>
+
         <menuitem id="config_nursery_stage"
                   name="Nursery Stage"
                   parent="estate.estate_master_menu"
                   action="action_list_stage"
+                  groups="estate.group_agronomi"/>
+
+        <menuitem id="config_nursery_step"
+                  name="Nursery Step Recovery"
+                  parent="estate.estate_master_menu"
+                  action="action_list_step"
                   groups="estate.group_agronomi"/>
     </data>
 </openerp>
