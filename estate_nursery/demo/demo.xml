@@ -397,6 +397,7 @@
             <field name="weight">15</field>
             <field name="product_tmpl_id" ref="estate_nursery.seed_dami_product_template"/>
         </record>
+
         <record id="packaging_seed_2" model="product.packaging">
             <field name="qty">7</field>
             <field name="ul" ref="estate_nursery.seed_bag_100"/>
@@ -405,113 +406,6 @@
             <field name="rows">2</field>
             <field name="weight">15</field>
             <field name="product_tmpl_id" ref="estate_nursery.seed_ppks_product_template"/>
-        </record>
-
-        <!-- stock.location -->
-        <record id="estate_nursery.location_estate" model="stock.location">
-            <field name="name">Liyodu Estate</field>
-            <field name="location_id" ref="stock.stock_location_locations"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="False"/>
-        </record>
-        <record id="estate_nursery.location_nursery" model="stock.location">
-            <field name="name">Pembibitan Liyodu</field>
-            <field name="location_id" ref="estate_nursery.location_estate"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="False"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">2</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-        <record id="estate_nursery.location_prenursery" model="stock.location">
-            <field name="name">Pre Nursery</field>
-            <field name="location_id" ref="estate_nursery.location_nursery"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="False"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">2</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-        <record id="estate_nursery.location_mainnursery" model="stock.location">
-            <field name="name">Main Nursery</field>
-            <field name="location_id" ref="estate_nursery.location_nursery"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="False"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">2</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-        <record id="estate_nursery.location_cullingtotal" model="stock.location">
-            <field name="name">Culling</field>
-            <field name="location_id" ref="estate_nursery.location_nursery"/>
-            <field name="usage">view</field>
-            <field name="scrap_location" eval="True"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">2</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-
-        <record id="estate_nursery.location_cullingloss" model="stock.location">
-            <field name="name">Culling Loss</field>
-            <field name="location_id" ref="estate_nursery.location_nursery"/>
-            <field name="usage">view</field>
-        </record>
-        <record id="estate_nursery.location_cullingloss1" model="stock.location">
-            <field name="name">Culling Loss </field>
-            <field name="location_id" ref="estate_nursery.location_cullingloss"/>
-            <field name="usage">inventory</field>
-        </record>
-
-        <record id="estate_nursery.location_virtual_separation" model="stock.location">
-            <field name="name">Virtual Separation</field>
-            <field name="location_id" ref="estate_nursery.location_nursery"/>
-            <field name="usage">view</field>
-        </record>
-
-        <record id="estate_nursery.virtual_separation" model="stock.location">
-            <field name="name">Virtual separation 01 </field>
-            <field name="location_id" ref="estate_nursery.location_virtual_separation"/>
-            <field name="usage">inventory</field>
-        </record>
-
-        <record id="estate_nursery.location_prenursery_1" model="stock.location">
-            <field name="name">PN1</field>
-            <field name="location_id" ref="estate_nursery.location_prenursery"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="False"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">3</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-
-        <record id="estate_nursery.location_prenursery_2" model="stock.location">
-            <field name="name">PN2</field>
-            <field name="location_id" ref="estate_nursery.location_prenursery"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="False"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">3</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-
-        <record id="estate_nursery.location_cullinga1" model="stock.location">
-            <field name="name">Culling A1</field>
-            <field name="location_id" ref="estate_nursery.location_cullingtotal"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="True"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">3</field>
-            <field name="estate_location_type">nursery</field>
-        </record>
-
-        <record id="estate_nursery.location_cullinga2" model="stock.location">
-            <field name="name">Culling A2</field>
-            <field name="location_id" ref="estate_nursery.location_cullingtotal"/>
-            <field name="usage">internal</field>
-            <field name="scrap_location" eval="True"/>
-            <field name="estate_location" eval="True"/>
-            <field name="estate_location_level">3</field>
-            <field name="estate_location_type">nursery</field>
         </record>
 
         <!--Demo report selection-->
@@ -526,11 +420,6 @@
             <!--<field name="report_date"></field>-->
             <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
         </record>
-
-        <!--&lt;!&ndash;Demo Receive&ndash;&gt;-->
-        <!--<record id="receive_request_1" model="estate.nursery.request_receive_wizard">-->
-            <!--<field name="name">RL1</field>-->
-        <!--</record>-->
 
     </data>
 </openerp>

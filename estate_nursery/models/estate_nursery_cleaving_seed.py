@@ -14,7 +14,6 @@ class CleavingPolytone(models.Model):
     batch_id=fields.Many2one('estate.nursery.batch',"Batch")
     partner_id=fields.Many2one('res.partner')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
-    progeny = fields.Char("Seed Progeny",related="batch_id.progeny_id.name")
     date_planted = fields.Date('Date Planted',store=True,readonly=True)
     age_seed_clv =fields.Integer('age_seed_clv',store=True)
     cleaving_code=fields.Char()

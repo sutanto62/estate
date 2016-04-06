@@ -31,7 +31,6 @@
                         <group>
                             <field name="seed"/>
                             <field name="variety_id"/>
-                            <field name="progeny_id" domain="[('variety_id','=',variety_id)]"/>
                         </group>
                     </page>
                 </page>
@@ -193,7 +192,6 @@
                 <tree string="Seed Batch List" colors="red:state in ('draft')">
                     <field name="name"/>
                     <field name="variety_id"/>
-                    <field name="progeny_id"/>
                     <field name="date_received"/>
                     <field name="qty_received" string="Qty DO" sum="Total"/>
                     <field name="qty_planted" string="Qty Planted" sum="Total"/>
@@ -301,8 +299,6 @@
                                         <field name="product_id" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
-                                        <field name="progeny_id" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
                                         <field name="selection_count" invisible="1"/>
                                     </group>
@@ -450,7 +446,6 @@
                     <field name="variety_id" string="Var" attrs="{'invisible': [('is_seed','=',False)]}"/>
                     -->
                     <field name="variety_id" string="Variety" groups="estate.group_user"/>
-                    <field name="progeny_id" string="Progeny" groups="estate.group_user" domain="[('variety_id','=',variety_id)]"/>
                 </field>
             </field>
         </record>
@@ -484,7 +479,6 @@
                         <group name="top_right">
                             <field name="product_id"/>
                             <field name="variety_id"/>
-                            <field name="progeny_id"/>
                             <field name="age_seed"/> month
                             <field name="picking_id"/>
                         </group>

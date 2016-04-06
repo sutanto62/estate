@@ -282,7 +282,7 @@
                                        onchange ="_compute_plannormal"/>
                                 <field name="flag_recovery"
                                        attrs="{'readonly': [('state','=','done')],
-                                       'invisible':['|',('stage_id','not in',('selectionstage_id','=',4)),('state','=','done')]}"/>
+                                       'invisible':[('state','=','done')]}"/>
                             </group>
                         </group>
 
@@ -376,8 +376,8 @@
             <field name="model">estate.nursery.recoverytemp</field>
             <field name="arch" type="xml">
                 <tree string="Seed Selection Recovery Line" colors="red:qty_abn_recovery" editable="bottom">
-                    <field name="qty_abn_recovery" string="&#931; Qty Seed Recovery" sum="Qty"/>
                     <field name="location_id" options="{'no_create_edit': True}"/>
+                    <field name="qty_abn_recovery" string="&#931; Qty Seed Recovery" sum="Qty"/>
                     <field name="comment" string="Add Description/Comment"/>
                 </tree>
             </field>

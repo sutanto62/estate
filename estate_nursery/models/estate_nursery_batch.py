@@ -23,8 +23,6 @@ class Seed(models.Model):
     # age_purchased = fields.Integer("Purchased Age", help="Fill in age of seed in month") # deprecated move to stock_quant
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
                                  help="Select Seed Variety.")
-    progeny_id = fields.Many2one('estate.nursery.progeny', "Progeny",
-                                 help="Value depends on Seed Variety.")
 
 
 class Stage(models.Model):
@@ -91,8 +89,6 @@ class Batch(models.Model):
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)])
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
-    progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
-                                 domain="[('variety_id','=',variety_id)]")
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True ,)
     culling_location_id = fields.Many2one('estate.block.template', _("Culling Location"),
@@ -267,7 +263,7 @@ class Batch(models.Model):
                 'name': 'Selection: %s' % self.lot_id.product_id.display_name,
                 'date_expected': self.date_planted,
                 'location_id': self.picking_id.location_dest_id.id,
-                'location_dest_id': self.culling_location_id.id,
+                'location_dest_id': self.culling_location_id.inherit_location_id.id,
                 'state': 'confirmed', # set to done if no approval required
                 'restrict_lot_id': self.lot_id.id # required by check tracking product
             }
@@ -695,13 +691,13 @@ class TransferDetail(models.TransientModel):
         # Iterate through transfer detail item
         for item in self.item_ids:
             if item.product_id.seed:
-                if date_done or item.variety_id or item.progeny_id:
+                if date_done or item.variety_id:
                     lot_new = self.do_create_lot(item.product_id)
                     item.write({'lot_id': lot_new[0].id})
                     batch = self.do_create_batch(item, self, lot_new[0])
                     self.do_create_batchline(item, batch[0])
                 else:
-                    raise exceptions.Warning('Required Date of Transfer, Variety and Progeny.')
+                    raise exceptions.Warning('Required Date of Transfer and Variety')
             super(TransferDetail, self).do_detailed_transfer()
 
         return True
@@ -734,7 +730,6 @@ class TransferDetail(models.TransientModel):
             'name': "Batch %d" % serial,
             'lot_id': lot.id,
             'variety_id': item.variety_id.id,
-            'progeny_id': item.progeny_id.id,
             'date_received': date_done,
             'age_seed': transfer.age_seed,
             'qty_received': item.quantity,
@@ -873,5 +868,3 @@ class TransferDetailItem(models.TransientModel):
 
     is_seed = fields.Boolean("Is Seed", related='product_id.seed')
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", ondelete="restrict")
-    progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", ondelete="restrict",
-                                 domain="[('variety_id','=',variety_id)]")
