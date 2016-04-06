@@ -378,23 +378,23 @@
                 <tree string="Seed Batch List"
                       create="false" editable='top'
                       colors="blue:flag_bag!=True,black:flag_bag!=False" delete="false">
-                    <field name="name"/>
+                    <field name="name" readonly="1"/>
                     <field name="flag_bag" invisible="1"/>
                     <field name="total_qty_parent" attrs="{'invisible' : [('flag_bag','=',True)]}" string="Qty Box" readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="seed_qty" attrs="{'invisible' : [('flag_bag','=',False)]}" string="Qty DO" sum="Qty DO" readonly="1">{‘readonly_by_pass’: True}</field>
-                    <field name="qty_single" string="Sgl."/>
-                    <field name="qty_double" string="Dbl."/>
+                    <field name="qty_single" string="Sgl." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                    <field name="qty_double" string="Dbl." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
                     <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal"/>
                     <field name="percentage_normal" string="% Nor."
                            groups="estate.group_assistant"/>
-                    <field name="qty_broken" string="Bro."/>
-                    <field name="qty_dead" string="Dd."/>
-                    <field name="qty_fungus" string="Fgs."/>
+                    <field name="qty_broken" string="Bro." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                    <field name="qty_dead" string="Dd." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                    <field name="qty_fungus" string="Fgs." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
                     <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal" />
                     <field name="percentage_abnormal" string="% Abn."
                            groups="estate.group_assistant"/>
-                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted"/>
-                    <field name="location_id" string="Loc." options="{'no_create_edit': True}"/>
+                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted" attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                    <field name="location_id" string="Loc." options="{'no_create_edit': True}" attrs="{'readonly' : [('flag_bag','=',False)]}"/>
                     <field name="selection_do_var" string="Var DO"
                            groups="estate.group_assistant"/>
                     <field name="planting_selection_var" string="Var Plt."

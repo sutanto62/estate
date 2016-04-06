@@ -131,11 +131,5 @@
             <field name="view_search_recovery" ref="estate_nursery.view_form_transferto_mn"/>
         </record>
 
-        <!-- MENU -->
-        <menuitem id="nursery_transfer_Mn"
-                  name="Request Transfer Pn to Mn"
-                  parent="estate_nursery_planting"
-                  action="action_list_transfermn" sequence="18"
-                  groups="estate.group_manager"/>
     </data>
 </openerp>

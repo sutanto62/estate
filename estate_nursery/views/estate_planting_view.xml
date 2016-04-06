@@ -348,7 +348,13 @@
         </record>
         
         <!--Menu View-->
-        <menuitem id="estate_nursery_planting" name="Planting" parent="estate_nursery_menu" sequence="80"/>
+        <menuitem id="estate_nursery_planting" name="Transplanting" parent="estate_nursery_menu" sequence="80"/>
+         <!-- MENU -->
+        <menuitem id="nursery_transfer_mn"
+                  name="Request Transfer Pn to Mn"
+                  parent="estate_nursery_planting"
+                  action="action_list_transfermn" sequence="18"
+                  groups="estate.group_manager"/>
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
                   action="action_list_requestplanting" sequence="19"/>
         <menuitem id="planting_seed" name="Seed Delivery Order" parent="estate_nursery_planting"
