@@ -84,10 +84,6 @@
                                 states="approved1"
                                 groups="estate.group_manager"/>
 
-                        <button name="%(custom_report_cleaving_batch)d"
-                                type='action' string='Print Report Cleaving' icon="gtk-print"
-                                states='done' groups="estate.group_manager"/>
-
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,approved1,approved2,done"
                                statusbar_color='{"draft":"blue"}'/>
@@ -166,6 +162,20 @@
             <field name="context">{'search_default_group_cleaving_id': 1}</field>
             <field name="view_search_cleaving" ref="estate_nursery.view_form_cleaving_nursery"/>
         </record>
+
+        <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_template_cleaving">
+             <field name="name">Inherit Button Cleaving</field>
+             <field name="model">estate.nursery.cleaving</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_cleaving_nursery"/>
+             <field name="arch" type="xml">
+                 <button name="signal_approved2" position="after">
+                     <button name="%(custom_report_cleaving_batch)d"
+                                type='action' string='Print Report Cleaving' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+                 </button>
+             </field>
+         </record>
 
         <!-- MENU -->
         <menuitem id="nursery_seed_cleaving"

@@ -53,10 +53,6 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
-                        <button name="%(custom_report_seeddo)d"
-                                type='action' string='Print SPB' icon="gtk-print"
-                                states='done' groups="estate.group_manager"/>
-
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
                                statusbar_color='{"draft":"blue",}'/>
@@ -257,14 +253,6 @@
                                 states="validate2"
                                 groups="estate.group_manager"/>
 
-                        <button name="%(action_list_seeddo)d"
-                                type='action' string='Create SPB'
-                                states='validate2' groups="estate.group_manager"/>
-
-                        <button name="%(custom_report_request)d"
-                                type='action' string='Print BPB' icon="gtk-print"
-                                states='done' groups="estate.group_manager"/>
-
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,validate1,validate2,done"
                                statusbar_color='{"draft":"blue","pending":"red","pending2":"red",
@@ -346,6 +334,39 @@
             <field name="res_model">estate.nursery.seeddo</field>
             <field name="view_mode">tree,form</field>
         </record>
+
+        <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_template_seeddo">
+             <field name="name">Inherit Button Seeddo</field>
+             <field name="model">estate.nursery.seeddo</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_seeddo"/>
+             <field name="arch" type="xml">
+                 <button name="signal_done" position="after">
+                      <button name="%(custom_report_seeddo)d"
+                                type='action' string='Print SPB' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+                 </button>
+             </field>
+         </record>
+
+        <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_template_request">
+             <field name="name">Inherit Button Request</field>
+             <field name="model">estate.nursery.request</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_request_planting"/>
+             <field name="arch" type="xml">
+                 <button name="signal_done" position="after">
+                     <button name="%(action_list_seeddo)d"
+                                type='action' string='Create SPB'
+                                states='validate2' groups="estate.group_manager"/>
+                     <button name="%(custom_report_request)d"
+                                type='action' string='Print BPB' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+                 </button>
+             </field>
+         </record>
+
+
         
         <!--Menu View-->
         <menuitem id="estate_nursery_planting" name="Transplanting" parent="estate_nursery_menu" sequence="80"/>

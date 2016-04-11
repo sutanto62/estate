@@ -122,14 +122,6 @@
             </field>
         </record>
 
-        <!--Action-->
-        <record model="ir.actions.act_window" id="action_list_transfermn" >
-            <field name="name">Transfer MN</field>
-            <field name="res_model">estate.nursery.transfermn</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_Date': 1}</field>
-            <field name="view_search_recovery" ref="estate_nursery.view_form_transferto_mn"/>
-        </record>
 
     </data>
 </openerp>

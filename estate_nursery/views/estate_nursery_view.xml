@@ -24,7 +24,6 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <field name="type" position="after">
-
                 </field>
                 <page string="Sales" position="after">
                     <page string="Plantation">
@@ -231,14 +230,6 @@
                                 states="confirmed"
                                 groups="estate.group_manager"/>
 
-                        <button name="%(reportplantation_seedreceived_batch)d"
-                                string="Print Seed Receive" states="done" type="action" icon="gtk-print"/>
-
-                        <button name="%(action_list_transfermn)d"
-                                string="Request Mn"
-                                attrs="{'invisible':[('state','!=','done'),('age_seed_range','&lt;',3),('selection_count','&lt;',3)]}"
-                                type="action" />
-
                         <!--<button name="signal_selection_batch" type="workflow"-->
                                 <!--string="Selection"-->
                                 <!--class="oe_highlight"-->
@@ -260,12 +251,6 @@
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,done"
                                statusbar_colors='{"draft" :"blue","confirm":"blue","done":"blue"}'/>
-                        <!--
-                        <button name="action_selection_next" type="object"
-                                string="Next Selection"
-                                states="0,1,2,3,4"
-                                class="oe_highlight"/>
-                        -->
                     </header>
                     <group name="top" string="Batch Information">
                         <group name="top_left">
@@ -389,7 +374,7 @@
                     <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal" />
                     <field name="percentage_abnormal" string="% Abn."
                            groups="estate.group_assistant"/>
-                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted" attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted" readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="location_id" string="Loc." options="{'no_create_edit': True}" attrs="{'readonly' : [('flag_bag','=',False)]}"/>
                     <field name="selection_do_var" string="Var DO"
                            groups="estate.group_assistant"/>
@@ -530,6 +515,67 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_seed_inherit_quant_search">
+            <field name="name">Batch Quants Search</field>
+            <field name="model">estate.nursery.inherit.quant</field>
+            <field name="arch" type="xml">
+                <search string="Quants">
+                    <field name="product_id"/>
+                    <field name="location_id"/>
+                    <field name="package_id" groups="stock.group_tracking_lot"/>
+                    <field name="lot_id" groups="stock.group_production_lot"/>
+                    <field name="owner_id" groups="stock.group_tracking_owner"/>
+                    <group expand="0" string="Filters">
+                        <filter name="internal_loc" string="Internal Locations" domain="[('location_id.usage','=', 'internal')]"/>
+                    </group>
+                    <group expand="0" string="Group by...">
+                       <filter name="productgroup" string="Product" context="{'group_by' : 'product_id'}"/>
+                       <filter string="Owner" context="{'group_by' : 'owner_id'}" groups="stock.group_tracking_owner"/>
+                       <filter string="Lot" context="{'group_by' : 'lot_id'}" groups="stock.group_production_lot"/>
+                       <filter name="locationgroup" string="Location" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'location_id'}"/>
+                       <filter string="Package" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'package_id'}" groups="stock.group_tracking_lot"/>
+                       <filter string="Packaging" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'packaging_type_id'}" groups="stock.group_tracking_lot"/>
+                       <filter string="Company" icon="terp-go-home" domain="[]" context="{'group_by' : 'company_id'}" groups="base.group_multi_company"/>
+                   </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_seed_inherit_quant_tree">
+            <field name="name">Batch Quants Tree</field>
+            <field name="model">estate.nursery.inherit.quant</field>
+            <field name="arch" type="xml">
+                <tree string="Quants" create="0">
+                    <field name="product_id"/>
+                    <field name="qty"/>
+                    <field name="location_id"/>
+                    <field name="owner_id" groups="stock.group_tracking_owner"/>
+                    <field name="lot_id" groups="stock.group_production_lot"/>
+                    <field name="package_id" groups="stock.group_tracking_lot"/>
+                    <field name="packaging_type_id" invisible="1"/>
+                    <field name="in_date"/>
+                    <field name="inventory_value"/>
+                    <field name="reservation_id" invisible="1"/>
+                    <field name="propagated_from_id" invisible="1"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_seed_inherit_stock_quant_form">
+            <field name="name">Batch Quants </field>
+            <field name="model">estate.nursery.inherit.quant</field>
+            <field name="arch" type="xml">
+                <form string="inherit quant view">
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
         <!-- Action -->
         <record model="ir.actions.act_window" id="action_list_stage">
             <field name="name">Nursery Stage</field>
@@ -568,7 +614,24 @@
             <field name="view_mode">tree,form,graph</field>
         </record>
 
+        <record model="ir.actions.act_window" id="action_list_inherit_quant">
+            <field name="name">Inherit Quant</field>
+            <field name="res_model">estate.nursery.inherit.quant</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!--Action-->
+        <record model="ir.actions.act_window" id="action_list_transfermn" >
+            <field name="name">Transfer MN</field>
+            <field name="res_model">estate.nursery.transfermn</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_by_Date': 1}</field>
+            <field name="view_search_recovery" ref="estate_nursery.view_form_transferto_mn"/>
+        </record>
+
+
         <!-- Single model, different tree and form view -->
+
         <record model="ir.actions.act_window" id="action_list_batch_planting">
             <field name="name">Planting</field>
             <field name="res_model">estate.nursery.batch</field>
@@ -584,12 +647,31 @@
             <field name="act_window_id" ref="action_list_batch_planting"/>
         </record>
 
+
         <record id="action_list_batch_planting_form" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_seed_batch_planting_form"/>
             <field name="act_window_id" ref="action_list_batch_planting"/>
         </record>
+
+        <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_template">
+             <field name="name">Inherit Block Template</field>
+             <field name="model">estate.nursery.batch</field>
+             <field name="inherit_id" ref="estate_nursery.view_seed_batch_form"/>
+             <field name="arch" type="xml">
+                 <button name="signal_approved" position="after">
+                     <button name="%(reportplantation_seedreceived_batch)d"
+                                string="Print Seed Receive" states="done" type="action" icon="gtk-print"/>
+                     <button name="%(action_list_transfermn)d"
+                                string="Request Mn"
+                                attrs="{'invisible':[('state','!=','done'),('age_seed_range','&lt;',3),('selection_count','&lt;',3)]}"
+                                type="action" />
+
+                 </button>
+             </field>
+         </record>
 
         <!-- Menu -->
         <menuitem id="estate_nursery_menu"
@@ -613,6 +695,12 @@
                   parent="estate_nursery_menu"
                   action="action_list_batch"
                   sequence="13"/>
+
+        <menuitem id="nursery_quants" name="Seed Batch Quants"
+                  parent="nursery_seed_batch"
+                  action="action_list_inherit_quant"
+                  sequence="13"/>
+
 
         <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />
         <menuitem id="config_seed_variety"
