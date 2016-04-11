@@ -22,7 +22,9 @@ class Seed(models.Model):
     seed = fields.Boolean("Seed Product", help="Included at Seed Management.", default=False)
     # age_purchased = fields.Integer("Purchased Age", help="Fill in age of seed in month") # deprecated move to stock_quant
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
-                                 help="Select Seed Variety.")
+                                 help="Select Seed Variety.",
+                                 default=lambda self: self.variety_id.search([('name','=','Tenera')]))
+
 
 
 class Stage(models.Model):
@@ -142,6 +144,21 @@ class Batch(models.Model):
         ('recovery','Recovery Seed'),('cleaving','Cleaving Seed Polytone'),
         ('tfmain','Transfer Main Nursery'),
         ('done', 'Selection Seed Receiving')], string="State")
+
+    @api.multi
+    def action_view_request_mn(self):
+        course_form = self.env.ref('estate_nursery.view_form_transferto_mn', False)
+        return {
+            'name': 'New request',
+            'type': 'ir.actions.act_window',
+            'res_model': 'estate.nursery.transfermn',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'views': [(course_form.id, 'form')],
+            'view_id': 'course_form.id',
+            }
+
 
     @api.one
     def action_draft(self):
@@ -273,6 +290,7 @@ class Batch(models.Model):
             move.action_done()
 
         return True
+
 
     # set constraint to date received to date planted
     @api.multi
@@ -655,6 +673,12 @@ class Batchline(models.Model):
         self.selection_do_var = (self.subtotal_normal + self.subtotal_abnormal) - self.seed_qty
         self.planting_selection_var = self.qty_planted - self.subtotal_normal
 
+    @api.one
+    @api.onchange('qty_planted','subtotal_normal')
+    def _change_quantity_planted(self):
+        if self.subtotal_normal:
+            self.qty_planted = self.subtotal_normal
+        return True
 
 class Box(models.Model):
     """Deprecated. Use Batchline."""
@@ -867,4 +891,4 @@ class TransferDetailItem(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
     is_seed = fields.Boolean("Is Seed", related='product_id.seed')
-    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", ondelete="restrict")
+    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", ondelete="restrict",related='product_id.variety_id')

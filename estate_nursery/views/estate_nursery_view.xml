@@ -515,65 +515,51 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_seed_inherit_quant_search">
-            <field name="name">Batch Quants Search</field>
-            <field name="model">estate.nursery.inherit.quant</field>
-            <field name="arch" type="xml">
-                <search string="Quants">
-                    <field name="product_id"/>
-                    <field name="location_id"/>
-                    <field name="package_id" groups="stock.group_tracking_lot"/>
-                    <field name="lot_id" groups="stock.group_production_lot"/>
-                    <field name="owner_id" groups="stock.group_tracking_owner"/>
-                    <group expand="0" string="Filters">
-                        <filter name="internal_loc" string="Internal Locations" domain="[('location_id.usage','=', 'internal')]"/>
-                    </group>
-                    <group expand="0" string="Group by...">
-                       <filter name="productgroup" string="Product" context="{'group_by' : 'product_id'}"/>
-                       <filter string="Owner" context="{'group_by' : 'owner_id'}" groups="stock.group_tracking_owner"/>
+
+        <!--Inherit Stock Quant-->
+        <record model="ir.ui.view" id="view_form_inherit_search_template">
+             <field name="name">Inherit Search QuantTemplate</field>
+             <field name="model">stock.quant</field>
+             <field name="inherit_id" ref="stock.quant_search_view"/>
+             <field name="arch" type="xml">
+                     <filter name="internal_loc" string="Internal Locations"
+                             domain="[('location_id.usage','=', 'internal')]" position="replace">
+                        <filter name="product_name" string="Product Seed" domain="[('product_id.seed','=',True)]"
+                                context="{'group_by' : 'product_id'}" />
+                     </filter>
+             </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_inherit_search_groupbytemplate">
+             <field name="name">Inherit Search QuantTemplate</field>
+             <field name="model">stock.quant</field>
+             <field name="inherit_id" ref="stock.quant_search_view"/>
+             <field name="arch" type="xml">
+                 <group expand="0" string="Group by..." position="replace">
+                       <filter name="productgroup" string="Product" context="{'group_by' : 'product_id'}" invisible="0"/>
+                       <filter string="Owner" context="{'group_by' : 'owner_id'}" groups="stock.group_tracking_owner" invisible="1"/>
                        <filter string="Lot" context="{'group_by' : 'lot_id'}" groups="stock.group_production_lot"/>
                        <filter name="locationgroup" string="Location" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'location_id'}"/>
                        <filter string="Package" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'package_id'}" groups="stock.group_tracking_lot"/>
                        <filter string="Packaging" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'packaging_type_id'}" groups="stock.group_tracking_lot"/>
-                       <filter string="Company" icon="terp-go-home" domain="[]" context="{'group_by' : 'company_id'}" groups="base.group_multi_company"/>
-                   </group>
-                </search>
-            </field>
+                       <filter string="Company" icon="terp-go-home" domain="[]" context="{'group_by' : 'company_id'}" groups="base.group_multi_company" />
+                 </group>
+             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_seed_inherit_quant_tree">
-            <field name="name">Batch Quants Tree</field>
-            <field name="model">estate.nursery.inherit.quant</field>
-            <field name="arch" type="xml">
-                <tree string="Quants" create="0">
-                    <field name="product_id"/>
-                    <field name="qty"/>
-                    <field name="location_id"/>
-                    <field name="owner_id" groups="stock.group_tracking_owner"/>
-                    <field name="lot_id" groups="stock.group_production_lot"/>
-                    <field name="package_id" groups="stock.group_tracking_lot"/>
-                    <field name="packaging_type_id" invisible="1"/>
-                    <field name="in_date"/>
-                    <field name="inventory_value"/>
-                    <field name="reservation_id" invisible="1"/>
-                    <field name="propagated_from_id" invisible="1"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="view_seed_inherit_stock_quant_form">
-            <field name="name">Batch Quants </field>
-            <field name="model">estate.nursery.inherit.quant</field>
-            <field name="arch" type="xml">
-                <form string="inherit quant view">
-                    <group>
-                        <group>
-                            <field name="name"/>
-                        </group>
-                    </group>
-                </form>
-            </field>
+        <!--Inherit Stock move -->
+        <record model="ir.ui.view" id="view_form_inherit_search_move_template">
+             <field name="name">Inherit Search MoveTemplate</field>
+             <field name="model">stock.production.lot</field>
+             <field name="inherit_id" ref="stock.search_product_lot_filter"/>
+             <field name="arch" type="xml">
+                 <filter string="Product" icon="terp-accessories-archiver" domain="[]"
+                                context="{'group_by':'product_id'}" position="after">
+                     <filter name="product_name" string="Product Seed" icon="terp-accessories-archiver"
+                             domain="[('product_id.seed','=',True)]"
+                                context="{'group_by':'product_id'}" />
+                 </filter>
+             </field>
         </record>
 
         <!-- Action -->
@@ -612,12 +598,6 @@
             <field name="name">Seed Batch</field>
             <field name="res_model">estate.nursery.batch</field>
             <field name="view_mode">tree,form,graph</field>
-        </record>
-
-        <record model="ir.actions.act_window" id="action_list_inherit_quant">
-            <field name="name">Inherit Quant</field>
-            <field name="res_model">estate.nursery.inherit.quant</field>
-            <field name="view_mode">tree,form</field>
         </record>
 
         <!--Action-->
@@ -668,10 +648,21 @@
                                 string="Request Mn"
                                 attrs="{'invisible':[('state','!=','done'),('age_seed_range','&lt;',3),('selection_count','&lt;',3)]}"
                                 type="action" />
-
                  </button>
              </field>
          </record>
+
+        <!--&lt;!&ndash;inherit action move &ndash;&gt;-->
+        <!--<record model="ir.actions.act_window" id="view_form_inherit_stockmove_template">-->
+             <!--<field name="name">Inherit Stock Move Template</field>-->
+             <!--<field name="res_model">stock.production.lot</field>-->
+             <!--<field name="inherit_id" ref="stock.action_production_lot_form"/>-->
+             <!--<field name="arch" type="xml">-->
+                 <!--<field name="context" position="replace">-->
+                     <!--<field name="context">{'search_default_product_name':1}</field>-->
+                 <!--</field>-->
+             <!--</field>-->
+         <!--</record>-->
 
         <!-- Menu -->
         <menuitem id="estate_nursery_menu"
@@ -696,10 +687,25 @@
                   action="action_list_batch"
                   sequence="13"/>
 
-        <menuitem id="nursery_quants" name="Seed Batch Quants"
+        <menuitem id="traceability_batch" name="Traceability Batch"
                   parent="nursery_seed_batch"
-                  action="action_list_inherit_quant"
                   sequence="13"/>
+
+        <menuitem id="detail_batch" name="Detail Batch"
+                  parent="nursery_seed_batch"
+                  sequence="12"/>
+
+        <menuitem id="nursery_quants_batch" name="Seed Batch Quants"
+                  parent="traceability_batch"
+                  action="stock.quantsact"
+                  sequence="13"/>
+
+        <menuitem id="nursery_move_batch" name="Seed Batch Move"
+                  parent="traceability_batch"
+                  action="stock.action_production_lot_form"
+                  sequence="12"/>
+
+
 
 
         <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />

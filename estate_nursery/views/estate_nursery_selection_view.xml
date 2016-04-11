@@ -446,7 +446,7 @@
         <!-- MENU -->
         <menuitem id="nursery_seed_selection"
                   name="Selection Seed"
-                  parent="nursery_seed_batch"
+                  parent="detail_batch"
                   action="action_list_selection" sequence="15"
                   groups="estate.group_manager"/>
         <menuitem id="nursery_line_selection_stage"

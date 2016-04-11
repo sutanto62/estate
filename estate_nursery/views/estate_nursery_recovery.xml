@@ -158,7 +158,7 @@
         <!-- MENU -->
         <menuitem id="nursery_seed_recovery"
                   name="Recovery Seed"
-                  parent="nursery_seed_batch"
+                  parent="detail_batch"
                   action="action_list_recovery" sequence="17"
                   groups="estate.group_manager"/>
     </data>
