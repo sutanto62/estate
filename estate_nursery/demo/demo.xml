@@ -31,26 +31,7 @@
             <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
         </record>
 
-        <record id="estate_nursery.variety_pis" model="estate.nursery.variety">
-            <field name="name">Pisifera</field>
-            <field name="code">PIS</field>
-            <field name="active">False</field>
-        </record>
-
-        <record id="estate_nursery.variety_tendur" model="estate.nursery.variety">
-            <field name="name">Tenera</field>
-            <field name="code">TEN</field>
-            <field name="active" eval="True"/>
-        </record>
-
-        <record id="estate_nursery.variety_tenppks" model="estate.nursery.variety">
-            <field name="name">Tenera</field>
-            <field name="code">TEN</field>
-            <field name="active" eval="True"/>
-        </record>
-
-
-        <record id="estate_nursery.variety_tentopaz" model="estate.nursery.variety">
+        <record id="estate_nursery.variety_ten" model="estate.nursery.variety">
             <field name="name">Tenera</field>
             <field name="code">TEN</field>
             <field name="active" eval="True"/>
@@ -88,27 +69,6 @@
             <field name="active" eval="True"/>
         </record>
 
-        <!--  -->
-        <!--   <record id="object0" model="estate_nursery.estate_nursery"> -->
-        <!--     <field name="name">Object 0</field> -->
-        <!--   </record> -->
-        <!--  -->
-        <!--   <record id="object1" model="estate_nursery.estate_nursery"> -->
-        <!--     <field name="name">Object 1</field> -->
-        <!--   </record> -->
-        <!--  -->
-        <!--   <record id="object2" model="estate_nursery.estate_nursery"> -->
-        <!--     <field name="name">Object 2</field> -->
-        <!--   </record> -->
-        <!--  -->
-        <!--   <record id="object3" model="estate_nursery.estate_nursery"> -->
-        <!--     <field name="name">Object 3</field> -->
-        <!--   </record> -->
-        <!--  -->
-        <!--   <record id="object4" model="estate_nursery.estate_nursery"> -->
-        <!--     <field name="name">Object 4</field> -->
-        <!--   </record> -->
-        <!--  -->
         <!--
         product.product
         -->
@@ -120,6 +80,7 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">090901</field>
+            <field name="variety_id">Tenera</field>
             <field name="seed" eval="True"/>
             <field name="track_all" eval="True"/>
         </record>
@@ -132,6 +93,7 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">090902</field>
+            <field name="variety_id">Tenera</field>
             <field name="seed" eval="True"/>
             <field name="track_all" eval="True"/>
         </record>
@@ -144,6 +106,7 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">090902</field>
+            <field name="variety_id">Tenera</field>
             <field name="seed" eval="True"/>
             <field name="track_all" eval="True"/>
         </record>
