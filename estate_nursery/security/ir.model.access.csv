@@ -37,9 +37,9 @@
 "cleaving_assistant","estate_nursery_cleaving","estate_nursery.model_estate_nursery_cleaving","estate.group_assistant","True","True","False","False"
 "cleaving_manager","estate_nursery_cleaving","estate_nursery.model_estate_nursery_cleaving","estate.group_manager","True","True","True","False"
 
-"cleavingline_user","estate_nursery_cleavingln","estate_nursery.model_estate_nursery_cleaving","estate.group_user","True","False","True","False"
-"cleavingline_assistant","estate_nursery_cleavingln","estate_nursery.model_estate_nursery_cleaving","estate.group_assistant","True","True","False","False"
-"cleavingline_manager","estate_nursery_cleavingln","estate_nursery.model_estate_nursery_cleaving","estate.group_manager","True","True","True","False"
+"cleavingline_user","estate_nursery_cleavingln","estate_nursery.model_estate_nursery_cleavingln","estate.group_user","True","False","True","False"
+"cleavingline_assistant","estate_nursery_cleavingln","estate_nursery.model_estate_nursery_cleavingln","estate.group_assistant","True","True","False","False"
+"cleavingline_manager","estate_nursery_cleavingln","estate_nursery.model_estate_nursery_cleavingln","estate.group_manager","True","True","True","False"
 
 "recovery_user","estate_nursery_recovery","estate_nursery.model_estate_nursery_recovery","estate.group_user","True","False","True","False"
 "recovery_assistant","estate_nursery_recovery","estate_nursery.model_estate_nursery_recovery","estate.group_assistant","True","True","False","False"
