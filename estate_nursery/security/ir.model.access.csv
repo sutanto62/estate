@@ -1,11 +1,11 @@
 "id","name","model_id/id","group_id/id","perm_read","perm_write","perm_create","perm_unlink"
 
-"batchline_user","estate_nursery_batchline","estate_nursery.model_estate_nursery_batchline","estate.group_user","True","False","True","False"
+"batchline_user","estate_nursery_batchline","estate_nursery.model_estate_nursery_batchline","estate.group_user","True","True","False","False"
 "batchline_manager","estate_nursery_batchline","estate_nursery.model_estate_nursery_batchline","estate.group_manager","True","True","True","False"
 "batchline_assistant","estate_nursery_batchline","estate_nursery.model_estate_nursery_batchline","estate.group_assistant","True","True","False","False"
 
 
-"batch_user","estate_nursery_batch","estate_nursery.model_estate_nursery_batch","estate.group_user","True","False","True","False"
+"batch_user","estate_nursery_batch","estate_nursery.model_estate_nursery_batch","estate.group_user","True","True","False","False"
 "batch_manager","estate_nursery_batch","estate_nursery.model_estate_nursery_batch","estate.group_manager","True","True","True","False"
 "batch_assistant","estate_nursery_batch","estate_nursery.model_estate_nursery_batch","estate.group_assistant","True","True","False","False"
 
@@ -100,5 +100,13 @@
 "variety_user","estate_nursery_variety","estate_nursery.model_estate_nursery_variety","estate.group_user","True","False","True","False"
 "variety_assistant","estate_nursery_variety","estate_nursery.model_estate_nursery_variety","estate.group_assistant","True","True","False","False"
 "variety_manager","estate_nursery_variety","estate_nursery.model_estate_nursery_variety","estate.group_manager","True","True","True","False"
+
+"reportline_user","estate_nursery_reportline","estate_nursery.model_estate_nursery_reportline","estate.group_user","True","False","True","False"
+"reportline_assistant","estate_nursery_reportline","estate_nursery.model_estate_nursery_reportline","estate.group_assistant","True","True","False","False"
+"reportline_manager","estate_nursery_reportline","estate_nursery.model_estate_nursery_reportline","estate.group_manager","True","True","True","False"
+
+"cause_user","estate_nursery_cause","estate_nursery.model_estate_nursery_cause","estate.group_user","True","False","True","False"
+"cause_assistant","estate_nursery_cause","estate_nursery.model_estate_nursery_cause","estate.group_assistant","True","True","False","False"
+"cause_manager","estate_nursery_cause","estate_nursery.model_estate_nursery_cause","estate.group_manager","True","True","True","False"
 
 
