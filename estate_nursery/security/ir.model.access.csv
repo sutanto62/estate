@@ -93,4 +93,12 @@
 "transfermnline_assistant","estate_nursery_transfermnline","estate_nursery.model_estate_nursery_transfermnline","estate.group_assistant","True","True","False","False"
 "transfermnline_manager","estate_nursery_transfermnline","estate_nursery.model_estate_nursery_transfermnline","estate.group_manager","True","True","True","False"
 
+"estate_block_template_user","estate_block_template","estate.model_estate_block_template","estate.group_user","True","False","True","False"
+"estate_block_template_assistant","estate_block_template","estate.model_estate_block_template","estate.group_assistant","True","True","False","False"
+"estate_block_template_manager","estate_block_template","estate.model_estate_block_template","estate.group_manager","True","True","True","False"
+
+"variety_user","estate_nursery_variety","estate_nursery.model_estate_nursery_variety","estate.group_user","True","False","True","False"
+"variety_assistant","estate_nursery_variety","estate_nursery.model_estate_nursery_variety","estate.group_assistant","True","True","False","False"
+"variety_manager","estate_nursery_variety","estate_nursery.model_estate_nursery_variety","estate.group_manager","True","True","True","False"
+
 
