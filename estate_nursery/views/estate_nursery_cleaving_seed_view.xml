@@ -172,7 +172,7 @@
                  <button name="signal_approved2" position="after">
                      <button name="%(custom_report_cleaving_batch)d"
                                 type='action' string='Print Report Cleaving' icon="gtk-print"
-                                states='done' groups="estate.group_manager"/>
+                                states='done' groups="estate.group_agronomi"/>
                  </button>
              </field>
          </record>
@@ -182,6 +182,6 @@
                   name="Cleaving Seed"
                   parent="detail_batch"
                   action="action_list_cleaving" sequence="16"
-                  groups="estate.group_manager"/>
+                  groups="estate.group_agronomi"/>
     </data>
 </openerp>

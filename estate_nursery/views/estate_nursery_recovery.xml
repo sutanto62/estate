@@ -160,6 +160,6 @@
                   name="Recovery Seed"
                   parent="detail_batch"
                   action="action_list_recovery" sequence="17"
-                  groups="estate.group_manager"/>
+                  groups="estate.group_agronomi"/>
     </data>
 </openerp>

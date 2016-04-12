@@ -448,7 +448,7 @@
                   name="Selection Seed"
                   parent="detail_batch"
                   action="action_list_selection" sequence="15"
-                  groups="estate.group_manager"/>
+                  groups="estate.group_agronomi"/>
         <menuitem id="nursery_line_selection_stage"
                   name="Batch Selection Stage"
                   parent="estate.estate_master_menu"

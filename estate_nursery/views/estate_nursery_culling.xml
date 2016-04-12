@@ -162,6 +162,6 @@
                   name="Culling"
                   parent="estate_nursery_menu"
                   action="action_list_culling" sequence="18"
-                  groups="estate.group_manager"/>
+                  groups="estate.group_user"/>
     </data>
 </openerp>

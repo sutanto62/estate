@@ -22,7 +22,7 @@
     'depends': ['base','mail','estate','stock','product',
                 'report','board',
                 'purchase','membership','mrp',
-                'estate_vehicle','readonly_bypass','smile_audit'],
+                'estate_vehicle','readonly_bypass','smile_audit','warning'],
 
     # always loaded
     'data': [
