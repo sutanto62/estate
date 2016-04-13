@@ -32,7 +32,8 @@ class Selection(models.Model):
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade',default=_default_session)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True)
 
-    age_seed = fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
+    age_seed = fields.Integer('Age Seed Batch')
+    age_seed_calculate =fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,
                                         default=lambda self: self.selectionstage_id.search([
@@ -401,12 +402,13 @@ class Selection(models.Model):
                 return True
 
     #onchange age seed
-    @api.depends('age_seed','date_plant','selection_date')
+    @api.depends('age_seed','date_plant','selection_date','age_seed_calculate')
     def _compute_age_seed(self):
         res={}
         fmt = '%Y-%m-%d'
-        if self.date_plant and self.selection_date:
+        if self.age_seed and self.selection_date:
             from_date = self.date_plant
+            age_seed = self.age_seed
             to_date = self.selection_date
             conv_fromdate = datetime.strptime(str(from_date), fmt)
             conv_todate = datetime.strptime(str(to_date), fmt)
@@ -416,7 +418,7 @@ class Selection(models.Model):
             rangeyear1 = conv_fromdate.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
-            self.age_seed = (d2 + yearresult) - d1
+            self.age_seed_calculate =((d2 + yearresult) - d1)-int(age_seed)
         return res
 
 

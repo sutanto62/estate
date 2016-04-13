@@ -15,7 +15,8 @@ class CleavingPolytone(models.Model):
     partner_id=fields.Many2one('res.partner')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
     date_planted = fields.Date('Date Planted',store=True,readonly=True)
-    age_seed_clv =fields.Integer('age_seed_clv',store=True)
+    age_seed=fields.Integer('Age seed')
+    age_seed_clv =fields.Integer('Age Seed Cleaving',compute='_compute_age_seed',store=True)
     cleaving_code=fields.Char()
     cleaving_date=fields.Date("Date of Cleaving polytone",required=True)
     cleavingline_ids=fields.One2many('estate.nursery.cleavingln','cleaving_id',"Cleaving line")
@@ -53,13 +54,16 @@ class CleavingPolytone(models.Model):
        self.qty_singlebatch=self.batch_id.qty_single
        self.write({'qty_singlebatch':self.qty_singlebatch})
 
-    @api.onchange('age_seed_clv','cleaving_date','date_planted')
-    def change_age_seed(self):
+
+    @api.depends('age_seed_clv','cleaving_date','date_planted','age_seed')
+    def _compute_age_seed(self):
+        res={}
         fmt = '%Y-%m-%d'
-        if self.cleaving_date:
-            from_date = self.cleaving_date
-            to_date = self.date_planted
-            conv_fromdate=datetime.strptime(str(from_date),fmt)
+        if self.age_seed and self.cleaving_date:
+            from_date = self.date_planted
+            age_seed = self.age_seed
+            to_date = self.cleaving_date
+            conv_fromdate = datetime.strptime(str(from_date), fmt)
             conv_todate = datetime.strptime(str(to_date), fmt)
             d1 = conv_fromdate.month
             d2 = conv_todate.month
@@ -67,12 +71,9 @@ class CleavingPolytone(models.Model):
             rangeyear1 = conv_fromdate.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
-            if yearresult == 0 :
-                    ageseed = (d1-d2)
-                    self.age_seed_clv = ageseed
-            elif yearresult > 0:
-                    ageseed = (d1 + yearresult) - d2
-                    self.age_seed_clv = ageseed
+            self.age_seed_clv =((d2 + yearresult) - d1)-int(age_seed)
+        return res
+
 
     #get quantity Double
     @api.onchange('qty_doublebatch','batch_id')

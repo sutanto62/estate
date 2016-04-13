@@ -21,7 +21,8 @@ class NurseryRecovery(models.Model):
     step_id = fields.Many2one('estate.nursery.steprecovery','Step Recovery',required=True)
     recovery_date=fields.Date("Recovery Date",store=True)
     date_planted = fields.Date("Date Planted",store=True,readonly=True)
-    age_seed_recovery = fields.Integer("Age Seed Recovery",store=True)
+    age_seed_recovery = fields.Integer("Age Seed Recovery",compute='_compute_age_seed',store=True)
+    age_seed = fields.Integer('Age Seed')
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",)
     qty_plant=fields.Integer()
@@ -195,14 +196,15 @@ class NurseryRecovery(models.Model):
                 self.qty_dead += item.qty_dead
         return True
 
-
-    @api.onchange('age_seed_recovery','recovery_date','date_planted')
-    def change_age_seed(self):
+    @api.depends('age_seed_recovery','recovery_date','date_planted','age_seed')
+    def _compute_age_seed(self):
+        res={}
         fmt = '%Y-%m-%d'
-        if self.recovery_date:
-            from_date = self.recovery_date
-            to_date = self.date_planted
-            conv_fromdate=datetime.strptime(str(from_date),fmt)
+        if self.age_seed and self.recovery_date:
+            from_date = self.date_planted
+            age_seed = self.age_seed
+            to_date = self.recovery_date
+            conv_fromdate = datetime.strptime(str(from_date), fmt)
             conv_todate = datetime.strptime(str(to_date), fmt)
             d1 = conv_fromdate.month
             d2 = conv_todate.month
@@ -210,15 +212,8 @@ class NurseryRecovery(models.Model):
             rangeyear1 = conv_fromdate.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
-            if yearresult == 0 :
-                    ageseed = (d1-d2)
-                    self.age_seed_recovery = ageseed
-            elif yearresult > 0:
-                    ageseed = (d1 + yearresult) - d2
-                    self.age_seed_recovery = ageseed
-
-
-
+            self.age_seed_recovery =((d2 + yearresult) - d1)-int(age_seed)
+        return res
 
 class RecoveryLine(models.Model):
 

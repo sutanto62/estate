@@ -3,6 +3,7 @@
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime, date
 from openerp.exceptions import ValidationError
+
 from dateutil.relativedelta import *
 import calendar
 
@@ -555,6 +556,21 @@ class Batch(models.Model):
                 self.status_age = False
         return False
 
+    # @api.one
+    # def send_message_notification(self):
+    #     #for send message notification to group user or user manager for every batch transfer to mn.
+    #     if self.age_seed_range > 3 or self.age_seed_range < 6:
+    #         send_data = {
+    #             'model': self.model,
+    #             'subject': subject_rendered,
+    #             'body': 'Please for send to Mn %s Because Seed age %s' %(self.lot_id.product_id.display_name,self.age_seed_range) ,
+    #             }
+    #
+    #         sendnotif = self.env['message_template.mixin'].create(send_data)
+    #         sendnotif.send()
+    #         sendnotif.send_group()
+
+
 
     @api.onchange('age_seed','age_seed_planted','date_planted')
     def compute_age_planted(self):
@@ -611,7 +627,26 @@ class Batch(models.Model):
                 date_conv_frommonth = conv_fromdate.month
                 month=date_conv_tomonth-date_conv_frommonth
                 self.age_seed_range += month
-                print self.month
+            if self.cleaving_ids:
+                for date in self.cleaving_ids:
+                    date_cleaving = date.cleaving_date
+                from_date = self.date_planted
+                conv_fromdate = datetime.strptime(str(from_date), fmt)
+                conv_todate = datetime.strptime(str(date_cleaving), fmt)
+                date_conv_tomonth = conv_todate.month
+                date_conv_frommonth = conv_fromdate.month
+                month=date_conv_tomonth-date_conv_frommonth
+                self.age_seed_range += month
+            if self.recovery_ids:
+                for date in self.recovery_ids:
+                    date_recovery = date.recovery_date
+                from_date = self.date_planted
+                conv_fromdate = datetime.strptime(str(from_date), fmt)
+                conv_todate = datetime.strptime(str(date_recovery), fmt)
+                date_conv_tomonth = conv_todate.month
+                date_conv_frommonth = conv_fromdate.month
+                month=date_conv_tomonth-date_conv_frommonth
+                self.age_seed_range += month
 
 
 class Batchline(models.Model):
@@ -892,3 +927,5 @@ class TransferDetailItem(models.TransientModel):
 
     is_seed = fields.Boolean("Is Seed", related='product_id.seed')
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", ondelete="restrict",related='product_id.variety_id')
+
+

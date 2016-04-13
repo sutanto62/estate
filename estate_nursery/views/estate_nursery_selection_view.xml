@@ -266,7 +266,8 @@
                                 <field name="selection_date"
                                        attrs="{'invisible': [('selectionstage_id','=',False)],
                                  'readonly': [('state','=','done')]}"/>
-                                 <field name="age_seed" readonly="1"/>
+                                <field name="age_seed" readonly="1"/>
+                                <field name="age_seed_calculate" readonly="1"/>
 
                             </group>
 

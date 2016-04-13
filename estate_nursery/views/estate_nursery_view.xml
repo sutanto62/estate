@@ -252,101 +252,108 @@
                                statusbar_visible="draft,confirmed,done"
                                statusbar_colors='{"draft" :"blue","confirm":"blue","done":"blue"}'/>
                     </header>
-                    <group name="top" string="Batch Information">
-                        <group name="top_left">
-                            <field name="name"/>
-                            <field name="date_received" />
-                            <field name="date_planted" attrs="{'required': [('state','=','draft')], 'readonly': [('state','=','done')]}"/>
-                            <field name="state" invisible="True"/>
-                            <field name="stage_id" invisible="True" readonly="True"/>
-                            <field name="status" invisible="1" context="{'default_status' : False}"/>
-                            <field name="status_age" invisible="1" context="{'default_status' : False}"/>
+                    <sheet>
+                        <group name="top" string="Batch Information">
+                            <group name="top_left">
+                                <field name="name"/>
+                                <field name="date_received" />
+                                <field name="date_planted" attrs="{'required': [('state','=','draft')], 'readonly': [('state','=','done')]}"/>
+                                <field name="state" invisible="True"/>
+                                <field name="stage_id" invisible="True" readonly="True"/>
+                                <field name="status" invisible="1" context="{'default_status' : False}"/>
+                                <field name="status_age" invisible="1" context="{'default_status' : False}"/>
+                            </group>
+                            <group name="top_right">
+                                <field name="picking_id" />
+                                <field name="culling_location_id"
+                                       attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','!=','draft')]}" options="{'no_create_edit': True}"/>
+                            </group>
                         </group>
-                        <group name="top_right">
-                            <field name="picking_id" />
-                            <field name="culling_location_id"
-                                   attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','!=','draft')]}" options="{'no_create_edit': True}"/>
-                        </group>
-                    </group>
-                    <group>
-                        <notebook>
-                            <page string="Detail Information">
-                                <group name="top" string="Information">
-                                    <group name="top_left">
-                                        <field name="age_seed_range" string="Seed Age" readonly="1"/>
-                                        <field name="age_seed_planted" string="Seed Age Planted" readonly="1" invisible="0"/>
-                                        <field name="qty_planted_temp" invisible="1" readonly="1">{‘readonly_by_pass’: True}</field>
-                                         <field name="age_seed" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}"/>
+
+                            <notebook>
+                                <page string="Detail Information">
+                                    <group name="top" string="Information">
+                                        <group name="top_left">
+                                            <field name="age_seed_range" string="Seed Age" readonly="1"/>
+                                            <field name="age_seed_planted" string="Seed Age Planted" readonly="1" invisible="0"/>
+                                            <field name="qty_planted_temp" invisible="1" readonly="1">{‘readonly_by_pass’: True}</field>
+                                             <field name="age_seed" attrs="{'required': [('state','=','draft')],
+                                            'readonly': [('state','=','done')]}"/>
+                                        </group>
+                                        <group name="top_right">
+                                            <field name="product_id" attrs="{'required': [('state','=','draft')],
+                                            'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                            <field name="variety_id" attrs="{'required': [('state','=','draft')],
+                                            'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                            <field name="selection_count" invisible="1"/>
+                                        </group>
                                     </group>
-                                    <group name="top_right">
-                                        <field name="product_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
-                                        <field name="variety_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
-                                        <field name="selection_count" invisible="1"/>
+
+                                    <group name="bottom" string="Information Quantity Seed">
+                                         <group name="bottom_left">
+                                             <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
+                                            'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                             <field name="qty_received" string="Received Seed Quantity" readonly="1"/>
+                                             <field name="qty_normal" readonly="1"/>
+                                             <field name="qty_abnormal" readonly="1"/>
+                                        </group>
+                                        <group name="bottom_right">
+                                            <field name="qty_single" string="Single Seed Quantity" readonly="1"/>
+                                            <field name="qty_double"  readonly="1" invisible="0"/>
+                                            <field name="qty_planted"  string="Planted Seed Quantity" attrs="{'readonly': [('state','!=','draft')]}" invisible="0"/>
+                                            <field name="qty_recovery" string="Recovery Seed Quantity" invisible="0"/>
+                                        </group>
                                     </group>
-                                </group>
+                                </page>
 
-                                <group name="bottom" string="Information Quantity Seed">
-                                     <group name="bottom_left">
-                                         <field name="kebun_location_id" attrs="{'required': [('state','=','draft')],
-                                        'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
-                                         <field name="qty_received" string="Received Seed Quantity" readonly="1"/>
-                                         <field name="qty_normal" readonly="1"/>
-                                         <field name="qty_abnormal" readonly="1"/>
+                                <page string="Delivery (Box/Bags)">
+                                    <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
+                                        context="{'flag_bag': True,'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
+                                </page>
+
+                                <page string="Selection" attrs="{'readonly' : ['|',('selection_count', 'like', 6),('selection_count', '>', 6)],
+                                'invisible' : [('state','!=','done')]}">
+                                    <field name="selection_ids"  string="Create Selection" attrs="{
+                                    'required' : [('state', '=', 'draft')]}"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
+                                           'default_qty_plante': qty_planted,'default_date_plant': date_planted,
+                                           'default_age_seed': age_seed_range}"/>
+                                </page>
+
+                                <page> string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
+                                    <field name="cleaving_ids" string="Create Cleaving Polytone" attrs="{
+                                    'readonly' : ['|',('status','=',True),
+                                    ('age_seed_range','!=',3),('status_age','!=',True)]}"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
+                                           'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
+                                           'default_age_seed' : age_seed_range}"/>
+                                </page>
+
+                                <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery','=',0)]}">
+                                    <field name="recovery_ids" string="Create Recovery Seed"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
+                                           'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
+                                           'default_age_seed' : age_seed_range,'default_qty_recovery': qty_recovery}"/>
+                                </page>
+
+                                <page string="Additional Information">
+                                    <group name="bottom" string="Information">
+                                        <field name="comment"/>
                                     </group>
-                                    <group name="bottom_right">
-                                        <field name="qty_single" string="Single Seed Quantity" readonly="1"/>
-                                        <field name="qty_double"  readonly="1" invisible="0"/>
-                                        <field name="qty_planted"  string="Planted Seed Quantity" attrs="{'readonly': [('state','!=','draft')]}" invisible="0"/>
-                                        <field name="qty_recovery" string="Recovery Seed Quantity" invisible="0"/>
-                                    </group>
-                                </group>
-                            </page>
-
-                            <page string="Delivery (Box/Bags)">
-                                <field name="batchline_ids" attrs="{'readonly' : [('state', '!=', 'draft')]}"
-                                    context="{'flag_bag': True,'tree_view_ref' : 'estate_nursery.view_seed_batchline_tree'}"/>
-                            </page>
-
-                            <page string="Selection" attrs="{'readonly' : ['|',('selection_count', 'like', 6),('selection_count', '>', 6)],
-                            'invisible' : [('state','!=','done')]}">
-                                <field name="selection_ids"  string="Create Selection" attrs="{
-                                'required' : [('state', '=', 'draft')]}"
-                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
-                                       'default_qty_plante': qty_planted,'default_date_plant': date_planted,
-                                       'default_age_seed': age_seed_range}"/>
-                            </page>
-
-                            <page string="Cleaving Polytone" attrs="{'invisible' : [('qty_double', '=',0)],}">
-                                <field name="cleaving_ids" string="Create Cleaving Polytone" attrs="{
-                                'readonly' : ['|',('status','=',True),
-                                ('age_seed_range','!=',3),('status_age','!=',True)]}"
-                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_cleaving_polytone',
-                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
-                                       'default_age_seed_clv' : age_seed_range}"/>
-                            </page>
-
-                            <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery','=',0)]}">
-                                <field name="recovery_ids" string="Create Recovery Seed"
-                                       context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
-                                       'default_qty_plante': qty_planted,'default_date_planted' : date_planted,
-                                       'default_age_seed_recovery' : age_seed_range,'default_qty_recovery': qty_recovery}"/>
-                            </page>
-
-                            <page string="Additional Information">
-                                <group name="bottom" string="Information">
-                                    <field name="comment"/>
-                                </group>
-                            </page>
-                        </notebook>
-                    </group>
-                    <div class="oe_chatter">
-                            <field name="message_follower_ids" widget="mail_followers"/>
-                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
-                    </div>
+                                </page>
+                            </notebook>
+                        <div class="oe_chatter">
+                                <field name="message_follower_ids" widget="mail_followers"/>
+                                <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
+                    </sheet>
+                       <footer>
+                            <button name="show_history" string="_Show" class="oe_highlight"/>
+                        </footer>
+                        <script>
+                            jQuery('footer button:first').click(function() { alert('hello pagi oza'); });
+                        </script>
                 </form>
             </field>
         </record>
@@ -357,7 +364,7 @@
             <field name="model">estate.nursery.batchline</field>
             <field name="arch" type="xml">
                 <tree string="Seed Batch List"
-                      create="false" editable='top'
+                      create="false" editable="bottom"
                       colors="blue:flag_bag!=True,black:flag_bag!=False" delete="false">
                     <field name="name" readonly="1"/>
                     <field name="flag_bag" invisible="1"/>
@@ -390,12 +397,39 @@
             <field name="model">estate.nursery.batchline</field>
             <field name="arch" type="xml">
                 <form string="Seed Batchline">
-                    <group>
-                        <field name="name"/>
-                        <field name="complete_name"/>
-                        <field name="parent_id"/>
-                        <field name="seed_qty"/>
-                    </group>
+                    <sheet>
+                        <group>
+                            <group string=" Information  Seed">
+                                <field name="name" readonly="1"/>
+                                <field name="flag_bag" invisible="1"/>
+                                <field name="complete_name" invisible="1"/>
+                                <field name="parent_id" readonly="1"/>
+                                <field name="total_qty_parent" attrs="{'invisible' : [('flag_bag','=',True)]}"
+                                       string="Qty Box" readonly="1">{‘readonly_by_pass’: True}</field>
+                                <field name="qty_planted" string="&#931; Plt."
+                                       sum="Qty Planted" readonly="1">{‘readonly_by_pass’: True}</field>
+                                <field name="location_id" string="Loc." attrs="{'invisible' : [('flag_bag','=',False)]}"
+                                       options="{'no_create_edit': True}" />
+                            </group>
+                            <group string="Selection Normal and Double">
+                                <field name="seed_qty" readonly="1" attrs="{'invisible' : [('flag_bag','=',False)]}"/>
+                                <field name="qty_single" string="Sgl." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                                <field name="qty_double" string="Dbl." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                                <field name="subtotal_normal" string="&#931; Nor." sum="Qty Normal" readonly="1"/>
+                                <field name="percentage_normal" string="% Nor."
+                                    groups="estate.group_assistant"  readonly="1"/>
+                            </group>
+                            <group string="Selection Abnormal and Dead">
+                                <field name="qty_broken" string="Bro." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                                <field name="qty_dead" string="Dd." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                                <field name="qty_fungus" string="Fgs." attrs="{'readonly' : [('flag_bag','=',False)]}"/>
+                                <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal" readonly="1" />
+                                <field name="percentage_abnormal" string="% Abn."
+                                    groups="estate.group_assistant"  readonly="1" />
+                            </group>
+
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
