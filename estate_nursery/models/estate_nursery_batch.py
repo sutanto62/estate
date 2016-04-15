@@ -119,8 +119,8 @@ class Batch(models.Model):
 
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity",track_visibility='onchange')
-    qty_single= fields.Integer("single Seed Quantity",compute='_compute_single')
-    qty_double=fields.Integer("Double Seed Quantity",compute='_compute_double')
+    qty_single= fields.Integer("single Seed Quantity",compute='_compute_single',store=True)
+    qty_double=fields.Integer("Double Seed Quantity",compute='_compute_double',store=True)
     qty_abnormal=fields.Integer("Abnormal Seed Quantity",track_visibility='onchange')
     qty_normal_double=fields.Integer("Normal After Cleaving")
     qty_abnormal_double=fields.Integer("Abnormal After Double")
