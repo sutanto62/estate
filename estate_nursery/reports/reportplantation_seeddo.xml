@@ -150,10 +150,10 @@
                                     </thead>
                                     <tbody class="selection_tbody">
                                             <tr height="43" t-foreach="o.batch_planted_ids" t-as="f" style="font-family: times; font-size:8pt;">
-                                                <td style="width:10%; color:#568eff;">1</td>
-                                                <td style="width:10%; color:#568eff;">1</td>
-                                                <td style="width:10%; color:#568eff;">1</td>
-                                                <td style="width:10%; color:#568eff;">1</td>
+                                                <td style="width:10%; color:#568eff;">&#160;</td>
+                                                <td style="width:10%; color:#568eff;">&#160;</td>
+                                                <td style="width:10%; color:#568eff;">&#160;</td>
+                                                <td style="width:10%; color:#568eff;">&#160;</td>
                                                 <tr height="43" t-foreach="f.bpb_id.requestline_ids" t-as="s" style="font-family: times; font-size:11pt;" >
                                                     <td style="width:10%; color:#568eff;"><span t-field="s.inherit_location_id"/></td>
                                                     <td style="width:10%;"></td>
