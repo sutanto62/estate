@@ -1,10 +1,11 @@
 from openerp import models, fields, api, exceptions
+import logging
 from datetime import datetime, date
 from dateutil.relativedelta import *
 from openerp.exceptions import ValidationError
 import calendar
 
-
+_logger = logging.getLogger(__name__)
 class Culling(models.Model):
 
     _name = "estate.nursery.culling"
@@ -89,7 +90,6 @@ class Culling(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[batch.id] = batch_value_name
             return temp
-
 
     #state for Culling
     @api.one
@@ -227,8 +227,7 @@ class CullingLine(models.Model):
     name=fields.Char(related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
     batch_id=fields.Many2one('estate.nursery.batch')
-    selection_id=fields.Many2one('estate.nursery.selection',domain="[('qty_abnormal','>',0)]"
-                                 )
+    selection_id=fields.Many2one('estate.nursery.selection')
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='selection_id.batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="selection_id.lot_id.product_id")
@@ -249,6 +248,18 @@ class CullingLine(models.Model):
                                                   ('estate_location_type', '=', 'nursery'),('scrap_location', '=', True)]
                                           ,store=True,related='selection_id.culling_location_id',readonly=True)
 
+    @api.multi
+    @api.onchange('selection_id')
+    def _onchange_batch_id(self):
+        cullinglist = self.env['estate.nursery.cullingline'].search([])
+        if self:
+            arrCullinglist = []
+            for a in cullinglist:
+                arrCullinglist.append(a.selection_id.id)
+            return {
+                'domain': {'selection_id': [('id','not in',arrCullinglist),('qty_abnormal','>',0)]}
+            }
+
     #get qty total do batch
     @api.onchange('selection_id','total_seed_dobatch')
     def _get_total_seed_dobatch(self):
@@ -259,7 +270,7 @@ class CullingLine(models.Model):
     #get qty normal batch
     @api.onchange('selection_id','allqty_normal_batch')
     def _get_total_allnormal_dobatch(self):
-        self.allqty_normal_batch=self.selection_id.qty_nor_batch
+        self.allqty_normal_batch=self.selection_id.batch_id.qty_normal
         self.write({'allqty_normal_batch':self.allqty_normal_batch})
 
 
@@ -273,13 +284,13 @@ class CullingLine(models.Model):
     #get qty abnormal batch
     @api.onchange('selection_id','allqty_abnormal_batch')
     def _get_total_allabnormal_dobatch(self):
-        self.allqty_abnormal_batch=self.selection_id.qty_abn_batch
+        self.allqty_abnormal_batch=self.selection_id.batch_id.qty_abnormal
         self.write({'allqty_abnormal_batch':self.allqty_abnormal_batch})
 
     #get qty Planted
     @api.onchange('selection_id','total_transplanted')
     def _get_total_allplanted(self):
-        self.total_transplanted=self.selection_id.qty_tpr_batch
+        self.total_transplanted=self.selection_id.qty_plant
         self.write({'total_transplanted':self.total_transplanted})
         print self.total_transplanted
 
@@ -296,9 +307,16 @@ class CullinglineBatch(models.Model):
 
     _name = "estate.nursery.cullinglinebatch"
 
+    def domain_batch(self):
+        tempt=[]
+        for record in self:
+            tempt.append(record.batch_id)
+            print tempt
+        return tempt
+
     name=fields.Char("Culling line name",related='culling_id.name')
     culling_id=fields.Many2one('estate.nursery.culling')
-    batch_id=fields.Many2one('estate.nursery.batch',domain="[('qty_abnormal','>',0)]")
+    batch_id=fields.Many2one('estate.nursery.batch',)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
     product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
@@ -327,6 +345,17 @@ class CullinglineBatch(models.Model):
             self.qty_normal_batch=self.batch_id.qty_normal
             self.write({'qty_normal_batch':self.qty_normal_batch})
 
+    @api.multi
+    @api.onchange('batch_id')
+    def _onchange_batch_id(self):
+        cullinglist = self.env['estate.nursery.cullinglinebatch'].search([])
+        if self:
+            arrCullinglist = []
+            for a in cullinglist:
+                arrCullinglist.append(a.batch_id.id)
+            return {
+                'domain': {'batch_id': [('id','not in',arrCullinglist),('qty_abnormal','>',0)]}
+            }
 
     #get qty seed receive perbatch
     @api.onchange('batch_id','total_seed_DO')
@@ -340,6 +369,13 @@ class CullinglineBatch(models.Model):
     def _get_abnormal_total(self):
             total_abnormal = self.qty_abnormal_batch
             self.total_qty_abnormal_batch = total_abnormal
+
+# class cullingtest(models.Model):
+#
+#     _name = "estate.nursery.cullingtest"
+#
+#     name=fields.Char()
+#     batch_id=fields.Many2one('estate.nursery.batch')
 
 
 

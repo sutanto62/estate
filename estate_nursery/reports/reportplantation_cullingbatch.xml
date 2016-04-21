@@ -12,185 +12,191 @@
                             </div>
                         </div>
 
-                    <!-- SECOND ROW -->
-                        <div class="row col-xs-12">
-                            <div class="col-xs-12" style="font-family: times;font-size:14pt;">
-                                <table>
-                                    <thead>
-                                        <td><p style="font-family: times; font-size:20pt;">Report Detail</p></td>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><b style="font-family: times; font-size:15pt;">Report Name :</b></td>
-                                            <td><p t-field="o.culling_code" style="font-family: times; font-size:15pt;"/></td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><b style="font-family: times; font-size:15pt;">Culling Date :</b></td>
-                                            <td><p t-field="o.culling_date" style="font-family: times; font-size:15pt;"/></td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><b style="font-family: times; font-size:15pt;">Total Abnormal :</b></td>
-                                            <td><p t-field="o.total_quantityabnormal_temp" style="font-family: times; font-size:15pt;"/></td>
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
+                    <!-- Deklarasi variabel global -->
+                        <t t-set="totalseeddo" t-value="0"/>
+                        <t t-set="totalqtynormal" t-value="0"/>
+                        <t t-set="totalqtyabnormal" t-value="0"/>
+                        <t t-set="totaltotalabnormal" t-value="0"/>
+                        <t t-set="totaltotalplanted" t-value="0"/>
                         <!-- Third ROW -->
-                        <div class="row col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
-                            <div class="col-xs-1">
-                                <table>
+                        <div class="row col-xs-12" style="background-color:white;color:black;">
+                            <div class="row col-xs-12" >
+                                <table width="100%">
                                     <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">Batch No </p></td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Batch</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Seed Do</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Qty Normal</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Qty Abnormal</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Location Culling</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Total Abnormal</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Total Transplanted</td>
                                     </tr>
-                                </table></div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">Seed DO</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">QTY Abnormal Batch</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">QTY Normal Batch</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-2">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">Location Culling</p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">Total  Abnormal </p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="col-xs-1">
-                                <table>
-                                    <tr>
-                                        <td><p style="font-family: times; font-size:15pt;">Total  Transplanted </p></td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
+                                    <t t-foreach="o.cullingline_ids" t-as="s">
+                                    <tr height="40"  style="font-family: times; font-size:8pt; ">
+                                        <!--set variabel -->
+                                        <t t-set="totalseeddo" t-value="totalseeddo+s.total_seed_DO"/>
+                                        <t t-set="totalqtynormal" t-value="totalqtynormal+s.qty_normal_batch"/>
+                                        <t t-set="totalqtyabnormal" t-value="totalqtyabnormal+s.qty_abnormal_batch"/>
+                                        <t t-set="totaltotalabnormal" t-value="totaltotalabnormal+s.total_qty_abnormal_batch"/>
+                                        <t t-set="totaltotalplanted" t-value="totaltotalplanted+s.qty_transplanted"/>
 
-                      <!-- Forth ROW -->
-                      <div class="row col-xs-12" style="border: 1px solid #568eff;">
-                          <t t-foreach="o.cullingline_ids"  t-as="i">
-                                <div class="col-xs-12">
-                                    <div class="col-xs-1">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.batch_id.name" style="text-align:left;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.total_seed_DO" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.qty_abnormal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.qty_normal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-2" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.culling_location_id.name" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.total_qty_abnormal_batch" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1" style="text-align:right;border-left:1px solid #568eff;">
-                                        <div>
-                                            <table>
-                                                <tr>
-                                                    <td><p t-esc="i.qty_transplanted" style="text-align:right;font-family: times; font-size:14pt;"/></td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                            </div>
-                        </t>
-                    </div>
-
-                    <!-- Fifth ROW -->
-                    <div class="row col-xs-12" style="border: 1px solid #568eff;">
-                        <div class="col-xs-8" style="text-align:right;" >
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <td>
-                                            <b style="text-align:right;font-family: times; font-size:15pt;">Total:</b>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >&#160;</td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.total_seed_DO"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.qty_normal_batch"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;">
+                                                            <span t-field="s.qty_abnormal_batch"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.culling_location_id.name"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.total_qty_abnormal_batch"/>
+                                        </td>
+                                        <td style="font-size:8pt; border-right: 1px solid black !imprtant;" >
+                                                            <span t-field="s.qty_transplanted"/>
                                         </td>
                                     </tr>
-                                </thead>
-                            </table>
-                        </div>
-                        <div class="col-xs-4" >
-                            <div style="text-align:right;">
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <t t-set="variable" t-value="0"/>
-                                            <t t-foreach="o.cullingline_ids" t-as="m">
-                                                <t t-set="variable" t-value="variable+m.total_qty_abnormal_batch"/>
-                                            </t>
-                                            <b t-esc="variable" style="text-align:right;font-family: times; font-size:14pt;"/>
+
+                                    </t>
+                                    <tr height="40"  style="font-family: times; font-size:12pt; ">
+
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b style="text-align:right;font-family: times; font-size:9pt;"> Total</b>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totalseeddo" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totalqtynormal" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totalqtyabnormal" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b style="text-align:right;font-family: times; font-size:9pt;">&#160;</b>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totaltotalabnormal" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totaltotalplanted" style="text-align:right;font-family: times; font-size:9pt;"/>
                                         </td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
+
+                    <div class="row col-xs-12">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                  Mengetahui
+                                </td>
+                                <td>
+                                    Diperiksa Oleh
+                                </td>
+                                <td>
+                                  Disetujui Oleh
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Disbunnak Prov Gorontalo
+                                </td>
+                                <td>
+                                    Estate Manager
+                                </td>
+                                <td>
+                                    GM Pembibitan
+                                </td>
+                            </tr>
+
+                        </table>
                     </div>
                 </div>
             </t>

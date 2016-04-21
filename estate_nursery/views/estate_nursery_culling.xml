@@ -157,6 +157,24 @@
             <field name="view_search_culling" ref="estate_nursery.view_form_culling"/>
         </record>
 
+         <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_culling_template">
+             <field name="name">Inherit Button Culling</field>
+             <field name="model">estate.nursery.culling</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_culling"/>
+             <field name="arch" type="xml">
+                 <button name="signal_approved3" position="after">
+                     <button name="%(custom_report_culling_batch)d"
+                                string="Pemusnahan Kecambah"
+                                type="action" />
+                     <button name="%(custom_report_culling)d"
+                                string="Pemusnahan Bibit"
+                                type="action" />
+
+                 </button>
+             </field>
+         </record>
+
         <!--Menu-->
         <menuitem id="req_seed_culling"
                   name="Culling"
