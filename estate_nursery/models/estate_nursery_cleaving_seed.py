@@ -239,7 +239,7 @@ class CleavingLine(models.Model):
 
     name=fields.Char(related='cleaving_id.name')
     cleaving_id=fields.Many2one('estate.nursery.cleaving')
-    batch_id=fields.Many2one('estate.nursery.batch',)
+    batch_id=fields.Many2one('estate.nursery.batch')
     location_id=fields.Many2one('estate.block.template', "Bedengan/Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
@@ -273,6 +273,18 @@ class CleavingLine(models.Model):
     def _get_value_double(self):
        self.qty_double=self.cleaving_id.qty_doublebatch
 
+    @api.multi
+    @api.onchange('location_id','batch_id')
+    def _change_domain_locationid(self):
+        batchline=self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.batch_id.id)])
+        if self:
+            arrBatchline = []
+            for a in batchline:
+                arrBatchline.append(a.location_id.id)
+            return {
+                'domain': {'location_id': [('id','in',arrBatchline)]},
+            }
+        return True
 
     #calculate normal double
     @api.multi
