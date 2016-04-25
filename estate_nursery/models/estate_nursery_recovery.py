@@ -18,7 +18,8 @@ class NurseryRecovery(models.Model):
     recovery_code=fields.Char()
     batch_id= fields.Many2one('estate.nursery.batch','batch',default=_default_session)
     partner_id=fields.Many2one('res.partner')
-    step_id = fields.Many2one('estate.nursery.steprecovery','Step Recovery',required=True)
+    stage_id = fields.Many2one('estate.nursery.stage','Stage Selection',required=True)
+    step_id = fields.Many2one('estate.nursery.steprecovery','Step Recovery',store=True,required=True)
     recovery_date=fields.Date("Recovery Date",store=True)
     date_planted = fields.Date("Date Planted",store=True,readonly=True)
     age_seed_recovery = fields.Integer("Age Seed Recovery",compute='_compute_age_seed',store=True)
@@ -50,14 +51,16 @@ class NurseryRecovery(models.Model):
 
     #Compute Seed
     @api.one
-    @api.depends('qty_normal','qty_plante','qty_recovery','qty_dead')
+    @api.depends('recovery_line_ids','qty_normal','qty_plante','qty_recovery','qty_dead')
     def _compute_abnormal(self):
+        self.qty_dead= 0
+        self.qty_normal=0
         if self.recovery_line_ids:
-            if self.qty_normal:
-                self.qty_abnormal= int(self.qty_recovery)-self.qty_normal
-            elif self.qty_dead:
-                self.qty_abnormal= int(self.qty_recovery)-int(self.qty_dead)
-            elif self.qty_dead and self.qty_normal:
+            # if self.qty_normal:
+            #     self.qty_abnormal= int(self.qty_recovery)-self.qty_normal
+            # elif self.qty_dead:
+            #     self.qty_abnormal= int(self.qty_recovery)-int(self.qty_dead)
+            if self.qty_dead and self.qty_normal:
                 self.qty_abnormal= int(self.qty_recovery)-(int(self.qty_dead)+self.qty_normal)
         return True
 
@@ -128,7 +131,7 @@ class NurseryRecovery(models.Model):
     def action_move(self):
         location_ids = set()
         for item in self.recovery_line_ids:
-            if item.location_id and item.qty_abnormal > 0: # todo do not include empty quantity location
+            if item.location_id and item.qty_dead > 0: # todo do not include empty quantity location
                 location_ids.add(item.location_id.inherit_location_id)
 
             for location in location_ids:
@@ -155,7 +158,7 @@ class NurseryRecovery(models.Model):
 
         batch_ids = set()
         for itembatch in self.recovery_line_ids:
-            if  itembatch.location_id and itembatch.qty_abnormal > 0:
+            if  itembatch.location_id and itembatch.qty_normal > 0:
                 batch_ids.add(itembatch.location_id.inherit_location_id)
 
             for batchrecovery in batch_ids:
@@ -221,8 +224,9 @@ class RecoveryLine(models.Model):
 
     name=fields.Char()
     recovery_seed_id=fields.Many2one('estate.nursery.recovery')
-    qty_normal=fields.Integer("Quantity Normal",required=True)
-    qty_dead = fields.Integer("Quantity Dead")
+    stageline_a_id = fields.Many2one('estate.nursery.stage')
+    qty_normal=fields.Integer("Quantity Normal",required=True,store=True)
+    qty_dead = fields.Integer("Quantity Dead",required=True,store=True)
     qty_abnormal=fields.Integer("Quantity Abnormal")
     location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Cleaving'),
                                                                              ('usage','=','inventory'),
@@ -232,7 +236,6 @@ class RecoveryLine(models.Model):
                                     domain=[('estate_location', '=', True),
                                             ('estate_location_level', '=', '3'),
                                             ('estate_location_type', '=', 'nursery'),
-                                            ('stage_id','=',4),
                                             ('scrap_location', '=', False),
                                             ],
                                              help="Fill in location seed planted.",
@@ -240,8 +243,38 @@ class RecoveryLine(models.Model):
     @api.one
     @api.onchange('qty_abnormal','recovery_seed_id')
     def change_abnormal(self):
-        if self.qty_normal :
+        if self.qty_dead:
             self.qty_abnormal = self.recovery_seed_id.qty_abnormal
+    @api.one
+    @api.onchange('qty_normal','recovery_seed_id')
+    def change_normal(self):
+        if self.qty_dead:
+            self.qty_normal = self.recovery_seed_id.qty_normal
+    @api.multi
+    @api.onchange('stageline_a_id','location_id','recovery_seed_id')
+    def change_location(self):
+        self.stageline_a_id = self.recovery_seed_id.stage_id
+        if self:
+            arrRecoverySeed = []
+            if self.stageline_a_id.code == 'PN':
+                batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.recovery_seed_id.batch_id.id),
+                                                                              ('location_id.id','!=',False)])
+                for a in batchTransferPn:
+                    arrRecoverySeed.append(a.location_id.id)
+            elif self.stageline_a_id.code == 'MN':
+                batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.recovery_seed_id.batch_id.id)])
+                for b in batchTransferMn:
+                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
+                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.recovery_seed_id.batch_id.id)])
+                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                    if qty[0].qty > 0:
+                        arrRecoverySeed.append(b.location_mn_id.id)
+            return {
+                'domain': {'location_id': [('id','in',arrRecoverySeed)]},
+            }
+        return True
+
 
 
 

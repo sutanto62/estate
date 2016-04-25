@@ -628,7 +628,8 @@ class TempRecovery(models.Model):
         if self:
             arrRecoverySeed = []
             if self.stage_a_id.code == 'PN':
-                batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.selection_id.batch_id.id),('location_id.id','!=',False)])
+                batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.selection_id.batch_id.id),
+                                                                              ('location_id.id','!=',False)])
                 for a in batchTransferPn:
                     arrRecoverySeed.append(a.location_id.id)
             elif self.stage_a_id.code == 'MN':

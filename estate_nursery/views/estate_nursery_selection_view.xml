@@ -251,7 +251,7 @@
                                  <field name="selection_code" class="oe_inline" readonly="1" />
                                  <label string="For "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
-                                 <field name="batch_id.name" class="oe_inline" readonly="1" />
+                                 <field name="batch_id" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
 
