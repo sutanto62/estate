@@ -25,12 +25,11 @@ class Selection(models.Model):
 
     name= fields.Char(store=True, track_visibility='onchange')
     selection_code=fields.Char("SFB",store=True)
-    batch_code=fields.Char(related='batch_id.name',store=True,)
     partner_id = fields.Many2one('res.partner')
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade',default=_default_session)
-    stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True)
+    stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True,store=True)
 
     age_seed = fields.Integer('Age Seed Batch')
     age_seed_calculate =fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
@@ -98,6 +97,7 @@ class Selection(models.Model):
         if context.get('search_default_filter_selection'):
             args.append((('selectionstage_id', 'child_of', context['search_default_filter_selection'])))
         return super(Selection, self).search(cr, uid, args, offset=offset, limit=limit, order=order, context=context, count=count)
+
 
     #workflow state
     @api.one
@@ -532,13 +532,15 @@ class SelectionLine(models.Model):
     _name = 'estate.nursery.selectionline'
     _inherit = ['mail.thread']
 
+    def _default_session(self):
+        return self.env['estate.nursery.batch'].browse(self._context.get('active_id'))
 
     name=fields.Char(related='selection_id.name')
     partner_id=fields.Many2one("res.partner")
     qty = fields.Integer("Quantity Abnormal",required=True,store=True)
     cause_id = fields.Many2one("estate.nursery.cause",string="Cause",required=True,track_visibility='onchange')
     selectionstage =fields.Char(related="selection_id.selectionstage_id.name" , store=True)
-    batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True)
+    batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True,default=_default_session)
     stage_a_id=fields.Many2one('estate.nursery.stage')
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
     location_id = fields.Many2one('estate.block.template', "Bedengan",
@@ -552,14 +554,29 @@ class SelectionLine(models.Model):
     comment = fields.Text("Description")
 
     #Domain cause with stage id in selection form
-    @api.onchange('stage_a_id','selection_id','cause_id','location_id')
+    @api.multi
+    @api.onchange('stage_a_id','selection_id','cause_id','location_id','batch_id')
     def _change_domain_causeid(self):
-        # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
         self.stage_a_id=self.selection_id.stage_id
+
         if self:
+            arrTransferSeed = []
+            if self.stage_a_id.code == 'PN':
+                batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.batch_id.id),('location_id.id','!=',False)])
+                for a in batchTransferPn:
+                    arrTransferSeed.append(a.location_id.id)
+            elif self.stage_a_id.code == 'MN':
+                batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.batch_id.id)])
+                for b in batchTransferMn:
+                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
+                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
+                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                    if qty[0].qty > 0:
+                        arrTransferSeed.append(b.location_mn_id.id)
             return {
                 'domain': {'cause_id': [('stage_id.id', '=',self.stage_a_id.id)],
-                           'location_id': [('stage_id.id','=',self.stage_a_id.id)]},
+                           'location_id': [('stage_id.id','=',self.stage_a_id.id),('id','in',arrTransferSeed)]},
             }
         return True
 
@@ -604,8 +621,9 @@ class TempRecovery(models.Model):
 
 
     #Domain cause with stage id in selection form
+    @api.multi
     @api.onchange('stage_a_id','selection_id','location_id')
-    def _change_domain_causeid(self):
+    def _change_domain_locationid(self):
         # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
         self.stage_a_id=self.selection_id.stage_id
         if self:
