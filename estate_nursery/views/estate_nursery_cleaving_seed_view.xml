@@ -38,11 +38,11 @@
             <field name="arch" type="xml">
                 <tree string="Nursery Cleaving Tree View">
                     <field name="cleaving_code" string="Cleaving ID" delete="false"/>
-                    <field name="cleaving_date"/>
-                    <field name="qty_plantedbatch" string="Quantity Planted"/>
-                    <field name="qty_doublebatch" string="Quantity Double"/>
-                    <field name="qty_normal" string="Quantity Normal"/>
-                    <field name="qty_abnormal" string="Quantity Abnormal"/>
+                    <field name="cleaving_date" string="Cleaving Date"/>
+                    <field name="qty_plantedbatch" string="Qty Planted"/>
+                    <field name="qty_doublebatch" string="Qty Double"/>
+                    <field name="qty_normal" string="Qty Normal"/>
+                    <field name="qty_abnormal" string="Qty Abnormal"/>
                     <field name="qty_total" string="&#931;  Saldo Total."/>
                 </tree>
             </field>

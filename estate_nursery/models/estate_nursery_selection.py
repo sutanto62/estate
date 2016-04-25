@@ -558,7 +558,6 @@ class SelectionLine(models.Model):
     @api.onchange('stage_a_id','selection_id','cause_id','location_id','batch_id')
     def _change_domain_causeid(self):
         self.stage_a_id=self.selection_id.stage_id
-
         if self:
             arrTransferSeed = []
             if self.stage_a_id.code == 'PN':
@@ -627,8 +626,22 @@ class TempRecovery(models.Model):
         # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
         self.stage_a_id=self.selection_id.stage_id
         if self:
+            arrRecoverySeed = []
+            if self.stage_a_id.code == 'PN':
+                batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.selection_id.batch_id.id),('location_id.id','!=',False)])
+                for a in batchTransferPn:
+                    arrRecoverySeed.append(a.location_id.id)
+            elif self.stage_a_id.code == 'MN':
+                batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.selection_id.batch_id.id)])
+                for b in batchTransferMn:
+                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
+                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.selection_id.batch_id.id)])
+                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                    if qty[0].qty > 0:
+                        arrRecoverySeed.append(b.location_mn_id.id)
             return {
-                'domain': {'location_id': [('stage_id.id','=',self.stage_a_id.id)]},
+                'domain': {'location_id': [('id','in',arrRecoverySeed)]},
             }
         return True
 
