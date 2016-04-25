@@ -18,17 +18,17 @@ class TransferStocktoMn(models.Model):
     transfermn_code=fields.Char()
     batch_id=fields.Many2one('estate.nursery.batch',string="Batch No", required=True, default=_default_session)
     partner_id = fields.Many2one('res.partner')
-    qty_move =fields.Integer('Quantity Move',compute="_compute_total_normal")
+    qty_move =fields.Integer('Quantity Move',compute="_compute_total_normal" , store=True)
     location_mn_id = fields.Many2one('estate.block.template', "Plot",
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),
                                           ('stage_id','=',4),
                                           ('scrap_location', '=', False)],
-                                  help="Fill in location seed planted.")
+                                  help="Fill in location seed planted.", store=True)
     transfermnline_ids=fields.One2many('estate.nursery.transfermnline','transfermn_id')
 
-    date_transfer = fields.Date('Date Transfer Mn',required=True)
+    date_transfer = fields.Date('Date Transfer Mn',required=True,store=True)
 
     state= fields.Selection([
         ('draft', 'Draft'),
@@ -130,6 +130,7 @@ class transferpntomnline(models.Model):
     _name="estate.nursery.transfermnline"
 
     name=fields.Char("")
+    batch_id=fields.Many2one('estate.nursery.batch')
     transfermn_id=fields.Many2one('estate.nursery.transfermn')
     qty_move = fields.Integer('Quantity to Move')
     location_pn_id = fields.Many2one('estate.block.template', "Bedengan",
@@ -139,3 +140,22 @@ class transferpntomnline(models.Model):
                                           ('stage_id','=',3),
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.")
+    @api.multi
+    @api.onchange('location_pn_id','batch_id')
+    def _change_domain_locationpnid(self):
+        batchline=self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.batch_id.id),('location_id.id','!=',False)])
+        if self:
+            arrBatchline = []
+            for a in batchline:
+                estate=self.env['estate.block.template'].search([('id','=',a.location_id[0].id)])
+                stock=self.env['stock.location'].search([('id','=',estate.inherit_location_id[0].id)])
+                idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
+                qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                if qty[0].qty > 0:
+                    arrBatchline.append(a.location_id.id)
+
+            print arrBatchline
+            return {
+                    'domain': {'location_pn_id': [('id','in',arrBatchline)]},
+            }
+        return True
