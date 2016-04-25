@@ -28,10 +28,10 @@ class NurseryRecovery(models.Model):
     qty_recovery= fields.Integer("Quantity Recovery",)
     qty_plant=fields.Integer()
     qty_normal=fields.Integer(compute="_compute_total_normal",store=True, track_visibility='onchange')
-    qty_dead = fields.Integer(compute="_compute_total_dead",store=True)
-    qty_abnormal= fields.Integer("Quantity Abnormal",compute="_compute_abnormal" , track_visibility='onchange')
+    qty_dead = fields.Integer(compute="_compute_total_normal",store=True)
+    qty_abnormal= fields.Integer("Quantity Variant",compute="_compute_abnormal" , track_visibility='onchange',store=True)
     qty_plante=fields.Integer("Quantity Seed Planted Batch" , track_visibility='onchange')
-    qty_total = fields.Integer( "Result Quantity",compute="_compute_total", track_visibility='onchange')
+    qty_total = fields.Integer("Result Quantity",compute="_compute_total_normal",store=True, track_visibility='onchange')
     culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
@@ -56,19 +56,10 @@ class NurseryRecovery(models.Model):
         self.qty_dead= 0
         self.qty_normal=0
         if self.recovery_line_ids:
-            # if self.qty_normal:
-            #     self.qty_abnormal= int(self.qty_recovery)-self.qty_normal
-            # elif self.qty_dead:
-            #     self.qty_abnormal= int(self.qty_recovery)-int(self.qty_dead)
             if self.qty_dead and self.qty_normal:
                 self.qty_abnormal= int(self.qty_recovery)-(int(self.qty_dead)+self.qty_normal)
         return True
 
-    @api.one
-    @api.depends('qty_normal','qty_plante')
-    def _compute_total(self):
-        if self.qty_normal and self.qty_plante:
-            self.qty_total = int(self.qty_plante) + self.qty_normal
 
     #constraint for Quantity normal set nor more than quanity recovery
     @api.constrains('qty_normal','qty_recovery')
@@ -135,13 +126,16 @@ class NurseryRecovery(models.Model):
                 location_ids.add(item.location_id.inherit_location_id)
 
             for location in location_ids:
-                qty_total_abnormal_recovery = 0
+                qty_total_dead_recovery = 0
                 qty = self.env['estate.nursery.recoveryline'].search([('location_id.inherit_location_id', '=', location.id),
                                                                    ('recovery_seed_id', '=', self.id)
                                                                    ])
+                for i in qty:
+                    qty_total_dead_recovery = i.qty_dead
+
             move_data = {
                 'product_id': self.batch_id.product_id.id,
-                'product_uom_qty': self.qty_dead,
+                'product_uom_qty': qty_total_dead_recovery,
                 'origin':self.recovery_code,
                 'product_uom': self.batch_id.product_id.uom_id.id,
                 'name': 'Selection Recovery Dead.%s: %s'%(self.recovery_code,self.batch_id.name),
@@ -162,13 +156,15 @@ class NurseryRecovery(models.Model):
                 batch_ids.add(itembatch.location_id.inherit_location_id)
 
             for batchrecovery in batch_ids:
-
-                trash = self.env['estate.nursery.recoveryline'].search([('location_id.inherit_location_id', '=', batchrecovery.id),
+                qty_total_normal_recovery = 0
+                locationrecov = self.env['estate.nursery.recoveryline'].search([('location_id.inherit_location_id', '=', batchrecovery.id),
                                                                         ('recovery_seed_id', '=', self.id)])
+                for i in locationrecov:
+                    qty_total_normal_recovery = i.qty_normal
 
             move_data = {
                         'product_id': self.batch_id.product_id.id,
-                        'product_uom_qty': self.qty_normal,
+                        'product_uom_qty': qty_total_normal_recovery,
                         'origin':self.recovery_code,
                         'product_uom': self.batch_id.product_id.uom_id.id,
                         'name': 'Move Normal Seed  %s for %s:'%(self.recovery_code,self.batch_id.name),
@@ -184,20 +180,23 @@ class NurseryRecovery(models.Model):
         return True
 
     @api.one
-    @api.depends('recovery_line_ids')
+    @api.depends('recovery_line_ids','qty_normal','qty_dead','qty_plante','qty_total')
     def _compute_total_normal(self):
+        self.qty_total = 0
         if self.recovery_line_ids:
             for item in self.recovery_line_ids:
                 self.qty_normal += item.qty_normal
+                self.qty_dead += item.qty_dead
+            self.qty_total = int(self.qty_plante) + self.qty_normal
         return True
 
-    @api.one
-    @api.depends('recovery_line_ids')
-    def _compute_total_dead(self):
-        if self.recovery_line_ids:
-            for item in self.recovery_line_ids:
-                self.qty_dead += item.qty_dead
-        return True
+    # @api.one
+    # @api.depends('recovery_line_ids')
+    # def _compute_total_dead(self):
+    #     if self.recovery_line_ids:
+    #         for item in self.recovery_line_ids:
+    #
+    #     return True
 
     @api.depends('age_seed_recovery','recovery_date','date_planted','age_seed')
     def _compute_age_seed(self):
@@ -245,11 +244,13 @@ class RecoveryLine(models.Model):
     def change_abnormal(self):
         if self.qty_dead:
             self.qty_abnormal = self.recovery_seed_id.qty_abnormal
+
     @api.one
     @api.onchange('qty_normal','recovery_seed_id')
     def change_normal(self):
         if self.qty_dead:
             self.qty_normal = self.recovery_seed_id.qty_normal
+
     @api.multi
     @api.onchange('stageline_a_id','location_id','recovery_seed_id')
     def change_location(self):
