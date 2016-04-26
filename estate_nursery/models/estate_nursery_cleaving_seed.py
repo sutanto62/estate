@@ -244,7 +244,6 @@ class CleavingLine(models.Model):
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),
-                                          ('stage_id','=',3),
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.",required=True)
     location_type=fields.Many2one('stock.location',("location Last"),domain=[('name','=','Cleaving'),

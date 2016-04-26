@@ -16,7 +16,7 @@ class TransferStocktoMn(models.Model):
 
     name=fields.Char()
     transfermn_code=fields.Char()
-    batch_id=fields.Many2one('estate.nursery.batch',string="Batch No", required=True, default=_default_session)
+    batch_id=fields.Many2one('estate.nursery.batch',string="Batch No", required=True, default=_default_session,ondelete="cascade")
     partner_id = fields.Many2one('res.partner')
     qty_move =fields.Integer('Quantity Move',compute="_compute_total_normal" , store=True)
     location_mn_id = fields.Many2one('estate.block.template', "Plot",
@@ -124,6 +124,8 @@ class TransferStocktoMn(models.Model):
                     error_msg = "Quantity Move  is set not more than Quantity Planted in Batch "
                     raise exceptions.ValidationError(error_msg)
         return True
+
+
 
 class transferpntomnline(models.Model):
 

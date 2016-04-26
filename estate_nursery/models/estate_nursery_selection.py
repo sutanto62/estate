@@ -28,7 +28,7 @@ class Selection(models.Model):
     partner_id = fields.Many2one('res.partner')
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
-    batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade',default=_default_session)
+    batch_id = fields.Many2one('estate.nursery.batch', "Batch",required=True,default=_default_session,ondelete="cascade")
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True,store=True)
 
     age_seed = fields.Integer('Age Seed Batch')

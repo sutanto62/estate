@@ -16,7 +16,7 @@ class NurseryRecovery(models.Model):
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
-    batch_id= fields.Many2one('estate.nursery.batch','batch',default=_default_session)
+    batch_id= fields.Many2one('estate.nursery.batch','batch',default=_default_session,required=True,ondelete="cascade")
     partner_id=fields.Many2one('res.partner')
     stage_id = fields.Many2one('estate.nursery.stage','Stage Selection',required=True)
     step_id = fields.Many2one('estate.nursery.steprecovery','Step Recovery',store=True,required=True)
@@ -190,14 +190,6 @@ class NurseryRecovery(models.Model):
             self.qty_total = int(self.qty_plante) + self.qty_normal
         return True
 
-    # @api.one
-    # @api.depends('recovery_line_ids')
-    # def _compute_total_dead(self):
-    #     if self.recovery_line_ids:
-    #         for item in self.recovery_line_ids:
-    #
-    #     return True
-
     @api.depends('age_seed_recovery','recovery_date','date_planted','age_seed')
     def _compute_age_seed(self):
         res={}
@@ -282,8 +274,6 @@ class RecoveryLine(models.Model):
 class StepRecovery(models.Model):
 
     _name = 'estate.nursery.steprecovery'
-    # _inherits ={'estate.nursery.stage' : 'stage_id'}
-
 
     name=fields.Char()
     stage_id=fields.Many2one('estate.nursery.stage')

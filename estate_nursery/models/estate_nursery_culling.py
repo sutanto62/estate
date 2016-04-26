@@ -170,7 +170,7 @@ class Culling(models.Model):
 
                  move_data = {
                         'product_id': itembatch.product_id.id,
-                        'product_uom_qty': itembatch.total_qty_abnormal_batch,
+                        'product_uom_qty': qty_total_cullingbatch,
                         'product_uom': itembatch.product_id.uom_id.id,
                         'name': 'Culling Abnormal Kecambah for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
@@ -203,7 +203,7 @@ class Culling(models.Model):
 
                  move_data = {
                         'product_id': item.product_id.id,
-                        'product_uom_qty': item.qty_abnormal_selection,
+                        'product_uom_qty': qty_batch,
                         'product_uom': item.product_id.uom_id.id,
                         'name': 'Culling Abnormal Bibit for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
@@ -370,12 +370,7 @@ class CullinglineBatch(models.Model):
             total_abnormal = self.qty_abnormal_batch
             self.total_qty_abnormal_batch = total_abnormal
 
-# class cullingtest(models.Model):
-#
-#     _name = "estate.nursery.cullingtest"
-#
-#     name=fields.Char()
-#     batch_id=fields.Many2one('estate.nursery.batch')
+
 
 
 
