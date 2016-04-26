@@ -30,7 +30,6 @@ class Activity(models.Model):
     uom_id = fields.Many2one('product.uom', string="Basic Unit of Measurements")
     standard_price = fields.Float('Standard Price')
 
-
     @api.one
     @api.depends('name', 'parent_id')
     def _complete_name(self):

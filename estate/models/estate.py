@@ -48,7 +48,8 @@ class EstateBlockTemplate(models.Model):
     _inherits = {'stock.location': 'inherit_location_id'}
 
     inherit_location_id = fields.Many2one('stock.location', required=True, ondelete="restrict")
-    batch_id = fields.Many2one('estate.nursery.batch', "Seed Source")
+    batch_id = fields.Many2one('estate.nursery.batch', "Seed Source", required=False, ondelete="restrict",
+                               help='Use batch for nursery block only.')
     area_gis = fields.Float("GIS Area (ha)", digits=(18, 6), help="Closing block area.")
     area_planted = fields.Float("Planted Area (ha)", digits=(18, 6),
                                 help="Calculated based on stand per hectare.")
@@ -99,7 +100,7 @@ class EstateBlock(models.Model):
     _name = 'estate.block'
     _inherits = {'estate.block.template': 'block_template_id'}
 
-    block_template_id = fields.Many2one('estate.block.template', "Block Template")
+    block_template_id = fields.Many2one('estate.block.template', "Block Template", required=True, ondelete="restrict")
     parameter_value_ids = fields.Many2many('estate.parameter.value', id1='block_id', id2='val_id', string="Parameter Value")
 
 class BlockParameter(models.Model):
