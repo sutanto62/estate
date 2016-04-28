@@ -20,6 +20,7 @@ class Requestplanting(models.Model):
     user_id=fields.Many2one('res.users')
     employee_id= fields.Many2one('hr.employee')
     batch_id=fields.Many2one('estate.nursery.batch')
+    seeddo_id=fields.Many2one('estate.nursery.seeddo')
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner',required=True, ondelete="restrict",
                                default=lambda self: self.partner_id.search
@@ -97,10 +98,42 @@ class Requestplanting(models.Model):
         qty_req = self.total_qty_pokok
         requestlineids = self.requestline_ids
         serial = self.env['estate.nursery.request'].search_count([]) + 1
-
         for item in requestlineids:
             qty_req += item.qty_request
         self.write({'total_qty_pokok': self.total_qty_pokok,'name': "Request Seed  %d" % serial,})
+        self.action_move()
+        return True
+
+    @api.one
+    def action_move(self):
+        location_ids = set()
+        for item in self.requestline_ids:
+            if item.location_id and item.qty_request > 0: # todo do not include empty quantity location
+                location_ids.add(item.location_id.inherit_location_id)
+
+        for location in location_ids:
+            qty_total_request = 0
+            qty = self.env['estate.nursery.requestline'].search([('location_id.inherit_location_id', '=', location.id),
+                                                                   ('request_id', '=', self.id)
+                                                                   ])
+            for i in qty:
+                qty_total_request += i.qty_request
+
+            move_data = {
+                'product_id': item.batch_id.product_id.id,
+                'product_uom_qty': qty_total_request,
+                'origin':item.batch_id.name,
+                'product_uom': item.batch_id.product_id.uom_id.id,
+                'name': 'Move Seed to Plot.%s: %s'%(self.bpb_code,item.batch_id.name),
+                'date_expected': self.date_request,
+                'location_id': location.id,
+                'location_dest_id':item.block_location_id.inherit_location_id.id,
+                'state': 'done', # set to done if no approval required
+                'restrict_lot_id': item.batch_id.lot_id.id # required by check tracking product
+            }
+            move = self.env['stock.move'].create(move_data)
+            move.action_confirm()
+            move.action_done()
         return True
 
     #compute RequestLine
@@ -126,7 +159,7 @@ class Requestplanting(models.Model):
         if self.requestline_ids:
             temp={}
             for division in self.requestline_ids:
-                division_value_name = division.inherit_location_id.name
+                division_value_name = division.block_location_id.name
                 if division_value_name in temp.values():
                     error_msg = "Division for Block \"%s\" is set more than once " % division_value_name
                     raise exceptions.ValidationError(error_msg)
@@ -139,38 +172,95 @@ class RequestLine(models.Model):
 
     name=fields.Char("Requestline",related='request_id.name')
     request_id=fields.Many2one('estate.nursery.request',ondelete='cascade')
-    inherit_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
+    batch_id = fields.Many2one('estate.nursery.batch')
+    block_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'planted'),
                                                   ('scrap_location', '=', False),
                                                   ])
-    large_area = fields.Float("Luas Block",digits=(2,2),related='inherit_location_id.area_planted',readonly=True)
+    location_id = fields.Many2one('estate.block.template', "Plot",
+                                    domain=[('estate_location', '=', True),
+                                            ('estate_location_level', '=', '3'),
+                                            ('estate_location_type', '=', 'nursery'),
+                                            ('scrap_location', '=', False),
+                                            ],
+                                             help="Fill in location seed planted.",
+                                             required=True,)
+    large_area = fields.Float("Luas Block",digits=(2,2),related='block_location_id.area_planted',readonly=True)
     qty_request = fields.Integer("Quantity Request",required=True)
+
     comment = fields.Text("Decription / Comment")
 
+    #onchange or domain batch id for age more than 6
+    @api.multi
+    @api.onchange('batch_id')
+    def _onchange_batch_id(self):
+        #domain batch
+        arrBatch=[]
+        arrRecordBatch=[]
+        batch = self.env['estate.nursery.batch'].search([('age_seed_range','>=',6),('qty_planted','>',0)])
+        if self:
+            if self.batch_id:
+                bpbline = self.env['estate.nursery.requestline'].search([('batch_id.id','=',self.batch_id.id)]).batch_id
+                batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.batch_id.id)])
+                for b in batchTransferMn:
+                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
+                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
+                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                    if qty[0].qty > 0:
+                        arrRecordBatch.append(b.batch_id.id)
+            for a in batch:
+                arrBatch.append(a.id)
+            return {
+                'domain': {'batch_id': [('id','in',arrBatch)]}
+            }
+
+    #onchange location sesuai qty yang ada di plot setiap batch
+    @api.multi
+    @api.onchange('location_id','batch_id')
+    def _onchange_location_id(self):
+        arrLocation = []
+        if self:
+            batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.batch_id.id)])
+            if self.batch_id:
+                for b in batchTransferMn:
+                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
+                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
+                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                    if qty[0].qty > 0:
+                        arrLocation.append(b.location_mn_id.id)
+            return {
+                'domain': {
+                           'location_id': [('id','=',arrLocation)]}
+            }
+        return True
 
     #constraint qty Request not moree than standard qty sph
     @api.one
-    @api.constrains('qty_request','inherit_location_id')
+    @api.constrains('qty_request','block_location_id','batch_id')
     def check_qty_request(self):
-        qty_standard = self.inherit_location_id.qty_sph_standard
-        qty_do = self.inherit_location_id.qty_sph_do
+        qty_standard = self.block_location_id.qty_sph_standard
+        # qty_do = self.inherit_location_id.qty_sph_do
+        total=0
+        batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.batch_id.id)])
+        for b in batchTransferMn:
+                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
+                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
+                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                    for a in qty:
+                        total += a.qty
         if self.qty_request:
-            if self.inherit_location_id.qty_sph_standard:
-                if self.qty_request > qty_standard:
-                    error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 126 " % self.inherit_location_id.name
+            if self.qty_request > qty_standard:
+                    error_msg = "\"%s\" quantity is set not more than 126 " % self.block_location_id.name
                     raise exceptions.ValidationError(error_msg)
-            elif self.inherit_location_id.qty_sph_do:
-                if self.qty_request > qty_do:
-                    error_msg = "Selection Stage Seed \"%s\" quantity is set not more than 130 " % self.inherit_location_id.name
+            # if self.qty_request > qty_do:
+            #         error_msg = "\"%s\" quantity is set not more than 130 " % self.inherit_location_id.name
+            #         raise exceptions.ValidationError(error_msg)
+            if self.qty_request > total:
+                    error_msg = "\"%s\" quantity is Maximal %s" % (self.block_location_id.name,total)
                     raise exceptions.ValidationError(error_msg)
             return True
-
-    #onchange
-    # @api.one
-    # @api.onechange('qty_request','inherit_location_id')
-    # def onchange_qty_request(self):
-    #     if self.inherit_location_id:
-    #         self.qty_request = 0
-    #         self.qty_request += self.inherit_location_id.

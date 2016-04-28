@@ -7,8 +7,8 @@
             <field name="arch" type="xml">
                    <graph string="Graph Cleaving Abnormal Seed" type="pivot">
                        <field name="batch_id" string="Cleaving"/>
-                       <field name="qty_total" type="measure" string="Qty Normal"/>
-                       <field name="qty_abnormal" type="measure"  sum="Qty Abnormal"/>
+                       <!--<field name="qty_total" type="measure" string="Qty Normal"/>-->
+                       <!--<field name="qty_abnormal" type="measure"  sum="Qty Abnormal"/>-->
                    </graph>
             </field>
         </record>

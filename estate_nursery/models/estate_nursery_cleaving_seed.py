@@ -25,8 +25,8 @@ class CleavingPolytone(models.Model):
     qty_plante=fields.Integer()
     qty_singlebatch=fields.Integer()
     qty_doublebatch=fields.Integer()
-    qty_abnormal=fields.Integer("Quantity Abnormal",compute="_compute_total_abnormal",track_visibility='onchange')
-    qty_total=fields.Integer("Total All Seed ",compute="_compute_subtotal",track_visibility='onchange')
+    qty_abnormal=fields.Integer("Quantity Abnormal",store=True,compute="_compute_total_abnormal",track_visibility='onchange')
+    qty_total=fields.Integer("Total All Seed ",store=True,compute="_compute_subtotal",track_visibility='onchange')
     qty_normal=fields.Integer("Quantity Normal",compute="_compute_total_normal",track_visibility='onchange')
     culling_location_id = fields.Many2one('estate.block.template',("Culling Location"),
                                           domain=[('estate_location', '=', True),
