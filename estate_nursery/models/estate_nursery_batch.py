@@ -708,12 +708,12 @@ class Batchline(models.Model):
         self.selection_do_var = (self.subtotal_normal + self.subtotal_abnormal) - self.seed_qty
         self.planting_selection_var = self.qty_planted - self.subtotal_normal
 
-    @api.one
-    @api.onchange('qty_planted','subtotal_normal')
-    def _change_quantity_planted(self):
-        if self.subtotal_normal:
-            self.qty_planted = self.subtotal_normal
-        return True
+    # @api.one
+    # @api.onchange('qty_planted','subtotal_normal')
+    # def _change_quantity_planted(self):
+    #     if self.subtotal_normal:
+    #         self.qty_planted = self.subtotal_normal
+    #     return True
 
 class Box(models.Model):
     """Deprecated. Use Batchline."""

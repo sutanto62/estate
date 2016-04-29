@@ -387,7 +387,7 @@
                     <field name="subtotal_abnormal" string="&#931;  Abn." sum="Qty Abnormal" />
                     <field name="percentage_abnormal" string="% Abn."
                            groups="estate.group_assistant"/>
-                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="qty_planted" string="&#931; Plt." sum="Qty Planted"/>
                     <field name="location_id" string="Loc." options="{'no_create_edit': True}"
                            attrs="{'readonly' : [('flag_bag','=',False)]}"/>
                     <field name="selection_do_var" string="Var DO"
