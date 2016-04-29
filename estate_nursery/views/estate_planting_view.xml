@@ -69,7 +69,7 @@
                         </div>
                         <group>
                             <group>
-                                <field name="date_request"/>
+                                <field name="date_request" attrs="{'readonly' : [('state', '=', 'done')]}"/>
                             </group>
                             <group coolspan="10">
                                 <field name="total_qty_pokok" string="Total Quantity Seed Transfer"/>
@@ -278,7 +278,8 @@
                                             <field name="returnseedline_ids" track_visibility="onchange"
                                                    attrs="{'required': [('state','=','draft')],
                                                 'readonly': [('state','=','done')]}"
-                                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_returnseedline'}"/>
+                                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_returnseedline',
+                                                   'default_bpb_id' : bpb_id}"/>
                                         </tree>
                                 </page>
                                 </notebook>
@@ -299,10 +300,11 @@
             <field name="model">estate.nursery.returnseedline</field>
             <field name="arch" type="xml">
                 <tree string="Return line View" colors="red:qty_return" editable="bottom">
+                    <field name="bpb_id" readonly="1" invisible="1"/>
                     <field name="block_location_id" string="Blok" options="{'no_create_edit': True}" />
                     <field name="qty_request" string="&#931; Quantity Request ." sum="Qty"/>
                     <field name="qty_return" string="&#931; Quantity Return ." sum="Qty"/>
-                    <field name="batch_id" string="Batch no" options="{'no_create_edit': True}"/>
+                    <field name="batch_id" string="Batch no" required="1" options="{'no_create_edit': True}"/>
                     <field name="location_id" string="Plot" options="{'no_create_edit': True}"/>
                     <field name="qty_transfer" string="&#931; Quantity transfer ." sum="Qty"/>
                     <field name="comment"/>

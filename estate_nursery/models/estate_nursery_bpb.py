@@ -124,7 +124,7 @@ class Requestplanting(models.Model):
                 'product_uom_qty': qty_total_request,
                 'origin':item.batch_id.name,
                 'product_uom': item.batch_id.product_id.uom_id.id,
-                'name': 'Move Seed to Plot.%s: %s'%(self.bpb_code,item.batch_id.name),
+                'name': 'Move Seed to block.%s: %s'%(self.bpb_code,item.batch_id.name),
                 'date_expected': self.date_request,
                 'location_id': location.id,
                 'location_dest_id':item.block_location_id.inherit_location_id.id,
