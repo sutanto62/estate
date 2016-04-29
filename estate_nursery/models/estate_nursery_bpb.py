@@ -172,13 +172,13 @@ class RequestLine(models.Model):
 
     name=fields.Char("Requestline",related='request_id.name')
     request_id=fields.Many2one('estate.nursery.request',ondelete='cascade')
-    batch_id = fields.Many2one('estate.nursery.batch')
+    batch_id = fields.Many2one('estate.nursery.batch',store=True)
     block_location_id = fields.Many2one('estate.block.template', ("Seed Location"),track_visibility='onchange',
                                           domain=[('estate_location', '=', True),
                                                   ('estate_location_level', '=', '3'),
                                                   ('estate_location_type', '=', 'planted'),
                                                   ('scrap_location', '=', False),
-                                                  ])
+                                                  ],store=True)
     location_id = fields.Many2one('estate.block.template', "Plot",
                                     domain=[('estate_location', '=', True),
                                             ('estate_location_level', '=', '3'),
@@ -186,9 +186,9 @@ class RequestLine(models.Model):
                                             ('scrap_location', '=', False),
                                             ],
                                              help="Fill in location seed planted.",
-                                             required=True,)
-    large_area = fields.Float("Luas Block",digits=(2,2),related='block_location_id.area_planted',readonly=True)
-    qty_request = fields.Integer("Quantity Request",required=True)
+                                             required=True,store=True)
+    large_area = fields.Float("Luas Block",digits=(2,2),related='block_location_id.area_planted',readonly=True,store=True)
+    qty_request = fields.Integer("Quantity Request",required=True,store=True)
 
     comment = fields.Text("Decription / Comment")
 

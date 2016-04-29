@@ -18,6 +18,8 @@ class Planting(models.Model):
     activityline_ids=fields.One2many('estate.nursery.activityline','seeddo_id','Information Activity Transportir')
     batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
                                           help="Define batch parameter")
+    request_ids = fields.One2many('estate.nursery.request','seeddo_id',"Request Ids",help="Define Many Bpb")
+    return_ids = fields.One2many('estate.nursery.returnseed','seeddo_id',"Returns Ids",help="Define Many Return Bpb")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     date_request = fields.Date('Date Seed Delivery Order',required=True)
     total_qty_pokok= fields.Integer("Total Pokok",compute="compute_total_qty_pokok",track_visibility='onchange')
@@ -26,6 +28,20 @@ class Planting(models.Model):
     comment=fields.Text("Additional Information")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
+
+    @api.cr_uid_ids_context
+    def do_enter_transfer_details(self, cr, uid, seeddo, context=None):
+        if not context:
+            context = {}
+
+        context.update({
+            'active_model': self._name,
+            'active_ids': seeddo,
+            'active_id': len(seeddo) and seeddo[0] or False
+        })
+
+        created_id = self.pool['estate.nursery.transfer'].create(cr, uid, {'seeddo_id': len(seeddo) and seeddo[0] or False}, context)
+        return self.pool['estate.nursery.transfer'].wizard_view(cr, uid, created_id, context)
 
     #sequence
     def create(self, cr, uid, vals, context=None):
@@ -59,43 +75,16 @@ class Planting(models.Model):
     @api.one
     def action_approved(self):
         """Approved Planting is done."""
-        # self.action_receive()
+        # self.action_move()
         self.state = 'done'
 
-    @api.cr_uid_ids_context
-    def do_enter_transfer_details(self, cr, uid, seeddo, context=None):
-        if not context:
-            context = {}
+    @api.one
+    def action_receive(self):
+         self.action_move()
 
-        context.update({
-            'active_model': self._name,
-            'active_ids': seeddo,
-            'active_id': len(seeddo) and seeddo[0] or False
-        })
-
-        created_id = self.pool['estate.nursery.transfer'].create(cr, uid, {'seeddo_id': len(seeddo) and seeddo[0] or False}, context)
-        return self.pool['estate.nursery.transfer'].wizard_view(cr, uid, created_id, context)
-
-    # @api.one
-    # def action_receive(self):
-    #
-    # @api.one
-    # def action_receive(self):
-    #     qty_req = self.total_qty_pokok
-    #     requestlineids = self.requestline_ids
-    #
-    #     for item in requestlineids:
-    #         qty_req += item.qty_request
-    #     self.write({'total_qty_pokok': self.total_qty_pokok})
-    #
-    #     return True
-
-    # #count selection
-    # @api.one
-    # @api.depends('request_ids')
-    # def _get_request_count(self):
-    #     for r in self:
-    #         r.request_count = len(r.request_ids)
+    @api.one
+    def action_move(self):
+        return True
 
     #Compute Amount ALL
     @api.one
@@ -108,12 +97,19 @@ class Planting(models.Model):
 
     #compute Qty Planted transplanting
     @api.one
-    @api.depends('batch_planted_ids')
+    @api.depends('return_ids','request_ids')
     def compute_total_qty_pokok(self):
-        if self.batch_planted_ids:
-            for qty in self.batch_planted_ids:
-                self.total_qty_pokok += qty.total_qty_pokok
-                print self.total_qty_pokok
+        total_request = 0
+        total_return = 0
+        if self.state == "done":
+            if self.request_ids:
+                for qty in self.request_ids:
+                    total_request += qty.total_qty_pokok
+            if self.return_ids:
+                for qty in self.return_ids:
+                    total_return += qty.total_qty_return
+            self.total_qty_pokok = total_request-total_return
+        return True
 
     #Onchange FOR ALL
     @api.onchange('amount_total','expense')
@@ -173,8 +169,8 @@ class TransportirDetail(models.Model):
 
 
 class ActivityLine(models.Model):
+
     _name = "estate.nursery.activityline"
-    _inherits = {'estate.activity' : 'activity_id'}
 
     name=fields.Char()
     seeddo_id=fields.Many2one('estate.nursery.seeddo')
@@ -223,9 +219,7 @@ class BatchParameter(models.Model):
     bpb_id=fields.Many2one('estate.nursery.request','BPB Form')
     variety_id=fields.Many2one('estate.nursery.variety',related='bpb_id.variety_id',readonly=True)
     total_qty_pokok = fields.Integer('Qty Request',track_visibility='onchange',readonly=True)
-    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",
-                               domain=[('selection_count','>=',6),('qty_planted','>',0),('age_seed_range','>=', 6)],
-                               track_visibility='onchange')
+    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",store=True,track_visibility='onchange')
     seeddo_id=fields.Many2one('estate.nursery.seeddo')
     from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','val_id', "From Location",
                                           domain=[('estate_location', '=', True),
@@ -244,5 +238,34 @@ class BatchParameter(models.Model):
     def onchange_total_qty_pokok(self):
         self.total_qty_pokok = self.bpb_id.total_qty_pokok
         self.write({'total_qty_pokok' : self.total_qty_pokok})
+
+    @api.multi
+    @api.onchange('bpb_id')
+    def _onchange_bpb_id(self):
+        #untuk menghilangkan record bpb pada saat membuka transaksi baru untuk membuat SEED DO , BPB tidak dapat di pilih 2 kali.
+        #for delete record BPB to create new transction for create SEED DO , and then BPB not Choose more than one for evert Transaction SEED DO
+
+        batchparameterline = self.env['estate.batch.parameter'].search([])
+        if self:
+            arrParameterLine = []
+            for a in batchparameterline:
+                arrParameterLine.append(a.bpb_id.id)
+            return {
+                'domain': {'bpb_id': [('id','not in',arrParameterLine),('total_qty_pokok','>',0)]}
+            }
+
+    @api.multi
+    @api.onchange('batch_id')
+    def _onchange_batch_id(self):
+        #domain batch
+        batch = self.env['estate.nursery.batch'].search([('age_seed_range','>=',6),('qty_planted','>',0)])
+
+        if self:
+            arrBatch=[]
+            for a in batch:
+                arrBatch.append(a.id)
+            return {
+                'domain': {'batch_id': [('id','in',arrBatch)]}
+            }
 
 

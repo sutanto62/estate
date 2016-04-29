@@ -61,6 +61,7 @@
         'workflow/session_planting_workflow.xml',
         'workflow/session_recovery_workflow.xml',
         'workflow/session_transfertomn_workflow.xml',
+        'workflow/session_returnseed_workflow.xml',
         'res_config_view.xml',
 
         'config_reports/selection_report.xml',
