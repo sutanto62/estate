@@ -27,7 +27,12 @@ class Planting(models.Model):
     amount_total = fields.Integer('Total Amount Transportir')
     comment=fields.Text("Additional Information")
     state=fields.Selection([('draft','Draft'),('confirmed','Confirm'),
-            ('validate1','First Approval'),('validate2','Second Approval'),('done','Ordered')])
+                            ('open2','Open Pending'),('pending2','Pending'),
+            ('pending','Pending'),('open','Open Pending'),
+            ('validate1','First Approval'),('validate2','Second Approval'),
+                            ('done','Ordered'),('return','Return Seed'),
+                            ('validate3','Return Approval'),
+                            ('done2','Done')])
 
     @api.cr_uid_ids_context
     def do_enter_transfer_details(self, cr, uid, seeddo, context=None):
@@ -73,18 +78,42 @@ class Planting(models.Model):
         self.state = 'validate2'
 
     @api.one
+    def action_open_pending(self):
+        """Set Planting State to open."""
+        self.state = 'open'
+    @api.one
+    def action_open_pending2(self):
+        """Set Planting State to open."""
+        self.state = 'open2'
+    @api.one
+    def action_pending(self):
+        """Set Selection State to pending."""
+        self.state = 'pending'
+    @api.one
+    def action_pending2(self):
+        """Set Selection State to pending."""
+        self.state = 'pending2'
+
+
+    @api.one
     def action_approved(self):
         """Approved Planting is done."""
-        # self.action_move()
         self.state = 'done'
 
     @api.one
-    def action_receive(self):
-         self.action_move()
+    def action_return(self):
+        #to return seed after transfer
+         self.state = 'return'
 
     @api.one
-    def action_move(self):
-        return True
+    def action_approve3(self):
+        #approved return seed after transfer
+        self.state = 'validate3'
+
+    @api.one
+    def action_done2(self):
+        #done return seed after transfer
+        self.state = 'done2'
 
     #Compute Amount ALL
     @api.one

@@ -133,21 +133,21 @@ class NurseryRecovery(models.Model):
                 for i in qty:
                     qty_total_dead_recovery = i.qty_dead
 
-            move_data = {
-                'product_id': self.batch_id.product_id.id,
-                'product_uom_qty': qty_total_dead_recovery,
-                'origin':self.recovery_code,
-                'product_uom': self.batch_id.product_id.uom_id.id,
-                'name': 'Selection Recovery Dead.%s: %s'%(self.recovery_code,self.batch_id.name),
-                'date_expected': self.recovery_date,
-                'location_id': item.location_type.id,
-                'location_dest_id':self.culling_location_id.inherit_location_id.id,
-                'state': 'confirmed', # set to done if no approval required
-                'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
-            }
-            move = self.env['stock.move'].create(move_data)
-            move.action_confirm()
-            move.action_done()
+                move_data = {
+                    'product_id': self.batch_id.product_id.id,
+                    'product_uom_qty': item.qty_dead,
+                    'origin':self.recovery_code,
+                    'product_uom': self.batch_id.product_id.uom_id.id,
+                    'name': 'Selection Recovery Dead.%s: %s'%(self.recovery_code,self.batch_id.name),
+                    'date_expected': self.recovery_date,
+                    'location_id': item.location_type.id,
+                    'location_dest_id':self.culling_location_id.inherit_location_id.id,
+                    'state': 'confirmed', # set to done if no approval required
+                    'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
+                }
+                move = self.env['stock.move'].create(move_data)
+                move.action_confirm()
+                move.action_done()
 
 
         batch_ids = set()
@@ -162,9 +162,9 @@ class NurseryRecovery(models.Model):
                 for i in locationrecov:
                     qty_total_normal_recovery = i.qty_normal
 
-            move_data = {
+                move_data = {
                         'product_id': self.batch_id.product_id.id,
-                        'product_uom_qty': qty_total_normal_recovery,
+                        'product_uom_qty': itembatch.qty_normal,
                         'origin':self.recovery_code,
                         'product_uom': self.batch_id.product_id.uom_id.id,
                         'name': 'Move Normal Seed  %s for %s:'%(self.recovery_code,self.batch_id.name),
@@ -174,9 +174,9 @@ class NurseryRecovery(models.Model):
                         'state': 'confirmed', # set to done if no approval required
                         'restrict_lot_id': self.batch_id.lot_id.id # required by check tracking product
                  }
-            move = self.env['stock.move'].create(move_data)
-            move.action_confirm()
-            move.action_done()
+                move = self.env['stock.move'].create(move_data)
+                move.action_confirm()
+                move.action_done()
         return True
 
     @api.one

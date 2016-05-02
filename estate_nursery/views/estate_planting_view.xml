@@ -26,7 +26,7 @@
                         <button name="signal_draft" type="workflow"
                                 string="Reject"
                                 class="oe_highlight"
-                                states="confirmed,validate1,validate2"
+                                states="confirmed,validate1,validate2,"
                                 groups="estate.group_assistant"/>
 
                         <button name="signal_confirm" type="workflow"
@@ -50,11 +50,23 @@
                         <button name="signal_done" type="workflow"
                                 string="Validate"
                                 class="oe_highlight"
-                                states="validate2"
+                                states="validate2,validate3"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_return" type="workflow"
+                                string="Return Seed"
+                                class="oe_highlight"
+                                states="done"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_approve3" type="workflow"
+                                string="Done"
+                                class="oe_highlight"
+                                states="return"
                                 groups="estate.group_manager"/>
 
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,validate1,validate2,done"
+                               statusbar_visible="draft,confirmed,done,return,done2"
                                statusbar_color='{"draft":"blue",}'/>
                     </header>
                     <sheet>
@@ -86,7 +98,8 @@
                                                 'default_seeddo_id': id}"/>
                                 </page>
 
-                                <page string="Return Seed" attrs="{'invisible':[('state','!=','done')]}">
+                                <page string="Return Seed" attrs="{'invisible':[('state','!=','done'),
+                                ('state','!=','return'),('state','!=','validate3')],'readonly':[('state','=','validate3')]}">
                                         <field name="return_ids" string="Information For Return Seed"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_returnseed',
                                                 'default_seeddo_id': id}"/>
@@ -320,6 +333,7 @@
                 <tree string="Request planting View"
                       colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
                     <field name="bpb_code" string="Request No" />
+                    <field name="seeddo_id" string="Seed DO No"/>
                     <field name="date_request"/>
                     <field name="kebun_location_id" string="Estate"/>
                     <field name="divisi_location_id" string="Division"/>
