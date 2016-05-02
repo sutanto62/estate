@@ -55,29 +55,29 @@ class ReturnSeed(models.Model):
             if item.location_id and item.qty_return > 0: # todo do not include empty quantity location
                 location_ids.add(item.location_id.inherit_location_id)
 
-        for location in location_ids:
-            qty_total_return = 0
-            qty = self.env['estate.nursery.returnseedline'].search([('location_id.inherit_location_id', '=', location.id),
+            for location in location_ids:
+                qty_total_return = 0
+                qty = self.env['estate.nursery.returnseedline'].search([('location_id.inherit_location_id', '=', location.id),
                                                                    ('return_id', '=', self.id)
                                                                    ])
-            for i in qty:
-                qty_total_return += i.qty_return
+                for i in qty:
+                    qty_total_return += i.qty_return
 
-            move_data = {
-                'product_id': item.batch_id.product_id.id,
-                'product_uom_qty': qty_total_return,
-                'origin':item.batch_id.name,
-                'product_uom': item.batch_id.product_id.uom_id.id,
-                'name': 'Return Seed to Plot.%s: %s'%(self.bpb_id.bpb_code,item.batch_id.name),
-                'date_expected': self.return_date,
-                'location_id': item.block_location_id.inherit_location_id.id,
-                'location_dest_id':location.id,
-                'state': 'done', # set to done if no approval required
-                'restrict_lot_id': item.batch_id.lot_id.id # required by check tracking product
-            }
-            move = self.env['stock.move'].create(move_data)
-            move.action_confirm()
-            move.action_done()
+                move_data = {
+                    'product_id': item.batch_id.product_id.id,
+                    'product_uom_qty': item.qty_return,
+                    'origin':item.batch_id.name,
+                    'product_uom': item.batch_id.product_id.uom_id.id,
+                    'name': 'Return Seed to Plot.%s: %s'%(self.bpb_id.bpb_code,item.batch_id.name),
+                    'date_expected': self.return_date,
+                    'location_id': item.block_location_id.inherit_location_id.id,
+                    'location_dest_id':location.id,
+                    'state': 'done', # set to done if no approval required
+                    'restrict_lot_id': item.batch_id.lot_id.id # required by check tracking product
+                }
+                move = self.env['stock.move'].create(move_data)
+                move.action_confirm()
+                move.action_done()
         return True
 
     #onchange or domain
@@ -86,20 +86,29 @@ class ReturnSeed(models.Model):
     # @api.onchange('bpb_id','seeddo_id')
     # def _onchange_bpb_id(self):
     #     # domain bpb id sesuai dengan list bpbp id yang ada di seeddo
-    #     arrBpb = []
     #     if self:
-    #         # spbId = self.env['estate.nursery.returnseed'].search([]).seeddo_id
-    #         # for a in self:
-    #         #     print "test"
-    #         #     print a
-    #         bpbId = self.env['estate.nursery.request'].search([('seeddo_id','=',self.seeddo_id.id)]).id
-    #         print"aaaaa"
-    #         print bpbId
-    #         # for a in bpbId:
-    #         #     arrBpb.append(a.seeddo_id.id)
-    #         # print"seeddo"
-    #         #
-    #         # print arrBpb
+    #         bpblist = self.env['estate.nursery.request']
+    #         arrBpblist = []
+    #         for a in bpblist:
+    #             arrBpblist.append(a.seeddo_id.id)
+    #         print arrBpblist
+    #         return {
+    #             'domain': {'batch_id': [('id','in',arrBpblist)]}
+    #         }
+    #     # arrBpb = []
+        # if self:
+        #     # spbId = self.env['estate.nursery.returnseed'].search([]).seeddo_id
+        #     # for a in self:
+        #     #     print "test"
+        #     #     print a
+        #     bpbId = self.env['estate.nursery.request'].search([('seeddo_id','=',self.seeddo_id.id)]).id
+        #     print"aaaaa"
+        #     print bpbId
+        #     # for a in bpbId:
+        #     #     arrBpb.append(a.seeddo_id.id)
+        #     # print"seeddo"
+        #     #
+        #     # print arrBpb
 
     #compute
     @api.multi
@@ -115,6 +124,7 @@ class ReturnSeed(models.Model):
     #constrains
     @api.constrains('returnseedline_ids')
     def _constrains_returnseedline(self):
+        #constraint for equalize line in seed_return between returnline to bpb line
         if self:
             countLine = 0
             countLineReturn = 0
@@ -172,8 +182,13 @@ class ReturnSeedLine(models.Model):
                 arrBlock.append(a.block_location_id.id)
                 arrLocation.append(a.location_id.id)
                 arrBatch.append(a.batch_id.id)
-                qty += a.qty_request
-            self.qty_request = qty
+            if self.block_location_id and self.batch_id:
+                stockLocation = self.env['estate.block.template'].search([('id','=',self.block_location_id.id)])
+                stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
+                idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
+                qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
+                for c in qty:
+                    self.qty_request = c.qty
         return {
                 'domain': {'block_location_id': [('id','in',arrBlock)],
                            'batch_id':[('id','in',arrBatch)],
