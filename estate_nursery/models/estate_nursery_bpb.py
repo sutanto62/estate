@@ -44,7 +44,7 @@ class Requestplanting(models.Model):
                                default=lambda self: self.variety_id.search
                                         ([('name','=','Dura')]))
     comment=fields.Text("Cause Pending")
-    total_qty_pokok = fields.Integer("Quantity Pokok Bibit",compute="_compute_total",track_visibility='onchange')
+    total_qty_pokok = fields.Integer("Quantity Pokok Seed",compute="_compute_total",track_visibility='onchange')
     state=fields.Selection([('draft','Draft'),('open2','Open Pending'),('pending2','Pending'),
             ('pending','Pending'),('confirmed','Confirm'),('open','Open Pending'),
             ('validate1','First Approval'),('validate2','Second Approval'),('done','Draft To SPB')])
@@ -107,33 +107,35 @@ class Requestplanting(models.Model):
     @api.one
     def action_move(self):
         location_ids = set()
+        blocklocation_ids = set()
         for item in self.requestline_ids:
             if item.location_id and item.qty_request > 0: # todo do not include empty quantity location
                 location_ids.add(item.location_id.inherit_location_id)
+                blocklocation_ids.add(item.block_location_id.inherit_location_id)
 
-        for location in location_ids:
-            qty_total_request = 0
-            qty = self.env['estate.nursery.requestline'].search([('location_id.inherit_location_id', '=', location.id),
+            for location in location_ids:
+                qty_total_request = 0
+                qty = self.env['estate.nursery.requestline'].search([('location_id.inherit_location_id', '=', location.id),
                                                                    ('request_id', '=', self.id)
                                                                    ])
-            for i in qty:
-                qty_total_request += i.qty_request
+                for i in qty:
+                    qty_total_request += i.qty_request
 
-            move_data = {
-                'product_id': item.batch_id.product_id.id,
-                'product_uom_qty': qty_total_request,
-                'origin':item.batch_id.name,
-                'product_uom': item.batch_id.product_id.uom_id.id,
-                'name': 'Move Seed to block.%s: %s'%(self.bpb_code,item.batch_id.name),
-                'date_expected': self.date_request,
-                'location_id': location.id,
-                'location_dest_id':item.block_location_id.inherit_location_id.id,
-                'state': 'done', # set to done if no approval required
-                'restrict_lot_id': item.batch_id.lot_id.id # required by check tracking product
-            }
-            move = self.env['stock.move'].create(move_data)
-            move.action_confirm()
-            move.action_done()
+                move_data = {
+                    'product_id': item.batch_id.product_id.id,
+                    'product_uom_qty': item.qty_request,
+                    'origin':item.batch_id.name,
+                    'product_uom': item.batch_id.product_id.uom_id.id,
+                    'name': 'Move Seed to block.%s: %s'%(self.bpb_code,item.batch_id.name),
+                    'date_expected': self.date_request,
+                    'location_id': location.id,
+                    'location_dest_id':item.block_location_id.inherit_location_id.id,
+                    'state': 'done', # set to done if no approval required
+                    'restrict_lot_id': item.batch_id.lot_id.id # required by check tracking product
+                }
+                move = self.env['stock.move'].create(move_data)
+                move.action_confirm()
+                move.action_done()
         return True
 
     #compute RequestLine
@@ -165,6 +167,9 @@ class Requestplanting(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[division.id] = division_value_name
             return temp
+
+    #onchange
+
 
 class RequestLine(models.Model):
 
@@ -202,7 +207,6 @@ class RequestLine(models.Model):
         batch = self.env['estate.nursery.batch'].search([('age_seed_range','>=',6),('qty_planted','>',0)])
         if self:
             if self.batch_id:
-                bpbline = self.env['estate.nursery.requestline'].search([('batch_id.id','=',self.batch_id.id)]).batch_id
                 batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.batch_id.id)])
                 for b in batchTransferMn:
                     stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
