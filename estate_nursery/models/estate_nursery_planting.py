@@ -85,6 +85,7 @@ class Planting(models.Model):
     def action_open_pending2(self):
         """Set Planting State to open."""
         self.state = 'open2'
+
     @api.one
     def action_pending(self):
         """Set Selection State to pending."""
@@ -100,20 +101,6 @@ class Planting(models.Model):
         """Approved Planting is done."""
         self.state = 'done'
 
-    @api.one
-    def action_return(self):
-        #to return seed after transfer
-         self.state = 'return'
-
-    @api.one
-    def action_approve3(self):
-        #approved return seed after transfer
-        self.state = 'validate3'
-
-    @api.one
-    def action_done2(self):
-        #done return seed after transfer
-        self.state = 'done2'
 
     #Compute Amount ALL
     @api.one
@@ -147,10 +134,10 @@ class Planting(models.Model):
         self.write({'amount_total':self.amount_total})
 
     #Constraint For ALL
-    #Constraint bpb choose not more than 1
     @api.one
     @api.constrains('batch_planted_ids')
     def _constrains_parameter_bpb(self):
+        #Constraint bpb choose not more than 1
         if self.batch_planted_ids:
             temp={}
             for bpb in self.batch_planted_ids:
@@ -160,6 +147,42 @@ class Planting(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[bpb.id] = bpb_value_name
             return temp
+
+    @api.multi
+    @api.constrains('request_ids','return_ids')
+    def _constraints_request_return_seed(self):
+        #Constraint Return line must be same with line in bpb
+        if self.return_ids:
+            countLine = 0
+            countLineReturn = 0
+            for r in self:
+                countLine += len(r.request_ids)
+                countLineReturn += len(r.return_ids)
+            if countLineReturn > countLine:
+                error_msg = "Line Return Must be match with line in BPB"
+                raise exceptions.ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('return_ids','request_ids','dotransportir_ids','activityline_ids')
+    def _constraints_line_mustbe_filled(self):
+        #Constraint Line return , request , transportir, activityin planting must be filled
+            countRequest = 0
+            countDotranport = 0
+            countActivity = 0
+            for item in self:
+                countActivity += len(item.activityline_ids)
+                countDotranport += len(item.dotransportir_ids)
+                countRequest += len(item.request_ids)
+            if countRequest == 0 :
+                error_msg = "Line Request Must be filled"
+                raise exceptions.ValidationError(error_msg)
+            if countDotranport == 0 :
+                error_msg = "Line Transportir Must be filled"
+                raise exceptions.ValidationError(error_msg)
+            if countActivity == 0 :
+                error_msg = "Line Activity Must be filled"
+                raise exceptions.ValidationError(error_msg)
+
 
 class TransportirDetail(models.Model):
 

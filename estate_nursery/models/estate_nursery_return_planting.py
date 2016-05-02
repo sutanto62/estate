@@ -194,6 +194,7 @@ class ReturnSeedLine(models.Model):
                            'batch_id':[('id','in',arrBatch)],
                            'location_id' :[('id','in',arrLocation)]},
             }
+
     #compute
     @api.multi
     @api.depends('qty_request','qty_return','qty_transfer')

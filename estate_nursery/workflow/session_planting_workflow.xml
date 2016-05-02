@@ -87,36 +87,6 @@
             <field name="action">action_approved()</field>
         </record>
 
-        <record model="workflow.activity" id="planting_return">
-            <field name="name">Return</field>
-            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
-
-            <field name="split_mode">XOR</field>
-            <field name="kind">function</field>
-
-            <field name="action">action_return()</field>
-        </record>
-
-        <!--<record model="workflow.activity" id="planting_done2">-->
-            <!--<field name="name">Return Done</field>-->
-            <!--<field name="wkf_id" ref="estate_nursery.planting_approval"/>-->
-
-            <!--<field name="split_mode">XOR</field>-->
-            <!--<field name="kind">function</field>-->
-
-            <!--<field name="action">action_done2()</field>-->
-        <!--</record>-->
-
-        <record model="workflow.activity" id="planting_return_approve">
-            <field name="name">Return Approval</field>
-            <field name="wkf_id" ref="estate_nursery.planting_approval"/>
-
-            <field name="split_mode">XOR</field>
-            <field name="kind">function</field>
-
-            <field name="action">action_approve3()</field>
-        </record>
-
         <record model="workflow.transition" id="plantingdraft_to_confirmed">
             <field name="act_from" ref="planting_draft"/>
             <field name="act_to" ref="planting_confirmed"/>
@@ -195,24 +165,6 @@
 
         <record model="workflow.transition" id="plantingdone_to_draft">
             <field name="act_from" ref="planting_done"/>
-            <field name="act_to" ref="planting_draft"/>
-            <field name="signal">signal_draft</field>
-        </record>
-
-        <record model="workflow.transition" id="plantingdone_to_return">
-            <field name="act_from" ref="planting_done"/>
-            <field name="act_to" ref="planting_return"/>
-            <field name="signal">signal_return</field>
-        </record>
-
-        <record model="workflow.transition" id="plantingreturn_to_approve">
-            <field name="act_from" ref="planting_return"/>
-            <field name="act_to" ref="planting_return_approve"/>
-            <field name="signal">signal_approve3</field>
-        </record>
-
-        <record model="workflow.transition" id="plantingreturn_to_plantingdone">
-            <field name="act_from" ref="planting_return_approve"/>
             <field name="act_to" ref="planting_draft"/>
             <field name="signal">signal_draft</field>
         </record>
