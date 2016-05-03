@@ -175,7 +175,6 @@ class ReturnSeedLine(models.Model):
         arrBlock = []
         arrBatch = []
         arrLocation =[]
-        qty = 0
         if self:
             bpbId =self.env['estate.nursery.requestline'].search([('request_id','=',self.bpb_id.id)])
             for a in bpbId:
@@ -183,12 +182,8 @@ class ReturnSeedLine(models.Model):
                 arrLocation.append(a.location_id.id)
                 arrBatch.append(a.batch_id.id)
             if self.block_location_id and self.batch_id:
-                stockLocation = self.env['estate.block.template'].search([('id','=',self.block_location_id.id)])
-                stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
-                idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
-                qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
-                for c in qty:
-                    self.qty_request = c.qty
+                qtyReq =self.env['estate.nursery.requestline'].search([('request_id','=',self.bpb_id.id)]).qty_request
+                self.qty_request = qtyReq
         return {
                 'domain': {'block_location_id': [('id','in',arrBlock)],
                            'batch_id':[('id','in',arrBatch)],
