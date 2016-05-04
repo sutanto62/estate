@@ -26,7 +26,10 @@
                                      <td style="width:25%;">: <span t-field="o.date_request" style="font-family: times; font-size:10pt;"/></td>
                                  </tr>
                                  <tr>
-
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
                                  </tr>
                                  <tr>
                                      <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No SPK</b></td>
@@ -42,9 +45,15 @@
                                  </tr>
                                  <tr>
                                      <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No Contractor</b></td>
-                                     <td style="width:25%;">: <p style="font-family: times; font-size:10pt;">CTK001</p></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">CTK001</span></td>
                                      <td style="width:25%;"><b style="font-family: times; font-size:10pt; width:10%;">Name Contractor</b></td>
-                                     <td style="width:25%;">: <p style="font-family: times; font-size:10pt;"/>Mohammad Gindar</td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;"/>Mohammad Gindar</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
                                  </tr>
                              </table>
                         </div>
@@ -81,12 +90,12 @@
                                         <td style="width:10%; border: 1px solid black;"><b>Division</b></td>
                                     </tr>
                                     <t t-foreach="o.request_ids" t-as="f">
-                                        <tr height="43" style="font-family: times; font-size:8pt;">
+                                        <tr style="font-family: times; font-size:8pt;">
                                             <td style="border: 1px solid black;"><span t-field="f.bpb_code"/></td>
                                             <td style="border: 1px solid black;"><span t-field="f.date_request"/></td>
                                             <td style="border: 1px solid black;"><span t-field="f.kebun_location_id"/></td>
                                             <td style="border: 1px solid black;"><span t-field="f.divisi_location_id"/></td>
-                                            <tr height="43" t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;">
+                                            <tr t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;">
                                                 <td style="color:white; "><span t-field="s.block_location_id"/></td>
                                                 <td style="">&#160;</td>
                                                 <td style="">&#160;</td>
@@ -107,12 +116,12 @@
                                     </tr>
 
                                         <t t-foreach="o.request_ids" t-as="f">
-                                            <tr height="43" style="font-family: times; font-size:8pt;">
+                                            <tr style="font-family: times; font-size:8pt;">
                                                 <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;">&#160;</td>
                                                 <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
                                                 <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
                                                 <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;">&#160;</td>
-                                                <tr height="43" t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;" >
+                                                <tr t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;" >
                                                         <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><span t-field="s.block_location_id"/></td>
                                                         <td style="border: 1px solid black;"><span />2015</td>
                                                         <td style="border: 1px solid black;"><span t-field="s.large_area"/></td>
@@ -129,10 +138,10 @@
                                             <td style="width:10%; border: 1px solid black;color:black;"><b>Seed Scrap</b></td>
                                         </tr>
                                     <t t-foreach="o.return_ids" t-as="f">
-                                        <tr height="43" style="font-family: times; font-size:8pt;">
+                                        <tr style="font-family: times; font-size:8pt;">
                                             <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
                                             <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:white">&#160;</td>
-                                            <tr height="43" t-foreach="f.returnseedline_ids" t-as="s" style="font-family: times; font-size:11pt;" >
+                                            <tr  t-foreach="f.returnseedline_ids" t-as="s" style="font-size:8pt;" >
                                                 <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><span t-field="s.qty_transfer"/></td>
                                                 <td style=" border: 1px solid black;color:black; color:black;"><span t-field="s.qty_return"/></td>
                                             </tr>
@@ -254,6 +263,15 @@
                             </t>
                         </table>
                     </div>
+
+                     <div class="row col-xs-12">
+                             <table style="width:100%;">
+                                 <tr>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">Additional Information</span></td>
+                                     <td style="width:75%; border-bottom: 1px solid black;">: <span t-field="o.comment" style="font-family: times; font-size:10pt;"/></td>
+                                 </tr>
+                             </table>
+                        </div>
 
                     <div class="row col-xs-12">
                         <table width="100%">
