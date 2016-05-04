@@ -14,60 +14,37 @@
                          <div class="row col-xs-12">
                              <table style="width:100%;">
                                  <tr>
-                                     <td style="width:50%;">
-                                         <table>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt;">Location Seed</b></td>
-                                                 <td style="width:25%;">: <span style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="width:100%;font-family: times; font-size:10pt;">No SPB </b></td>
-                                                 <td style="width:25%;">: <span t-field="o.seeddo_code" style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                         </table>
-                                     </td>
-                                     <td style="width:50%;">
-                                         <table>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt;">SPB Date</b></td>
-                                                 <td style="width:25%;">: <span t-field="o.date_request" style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                             <tr></tr>
-                                             <tr></tr>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt; width:10%;">Name Contractor</b></td>
-                                                 <td style="width:25%;">: <p style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                         </table>
-                                     </td>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;">Location Seed</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">LYD</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
                                  </tr>
-                             </table>
-                             <table style="width:100%;">
                                  <tr>
-                                     <td style="width:50%;">
-                                         <table>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No SPK</b></td>
-                                                 <td style="width:25%;">: <span style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">Date SPK</b></td>
-                                                 <td style="width:25%;">: <span style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No Contractor</b></td>
-                                                 <td style="width:25%;">: <p style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                         </table>
-                                     </td>
-                                     <td style="width:50%;">
-                                         <table>
-                                             <tr>
-                                                 <td style="width:25%;"><b style="font-family: times; font-size:10pt; width:10%;">Name Contractor</b></td>
-                                                 <td style="width:25%;">: <p style="font-family: times; font-size:10pt;"/></td>
-                                             </tr>
-                                         </table>
-                                     </td>
+                                     <td style="width:25%;"><b style="width:100%;font-family: times; font-size:10pt;">No SPB </b></td>
+                                     <td style="width:25%;">: <span t-field="o.seeddo_code" style="font-family: times; font-size:10pt;"/></td>
+                                     <td style="width:25%;"><b style="width:100%;font-family: times; font-size:10pt;">SPB Date</b></td>
+                                     <td style="width:25%;">: <span t-field="o.date_request" style="font-family: times; font-size:10pt;"/></td>
+                                 </tr>
+                                 <tr>
+
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No SPK</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">SPK001</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">Date SPK</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">4/5/2016</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No Contractor</b></td>
+                                     <td style="width:25%;">: <p style="font-family: times; font-size:10pt;">CTK001</p></td>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt; width:10%;">Name Contractor</b></td>
+                                     <td style="width:25%;">: <p style="font-family: times; font-size:10pt;"/>Mohammad Gindar</td>
                                  </tr>
                              </table>
                         </div>
@@ -131,13 +108,13 @@
 
                                         <t t-foreach="o.request_ids" t-as="f">
                                             <tr height="43" style="font-family: times; font-size:8pt;">
-                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:white">&#160;</td>
+                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;">&#160;</td>
                                                 <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
                                                 <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
-                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:white">&#160;</td>
+                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;">&#160;</td>
                                                 <tr height="43" t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;" >
                                                         <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><span t-field="s.block_location_id"/></td>
-                                                        <td style="border: 1px solid black;"><span />&#160;</td>
+                                                        <td style="border: 1px solid black;"><span />2015</td>
                                                         <td style="border: 1px solid black;"><span t-field="s.large_area"/></td>
                                                         <td style="border: 1px solid black;"><span t-field="s.qty_request"/></td>
                                                 </tr>
@@ -153,7 +130,7 @@
                                         </tr>
                                     <t t-foreach="o.return_ids" t-as="f">
                                         <tr height="43" style="font-family: times; font-size:8pt;">
-                                            <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-left: 1px solid black !important;color:white">&#160;</td>
+                                            <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
                                             <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:white">&#160;</td>
                                             <tr height="43" t-foreach="f.returnseedline_ids" t-as="s" style="font-family: times; font-size:11pt;" >
                                                 <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><span t-field="s.qty_transfer"/></td>
@@ -176,6 +153,7 @@
                         <table class="table table-condensed">
                             <thead style="background-color:white;color:black;">
                                 <tr>
+                                    <th style="width:30%;border: 1px solid black;">BPB No</th>
                                     <th style="width:30%;border: 1px solid black;">Spesification Seed</th>
                                     <th style="width:30%;border: 1px solid black;">Batch No</th>
                                     <th style="width:30%;border: 1px solid black;">Age Seed</th>
@@ -185,10 +163,11 @@
                             <tbody class="selection_tbody">
                                 <t t-foreach="o.request_ids" t-as="c">
                                     <tr  style="font-family: times; font-size:8pt;">
-                                        <td style="width:50%;border: 1px solid black;"><span t-field="c.variety_id"/></td>
+                                        <td style="border: 1px solid black;"><span t-field="c.bpb_code"/></td>
+                                        <td style="border: 1px solid black;"><span t-field="c.variety_id"/></td>
                                         <t t-foreach="c.requestline_ids" t-as="s">
-                                            <td style="width:50%;border: 1px solid black;"><span t-field="s.batch_id"/></td>
-                                            <td style="width:0%;border: 1px solid black;"><span t-field="s.batch_id.age_seed_range"/></td>
+                                            <td style="border: 1px solid black;"><span t-field="s.batch_id"/></td>
+                                            <td style="border: 1px solid black;"><span t-field="s.batch_id.age_seed_range"/></td>
                                         </t>
                                     </tr>
                                 </t>
