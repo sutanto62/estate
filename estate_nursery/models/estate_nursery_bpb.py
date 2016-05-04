@@ -206,15 +206,6 @@ class RequestLine(models.Model):
         arrRecordBatch=[]
         batch = self.env['estate.nursery.batch'].search([('age_seed_range','>=',6),('qty_planted','>',0)])
         if self:
-            if self.batch_id:
-                batchTransferMn = self.env['estate.nursery.transfermn'].search([('batch_id.id','=',self.batch_id.id)])
-                for b in batchTransferMn:
-                    stockLocation = self.env['estate.block.template'].search([('id','=',b.location_mn_id[0].id)])
-                    stock= self.env['stock.location'].search([('id','=',stockLocation.inherit_location_id[0].id)])
-                    idlot= self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)])
-                    qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
-                    if qty[0].qty > 0:
-                        arrRecordBatch.append(b.batch_id.id)
             for a in batch:
                 arrBatch.append(a.id)
             return {
