@@ -926,6 +926,13 @@ class TransferDetailItem(models.TransientModel):
     _inherit = 'stock.transfer_details_items'
 
     is_seed = fields.Boolean("Is Seed", related='product_id.seed')
-    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", ondelete="restrict",related='product_id.variety_id')
+    variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
+                                 ondelete="restrict",related='product_id.variety_id')
 
+class InheritEstateBlockTemplate(models.Model):
+
+    _inherit='estate.block.template'
+
+    batch_id = fields.Many2one('estate.nursery.batch','Seed Source',required=False,ondelete="restrict",
+                               help='use batch for nursery block only.')
 

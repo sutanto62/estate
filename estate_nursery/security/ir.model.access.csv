@@ -109,4 +109,10 @@
 "cause_assistant","estate_nursery_cause","estate_nursery.model_estate_nursery_cause","estate.group_assistant","True","True","False","False"
 "cause_manager","estate_nursery_cause","estate_nursery.model_estate_nursery_cause","estate.group_manager","True","True","True","False"
 
+"returnseed_user","estate_nursery_returnseed","estate_nursery.model_estate_nursery_returnseed","estate.group_user","True","False","True","False"
+"returnseed_assistant","estate_nursery_returnseed","estate_nursery.model_estate_nursery_returnseed","estate.group_assistant","True","True","False","False"
+"returnseed_manager","estate_nursery_returnseed","estate_nursery.model_estate_nursery_returnseed","estate.group_manager","True","True","True","False"
 
+"returnseedline_user","estate_nursery_returnseedline","estate_nursery.model_estate_nursery_returnseedline","estate.group_user","True","False","True","False"
+"returnseedline_assistant","estate_nursery_returnseedline","estate_nursery.model_estate_nursery_returnseedline","estate.group_assistant","True","True","False","False"
+"returnseedline_manager","estate_nursery_returnseedline","estate_nursery.model_estate_nursery_returnseedline","estate.group_manager","True","True","True","False"

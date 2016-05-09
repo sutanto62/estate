@@ -1,0 +1,156 @@
+<openerp>
+    <data>
+        <template id="report_plantation_statmentseed_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <!--Header Row-->
+                        <div class="row col-xs-12" style="font-family: times; background-color:#568eff;border: 1px solid #568eff;color:#ffffff; font-size:20pt;">
+                            <div class="col-xs-12" >
+                                <p style="text-align:center;font-family: times;" >Report Statment Seed</p>
+                            </div>
+                        </div>
+
+                         <!--&lt;!&ndash; BPB  Header ROW &ndash;&gt;-->
+                        <!--<div class="row col-xs-12" style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">-->
+                            <!--<div class="row col-xs-2">-->
+                                <!--<table class="table table-condensed">-->
+                                    <!--<thead style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">-->
+                                        <!--<tr height="55">-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">Box</th>-->
+                                        <!--</tr>-->
+                                    <!--</thead>-->
+                                        <!--<tbody class="selection_tbody">-->
+                                            <!--<tr height="40"  t-foreach="o.batchline_ids" t-as="s" style="font-family: times; font-size:8pt;">-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag ==0">-->
+                                                            <!--<span t-field="s.name"/>-->
+                                                    <!--</td>-->
+                                            <!--</tr>-->
+                                            <!--<tr>-->
+                                                <!--<td style="width:50%; font-size:9pt;border-bottom: 1px solid white !important;">-->
+                                                    <!--Total-->
+                                                <!--</td>-->
+                                            <!--</tr>-->
+                                        <!--</tbody>-->
+                                <!--</table>-->
+                            <!--</div>-->
+                            <!--<div class="row col-xs-11">-->
+                                <!--<table class="table table-condensed">-->
+                                    <!--<thead style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">-->
+                                        <!--<tr height="55">-->
+                                            <!--<th style="width:50%; font-size:9pt;border-bottom: 1px solid white !important;">Bag</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">SGL</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">DBL</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">Σ</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">%NOR</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">BRK </th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">Dead</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">Fungus</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">Σ</th>-->
+                                            <!--<th style="width:10px; font-size:9pt;border-bottom: 1px solid white !important;">%ABN</th>-->
+                                        <!--</tr>-->
+                                    <!--</thead>-->
+                                        <!--<tbody class="selection_tbody">-->
+                                            <!--<tr height="40" t-foreach="o.batchline_ids" t-as="s" style="font-family: times; font-size:8pt;">-->
+                                                    <!--<td style="width:20%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.name"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.qty_single"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.qty_double"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.subtotal_normal"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.percentage_normal"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.qty_broken"/>-->
+                                                    <!--</td>-->
+                                                     <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.qty_dead"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.qty_fungus"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.subtotal_abnormal"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt" t-if="s.flag_bag == 1">-->
+                                                            <!--<span t-field="s.percentage_abnormal"/>-->
+                                                    <!--</td>-->
+                                                <!--</tr>-->
+                                                <!--<tr>-->
+                                                    <!--<td style="width:20%;font-size:8pt"> &#160;</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.qty_single"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.qty_double"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.subtotal_normal"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt"> &#160;</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.qty_broken"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.qty_dead"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.qty_fungus"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt">-->
+                                                        <!--<t t-set="variable" t-value="0"/>-->
+                                                        <!--<t t-foreach="o.batchline_ids" t-as="m">-->
+                                                            <!--<t t-set="variable" t-value="variable+m.subtotal_abnormal"/>-->
+                                                        <!--</t>-->
+                                                        <!--<b t-esc="variable" style="text-align:right;font-family: times; font-size:8pt;"/>-->
+                                                    <!--</td>-->
+                                                    <!--<td style="width:5%;font-size:8pt"> &#160;</td>-->
+                                                <!--</tr>-->
+                                        <!--</tbody>-->
+                                <!--</table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                </div>
+            </t>
+        </template>
+
+        <template id="reportplantation_statmentseed_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_plantation_statmentseed_document')"/>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

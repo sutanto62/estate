@@ -182,7 +182,8 @@ class ReturnSeedLine(models.Model):
                 arrLocation.append(a.location_id.id)
                 arrBatch.append(a.batch_id.id)
             if self.block_location_id and self.batch_id:
-                qtyReq =self.env['estate.nursery.requestline'].search([('request_id','=',self.bpb_id.id)]).qty_request
+                qtyReq =self.env['estate.nursery.requestline'].search([('request_id','=',self.bpb_id.id),
+                                                                       ('batch_id','=',self.batch_id.id)]).qty_request
                 self.qty_request = qtyReq
         return {
                 'domain': {'block_location_id': [('id','in',arrBlock)],
@@ -209,3 +210,15 @@ class ReturnSeedLine(models.Model):
                 raise exceptions.ValidationError(error_msg)
         return True
 
+    @api.constrains('batch_id')
+    def _constraint_batch_id(self):
+        #for constraint batch id choose not more than one
+        if self:
+            temp={}
+            for batch in self:
+                batch_value = batch.batch_id.name
+                if batch_value in temp.values():
+                    error_msg = "Batch No \"%s\" is set more than once " % batch_value
+                    raise exceptions.ValidationError(error_msg)
+                temp[batch.id] = batch_value
+            return temp
