@@ -19,6 +19,7 @@ class Planting(models.Model):
     batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
                                           help="Define batch parameter")
     request_ids = fields.One2many('estate.nursery.request','seeddo_id',"Request Ids",help="Define Many Bpb")
+    timesheet_ids = fields.One2many('estate.timesheet.activity.transport','seeddo_id','Timesheet ids')
     return_ids = fields.One2many('estate.nursery.returnseed','seeddo_id',"Returns Ids",help="Define Many Return Bpb")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     date_request = fields.Date('Date Seed Delivery Order',required=True)

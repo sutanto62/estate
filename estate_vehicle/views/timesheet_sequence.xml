@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Sequences for Timesheet Activity Transport code -->
+        <record id="tmactivity_transport_code_sequence" model="ir.sequence.type">
+            <field name="name">Timesheet Activity Transport code</field>
+            <field name="code">estate.timesheet.activity.transport</field>
+        </record>
+
+        <record id="seq_tmactivity_transport" model="ir.sequence">
+            <field name="name">Timesheet Activity Transport sequence</field>
+            <field name="code">estate.timesheet.activity.transport</field>
+            <field name="prefix">TACT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

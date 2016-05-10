@@ -1,0 +1,55 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_path_location_config_tree">
+            <field name="name">Path location Tree</field>
+            <field name="model">path.location</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="start_location" options="{'no_create_edit': True}"/>
+                    <field name="end_location"
+                           options="{'no_create_edit': True}"/>
+                    <field name="distance_location"/>
+                    <field name="path_price" />
+                    <field name="comment"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_path_location_config_form" model="ir.ui.view">
+            <field name="name">Path location Form</field>
+            <field name="model">path.location</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                    <group>
+                        <group name="detail" string="Detail Location Path">
+                            <field name="start_location" string="Start Location"/>
+                            <field name="end_location" string="End Location"/>
+                        </group>
+                        <group name="price" string="Detail price">
+                            <field name="distance_location"/>
+                            <field name="path_price" string="Price Location"/>
+                            <field name="comment"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_path_location_config">
+            <field name="name">Path Location</field>
+            <field name="res_model">path.location</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="estate_path_location" name="Master Path Location"
+                  parent="estate.estate_blocking_menu"
+                  action="action_list_path_location_config"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>

@@ -24,7 +24,12 @@
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'templates.xml','views/estate_nursery_vehicle.xml',
+        'templates.xml',
+        'views/estate_nursery_vehicle.xml',
+        'views/estate_vehicle_path.xml',
+        'views/estate_vehicle_timesheet.xml',
+        # 'views/timesheet_sequence.xml',
+        #'workflow/workflow_estate_timesheet_activity_transport.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

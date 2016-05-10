@@ -1,0 +1,78 @@
+<openerp>
+    <data>
+        <!-- Tree : activity timesheet-->
+        <record model="ir.ui.view" id="view_tree_timesheet_activity_transport">
+            <field name="name">Estate timesheet activity Tree</field>
+            <field name="model">estate.timesheet.activity.transport</field>
+            <field name="arch" type="xml">
+                <tree string="Estate timesheet activity Tree" editable='bottom' delete="true">
+                    <field name="date_activity_transport" string="Date Activity"/>
+                    <field name="activity_id" string="Activity"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="employee_id" string="Employee Name"/>
+                    <field name="start_location" string="Start Location"/>
+                    <field name="end_location" string="End Location"/>
+                    <field name="start_time" string="Start Time"/>
+                    <field name="end_time" string="End Time"/>
+                    <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
+                    <field name="total_time" string="&#931; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                </tree>
+            </field>
+        </record>
+
+        <!--form : activity time sheet-->
+        <record id="view_estate_timesheet_activity_transport_form" model="ir.ui.view">
+            <field name="name">Estate Timesheet Activity Transport Form</field>
+            <field name="model">estate.timesheet.activity.transport</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Estate timesheet activity Form">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date_activity_transport" required="1"/>
+                                <field name="employee_id" attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="activity_id" attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                            </group>
+                        </group>
+                        <group string="Detail Information">
+                            <group name="Detail Path Location">
+                                <field name="start_location" readonly="0" string="Start Location " invisible="0"/>
+                                <field name="end_location" readonly="0" string="End Location " invisible="0"/>
+                                <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
+                            </group>
+                            <group name="Detail Time Information">
+                                <field name="start_time" required="True" string="Start Time"/>
+                                <field name="end_time" required="True" string="End Time"/>
+                                <field name="total_time" string="&#931; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                            </group>
+                        </group>
+                        <group>
+                            <notebook>
+                                    <page string="Additional Information">
+                                        <field name="comment" attrs="{'readonly': [('state','=','done')]}"/>
+                                     </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_estate_timesheet_activity_transport">
+            <field name="name">Action Estate Timesheet Activity Transport</field>
+            <field name="res_model">estate.timesheet.activity.transport</field>
+            <field name="view_mode">tree</field>
+         </record>
+
+         <menuitem id="estate_vehicle_timesheet_menu"
+                  name="Timesheet Vehicle Activity"
+                  parent="estate.main_estate_menu"
+                  sequence="10"/>
+
+         <menuitem id="estate_vehicle_timesheet_activity" name="Timesheet Vehicle Activity"
+                  parent="estate_vehicle.estate_vehicle_timesheet_menu"
+                  action="action_estate_timesheet_activity_transport"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>

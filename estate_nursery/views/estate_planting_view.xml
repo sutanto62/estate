@@ -96,16 +96,7 @@
                                                 'default_seeddo_id': id}"/>
                                 </page>
 
-
-                                <page string="Detail Transportir">
-                                        <field name="dotransportir_ids"
-                                               attrs="{
-                                        'required' : [('state', '=', 'confirmed')],
-                                        'readonly' : [('state', '=', 'done')]}"
-                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_dotransportir'}"/>
-                                </page>
-
-                                <page string="Tranportir Activity">
+                                 <page string="Tranportir Activity">
                                         <field name="activityline_ids" attrs="{
                                         'required' : [('state', '=', 'confirmed')],
                                         'readonly' : [('state', '=', 'done')]}"
@@ -122,6 +113,24 @@
                                             widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
                                     </group>
                                 </page>
+
+                                <page string="Detail Transportir">
+                                        <field name="dotransportir_ids"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : [('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_dotransportir'}"/>
+                                </page>
+
+                                <page string="Timesheet Vehicle &amp; Transportir">
+                                        <field name="timesheet_ids"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : [('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_vehicle.view_tree_timesheet_activity_transport'}"/>
+                                </page>
+
+
 
                                 <page string="Additional Information">
                                     <group>
