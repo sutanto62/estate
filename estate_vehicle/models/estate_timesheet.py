@@ -102,32 +102,29 @@ class TimesheetActivityTransport(models.Model):
                 }
         }
 
-    # @api.multi
-    # @api.onchange('vehicle_id')
-    # def onchange_vehicle(self):
-    #     arrVehicle =[]
-    #     print "test id"
-    #     seed = self.seeddo_id.id
-    #     print seed
-    #     if self:
-    #         dotransportir = self.env['estate.nursery.dotransportir'].search([('seeddo_id.id','=',self.seeddo_id)])
-    #         print "test"
-    #         print dotransportir
-
     @api.multi
     @api.onchange('vehicle_id')
-    def _onchange_vechicle(self):
-        # on change vehicle id where status available
+    def onchange_vehicle(self):
+        arrVehicletransport =[]
         if self:
-            arrVehicle=[]
-            vehicle=self.env['fleet.vehicle'].search([('status_vehicle','=','1')])
-            for v in vehicle:
-                    arrVehicle.append(v.id)
-        return {
-                'domain':{
-                    'vehicle_id':[('id','in',arrVehicle)]
-                }
-        }
+            if self.dc_type == '1':# dc type 1 refer to seed do
+                dotransportir = self.env['estate.nursery.dotransportir'].search([('seeddo_id.id','=',self.owner_id)])
+                for vehicle in dotransportir:
+                    arrVehicletransport.append(vehicle.estate_vehicle_id.id)
+                return {
+                    'domain':{
+                        'vehicle_id':[('id','in',arrVehicletransport)]
+                        }
+                    }
+            else :
+                vehicle=self.env['fleet.vehicle'].search([('status_vehicle','=','1')])
+                for v in vehicle:
+                    arrVehicletransport.append(v.id)
+                return {
+                    'domain':{
+                        'vehicle_id':[('id','in',arrVehicletransport)]
+                        }
+                    }
 
     #Sequence Recovery code
     # def create(self, cr, uid, vals, context=None):
@@ -143,8 +140,6 @@ class TimesheetActivityTransport(models.Model):
         if self:
             if self.start_time:
                 startTime = self.start_time
-                print "test"
-                print startTime
     #state for Cleaving
     @api.one
     def action_draft(self):
