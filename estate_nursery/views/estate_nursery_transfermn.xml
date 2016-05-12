@@ -100,6 +100,14 @@
                                                    'default_batch_id': batch_id}"/>
                                         </tree>
                                 </page>
+                                <page string="Vehicle Information">
+                                    <tree>
+                                        <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"
+                                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_timesheet_activity_transport',
+                                                   'default_dc_type' : 2}"/>
+                                    </tree>
+                                </page>
                             </notebook>
                         </group>
                         <div class="oe_chatter">
