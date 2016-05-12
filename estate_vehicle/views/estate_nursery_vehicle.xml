@@ -11,6 +11,10 @@
                         <field name="no_vehicle"/>
                         <field name="vehicle_type"/>
                     </group>
+                    <group string="Vehicle Capacity &amp; status">
+                        <field name="status_vehicle"/>
+                        <field name="capacity_vehicle"/>
+                    </group>
                     <group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >
                         <field name="employee_driver_id" string="Driver Internal" options="{'no_create_edit': True}"/>
                     </group>
