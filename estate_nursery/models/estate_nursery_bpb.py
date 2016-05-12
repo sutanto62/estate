@@ -20,7 +20,7 @@ class Requestplanting(models.Model):
     user_id=fields.Many2one('res.users')
     employee_id= fields.Many2one('hr.employee')
     batch_id=fields.Many2one('estate.nursery.batch')
-    seeddo_id=fields.Many2one('estate.nursery.seeddo')
+    seeddo_id=fields.Integer()
     requestline_ids=fields.One2many('estate.nursery.requestline','request_id',"RequestLine")
     partner_id=fields.Many2one('res.partner',required=True, ondelete="restrict",
                                default=lambda self: self.partner_id.search
