@@ -15,7 +15,7 @@ class ReturnSeed(models.Model):
         return self.env['estate.nursery.seeddo'].browse(self._context.get('active_id'))
 
     name=fields.Char()
-    seeddo_id = fields.Many2one('estate.nursery.seeddo',store=True,default="_default_session")
+    seeddo_id = fields.Integer(store=True,default="_default_session")
     bpb_id = fields.Many2one('estate.nursery.request')
     returnseedline_ids = fields.One2many('estate.nursery.returnseedline','return_id','Return Line')
     return_date=fields.Date('Return Seed Date',store=True)
@@ -82,33 +82,18 @@ class ReturnSeed(models.Model):
 
     #onchange or domain
 
-    # @api.multi
-    # @api.onchange('bpb_id','seeddo_id')
-    # def _onchange_bpb_id(self):
-    #     # domain bpb id sesuai dengan list bpbp id yang ada di seeddo
-    #     if self:
-    #         bpblist = self.env['estate.nursery.request']
-    #         arrBpblist = []
-    #         for a in bpblist:
-    #             arrBpblist.append(a.seeddo_id.id)
-    #         print arrBpblist
-    #         return {
-    #             'domain': {'batch_id': [('id','in',arrBpblist)]}
-    #         }
-    #     # arrBpb = []
-        # if self:
-        #     # spbId = self.env['estate.nursery.returnseed'].search([]).seeddo_id
-        #     # for a in self:
-        #     #     print "test"
-        #     #     print a
-        #     bpbId = self.env['estate.nursery.request'].search([('seeddo_id','=',self.seeddo_id.id)]).id
-        #     print"aaaaa"
-        #     print bpbId
-        #     # for a in bpbId:
-        #     #     arrBpb.append(a.seeddo_id.id)
-        #     # print"seeddo"
-        #     #
-        #     # print arrBpb
+    @api.multi
+    @api.onchange('bpb_id','seeddo_id')
+    def _onchange_bpb_id(self):
+        # domain bpb id sesuai dengan list bpbp id yang ada di seeddo
+        arrBpblist = []
+        if self:
+            bpblist = self.env['estate.nursery.request'].search([('seeddo_id','=',self.seeddo_id)])
+            for bpb in bpblist:
+                arrBpblist.append(bpb.id)
+        return {
+             'domain': {'bpb_id': [('id','in',arrBpblist)]}
+        }
 
     #compute
     @api.multi
