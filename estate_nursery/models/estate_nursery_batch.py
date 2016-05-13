@@ -23,8 +23,17 @@ class Seed(models.Model):
     seed = fields.Boolean("Seed Product", help="Included at Seed Management.", default=False)
     # age_purchased = fields.Integer("Purchased Age", help="Fill in age of seed in month") # deprecated move to stock_quant
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
-                                 help="Select Seed Variety.",
-                                 default=lambda self: self.variety_id.search([('name','=','Tenera')]))
+                                 help="Select Seed Variety.")
+    @api.multi
+    @api.onchange('variety_id','seed')
+    def _onchange_variety_id(self):
+        if self:
+            if self.seed == True:
+                return {
+                    'domain':{'variety_id': [('name','=','Tenera')]}
+                }
+            else:
+                return False
 
 
 
