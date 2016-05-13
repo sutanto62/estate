@@ -71,13 +71,19 @@
          </record>
 
          <menuitem id="estate_vehicle_timesheet_menu"
-                  name="Timesheet Vehicle Activity"
+                  name="Vehicle Activity"
                   parent="estate.main_estate_menu"
                   sequence="10"/>
 
          <menuitem id="estate_vehicle_timesheet_activity" name="Timesheet Vehicle Activity"
                   parent="estate_vehicle.estate_vehicle_timesheet_menu"
                   action="action_estate_timesheet_activity_transport"
-                  groups="base.group_no_one"/>
+                  groups="base.group_no_one" sequence="12"/>
+
+        <menuitem id="kanban_vehicle_estate" name="Vehicle List"
+                  parent="estate_vehicle.estate_vehicle_timesheet_menu"
+                  action="fleet.fleet_vehicle_act"
+                  sequence="11"/>
+
     </data>
 </openerp>

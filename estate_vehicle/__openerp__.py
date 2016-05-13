@@ -28,6 +28,8 @@
         'views/estate_nursery_vehicle.xml',
         'views/estate_vehicle_path.xml',
         'views/estate_vehicle_timesheet.xml',
+        'views/estate_vehicle_fuel_log.xml',
+        'views/inherit_vehicle_log_oil.xml'
         # 'views/timesheet_sequence.xml',
         #'workflow/workflow_estate_timesheet_activity_transport.xml'
     ],

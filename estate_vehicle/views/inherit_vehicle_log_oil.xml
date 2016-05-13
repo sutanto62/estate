@@ -1,0 +1,22 @@
+<openerp>
+    <data>
+        <!--view , log oil -->
+         <record model="ir.ui.view" id="view_button_vehicle_log">
+             <field name="name">Vehicle Log Oil</field>
+             <field name="model">fleet.vehicle</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
+                     <button name="return_action_to_open"
+                         type="object"
+                         class="oe_stat_button"
+                         icon="fa-flask"
+                         context="{'xml_id':'fleet_vehicle_log_oil_act'}"
+                         help="show the fuel logs for this vehicle">
+                         <field name="oil_log_count" widget="statinfo" string="Oil"/>
+                     </button>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>
