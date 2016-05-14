@@ -1,0 +1,111 @@
+<openerp>
+    <data>
+        <record model='ir.ui.view' id='fleet_vehicle_log_otherservice_form'>
+            <field name="name">fleet.vehicle.log.otherservice.form</field>
+            <field name="model">estate.vehicle.log.otherservice</field>
+            <field name="arch" type="xml">
+                <form string="Other Service Logs">
+                    <sheet>
+                        <group col="2">
+                            <group string="Vehicle Details">
+                                <field name="vehicle_id" on_change="on_change_vehicle(vehicle_id)"/>
+                            </group>
+                            <group string="Unit Service Details">
+                                <field name="product_id" string="Name Product"/>
+                                <field name="price_per_service" string="Price per Unit"/>
+                                <field name="unit" string="Unit Other Service" />
+                                <field name="total_amount" />
+                            </group>
+                        </group>
+                        <group col="2">
+                            <group string="Odometer Details">
+                                <label for="odometer"/>
+                                <div>
+                                    <field name="odometer" class="oe_inline"/>
+                                    <field name="odometer_unit" class="oe_inline"/>
+                                </div>
+                            </group>
+                            <group string="Additional Details">
+                                <field name="date" />
+                                <field name="purchaser_id" />
+                                <field name="inv_ref" />
+                                <field name="vendor_id" context="{'default_supplier': True}"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field nolabel="1" name="notes" placeholder="Write here any other information"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='fleet_vehicle_log_othserservice_tree'>
+            <field name="name">fleet.vehicle.log.othserservice.tree</field>
+            <field name="model">estate.vehicle.log.otherservice</field>
+            <field name="arch" type="xml">
+                <tree string="Other service Logs">
+                    <field name="date" />
+                    <field name="vehicle_id" />
+                    <field name="odometer" invisible="1"/>
+                    <field name="odometer_unit" invisible="1"/>
+                    <field name="purchaser_id" />
+                    <field name="inv_ref" invisible="1"/>
+                    <field name="vendor_id" invisible="1"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="unit" string="Unit Service"/>
+                    <field name="price_per_service" invisible="1"/>
+                    <field name="total_amount" sum="Price"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='fleet_vehicle_log_otherservice_search'>
+            <field name="name">fleet.vehicle.log.othserservice.search</field>
+            <field name="model">estate.vehicle.log.otherservice</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles Other Service Logs" >
+                    <field name="vehicle_id" />
+                    <field name="date"/>
+                    <field name="purchaser_id" />
+                    <field name="product_id"/>
+                    <field name="unit" />
+                    <field name="total_amount" sum="Price"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="fleet_vehicle_log_otherservice_graph">
+           <field name="name">fleet.vehicle.log.othserservice.graph</field>
+           <field name="model">estate.vehicle.log.otherservice</field>
+           <field name="arch" type="xml">
+                <graph string="Other Service Costs Per Month">
+                    <field name="vehicle_id" type="row"/>
+                    <field name="cost_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='fleet_vehicle_log_otherservice_act'>
+            <field name="name">Vehicles Other Service Logs</field>
+            <field name="res_model">estate.vehicle.log.otherservice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{"search_default_groupby_vehicle" : True}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new Other Service log.
+              </p><p>
+                Here you can add Other service entries for all vehicles.  You can
+                also filter logs of a particular vehicle using the search
+                field.
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="estate_vehicle.fleet_vehicle_log_otherservice_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_otherservice_menu" groups="fleet.group_fleet_user"/>
+    </data>
+</openerp>

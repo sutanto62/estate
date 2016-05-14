@@ -173,6 +173,44 @@ class VehicleSparepartLog(models.Model):
 
     #onchange
 
+class VehicleOtherServiceLog(models.Model):
+
+    _name="estate.vehicle.log.otherservice"
+    _inherits = {'fleet.vehicle.cost':'cost_id'}
+    _description = "Inherit view cost"
+
+    def on_change_vehicle(self, cr, uid, ids, vehicle_id, context=None):
+        if not vehicle_id:
+            return {}
+        vehicle = self.pool.get('fleet.vehicle').browse(cr, uid, vehicle_id, context=context)
+        odometer_unit = vehicle.odometer_unit
+        driver = vehicle.driver_id.id
+        return {
+            'value': {
+                'odometer_unit': odometer_unit,
+                'purchaser_id': driver,
+            }
+        }
+
+    name=fields.Char()
+    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade')
+    unit = fields.Integer('Unit Service')
+    product_id = fields.Many2one('product.product','Product',domain="[('type_vehicle','=',True),('type','=','service'),('uom_id','=',1)]",store=True)
+    cost_amount = fields.Float(related='cost_id.amount')
+    purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
+    inv_ref = fields.Char('Invoice Reference')
+    vendor_id = fields.Many2one('res.partner')
+    price_per_service = fields.Float('Price Service',store=True)
+    total_amount = fields.Float('Total Amount',compute="_compute_total_otherservice",)
+    notes = fields.Text('notes')
+
+    #computed
+    @api.depends('price_per_service','unit','total_amount')
+    def _compute_total_otherservice(self):
+        if self.price_per_service and self.unit:
+            self.total_amount = self.price_per_service * self.unit
+        return True
+
 class InheritProduct(models.Model):
 
     _inherit ='product.template'
