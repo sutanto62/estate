@@ -10,19 +10,39 @@
                     <field name="owner_id"  invisible="1" readonly="1"/>
                     <field name="dc_type" invisible="1"/>
                     <field name="vehicle_id" string="Vehicle" options="{'no_create_edit': True}"/>
-                    <field name="employee_id" string="Driver" options="{'no_create_edit': True}"/>
+                    <field name="employee_id" string="Driver/Helper" options="{'no_create_edit': True}"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
                     <field name="unit" string="Unit"/>
                     <field name="start_location" string="Start Location" options="{'no_create_edit': True}"/>
                     <field name="end_location" string="End Location" options="{'no_create_edit': True}"/>
                     <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
-                    <field name="start_time" string="Start Time" />
-                    <field name="end_time" string="End Time"/>
+                    <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
+                    <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
                     <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
                     <field name="total_time" string="&#931; time " readonly="1">{‘readonly_by_pass’: True}</field>
                 </tree>
             </field>
         </record>
+
+        <!--<template id="vehicle_js" name="vehicle js" inherit_id="web.assets_backend">-->
+            <!--<xpath expr="." position="inside">-->
+                <!--<script type="text/javascript">-->
+
+                    <!--$("body").on('DOMSubtreeModified', ".input-start-time", function () {-->
+                        <!--alert("Span HTML is now " + $(this).html()); }-->
+                    <!--);-->
+                    <!--&lt;!&ndash;$(document).ready(function(){&ndash;&gt;-->
+                        <!--&lt;!&ndash;alert($(".input-start-time > input").html);&ndash;&gt;-->
+                        <!--&lt;!&ndash;$(".input-start-time > input").val("34");&ndash;&gt;-->
+                    <!--&lt;!&ndash;});&ndash;&gt;-->
+
+                    <!--&lt;!&ndash;$(function(){&ndash;&gt;-->
+                        <!--&lt;!&ndash;var ev = $._data(this, 'events'); if(ev &amp;&amp; ev.click) alert('click bound to this button');&ndash;&gt;-->
+                    <!--&lt;!&ndash;});&ndash;&gt;-->
+                    <!--&lt;!&ndash;$(".oe_form_field_one2many_list_row_add").click(function(){ $(".input-start-time > input").val("34"); });&ndash;&gt;-->
+                <!--</script>-->
+            <!--</xpath>-->
+        <!--</template>-->
 
         <!--form : activity time sheet-->
         <record id="view_estate_timesheet_activity_transport_form" model="ir.ui.view">
@@ -47,8 +67,8 @@
                                 <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
                             </group>
                             <group name="Detail Time Information">
-                                <field name="start_time" required="True" string="Start Time"/>
-                                <field name="end_time" required="True" string="End Time"/>
+                                <field name="start_time" required="True"  widget="float_time" string="Start Time"/>
+                                <field name="end_time" required="True" widget="float_time" string="End Time"/>
                                 <field name="total_time" string="&#931; time " readonly="1">{‘readonly_by_pass’: True}</field>
                             </group>
                         </group>

@@ -5,7 +5,8 @@ from dateutil.relativedelta import *
 from pytz import timezone
 import calendar
 import decimal
-
+import time
+import re
 
 # class MasterTimesheet(models.Model):
 #
@@ -137,9 +138,12 @@ class TimesheetActivityTransport(models.Model):
     @api.depends('start_time','end_time','total_time')
     def _compute_total_time(self):
         self.ensure_one()
+        #to compute total_time
         if self:
-            if self.start_time:
-                startTime = self.start_time
+            if self.start_time and self.end_time:
+                self.total_time = self.end_time - self.start_time
+        return True
+
     #state for Cleaving
     @api.one
     def action_draft(self):
@@ -173,6 +177,7 @@ class TimesheetActivityTransport(models.Model):
     #
     # @api.one
     # def action_move(self):
+
 
 
 class MasterPath(models.Model):
