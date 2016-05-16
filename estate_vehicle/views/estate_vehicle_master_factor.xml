@@ -1,0 +1,46 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_master_factor_config_tree">
+            <field name="name">Master Factor Tree</field>
+            <field name="model">master.factor.multiple</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="parameter_id" string="Parameter Category"/>
+                    <field name="parameter_value_id" string="Parameter Value"/>
+                    <field name="type"/>
+                    <field name="factor_multiple" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_master_factor_config_form" model="ir.ui.view">
+            <field name="name">Master Factor Form</field>
+            <field name="model">master.factor.multiple</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" invisible="1"/>
+                        <field name="parameter_id"/>
+                        <field name="type"/>
+                        <field name="parameter_value_id"/>
+                        <field name="factor_multiple" />
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_master_factor_config">
+            <field name="name">Master Factor</field>
+            <field name="res_model">master.factor.multiple</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="estate_factor_category" name="Master Factor Category"
+                  parent="estate.estate_blocking_menu"
+                  action="action_list_master_factor_config"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>

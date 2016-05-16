@@ -191,3 +191,33 @@ class MasterPath(models.Model):
     start_location=fields.Many2one('estate.block.template', "Plot")
     end_location=fields.Many2one('estate.block.template', "Plot")
     comment = fields.Text()
+
+class MasterFactorMultiple(models.Model):
+
+    _name = 'master.factor.multiple'
+    _description = "Master Fator Multiple for activity"
+
+    name=fields.Char("Master Factor")
+    parameter_id=fields.Many2one('estate.parameter')
+    parameter_value_id = fields.Many2one("estate.parameter.value")
+    type = fields.Selection([('1', 'Human'), ('2', 'Vehicle')],
+                             string="Parameter type",
+                             help="Define use factor.")
+    factor_multiple = fields.Float("Factor Multiple",digits=(2,2))
+
+    #onchange
+    @api.multi
+    @api.onchange('parameter_id','parameter_value_id')
+    def onchange_parameter_value(self):
+        #to domain parameter value in parameter id
+        arrParameter = []
+        if self:
+            if self.parameter_id:
+                parameter = self.env['estate.parameter.value'].search([('parameter_id.id','=',self.parameter_id.id)])
+                for parameter in parameter:
+                    arrParameter.append(parameter.parameter_id.id)
+                return {
+                    'domain' : {
+                            'parameter_value_id':[('parameter_id.id','in',arrParameter)]
+                            }
+                    }

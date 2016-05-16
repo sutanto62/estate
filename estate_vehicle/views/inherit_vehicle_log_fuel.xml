@@ -1,0 +1,14 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_ownerid_vehicle_log_fuel">
+             <field name="name">Inherit Vehicle Log Fuel</field>
+             <field name="model">fleet.vehicle.log.fuel</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='vehicle_id']" position="after">
+                        <field name="owner_id" readonly ='1' invisible="1"/>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>

@@ -1,0 +1,22 @@
+<openerp>
+    <data>
+         <record model='ir.ui.view' id='fleet_vehicle_summary_tree'>
+            <field name="name">fleet summary vehicle</field>
+            <field name="model">estate.vehicle.log.oil</field>
+            <field name="arch" type="xml">
+                <tree string="Oil Logs">
+                    <field name="date_master" />
+                    <field name="vehicle_id" />
+                    <field name="timesheet_id" invisible="1"/>
+                    <field name="total_wage" invisible="1"/>
+                    <field name="total_fuel" />
+                    <field name="total_oil" invisible="1"/>
+                    <field name="total_sparepart" invisible="1"/>
+                    <field name="total_service" string="service"/>
+                    <field name="total_other_cost" string="other cost"/>
+                </tree>
+            </field>
+        </record>
+
+    </data>
+</openerp>
