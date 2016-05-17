@@ -6,6 +6,7 @@
             <field name="model">estate.timesheet.activity.transport</field>
             <field name="arch" type="xml">
                 <tree string="Estate timesheet activity Tree" editable='bottom' delete="true">
+                    <field name="id" readonly="1"/>
                     <field name="date_activity_transport" string="Date Activity"/>
                     <field name="owner_id"  invisible="1" readonly="1"/>
                     <field name="dc_type" invisible="1"/>

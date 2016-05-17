@@ -6,6 +6,7 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
+                    <field name="name" string="Factor Name"/>
                     <field name="parameter_id" string="Parameter Category"/>
                     <field name="parameter_value_id" string="Parameter Value"/>
                     <field name="type"/>

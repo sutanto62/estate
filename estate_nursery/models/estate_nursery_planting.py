@@ -19,7 +19,7 @@ class Planting(models.Model):
     batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
                                           help="Define batch parameter")
     request_ids = fields.One2many('estate.nursery.request','seeddo_id',"Request Ids",help="Define Many Bpb")
-    timesheet_ids = fields.One2many('estate.timesheet.activity.transport','seeddo_id','Timesheet ids')
+    timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id','Timesheet ids')
     return_ids = fields.One2many('estate.nursery.returnseed','seeddo_id',"Returns Ids",help="Define Many Return Bpb")
     picking_id = fields.Many2one('stock.picking', "Picking", readonly=True)
     date_request = fields.Date('Date Seed Delivery Order',required=True)
@@ -149,6 +149,36 @@ class Planting(models.Model):
                 temp[bpb.id] = bpb_value_name
             return temp
 
+    @api.one
+    @api.constrains('timesheet_ids')
+    def _constraints_timesheet(self):
+        #constraint timesheet for quantity unit not more than bpb
+        qty_unit = 0
+        qty_seed = 0
+        if self.timesheet_ids:
+            for timesheet in self.timesheet_ids:
+                qty_unit += timesheet.unit
+            for bpb in self.request_ids:
+                qty_seed += bpb.total_qty_pokok
+            if qty_unit > qty_seed:
+                error_msg = "Unit not more than \"%s\" in qty total BPB" % qty_seed
+                raise exceptions.ValidationError(error_msg)
+        return True
+
+    @api.one
+    @api.constrains(timesheet_ids)
+    def _constraint_date_timesheet(self):
+        #constraint date in timesheet must be same in seed do
+        if self.timesheet_ids:
+            for vehicletimesheet in self.timesheet_ids:
+                date = vehicletimesheet.date_activity_transport
+            if date > self.date_request:
+                error_msg = "Date not more than \"%s\" in Date move" % self.date_request
+                raise exceptions.ValidationError(error_msg)
+            elif date < self.date_request:
+                error_msg = "Date must be same \"%s\" in Date move" % self.date_request
+                raise exceptions.ValidationError(error_msg)
+
     @api.multi
     @api.constrains('request_ids','return_ids')
     def _constraints_request_return_seed(self):
@@ -194,6 +224,7 @@ class TransportirDetail(models.Model):
     driver_internal_id=fields.Many2one(related='estate_vehicle_id.employee_driver_id',readonly=True,track_visibility='onchange')
     driver_estate_id = fields.Many2one(related='estate_vehicle_id.driver_id',readonly=True,track_visibility='onchange')
     driver=fields.Char('Driver')
+    capacity = fields.Integer('Capacity')
     vehicle_type = fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
     no_vehicle = fields.Char('No Vehicle Transportir')
 
@@ -212,6 +243,28 @@ class TransportirDetail(models.Model):
                 self.driver=self.driver_estate_id.name
         return True
 
+    @api.one
+    @api.onchange('estate_vehicle_id','capacity')
+    def _onchange_capacity(self):
+        if self.estate_vehicle_id:
+            self.capacity = self.estate_vehicle_id.capacity_vehicle
+        return True
+
+    @api.multi
+    @api.onchange('estate_vehicle_id')
+    def _onchange_vechicle(self):
+        # on change vehicle id where status available
+        arrVehicle=[]
+        if self:
+            vehicle=self.env['fleet.vehicle'].search([('status_vehicle','=','1')])
+            for v in vehicle:
+                    arrVehicle.append(v.id)
+        return {
+                'domain':{
+                    'estate_vehicle_id':[('id','in',arrVehicle)]
+                }
+        }
+
     #onchange detail vehicle
     @api.one
     @api.onchange('estate_vehicle_id','vehicle_type','no_vehicle')
@@ -219,6 +272,7 @@ class TransportirDetail(models.Model):
         if self.estate_vehicle_id:
             self.vehicle_type = self.estate_vehicle_id.vehicle_type
             self.no_vehicle = self.estate_vehicle_id.no_vehicle
+        return True
 
 
 class ActivityLine(models.Model):

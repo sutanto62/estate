@@ -18,9 +18,7 @@ class TimesheetActivityTransport(models.Model):
     _name = 'estate.timesheet.activity.transport'
     _description = "Estate Master Time Sheet for Activity Transport"
 
-    def _default_session(self):
-        return self.env['estate.nursery.seeddo'].browse(self._context.get('active_id'))
-
+    id = fields.Integer()
     name=fields.Char("Timesheet Activity Tranport")
     date_activity_transport = fields.Date("Date activity Transport")
     owner_id = fields.Integer()
@@ -187,10 +185,13 @@ class MasterPath(models.Model):
 
     name=fields.Char("Master Path")
     distance_location = fields.Float('Distance Location',digits=(2,2))
+    factor_id = fields.Many2one('master.factor.multiple',domain=[('type','=','2')])
     path_price = fields.Float('Standard Price',digits=(2,2))
     start_location=fields.Many2one('estate.block.template', "Plot")
     end_location=fields.Many2one('estate.block.template', "Plot")
     comment = fields.Text()
+
+
 
 class MasterFactorMultiple(models.Model):
 
@@ -221,3 +222,70 @@ class MasterFactorMultiple(models.Model):
                             'parameter_value_id':[('parameter_id.id','in',arrParameter)]
                             }
                     }
+
+class FormulaPremiActivityVehicle(models.Model):
+
+    _name = 'master.formula.activity.vehicle'
+    _description = "Create formula to compute premi for driver , activity , and vehicle"
+
+    name=fields.Char()
+    formula_name = fields.Char('Formula name')
+    range_start = fields.Float('Range Distance Start' , digits=(2,2))
+    range_end = fields.Float('Range Distance End' , digits=(2,2))
+    type_handling = fields.Selection([('1', 'Single Handling'), ('2', 'Double Handling')],
+                             string="Handling type",
+                             help="Define use factor.")
+    type_day = fields.Selection([('1', 'Ordinary Day'), ('2', 'Friday')],
+                             string="Day type",
+                             help="Define use factor.")
+    basis = fields.Integer('Basis(Trip)')
+    premi_base = fields.Float('Basis Premi',digits=(2,2))
+    category_unit_id = fields.Many2one('master.category.unit')
+    job_id = fields.Many2one('hr.job')
+    use_start = fields.Date('Use Start')
+    use_end = fields.Date('Use End')
+
+class ViewTimesheetPremi(models.Model):
+
+    _name='v.timesheet.premi'
+    _description = "Timesheets by Activity"
+    _auto = False
+    _order='date_activity_transport'
+
+    id = fields.Integer('id')
+    date_activity_transport = fields.Date('date')
+    employee_id = fields.Many2one('hr.employee')
+    start_location = fields.Many2one('estate.block.template')
+    end_location = fields.Many2one('estate.block.template')
+    total_trip = fields.Integer()
+    total_productivity = fields.Integer()
+    basis = fields.Integer()
+    premi = fields.Float()
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_timesheet_premi as
+           select
+                pl.id,
+                ts.*,
+                fa.basis,
+                ((ts.total_trip - fa.basis) * fa.premi_base) as premi
+            from
+                (
+                    select
+
+                        ts.date_activity_transport,
+                        ts.employee_id,
+                        ts.start_location,
+                        ts.end_location,
+                        count(ts.id) total_trip,
+                        sum(ts.unit) total_productivity
+                    from
+                        estate_timesheet_activity_transport ts
+                    group by
+                        ts.date_activity_transport, ts.employee_id, ts.start_location, ts.end_location
+                ) ts
+                inner join path_location pl
+                on ts.start_location = pl.start_location and ts.end_location = pl.end_location
+                inner join
+                master_formula_activity_vehicle fa
+                on pl.distance_location >= fa.range_start and pl.distance_location <= fa.range_end""")

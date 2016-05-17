@@ -6,9 +6,11 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
+                    <field name="name" string="Path Name"/>
                     <field name="start_location" options="{'no_create_edit': True}"/>
                     <field name="end_location"
                            options="{'no_create_edit': True}"/>
+                    <field name="factor_id" string="Factor"/>
                     <field name="distance_location"/>
                     <field name="path_price" />
                     <field name="comment"/>

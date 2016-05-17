@@ -12,6 +12,7 @@
                         <field name="vehicle_type"/>
                     </group>
                     <group string="Vehicle Capacity &amp; status">
+                        <field name="category_unit_id" string="Category"/>
                         <field name="status_vehicle"/>
                         <field name="capacity_vehicle"/>
                     </group>
@@ -31,7 +32,6 @@
                 <field name="active" position="after">
                     <field name="type_vehicle" />
                 </field>
-
             </field>
         </record>
     </data>
