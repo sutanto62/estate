@@ -9,7 +9,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Mahroza",
+    'author': "Mahroza And Probo :)",
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -31,6 +31,7 @@
         'views/estate_vehicle_master_formula.xml',
         'views/estate_vehicle_master_categoryunit.xml',
         'views/view_timesheet_premi.xml',
+        'views/view_summary_cost_vehicle.xml',
         'views/estate_vehicle_timesheet.xml',
         'views/estate_vehicle_fuel_log.xml',
         'views/inherit_vehicle_log_oil.xml',
