@@ -49,8 +49,10 @@
                     <field name="year_log_text" string="Year"/>
                     <field name="month_log_text" string="Month"/>
                     <field name="vehicle_id" string="Vehicle"/>
-                    <field name="total_expense" string="Total Amount"/>
-                    <!--<field name="parent_id" string="Parent Id" invisible="1"/>-->
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="total_amount_per_month" string="Total Amount"/>
+                    <field name="total_time" string="Total Amount"/>
+                    <field name="amount_per_hour" string="Total Amount"/>
                 </tree>
             </field>
         </record>
@@ -61,18 +63,55 @@
             <field name="arch" type="xml">
                 <form string="View Summary Cost Vehicle">
                     <sheet>
-                        <group col="2">
-                            <group string="Vehicle Cost Details">
-                                <field name="summary_ids"/>
-                            </group>
+                        <div class="oe_title">
+                             <h3>
+                                 <label string="Summary Cost Vehicle "/>
+                                 <field name="vehicle_id" class="oe_inline" readonly="1"/>
+                                 <!--<label string="Month"/>-->
+                                 <field name="month_log_text" string="Month" class="oe_inline" readonly="1" />
+                                 <!--<label string="Year"/>-->
+                                 <field name="year_log_text" class="oe_inline" readonly="1" />
+                             </h3>
+                        </div>
+                        <field name="summary_ids"/>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="total_amount_per_month" string="&#931; Amount per Month "/>
+                            <field name="total_time" widget="monetary" readonly="1"
+                                               options="{'currency_field': 'currency_id'}"/>
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                                <label for="amount_per_hour"/>
+                            </div>
+                            <field name="amount_per_hour" nolabel="1" class="oe_subtotal_footer_separator"
+                                   widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
                         </group>
                         <group col="2">
-                            <group string="Summary Vehicle Details">
-                                <field name="year_log_text" string="Year"/>
-                                <field name="month_log_text" string="Month"/>
-                                <field name="vehicle_id" string="Vehicle"/>
-                                <field name="total_expense" string="Total Amount"/>
-                            </group>
+                            <notebook>
+                                <page string="Timesheet Details">
+                                    <field name="timesheetsummary_ids"/>
+                                </page>
+                                <page string="Detail Cost Vehicle">
+                                    <notebook>
+                                        <page string="Detail Basis &amp; Premi">
+                                            <field name="basispremi_ids"/>
+                                        </page>
+                                        <page string="Detail Service">
+                                            <field name="servicesummary_ids"/>
+                                        </page>
+                                        <page string="Detail Other Service">
+                                            <field name="otherservicesummary_ids"/>
+                                        </page>
+                                        <page string="Detail Fuel">
+                                                <field name="fuelsummary_ids"/>
+                                        </page>
+                                        <page string="Detail Oil">
+                                                <field name="oilsummary_ids"/>
+                                        </page>
+                                        <page string="Detail Sparepart">
+                                                <field name="sparepartsummary_ids"/>
+                                        </page>
+                                    </notebook>
+                                </page>
+                            </notebook>
                         </group>
                     </sheet>
                 </form>
@@ -87,13 +126,161 @@
                     <field name="year_log_text" string="Year"/>
                     <field name="month_log_text" string="Month"/>
                     <field name="vehicle_id" string="Vehicle"/>
-                    <field name="total_expense" string="Total Amount"/>
+                    <field name="total_amount_per_month" string="Total Amount"/>
+                    <field name="total_time" string="Total Amount"/>
+                    <field name="amount_per_hour" string="Total Amount"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
                         <filter name="groupby_month" context="{'group_by' : 'month_log_text'}" string="Month"/>
                         <filter name="groupby_year" context="{'group_by' : 'year_log_text'}" string="Year"/>
                     </group>
                 </search>
+            </field>
+        </record>
+
+
+         <record model="ir.ui.view" id="view_summary_basispremi_vehicle_tree">
+            <field name="name">View Summary Basis Premi Vehicle</field>
+            <field name="model">view.basispremi.vehicle.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="total_trip_vehicle" string="&#931; Trip Vehicle"/>
+                    <field name="employee_id" string="Employee"/>
+                    <field name="total_trip" string="&#931; Trip"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_timesheet_summary_vehicle_tree">
+            <field name="name">View Time Sheet Summary  Vehicle</field>
+            <field name="model">view.summary.timesheet.vehicle</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="start_location" string="Start Location"/>
+                    <field name="end_location" string="End Location"/>
+                    <field name="factor_id" string="Factor"/>
+                    <field name="distance_location" string="KM"/>
+                    <field name="activity_id" string="Activity"/>
+                    <field name="total_hour" string="Hour"/>
+                    <field name="amount_per_hour" string="Amount per Hour"/>
+                    <field name="total_amount_per_hour" string="&#931; Amount per Hour"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_summary_fuel_vehicle_tree">
+            <field name="name">View Summary Fuel Vehicle</field>
+            <field name="model">view.fuel.vehicle.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="create_date" string="Date Create"/>
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="liter" string="Liter"/>
+                    <field name="price_per_liter" string="Price per Liter"/>
+                    <field name="cost_amount" string="Amount"/>
+                    <field name="inv_ref"/>
+                    <field name="vendor_id" string="Vendor"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_summary_otherservice_vehicle_tree">
+            <field name="name">View Summary Other Service Vehicle</field>
+            <field name="model">view.otherservice.vehicle.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="create_date" string="Date Create"/>
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="purchaser_id" string="Purchaser"/>
+                    <field name="product_id"/>
+                    <field name="unit" string="Unit"/>
+                    <field name="price_per_service" string="Price per Service"/>
+                    <field name="amount" string="Amount"/>
+                    <field name="notes" string="Notes"/>
+                    <field name="inv_ref"/>
+                    <field name="vendor_id" string="Vendor"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_summary_sevice_vehicle_tree">
+            <field name="name">View Summary Service Vehicle</field>
+            <field name="model">view.service.vehicle.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="create_date" string="Date Create"/>
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="notes" string="Notes"/>
+                    <field name="purchaser_id" string="Purchaser"/>
+                    <field name="cost_amount" string="Amount"/>
+                    <field name="inv_ref"/>
+                    <field name="vendor_id" string="Vendor"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_summary_sparepart_vehicle_tree">
+            <field name="name">View Summary Sparepart Vehicle</field>
+            <field name="model">view.sparepart.vehicle.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="create_date" string="Date Create"/>
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="purchaser_id" string="Purchaser"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="unit" string="Unit"/>
+                    <field name="price_per_unit" string="Price per Unit"/>
+                    <field name="amount" string="Amount"/>
+                    <field name="notes" string="Notes"/>
+                    <field name="inv_ref"/>
+                    <field name="vendor_id" string="Vendor"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_summary_oil_vehicle_tree">
+            <field name="name">View Summary Oil Vehicle</field>
+            <field name="model">view.oil.vehicle.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="create_date" string="Date Create"/>
+                    <field name="day_log_text" string="Day"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="liter" string="Liter"/>
+                    <field name="price_per_liter" string="Price per Liter"/>
+                    <field name="cost_amount" string="Amount"/>
+                    <field name="inv_ref"/>
+                    <field name="vendor_id" string="Vendor"/>
+                </tree>
             </field>
         </record>
 

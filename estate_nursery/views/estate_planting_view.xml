@@ -77,17 +77,19 @@
                         </group>
                         <group>
                             <notebook>
-                                <page string="BPB List">
+                                <page string="BPB List" attrs="{'readonly':['|',('state','=','validate1'),('state','=','validate2'),
+                                ('state','=','done')]}">
                                         <field name="request_ids" string="Information For BPB"
                                                attrs="{
                                         'required' : [('state', '=', 'confirmed')],
-                                        'readonly' : [('state', '=', 'done')]}"
+                                        'readonly':['|',('state','=','validate1'),('state','=','validate2'),
+                                ('state','!=','done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_request_planting',
                                                 'default_seeddo_id': id}"/>
                                 </page>
-
-                                <page string="Return Seed" attrs="{'invisible':[('state','!=','validate2'),
-                                ('state','!=','done')]}">
+<!--attrs="{'invisible':['|',('state','!=','validate2'),-->
+                                <!--('state','!=','done')]}"-->
+                                <page string="Return Seed" >
                                         <field name="return_ids" string="Information For Return Seed"
                                                attrs="{
                                         'required' : [('state', '=', 'validate2')],
@@ -96,10 +98,11 @@
                                                 'default_seeddo_id': id}"/>
                                 </page>
 
-                                 <page string="Tranportir Activity">
+                                 <page string="Tranportir Activity" attrs="{'readonly':['|',('state','=','validate1'),('state','=','validate2'),
+                                ('state','=','done')]}">
                                         <field name="activityline_ids" attrs="{
                                         'required' : [('state', '=', 'confirmed')],
-                                        'readonly' : [('state', '=', 'done')]}"
+                                        'readonly' : ['|',('state', '=','validate1'),('state', '=', 'validate2'),('state', '=', 'done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_activityline'}"/>
                                     <group class="oe_subtotal_footer oe_right">
                                         <field name="expense" widget="monetary" readonly="1"
@@ -114,23 +117,23 @@
                                     </group>
                                 </page>
 
-                                <page string="Detail Transportir">
+                                <page string="Detail Transportir" attrs="{}">
                                         <field name="dotransportir_ids"
                                                attrs="{
                                         'required' : [('state', '=', 'confirmed')],
-                                        'readonly' : [('state', '=', 'done')]}"
+                                        'readonly' : ['|',('state', '=', 'validate1'),('state', '=', 'validate2'),('state', '=', 'done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_dotransportir'}"/>
                                 </page>
 
-                                <page string="Timesheet Vehicle &amp; Transportir">
+                                 <page string="Timesheet Vehicle &amp; Transportir" attrs="{'invisible':[('state','!=','validate1'),('state','!=','validate2'),
+                                ('state','!=','done')]}">
                                         <field name="timesheet_ids"
                                                attrs="{
                                         'required' : [('state', '=', 'confirmed')],
                                         'readonly' : [('state', '=', 'done')]}"
-                                                context="{'tree_view_ref' : 'estate_vehicle.view_tree_timesheet_activity_transport'}"/>
+                                                context="{'tree_view_ref' : 'estate_vehicle.view_tree_timesheet_activity_transport',
+                                               'default_dc_type' : 1, 'default_owner_id' : id}"/>
                                 </page>
-
-
 
                                 <page string="Additional Information">
                                     <group>
@@ -173,7 +176,8 @@
                 <tree string="Detail Transportir View" editable="bottom">
                     <field name="estate_vehicle_id" string="Code Vehicle" required="1"
                            options="{'no_create_edit': True}" domain="['|',('vehicle_type','=',1),('vehicle_type','=',2)]"/>
-                    <field name="driver" string="Driver Vehicle" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="capacity" string="Capacity" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="driver" string="Driver Vehicle"  invisible="1" readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="no_vehicle" string="No Vehicle" readonly="1"/>
                     <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
                 </tree>

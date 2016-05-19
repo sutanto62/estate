@@ -33,9 +33,9 @@ class TimesheetActivityTransport(models.Model):
     start_location = fields.Many2one('estate.block.template',store=True)
     end_location = fields.Many2one('estate.block.template',store=True)
     distance_location = fields.Float('Distance Location',store=True)
-    start_time = fields.Float(digits=(4,0))
-    end_time = fields.Float(digits=(4,0))
-    total_time = fields.Float(digits=(4,0),compute='_compute_total_time')
+    start_time = fields.Float(digits=(2,2))
+    end_time = fields.Float(digits=(2,2))
+    total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
     comment = fields.Text()
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),

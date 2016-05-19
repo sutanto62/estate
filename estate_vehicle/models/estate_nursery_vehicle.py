@@ -3,8 +3,13 @@ from datetime import datetime, date
 from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
 import calendar
+import time
+import datetime
+from openerp import tools
 
 
+# def str_to_datetime(strdate):
+#     return datetime.datetime.strptime(strdate, tools.DEFAULT_SERVER_DATE_FORMAT)
 
 
 class NurseryVehicle(models.Model):
@@ -14,29 +19,35 @@ class NurseryVehicle(models.Model):
     _description = "inherit information detail to fleet management"
 
     @api.model
-    def _count_oil(self):
-        if self.oil_log_count:
+    @api.onchange('other_service_log_count','oil_log_count','sparepart_log_count')
+    def _count_all_service(self):
+        if self:
             return {
                 vehicle_id:
                     {
-                     'oil_log_count': self.env['estate.vehicle.log.oil'].search_count([('vehicle_id', '=', vehicle_id)])
+                     'oil_log_count': self.env['estate.vehicle.log.oil'].search_count([('vehicle_id', '=', vehicle_id)]),
+                     'other_service_log_count': self.env['estate.vehicle.log.otherservice'].search_count([('vehicle_id', '=', vehicle_id)]),
+                     'sparepart_log_count': self.env['estate.vehicle.log.sparepart'].search_count([('vehicle_id', '=', vehicle_id)])
                     }
                 for vehicle_id in self.ids
             }
 
-    oil_log_count = fields.Integer('Oil Log Count',compute='_count_oil')
+    oil_log_count = fields.Integer('Oil Log Count')
+    other_service_log_count = fields.Integer('Other Service Log Count')
+    sparepart_log_count = fields.Integer('Sparepart Log Count')
+    category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
     no_vehicle=fields.Char('No Vehicle')
     vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
     employee_driver_id=fields.Many2one('hr.employee')
     capacity_vehicle = fields.Integer('Capacity')
     status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown')])
 
+
 class VehicleOilLog(models.Model):
 
     _name="estate.vehicle.log.oil"
     _inherits = {'fleet.vehicle.cost':'cost_id'}
     _description = "Inherit view fuel log"
-
 
     def on_change_vehicle(self, cr, uid, ids, vehicle_id, context=None):
         if not vehicle_id:
@@ -124,11 +135,16 @@ class VehicleOilLog(models.Model):
     purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
     inv_ref = fields.Char('Invoice Reference')
     vendor_id = fields.Many2one('res.partner')
-    cost_amount = fields.Float(related='cost_id.amount')
+    cost_amount = fields.Float(related='cost_id.amount',store=True)
     notes = fields.Text('notes')
     liter = fields.Float('Liter')
     price_per_liter = fields.Float('Price Per Liter')
     product_id = fields.Many2one('product.product','Product',domain="[('type','=','consu'),('uom_id','=',11)]")
+
+    _defaults = {
+        'cost_subtype_id': _get_default_service_type,
+        'cost_type': 'fuel',
+    }
 
 
 
@@ -152,6 +168,13 @@ class VehicleSparepartLog(models.Model):
             }
         }
 
+    def _get_default_service_type(self, cr, uid, context):
+        try:
+            model, model_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'fleet', 'type_service_service_8')
+        except ValueError:
+            model_id = False
+        return model_id
+
     name=fields.Char()
     cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade')
     unit = fields.Integer('Unit Sparepart')
@@ -161,7 +184,7 @@ class VehicleSparepartLog(models.Model):
     inv_ref = fields.Char('Invoice Reference')
     vendor_id = fields.Many2one('res.partner')
     price_per_unit = fields.Float('Price unit',readonly=1,related='product_id.list_price',store=True)
-    total_amount = fields.Float('Total Amount',compute="_compute_total_sparepart",)
+    total_amount = fields.Float('Total Amount',compute="_compute_total_sparepart",store=True)
     notes = fields.Text('notes')
 
     #computed
@@ -172,6 +195,11 @@ class VehicleSparepartLog(models.Model):
         return True
 
     #onchange
+
+    _defaults = {
+        'cost_subtype_id': _get_default_service_type,
+        'cost_type': 'services'
+    }
 
 class VehicleOtherServiceLog(models.Model):
 
@@ -192,6 +220,13 @@ class VehicleOtherServiceLog(models.Model):
             }
         }
 
+    def _get_default_service_type(self, cr, uid, context):
+        try:
+            model, model_id = self.pool.get('ir.model.data').get_object_reference(cr, uid, 'fleet', 'type_service_service_8')
+        except ValueError:
+            model_id = False
+        return model_id
+
     name=fields.Char()
     cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade')
     unit = fields.Integer('Unit Service')
@@ -211,11 +246,23 @@ class VehicleOtherServiceLog(models.Model):
             self.total_amount = self.price_per_service * self.unit
         return True
 
+    _defaults = {
+        'cost_subtype_id': _get_default_service_type,
+        'cost_type': 'other'
+    }
+
 class InheritProduct(models.Model):
 
     _inherit ='product.template'
 
     type_vehicle = fields.Boolean('Type Vehicle',default=False)
+
+class MasterCategoryUnit(models.Model):
+
+    _name= 'master.category.unit'
+
+    name=fields.Char()
+    type=fields.Selection([('1','Vehicle'), ('2','Unit ALL')])
 
 
 
