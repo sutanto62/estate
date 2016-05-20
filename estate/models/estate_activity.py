@@ -29,6 +29,10 @@ class Activity(models.Model):
     child_ids = fields.One2many('estate.activity', 'parent_id', "Child Activities")
     uom_id = fields.Many2one('product.uom', string="Basic Unit of Measurements")
     standard_price = fields.Float('Standard Price')
+    activity_type = fields.Selection([('estate', 'Estate Activity'),
+                                      ('vehicle', 'Vehicle activity'),
+                                      ('general', 'General Affair Activity')],
+                                     'Activity Type')
 
     @api.one
     @api.depends('name', 'parent_id')
