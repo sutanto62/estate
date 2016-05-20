@@ -12,15 +12,15 @@
                     <field name="dc_type" invisible="1"/>
                     <field name="vehicle_id" string="Vehicle" options="{'no_create_edit': True}"/>
                     <field name="employee_id" string="Driver/Helper" options="{'no_create_edit': True}"/>
+                    <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
                     <field name="unit" string="Unit"/>
                     <field name="start_location" string="Start Location" options="{'no_create_edit': True}"/>
                     <field name="end_location" string="End Location" options="{'no_create_edit': True}"/>
-                    <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
+                    <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
                     <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
                     <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
-                    <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
-                    <field name="total_time" string="&#931; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="total_time" string="&#916; time " readonly="1">{‘readonly_by_pass’: True}</field>
                 </tree>
             </field>
         </record>

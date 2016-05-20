@@ -75,11 +75,12 @@ class ViewSummaryCostVehicleDetail(models.Model):
                             (
                                 select count(ts.id) total_trip_vehicle,
                                     ts.employee_id,
+                                    ts.vehicle_id,
                                     date_part('month', ts.date_activity_transport) month_log,
                                     date_part('year', ts.date_activity_transport) year_log
                                         from estate_timesheet_activity_transport ts
                                     group by  month_log,year_log ,employee_id
-                            )b on a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
+                            )b on a.vehicle_id = b.vehicle_id and a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
                         ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null group by c.vehicle_id, c.month_log , c.year_log , hrc.wage , c.total_trip, c.total_trip_vehicle order by month_log
                         ) a order by type_log, month_log, year_log asc
         )detail""")
@@ -377,6 +378,7 @@ class ViewBasisPremiSummaryVehicle(models.Model):
     _order='year_log_text'
 
     id = fields.Integer()
+    date_activity_transport = fields.Date()
     day_log_text = fields.Text()
     month_log_text = fields.Text()
     year_log_text = fields.Text()
@@ -391,47 +393,45 @@ class ViewBasisPremiSummaryVehicle(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_basispremi_vehicle_detail as
-            select row_number() over()id,c.total_trip,c.vehicle_id,count(*) "count",
+            select row_number() over()id,c.date_activity_transport,c.total_trip,c.vehicle_id,count(*) "count",
             to_char(to_timestamp (day_log::text, 'MM'), 'Day') as day_log_text,
             to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
             (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
-            wage,
-            total_trip_vehicle,
-            c.employee_id,
+            wage,total_trip_vehicle,c.employee_id,
             year_log::text as year_log_text,
-                    CASE WHEN hrc.wage is null THEN 0
+                CASE WHEN hrc.wage is null THEN 0
                     ELSE ((c.total_trip/c.total_trip_vehicle)* hrc.wage)
                    END amount
                     from (
                 select
-                    'Timesheet' as timesheet, a.employee_id,a.day_log,a.month_log, a.year_log, a.vehicle_id , a.total_trip,
+                    'Timesheet' as timesheet,date_activity_transport, a.employee_id,a.day_log,a.month_log, a.year_log, a.vehicle_id , a.total_trip,
                     b.total_trip_vehicle
                     from (
-                        select ts.vehicle_id, count(ts.id) total_trip,ts.employee_id,
+                        select date_activity_transport,ts.vehicle_id, count(ts.id) total_trip,ts.employee_id,
                         date_part('day',ts.date_activity_transport) day_log,
                         date_part('month', ts.date_activity_transport) month_log,
                         date_part('year', ts.date_activity_transport) year_log
                             from estate_timesheet_activity_transport ts
                             inner join fleet_vehicle fv on ts.vehicle_id = fv.id
-                        group by vehicle_id,day_log, month_log,year_log ,employee_id
+                        group by vehicle_id,day_log, month_log,year_log ,employee_id,date_activity_transport
                 )a inner join
-                (
-                    select count(ts.id) total_trip_vehicle,
-                        ts.employee_id,
-                        date_part('day',ts.date_activity_transport) day_log,
-                        date_part('month', ts.date_activity_transport) month_log,
-                        date_part('year', ts.date_activity_transport) year_log
-                            from estate_timesheet_activity_transport ts
-                        group by  day_log,month_log,year_log ,employee_id
-                )b on a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
-            ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null
-                group by c.vehicle_id,c.day_log,c.employee_id,
-                c.month_log ,
-                c.year_log ,
-                hrc.wage ,
-                c.total_trip,
-                c.total_trip_vehicle
-                order by month_log;""")
+            (
+                select count(ts.id) total_trip_vehicle,
+                    ts.employee_id,
+                    date_part('day',ts.date_activity_transport) day_log,
+                    date_part('month', ts.date_activity_transport) month_log,
+                    date_part('year', ts.date_activity_transport) year_log
+                        from estate_timesheet_activity_transport ts
+                    group by  day_log,month_log,year_log ,employee_id
+            )b on a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
+        ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null
+        group by c.vehicle_id,c.day_log,c.employee_id,
+        c.month_log ,
+        c.year_log ,
+        hrc.wage ,
+        c.total_trip,
+        c.total_trip_vehicle ,c.date_activity_transport
+        order by month_log;""")
 
 class ViewTimesheetSummaryVehicle(models.Model):
 

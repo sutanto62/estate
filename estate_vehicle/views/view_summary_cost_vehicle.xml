@@ -145,10 +145,11 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="date_activity_transport" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
                     <field name="total_trip_vehicle" string="&#931; Trip Vehicle"/>
                     <field name="employee_id" string="Employee"/>
                     <field name="total_trip" string="&#931; Trip"/>
@@ -162,11 +163,12 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="start_location" string="Start Location"/>
-                    <field name="end_location" string="End Location"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="start_location" string="Start Location" />
+                    <field name="end_location" string="End Location" />
                     <field name="factor_id" string="Factor"/>
                     <field name="distance_location" string="KM"/>
                     <field name="activity_id" string="Activity"/>
@@ -183,11 +185,11 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="create_date" string="Date Create"/>
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
                     <field name="liter" string="Liter"/>
                     <field name="price_per_liter" string="Price per Liter"/>
                     <field name="cost_amount" string="Amount"/>
@@ -203,11 +205,11 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="create_date" string="Date Create"/>
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
                     <field name="purchaser_id" string="Purchaser"/>
                     <field name="product_id"/>
                     <field name="unit" string="Unit"/>
@@ -226,11 +228,11 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="create_date" string="Date Create"/>
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
                     <field name="notes" string="Notes"/>
                     <field name="purchaser_id" string="Purchaser"/>
                     <field name="cost_amount" string="Amount"/>
@@ -246,12 +248,12 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="create_date" string="Date Create"/>
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="vehicle_id" string="Vehicle"/>
-                    <field name="purchaser_id" string="Purchaser"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
+                    <field name="purchaser_id" string="Purchaser" />
                     <field name="product_id" string="Product"/>
                     <field name="unit" string="Unit"/>
                     <field name="price_per_unit" string="Price per Unit"/>
@@ -269,12 +271,12 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="create_date" string="Date Create"/>
-                    <field name="day_log_text" string="Day"/>
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="vehicle_id" string="Vehicle"/>
-                    <field name="product_id" string="Product"/>
+                    <field name="create_date" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
+                    <field name="product_id" string="Product" />
                     <field name="liter" string="Liter"/>
                     <field name="price_per_liter" string="Price per Liter"/>
                     <field name="cost_amount" string="Amount"/>

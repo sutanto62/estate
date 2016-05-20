@@ -264,6 +264,13 @@ class MasterCategoryUnit(models.Model):
     name=fields.Char()
     type=fields.Selection([('1','Vehicle'), ('2','Unit ALL')])
 
+# class InheritActivityBreakDown(models.Model):
+#
+#     _inherit ='estate.activity'
+#     _description = "inherit to estate activity for type Break down"
+#
+#     type_breakdown = fields.Boolean('Type Breakdown')
+
 
 
 

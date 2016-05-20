@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'templates.xml',
         'views/estate_nursery_vehicle.xml',
         'views/estate_vehicle_path.xml',
@@ -35,6 +35,7 @@
         'views/estate_vehicle_timesheet.xml',
         'views/estate_vehicle_fuel_log.xml',
         'views/inherit_vehicle_log_oil.xml',
+        # 'views/inherit_activity_typebreakdown.xml',
         'views/estate_vehicle_otherservice_log.xml',
         'views/estate_vehicle_sparepart_log.xml'
         # 'views/timesheet_sequence.xml',

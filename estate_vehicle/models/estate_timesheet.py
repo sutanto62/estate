@@ -272,7 +272,6 @@ class ViewTimesheetPremi(models.Model):
             from
                 (
                     select
-
                         ts.date_activity_transport,
                         ts.employee_id,
                         ts.start_location,
