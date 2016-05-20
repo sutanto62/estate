@@ -1,2 +1,15 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-"__export__.ir_rule_activity","Estate Activity","estate.model_estate_activity","estate.group_user","True","True","True","False"
+access_estate_activity,Estate Activity,model_estate_activity,estate.group_user,True,True,True,False
+access_estate_labour_type,Estate Labour Type,model_estate_labour_type,estate.group_user,True,True,True,False
+access_estate_object,Estate Object,model_estate_object,estate.group_user,True,True,True,False
+access_estate_object_type,Estate Object Type,model_estate_object_type,estate.group_user,True,True,True,False
+access_estate_block_template,Estate Block Template,model_estate_block_template,estate.group_user,True,True,True,False
+access_estate_block,Estate Block,model_estate_block,estate.group_user,True,True,True,False
+access_estate_block_parameter,Estate Block Parameter,model_estate_block_parameter,estate.group_user,True,True,True,False
+access_estate_parameter,Estate Parameter,model_estate_parameter,estate.group_user,True,True,True,False
+access_estate_parameter_value,Estate Parameter Value,model_estate_parameter_value,estate.group_user,True,True,True,False
+access_estate_planted_year,Estate Planted Year,model_estate_planted_year,estate.group_user,True,True,True,False
+access_estate_stand_hectare,Estate Stand Hectare,model_estate_stand_hectare,estate.group_user,True,True,True,False
+access_estate_operation,Estate Operation,model_estate_operation,estate.group_user,True,True,True,False
+access_estate_hr_team,Estate HR Team,model_estate_hr_team,estate.group_user,True,True,True,False
+access_estate_hr_member,Estate HR Member,model_estate_hr_member,estate.group_user,True,True,True,False

@@ -75,6 +75,10 @@
                             <field name="qty_tree_mature_normal"/>
                             <field name="qty_tree_mature_abnormal"/>
                             <field name="qty_sph_standard"/>
+                            <field name="area_gis"/>
+                            <field name="area_planted"/>
+                            <field name="area_unplanted"/>
+                            <field name="area_emplacement"/>
                         </group>
 
                         <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">

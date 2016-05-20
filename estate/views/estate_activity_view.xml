@@ -18,6 +18,7 @@
                             <field name="standard_price"/>
                             <field name="code"/>
                             <field name="type"/>
+                            <field name="activity_type"/>
                         </group>
                         <!-- move to estate_account module
                         <group name="account" string="Account">
