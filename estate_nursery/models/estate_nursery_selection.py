@@ -17,7 +17,6 @@ class Selection(models.Model):
     _name = 'estate.nursery.selection'
     _description = "Seed Batch Selection"
     _inherit = ['mail.thread']
-    _inherits = {'estate.nursery.batch': 'batch_id'}
 
 
     def _default_session(self):
@@ -28,7 +27,7 @@ class Selection(models.Model):
     partner_id = fields.Many2one('res.partner')
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
-    batch_id = fields.Many2one('estate.nursery.batch', "Batch",required=True,default=_default_session,ondelete="cascade")
+    batch_id = fields.Many2one('estate.nursery.batch', "Batch",default=_default_session)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True,store=True)
 
     age_seed = fields.Integer('Age Seed Batch')
@@ -646,10 +645,4 @@ class TempRecovery(models.Model):
             }
         return True
 
-
-class SetEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, set):
-            return list(obj)
-        return json.JSONEncoder.default(self, obj)
 

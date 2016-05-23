@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Team -->
+        <record id="team_syukur" model="estate.hr.team">
+            <field name="name">Kemandoran Syukur</field>
+            <field name="active">True</field>
+            <field name="date_effective" eval="time.strftime('%Y-%m')+'-1'"/>
+            <field name="employee_id" ref="hr_employee.kht_mandor"/>
+            <field name="assistant_id" ref="hr.employee_al"/>
+            <field name="state">active</field>
+        </record>
+        <record id="team_gilles" model="estate.hr.team">
+            <field name="name">Kemandoran Gilles</field>
+            <field name="active">True</field>
+            <field name="date_effective" eval="time.strftime('%Y-%m')+'-1'"/>
+            <field name="employee_id" ref="hr.employee_qdp"/>
+            <field name="assistant_id" ref="hr.employee_al"/>
+            <field name="state">active</field>
+        </record>
+
+        <!-- Team Member -->
+        <record id="team_syukur_1" model="estate.hr.member">
+            <field name="team_id" ref="team_syukur"/>
+            <field name="employee_id" ref="hr_employee.khl_1"/>
+        </record>
+        <record id="team_syukur_2" model="estate.hr.member">
+            <field name="team_id" ref="team_syukur"/>
+            <field name="employee_id" ref="hr_employee.khl_2"/>
+        </record>
+        <record id="team_syukur_3" model="estate.hr.member">
+            <field name="team_id" ref="team_syukur"/>
+            <field name="employee_id" ref="hr_employee.khl_3"/>
+        </record>
+        
+        <record id="team_gilles_1" model="estate.hr.member">
+            <field name="team_id" ref="team_gilles"/>
+            <field name="employee_id" ref="hr_employee.khl_4"/>
+        </record>
+        <record id="team_gilles_2" model="estate.hr.member">
+            <field name="team_id" ref="team_gilles"/>
+            <field name="employee_id" ref="hr_employee.khl_5"/>
+        </record>
+        <record id="team_gilles_3" model="estate.hr.member">
+            <field name="team_id" ref="team_gilles"/>
+            <field name="employee_id" ref="hr_employee.khl_6"/>
+        </record>
+
+    </data>
+</openerp>

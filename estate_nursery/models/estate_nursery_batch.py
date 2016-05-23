@@ -674,7 +674,6 @@ class Batchline(models.Model):
     parent_right = fields.Integer('Parent Right', index=True)
     child_ids = fields.One2many('estate.nursery.batchline', 'parent_id', "Contains")
     batch_id = fields.Many2one('estate.nursery.batch', "Batch", ondelete="restrict")
-    separation_id=fields.Many2one('estate.nursery.separation',"Separation Seed")
     total_qty_parent=fields.Integer("DO Quantity")
     seed_qty = fields.Integer("DO Quantity")
     qty_single = fields.Integer("Single Tone Quantity",store=True)
@@ -938,10 +937,10 @@ class TransferDetailItem(models.TransientModel):
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety",
                                  ondelete="restrict",related='product_id.variety_id')
 
-class InheritEstateBlockTemplate(models.Model):
-
-    _inherit='estate.block.template'
-
-    batch_id = fields.Many2one('estate.nursery.batch','Seed Source',required=False,ondelete="restrict",
-                               help='use batch for nursery block only.')
+# class InheritEstateBlockTemplate(models.Model):
+#
+#     _inherit='estate.block.template'
+#
+#     batch_id = fields.Many2one('estate.nursery.batch','Seed Source',required=False,ondelete="restrict",
+#                                help='use batch for nursery block only.')
 

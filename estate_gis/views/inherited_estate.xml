@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Inherit view -->
+        <record id="inherited_block_config_view_form" model="ir.ui.view">
+            <field name="name">estate.block.template.inherit</field>
+            <field name="model">estate.block.template</field>
+            <field name="inherit_id" ref="estate.view_form_block_config"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Location']" position="inside">
+                    <field name="the_area" widget="geo_edit_map"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Geo View -->
+        <record id="estate_block_template_geoview" model="ir.ui.view">
+            <field name="name">estate.block.template.geo_view</field>
+            <field name="arch" type="xml">
+                <geoengine version="7.0">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                </geoengine>
+            </field>
+            <field eval="16" name="priority"/>
+            <field name="model">estate.block.template</field>
+        </record>
+
+    </data>
+</openerp>

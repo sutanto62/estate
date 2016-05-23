@@ -1,5 +1,5 @@
-"id","name","type","parent_id/id","standard_price"
-"estate.activity_1","All","View","",
-"estate.activity_2","Merumput","View","estate.activity_1",
-"estate.activity_3","Pengendalian Piringan Manual","Normal","estate.activity_2", 20
-"estate.activity_4","Pengendalian Piringan Chemist","Normal","estate.activity_2", 10.5
+"id","name","parent_id/id","uom_id/id","standard_price","piece_rate_price","type","qty_base"
+"estate.activity_1","All","","","","","View",""
+"estate.activity_2","Merumput","estate.activity_1","","","","View",""
+"estate.activity_4","Pengendalian Piringan Chemist","estate.activity_2","estate.product_uom_hectare","75000","60000","Normal","2.0"
+"estate.activity_3","Pengendalian Piringan Manual","estate.activity_2","estate.product_uom_hectare","75000","60000","Normal","0.5"

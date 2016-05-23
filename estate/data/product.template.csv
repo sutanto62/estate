@@ -1,0 +1,4 @@
+"id","name","type","uom_id/id","standard_price","list_price","uom_po_id/id","categ_id/id"
+"product.umr_gorontalo","UMR Gorontalo","Service","product.product_uom_hour",10000,10000,"product.product_uom_hour","product.product_category_2"
+"product.umr_gorontalo_khl","UMR Gorontalo (KHL)","Service","product.product_uom_hour",11000,11000,"product.product_uom_hour","product.product_category_2"
+"product.umr_gorontalo_kht","UMR Gorontalo (KHT)","Service","product.product_uom_hour",12000,12000,"product.product_uom_hour","product.product_category_2"

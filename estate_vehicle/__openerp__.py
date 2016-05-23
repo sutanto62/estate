@@ -19,12 +19,18 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','fleet','hr'],
+    'depends': ['base','fleet','hr','estate'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'templates.xml',
+        'views/estate_vehicle_fuel_log.xml',
+        'views/estate_vehicle_otherservice_log.xml',
+        'views/estate_vehicle_sparepart_log.xml',
+        'views/inherit_vehicle_log_oil.xml',
+        # 'views/inherit_transfertomn_spb_view',
+        'views/estate_vehicle_timesheet.xml',
         'views/estate_nursery_vehicle.xml',
         'views/estate_vehicle_path.xml',
         'views/estate_vehicle_master_factor.xml',
@@ -32,12 +38,10 @@
         'views/estate_vehicle_master_categoryunit.xml',
         'views/view_timesheet_premi.xml',
         'views/view_summary_cost_vehicle.xml',
-        'views/estate_vehicle_timesheet.xml',
-        'views/estate_vehicle_fuel_log.xml',
-        'views/inherit_vehicle_log_oil.xml',
+
+
         # 'views/inherit_activity_typebreakdown.xml',
-        'views/estate_vehicle_otherservice_log.xml',
-        'views/estate_vehicle_sparepart_log.xml'
+
         # 'views/timesheet_sequence.xml',
         #'workflow/workflow_estate_timesheet_activity_transport.xml'
     ],

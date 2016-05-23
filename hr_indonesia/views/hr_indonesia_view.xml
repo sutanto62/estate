@@ -16,6 +16,11 @@
                                 <field name="internship"/>
                                 <field name="outsource"/>
                             </group>
+                            <group string="Identification" name="employee_id">
+                                <field name="nik_number"/>
+                                <field name="bpjs_number"/>
+                                <field name="npwp_number"/>
+                            </group>
                         </group>
                     </page>
                 </page>

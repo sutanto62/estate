@@ -230,7 +230,7 @@ class CullingLine(models.Model):
     selection_id=fields.Many2one('estate.nursery.selection')
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='selection_id.batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="selection_id.lot_id.product_id")
+    product_id = fields.Many2one('product.product', "Product",)
     selectionstage_id=fields.Many2one('estate.nursery.selectionstage',
                                       related='selection_id.selectionstage_id',readonly=True)
     allqty_normal_batch=fields.Integer()
@@ -294,6 +294,14 @@ class CullingLine(models.Model):
         self.write({'total_transplanted':self.total_transplanted})
         print self.total_transplanted
 
+    @api.multi
+    @api.onchange('product_id','selection_id')
+    def _onchange_product_id(self):
+        self.ensure_one()
+        if self.selection_id:
+            self.product_id = self.selection_id.batch_id.product_id
+        return True
+
     #get  total qty abnormal
     @api.one
     @api.depends('qty_abnormal_selection','allqty_abnormal_batch','total_abnormal')
@@ -319,7 +327,7 @@ class CullinglineBatch(models.Model):
     batch_id=fields.Many2one('estate.nursery.batch',)
     lot_id = fields.Many2one('stock.production.lot', "Lot",required=True, ondelete="restrict",
                              domain=[('product_id.seed','=',True)],related='batch_id.lot_id')
-    product_id = fields.Many2one('product.product', "Product", related="lot_id.product_id")
+    product_id = fields.Many2one('product.product', "Product",)
     qty_normal_batch=fields.Integer()
     qty_abnormal_batch=fields.Integer(related='batch_id.qty_abnormal')
     qty_transplanted=fields.Integer(store=True)
@@ -362,6 +370,14 @@ class CullinglineBatch(models.Model):
     def _get_receive(self):
             self.total_seed_DO=self.batch_id.qty_received
             self.write({'total_seed_DO':self.total_seed_DO})
+
+    @api.multi
+    @api.onchange('product_id','batch_id')
+    def _onchange_product_id(self):
+        self.ensure_one()
+        if self.batch_id:
+            self.product_id = self.batch_id.product_id
+        return True
 
     #Total qty abnormal seed batch
     @api.one

@@ -16,8 +16,6 @@ class Planting(models.Model):
     partner_id=fields.Many2one('res.partner')
     dotransportir_ids = fields.One2many('estate.nursery.dotransportir','seeddo_id','InformationTransportir')
     activityline_ids=fields.One2many('estate.nursery.activityline','seeddo_id','Information Activity Transportir')
-    batch_planted_ids= fields.One2many('estate.batch.parameter','seeddo_id', "Batch Parameter",
-                                          help="Define batch parameter")
     request_ids = fields.One2many('estate.nursery.request','seeddo_id',"Request Ids",help="Define Many Bpb")
     timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id','Timesheet ids')
     return_ids = fields.One2many('estate.nursery.returnseed','seeddo_id',"Returns Ids",help="Define Many Return Bpb")
@@ -134,21 +132,7 @@ class Planting(models.Model):
         self.amount_total = self.expense
         self.write({'amount_total':self.amount_total})
 
-    #Constraint For ALL
-    @api.one
-    @api.constrains('batch_planted_ids')
-    def _constrains_parameter_bpb(self):
-        #Constraint bpb choose not more than 1
-        if self.batch_planted_ids:
-            temp={}
-            for bpb in self.batch_planted_ids:
-                bpb_value_name = bpb.bpb_id.name
-                if bpb_value_name in temp.values():
-                    error_msg = "Request Seed \"%s\" is set more than once " % bpb_value_name
-                    raise exceptions.ValidationError(error_msg)
-                temp[bpb.id] = bpb_value_name
-            return temp
-
+    # Constraint For ALL
     @api.one
     @api.constrains('timesheet_ids')
     def _constraints_timesheet(self):
@@ -166,7 +150,7 @@ class Planting(models.Model):
         return True
 
     @api.one
-    @api.constrains(timesheet_ids)
+    @api.constrains('timesheet_ids')
     def _constraint_date_timesheet(self):
         #constraint date in timesheet must be same in seed do
         if self.timesheet_ids:
@@ -214,6 +198,11 @@ class Planting(models.Model):
                 error_msg = "Line Activity Must be filled"
                 raise exceptions.ValidationError(error_msg)
 
+class InheritFleet(models.Model):
+    _inherit='fleet.vehicle'
+
+    vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
+    employee_driver_id=fields.Many2one('hr.employee')
 
 class TransportirDetail(models.Model):
 
@@ -315,64 +304,5 @@ class ActivityLine(models.Model):
             result=price*product
             self.result_price=result
         return True
-
-
-class BatchParameter(models.Model):
-    """Parameter of Batch.
-    """
-    _name = 'estate.batch.parameter'
-    _inherit=['mail.thread']
-
-    bpb_id=fields.Many2one('estate.nursery.request','BPB Form')
-    variety_id=fields.Many2one('estate.nursery.variety',related='bpb_id.variety_id',readonly=True)
-    total_qty_pokok = fields.Integer('Qty Request',track_visibility='onchange',readonly=True)
-    batch_id = fields.Many2one('estate.nursery.batch', "Nursery Batch",store=True,track_visibility='onchange')
-    seeddo_id=fields.Many2one('estate.nursery.seeddo')
-    from_location_id = fields.Many2many('estate.block.template','batch_rel_loc','inherit_location_id','val_id', "From Location",
-                                          domain=[('estate_location', '=', True),
-                                                  ('estate_location_level', '=', '3'),
-                                                  ('estate_location_type', '=', 'nursery'),
-                                                  ('stage_id','=',4),
-                                                  ('scrap_location', '=', False),
-                                                  ])
-    parameter_value_id = fields.Many2one('estate.bpb.value', "Value",
-                                         domain="[('parameter_id', '=', parameter_id)]",
-                                         ondelete='restrict')
-
-    #onchange total qty pokok
-    @api.one
-    @api.onchange('bpb_id','total_qty_pokok')
-    def onchange_total_qty_pokok(self):
-        self.total_qty_pokok = self.bpb_id.total_qty_pokok
-        self.write({'total_qty_pokok' : self.total_qty_pokok})
-
-    @api.multi
-    @api.onchange('bpb_id')
-    def _onchange_bpb_id(self):
-        #untuk menghilangkan record bpb pada saat membuka transaksi baru untuk membuat SEED DO , BPB tidak dapat di pilih 2 kali.
-        #for delete record BPB to create new transction for create SEED DO , and then BPB not Choose more than one for evert Transaction SEED DO
-
-        batchparameterline = self.env['estate.batch.parameter'].search([])
-        if self:
-            arrParameterLine = []
-            for a in batchparameterline:
-                arrParameterLine.append(a.bpb_id.id)
-            return {
-                'domain': {'bpb_id': [('id','not in',arrParameterLine),('total_qty_pokok','>',0)]}
-            }
-
-    @api.multi
-    @api.onchange('batch_id')
-    def _onchange_batch_id(self):
-        #domain batch
-        batch = self.env['estate.nursery.batch'].search([('age_seed_range','>=',6),('qty_planted','>',0)])
-
-        if self:
-            arrBatch=[]
-            for a in batch:
-                arrBatch.append(a.id)
-            return {
-                'domain': {'batch_id': [('id','in',arrBatch)]}
-            }
 
 

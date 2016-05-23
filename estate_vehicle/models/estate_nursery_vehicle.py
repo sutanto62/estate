@@ -37,11 +37,34 @@ class NurseryVehicle(models.Model):
     sparepart_log_count = fields.Integer('Sparepart Log Count')
     category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
     no_vehicle=fields.Char('No Vehicle')
-    vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
-    employee_driver_id=fields.Many2one('hr.employee')
+    # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
+    # employee_driver_id=fields.Many2one('hr.employee')
     capacity_vehicle = fields.Integer('Capacity')
-    status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown')])
+    status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
 
+
+
+class InheritActivity(models.Model):
+
+    _inherit = 'estate.activity'
+    _description = 'inherit status'
+
+    status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+
+class InheritFuel(models.Model):
+
+    _inherit ='fleet.vehicle.log.fuel'
+    _description = 'inherit product_id in fuel'
+
+    product_id = fields.Many2one('product.product',domain="[('type','=','consu'),('uom_id','=',11)]")
+
+    # #onchange
+    # @api.multi
+    # @api.onchange('price_pre_liter','product_id')
+    # def _onchange_priceperliter(self):
+    #     if self.product_id:
+    #         price_per_liter = self.product_id.standard_price
+    #     return True
 
 class VehicleOilLog(models.Model):
 
@@ -82,26 +105,6 @@ class VehicleOilLog(models.Model):
         else :
             return {}
 
-    def on_change_price_per_liter(self, cr, uid, ids, liter, price_per_liter, amount, context=None):
-        #need to cast in float because the value receveid from web client maybe an integer (Javascript and JSON do not
-        #make any difference between 3.0 and 3). This cause a problem if you encode, for example, 2 liters at 1.5 per
-        #liter => total is computed as 3.0, then trigger an onchange that recomputes price_per_liter as 3/2=1 (instead
-        #of 3.0/2=1.5)
-        #If there is no change in the result, we return an empty dict to prevent an infinite loop due to the 3 intertwine
-        #onchange. And in order to verify that there is no change in the result, we have to limit the precision of the
-        #computation to 2 decimal
-        liter = float(liter)
-        price_per_liter = float(price_per_liter)
-        amount = float(amount)
-        if liter > 0 and price_per_liter > 0 and round(liter*price_per_liter,2) != amount:
-            return {'value' : {'amount' : round(liter * price_per_liter,2),}}
-        elif amount > 0 and price_per_liter > 0 and round(amount/price_per_liter,2) != liter:
-            return {'value' : {'liter' : round(amount / price_per_liter,2),}}
-        elif amount > 0 and liter > 0 and round(amount/liter,2) != price_per_liter:
-            return {'value' : {'price_per_liter' : round(amount / liter,2),}}
-        else :
-            return {}
-
     def on_change_amount(self, cr, uid, ids, liter, price_per_liter, amount, context=None):
         #need to cast in float because the value receveid from web client maybe an integer (Javascript and JSON do not
         #make any difference between 3.0 and 3). This cause a problem if you encode, for example, 2 liters at 1.5 per
@@ -130,15 +133,15 @@ class VehicleOilLog(models.Model):
         return model_id
 
     name=fields.Char()
-    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade')
+    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade',required=True)
     cost_type_id = fields.Many2one('fleet.service.type')
     purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
     inv_ref = fields.Char('Invoice Reference')
     vendor_id = fields.Many2one('res.partner')
     cost_amount = fields.Float(related='cost_id.amount',store=True)
     notes = fields.Text('notes')
-    liter = fields.Float('Liter')
-    price_per_liter = fields.Float('Price Per Liter')
+    liter = fields.Float('Liter',store=True)
+    price_per_liter = fields.Float('Price Per Liter',related='product_id.standard_price',store=True)
     product_id = fields.Many2one('product.product','Product',domain="[('type','=','consu'),('uom_id','=',11)]")
 
     _defaults = {
@@ -176,14 +179,14 @@ class VehicleSparepartLog(models.Model):
         return model_id
 
     name=fields.Char()
-    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade')
+    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade',required=True)
     unit = fields.Integer('Unit Sparepart')
     product_id = fields.Many2one('product.product','Product',domain="[('type_vehicle','=',True),('type','=','product'),('uom_id','=',1)]",store=True)
-    cost_amount = fields.Float(related='cost_id.amount')
+    cost_amount = fields.Float(related='cost_id.amount',store=True)
     purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
     inv_ref = fields.Char('Invoice Reference')
     vendor_id = fields.Many2one('res.partner')
-    price_per_unit = fields.Float('Price unit',readonly=1,related='product_id.list_price',store=True)
+    price_per_unit = fields.Float('Price unit',readonly=1,related='product_id.standard_price',store=True)
     total_amount = fields.Float('Total Amount',compute="_compute_total_sparepart",store=True)
     notes = fields.Text('notes')
 
@@ -227,15 +230,16 @@ class VehicleOtherServiceLog(models.Model):
             model_id = False
         return model_id
 
+
     name=fields.Char()
-    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade')
+    cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade',required=True)
     unit = fields.Integer('Unit Service')
     product_id = fields.Many2one('product.product','Product',domain="[('type_vehicle','=',True),('type','=','service'),('uom_id','=',1)]",store=True)
     cost_amount = fields.Float(related='cost_id.amount')
     purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
     inv_ref = fields.Char('Invoice Reference')
     vendor_id = fields.Many2one('res.partner')
-    price_per_service = fields.Float('Price Service',store=True)
+    price_per_service = fields.Float('Price Service',store=True,related='product_id.standard_price')
     total_amount = fields.Float('Total Amount',compute="_compute_total_otherservice",)
     notes = fields.Text('notes')
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="hr_contract_type_estate" model="hr.contract.type">
+            <field name="name">Estate Worker</field>
+        </record>
+    </data>
+</openerp>

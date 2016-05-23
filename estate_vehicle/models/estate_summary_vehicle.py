@@ -79,7 +79,7 @@ class ViewSummaryCostVehicleDetail(models.Model):
                                     date_part('month', ts.date_activity_transport) month_log,
                                     date_part('year', ts.date_activity_transport) year_log
                                         from estate_timesheet_activity_transport ts
-                                    group by  month_log,year_log ,employee_id
+                                    group by  month_log,year_log ,employee_id,ts.vehicle_id
                             )b on a.vehicle_id = b.vehicle_id and a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
                         ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null group by c.vehicle_id, c.month_log , c.year_log , hrc.wage , c.total_trip, c.total_trip_vehicle order by month_log
                         ) a order by type_log, month_log, year_log asc

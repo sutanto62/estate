@@ -28,8 +28,30 @@
                          class="oe_stat_button"
                          icon="fa-wrench"
                          help="show the Sparepart logs for this vehicle">
-                         <!--<field name="sparepart_log_count" widget="statinfo" string="Sparepart"/>-->
+                         <field name="sparepart_log_count" widget="statinfo" string="Sparepart"/>
                      </button>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inheritview_field_product_id_vehicle_log">
+             <field name="name">Inherit Vehicle Log Fuel</field>
+             <field name="model">fleet.vehicle.log.fuel</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='liter']" position="before">
+                     <field name="product_id" string="Product"/>
+                 </xpath>
+             </field>
+         </record>
+
+         <record model="ir.ui.view" id="inheritview_field_status_activity">
+             <field name="name">Inherit status</field>
+             <field name="model">estate.activity</field>
+             <field name="inherit_id" ref="estate.view_activity_config_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='activity_type']" position="after">
+                     <field name="status" string="Status Vehicle" attrs="{'invisible':[('activity_type','!=', 'vehicle')]}"/>
                  </xpath>
              </field>
          </record>

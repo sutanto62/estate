@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!-- View Tree: Team -->
-        <record model="ir.ui.view" id="view_tree_estate_team">
+        <record id="view_tree_estate_team" model="ir.ui.view" >
             <field name="name">Estate Team Tree</field>
             <field name="model">estate.hr.team</field>
             <field name="arch" type="xml">
@@ -12,7 +12,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="view_team_form">
+        <record id="view_team_form" model="ir.ui.view" >
             <field name="name">Estate Team Form</field>
             <field name="model">estate.hr.team</field>
             <field name="priority" eval="1"/>
@@ -24,6 +24,7 @@
                             <field name="active"/>
                             <field name="date_effective"/>
                             <field name="employee_id"/>
+                            <field name="assistant_id"/>
                         </group>
                         <field name="member_ids"/>
                     </sheet>
@@ -31,7 +32,7 @@
             </field>
         </record>
 
-         <record model="ir.ui.view" id="view_member_tree">
+         <record id="view_member_tree" model="ir.ui.view" >
             <field name="name">Member Tree</field>
             <field name="model">estate.hr.member</field>
             <field name="priority" eval="1"/>
@@ -44,16 +45,105 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="action_list_estate_team">
+        <!-- View Attendance -->
+        <record id="attendance_code_view_tree" model="ir.ui.view">
+            <field name="name">Attendance Code Tree</field>
+            <field name="model">estate.hr.attendance</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="unit_amount"/>
+                    <field name="qty_ratio"/>
+                </tree>
+            </field>
+        </record>
+
+
+        <!-- Regional Wage -->
+        <record id="estate_wage_view_tree" model="ir.ui.view">
+            <field name="name">Regional wage Tree</field>
+            <field name="model">estate.wage</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="estate_id"/>
+                    <field name="date_start"/>
+                    <field name="name"/>
+                    <field name="wage"/>
+                    <field name="number_of_days" string="Day(s)"/>
+                    <field name="daily_wage"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="estate_wage_view_form" model="ir.ui.view">
+            <field name="name">Regional Wage Form</field>
+            <field name="model">estate.wage</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="estate_id"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="wage"/>
+                            <field name="number_of_days"/>
+                            <field name="daily_wage"/>
+                        </group>
+                    </group>
+                    <separator string="Additional Information"/>
+                    <field name="comment"/>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- Action -->
+        <record id="action_list_estate_team" model="ir.actions.act_window" >
             <field name="name">Estate Team</field>
             <field name="res_model">estate.hr.team</field>
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_list_attendance_code" model="ir.actions.act_window" >
+            <field name="name">Estate Attendance</field>
+            <field name="res_model">estate.hr.attendance</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="estate_wage_action" model="ir.actions.act_window" >
+            <field name="name">Regional Wage</field>
+            <field name="res_model">estate.wage</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem id="estate_labour_menu"
+                  name="Labour"
+                  parent="estate_config_menu"
+                  groups="base.group_no_one"/>
+
         <menuitem id="estate_estate_team_menu" name="Estate Team"
-                  parent="estate_blocking_menu"
+                  parent="estate_labour_menu"
                   action="action_list_estate_team"
                   groups="base.group_no_one"/>
+
+        <menuitem id="estate_estate_attendance_menu" name="Estate Attendance"
+                  parent="estate_labour_menu"
+                  action="action_list_attendance_code"
+                  groups="base.group_no_one"/>
+
+        <menuitem id="estate_estate_wage" name="Regional Wage"
+                  parent="estate_labour_menu"
+                  action="estate_wage_action"
+                  groups="base.group_no_one"/>
+
+
 
     </data>
 </openerp>

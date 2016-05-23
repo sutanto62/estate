@@ -81,10 +81,6 @@
 "activityline_assistant","estate_nursery_activityline","estate_nursery.model_estate_nursery_activityline","estate.group_assistant","True","True","False","False"
 "activityline_manager","estate_nursery_activityline","estate_nursery.model_estate_nursery_activityline","estate.group_manager","True","True","True","False"
 
-"parameter_user","estate_batch_parameter","estate_nursery.model_estate_batch_parameter","estate.group_user","True","False","True","False"
-"parameter_assistant","estate_batch_parameter","estate_nursery.model_estate_batch_parameter","estate.group_assistant","True","True","False","False"
-"parameter_manager","estate_batch_parameter","estate_nursery.model_estate_batch_parameter","estate.group_manager","True","True","True","False"
-
 "transfermn_user","estate_nursery_transfermn","estate_nursery.model_estate_nursery_transfermn","estate.group_user","True","False","True","False"
 "transfermn_assistant","estate_nursery_transfermn","estate_nursery.model_estate_nursery_transfermn","estate.group_assistant","True","True","False","False"
 "transfermn_manager","estate_nursery_transfermn","estate_nursery.model_estate_nursery_transfermn","estate.group_manager","True","True","True","False"

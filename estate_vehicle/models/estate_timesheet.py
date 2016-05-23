@@ -27,9 +27,12 @@ class TimesheetActivityTransport(models.Model):
     uom_id = fields.Many2one('product.uom',store=True)
     unit = fields.Float('unit per activity',digits=(2,2),store=True)
     vehicle_id = fields.Many2one('fleet.vehicle',store=True)
-    activity_id = fields.Many2one('estate.activity',store=True)
+    activity_id = fields.Many2one('estate.activity',store=True,domain=[('activity_type','=','vehicle')])
     partner_id=fields.Many2one('res.partner')
     timesheet_activity_code = fields.Char()
+    start_km = fields.Float(digits=(2,2),store=True)
+    end_km = fields.Float(digits=(2,2),store=True)
+    total_distance = fields.Float(digits=(2,2),compute='_compute_total_distance',store=True)
     start_location = fields.Many2one('estate.block.template',store=True)
     end_location = fields.Many2one('estate.block.template',store=True)
     distance_location = fields.Float('Distance Location',store=True)
@@ -142,6 +145,35 @@ class TimesheetActivityTransport(models.Model):
                 self.total_time = self.end_time - self.start_time
         return True
 
+    @api.multi
+    @api.depends('start_km','end_km','total_distance')
+    def _compute_total_distance(self):
+        self.ensure_one()
+        #to Compute total Distance
+        if self:
+            if self.end_km and self.start_km:
+                self.total_distance = self.end_km - self.start_km
+            return True
+
+    # @api.depends('fleet.vehicle.status_vehicle')
+    # def _compute_status_vehicle(self):
+    #
+    #     if self.activity_id.status == '2':
+    #         for rec in self.
+
+
+
+    #Constraint ALL
+
+    @api.multi
+    @api.constrains('start_km','end_km')
+    def _constraint_startkm_endkm(self):
+        if self:
+            if self.end_km < self.start_km:
+                error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
+                raise exceptions.ValidationError(error_msg)
+            return True
+
     #state for Cleaving
     @api.one
     def action_draft(self):
@@ -190,7 +222,6 @@ class MasterPath(models.Model):
     start_location=fields.Many2one('estate.block.template', "Plot")
     end_location=fields.Many2one('estate.block.template', "Plot")
     comment = fields.Text()
-
 
 
 class MasterFactorMultiple(models.Model):
@@ -288,3 +319,13 @@ class ViewTimesheetPremi(models.Model):
                 inner join
                 master_formula_activity_vehicle fa
                 on pl.distance_location >= fa.range_start and pl.distance_location <= fa.range_end""")
+
+# class CreateTrigger(models.Model):
+#
+#     _name = 'trigger.status.vehicle'
+#
+#     def init(self, cr):
+#         cr.execute("""""")
+
+
+

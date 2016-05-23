@@ -65,6 +65,11 @@
                             <field name="estate_location" required="True"/>
                             <field name="estate_location_level" required="True"/>
                             <field name="estate_location_type" required="True"/>
+                            <field name="assistant_id"/>
+                        </group>
+
+                        <group name="account" string="Account">
+                            <field name="account_id"/>
                         </group>
 
                         <group string="Areal Statement" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
@@ -136,11 +141,18 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_list_analytic" model="ir.actions.act_window" >
+            <field name="name">Analytic Estate Journal Items</field>
+            <field name="res_model">account.analytic.line</field>
+            <field name="domain">[('journal_id','=',5)]</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <!-- todo action open Activity By Category -->
 
 
         <!-- Menu -->
-        <menuitem id="main_estate_menu" name="Plantation"/>
+        <menuitem id="main_estate_menu" name="Estate"/>
 
         <menuitem id="estate_config_menu" name="Configuration" parent="main_estate_menu" sequence="100"/>
 
@@ -157,6 +169,16 @@
         <menuitem id="estate_master_menu" name="Configuration"
                   parent="estate_config_menu"
                   groups="base.group_no_one"/>
+
+        <menuitem id="estate_account_menu" name="Account"
+                  parent="estate_config_menu"
+                  groups="base.group_no_one"/>
+
+        <menuitem id="estate_account_analytic_menu" name="Analytic Journal Entries"
+                  parent="estate_account_menu"
+                  action="action_list_analytic"
+                  groups="base.group_no_one"/>
+
         <menuitem id="estate_parameter_menu" name="Parameter"
                   parent="estate_master_menu"
                   action="action_list_parameter_config"

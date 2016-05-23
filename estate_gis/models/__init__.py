@@ -1,0 +1,1 @@
+import inherited_estate

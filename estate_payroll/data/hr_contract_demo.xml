@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Employee Contract -->
+        <record id="hr_contract_abasakumali_1" model="hr.contract">
+            <field name="name">Abas Akumali</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_abasdepo_1" model="hr.contract">
+            <field name="name">Abas Depo</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_ganinanggili_1" model="hr.contract">
+            <field name="name">Gani Nanggili</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_3"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_kanonodesta_1" model="hr.contract">
+            <field name="name">Kanono Desta</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_4"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_latifabdulah_1" model="hr.contract">
+            <field name="name">Latif Abdulah</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_5"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_adamakumali_1" model="hr.contract">
+            <field name="name">Adam Akumali</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_6"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_lasena_1" model="hr.contract">
+            <field name="name">Lasena</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_7"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_suryomaduto_1" model="hr.contract">
+            <field name="name">Suryo Maduto</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_8"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_amrainahmad_1" model="hr.contract">
+            <field name="name">Amrain Ahmad</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_9"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_ahmadbahrun_1" model="hr.contract">
+            <field name="name">Ahmad Bahrun</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.khl_10"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate"/>
+        </record>
+        <record id="hr_contract_syukurmandor_1" model="hr.contract">
+            <field name="name">Syukur Mandor</field>
+            <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
+            <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
+            <field name="date_end" eval="time.strftime('%Y')+'-12-31'"/>
+            <field name="employee_id" ref="hr_employee.kht_mandor"/>
+            <field eval="1875000.0" name="wage"/>
+            <field name="working_hours" ref="resource.timesheet_estate_ops"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate_tl"/>
+        </record>
+    </data>
+</openerp>

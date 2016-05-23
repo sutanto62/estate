@@ -18,6 +18,8 @@ class Team(models.Model):
     date_effective = fields.Date("Date Effective")
     employee_id = fields.Many2one('hr.employee', "Team Leader", required='True', ondelete='restrict',
                                   help="An employee is only allowed to lead one active team.")
+    assistant_id = fields.Many2one('hr.employee', "Assistant", ondelete='restrict',
+                                   help="Set this as default Assistant, will be used to record at Upkeep.")
     member_ids = fields.One2many('estate.hr.member', 'team_id')
     member_total = fields.Integer(compute='_count_member', store='False')
     state = fields.Selection([('draft', 'Draft'),
@@ -28,7 +30,7 @@ class Team(models.Model):
 
     @api.depends('member_ids')
     def _count_member(self):
-        # Count total member
+        # Count amount member
         val = 0
         for i in self.member_ids:
             val += 1
@@ -44,8 +46,10 @@ class Team(models.Model):
         3. An employee is allowed to register as member of one active team."""
 
         if self.employee_id:
-            # validate leader
-            res = self.search([('employee_id', '=', self.employee_id.id), ('state', '=', 'active')])
+            # Validate if Leader has been registered at another team
+            res = self.search([('id', 'not in', self.ids),
+                               ('employee_id', '=', self.employee_id.id),
+                               ('state', '=', 'active')])
             if res:
                 msg = '%s is a leader at Team %s' % (self.employee_id.name, res.name)
                 raise exceptions.ValidationError(msg)
@@ -56,11 +60,13 @@ class Team(models.Model):
                 if self.employee_id == rec.employee_id:
                     msg = '%s has been registered as a Team Leader.' % rec.employee_id.name
                     raise exceptions.ValidationError(msg)
+                # todo error in validating in another team
+                # constrains: add double team (config)
                 # validate double team
-                res = self.env['estate.hr.member'].search([('team_id.state', '=', 'active'),
-                        ('employee_id', '=', rec.employee_id.id)])
-                msg = '%s has been registered in another active Team.' % rec.employee_id.name
-                raise exceptions.ValidationError(msg)
+                # res = self.env['estate.hr.member'].search([('team_id.state', '=', 'active'),
+                #         ('employee_id', '=', rec.employee_id.id)])
+                # msg = '%s has been registered in another active Team.' % rec.employee_id.name
+                # raise exceptions.ValidationError(msg)
 
 class TeamMember(models.Model):
     """List of Team Member
@@ -72,3 +78,37 @@ class TeamMember(models.Model):
                                   help="Member should not be a Team Leader.")
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
+
+class AttendanceCode(models.Model):
+    _name = 'estate.hr.attendance'
+    _rec_name = 'code'
+
+    name = fields.Char('Attendance')
+    code = fields.Char('Code')
+    unit_amount = fields.Float('Hour')
+    qty_ratio = fields.Float('Quantity Ratio', help='Use to calculate work result quantity.')
+
+class Wage(models.Model):
+    """Set default wage for estate level.
+    """
+    _name = 'estate.wage'
+    _order = 'estate_id asc, date_start desc'
+
+    @api.multi
+    @api.depends('wage', 'number_of_days')
+    def _compute_daily_wage(self):
+        for record in self:
+            record.daily_wage = record.wage / record.number_of_days
+
+    name = fields.Char('Name')
+    active = fields.Boolean('Active', default=True)
+    date_start = fields.Date('Start Date')
+    estate_id = fields.Many2one('stock.location', "Estate",
+                                help='Set wage for all child locations if employee has no contract.',
+                                domain=[('estate_location', '=', True), ('estate_location_level', '=', '1')])
+    wage = fields.Float('Minimum Regional Wage')
+    daily_wage = fields.Float('Daily Wage', help='Minimum Regional Wage divide by Number of working days',
+                              compute='_compute_daily_wage')
+    number_of_days = fields.Float('Number of working days', default='25')
+    comment = fields.Text('Additional Information')
+

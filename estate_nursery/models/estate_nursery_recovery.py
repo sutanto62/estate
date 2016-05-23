@@ -9,14 +9,13 @@ class NurseryRecovery(models.Model):
 
     _name ='estate.nursery.recovery'
     _inherit = ['mail.thread']
-    _inherits =  {'estate.nursery.batch': 'batch_id'}
 
     def _default_session(self):
         return self.env['estate.nursery.batch'].browse(self._context.get('active_id'))
 
     name=fields.Char(related="batch_id.name")
     recovery_code=fields.Char()
-    batch_id= fields.Many2one('estate.nursery.batch','batch',default=_default_session,required=True,ondelete="cascade")
+    batch_id= fields.Many2one('estate.nursery.batch','batch',default=_default_session)
     partner_id=fields.Many2one('res.partner')
     stage_id = fields.Many2one('estate.nursery.stage','Stage Selection',required=True)
     step_id = fields.Many2one('estate.nursery.steprecovery','Step Recovery',store=True,required=True)

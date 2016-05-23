@@ -19,27 +19,40 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mail','estate','stock','product',
+    'depends': ['estate','base',
+                'fleet',
                 'report','board',
-                'purchase','membership','mrp',
-                'estate_vehicle','readonly_bypass','smile_audit','warning'],
-
+                'readonly_bypass','mail','estate_vehicle'],
     # always loaded
     'data': [
         'demo/partner_data.xml',
         'security/ir.model.access.csv',
+
+        'config_reports/selection_report.xml',
+        'config_reports/batch_report.xml',
+        'config_reports/report_cleaving.xml',
+        'config_reports/report_culling.xml',
+        'config_reports/report_culling_batch.xml',
+        'config_reports/reportplantation_prenursery_report.xml',
+        'config_reports/reportplantation_bpb.xml',
+        'config_reports/reportplantation_div.xml',
+        'config_reports/reportmainnursery_div.xml',
+        'config_reports/reportplantation_seedreceived.xml',
+        'config_reports/reportplantation_seed_do.xml',
+
         'templates.xml',
+        'views/inherit_blocktemplate.xml',
+        'views/estate_nursery_transfermn.xml',
         'views/estate_nursery_view.xml',
         'views/estate_nursery_selection_view.xml',
         'views/estate_nursery_culling.xml',
         'views/estate_nursery_cleaving_seed_view.xml',
         'views/estate_nursery_recovery.xml',
-        'views/estate_nursery_transfermn.xml',
         'views/report_plantation_view.xml',
         'views/sequence_view_planting.xml',
         'views/estate_planting_view.xml',
         'views/dashboard_selection.xml',
-        'views/inherit_blocktemplate.xml',
+
 
         'reports/selection_report.xml',
         'reports/batch_report.xml',
@@ -64,17 +77,7 @@
         'workflow/session_returnseed_workflow.xml',
         'res_config_view.xml',
 
-        'config_reports/selection_report.xml',
-        'config_reports/batch_report.xml',
-        'config_reports/report_cleaving.xml',
-        'config_reports/report_culling.xml',
-        'config_reports/report_culling_batch.xml',
-        'config_reports/reportplantation_prenursery_report.xml',
-        'config_reports/reportplantation_bpb.xml',
-        'config_reports/reportplantation_div.xml',
-        'config_reports/reportmainnursery_div.xml',
-        'config_reports/reportplantation_seedreceived.xml',
-        'config_reports/reportplantation_seed_do.xml',
+
         'views/sequence_view.xml',
 
     ],

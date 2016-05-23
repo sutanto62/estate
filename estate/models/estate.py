@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, osv
+from openerp.addons.base_geoengine import geo_model
+from openerp.addons.base_geoengine import fields as geo_fields
 
 class EstateLocation(models.Model):
     """Extend Location. Have relation one-to-one with EstateBlockTemplate."""
@@ -39,7 +41,7 @@ class EstateObjectType(models.Model):
 
     name = fields.Char("Name")
 
-class EstateBlockTemplate(models.Model):
+class EstateBlockTemplate(geo_model.GeoModel):
     """Block is a unit of an Estate. Hierarchical as Estate, Division, Block or Sub Block.
     Block is delegation inheritance of Stock Location.
     """
@@ -48,8 +50,9 @@ class EstateBlockTemplate(models.Model):
     _inherits = {'stock.location': 'inherit_location_id'}
 
     inherit_location_id = fields.Many2one('stock.location', required=True, ondelete="restrict")
-    batch_id = fields.Many2one('estate.nursery.batch', "Seed Source", required=False, ondelete="restrict",
-                               help='Use batch for nursery block only.')
+    assistant_id = fields.Many2one('hr.employee', "Assistant", ondelete="restrict")
+    # batch_id = fields.Many2one('estate.nursery.batch', "Seed Source", required=False, ondelete="restrict",
+    #                            help='Use batch for nursery block only.')
     area_gis = fields.Float("GIS Area (ha)", digits=(18, 6), help="Closing block area.")
     area_planted = fields.Float("Planted Area (ha)", digits=(18, 6),
                                 help="Calculated based on stand per hectare.")
@@ -78,12 +81,13 @@ class EstateBlockTemplate(models.Model):
     block_parameter_ids = fields.One2many('estate.block.parameter', 'block_id', "Block Parameter",
                                           help="Define block parameter")
     closing = fields.Boolean("Closing Block", help="Land clearing has been finished.")
+    account_id = fields.Many2one('account.analytic.account', 'Analytic Account', help="Batch/Year Planted")
 
     # Set default value embedded object (stock location)
     _defaults = {
         'estate_location': 'true',
         'estate_location_type': 'planted',
-        'usage': 'production'
+        'usage': 'internal'
     }
 
     @api.one
@@ -162,3 +166,4 @@ class StandPerHectare(models.Model):
         records = self.env['estate.stand.hectare'].search([('id', '!=', self.id)])
         for rec in records:
             rec.default = 'False'
+

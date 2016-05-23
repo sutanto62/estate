@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'hr_indonesia'],
+    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'base_geoengine'],
 
     # always loaded
     'data': [
@@ -29,17 +29,32 @@
         'views/estate.xml',
         'views/estate_activity_view.xml',
         'views/estate_hr_view.xml',
+        'views/estate_upkeep.xml',
+        'views/inherited_product_category_view.xml',
         'res_config_view.xml',
-        'security/security.xml'
+        'security/security.xml',
+        'data/estate_uom_data.xml',
+        'data/hr_data.xml',
     ],
-    # only loaded in demonstration mode
+    # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
-        'data/demo.xml',
+        'data/account.analytic.account.csv',
+        'data/account.analytic.journal.csv',
         'data/estate.activity.csv',
         'data/stock.location.csv',
         'data/estate.block.template.csv',
+        #'data/estate.hr.team.csv',
         'data/estate.parameter.csv',
         'data/estate.parameter.value.csv',
-        'data/estate.stand.hectare.csv'
+        'data/estate.stand.hectare.csv',
+        'data/product.template.csv',
+        'data/res.users.csv',
+        'data/hr_demo.xml',
+        'data/demo.xml',
+        'data/hr_contract_demo.xml',
+        'data/estate_hr_team_demo.xml',
+        'data/inherited_product_demo.xml',
+
+        #'data/hr.employee.csv', # fix demo product.template & product.product. hr.employee.product_id using product.product
     ],
 }

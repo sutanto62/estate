@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- product.uom.categ -->
+        <record id="product_uom_categ_area" model="product.uom.categ">
+            <field name="name">Area</field>
+        </record>
+
+        <!-- product.uom -->
+        <record id="product_uom_hectare" model="product.uom">
+            <field name="category_id" ref="product_uom_categ_area"/>
+            <field name="name">ha</field>
+            <field name="factor" eval="1.0"/>
+        </record>
+    </data>
+</openerp>

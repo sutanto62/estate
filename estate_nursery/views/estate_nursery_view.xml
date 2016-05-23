@@ -455,7 +455,7 @@
          </record>
 
         <!-- View, Extend Stock Transfer todo create separate view for next release -->
-        stock.view_stock_enter_transfer_details
+        <!--stock.view_stock_enter_transfer_details-->
         <record model="ir.ui.view" id="view_form_selection">
             <field name="name">Enter Transfers Detail Extended</field>
             <field name="model">stock.transfer_details</field>
@@ -588,7 +588,6 @@
              </field>
         </record>
 
-        <!--Inherit Stock move -->
         <record model="ir.ui.view" id="view_form_inherit_search_move_template">
              <field name="name">Inherit Search MoveTemplate</field>
              <field name="model">stock.production.lot</field>

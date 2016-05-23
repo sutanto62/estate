@@ -3,7 +3,7 @@
 
         <record id="base.res_partner_ppks" model="res.partner">
             <field name="name">Pusat Penelitian Kelapa Sawit</field>
-            <field name="is_company" eval="True"></field>
+            <field name="is_company" eval="True"/>
             <field name="supplier" eval="True"/>
             <field name="active" eval="True"/>
             <!--<field name="property_product_pricelist_purchase" ref="purchase.list0"/>-->
@@ -40,7 +40,7 @@
         <record id="estate_nursery.progeny_ppks540" model="estate.nursery.progeny">
             <field name="name">PPKS 540</field>
             <field name="code">P1</field>
-            <field name="variety_id" ref="estate_nursery.variety_tenppks"/>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_ppks"/>
             <field name="active" eval="True"/>
         </record>
@@ -48,7 +48,7 @@
         <record id="estate_nursery.progeny_damiym" model="estate.nursery.progeny">
             <field name="name">Dami YM</field>
             <field name="code">YM</field>
-            <field name="variety_id" ref="estate_nursery.variety_tendur"/>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_dami"/>
             <field name="active" eval="True"/>
         </record>
@@ -56,7 +56,7 @@
         <record id="estate_nursery.progeny_damiam" model="estate.nursery.progeny">
             <field name="name">Dami AM</field>
             <field name="code">AM</field>
-            <field name="variety_id" ref="estate_nursery.variety_tendur"/>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_dami"/>
             <field name="active" eval="True"/>
         </record>
@@ -64,7 +64,7 @@
         <record id="estate_nursery.progeny_topaz" model="estate.nursery.progeny">
             <field name="name">Topaz</field>
             <field name="code">T1</field>
-            <field name="variety_id" ref="estate_nursery.variety_tentopaz"/>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="supplier_id" ref="base.res_partner_topaz"/>
             <field name="active" eval="True"/>
         </record>
@@ -80,7 +80,7 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">090901</field>
-            <field name="variety_id">Tenera</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="seed" eval="True"/>
             <field name="track_all" eval="True"/>
         </record>
@@ -93,7 +93,7 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">090902</field>
-            <field name="variety_id">Tenera</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="seed" eval="True"/>
             <field name="track_all" eval="True"/>
         </record>
@@ -106,7 +106,7 @@
             <field name="uom_id" ref="product.product_uom_unit"/>
             <field name="uom_po_id" ref="product.product_uom_unit"/>
             <field name="default_code">090902</field>
-            <field name="variety_id">Tenera</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="seed" eval="True"/>
             <field name="track_all" eval="True"/>
         </record>
@@ -375,13 +375,13 @@
         <record id="report_selection_1" model="estate.nursery.reportline">
             <field name="name">Report Pre Nursery</field>
             <!--<field name="report_date"></field>-->
-            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+            <field name="kebun_location_id" />
         </record>
 
         <record id="report_selection_2" model="estate.nursery.reportline">
             <field name="name">Report Main Nursery</field>
             <!--<field name="report_date"></field>-->
-            <field name="kebun_location_id" ref="estate_nursery.location_estate"/>
+            <field name="kebun_location_id" />
         </record>
 
     </data>

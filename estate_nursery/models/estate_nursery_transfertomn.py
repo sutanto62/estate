@@ -8,7 +8,6 @@ import calendar
 class TransferStocktoMn(models.Model):
 
     _name='estate.nursery.transfermn'
-    _inherits = {'estate.nursery.batch' : 'batch_id'}
     _inherit = ['mail.thread',]
 
     def _default_session(self):
