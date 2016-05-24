@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_estate_payslip">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="batch">
+                    <t t-call="report.external_layout">
+                        <div class="page">
+                            <h2 class="text-center">Payroll <span t-esc="batch.name"/><br/>
+                                <t t-if="batch.estate_id">
+                                    <small>Estate <t t-esc="batch.estate_id.name"/></small>
+                                </t>
+                                <t t-if="batch.division_id">
+                                    <small>Division <t t-esc="batch.division_id.name"/></small>
+                                </t>
+                            </h2>
+                            <t t-foreach="get_team(batch.slip_ids)" t-as="team">
+                                <t t-if="team.name==''">
+                                    <h3>Non Kemandoran</h3>
+                                </t>
+                                <h3 t-esc="team.name"/>
+                                <table class="table table-striped table-condensed table-bordered" style="font-size:65%">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="2">no.</th>
+                                            <th rowspan="2">Name</th>
+                                            <th rowspan="2">ID</th>
+                                            <th rowspan="2">Type</th>
+                                            <th colspan="4" class="text-center">Wage</th>
+                                            <th rowspan="2">Allowance</th>
+                                            <th rowspan="2">Deduction</th>
+                                            <th rowspan="2">Total</th>
+                                            <th colspan="3" class="text-center">Other</th>
+                                            <th rowspan="2">Total (taxed)</th>
+                                            <th rowspan="2" colspan="2">Signature</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Day</th>
+                                            <th>EDW</th>
+                                            <th>OT</th>
+                                            <th>PR</th>
+                                            <th>BPJS TK</th>
+                                            <th>BPJS K</th>
+                                            <th>Tax</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody>
+                                        <t t-set="amount_total_team" t-value="0"/>
+                                        <t t-set="no" t-value="0"/>
+                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id))"/>
+                                        <t t-set="round" t-value="1000"/>
+                                        <t t-foreach="get_payslip_team(team.id)" t-as="payslip">
+                                            <!-- only print payslip with done state -->
+                                            <t t-if="payslip.state== 'done'">
+                                                <tr>
+                                                    <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
+                                                    <t t-set="amount_ot" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'OT')"/>
+                                                    <t t-set="amount_pr" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'PR')"/>
+                                                    <t t-set="amount_total" t-value="amount_edw+amount_ot+amount_pr"/>
+                                                    <t t-set="amount_total_team" t-value="amount_total_team+amount_total"/>
+
+                                                    <t t-set="no" t-value="no+1"/>
+                                                    <td><t t-esc="no"/></td>
+                                                    <td><span t-field="payslip.employee_id.name"/></td>
+                                                    <td><span t-field="payslip.employee_id.nik_number"/></td>
+                                                    <td><span t-field="payslip.employee_id.contract_type"/></td>
+                                                    <td><span t-field="payslip.worked_days_line_ids[0].number_of_days"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_edw)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_ot)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_pr)"/></td>
+                                                    <td class="text-right">0</td>
+                                                    <td class="text-right">0</td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
+                                                    <td class="text-right">0</td>
+                                                    <td class="text-right">0</td>
+                                                    <td class="text-right">0</td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
+
+                                                    <!-- Last row use colspan instead of rowspan -->
+                                                    <t t-if="no%2!=0">
+                                                        <t t-if="no==last_row">
+                                                            <td colspan="2" style="width:20%"><t t-esc="no"/></td>
+                                                        </t>
+                                                        <t t-if="no!=last_row">
+                                                            <td rowspan="2" style="width:10%"><t t-esc="no"/></td>
+                                                            <td rowspan="2" style="width:10%"><t t-esc="no+1"/></td>
+                                                        </t>
+                                                    </t>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                        <tr>
+                                            <td colspan="10" class="text-right"><strong>Total Gross</strong></td>
+                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total_team)"/></td>
+                                            <td colspan="3" class="text-right"><strong>Total Net</strong></td>
+                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total_team)"/></td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

@@ -20,7 +20,7 @@
             <field name="name">estate settings</field>
             <field name="model">estate.config.settings</field>
             <field name="arch" type="xml">
-                <form string="Configure Plantation" class="oe_form_configuration">
+                <form string="Configure Estate" class="oe_form_configuration">
                     <header>
                         <button string="Apply" type="object" name="execute" class="oe_highlight"/>
                         or
@@ -36,6 +36,27 @@
                             </div>
                         </div>
                     </group>
+                    <group name="upkeep_grp">
+                        <label for="id" string="Upkeep"/>
+                        <div name="upkeep">
+                            <div name="upkeep_constrains">
+                                <field name="default_max_entry_day" class="oe_inline"/>
+                                <label for="default_max_entry_day"/>
+                            </div>
+                            <div name="journal">
+                                <field name="default_journal_line_id" class="oe_inline"/>
+                                <label for="default_journal_line_id"/>
+                            </div>
+                            <div name="journal">
+                                <field name="default_analytic_account_id" class="oe_inline"/>
+                                <label for="default_analytic_account_id"/>
+                            </div>
+                            <div name="journal">
+                                <field name="default_account_id" class="oe_inline"/>
+                                <label for="default_account_id"/>
+                            </div>
+                        </div>
+                    </group>
                 </form>
             </field>
         </record>
@@ -48,7 +69,7 @@
             <field name="target">inline</field>
         </record>
 
-        <menuitem id="menu_estate_configuration" name="Plantation" parent="base.menu_config"
+        <menuitem id="menu_estate_configuration" name="Estate" parent="base.menu_config"
             sequence="70" action="action_estate_configuration"/>
 
     </data>

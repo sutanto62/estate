@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="inherited_view_team_form" model="ir.ui.view">
+            <field name="name">estate.hr.team.view.inherit</field>
+            <field name="model">estate.hr.team</field>
+            <field name="inherit_id" ref="estate.view_team_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='assistant_id']" position="after">
+                    <field name="payroll_location_id"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>

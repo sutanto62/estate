@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Product Category -->
+        <record id="product.product_category_pg" model="product.category">
+            <field name="name">Palma Group</field>
+            <field name="type">view</field>
+        </record>
+        <record id="product.product_category_estate" model="product.category">
+            <field name="parent_id" ref="product.product_category_pg"/>
+            <field name="name">Estate Material</field>
+            <field name="estate_product">True</field>
+            <field name="type">normal</field>
+        </record>
+        <record id="product.product_category_chemical" model="product.category">
+            <field name="parent_id" ref="product.product_category_estate"/>
+            <field name="name">Chemical</field>
+            <field name="estate_product">True</field>
+            <field name="type">normal</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Wage -->
+        <record id="estate_wage_1" model="estate.wage">
+            <field name="name">UMR Regional 2015</field>
+            <field name="active">True</field>
+            <field name="date_start">1/1/2015</field>
+            <field name="estate_id" ref="estate.estate_stock_location"/>
+            <field name="wage">1600000</field>
+            <field name="number_of_days">25</field>
+        </record>
+
+        <record id="estate_wage_2" model="estate.wage">
+            <field name="name">UMR Regional 2016</field>
+            <field name="active">True</field>
+            <field name="date_start">1/1/2016</field>
+            <field name="estate_id" ref="estate.estate_stock_location"/>
+            <field name="wage">1875000</field>
+            <field name="number_of_days">25</field>
+        </record>
+
+        <record id="estate_wage_3" model="estate.wage">
+            <field name="name">UMR Regional 2016</field>
+            <field name="active">True</field>
+            <field name="date_start">5/1/2016</field>
+            <field name="estate_id" ref="estate.estate_stock_location"/>
+            <field name="wage">1950000</field>
+            <field name="number_of_days">25</field>
+        </record>
+
+    </data>
+</openerp>

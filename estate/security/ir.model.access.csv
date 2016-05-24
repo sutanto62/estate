@@ -13,3 +13,11 @@ access_estate_stand_hectare,Estate Stand Hectare,model_estate_stand_hectare,esta
 access_estate_operation,Estate Operation,model_estate_operation,estate.group_user,True,True,True,False
 access_estate_hr_team,Estate HR Team,model_estate_hr_team,estate.group_user,True,True,True,False
 access_estate_hr_member,Estate HR Member,model_estate_hr_member,estate.group_user,True,True,True,False
+access_estate_parameter_weight,Estate Parameter Weight,model_estate_parameter_weight,estate.group_user,True,True,True,False
+access_estate_activity_norm,Estate Activity Norm,model_estate_activity_norm,estate.group_user,True,True,True,False
+access_estate_hr_attendance,Estate HR Attendance,model_estate_hr_attendance,estate.group_user,True,True,True,False
+access_estate_upkeep,Estate Upkeep,model_estate_upkeep,estate.group_user,True,True,True,False
+access_estate_upkeep_activity,Estate Upkeep Activity,model_estate_upkeep_activity,estate.group_user,True,True,True,False
+access_estate_upkeep_labour,Estate Upkeep Labour,model_estate_upkeep_labour,estate.group_user,True,True,True,False
+access_estate_material,Estate Upkeep Material,model_estate_upkeep_material,estate.group_user,True,True,True,False
+access_estate_wage,Estate Wage,model_estate_wage,estate.group_user,True,True,True,False

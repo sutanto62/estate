@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Salary Rule -->
+        <record id="hr_salary_rule_labour_daily_wage" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">HK</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Labour Daily Wage</field>
+            <field name="sequence" eval="17"/>
+            <field name="amount_python_compute">result = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)</field>
+         </record>
+
+        <record id="hr_salary_rule_flat_overtime" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">OT</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Flat Overtime</field>
+            <field name="sequence" eval="17"/>
+            <field name="amount_python_compute">result = inputs.OT and inputs.OT.amount</field>
+         </record>
+
+        <record id="hr_salary_rule_piece_rate" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">PR</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Pice Rate</field>
+            <field name="sequence" eval="17"/>
+            <field name="amount_python_compute">result = inputs.PR and inputs.PR.amount</field>
+         </record>
+
+        <!-- Checkroll Scructure -->
+        <record id="hr_payroll.structure_estate" model="hr.payroll.structure">
+            <field name="code">CHKBASE</field>
+            <field name="name">Checkroll Estate</field>
+            <field eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'), ref('hr_salary_rule_flat_overtime'),ref('hr_salary_rule_piece_rate')])]" name="rule_ids"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record id="hr_payroll.structure_estate_tl" model="hr.payroll.structure">
+            <field name="name">Checkroll Estate TL 1</field>
+            <field name="code">CHKBASETL</field>
+            <field name="parent_id" ref="hr_payroll.structure_estate"/>
+        </record>
+
+
+
+    </data>
+</openerp>

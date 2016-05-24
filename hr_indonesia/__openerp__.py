@@ -19,13 +19,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hr'],
+    'depends': ['base','hr', 'hr_contract'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'templates.xml',
         'views/hr_indonesia_view.xml',
+        'data/hr_data.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

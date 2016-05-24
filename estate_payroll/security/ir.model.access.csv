@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_payroll_estate_payroll,estate_payroll.estate_payroll,model_estate_payroll_estate_payroll,,1,0,0,0

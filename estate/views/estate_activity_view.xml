@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!-- View Tree: Activity List -->
+        <record id="view_activity_list_tree" model="ir.ui.view" >
+            <field name="name">Activity List Tree</field>
+            <field name="model">estate.activity</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree colors="blue:type=='view'">
+                    <field name="complete_name"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- View Form: Activity -->
         <record id="view_activity_config_form" model="ir.ui.view">
             <field name="name">Activity Form</field>
@@ -13,23 +26,75 @@
                         <field name="parent_id"/>
                     </group>
                     <group>
-                        <group name="detail" string="Detail">
-                            <field name="uom_id"/>
-                            <field name="standard_price"/>
-                            <field name="code"/>
-                            <field name="type"/>
-                            <field name="activity_type"/>
+                        <group>
+                            <group name="detail" string="Detail">
+                                <field name="uom_id"/>
+                                <field name="standard_price"/>
+                                <field name="piece_rate_price"/>
+                                <field name="code"/>
+                                <field name="type"/>
+                                <field name="account_id"/>
+                                <field name="general_account_id"/>
+                                <field name="activity_type"/>
+                            </group>
                         </group>
+
                         <!-- move to estate_account module
                         <group name="account" string="Account">
                             <field name="activity_income_id"/>
                             <field name="activity_expense_id"/>
                         </group>-->
+                        <group name="ratio" string="Standard Work Result and Ratio"
+                            attrs="{'invisible': [('type', '=', 'view')]}">
+                            <!--
+                            #todo add remark: change on these field have impact on activity parameter value's norm on save
+                            -->
+                            <group>
+                                <field name="qty_base" />
+                                <field name="qty_base_min" />
+                                <field name="qty_base_max"/>
+                            </group>
+                            <group>
+                                <field name="ratio_min" readonly="True"/>
+                                <field name="ratio_max" readonly="True"/>
+                            </group>
+                        </group>
                     </group>
-                    <group>
-                        <field name="comment"/>
-                    </group>
+                    <!-- # todo field masih lompat pakai context belum bisa - tanya oza -->
+                    <separator string="Activity Parameter Weight"/>
+                    <field name="parameter_weight_ids"/>
+                    <separator string="Activity Norm"/>
+                    <field name="activity_norm_ids"/>
+                    <separator string="Additional Information"/>
+                    <field name="comment"/>
                 </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_activity_norm_tree">
+            <field name="name">Activity Norm Tree</field>
+            <field name="model">estate.activity.norm</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="parameter_id"/>
+                    <field name="parameter_value_id"/>
+                    <field name="coefficient"/>
+                    <field name="qty_base"/>
+                    <field name="ratio_base"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_activity_parameter_tree">
+            <field name="name">Activity Parameter Weight Tree</field>
+            <field name="model">estate.parameter.weight</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="parameter_id"/>
+                    <field name="weight" sum="True"/>
+                </tree>
             </field>
         </record>
 
@@ -43,7 +108,6 @@
                   parent="estate_blocking_menu"
                   action="action_list_activity_config"
                   groups="base.group_no_one"/>
-
 
         </data>
 </openerp>

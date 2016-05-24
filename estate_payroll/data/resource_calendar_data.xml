@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Calendar -->
+        <record id="resource.timesheet_estate_ops" model="resource.calendar">
+            <field name="name">Estate 45 Hours/Week</field>
+        </record>
+        <!-- Calendar Attendance -->
+        <record id="resource.cal_attendance_0_1" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Monday 1</field>
+            <field name="dayofweek">0</field>
+            <field name="hour_from">6.00</field>
+            <field name="hour_to">9.00</field>
+        </record>
+        <record id="resource.cal_attendance_0_2" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Monday 2</field>
+            <field name="dayofweek">0</field>
+            <field name="hour_from">9.50</field>
+            <field name="hour_to">12.00</field>
+        </record>
+        <record id="resource.cal_attendance_0_3" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Monday 3</field>
+            <field name="dayofweek">0</field>
+            <field name="hour_from">12.50</field>
+            <field name="hour_to">14.00</field>
+        </record>
+
+        <record id="resource.cal_attendance_1_1" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Tuesday 1</field>
+            <field name="dayofweek">1</field>
+            <field name="hour_from">6.00</field>
+            <field name="hour_to">9.00</field>
+        </record>
+        <record id="resource.cal_attendance_1_2" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Tuesday 2</field>
+            <field name="dayofweek">1</field>
+            <field name="hour_from">9.50</field>
+            <field name="hour_to">12.00</field>
+        </record>
+        <record id="resource.cal_attendance_1_3" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Tuesday 3</field>
+            <field name="dayofweek">1</field>
+            <field name="hour_from">12.50</field>
+            <field name="hour_to">14.00</field>
+        </record>
+
+        <record id="resource.cal_attendance_2_1" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Wednesday 1</field>
+            <field name="dayofweek">2</field>
+            <field name="hour_from">6.00</field>
+            <field name="hour_to">9.00</field>
+        </record>
+        <record id="resource.cal_attendance_2_2" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Wednesday 2</field>
+            <field name="dayofweek">2</field>
+            <field name="hour_from">9.50</field>
+            <field name="hour_to">12.00</field>
+        </record>
+        <record id="resource.cal_attendance_2_3" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Wednesday 3</field>
+            <field name="dayofweek">3</field>
+            <field name="hour_from">12.50</field>
+            <field name="hour_to">14.00</field>
+        </record>
+
+        <record id="resource.cal_attendance_4_1" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Friday 1</field>
+            <field name="dayofweek">4</field>
+            <field name="hour_from">6.00</field>
+            <field name="hour_to">11.00</field>
+        </record>
+
+        <record id="resource.cal_attendance_5_1" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Saturday 1</field>
+            <field name="dayofweek">5</field>
+            <field name="hour_from">6.00</field>
+            <field name="hour_to">9.00</field>
+        </record>
+        <record id="resource.cal_attendance_5_2" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Saturday 2</field>
+            <field name="dayofweek">5</field>
+            <field name="hour_from">9.50</field>
+            <field name="hour_to">12.00</field>
+        </record>
+        <record id="resource.cal_attendance_5_3" model="resource.calendar.attendance">
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+            <field name="name">Saturday 3</field>
+            <field name="dayofweek">5</field>
+            <field name="hour_from">12.50</field>
+            <field name="hour_to">14.00</field>
+        </record>
+    </data>
+</openerp>

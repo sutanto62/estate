@@ -1,4 +1,5 @@
 import estate
-import estate_product
 import estate_activity
 import estate_hr
+import inherited_product_category
+import estate_upkeep
