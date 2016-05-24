@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_gis_estate_gis,estate_gis.estate_gis,model_estate_gis_estate_gis,,1,0,0,0
