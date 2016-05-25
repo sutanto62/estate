@@ -182,8 +182,6 @@
                                                options="{'no_create': True}"/>
                                         <field name="activity_uom_id" readonly="True"
                                                string="UoM"/>
-                                        <field name="lot_id"
-                                               options="{'no_create': True}"/>
                                         <field name="location_ids"
                                                options="{'no_create': True}"
                                                widget="many2many_tags"
@@ -318,8 +316,6 @@
                                        options="{'no_create': True, 'no_open': True}"/>
                                 <field name="activity_uom_id" readonly="True"
                                        string="Unit" options="{'no_create': True, 'no_open': True}"/>
-                                <field name="lot_id" readonly="True"
-                                       options="{'no_create': True, 'no_open': True}"/>
                                 <field name="location_ids" readonly="True"
                                        options="{'no_create': True, 'no_open': True}"
                                        widget="many2many_tags"/>

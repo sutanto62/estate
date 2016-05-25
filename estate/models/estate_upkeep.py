@@ -284,7 +284,7 @@ class UpkeepActivity(models.Model):
                                   help='Any update will reset Block.',
                                   required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
-    lot_id = fields.Many2one('stock.production.lot', "Batch", help='Nursery upkeep uses Batch for costing.')
+
     location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id',
                                     string='Location')
     division_id = fields.Many2one('stock.location', compute='_compute_division')
