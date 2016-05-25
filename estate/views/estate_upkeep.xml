@@ -552,7 +552,6 @@
                     <field name="upkeep_date"/>
                     <field name="activity_id"/>
                     <field name="activity_uom_id" string="UoM"/>
-                    <field name="lot_id" string="Batch"/>
                     <field name="location_ids" string="Location"/>
                     <field name="labour_unit_amount" string="Qty."/>
                     <field name="labour_overtime_amount" string="OT"/>
