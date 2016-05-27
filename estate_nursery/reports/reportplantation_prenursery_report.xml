@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_plantation_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+
+                    <h2 colors="black">
+                        <span >Rekapitulasi Seleksi Bibit Pre Nursery</span>
+                    </h2>
+
+                    <div class="row">
+                        <div class="col-xs-5" >
+                            <strong>Report Name: <p t-field="o.name"/></strong>
+                            <strong>Report Date: <p t-field="o.report_date"/></strong>
+                            <strong>Estate:<p t-field="o.kebun_location_id"/></strong>
+                        </div>
+                    </div>
+
+                    <hr></hr>
+
+                    <h2 colors="black">
+                        <span >Detail Selection Batch</span>
+                    </h2>
+
+                    <hr></hr>
+
+                    <table class="table table-condensed">
+                        <thead style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
+                            <tr>
+                                <th style="width:5%;">Batch No</th>
+                                <th style="width:2%;">Variety</th>
+                                <th style="width:2%;">DO</th>
+                                <th style="width:2%;">Planted</th>
+                                <th style="width:25%;">Selection</th>
+                                <th style="width:10%;">Comment</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="selection_tbody">
+                            <tr t-foreach="o.batch_ids" t-as="l">
+                                <td style="width:5%;"><span t-field="l.name"/></td>
+                                <td style="width:2%;"><span t-field="l.variety_id"/></td>
+                                <td style="width:2%;"><span t-field="l.qty_received"/></td>
+                                <td style="width:2%;"><span t-field="l.qty_planted"/></td>
+                                <td style="width:25%">
+                                    <table class="table table-condensed">
+                                        <thead style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
+                                            <tr>
+                                                <th>selection stage</th>
+                                                <th>selection date</th>
+                                                <th>information time</th>
+                                                <th style="width=25">Selection Abnormal</th>
+                                                <th style="width=15">Total Abnormal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr t-foreach="l.selection_ids" t-as="h">
+                                                    <td style="width:10%;"><span t-field="h.selectionstage_id"/></td>
+                                                    <td style="width:5%;"><span t-field="h.selection_date"/></td>
+                                                    <td style="width:10%;"><span t-field="h.nursery_information"/></td>
+                                                    <td style="width:25%">
+                                                        <table class="table table-condensed">
+                                                            <thead style="background-color:#568eff;border: 1px solid #568eff;color:#ffffff;">
+                                                                <tr>
+                                                                    <th style="width=10">Selection Cause</th>
+                                                                    <th style="width=3">Abnormal</th>
+                                                                    <th style="width=10">Location</th>
+                                                                    <th style="width=5">Comment</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            <tr t-foreach="h.selectionline_ids" t-as="b">
+                                                                <td style="width:10%;"><span t-field="b.cause_id.sequence"/><span t-field="b.cause_id"/></td>
+                                                                <td style="width:3%;"><span t-field="b.qty"/></td>
+                                                                <td style="width:10%;"><span t-field="b.location_id"/></td>
+                                                                <td style="width:5%;"><span t-field="b.comment"/></td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                    <td style="width:15"><span t-field="h.qty_abnormal"/></td>
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                             <tr>
+                                 <tbody>
+                                     <tr>
+                                         <!--<td/><td/>-->
+                                         <!--<td><span t-field="o.total_do"/> </td>-->
+                                         <!--<td/>-->
+                                         <!--<td><span t-field="o.total_planted"/> </td>-->
+                                     </tr>
+                                </tbody>
+                             </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+        <template id="reportplantation_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_plantation_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

@@ -17,7 +17,8 @@
         <record id="estate.group_manager" model="res.groups">
             <field name="name">Estate Manager</field>
             <field name="category_id" ref="module_category_estate"/>
-            <field name="implied_ids" eval="[(4, ref('estate.group_user')), (4, ref('estate.group_assistant'))]"/>
+            <field name="implied_ids" eval="[(4, ref('estate.group_user')),
+            (4, ref('estate.group_assistant'))]"/>
         </record>
         <record id="estate.group_agronomi" model="res.groups">
             <field name="name">Estate Agronomi</field>

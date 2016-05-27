@@ -1,0 +1,185 @@
+<openerp>
+    <data>
+        <!--View Tree, Culling -->
+        <record model="ir.ui.view" id="view_tree_culling">
+            <field name="name">Nursery Culling Tree</field>
+            <field name="model">estate.nursery.culling</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Culling View">
+                    <field name="culling_code" string="Culling no"/>
+                    <field name="culling_location_id" string="Location culling"/>
+                    <field name="culling_date" string="Culling Date"/>
+                    <field name="total_quantityabnormal_temp" string="Quantity Abnormal"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--view form,culling-->
+        <record model="ir.ui.view" id="view_form_culling">
+            <field name="name">Nursery Culling</field>
+            <field name="model">estate.nursery.culling</field>
+            <field name="arch" type="xml">
+                <form string="Nursery Culling View">
+                    <header coolspan="10">
+
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed,approved1,approved2,approved3"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_done" type="workflow"
+                                string="Done"
+                                class="oe_highlight"
+                                states="approved3"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Estate Kasie"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Estate Manager"
+                                class="oe_highlight"
+                                states="approved1"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved3" type="workflow"
+                                string="Direktur"
+                                class="oe_highlight"
+                                states="approved2"
+                                groups="estate.group_manager"/>
+
+
+                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,approved1,approved2,approved3,done"
+                               statusbar_color='{"draft":"blue"}'/>
+                    </header>
+                    <sheet>
+
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                <label string="Culling "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                <label string="Request For Culling "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                <field name="culling_code" class="oe_inline" readonly="1" />
+                             </h1>
+                         </div>
+
+                        <group coolspan="10">
+                            <group>
+                                <field name="selectionform" string="Select Type"/>
+                                <field name="culling_date" string="Culling Date"/>
+                            </group>
+                            <group>
+                                <field name="location_type" string="Location Loss" options="{'no_create_edit': True}"/>
+                                <field name="quantitytotal_abnormal" string="Total Quantity Abnormal Batch"
+                                       attrs="{'invisible':[('selectionform','!=', '1')]}"/>
+                                <field name="total_quantityabnormal_temp" string="Total All Abnormal"
+                                       attrs="{'invisible':[('selectionform','!=', '2')]}"/>
+                            </group>
+                        </group>
+                        <group>
+                            <notebook>
+                                <page string="Culling Line Batch detail" attrs="{'invisible':[('selectionform','!=', '1')]}">
+                                    <field name="cullingline_ids" attrs="{'readonly':[('state','=', 'done')]}"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglinebatch'}"/>
+                                </page>
+                                <page string="Culling Line All detail" attrs="{'invisible':[('selectionform','!=', '2')]}">
+                                    <field name="cullinglineall_ids" attrs="{'readonly':[('state','=', 'done')]}"
+                                           context="{'tree_view_ref' : 'estate_nursery.view_tree_nursery_cullinglineall'}"/>
+                                </page>
+                            </notebook>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--view Tree, Culling line All-->
+        <record model="ir.ui.view" id="view_tree_nursery_cullinglineall">
+            <field name="name">Nursery Culling line all Tree</field>
+            <field name="model">estate.nursery.cullingline</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Culling line View" editable="bottom">
+                    <field name="selection_id" string="Selection Seed " options="{'no_create_edit': True}"/>
+                    <field name="selectionstage_id" invisible="1" string="Selection Stage" />
+                    <field name="qty_abnormal_selection" string="&#931;Abn Selection"/>
+                    <field name="qty_normal_selection" readonly="1" string="&#931;Nor Selection">{‘readonly_by_pass’: True}</field>
+                    <field name="culling_location_id" string="Location Culling"/>
+                    <field name="total_abnormal" string="&#931; Pemusnahan"/>
+                    <field name="total_transplanted" readonly="1" string="&#931; Transplanted">{‘readonly_by_pass’: True}</field>
+                </tree>
+            </field>
+        </record>
+
+        <!--view Tree, Culling line batch-->
+        <record model="ir.ui.view" id="view_tree_nursery_cullinglinebatch">
+            <field name="name">Nursery Culling line Tree</field>
+            <field name="model">estate.nursery.cullinglinebatch</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Culling line View" editable="bottom">
+                    <field name="batch_id" string="Batch No" options="{'no_create_edit': True}"/>
+                    <field name="total_seed_DO" readonly="1" string="&#931; Kecambah">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="qty_abnormal_batch" readonly="1" string="&#931;Abn Batch Receive">
+                        {‘readonly_by_pass’: True}{‘readonly_by_pass’: True}</field>
+                    <field name="qty_normal_batch" readonly="1" string="&#931;Nor Batch Receive">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="culling_location_id" readonly="1" string="Location Culling">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="total_qty_abnormal_batch" readonly="1" string="&#931; QTY Abnomal">
+                        {‘readonly_by_pass’: True}</field>
+                    <field name="qty_transplanted" readonly="1" string="&#931; Trasplanted">
+                        {‘readonly_by_pass’: True}</field>
+                </tree>
+            </field>
+        </record>
+
+        <!--Action -->
+        <record model="ir.actions.act_window" id="action_list_culling" >
+            <field name="name">Culling</field>
+            <field name="res_model">estate.nursery.culling</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_search_culling" ref="estate_nursery.view_form_culling"/>
+        </record>
+
+         <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_culling_template">
+             <field name="name">Inherit Button Culling</field>
+             <field name="model">estate.nursery.culling</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_culling"/>
+             <field name="arch" type="xml">
+                 <button name="signal_approved3" position="after">
+                     <button name="%(custom_report_culling_batch)d"
+                                string="Pemusnahan Kecambah"
+                                type="action" />
+                     <button name="%(custom_report_culling)d"
+                                string="Pemusnahan Bibit"
+                                type="action" />
+
+                 </button>
+             </field>
+         </record>
+
+        <!--Menu-->
+        <menuitem id="req_seed_culling"
+                  name="Culling"
+                  parent="estate_nursery_menu"
+                  action="action_list_culling" sequence="18"
+                  groups="estate.group_user"/>
+    </data>
+</openerp>

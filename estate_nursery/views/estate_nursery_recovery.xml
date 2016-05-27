@@ -1,0 +1,167 @@
+<openerp>
+    <data>
+
+         <!--Search , Recovery-->
+        <record id="view_search_recovery" model ="ir.ui.view">
+            <field name="name">Recovery Search</field>
+            <field name="model">estate.nursery.recovery</field>
+            <field name="arch" type="xml">
+                  <search string="Recovery">
+                      <group string="Group By">
+                          <filter name="by_Date" string="Date Recovery"
+                              icon="terp-partner" context="{'group_by':'recovery_date'}"/>
+                      </group>
+                  </search>
+            </field>
+        </record>
+
+         <record model="ir.ui.view" id="view_tree_recovery_seed">
+            <field name="name">Recovery Seed Tree</field>
+            <field name="model">estate.nursery.recovery</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Recovery Tree View" delete="false">
+                    <field name="recovery_code" string="Recovery ID"/>
+                    <field name="stage_id"/>
+                    <field name="recovery_date"/>
+                    <field name="qty_recovery" string="QTY Selection Abnormal"/>
+                    <field name="qty_normal" string="QTY Recovery Normal"/>
+                    <field name="qty_dead" string="QTY Recovery Dead"/>
+                    <field name="qty_abnormal" string="QTY Recovery Abnormal"/>
+                    <field name="qty_total" string="&#931;  Saldo Total."/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_recovery_nursery">
+            <field name="name">Recovery Seed </field>
+            <field name="model">estate.nursery.recovery</field>
+            <field name="arch" type="xml">
+                <form String="Nursery Recovery View">
+                    <header coolspan="10">
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed,approved1,approved2"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_done" type="workflow"
+                                string="Done"
+                                class="oe_highlight"
+                                states="approved2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Estate Kasie"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Estate Manager"
+                                class="oe_highlight"
+                                states="approved1"
+                                groups="estate.group_manager"/>
+
+                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,approved1,approved2,done"
+                               statusbar_color='{"draft":"blue"}'/>
+                    </header>
+                    <sheet>
+                         <div class="oe_title" colors="blue">
+                             <h1>
+                                 <label string="Selection Recovery Seed For"
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                 <label string="Selection Recovery Seed For "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}">
+                                     <field name="recovery_code" class="oe_inline" readonly="1" />
+                                 </label>
+                                 <field name="name" class="oe_inline" readonly="1"/>
+                             </h1>
+                         </div>
+
+                        <group>
+                            <group>
+                                <field name="batch_id" invisible="1"/>
+                                <field name="stage_id" attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="step_id" attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="date_planted"/>
+                                <field name="recovery_date" string="Recovery Date" required="1" attrs="{'readonly': [('state','=','done')]}"/>
+                            </group>
+
+                            <group coolspan="10">
+                                <field name="culling_location_id" string="Culling location"
+                                        attrs="{'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="qty_total" string="Quantity Total" attrs="{'required': [('state','=','draft')],
+                                 'readonly': [('state','!=','draft')]}"/>
+                                <field name="age_seed" readonly="1"/>
+                            </group>
+
+                        </group>
+                        <group attrs="{'invisible': [('state','!=','done')]}" string="Detail Information">
+                            <group>
+                                <field name="qty_plante" string="Quantity Last planted" invisible="0" readonly="1"/>
+                                <field name="qty_recovery" readonly="1" string="Quantity Recovery " invisible="0">{‘readonly_by_pass’: True}</field>
+                            </group>
+                            <group>
+                                <field name="qty_normal" readonly="1" string="Quantity Normal">{‘readonly_by_pass’: True}</field>
+                                <field name="qty_dead" readonly="1" string="Quantity Dead">{‘readonly_by_pass’: True}</field>
+                                <field name="qty_abnormal" string="Quantity Abnormal " invisible="0"/>
+                            </group>
+                        </group>
+                        <group>
+                            <notebook>
+                                    <page string="Recovery Line">
+                                        <tree>
+                                            <field name="recovery_line_ids" attrs="{'readonly': [('state','=','done')]}"
+                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_recoveryline_seed'}"/>
+                                        </tree>
+                                     </page>
+                            </notebook>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_recoveryline_seed">
+            <field name="name">Recovery Seed Tree Line</field>
+            <field name="model">estate.nursery.recoveryline</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Recovery Line Tree View" editable="bottom">
+                    <field name="recovery_seed_id" invisible="1"/>
+                    <field name="qty_normal" string="Qty Normal"/>
+                    <field name="qty_dead" string="Qty Dead"/>
+                    <field name="qty_abnormal" string="Qty Abnormal" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="location_type" string="Location From" readonly="1"/>
+                    <field name="location_id" string="Location To" options="{'no_create_edit': True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--Action-->
+        <record model="ir.actions.act_window" id="action_list_recovery" >
+            <field name="name">Recovery</field>
+            <field name="res_model">estate.nursery.recovery</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_by_Date': 1}</field>
+            <field name="view_search_recovery" ref="estate_nursery.view_form_recovery_nursery"/>
+        </record>
+
+        <!-- MENU -->
+        <menuitem id="nursery_seed_recovery"
+                  name="Recovery Seed"
+                  parent="detail_batch"
+                  action="action_list_recovery" sequence="17"
+                  groups="estate.group_agronomi"/>
+    </data>
+</openerp>

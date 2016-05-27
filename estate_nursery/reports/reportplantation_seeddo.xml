@@ -1,0 +1,412 @@
+<openerp>
+    <data>
+        <template id="report_seeddo_div_document">
+            <t t-call="report.external_layout">
+                <div class="page" style="font-family: times;">
+                    <!--Header Row-->
+                        <div class="row col-xs-12" style="font-family: times; background-color:qhite;border: 1px solid white;color:black; font-size:20pt;">
+                            <div class="col-xs-12" >
+                                <p style="text-align:center;font-family: times;" >Report Seed Delivery Order</p>
+                            </div>
+                        </div>
+
+                    <!--Location  Row -->
+                         <div class="row col-xs-12">
+                             <table style="width:100%;">
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;">Location Seed</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">LYD</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="width:100%;font-family: times; font-size:10pt;">No SPB </b></td>
+                                     <td style="width:25%;">: <span t-field="o.seeddo_code" style="font-family: times; font-size:10pt;"/></td>
+                                     <td style="width:25%;"><b style="width:100%;font-family: times; font-size:10pt;">SPB Date</b></td>
+                                     <td style="width:25%;">: <span t-field="o.date_request" style="font-family: times; font-size:10pt;"/></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No SPK</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">SPK001</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">Date SPK</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">4/5/2016</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt;width:10%;">No Contractor</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;">CTK001</span></td>
+                                     <td style="width:25%;"><b style="font-family: times; font-size:10pt; width:10%;">Name Contractor</b></td>
+                                     <td style="width:25%;">: <span style="font-family: times; font-size:10pt;"/>Mohammad Gindar</td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">&#160;</span></td>
+                                 </tr>
+                             </table>
+                        </div>
+                        <div class="row col-xs-12">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                        <!-- BPB  Header ROW -->
+                        <div class="row col-xs-12" style="font-family: times;color:black; font-size:12pt;">
+                                <div class="col-xs-12" >
+                                    <b style="text-align:left;font-family: times;" >List BPB</b>
+                                </div>
+                        </div>
+
+                        <div class="row col-xs-12" style="background-color:white;color:black;">
+                           <div class=" col-xs-5" style="padding-right:0px;padding-left:0px;">
+                               <table class="table table-condensed" style="border: 1px solid black;">
+                                    <tr height="55" style="background-color:white;border: 1px solid black;color:black;font-family: times;">
+                                        <td style="width:10%; border: 1px solid black;"><b>No BPB</b></td>
+                                        <td style="width:10%; border: 1px solid black;"><b>Date BPB</b></td>
+                                        <td style="width:10%; border: 1px solid black;"><b>Estate</b></td>
+                                        <td style="width:10%; border: 1px solid black;"><b>Division</b></td>
+                                    </tr>
+                                    <t t-foreach="o.request_ids" t-as="f">
+                                        <tr style="font-family: times; font-size:8pt;">
+                                            <td style="border: 1px solid black;"><span t-field="f.bpb_code"/></td>
+                                            <td style="border: 1px solid black;"><span t-field="f.date_request"/></td>
+                                            <td style="border: 1px solid black;"><span t-field="f.kebun_location_id"/></td>
+                                            <td style="border: 1px solid black;"><span t-field="f.divisi_location_id"/></td>
+                                            <tr t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;">
+                                                <td style="color:white; "><span t-field="s.block_location_id"/></td>
+                                                <td style="">&#160;</td>
+                                                <td style="">&#160;</td>
+                                                <td style="">&#160;</td>
+                                            </tr>
+                                        </tr>
+                                    </t>
+                                </table>
+                           </div>
+                            <div class="col-xs-5" style="padding-right:0px;padding-left:0px;">
+                                <table class="table table-condensed">
+
+                                    <tr height="55" style="font-family: times;">
+                                        <td style="width:10%; border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><b>Block</b></td>
+                                        <td style="width:10%; border: 1px solid black;"><b>Year Planted</b></td>
+                                        <td style="width:10%; border: 1px solid black;"><b>Large Area(Ha)</b></td>
+                                        <td style="width:10%; border: 1px solid black;"><b>&#931; Seed Request</b></td>
+                                    </tr>
+
+                                        <t t-foreach="o.request_ids" t-as="f">
+                                            <tr style="font-family: times; font-size:8pt;">
+                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;">&#160;</td>
+                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
+                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
+                                                <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;">&#160;</td>
+                                                <tr t-foreach="f.requestline_ids" t-as="s" style="font-family: times; font-size:8pt;" >
+                                                        <td style="border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><span t-field="s.block_location_id"/></td>
+                                                        <td style="border: 1px solid black;"><span />2015</td>
+                                                        <td style="border: 1px solid black;"><span t-field="s.large_area"/></td>
+                                                        <td style="border: 1px solid black;"><span t-field="s.qty_request"/></td>
+                                                </tr>
+                                            </tr>
+                                        </t>
+                                </table>
+                            </div>
+                            <div class="col-xs-2" style="padding-right:0px;padding-left:0px;">
+                                <table class="table table-condensed">
+                                        <tr height="55" style="font-family: times;">
+                                            <td style="width:10%; border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><b>Seed Delivery</b></td>
+                                            <td style="width:10%; border: 1px solid black;color:black;"><b>Seed Scrap</b></td>
+                                        </tr>
+                                    <t t-foreach="o.return_ids" t-as="f">
+                                        <tr style="font-family: times; font-size:8pt;">
+                                            <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;color:white">&#160;</td>
+                                            <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:white">&#160;</td>
+                                            <tr  t-foreach="f.returnseedline_ids" t-as="s" style="font-size:8pt;" >
+                                                <td style=" border-top: 1px solid black !important;border-bottom: 1px solid black !important;border-right: 1px solid black !important;color:black"><span t-field="s.qty_transfer"/></td>
+                                                <td style=" border: 1px solid black;color:black; color:black;"><span t-field="s.qty_return"/></td>
+                                            </tr>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </div>
+
+                    <!--Spesification Seed head Row-->
+                    <div class="row col-xs-12" style="font-family: times;color:black; font-size:12pt;">
+                            <div class="col-xs-12" >
+                                <b style="text-align:left;font-family: times;" >Spesification Seed</b>
+                            </div>
+                    </div>
+
+                     <div class="row col-xs-12" style="background-color:white;color:black;">
+                        <table class="table table-condensed">
+                            <thead style="background-color:white;color:black;">
+                                <tr>
+                                    <th style="width:30%;border: 1px solid black;">BPB No</th>
+                                    <th style="width:30%;border: 1px solid black;">Spesification Seed</th>
+                                    <th style="width:30%;border: 1px solid black;">Batch No</th>
+                                    <th style="width:30%;border: 1px solid black;">Age Seed</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="selection_tbody">
+                                <t t-foreach="o.request_ids" t-as="c">
+                                    <tr  style="font-family: times; font-size:8pt;">
+                                        <td style="border: 1px solid black;"><span t-field="c.bpb_code"/></td>
+                                        <td style="border: 1px solid black;"><span t-field="c.variety_id"/></td>
+                                        <t t-foreach="c.requestline_ids" t-as="s">
+                                            <td style="border: 1px solid black;"><span t-field="s.batch_id"/></td>
+                                            <td style="border: 1px solid black;"><span t-field="s.batch_id.age_seed_range"/></td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!--Transportir Header Row-->
+                    <div class="row col-xs-12" style="font-family: times;color:black; font-size:12pt;">
+                            <div class="col-xs-12" >
+                                <b style="text-align:left;font-family: times;" >Tranportir</b>
+                            </div>
+                    </div>
+
+                    <div class="row col-xs-12" style="background-color:white;color:black;">
+                        <table class="table table-condensed">
+                            <thead style="background-color:white;border: 1px solid black;color:black;">
+                                <tr>
+                                    <th style="width:2.5%;border: 1px solid black;">Code VRA</th>
+                                    <th style="width:2.5%;border: 1px solid black;">No Police</th>
+                                    <th style="width:2.5%;border: 1px solid black;">Driver</th>
+                                    <th style="width:2.5%;border: 1px solid black;">Type Vehicle</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="selection_tbody">
+                                <tr t-foreach="o.dotransportir_ids" t-as="a" style="font-family: times; font-size:8pt;">
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="a.estate_vehicle_id"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="a.no_vehicle"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="a.driver"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="a.vehicle_type"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Deklarasi variabel global -->
+                        <t t-set="totalVolume" t-value="0"/>
+                        <t t-set="totalResultprice" t-value="0"/>
+                    <!-- Activitiy Header ROW -->
+                    <div class="row col-xs-12" style="font-family: times;color:black; font-size:12pt;">
+                        <div class="col-xs-12" >
+                            <b style="text-align:left;font-family: times;" >Activity Detail</b>
+                        </div>
+                    </div>
+
+                    <div class="row col-xs-12" style="background-color:white;color:black;">
+                        <table class="table table-condensed">
+                            <tr style="background-color:white;border: 1px solid black;color:black;">
+                                    <td style="width:2.5%;border: 1px solid black;">Activity</td>
+                                    <td style="width:2.5%;border: 1px solid black;">Uom</td>
+                                    <td style="width:2.5%;border: 1px solid black;">Price</td>
+                                    <td style="width:2.5%;border: 1px solid black;">Volume</td>
+                                    <td style="width:2.5%;border: 1px solid black;">Expense</td>
+                                    <td style="width:2.5%;border: 1px solid black;">Account</td>
+                            </tr>
+
+                            <t t-foreach="o.activityline_ids" t-as="b">
+                                <tr style="font-family: times; font-size:8pt;">
+                                    <!--set variabel -->
+                                        <t t-set="totalVolume" t-value="totalVolume+b.qty_product"/>
+                                        <t t-set="totalResultprice" t-value="totalResultprice+b.result_price"/>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="b.activity_id"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="b.product_type_id"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="b.price"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="b.qty_product"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="b.result_price"/></td>
+                                    <td style="width:2.5%;border: 1px solid black;"><span t-field="b.transportactivity_expense_id"/></td>
+                                </tr>
+                                <tr style="font-family: times; font-size:8pt;">
+                                    <td colspan="3" style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                        <b style="text-align:right;font-family: times; font-size:9pt;">Total :</b>
+                                    </td>
+                                    <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                        <b t-esc="totalVolume" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                    </td>
+                                    <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                        <b t-esc="totalResultprice" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                    </td>
+                                    <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                        &#160;
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+
+                     <div class="row col-xs-12">
+                             <table style="width:100%;">
+                                 <tr>
+                                     <td style="width:25%; border-bottom: 1px solid black;"><span style="font-family: times; font-size:10pt;">Additional Information</span></td>
+                                     <td style="width:75%; border-bottom: 1px solid black;">: <span t-field="o.comment" style="font-family: times; font-size:10pt;"/></td>
+                                 </tr>
+                             </table>
+                        </div>
+
+                    <div class="row col-xs-12">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Dibuat Oleh
+                                </td>
+                                <td>
+                                    Transportir Oleh
+                                </td>
+                                <td>
+                                    Diterima Oleh
+                                </td>
+                                <td>
+                                    Disetujui Oleh
+                                </td>
+                                <td>
+                                    Diketahui Oleh
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Asisten Bibitan
+                                </td>
+                                <td>
+                                    Sopir
+                                </td>
+                                <td>
+                                    Asisten Divisi
+                                </td>
+                                <td>
+                                    Manager Kebun
+                                </td>
+                                <td>
+                                    Manager Traksi
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+
+        <template id="reportseeddo_div_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_seeddo_div_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

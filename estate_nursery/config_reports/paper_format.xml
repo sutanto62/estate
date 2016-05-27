@@ -1,0 +1,19 @@
+<openerp>
+    <data>
+        <record id="paperformat_reportplantation" model="report.paperformat">
+            <field name="name">Report Paper Format</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">80</field>
+            <field name="page_width">175</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top"> 40</field>
+            <field name="margin_bottom">20</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+    </data>
+</openerp>

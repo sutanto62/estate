@@ -1,0 +1,549 @@
+<openerp>
+    <data>
+
+        <!--view , Planting-->
+        <record model="ir.ui.view" id="view_tree_seeddo">
+            <field name="name">Planting Seed</field>
+            <field name="model">estate.nursery.seeddo</field>
+            <field name="arch" type="xml">
+                <tree string="Request planting View"
+                      colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
+                    <field name="seeddo_code" string="Request No" />
+                    <field name="date_request" string="Date Request"/>
+                    <field name="total_qty_pokok" string="Total Quantity"/>
+                    <field name="state" string="Status" invisible="0"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_vehicleadd_employeeinternal_inherited">
+            <field name="name">Vehicle - Extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+                <group string="Additional Properties" position="before">
+                    <group string="Vehicle Information">
+                        <!--<field name="no_vehicle"/>-->
+                        <field name="vehicle_type"/>
+                    </group>
+                    <group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >
+                        <field name="employee_driver_id" string="Driver Internal" options="{'no_create_edit': True}"/>
+                    </group>
+                </group>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_seeddo">
+            <field name="name">Seed Delivery Order</field>
+            <field name="model">estate.nursery.seeddo</field>
+            <field name="arch" type="xml">
+                <form String="Seed DO View">
+                    <header coolspan="10">
+
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed,validate1,validate2"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Approved Kasie"
+                                class="oe_highlight"
+                                states="confirmed,open"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Approved Estate Manager"
+                                class="oe_highlight"
+                                states="validate1,open2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_done" type="workflow"
+                                string="Validate"
+                                class="oe_highlight"
+                                states="validate2"
+                                groups="estate.group_manager"/>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,done"
+                               statusbar_color='{"draft":"blue",}'/>
+                    </header>
+
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                <label string="Seed Delivery Order For"
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                <label string="Seed Delivery Order For"
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                    <field name="seeddo_code" class="oe_inline" readonly="1" />
+                             </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="date_request" attrs="{'readonly' : [('state', '=', 'done')]}"/>
+                            </group>
+                            <group coolspan="10">
+                                <field name="total_qty_pokok" string="Total Quantity Seed Transfer"/>
+                            </group>
+                        </group>
+                        <group>
+                            <notebook>
+                                <page string="BPB List" attrs="{'readonly':['|',('state','=','validate1'),('state','=','validate2'),
+                                ('state','=','done')]}">
+                                        <field name="request_ids" string="Information For BPB"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly':['|',('state','=','validate1'),('state','=','validate2'),
+                                ('state','!=','done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_request_planting',
+                                                'default_seeddo_id': id}"/>
+                                </page>
+<!--attrs="{'invisible':['|',('state','!=','validate2'),-->
+                                <!--('state','!=','done')]}"-->
+                                <page string="Return Seed" >
+                                        <field name="return_ids" string="Information For Return Seed"
+                                               attrs="{
+                                        'required' : [('state', '=', 'validate2')],
+                                        'readonly' : [('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_returnseed',
+                                                'default_seeddo_id': id}"/>
+                                </page>
+
+                                 <page string="Tranportir Activity" attrs="{'readonly':['|',('state','=','validate1'),('state','=','validate2'),
+                                ('state','=','done')]}">
+                                        <field name="activityline_ids" attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : ['|',('state', '=','validate1'),('state', '=', 'validate2'),('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_activityline'}"/>
+                                    <group class="oe_subtotal_footer oe_right">
+                                        <field name="expense" widget="monetary" readonly="1"
+                                               options="{'currency_field': 'currency_id'}"/>
+                                            <div class="oe_subtotal_footer_separator oe_inline">
+                                                <label for="amount_total"/>
+                                                    <button name="button_dummy" states="draft"
+                                            string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                            </div>
+                                        <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator"
+                                            widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
+                                    </group>
+                                </page>
+
+                                <page name='detail_transportir' string="Detail Transportir" attrs="{}">
+                                        <field name="dotransportir_ids"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : ['|',('state', '=', 'validate1'),('state', '=', 'validate2'),('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_nursery.view_tree_dotransportir'}"/>
+                                </page>
+
+                                 <page string="Timesheet Vehicle &amp; Transportir" attrs="{'invisible':[('state','!=','validate1'),('state','!=','validate2'),
+                                     ('state','!=','done')]}">
+                                        <field name="timesheet_ids"
+                                               attrs="{
+                                        'required' : [('state', '=', 'confirmed')],
+                                        'readonly' : [('state', '=', 'done')]}"
+                                                context="{'tree_view_ref' : 'estate_vehicle.view_tree_timesheet_activity_transport',
+                                               'default_dc_type' : 1, 'default_owner_id' : id}"/>
+                                </page>
+
+                                <page string="Additional Information">
+                                    <group>
+                                        <field name="comment"/>
+                                    </group>
+                                </page>
+
+                            </notebook>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
+                </form>
+            </field>
+        </record>
+
+        <!--View,Detail Transportir-->
+        <record model="ir.ui.view" id="view_tree_dotransportir">
+            <field name="name">Detail Transportir Line</field>
+            <field name="model">estate.nursery.dotransportir</field>
+            <field name="arch" type="xml">
+                <tree string="Detail Transportir View" editable="bottom">
+                    <field name="estate_vehicle_id" string="Code Vehicle" required="1"
+                           options="{'no_create_edit': True}" domain="['|',('vehicle_type','=',1),('vehicle_type','=',2)]"/>
+                    <field name="capacity" string="Capacity" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="driver" string="Driver Vehicle"  invisible="1" readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="no_vehicle" string="No Vehicle" readonly="1"/>
+                    <field name="vehicle_type" string="Vehicle Type" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--view, Activity Line-->
+        <record model="ir.ui.view" id="view_tree_activityline">
+            <field name="name">Activity Line</field>
+            <field name="model">estate.nursery.activityline</field>
+            <field name="arch" type="xml">
+                <tree string="Activity Line View" editable="bottom">
+                    <field name="activity_id" string="Activity"  options="{'no_create_edit': True}"/>
+                    <field name="product_type_id" string="Product UoM">{‘readonly_by_pass’: True}</field>
+                    <field name="qty_product" string="Quantity" />
+                    <field name="price" string="Price/product" required="1">{‘readonly_by_pass’: True}</field>
+                    <field name="transportactivity_expense_id"/>
+                    <field name="result_price" string="Total Price" readonly="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--View,search returnseed-->
+        <record id="view_search_returnseed" model ="ir.ui.view">
+            <field name="name">Return Seed Search</field>
+            <field name="model">estate.nursery.returnseed</field>
+            <field name="arch" type="xml">
+                  <search>
+                       <filter name="group_returnseed_id" string="Return Date"
+                              icon="terp-partner" context="{'group_by':'return_date'}"/>
+                        <group string="Group By">
+                            <filter name="by_category" string="Date"
+                                context="{'group_by': 'return_date'}"/>
+                        </group>
+                  </search>
+            </field>
+        </record>
+
+        <!--View, Return Seed Planting-->
+        <record model="ir.ui.view" id="view_tree_returnseed">
+            <field name="name">Tree Return Seed</field>
+            <field name="model">estate.nursery.returnseed</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Stage View">
+                    <field name="bpb_id" string="BPB No"/>
+                    <field name="return_date" string="Return Date"/>
+                    <field name="total_qty_return" string="&#931; Quantity Return ." sum="Qty"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_return_seed">
+            <field name="name">Return Seed Bpb</field>
+            <field name="model">estate.nursery.returnseed</field>
+            <field name="search_view_id" ref="view_search_returnseed"/>
+            <field name="arch" type="xml">
+                <form String="Nursery selection view">
+                    <header coolspan="10">
+
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_done" type="workflow"
+                                string="Approved"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="estate.group_manager"/>
+
+                         <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,done"
+                               statusbar_color='{"draft":"blue"}'/>
+                    </header>
+                    <sheet>
+
+                         <div class="oe_title" colors="blue">
+                             <h1>
+                                 <label string="Return Seed For Bpb "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                 <label string="Return Seed  "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <label string="For "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <field name="bpb_id" class="oe_inline" readonly="1" />
+                             </h1>
+                         </div>
+
+                        <group>
+                            <group>
+                                <field name="seeddo_id" id="seeddo_id" String="SPB No" readonly="1" invisible="0">{‘readonly_by_pass’: True}</field>
+                                <field name="bpb_id" string="BPB No" attrs="{'readonly': [('state','=','done')]}"
+                                       required="1" options="{'no_create_edit': True}"/>
+                                <field name="return_date"  attrs="{'readonly': [('state','=','done')]}"
+                                       string="Return Date" required="1"/>
+                            </group>
+
+                            <group>
+                                <field name="total_qty_return" string="&#931; Quantity Return ." sum="Qty" readonly="1"/>
+                            </group>
+
+                        </group>
+
+                        <group>
+                            <notebook>
+                                <page string="Return Line Information">
+                                        <tree>
+                                            <field name="returnseedline_ids" track_visibility="onchange"
+                                                   attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"
+                                                   context="{'tree_view_ref' : 'estate_nursery.view_tree_returnseedline',
+                                                   'default_bpb_id' : bpb_id}"/>
+                                        </tree>
+                                </page>
+                                </notebook>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--View , Request line Planting-->
+
+        <record model="ir.ui.view" id="view_tree_returnseedline">
+            <field name="name">Returnseedline Planting</field>
+            <field name="model">estate.nursery.returnseedline</field>
+            <field name="arch" type="xml">
+                <tree string="Return line View" colors="red:qty_return" editable="bottom">
+                    <field name="bpb_id" readonly="1" invisible="1"/>
+                    <field name="batch_id" string="Batch no" required="1" options="{'no_create_edit': True}"/>
+                    <field name="block_location_id" string="Blok" options="{'no_create_edit': True}" />
+                    <field name="qty_request" string="&#931; Quantity Request ." sum="Qty"/>
+                    <field name="qty_return" string="&#931; Quantity Return ." sum="Qty"/>
+                    <field name="location_id" string="Plot" options="{'no_create_edit': True}"/>
+                    <field name="qty_transfer" string="&#931; Quantity transfer ." sum="Qty"/>
+                    <field name="comment"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--View , Request Planting-->
+        <record model="ir.ui.view" id="view_tree_request_planting">
+            <field name="name">Request Planting</field>
+            <field name="model">estate.nursery.request</field>
+            <field name="arch" type="xml">
+                <tree string="Request planting View"
+                      colors="red:state=='draft';red:state=='confirmed';green:state=='done'">
+                    <field name="bpb_code" string="Request No" />
+                    <field name="seeddo_id" string="Seed DO No"/>
+                    <field name="date_request"/>
+                    <field name="kebun_location_id" string="Estate"/>
+                    <field name="divisi_location_id" string="Division"/>
+                    <field name="total_qty_pokok" string="Total Quantity"/>
+                    <field name="state" string="Status" invisible="0"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_request_planting">
+            <field name="name">Request Planting</field>
+            <field name="model">estate.nursery.request</field>
+            <field name="arch" type="xml">
+                <form String="Nursery selection view">
+                    <header coolspan="10">
+
+                        <button name="signal_draft" type="workflow"
+                                string="Reject"
+                                class="oe_highlight"
+                                states="confirmed,validate1,validate2"
+                                groups="estate.group_assistant"/>
+
+                        <button name="signal_confirm" type="workflow"
+                                string="Confirmed"
+                                class="oe_highlight"
+                                states="draft"
+                                groups="estate.group_assistant" />
+
+                        <button name="signal_approved1" type="workflow"
+                                string="Approved Kasie"
+                                class="oe_highlight"
+                                states="confirmed,open"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_approved2" type="workflow"
+                                string="Approved Estate Manager"
+                                class="oe_highlight"
+                                states="validate1,open2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_pending" type="workflow"
+                                string="Pending"
+                                class="oe_highlight"
+                                states="validate1,"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_pending2" type="workflow"
+                                string="Pending"
+                                class="oe_highlight"
+                                states="validate2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_open_pending" type="workflow"
+                                string="Open Pending"
+                                class="oe_highlight"
+                                states="pending"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_open_pending2" type="workflow"
+                                string="Open Pending"
+                                class="oe_highlight"
+                                states="pending2"
+                                groups="estate.group_manager"/>
+
+                        <button name="signal_done" type="workflow"
+                                string="Validate"
+                                class="oe_highlight"
+                                states="validate2"
+                                groups="estate.group_manager"/>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,validate1,validate2,done"
+                               statusbar_color='{"draft":"blue","pending":"red","pending2":"red",
+                               "open":"green","open2":"green"}'/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                <label string="Request Seed Planting "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                <label string="Request Seed For Planting "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                    <field name="bpb_code" class="oe_inline" readonly="1" />
+                             </h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="seeddo_id" invisible="1"/>
+                                <field name="kebun_location_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="divisi_location_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="employee_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}" string="To Employee" options="{'no_create_edit': True}"/>
+                            </group>
+
+                            <group coolspan="10">
+                                <field name="variety_id" attrs="{'required': [('state','!=','draft')],
+                                 'readonly': [('state','=','done')]}" options="{'no_create_edit': True}"/>
+                                <field name="total_qty_pokok" readonly="1"/>
+                                <field name="date_request" string="BPB Date Request" required="1" attrs="{
+                                 'readonly': [('state','=','validate2'),('state','=','done')]}"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <notebook>
+                                <page string="Request's Planting">
+                                    <tree>
+                                        <field name="requestline_ids" attrs="{'required': [('state','=','draft')],
+                                                'readonly': [('state','=','done')]}"
+                                                 context="{'tree_view_ref' : 'estate_planting.view_tree_requestline_planting'}"/>
+                                    </tree>
+                                </page>
+                            </notebook>
+                        </group>
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!--View , Request line Planting-->
+
+        <record model="ir.ui.view" id="view_tree_requestline_planting">
+            <field name="name">Requestline Planting</field>
+            <field name="model">estate.nursery.requestline</field>
+            <field name="arch" type="xml">
+                <tree string="Request line View" colors="red:qty_request" editable="bottom">
+                    <field name="batch_id" string="Batch no" options="{'no_create_edit': True}"/>
+                    <field name="location_id" string="Plot" options="{'no_create_edit': True}"/>
+                    <field name="large_area" string="Large(Ha)"/>
+                    <field name="qty_request" string="&#931; Quantity Request ." sum="Qty"/>
+                    <field name="block_location_id" string="Blok" options="{'no_create_edit': True}" />
+                    <field name="comment"/>
+                </tree>
+            </field>
+        </record>
+
+        <!--Action-->
+        <record model="ir.actions.act_window" id="action_list_requestplanting" >
+            <field name="name">Request seed</field>
+            <field name="res_model">estate.nursery.request</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_returnplanting" >
+            <field name="name">Return seed</field>
+            <field name="res_model">estate.nursery.returnseed</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_seeddo" >
+            <field name="name">Planting Seed</field>
+            <field name="res_model">estate.nursery.seeddo</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_template_seeddo">
+             <field name="name">Inherit Button Seeddo</field>
+             <field name="model">estate.nursery.seeddo</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_seeddo"/>
+             <field name="arch" type="xml">
+                 <button name="signal_done" position="after">
+                      <button name="%(custom_report_seeddo)d"
+                                type='action' string='Print SPB' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+                 </button>
+             </field>
+         </record>
+
+        <!--inherit button action-->
+        <record model="ir.ui.view" id="view_form_inherit_button_template_request">
+             <field name="name">Inherit Button Request</field>
+             <field name="model">estate.nursery.request</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_request_planting"/>
+             <field name="arch" type="xml">
+                 <button name="signal_done" position="after">
+                     <button name="%(custom_report_request)d"
+                                type='action' string='Print BPB' icon="gtk-print"
+                                states='done' groups="estate.group_manager"/>
+                 </button>
+             </field>
+         </record>
+
+
+        
+        <!--Menu View-->
+        <menuitem id="estate_nursery_planting" name="Transplanting" parent="estate_nursery_menu" sequence="80"
+                  groups="estate.group_user"/>
+         <!-- MENU -->
+        <menuitem id="nursery_transfer_mn"
+                  name="Request Transfer Pn to Mn"
+                  parent="estate_nursery_planting"
+                  action="action_list_transfermn" sequence="18"
+                  groups="estate.group_user"/>
+        <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
+                  action="action_list_requestplanting" sequence="19" groups="estate.group_user"/>
+        <menuitem id="return_seed_planting" name="Return Seed Planting" parent="estate_nursery_planting"
+                  action="action_list_returnplanting" sequence="20" groups="estate.group_user"/>
+        <menuitem id="planting_seed" name="Seed Delivery Order" parent="estate_nursery_planting"
+                  action="action_list_seeddo" sequence="21" groups="estate.group_user"/>
+    </data>
+</openerp>

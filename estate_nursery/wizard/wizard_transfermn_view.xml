@@ -1,0 +1,48 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="wizard_transfermn_form_view">
+            <field name="name">Wizard Transfer Mn form</field>
+            <field name="model">estate.transfermn.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Transfer Mn Seed">
+                    <group string="Seed Delivery Order Information">
+                        <group>
+                            <field name="date_transfer" string="Date Transfer"/>
+                        </group>
+                    </group>
+                    <group string="Transfer Detail">
+                        <div class="oe_grey">
+                            Detail quantity transfer to Mn and show quantity diffrent after transfer.
+                        </div>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="batch_id" string="Batch No" />
+                            <field name="qty_move" string="Quantity Move"/>
+                        </group>
+                        <group>
+                            <field name="location_pn_id" string="Location From"/>
+                            <field name="location_mn_id" string="Location To"/>
+                        </group>
+                    </group>
+
+                    <footer>>
+                        <!--for button transfer under project-->
+                        <button name="do_detailed_transfermn"
+                                string="Transfer" type="object" class="oe_highlight"/>
+                            or
+                        <button special="cancel"  string="Cancel" class="oe_highlight"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_transfermn_wizard"
+                    name="Transfer Seed"
+                    src_model="estate.nursery.batch"
+                    res_model="estate.transfermn.wizard"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+    </data>
+</openerp>

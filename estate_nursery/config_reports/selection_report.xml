@@ -1,0 +1,13 @@
+<openerp>
+    <data>
+        <report
+            id="custom_report_selection"
+            model="estate.nursery.selection"
+            string="Selection report"
+            report_type="qweb-pdf"
+            name="estate_nursery.selection_report"
+            attachment_use="False"
+            file="estate_nursery.selection_report"
+        />
+    </data>
+</openerp>

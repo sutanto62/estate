@@ -1,0 +1,55 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="wizard_seeddo_form_view">
+            <field name="name">wizard form</field>
+            <field name="model">estate.nursery.transfer</field>
+            <field name="arch" type="xml">
+                <form string="Transfer Seed">
+                    <group string="Seed Deliveery Order Information">
+                        <group>
+                            <field name="date_transfer" string="Date Transfer"/>
+                        </group>
+                    </group>
+                    <group string="Transfer Detail">
+                        <div class="oe_grey">
+                            Detail quantity transfer to Transplanting and show quantity diffrent after transfer.
+                        </div>
+                    </group>
+                    <group>
+                        <field name="transferline_ids"
+                                    context="{'tree_view_ref' :'estate_nursery.view_transferline_tree'}" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <!--for button transfer under project-->
+                        <button special="cancel"
+                                string="Transfer" class="oe_highlight"/>
+                            or
+                        <button name="act_cancel" special="cancel" type="object" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_transferline_tree">
+            <field name="name">Batch Parameter Tree</field>
+            <field name="model">estate.nursery.transferline</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="True">
+                    <field name="seeddo_id" options="{'no_create_edit': True}"/>
+                    <field name="qty_request"/>
+                    <field name="qty_difference"/>
+                    <field name="qty_result"/>
+                </tree>
+            </field>
+        </record>
+
+        <act_window id="launch_seeddo_wizard"
+                    name="Transfer Seed"
+                    src_model="estate.nursery.seeddo"
+                    res_model="estate.nursery.transfer"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+    </data>
+</openerp>

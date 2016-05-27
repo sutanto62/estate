@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_batch_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <h2 colors="black" t-if="o.state == 'done'" style="text-align:center;font-family: times;">
+                        Batch Information
+                    </h2>
+                    <div class="row">
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <strong>Name Batch : <p t-field="o.name"/></strong>
+                            <strong>Received Date: <p t-field="o.date_received"/></strong>
+                            <strong>Planted Date: <p t-field="o.date_planted"/></strong>
+                        </div>
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <strong>Normal :<p t-field="o.qty_normal"/></strong>
+                            <strong>Abnormal :<p t-field="o.qty_abnormal"/></strong>
+                            <strong>Quantity received:<p t-field="o.qty_received"/></strong>
+                        </div>
+                        <div class="col -xs- 3" t-if="o.state == 'done'">
+                            <strong>Picking :</strong>
+                            <p t-field="o.picking_id"/>
+                            <strong>Culling Location :</strong>
+                            <p t-field="o.culling_location_id"/>
+                        </div>
+                    </div>
+
+                    <h2 colors="black" >
+                        <span t-if="o.state == 'done'">Selection Information</span>
+                    </h2>
+
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:10%;">Selection Stage</th>
+                                <th style="width:10%;">Normal</th>
+                                <th style="width:10%;">Abnormal</th>
+                                <th style="width:10%;">% NOR</th>
+                                <th style="width:10%;">% ABN</th>
+                                <th style="width:10%;">Planted</th>
+                                <th style="width:10%;">DO</th>
+                                <th style="width:10%;">Planted Date</th>
+                                <th style="width:10%;">Information Time</th>
+                                <th style="width:10%;">Selection Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="selection_tbody">
+                            <tr t-foreach="o.selection_ids" t-as="l">
+                                <td style="width:10%;"><span t-field="l.selectionstage_id"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_normal"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_abnormal"/></td>
+                                <td style="width:10%;"><span t-field="l.nursery_persentagen"/></td>
+                                <td style="width:10%;"><span t-field="l.nursery_persentagea"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_plant"/></td>
+                                <td style="width:10%;"><span t-field="l.qty_batch"/></td>
+                                <td style="width:10%;"><span t-field="l.date_plant"/></td>
+                                <td style="width:10%;"><span t-field="l.nursery_information"/></td>
+                                <td style="width:10%;"><span t-field="l.selection_date"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </template>
+        <template id="batch_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'estate_nursery.report_batch_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

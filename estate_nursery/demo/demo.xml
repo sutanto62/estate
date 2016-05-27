@@ -1,0 +1,388 @@
+<openerp>
+    <data>
+
+        <record id="base.res_partner_ppks" model="res.partner">
+            <field name="name">Pusat Penelitian Kelapa Sawit</field>
+            <field name="is_company" eval="True"/>
+            <field name="supplier" eval="True"/>
+            <field name="active" eval="True"/>
+            <!--<field name="property_product_pricelist_purchase" ref="purchase.list0"/>-->
+            <field name="property_stock_customer" ref="stock.stock_location_customers"/>
+            <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
+        </record>
+
+        <record id="base.res_partner_dami" model="res.partner">
+            <field name="name">Dami Mas Sejahtera</field>
+            <field name="is_company" eval="True"/>
+            <field name="supplier" eval="True"/>
+            <field name="active" eval="True"/>
+            <!--<field name="property_product_pricelist_purchase" ref="purchase.list0"/>-->
+            <field name="property_stock_customer" ref="stock.stock_location_customers"/>
+            <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
+        </record>
+
+        <record id="base.res_partner_topaz" model="res.partner">
+            <field name="name">Topaz</field>
+            <field name="is_company" eval="True"/>
+            <field name="supplier" eval="True"/>
+            <field name="active" eval="True"/>
+            <!--<field name="property_product_pricelist_purchase" ref="purchase.list0"/>-->
+            <field name="property_stock_customer" ref="stock.stock_location_customers"/>
+            <field name="property_stock_supplier" ref="stock.stock_location_suppliers"/>
+        </record>
+
+        <record id="estate_nursery.variety_ten" model="estate.nursery.variety">
+            <field name="name">Tenera</field>
+            <field name="code">TEN</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="estate_nursery.progeny_ppks540" model="estate.nursery.progeny">
+            <field name="name">PPKS 540</field>
+            <field name="code">P1</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_ppks"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="estate_nursery.progeny_damiym" model="estate.nursery.progeny">
+            <field name="name">Dami YM</field>
+            <field name="code">YM</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_dami"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="estate_nursery.progeny_damiam" model="estate.nursery.progeny">
+            <field name="name">Dami AM</field>
+            <field name="code">AM</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_dami"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="estate_nursery.progeny_topaz" model="estate.nursery.progeny">
+            <field name="name">Topaz</field>
+            <field name="code">T1</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="supplier_id" ref="base.res_partner_topaz"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!--
+        product.product
+        -->
+        <record id="seed_dami" model="product.product">
+            <field name="name">Kecambah Dami Mas</field>
+            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="standard_price">8090</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="default_code">090901</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <record id="seed_ppks" model="product.product">
+            <field name="name">Kecambah PPKS</field>
+            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="standard_price">7500</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="default_code">090902</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <record id="seed_topaz" model="product.product">
+            <field name="name">Kecambah Topaz</field>
+            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="standard_price">7750</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_unit"/>
+            <field name="uom_po_id" ref="product.product_uom_unit"/>
+            <field name="default_code">090902</field>
+            <field name="variety_id" ref="estate_nursery.variety_ten"/>
+            <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <!--
+        product.ul
+        -->
+        <record id="seed_box" model="product.ul">
+            <field name="name">Seed Box 60 x 30 x 30</field>
+            <field name="type">box</field>
+        </record>
+        <record id="seed_bag_200" model="product.ul">
+            <field name="name">Seed Bag 200</field>
+            <field name="type">pack</field>
+        </record>
+        <record id="seed_bag_100" model="product.ul">
+            <field name="name">Seed Bag 100</field>
+            <field name="type">pack</field>
+        </record>
+
+        <!--nurserystage-->
+        <record id="nurserystage_1" model="estate.nursery.stage">
+            <field name="name">Pre Nursery</field>
+            <field name="code">PN</field>
+            <field name="sequance">1</field>
+            <field name="age_minimum">0</field>
+            <field name="age_maximum">3</field>
+        </record>
+        <record id="nurserystage_2" model="estate.nursery.stage">
+            <field name="name">Main Nursery</field>
+            <field name="code">MN</field>
+            <field name="sequance">2</field>
+            <field name="age_minimum">3</field>
+            <field name="age_maximum">0</field>
+        </record>
+
+        <!--selectionstage-->
+        <record id="nursery_stage_1" model="estate.nursery.selectionstage">
+            <field name="name">Pre Nursery 1</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="age_limit_min">0</field>
+            <field name="age_limit_max">1</field>
+            <field name="age_selection">1</field>
+            <field name="info">Draft</field>
+            <field name="comment">Tahap Pre nusery satu</field>
+        </record>
+
+        <record id="nurserystage_stage_2" model="estate.nursery.selectionstage">
+            <field name="name">Pre Nursery 2</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="age_limit_min">1</field>
+            <field name="age_limit_max">3</field>
+            <field name="age_selection">2</field>
+            <field name="info">Draft</field>
+            <field name="comment">Tahap Pre nusery dua</field>
+        </record>
+
+        <record id="nurserystage_stage_4" model="estate.nursery.selectionstage">
+            <field name="name">Main Nursery 1</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="age_limit_min">3</field>
+            <field name="age_limit_max">6</field>
+            <field name="age_selection">6</field>
+            <field name="info">Draft</field>
+            <field name="comment">Tahap Main nusery satu</field>
+        </record>
+
+        <record id="nurserystage_stage_5" model="estate.nursery.selectionstage">
+            <field name="name">Main Nursery 2</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="age_limit_min">6</field>
+            <field name="age_limit_max">9</field>
+            <field name="age_selection">7</field>
+            <field name="info">Draft</field>
+            <field name="comment">Tahap Main nusery dua</field>
+        </record>
+        <record id="nursery_stage_6" model="estate.nursery.selectionstage">
+            <field name="name">Main Nursery 3</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="age_limit_min">9</field>
+            <field name="age_limit_max">12</field>
+            <field name="age_selection">10</field>
+            <field name="info">Draft</field>
+            <field name="comment">Tahap Main nusery tiga</field>
+        </record>
+
+        <!--selection cause, pre nursery-->
+        <record id="nursery_cause_1" model="estate.nursery.cause">
+            <field name="name">Twisted shoot</field>
+            <field name="code">TWS</field>
+            <field name="sequence">1</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun bengkok</field>
+        </record>
+        <record id="nursery_cause_2" model="estate.nursery.cause">
+            <field name="name">Stunted leaf</field>
+            <field name="code">STL</field>
+            <field name="sequence">2</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun kerdil</field>
+        </record>
+        <record id="nursery_cause_3" model="estate.nursery.cause">
+            <field name="name">Rolled Leaf</field>
+            <field name="code">DMG</field>
+            <field name="sequence">3</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun melintir</field>
+        </record>
+        <record id="nursery_cause_4" model="estate.nursery.cause">
+            <field name="name">Narrow  Leaf</field>
+            <field name="code">NRL</field>
+            <field name="sequence">4</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun lalang dan sempit</field>
+        </record>
+        <record id="nursery_cause_5" model="estate.nursery.cause">
+            <field name="name">Accurate Leaf</field>
+            <field name="code">ACT</field>
+            <field name="sequence">5</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun menyempit dan tegak</field>
+        </record>
+        <record id="nursery_cause_6" model="estate.nursery.cause">
+            <field name="name">Crinkled Leaf</field>
+            <field name="code">CRK</field>
+            <field name="sequence">6</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun berkerut/sempit</field>
+        </record>
+        <record id="nursery_cause_7" model="estate.nursery.cause">
+            <field name="name">Chimaera Leaf</field>
+            <field name="code">CHR</field>
+            <field name="sequence">7</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun dengan sirip kuning</field>
+        </record>
+        <record id="nursery_cause_8" model="estate.nursery.cause">
+            <field name="name">HAMA Leaf</field>
+            <field name="code">HMA</field>
+            <field name="sequence">8</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun terkena hama penyakit</field>
+        </record>
+        <record id="nursery_cause_9" model="estate.nursery.cause">
+            <field name="name">Other Cause</field>
+            <field name="code">OTH</field>
+            <field name="sequence">9</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_1"/>
+            <field name="comment">daun terkena penyakit yang belum terdeteksi</field>
+        </record>
+
+        <!--demo main nursery-->
+        <record id="nursery_cause_10" model="estate.nursery.cause">
+            <field name="name">Erected leaf</field>
+            <field name="code">ERC</field>
+            <field name="sequence">10</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">daun tumbuh meninggi dan kaku </field>
+        </record>
+
+        <record id="nursery_cause_11" model="estate.nursery.cause">
+            <field name="name">Flat top Leaf</field>
+            <field name="code">FLT</field>
+            <field name="sequence">11</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Tajuk daun rata</field>
+        </record>
+
+        <record id="nursery_cause_12" model="estate.nursery.cause">
+            <field name="name">Limp Leaf</field>
+            <field name="code">LMP</field>
+            <field name="sequence">12</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Daun Lemah dan Loyo</field>
+        </record>
+
+        <record id="nursery_cause_13" model="estate.nursery.cause">
+            <field name="name">Juvlenile Leaf</field>
+            <field name="code">FLT</field>
+            <field name="sequence">13</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Anak daun tidak membelah</field>
+        </record>
+
+        <record id="nursery_cause_14" model="estate.nursery.cause">
+            <field name="name">Crown desease Leaf</field>
+            <field name="code">CRD</field>
+            <field name="sequence">14</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Terserang penyakit tajuk</field>
+        </record>
+
+        <record id="nursery_cause_15" model="estate.nursery.cause">
+            <field name="name">Accute pinnate Intersection Leaf</field>
+            <field name="code">API</field>
+            <field name="sequence">15</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Sudut anak daun sangat tajam dengan pelepah</field>
+        </record>
+
+        <record id="nursery_cause_16" model="estate.nursery.cause">
+            <field name="name">Short Leaf lets</field>
+            <field name="code">SLL</field>
+            <field name="sequence">16</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Anak Daun Pendek Pendek</field>
+        </record>
+
+        <record id="nursery_cause_17" model="estate.nursery.cause">
+            <field name="name">Range between leaf Cramped</field>
+            <field name="code">RBLC</field>
+            <field name="sequence">17</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Jarak antar anak daun rapat</field>
+        </record>
+
+        <record id="nursery_cause_18" model="estate.nursery.cause">
+            <field name="name">Range between leaf Longwise</field>
+            <field name="code">RBLC</field>
+            <field name="sequence">17</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Jarak antar anak daun memanjang</field>
+        </record>
+
+        <record id="nursery_cause_19" model="estate.nursery.cause">
+            <field name="name">Chimaera</field>
+            <field name="code">CHMR</field>
+            <field name="sequence">19</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Daun Terkena Penyakit Chimaera</field>
+        </record>
+
+        <record id="nursery_cause_20" model="estate.nursery.cause">
+            <field name="name">Other Cause</field>
+            <field name="code">OC</field>
+            <field name="sequence">20</field>
+            <field name="stage_id" ref="estate_nursery.nurserystage_2"/>
+            <field name="comment">Daun TErkena penyakit yang belum terdeteksi</field>
+        </record>
+
+        <!--
+        product.packaging
+        depend on: group_stock_packaging = true at stock.config.settings
+        -->
+        <record id="packaging_seed_1" model="product.packaging">
+            <field name="qty">5</field>
+            <field name="ul" ref="estate_nursery.seed_bag_200"/>
+            <field name="ul_container" ref="estate_nursery.seed_box"/>
+            <field name="ul_qty">3</field>
+            <field name="rows">2</field>
+            <field name="weight">15</field>
+            <field name="product_tmpl_id" ref="estate_nursery.seed_dami_product_template"/>
+        </record>
+
+        <record id="packaging_seed_2" model="product.packaging">
+            <field name="qty">7</field>
+            <field name="ul" ref="estate_nursery.seed_bag_100"/>
+            <field name="ul_container" ref="estate_nursery.seed_box"/>
+            <field name="ul_qty">3</field>
+            <field name="rows">2</field>
+            <field name="weight">15</field>
+            <field name="product_tmpl_id" ref="estate_nursery.seed_ppks_product_template"/>
+        </record>
+
+        <!--Demo report selection-->
+        <record id="report_selection_1" model="estate.nursery.reportline">
+            <field name="name">Report Pre Nursery</field>
+            <!--<field name="report_date"></field>-->
+            <field name="kebun_location_id" />
+        </record>
+
+        <record id="report_selection_2" model="estate.nursery.reportline">
+            <field name="name">Report Main Nursery</field>
+            <!--<field name="report_date"></field>-->
+            <field name="kebun_location_id" />
+        </record>
+
+    </data>
+</openerp>

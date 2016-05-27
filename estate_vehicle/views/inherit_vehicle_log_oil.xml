@@ -1,0 +1,59 @@
+<openerp>
+    <data>
+        <!--view , log oil -->
+         <record model="ir.ui.view" id="view_button_vehicle_log">
+             <field name="name">Vehicle Log Oil</field>
+             <field name="model">fleet.vehicle</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
+                     <button name="%(fleet_vehicle_log_oil_act)d"
+                         type="action"
+                         class="oe_stat_button"
+                         icon="fa-flask"
+                         help="show the oil logs for this vehicle">
+                         <field name="oil_log_count" widget="statinfo" string="Oil"/>
+                     </button>
+
+                     <button name="%(fleet_vehicle_log_otherservice_act)d"
+                         type="action"
+                         class="oe_stat_button"
+                         icon="fa-book"
+                         help="show the Other Service logs for this vehicle">
+                         <field name="other_service_log_count" widget="statinfo" string="Other Service"/>
+                     </button>
+
+                     <button name="%(fleet_vehicle_log_sparepart_act)d"
+                         type="action"
+                         class="oe_stat_button"
+                         icon="fa-wrench"
+                         help="show the Sparepart logs for this vehicle">
+                         <field name="sparepart_log_count" widget="statinfo" string="Sparepart"/>
+                     </button>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inheritview_field_product_id_vehicle_log">
+             <field name="name">Inherit Vehicle Log Fuel</field>
+             <field name="model">fleet.vehicle.log.fuel</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_log_fuel_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='liter']" position="before">
+                     <field name="product_id" string="Product"/>
+                 </xpath>
+             </field>
+         </record>
+
+         <record model="ir.ui.view" id="inheritview_field_status_activity">
+             <field name="name">Inherit status</field>
+             <field name="model">estate.activity</field>
+             <field name="inherit_id" ref="estate.view_activity_config_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='activity_type']" position="after">
+                     <field name="status" string="Status Vehicle" attrs="{'invisible':[('activity_type','!=', 'vehicle')]}"/>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>

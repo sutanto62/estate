@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_culling_batch_document">
+            <t t-call="report.external_layout">
+                <div class="page">
+                    <!--First Row-->
+                        <div class="row col-xs-12" style="font-family: times; background-color:white;border: 1px solid white;color:black; font-size:20pt;">
+                            <div class="col-xs-12" >
+                                <p>Report Berita Acara Pemusnahan Kecambah</p>
+                            </div>
+                        </div>
+
+                    <!-- Deklarasi variabel global -->
+                        <t t-set="totalseeddo" t-value="0"/>
+                        <t t-set="totalqtynormal" t-value="0"/>
+                        <t t-set="totalqtyabnormal" t-value="0"/>
+                        <t t-set="totaltotalabnormal" t-value="0"/>
+                        <t t-set="totaltotalplanted" t-value="0"/>
+                        <!-- Third ROW -->
+                        <div class="row col-xs-12" style="background-color:white;color:black;">
+                            <div class="row col-xs-12" >
+                                <table width="100%">
+                                    <tr>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Batch</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Seed Do</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Qty Normal</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Qty Abnormal</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Location Culling</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Total Abnormal</td>
+                                        <td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Total Transplanted</td>
+                                    </tr>
+                                    <t t-foreach="o.cullingline_ids" t-as="s">
+                                    <tr height="40"  style="font-family: times; font-size:8pt; ">
+                                        <!--set variabel -->
+                                        <t t-set="totalseeddo" t-value="totalseeddo+s.total_seed_DO"/>
+                                        <t t-set="totalqtynormal" t-value="totalqtynormal+s.qty_normal_batch"/>
+                                        <t t-set="totalqtyabnormal" t-value="totalqtyabnormal+s.qty_abnormal_batch"/>
+                                        <t t-set="totaltotalabnormal" t-value="totaltotalabnormal+s.total_qty_abnormal_batch"/>
+                                        <t t-set="totaltotalplanted" t-value="totaltotalplanted+s.qty_transplanted"/>
+
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >&#160;</td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.total_seed_DO"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.qty_normal_batch"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;">
+                                                            <span t-field="s.qty_abnormal_batch"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.culling_location_id.name"/>
+                                        </td>
+                                        <td style="font-size:8pt; border: 1px solid black !important;" >
+                                                            <span t-field="s.total_qty_abnormal_batch"/>
+                                        </td>
+                                        <td style="font-size:8pt; border-right: 1px solid black !imprtant;" >
+                                                            <span t-field="s.qty_transplanted"/>
+                                        </td>
+                                    </tr>
+
+                                    </t>
+                                    <tr height="40"  style="font-family: times; font-size:12pt; ">
+
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b style="text-align:right;font-family: times; font-size:9pt;"> Total</b>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totalseeddo" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totalqtynormal" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totalqtyabnormal" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b style="text-align:right;font-family: times; font-size:9pt;">&#160;</b>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totaltotalabnormal" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                        <td style="font-size:9pt;border: 1px solid black !important; height:40px;">
+                                                <b t-esc="totaltotalplanted" style="text-align:right;font-family: times; font-size:9pt;"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                    <div class="row col-xs-12">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                  Mengetahui
+                                </td>
+                                <td>
+                                    Diperiksa Oleh
+                                </td>
+                                <td>
+                                  Disetujui Oleh
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                                <td>
+                                    &#160;
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                                <td>
+                                    ........
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    Disbunnak Prov Gorontalo
+                                </td>
+                                <td>
+                                    Estate Manager
+                                </td>
+                                <td>
+                                    GM Pembibitan
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <template id="report_culling_batch_div_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang','estate_nursery.report_culling_batch_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

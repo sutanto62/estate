@@ -1,0 +1,41 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_master_category_unit_config_tree">
+            <field name="name">Master Category Unit</field>
+            <field name="model">master.category.unit</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" string="Category Name"/>
+                    <field name="type" string="Type Unit"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_master_category_unit_config_form" model="ir.ui.view">
+            <field name="name">Master category Unit Form</field>
+            <field name="model">master.category.unit</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" string="Category Name"/>
+                        <field name="type" string="Type Unit"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_master_categoryunit_config">
+            <field name="name">Master Category Unit</field>
+            <field name="res_model">master.category.unit</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="estate_category_unit" name="Master Category Unit"
+                  parent="estate.estate_blocking_menu"
+                  action="action_list_master_categoryunit_config"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>

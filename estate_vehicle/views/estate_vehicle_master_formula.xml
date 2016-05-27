@@ -1,0 +1,61 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_master_formula_config_tree">
+            <field name="name">Master Formula</field>
+            <field name="model">master.formula.activity.vehicle</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="formula_name" string="Name"/>
+                    <field name="range_start" string="Range Start"/>
+                    <field name="range_end" string="Range End"/>
+                    <field name="type_handling" string="Handling"/>
+                    <field name="type_day" string="Day"/>
+                    <field name="category_unit_id" string="Unit"/>
+                    <field name="job_id" string="Job"/>
+                    <field name="basis" string="Basis"/>
+                    <field name="premi_base" string="Premi Basis"/>
+                    <field name="use_start" string="Use Start"/>
+                    <field name="use_end" string="Use End"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_master_formula_config_form" model="ir.ui.view">
+            <field name="name">Master Formula Form</field>
+            <field name="model">master.formula.activity.vehicle</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="formula_name" string="Parameter Category"/>
+                        <field name="range_start" string="Parameter Value"/>
+                        <field name="range_end"/>
+                        <field name="type_handling"/>
+                        <field name="type_day"/>
+                        <field name="use_start"/>
+                        <field name="use_end"/>
+                    </group>
+                    <group>
+                        <field name="category_unit_id"/>
+                        <field name="job_id"/>
+                        <field name="basis"/>
+                        <field name="premi_base"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_master_formula_config">
+            <field name="name">Master Formula</field>
+            <field name="res_model">master.formula.activity.vehicle</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="estate_formula_premi" name="Master Formula Category"
+                  parent="estate.estate_blocking_menu"
+                  action="action_list_master_formula_config"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>

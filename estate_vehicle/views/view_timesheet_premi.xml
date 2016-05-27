@@ -1,0 +1,55 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_timesheet_premi_config_tree">
+            <field name="name">View Timesheet Premi</field>
+            <field name="model">v.timesheet.premi</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <!--<field name="id" readonly="1" invisible="0"/>-->
+                    <field name="date_activity_transport" string="Date"/>
+                    <field name="employee_id" string="Range Start"/>
+                    <field name="start_location" string="Range End"/>
+                    <field name="end_location" string="Handling"/>
+                    <field name="total_trip" string="Day"/>
+                    <field name="total_productivity" string="Unit"/>
+                    <field name="basis" string="Job"/>
+                    <field name="premi" string="Basis"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='vehicle_timesheet_premi_search'>
+            <field name="name">vehicle Timesheet Premi Search</field>
+            <field name="model">v.timesheet.premi</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles timesheet premi" >
+                    <field name="date_activity_transport" string="Date"/>
+                    <field name="employee_id" string="Range Start"/>
+                    <field name="start_location" string="Range End"/>
+                    <field name="end_location" string="Handling"/>
+                    <field name="total_trip" string="Day"/>
+                    <field name="total_productivity" string="Unit"/>
+                    <field name="basis" string="Job"/>
+                    <field name="premi" string="Basis"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_employee" context="{'group_by' : 'employee_id'}" string="Employee"/>
+                        <filter name="groupby_date" context="{'group_by' : 'date_activity_transport'}" string="Date"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_view_timesheet_config">
+                <field name="name">View Timesheet Premi</field>
+                <field name="res_model">v.timesheet.premi</field>
+                <field name="view_mode">tree</field>
+                <field name="context">{"search_default_groupby_date" : True}</field>
+        </record>
+
+        <menuitem id="estate_timesheet_premi" name="Timesheet Premi"
+                  parent="estate_vehicle.estate_vehicle_timesheet_menu"
+                  action="action_list_view_timesheet_config"
+                  groups="base.group_no_one" sequence="13"/>
+    </data>
+</openerp>

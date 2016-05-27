@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_requestplanting_document">
+            <t t-call="report.external_layout">
+                <style>
+                            table, td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+                </style>
+                <div class="page">
+                    <h4 colors="black" >
+                        <p style="text-align:center;font-family: times;" t-if="o.state == 'done'" >REQUEST PLANTING SEED</p>
+                        <hr/>
+                        <p style="text-align:center;font-family: times;" t-field="o.bpb_code"/>
+                        <table>
+                            <tr>Tanggal <span>:</span> <span t-field="o.date_request"/></tr>
+                            <br/>
+                            <tr>
+                                <td>Kepada  <span>:</span> <span t-field="o.employee_id"/></td>
+                                <br/>
+                            </tr>
+                            <br/>
+                            <tr>
+                                <td><p>Agar Dapat diberikan bibit sesuai jumlah yang tertera pada BPB ini :</p></td>
+                            </tr>
+                    </table>
+                    </h4>
+                    <hr></hr>
+                    <div class="row">
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <p>Kebun : <span t-field="o.kebun_location_id"/></p>
+                            <p>Divisi :<span t-field="o.divisi_location_id"/> </p>
+
+                        </div>
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <p>Jenis Bibit :<span t-field="o.variety_id"/></p>
+                            <p>Quantity Total Pokok :<span t-field="o.total_qty_pokok"/></p>
+                        </div>
+                    </div>
+
+                    <h2 colors="black" >
+                        <span t-if="o.state == 'done'">Request Detail</span>
+                    </h2>
+                    <hr></hr>
+
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:40%; font-size:9pt;border: 1px solid black !important; height:40px;" >Blok</th>
+                                <th style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Luas(Ha)</th>
+                                <th style="width:20%; font-size:9pt;border: 1px solid black !important; height:40px;">Pokok</th>
+                                <th style="width:30%; font-size:9pt;border: 1px solid black !important; height:40px;">Keterangan</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="request_tbody">
+                            <tr t-foreach="o.requestline_ids" t-as="l">
+                                <td style="width:40%; font-size:9pt;border: 1px solid black !important; height:40px;"><span t-field="l.block_location_id"/></td>
+                                <td style="width:10%;font-size:9pt;border: 1px solid black !important; height:40px;"><span t-field="l.large_area"/></td>
+                                <td style="width:20%;font-size:9pt;border: 1px solid black !important; height:40px;"><span t-field="l.qty_request"/></td>
+                                <td style="width:30%;font-size:9pt;border: 1px solid black !important; height:40px;"><span t-field="l.comment"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </template>
+        <template id="requestplanting_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'estate_nursery.report_requestplanting_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
+
+

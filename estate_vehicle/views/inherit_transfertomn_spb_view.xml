@@ -1,0 +1,42 @@
+<openerp>
+    <data>
+        <!--view , -->
+         <record model="ir.ui.view" id="inherit_view_field_view_timesheet_transfermn_activity">
+             <field name="name">Inherit timesheet transfertomn</field>
+             <field name="model">estate.nursery.transfermn</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_transferto_mn"/>
+             <field name="arch" type="xml">
+                 <notebook position="inside">
+                    <xpath expr="//page[@string='Transfer  Information']" position="after">
+                         <page string="Vehicle Information">
+                             <tree>
+                                 <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
+                                        'readonly': [('state','=','done')]}"
+                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_timesheet_activity_transport',
+                                               'default_dc_type' : 2}"/>
+                             </tree>
+                         </page>
+                     </xpath>
+                 </notebook>
+             </field>
+         </record>
+
+         <record model="ir.ui.view" id="inherit_view_field_view_timesheet_transfermn_activity">
+             <field name="name">Inherit timesheet SPB</field>
+             <field name="model">estate.nursery.seeddo</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_seeddo"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Detail Transportir']" position="after">
+                     <page string="Vehicle Information">
+                         <tree>
+                             <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
+                                    'readonly': [('state','=','done')]}"
+                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_timesheet_activity_transport',
+                                           'default_dc_type' : 2}"/>
+                         </tree>
+                     </page>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>

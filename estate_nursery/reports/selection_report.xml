@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+        <template id="report_selection_document">
+            <t t-call="report.external_layout">
+                <style>
+                            table, td {
+                            border: 1px solid black;
+                            border-collapse: collapse;
+                        }
+                </style>
+                <div class="page">
+                    <h2 style="text-align:center;font-family: times;" t-if="o.state == 'done'">Selection Information</h2>
+                    <h4 colors="black" >
+                        <table style="text-align:center;font-family: times;">
+                            <tr>
+                                <td><span t-field="o.name"/></td>
+                                <td>/<span t-field="o.stage_id"/></td>
+                                <td>/<span t-field="o.variety_id"/></td>
+                            </tr>
+                        </table>
+                    </h4>
+                    <hr></hr>
+                    <div class="row">
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <strong>Selection Stage:<p t-field="o.selectionstage_id"/></strong>
+                            <strong>Quantity DO: <p t-field="o.qty_batch"/></strong>
+                            <strong>Quantity Planted: <p t-field="o.qty_plant"/></strong>
+                        </div>
+                        <div class="col-xs-5" t-if="o.state == 'done'">
+                            <strong>Normal :<p t-field="o.qty_normal"/></strong>
+                            <strong>Abnormal :<p t-field="o.qty_abnormal"/></strong>
+                            <strong>Selection Date :</strong>
+                            <p t-field="o.selection_date"/>
+                        </div>
+                        <div class="col -xs- 3" t-if="o.state == 'done'">
+                            <strong>Information:</strong>
+                            <p t-field="o.nursery_information"/>
+                            <strong>Lapse of Day:</strong>
+                            <p t-field="o.nursery_lapseday"/>
+                            <strong>Lapse of Month :</strong>
+                            <p t-field="o.nursery_lapsemonth"/>
+                        </div>
+                    </div>
+
+                    <h2 colors="black" >
+                        <span t-if="o.state == 'done'">Selection Cause</span>
+                    </h2>
+                    <hr></hr>
+
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th style="width:40%;">Selection Cause</th>
+                                <th style="width:20%;">Abnormal</th>
+                                <th style="width:40%;">Location</th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody class="selection_tbody">
+                            <tr t-foreach="o.selectionline_ids" t-as="l">
+                                <td style="width:40%;"><span t-field="l.cause_id"/></td>
+                                <td style="width:20%;"><span t-field="l.qty"/></td>
+                                <td style="width:40%;"><span t-field="l.location_id"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </template>
+        <template id="selection_report">
+            <t t-call="report.html_container">
+                <t t-foreach="doc_ids" t-as="doc_id">
+                    <t t-raw="translate_doc(doc_id, doc_model, 'partner_id.lang', 'estate_nursery.report_selection_document')"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>
+
+

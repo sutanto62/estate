@@ -1,0 +1,172 @@
+<openerp>
+    <data>
+
+        <!-- Nursery request Planting -->
+        <record id="estate_nursery.request_approval" model="workflow">
+            <field name="name">Estate Nursery Request Planting Workflow</field>
+            <field name="osv">estate.nursery.request</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_draft">
+            <field name="name">Draft</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="flow_start" eval="True"/>
+            <field name="kind">function</field>
+            <field name="action">action_draft()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_pending">
+            <field name="name">Pending</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_pending()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_open_pending">
+            <field name="name">Open Pending</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+            <field name="action">action_open_pending()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_pending2">
+            <field name="name">Pending</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="kind">function</field>
+            <field name="action">action_pending2()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_open_pending2">
+            <field name="name">Open Pending</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+            <field name="action">action_open_pending2()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_confirmed">
+            <field name="name">Confirmed</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_confirmed()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_first_approved">
+            <field name="name">First Approved</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved1()</field>
+
+        </record>
+
+        <record model="workflow.activity" id="requestp_second_approved">
+            <field name="name">Second Approved</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved2()</field>
+        </record>
+
+        <record model="workflow.activity" id="requestp_done">
+            <field name="name">Done</field>
+            <field name="wkf_id" ref="estate_nursery.request_approval"/>
+
+            <field name="split_mode">XOR</field>
+            <field name="kind">function</field>
+
+            <field name="action">action_approved()</field>
+        </record>
+
+        <record model="workflow.transition" id="requestdraft_to_confirmed">
+            <field name="act_from" ref="requestp_draft"/>
+            <field name="act_to" ref="requestp_confirmed"/>
+            <field name="signal">signal_confirm</field>
+        </record>
+        <record model="workflow.transition" id="requestconfirmed_to_draft">
+            <field name="act_from" ref="requestp_confirmed"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+        <record model="workflow.transition" id="requestconfirmed_to_first_approved">
+            <field name="act_from" ref="requestp_confirmed"/>
+            <field name="act_to" ref="requestp_first_approved"/>
+            <field name="signal">signal_approved1</field>
+        </record>
+        <record model="workflow.transition" id="requestfirst_approved_to_draft">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="requestfirstapprove_to_pending">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_pending"/>
+            <field name="signal">signal_pending</field>
+        </record>
+
+        <record model="workflow.transition" id="requestpending_to_openpending">
+            <field name="act_from" ref="requestp_pending"/>
+            <field name="act_to" ref="requestp_open_pending"/>
+            <field name="signal">signal_open_pending</field>
+        </record>
+
+        <record model="workflow.transition" id="requestpending2_to_openpending2">
+            <field name="act_from" ref="requestp_pending2"/>
+            <field name="act_to" ref="requestp_open_pending2"/>
+            <field name="signal">signal_open_pending2</field>
+        </record>
+
+        <record model="workflow.transition" id="requestopenpending_to_firstapprove">
+            <field name="act_from" ref="requestp_open_pending"/>
+            <field name="act_to" ref="requestp_first_approved"/>
+            <field name="signal">signal_approved1</field>
+        </record>
+
+        <record model="workflow.transition" id="requestfirstapproved_to_second_approved">
+            <field name="act_from" ref="requestp_first_approved"/>
+            <field name="act_to" ref="requestp_second_approved"/>
+            <field name="signal">signal_approved2</field>
+        </record>
+
+        <record model="workflow.transition" id="requestsecondapprove_to_pending">
+            <field name="act_from" ref="requestp_second_approved"/>
+            <field name="act_to" ref="requestp_pending2"/>
+            <field name="signal">signal_pending2</field>
+        </record>
+
+        <record model="workflow.transition" id="requestopenpending2_to_secondapprove">
+            <field name="act_from" ref="requestp_open_pending2"/>
+            <field name="act_to" ref="requestp_second_approved"/>
+            <field name="signal">signal_approved2</field>
+        </record>
+
+        <record model="workflow.transition" id="requestsecond_approved_to_draft">
+            <field name="act_from" ref="requestp_second_approved"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+        <record model="workflow.transition" id="requestsecond_approved_to_done">
+            <field name="act_from" ref="requestp_second_approved"/>
+            <field name="act_to" ref="requestp_done"/>
+            <field name="signal">signal_done</field>
+        </record>
+
+        <record model="workflow.transition" id="requestdone_to_draft">
+            <field name="act_from" ref="requestp_done"/>
+            <field name="act_to" ref="requestp_draft"/>
+            <field name="signal">signal_draft</field>
+        </record>
+
+    </data>
+</openerp>

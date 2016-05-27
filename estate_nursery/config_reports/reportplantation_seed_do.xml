@@ -1,0 +1,33 @@
+<openerp>
+    <data>
+         <!--<record id="paperformat_reportseeddo" model="report.paperformat">-->
+            <!--<field name="name">Report Seed DO</field>-->
+            <!--<field name="default" eval="True"/>-->
+            <!--<field name="format">custom</field>-->
+            <!--<field name="page_height">600</field>-->
+            <!--<field name="page_width">297</field>-->
+            <!--<field name="orientation">Landscape</field>-->
+            <!--<field name="margin_top">60</field>-->
+            <!--<field name="margin_bottom">23</field>-->
+            <!--<field name="margin_left">7</field>-->
+            <!--<field name="margin_right">7</field>-->
+            <!--<field name="header_line" eval="False"/>-->
+            <!--<field name="header_spacing">60</field>-->
+            <!--<field name="dpi">90</field>-->
+        <!--</record>-->
+
+        <report
+            id="custom_report_seeddo"
+            model="estate.nursery.seeddo"
+            string="SPB report"
+            report_type="qweb-pdf"
+            name="estate_nursery.reportseeddo_div_report"
+            attachment_use="False"
+            file="estate_nursery.reportseeddo_div_report"
+        />
+
+         <!--<record id="custom_report_seeddo_plantation" model="ir.actions.report.xml">-->
+            <!--<field name="paperformat_id" ref="estate_nursery.paperformat_reportseeddo"/>-->
+        <!--</record>-->
+    </data>
+</openerp>

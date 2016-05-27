@@ -1,0 +1,112 @@
+<openerp>
+    <data>
+        <record model='ir.ui.view' id='fleet_vehicle_log_oil_form'>
+            <field name="name">fleet.vehicle.log.oil.form</field>
+            <field name="model">estate.vehicle.log.oil</field>
+            <field name="arch" type="xml">
+                <form string="Oil Logs">
+                    <sheet>
+                        <group col="2">
+                            <group string="Vehicle Details">
+                                <field name="vehicle_id" on_change="on_change_vehicle(vehicle_id)"/>
+                            </group>
+                            <group string="Refueling Oil Details">
+                                <field name="product_id" string="Name Product"/>
+                                <field name="liter" on_change="on_change_liter(liter,price_per_liter,amount)"/>
+                                <field name="price_per_liter"/>
+                                <field name="amount" on_change="on_change_amount(liter,price_per_liter,amount)"/>
+                            </group>
+                        </group>
+                        <group col="2">
+                            <group string="Odometer Details">
+                                <label for="odometer"/>
+                                <div>
+                                    <field name="odometer" class="oe_inline"/>
+                                    <field name="odometer_unit" class="oe_inline"/>
+                                </div>
+                                <field name="cost_type_id" string="Type"/>
+                            </group>
+                            <group string="Additional Details">
+                                <field name="date" />
+                                <field name="purchaser_id" />
+                                <field name="inv_ref" />
+                                <field name="vendor_id" context="{'default_supplier': True}"/>
+                            </group>
+                        </group>
+                        <group string="Notes">
+                            <field nolabel="1" name="notes" placeholder="Write here any other information"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='fleet_vehicle_log_oil_tree'>
+            <field name="name">fleet.vehicle.log.oil.tree</field>
+            <field name="model">estate.vehicle.log.oil</field>
+            <field name="arch" type="xml">
+                <tree string="Oil Logs">
+                    <field name="date" />
+                    <field name="vehicle_id" />
+                    <field name="odometer" invisible="1"/>
+                    <field name="odometer_unit" invisible="1"/>
+                    <field name="purchaser_id" />
+                    <field name="inv_ref" invisible="1"/>
+                    <field name="vendor_id" invisible="1"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="liter" />
+                    <field name="price_per_liter" invisible="1"/>
+                    <field name="amount" sum="Price"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='fleet_vehicle_log_oil_search'>
+            <field name="name">fleet.vehicle.log.fuel.search</field>
+            <field name="model">estate.vehicle.log.oil</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles Oil Logs" >
+                    <field name="vehicle_id" />
+                    <field name="date"/>
+                    <field name="purchaser_id" />
+                    <field name="product_id"/>
+                    <field name="liter" />
+                    <field name="amount" sum="Price"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="fleet_vehicle_log_oil_graph">
+           <field name="name">fleet.vehicle.log.oil.graph</field>
+           <field name="model">estate.vehicle.log.oil</field>
+           <field name="arch" type="xml">
+                <graph string="Oil Costs Per Month">
+                    <field name="vehicle_id" type="row"/>
+                    <field name="cost_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='fleet_vehicle_log_oil_act'>
+            <field name="name">Vehicles Oil Logs</field>
+            <field name="res_model">estate.vehicle.log.oil</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{"search_default_groupby_vehicle" : True}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new fuel log.
+              </p><p>
+                Here you can add refuelling entries for all vehicles.  You can
+                also filter logs of a particular vehicle using the search
+                field.
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="estate_vehicle.fleet_vehicle_log_oil_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_oil_menu" groups="fleet.group_fleet_user"/>
+    </data>
+</openerp>

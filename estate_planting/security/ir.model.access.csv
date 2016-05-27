@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_planting_estate_planting,estate_planting.estate_planting,model_estate_planting_estate_planting,,1,0,0,0

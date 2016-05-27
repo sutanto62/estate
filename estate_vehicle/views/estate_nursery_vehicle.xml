@@ -1,0 +1,38 @@
+<openerp>
+    <data>
+        <!-- View Tree: Estate Structure -->
+        <record model="ir.ui.view" id="view_form_vehicle_inherited">
+            <field name="name">Vehicle - Extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+                <group string="Additional Properties" position="before">
+                    <!--<group string="Vehicle Information">-->
+                        <!--<field name="no_vehicle"/>-->
+                        <!--<field name="vehicle_type"/>-->
+                    <!--</group>-->
+                    <group string="Vehicle Capacity &amp; status">
+                        <field name="category_unit_id" string="Category"/>
+                        <field name="status_vehicle"/>
+                        <field name="capacity_vehicle"/>
+                    </group>
+                    <!--<group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >-->
+                        <!--<field name="employee_driver_id" string="Driver Internal" options="{'no_create_edit': True}"/>-->
+                    <!--</group>-->
+                </group>
+            </field>
+        </record>
+
+          <!-- Extend Form to include Nursery fields -->
+        <record model="ir.ui.view" id="type_vehicle_form_inherited">
+            <field name="name">Estate Vehicle Extension</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <field name="type_vehicle" />
+                </field>
+            </field>
+        </record>
+    </data>
+</openerp>

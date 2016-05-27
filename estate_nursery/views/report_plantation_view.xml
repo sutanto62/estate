@@ -1,0 +1,70 @@
+<openerp>
+    <data>
+        <!--view , batchids-->
+         <record model="ir.ui.view" id="view_form_report_plantation">
+             <field name="name">report plantation</field>
+             <field name="model">estate.nursery.batch</field>
+             <field name="inherit_id" ref="estate_nursery.view_seed_batch_form"/>
+             <field name="arch" type="xml">
+                 <field name="culling_location_id" position="after">
+                     <field name="reportline_id" string="Choose Report"/>
+                 </field>
+             </field>
+         </record>
+        <!--view ,reportline -->
+       <record model="ir.ui.view" id="view_tree_report_plantation">
+            <field name="name">Report Plantation</field>
+            <field name="model">estate.nursery.reportline</field>
+            <field name="arch" type="xml">
+                <tree string="Nursery Report">
+                    <field name="name"/>
+                    <field name="report_date"/>
+                    <field name="kebun_location_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_report">
+            <field name="name">report plantation</field>
+            <field name="model">estate.nursery.reportline</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group coolspan="10">
+                            <field name="name"/>
+                            <field name="kebun_location_id" string="Estate Location"/>
+                        </group>
+                        <group>
+                            <field name="report_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <notebook>
+                            <page string="Report Batch Line">
+                                <tree>
+                                    <field name="batch_ids" />
+
+                                </tree>
+                            </page>
+                        </notebook>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!--Action-->
+        <record model="ir.actions.act_window" id="action_list_reportplantation">
+            <field name="name">Report Plantation</field>
+            <field name="res_model">estate.nursery.reportline</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!--Menu-->
+        <menuitem id="nursery_line_report_plantation" name="Report Batch and Selection"
+                  parent="nursery_seed_batch"
+                  action="action_list_reportplantation"
+                  sequence="17"
+                />
+
+    </data>
+</openerp>
