@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
-
+    <!--<data noupdate="1">-->
+    <data>
+        <record id="decimal_estate" model="decimal.precision">
+            <field name="name">Estate</field>
+            <field name="digits">6</field>
+        </record>
+        <record id="decimal_standard_price" model="decimal.precision">
+            <field name="name">Standard Price</field>
+            <field name="digits">6</field>
+        </record>
     </data>
 </openerp>

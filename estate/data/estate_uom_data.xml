@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <!--<data noupdate="1">-->
+    <data>
         <!-- product.uom.categ -->
         <record id="product_uom_categ_area" model="product.uom.categ">
             <field name="name">Area</field>
@@ -11,6 +12,36 @@
             <field name="category_id" ref="product_uom_categ_area"/>
             <field name="name">ha</field>
             <field name="factor" eval="1.0"/>
+        </record>
+
+        <record id="product_uom_bag" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">bag</field>
+        </record>
+
+        <record id="product_uom_bibit" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">bbt</field>
+        </record>
+
+        <record id="product_uom_kecambah" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">kcb</field>
+        </record>
+
+        <record id="product_uom_lubang" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">lbg</field>
+        </record>
+
+        <record id="product_uom_pokok" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">pkk</field>
+        </record>
+
+        <record id="product_uom_tp" model="product.uom">
+            <field name="category_id" ref="product.product_uom_categ_unit"/>
+            <field name="name">tp</field>
         </record>
     </data>
 </openerp>

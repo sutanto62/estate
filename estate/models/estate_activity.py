@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, osv, exceptions
+import openerp.addons.decimal_precision as dp
 
 class Activity(models.Model):
     _name = 'estate.activity'
@@ -33,22 +34,25 @@ class Activity(models.Model):
                                  help='Set as default analytic account at Upkeep.')
     general_account_id = fields.Many2one('account.account', 'General Account',
                                          help='Set as default general account.')
-    qty_base = fields.Float(string="Standard Work Result/Day", digits=(12, 6),
+    qty_base = fields.Float(string="Standard Work Result/Day", digits=dp.get_precision('Estate'),
                             help="Set as default work's result.")
-    qty_base_min = fields.Float(string="Minimum Work Result/Day", digits=(12, 6),
+    qty_base_min = fields.Float(string="Minimum Work Result/Day", digits=dp.get_precision('Estate'),
                             help="It will be used when Activity Norm defined. Set as minimum work's result.")
-    qty_base_max = fields.Float(string="Maximum Work Result/Day", digits=(12, 6),
+    qty_base_max = fields.Float(string="Maximum Work Result/Day", digits=dp.get_precision('Estate'),
                             help="It will be used when Activity Norm defined. Set as maximum work's result.")
-    ratio_min = fields.Float(compute='_compute_ratio', string="Minimum Work Result Ratio", digits=(12, 6), store=True,
+    ratio_min = fields.Float(compute='_compute_ratio', string="Minimum Work Result Ratio",
+                             digits=dp.get_precision('Estate'), store=True,
                              help="Used to compute work day(s) per unit of measurement.")
-    ratio_max = fields.Float(compute='_compute_ratio', string="Maximum Work Result Ratio", digits=(12, 6), store=True,
+    ratio_max = fields.Float(compute='_compute_ratio', string="Maximum Work Result Ratio",
+                             digits=dp.get_precision('Estate'), store=True,
                              help="Used to compute work day(s) per unit of measurement.")
     parameter_weight_ids = fields.One2many(comodel_name='estate.parameter.weight', inverse_name='activity_id',
                                          string="Parameter Weight")
     activity_norm_ids = fields.One2many(comodel_name='estate.activity.norm', inverse_name='activity_id',
                                         string="Activity Norm")
-    standard_price = fields.Float('Standard Price')
-    piece_rate_price = fields.Float('Piece Rate Price', help='Empty value use standard price instead')
+    standard_price = fields.Float('Standard Price', digits=dp.get_precision('Standard Price'))
+    piece_rate_price = fields.Float('Piece Rate Price', digits=dp.get_precision('Standard Price'),
+                                    help='Empty value use standard price instead')
     activity_type = fields.Selection([('estate', 'Estate Activity'),
                                       ('vehicle', 'Vehicle activity'),
                                       ('general', 'General Affair Activity')],
@@ -85,7 +89,7 @@ class Activity(models.Model):
         """Keep base quantity, min and max.
         """
         if self.qty_base_min or self.qty_base_max:
-            if self.qty_base_min >= self.qty_base_max:
+            if self.qty_base_min > self.qty_base_max:
                 error_msg = "Minimum should less than maximum."
                 raise exceptions.ValidationError(error_msg)
             if self.qty_base < self.qty_base_min or self.qty_base > self.qty_base_max:

@@ -4,6 +4,7 @@ from openerp import models, fields, api, exceptions
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
+import openerp.addons.decimal_precision as dp
 
 estate_working_days = 25 # todo create working calendar
 overtime_amount = 10000
@@ -288,7 +289,8 @@ class UpkeepActivity(models.Model):
     location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id',
                                     string='Location')
     division_id = fields.Many2one('stock.location', compute='_compute_division')
-    unit_amount = fields.Float('Target Unit Amount', help="Calculate labour's work result by dividing with attendance ratio.") # constrains sum of labour activity quantity
+    unit_amount = fields.Float('Target Unit Amount', digits=dp.get_precision('Estate'),
+                               help="Calculate labour's work result by dividing with attendance ratio.") # constrains sum of labour activity quantity
     amount = fields.Float('Cost', compute='_compute_amount', store=True,
                           help='Sum of labour wage and material cost.')
     labour_unit_amount = fields.Float('Labour Unit Amount', compute='_compute_amount', store=True,
@@ -307,10 +309,13 @@ class UpkeepActivity(models.Model):
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state')  # todo ganti dg context
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
+                                      digits=dp.get_precision('Estate'),
                                       help='Included piece rate conversion to number of day based on activity standard base')
     ratio_day_quantity = fields.Float('Ratio Day/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
+                                      digits=dp.get_precision('Estate'),
                                       help='Included piece rate conversion to number of day based on activity standard base')
     ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
+                                       digits=dp.get_precision('Account'),
                                        help='Included piece rate conversion to number of day based on activity standard base')
 
     @api.multi
@@ -430,9 +435,9 @@ class UpkeepLabour(models.Model):
     attendance_code_id = fields.Many2one('estate.hr.attendance', 'Attendance',
                                     help='Any update will reset employee\'s timesheet')
     attendance_code_ratio = fields.Float('Ratio', digits=(4,2), related='attendance_code_id.qty_ratio')
-    quantity = fields.Float('Quantity', help='Define total work result')
-    quantity_piece_rate = fields.Float('Piece Rate', help='Define piece rate work result')
-    quantity_overtime = fields.Float('Overtime', help='Define wage based on hour(s)')
+    quantity = fields.Float('Quantity', help='Define total work result', digits=dp.get_precision('Estate'))
+    quantity_piece_rate = fields.Float('Piece Rate', help='Define piece rate work result', digits=dp.get_precision('Estate'))
+    quantity_overtime = fields.Float('Overtime', help='Define wage based on hour(s)', digits=dp.get_precision('Estate'))
     number_of_day = fields.Float('Work Day', help='Maximum 1', compute='_compute_number_of_day', store=True)
     wage_number_of_day = fields.Float('Daily Wage', compute='_compute_wage_number_of_day', store=True)
     wage_overtime = fields.Float('Overtime Wage', compute='_compute_wage_overtime', store=True)
@@ -442,10 +447,13 @@ class UpkeepLabour(models.Model):
     #extra_amount = fields.Float('Extra Amount') # Premi
     amount = fields.Float('Wage', compute='_compute_amount', store=True, help='Sum of daily, piece rate and overtime wage')
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True,
+                                      digits=dp.get_precision('Estate'),
                                       help='Included piece rate conversion to number of day based on activity standard base')
     ratio_day_quantity = fields.Float('Ratio Day/Quantity', compute='_compute_ratio', store=True,
+                                      digits=dp.get_precision('Estate'),
                                       help='Included piece rate conversion to number of day based on activity standard base')
     ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True,
+                                       digits=dp.get_precision('Account'),
                                        help='Included piece rate conversion to number of day based on activity standard base')
     var_quantity_day = fields.Float('Variance Qty/Day (%)', compute='_compute_variance', store=True, digits=(2,0),
                                     help='Reality to standard difference variance')
