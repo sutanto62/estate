@@ -20,7 +20,7 @@
 
     # any module necessary for this one to work correctly
     'depends': ['estate','base',
-                'fleet',
+                'fleet','purchase',
                 'report','board',
                 'readonly_bypass','mail','estate_vehicle'],
     # always loaded

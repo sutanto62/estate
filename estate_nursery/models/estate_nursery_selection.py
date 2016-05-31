@@ -34,8 +34,7 @@ class Selection(models.Model):
     age_seed_calculate =fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,
-                                        default=lambda self: self.selectionstage_id.search([
-                                            ('name','=','Pre Nursery 1')]),store=True)
+                                        store=True)
 
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
     qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
@@ -427,6 +426,18 @@ class Selection(models.Model):
     def _changestage_id(self):
         self.stage_id=self.selectionstage_id.stage_id
 
+    #onchange Stage
+    @api.multi
+    @api.onchange('selectionstage_id')
+    def _onchange_batch_id(self):
+        selectionstagelist = self.env['estate.nursery.selection'].search([])
+        if self:
+            arrSelectionstagelist = []
+            for a in selectionstagelist:
+                arrSelectionstagelist.append(a.selectionstage_id.id)
+            return {
+                'domain': {'selectionstage_id': [('id','not in',arrSelectionstagelist)]}
+            }
     #onchange qty Normal
     @api.onchange('qty_normal')
     def onchange_normal(self):
@@ -461,6 +472,8 @@ class Selection(models.Model):
                 if qty_selection > qty_batch:
                     error_msg="Quantity Abnormal %s is set more than Quantity Planted %s " %(qty_selection,qty_batch)
                     raise exceptions.ValidationError(error_msg)
+
+
 
 
 class SelectionStage(models.Model):
@@ -574,7 +587,7 @@ class SelectionLine(models.Model):
                         arrTransferSeed.append(b.location_mn_id.id)
             return {
                 'domain': {'cause_id': [('stage_id.id', '=',self.stage_a_id.id)],
-                           'location_id': [('stage_id.id','=',self.stage_a_id.id),('id','in',arrTransferSeed)]},
+                           'location_id': [('id','in',arrTransferSeed)]},
             }
         return True
 

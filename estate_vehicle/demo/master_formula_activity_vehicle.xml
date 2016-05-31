@@ -1,0 +1,224 @@
+<openerp>
+    <data>
+        <record id="master_formula_1" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula1</field>
+            <field name="range_start">0</field>
+            <field name="range_end">1</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">1</field>
+            <field name="basis">30</field>
+            <field name="premi_base">2500</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_2" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula2</field>
+            <field name="range_start">1.5</field>
+            <field name="range_end">2</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">1</field>
+            <field name="basis">24</field>
+            <field name="premi_base">3125</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_3" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula3</field>
+            <field name="range_start">2.5</field>
+            <field name="range_end">3</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">1</field>
+            <field name="basis">18</field>
+            <field name="premi_base">4167</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_4" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula4</field>
+            <field name="range_start">3.5</field>
+            <field name="range_end">4</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">1</field>
+            <field name="basis">15</field>
+            <field name="premi_base">5000</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_5" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula5</field>
+            <field name="range_start">4.5</field>
+            <field name="range_end">5</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">1</field>
+            <field name="basis">12</field>
+            <field name="premi_base">6250</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_6" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula6</field>
+            <field name="range_start">5</field>
+            <field name="range_end">0</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">1</field>
+            <field name="basis">8</field>
+            <field name="premi_base">9375</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_7" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula7</field>
+            <field name="range_start">0</field>
+            <field name="range_end">1</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">2</field>
+            <field name="basis">21</field>
+            <field name="premi_base">2500</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_8" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula8</field>
+            <field name="range_start">1.5</field>
+            <field name="range_end">2</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">2</field>
+            <field name="basis">17</field>
+            <field name="premi_base">3125</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_9" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula9</field>
+            <field name="range_start">2.5</field>
+            <field name="range_end">3</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">2</field>
+            <field name="basis">13</field>
+            <field name="premi_base">4167</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_10" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula10</field>
+            <field name="range_start">3.5</field>
+            <field name="range_end">4</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">2</field>
+            <field name="basis">11</field>
+            <field name="premi_base">5000</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_11" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula11</field>
+            <field name="range_start">4.5</field>
+            <field name="range_end">5</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">2</field>
+            <field name="basis">9</field>
+            <field name="premi_base">6250</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_12" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula6</field>
+            <field name="range_start">5</field>
+            <field name="range_end">0</field>
+            <field name="type_handling">1</field>
+            <field name="type_day">2</field>
+            <field name="basis">6</field>
+            <field name="premi_base">9375</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_1"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_13" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula13</field>
+            <field name="range_start">1</field>
+            <field name="range_end">5</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">1</field>
+            <field name="basis">200</field>
+            <field name="premi_base">375</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_2"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_14" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula14</field>
+            <field name="range_start">5</field>
+            <field name="range_end">10</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">1</field>
+            <field name="basis">120</field>
+            <field name="premi_base">625</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_2"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_15" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula13</field>
+            <field name="range_start">1</field>
+            <field name="range_end">5</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">2</field>
+            <field name="basis">143</field>
+            <field name="premi_base">375</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_2"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_16" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula16</field>
+            <field name="range_start">5</field>
+            <field name="range_end">10</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">2</field>
+            <field name="basis">86</field>
+            <field name="premi_base">625</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_2"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_17" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula17</field>
+            <field name="range_start">1</field>
+            <field name="range_end">5</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">1</field>
+            <field name="basis">200</field>
+            <field name="premi_base">375</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_4"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_18" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula18</field>
+            <field name="range_start">5</field>
+            <field name="range_end">10</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">1</field>
+            <field name="basis">120</field>
+            <field name="premi_base">625</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_4"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_19" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula19</field>
+            <field name="range_start">1</field>
+            <field name="range_end">5</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">2</field>
+            <field name="basis">143</field>
+            <field name="premi_base">375</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_4"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+        <record id="master_formula_20" model="master.formula.activity.vehicle">
+            <field name="formula_name">Formula20</field>
+            <field name="range_start">5</field>
+            <field name="range_end">10</field>
+            <field name="type_handling">2</field>
+            <field name="type_day">2</field>
+            <field name="basis">86</field>
+            <field name="premi_base">625</field>
+            <field name="category_unit_id" ref="estate_vehicle.master_unit_4"/>
+            <field name="job_id" ref="estate_vehicle.vehicle_hr_job_10"/>
+        </record>
+    </data>
+</openerp>

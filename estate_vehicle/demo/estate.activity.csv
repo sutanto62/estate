@@ -1,0 +1,86 @@
+"id","name","parent_id/id","uom_id/id","standard_price","piece_rate_price","type","qty_base","activity_type"
+"estate.activity_5","vehicle","","","","","View","","vehicle"
+"estate.activity_6","Available","estate.activity_5","","","","View","","vehicle"
+"estate.activity_7","Langsir Bibit","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","2.0","vehicle"
+"estate.activity_8","Langsir Bibit Dalam Block","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_9","Langsir Bibit Sisipan","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","2.0","vehicle"
+"estate.activity_10","Langsir Brondol","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_11","Langsir Brondol & TBS","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","2.0","vehicle"
+"estate.activity_12","Langsir Buah Restan","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_13","Langsir Minyak","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","2.0","vehicle"
+"estate.activity_14","Langsir Pupuk","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_15","Langsir Pupuk Dalam Block","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","2.0","vehicle"
+"estate.activity_16","Langsir Pupuk u/Patai","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_17","Langsir solar","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","2.0","vehicle"
+"estate.activity_18","Langsir Solar u/ Rumah Mesin","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_19","Langsir Tanah Polybag","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_20","Langsir TBS","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_21","Langsir Titian Panen","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_22","Loading tanah u/Polybag","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_23","Loading Tanah u/Timbun Jalan","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_24","Meratakan Tanah galian u/Jalan","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_25","Meratakan Tanah Timbunan","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_26","Muat Bibit","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_27","Muat Pupuk","estate.activity_6","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_28","Standby","estate.activity_5","","","","View","","vehicle"
+"estate.activity_29","Standby Alat rusak","estate.activity_28","","","","Normal","","vehicle"
+"estate.activity_30","Standby Hujan","estate.activity_28","","","","Normal","","vehicle"
+"estate.activity_31","Standby Minggu","estate.activity_28","","","","Normal","","vehicle"
+"estate.activity_32","Standby Idle","estate.activity_28","","","","Normal","","vehicle"
+"estate.activity_33","Service","estate.activity_5","","","","View","","vehicle"
+"estate.activity_34","Service Jalan","estate.activity_33","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_35","Service Jalan CR","estate.activity_33","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_36","Service Jalan MR","estate.activity_33","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_37","Service Tanah Timbunan","estate.activity_33","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_38","Servis Badan Jalan","estate.activity_33","estate.product_uom_hectare","75000","60000","Normal","0.5","vehicle"
+"estate.activity_39","BreakDown","estate.activity_5","","","","View","","vehicle"
+"estate.activity_40","Turun Mesin","estate.activity_39","","","","Normal","","vehicle"
+"estate.activity_41","Tarik Alat terpuruk","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+"estate.activity_42","Tarik Truck","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+"estate.activity_43","Tarik Truck Muat Pupuk","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+"estate.activity_44","Teras kontur","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+"estate.activity_45","Timbun Badan Jalan","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+"estate.activity_46","Timbun Jalan CR","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+"estate.activity_47","Timbun Jalan MR","estate.activity_6","estate.product_uom_hectare","","","Normal","0.5","vehicle"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

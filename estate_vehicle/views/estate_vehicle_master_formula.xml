@@ -11,9 +11,9 @@
                     <field name="range_end" string="Range End"/>
                     <field name="type_handling" string="Handling"/>
                     <field name="type_day" string="Day"/>
-                    <field name="category_unit_id" string="Unit"/>
-                    <field name="job_id" string="Job"/>
-                    <field name="basis" string="Basis"/>
+                    <field name="category_unit_id" string="Unit" options="{'no_create_edit': True}"/>
+                    <field name="job_id" string="Job" options="{'no_create_edit': True}"/>
+                    <field name="basis" string="Basis" />
                     <field name="premi_base" string="Premi Basis"/>
                     <field name="use_start" string="Use Start"/>
                     <field name="use_end" string="Use End"/>

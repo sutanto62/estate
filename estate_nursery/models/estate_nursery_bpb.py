@@ -204,7 +204,7 @@ class RequestLine(models.Model):
         #domain batch
         arrBatch=[]
         arrRecordBatch=[]
-        batch = self.env['estate.nursery.batch'].search([('age_seed_range','>=',6),('qty_planted','>',0)])
+        batch = self.env['estate.nursery.batch'].search([('age_seed_range','>',6),('qty_planted','>',0)])
         if self:
             for a in batch:
                 arrBatch.append(a.id)

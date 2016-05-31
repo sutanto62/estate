@@ -1,0 +1,36 @@
+<openerp>
+    <data>
+        <record id="master_unit_1" model="master.category.unit">
+            <field name="name">Dump Truck</field>
+            <field name="type">1</field>
+        </record>
+        <record id="master_unit_2" model="master.category.unit">
+            <field name="name">Pick Up</field>
+            <field name="type">1</field>
+        </record>
+        <record id="master_unit_3" model="master.category.unit">
+            <field name="name">Light Vehicle</field>
+            <field name="type">1</field>
+        </record>
+        <record id="master_unit_4" model="master.category.unit">
+            <field name="name">Tracktor</field>
+            <field name="type">1</field>
+        </record>
+        <record id="master_unit_5" model="master.category.unit">
+            <field name="name">Alat Berat</field>
+            <field name="type">2</field>
+        </record>
+        <record id="master_unit_6" model="master.category.unit">
+            <field name="name">Genset</field>
+            <field name="type">2</field>
+        </record>
+        <record id="master_unit_7" model="master.category.unit">
+            <field name="name">Water Pump</field>
+            <field name="type">2</field>
+        </record>
+        <record id="master_unit_8" model="master.category.unit">
+            <field name="name">Trailler</field>
+            <field name="type">1</field>
+        </record>
+    </data>
+</openerp>
