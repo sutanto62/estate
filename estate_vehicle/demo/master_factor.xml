@@ -1,0 +1,25 @@
+<openerp>
+    <data>
+        <record id="master_factor_1" model="master.factor.multiple">
+            <field name="name">Factor1</field>
+            <field name="parameter_id" ref="estate.parameter_topography"/>
+            <field name="parameter_value_id" ref="estate.parameter_value_hilly"/>
+            <field name="type">2</field>
+            <field name="factor_multiple">20</field>
+        </record>
+        <record id="master_factor_2" model="master.factor.multiple">
+            <field name="name">Factor2</field>
+            <field name="parameter_id" ref="estate.parameter_topography"/>
+            <field name="parameter_value_id" ref="estate.parameter_value_flat"/>
+            <field name="type">2</field>
+            <field name="factor_multiple">600</field>
+        </record>
+        <record id="master_factor_3" model="master.factor.multiple">
+            <field name="name">Factor3</field>
+            <field name="parameter_id" ref="estate.parameter_topography"/>
+            <field name="parameter_value_id" ref="estate.parameter_value_wave"/>
+            <field name="type">2</field>
+            <field name="factor_multiple">800</field>
+        </record>
+    </data>
+</openerp>

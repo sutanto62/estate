@@ -352,20 +352,20 @@
         depend on: group_stock_packaging = true at stock.config.settings
         -->
         <record id="packaging_seed_1" model="product.packaging">
-            <field name="qty">5</field>
+            <field name="qty">200</field>
             <field name="ul" ref="estate_nursery.seed_bag_200"/>
             <field name="ul_container" ref="estate_nursery.seed_box"/>
-            <field name="ul_qty">3</field>
+            <field name="ul_qty">10</field>
             <field name="rows">2</field>
             <field name="weight">15</field>
             <field name="product_tmpl_id" ref="estate_nursery.seed_dami_product_template"/>
         </record>
 
         <record id="packaging_seed_2" model="product.packaging">
-            <field name="qty">7</field>
+            <field name="qty">250</field>
             <field name="ul" ref="estate_nursery.seed_bag_100"/>
             <field name="ul_container" ref="estate_nursery.seed_box"/>
-            <field name="ul_qty">3</field>
+            <field name="ul_qty">10</field>
             <field name="rows">2</field>
             <field name="weight">15</field>
             <field name="product_tmpl_id" ref="estate_nursery.seed_ppks_product_template"/>

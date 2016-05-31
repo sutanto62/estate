@@ -406,8 +406,8 @@ class Batch(models.Model):
                         raise ValidationError("Quantity Single Should be Greater than Seed DO !")
                 elif qty_abnormal > seed_qty:
                         raise ValidationError("Quantity Total Abnormal not matched with Quantity Planted")
-                elif qty_normal > qty_planted:
-                        raise ValidationError("Quantity Total Normal not matched with Quantity Planted")
+                # elif qty_normal > qty_planted:
+                #         raise ValidationError("Quantity Total Normal not matched with Quantity Planted")
                 elif seed_qty < qty_double:
                         raise ValidationError("Quantity Double Should be Greater than Seed DO !")
                 elif seed_qty < qty_fungus:
@@ -692,7 +692,7 @@ class Batchline(models.Model):
                                   domain=[('estate_location', '=', True),
                                           ('estate_location_level', '=', '3'),
                                           ('estate_location_type', '=', 'nursery'),
-                                          ('stage_id','=',3),
+                                          ('stage_id','=',1),
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.")
     flag_bag= fields.Boolean('Bag or box ?')
@@ -713,8 +713,9 @@ class Batchline(models.Model):
     @api.depends('subtotal_normal', 'subtotal_abnormal', 'qty_planted')
     def _compute_variance(self):
         """Compute variance of received and planted."""
-        self.selection_do_var = (self.subtotal_normal + self.subtotal_abnormal) - self.seed_qty
-        self.planting_selection_var = self.qty_planted - self.subtotal_normal
+        if self.qty_single and self.qty_double and self.qty_broken and self.qty_dead and self.qty_fungus:
+            self.selection_do_var = (self.subtotal_normal + self.subtotal_abnormal) - self.seed_qty
+            self.planting_selection_var = self.qty_planted - self.subtotal_normal
 
     # @api.one
     # @api.onchange('qty_planted','subtotal_normal')

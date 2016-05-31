@@ -318,7 +318,7 @@
                                            'default_age_seed': age_seed_range}"/>
                                 </page>
 
-                                <page string="Transfer Mn" attrs="{'invisible' : [('age_seed_range','&lt;',3)]}">
+                                <page string="Transfer Mn" attrs="{'invisible' : [('age_seed_range','&lt;',2)]}">
                                     <field name="transfermn_ids"  string="Create Selection" attrs="{
                                     'required' : [('state', '=', 'draft')]}"
                                            context="{'tree_view_ref' : 'estate_nursery.view_tree_transfermn',
