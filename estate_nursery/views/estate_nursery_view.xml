@@ -710,7 +710,7 @@
         <menuitem id="estate_nursery_menu"
                   name="Nursery"
                   parent="estate.main_estate_menu"
-                  sequence="10"/>
+                  sequence="9"/>
 
         <menuitem id="nursery_seed_statement"
                   name="Nursery Statement"
