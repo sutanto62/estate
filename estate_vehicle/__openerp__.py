@@ -48,11 +48,11 @@
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
+        'demo/master_factor.xml',
         'demo/estate.activity.csv',
         'demo/path.location.csv',
         'demo/master_category_unit.xml',
         'demo/hr_job.xml',
         'demo/master_formula_activity_vehicle.xml',
-        'demo/master_factor.xml',
     ],
 }
