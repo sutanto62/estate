@@ -51,8 +51,8 @@
                     <field name="vehicle_id" string="Vehicle"/>
                     <field name="vehicle_id" string="Vehicle"/>
                     <field name="total_amount_per_month" string="Total Amount"/>
-                    <field name="total_time" string="Total Amount"/>
-                    <field name="amount_per_hour" string="Total Amount"/>
+                    <field name="total_time" string="Total Time"/>
+                    <field name="amount_per_hour" string="Total Amount Per Hour"/>
                 </tree>
             </field>
         </record>
