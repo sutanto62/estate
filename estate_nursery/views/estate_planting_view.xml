@@ -531,7 +531,7 @@
 
         
         <!--Menu View-->
-        <menuitem id="estate_nursery_planting" name="Transplanting" parent="estate_nursery_menu" sequence="80"
+        <menuitem id="estate_nursery_planting" name="Transplanting" parent="estate_nursery_menu" sequence="17"
                   groups="estate.group_user"/>
          <!-- MENU -->
         <menuitem id="nursery_transfer_mn"
