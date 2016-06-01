@@ -253,6 +253,9 @@
                                statusbar_colors='{"draft" :"blue","confirm":"blue","done":"blue"}'/>
                     </header>
                     <sheet>
+                         <div class="oe_right oe_button_box">
+
+                         </div>
                         <group name="top" string="Batch Information">
                             <group name="top_left">
                                 <field name="name"/>
@@ -688,11 +691,32 @@
              </field>
          </record>
 
+        <record model="ir.ui.view" id="view_form_inherit_button_tracability">
+             <field name="name">Button Traceability</field>
+             <field name="model">estate.nursery.batch</field>
+             <field name="inherit_id" ref="estate_nursery.view_seed_batch_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
+                     <button name="%(stock.quantsact)d"
+                                string="Seed Quants"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                     <button name="%(stock.action_production_lot_form)d"
+                                string="Seed Move"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                     <button name="%(estate_nursery.action_list_selection)d"
+                                string="Seed Selection"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                     <button name="%(estate_nursery.action_list_cleaving)d"
+                                string="Seed Cleaving"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                     <button name="%(estate_nursery.action_list_recovery)d"
+                                string="Seed Recovery"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                 </xpath>
+             </field>
+         </record>
+
+
         <!-- Menu -->
         <menuitem id="estate_nursery_menu"
                   name="Nursery"
                   parent="estate.main_estate_menu"
-                  sequence="10"/>
+                  sequence="9"/>
 
         <menuitem id="nursery_seed_statement"
                   name="Nursery Statement"
@@ -706,32 +730,10 @@
                   sequence="12"
                   groups="estate.group_user"/>
 
-        <menuitem id="nursery_seed_list_batch" name="Seed Batch"
+        <menuitem id="nursery_seed_batch" name="Seed Batch"
                   parent="estate_nursery_menu"
-                  sequence="13"/>
-
-        <menuitem id="nursery_seed_batch" name="Seed List Batch"
-                  parent="nursery_seed_list_batch"
                   action="action_list_batch"
-                  sequence="11"/>
-
-        <menuitem id="traceability_batch" name="Traceability Batch"
-                  parent="nursery_seed_list_batch"
                   sequence="13"/>
-
-        <menuitem id="detail_batch" name="Detail Batch"
-                  parent="nursery_seed_list_batch"
-                  sequence="12"/>
-
-        <menuitem id="nursery_quants_batch" name="Seed Batch Quants"
-                  parent="traceability_batch"
-                  action="stock.quantsact"
-                  sequence="13"/>
-
-        <menuitem id="nursery_move_batch" name="Seed Batch Move"
-                  parent="traceability_batch"
-                  action="stock.action_production_lot_form"
-                  sequence="12"/>
 
 
 

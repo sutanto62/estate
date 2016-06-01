@@ -51,8 +51,8 @@
                     <field name="vehicle_id" string="Vehicle"/>
                     <field name="vehicle_id" string="Vehicle"/>
                     <field name="total_amount_per_month" string="Total Amount"/>
-                    <field name="total_time" string="Total Amount"/>
-                    <field name="amount_per_hour" string="Total Amount"/>
+                    <field name="total_time" string="Total Time"/>
+                    <field name="amount_per_hour" string="Total Amount Per Hour"/>
                 </tree>
             </field>
         </record>
@@ -300,13 +300,13 @@
                 <field name="context">{"search_default_groupby_year" : True}</field>
         </record>
 
-        <menuitem id="estate_summary_cost_vehicle" name="Summary Cost Vehicle"
-                  parent="estate_vehicle.estate_vehicle_timesheet_menu"
+        <menuitem id="estate_summary_cost_vehicle" name="Vehicle Cost"
+                  parent="fleet.menu_fleet_reporting"
                   action="action_list_view_summary_vehicle"
                   groups="base.group_no_one" sequence="14"/>
 
-        <menuitem id="estate_summary_cost_vehicle_detail" name="Summary Cost Vehicle Detail"
-                  parent="estate_vehicle.estate_vehicle_timesheet_menu"
+        <menuitem id="estate_summary_cost_vehicle_detail" name="Vehicle Cost Detail"
+                  parent="fleet.menu_fleet_reporting"
                   action="action_list_view_summary_vehicle_detail"
                   groups="base.group_no_one" sequence="15"/>
 

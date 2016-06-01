@@ -59,9 +59,7 @@
                                statusbar_visible="draft,confirmed,done"
                                statusbar_color='{"draft":"blue"}'/>
                     </header>
-
-
-
+                    <sheet>
                          <div class="oe_title" colors="blue">
                              <h1>
                                  <label string="Transfer Mn For Batch "
@@ -110,11 +108,11 @@
                                 </page>
                             </notebook>
                         </group>
+                    </sheet>
                         <div class="oe_chatter">
                             <field name="message_follower_ids" widget="mail_followers"/>
                             <field name="message_ids" widget="mail_thread" options='{"thread_level": 1}'/>
                         </div>
-
                 </form>
             </field>
         </record>

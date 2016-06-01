@@ -60,8 +60,8 @@
         </record>
 
         <!--Menu-->
-        <menuitem id="nursery_line_report_plantation" name="Report Batch and Selection"
-                  parent="nursery_seed_batch"
+        <menuitem id="nursery_line_report_plantation" name="Batch &amp; Selection"
+                  parent="estate.menu_estate_reporting"
                   action="action_list_reportplantation"
                   sequence="17"
                 />
