@@ -17,6 +17,18 @@ class EstateLocation(models.Model):
                                             "Planted: location for planting. "
                                             "Emplacement: location for non-planting/nursery.")
 
+    def get_estate(self, id):
+        """
+        Get estate of a location
+        :param id: a location
+        :return: estate location
+        """
+        parent = self.env['stock.location'].search([('id', '=', id)]).location_id
+        if parent.estate_location_level == '1':
+            return parent
+        else:
+            return self.get_estate(parent.id)
+
 class LabourType(models.Model):
     _name = 'estate.labour.type'
 

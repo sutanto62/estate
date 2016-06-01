@@ -9,6 +9,7 @@
             <field name="arch" type="xml">
                 <tree colors="blue:type=='view'">
                     <field name="complete_name"/>
+                    <field name="wage_method"/>
                     <field name="type"/>
                 </tree>
             </field>
@@ -36,6 +37,7 @@
                                 <field name="account_id"/>
                                 <field name="general_account_id"/>
                                 <field name="activity_type"/>
+                                <field name="wage_method"/>
                             </group>
                         </group>
 

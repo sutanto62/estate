@@ -93,13 +93,11 @@ class Upkeep(models.Model):
     @api.one
     @api.onchange('division_id')
     def _onchange_division_id(self):
-        """Select estate automatically, Update location domain in upkeep line
+        """Select estate automatically, update location domain in upkeep line
         :return: first estate and set to estate_id
         """
         if self.division_id:
-            res = self.env['stock.location'].search([('id', '=', self.division_id.location_id.id)])
-            if res:
-                self.estate_id = res
+            self.estate_id = self.env['stock.location'].get_estate(self.division_id.id)
 
     @api.one
     @api.constrains('date')
@@ -307,7 +305,7 @@ class UpkeepActivity(models.Model):
                                    help="Sum of material's cost.")
     account_id = fields.Many2one('account.analytic.line', 'Analytic Account Line')
     comment = fields.Text('Remark')
-    state = fields.Selection(related='upkeep_id.state')  # todo ganti dg context
+    state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
                                       digits=dp.get_precision('Estate'),
                                       help='Included piece rate conversion to number of day based on activity standard base')
@@ -369,35 +367,35 @@ class UpkeepActivity(models.Model):
         2. Day/quantity, number of day per work result.
         3. Wage/quantity, cost per work result
         """
+        for record in self:
+            upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('upkeep_id', '=', record.upkeep_id.id),
+                                                                         ('activity_id', '=', record.activity_id.id)])
 
-        upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('upkeep_id', '=', self.upkeep_id.id),
-                                                                     ('activity_id', '=', self.activity_id.id)])
+            number_of_day = sum(labour.number_of_day for labour in upkeep_labour_ids)
+            quantity_piece_rate = sum(labour.quantity_piece_rate for labour in upkeep_labour_ids)
+            activity_standard_base = record.activity_id.qty_base
+            quantity = sum(labour.quantity for labour in upkeep_labour_ids)
+            amount = sum(labour.amount for labour in upkeep_labour_ids)
 
-        number_of_day = sum(labour.number_of_day for labour in upkeep_labour_ids)
-        quantity_piece_rate = sum(labour.quantity_piece_rate for labour in upkeep_labour_ids)
-        activity_standard_base = self.activity_id.qty_base
-        quantity = sum(labour.quantity for labour in upkeep_labour_ids)
-        amount = sum(labour.amount for labour in upkeep_labour_ids)
+            try:
+                total_days = number_of_day + (quantity_piece_rate/activity_standard_base)
+            except ZeroDivisionError:
+                total_days = 0
 
-        try:
-            total_days = number_of_day + (quantity_piece_rate/activity_standard_base)
-        except ZeroDivisionError:
-            total_days = 0
+            try:
+                record.ratio_quantity_day = quantity / total_days
+            except ZeroDivisionError:
+                record.ratio_quantity_day = 0
 
-        try:
-            self.ratio_quantity_day = quantity / total_days
-        except ZeroDivisionError:
-            self.ratio_quantity_day = 0
+            try:
+                record.ratio_day_quantity = total_days / quantity
+            except ZeroDivisionError:
+                record.ratio_day_quantity = 0
 
-        try:
-            self.ratio_day_quantity = total_days / quantity
-        except ZeroDivisionError:
-            self.ratio_day_quantity = 0
-
-        try:
-            self.ratio_wage_quantity = amount / quantity
-        except ZeroDivisionError:
-            self.ratio_wage_quantity = 0
+            try:
+                record.ratio_wage_quantity = amount / quantity
+            except ZeroDivisionError:
+                record.ratio_wage_quantity = 0
 
     @api.onchange('upkeep_id')
     def _onchange_upkeep(self):
@@ -456,12 +454,14 @@ class UpkeepLabour(models.Model):
                                        digits=dp.get_precision('Account'),
                                        help='Included piece rate conversion to number of day based on activity standard base')
     var_quantity_day = fields.Float('Variance Qty/Day (%)', compute='_compute_variance', store=True, digits=(2,0),
-                                    help='Reality to standard difference variance')
+                                    group_operator="avg", help='Reality to standard difference variance')
     prod_quantity_day = fields.Float('Productivity Qty/Day (%)', compute='_compute_prod', store=True, digits=(2, 0),
-                                     group_operator="avg", help='Achievement over standard.')
-
+                                     group_operator="avg", help='Achievement over standard in percentage.')
+    var_qty_base = fields.Float('Variance to Standard', compute='_compute_var_qty_base', store=True,
+                                group_operator="avg", digits=dp.get_precision('Estate'),
+                                help='Achievement over standar in quantity.')
     comment = fields.Text('Remark')
-    state = fields.Selection(related='upkeep_id.state')  # todo ganti dg context
+    state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
 
     @api.multi
     @api.depends('employee_id')
@@ -479,11 +479,14 @@ class UpkeepLabour(models.Model):
     @api.depends('attendance_code_ratio', 'activity_standard_base', 'quantity')
     def _compute_number_of_day(self):
         """Define number of days based on attendance code and work result
-        Condition:
+        Condition if activity.wage_method = 'standard':
         1. A day work and work result > activity standard = 1 day.
         2. A day work and work result more than half of standard = 0.5 day.
         3. A half day work and work result more than half of standard = 0.5 day.
-        4. Else = 0 day.
+        4. Else = 1 * attendance ratio day.
+
+        Condition if activity.wage_method = 'attendance':
+        1. based on attendance ratio.
         """
         att_ratio = self.attendance_code_ratio
         base = self.activity_standard_base # todo adjust base to estate block parameter
@@ -496,7 +499,10 @@ class UpkeepLabour(models.Model):
         else:
             result = 0
 
-        self.number_of_day = result
+        if self.activity_id.wage_method == 'standard':
+            self.number_of_day = result
+        elif self.activity_id.wage_method == 'attendance':
+            self.number_of_day = att_ratio
 
     @api.one
     @api.depends('number_of_day', 'employee_id', 'upkeep_date', 'estate_id')
@@ -504,7 +510,7 @@ class UpkeepLabour(models.Model):
         """Daily wage calculated from number of days exclude. Use regional minimum wage if employee
         has no contract.
         """
-        # Get default wage
+        # Get regional wage
         wage = self.env['estate.wage'].search([('active', '=', True),
                                                ('date_start', '<=', self.upkeep_date),
                                                ('estate_id', '=', self.estate_id.id)],
@@ -519,7 +525,10 @@ class UpkeepLabour(models.Model):
 
         # Contract override regional wage setting
         if newest_contract:
-            daily_wage = newest_contract.wage / wage.number_of_days
+            try:
+                daily_wage = newest_contract.wage / wage.number_of_days
+            except ZeroDivisionError:
+                daily_wage = 0
         else:
             daily_wage = wage.daily_wage
 
@@ -600,7 +609,7 @@ class UpkeepLabour(models.Model):
     @api.one
     @api.depends('quantity', 'activity_standard_base')
     def _compute_prod(self):
-        """Achievement over standard base
+        """Achievement over standard base in percentage.
         """
         #self.ensure_one()
         base = self.activity_standard_base
@@ -610,6 +619,27 @@ class UpkeepLabour(models.Model):
             result = 0
 
         self.prod_quantity_day = result
+
+    @api.multi
+    @api.depends('activity_id', 'quantity')
+    def _compute_var_qty_base(self):
+        """Achievement over standard in quantity.
+        """
+        for record in self:
+            # Calculate based on activity and quantity
+            if record.activity_id:
+                record.var_qty_base = record.quantity - record.activity_id.qty_base
+
+    @api.multi
+    @api.onchange('activity_id')
+    def _onchange_activity_id(self):
+        """
+        Certain activity has wage method based on attendance code. Required to refresh attendance code when
+        activity change
+        :return:
+        """
+        for record in self:
+            record.attendance_code_id = False
 
     @api.multi
     @api.constrains('quantity_piece_rate')
@@ -681,7 +711,9 @@ class UpkeepMaterial(models.Model):
     amount = fields.Float('Cost', compute='_compute_amount', store=True)
     ratio_product_activity = fields.Float(compute='_compute_ratio', digits=(18, 6), group_operator="avg", store=True)
     comment = fields.Text('Remark')
-    state = fields.Selection(related='upkeep_id.state')  # todo ganti dg context
+    state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
+    estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
+    division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
 
     @api.multi
     @api.depends('product_id')
