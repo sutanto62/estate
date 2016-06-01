@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_estate_workshop_estate_workshop,estate_workshop.estate_workshop,model_estate_workshop_estate_workshop,,1,0,0,0

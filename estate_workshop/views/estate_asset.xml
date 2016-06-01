@@ -1,0 +1,56 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="type_vehicle_form_asset_inherited">
+            <field name="name">Estate Asset Extension</field>
+            <field name="model">asset.asset</field>
+            <field name="inherit_id" ref="asset.assets_form_view"/>
+            <field name="arch" type="xml">
+                <field name="property_stock_asset" position="after">
+                    <field name="type_asset" string="Type Asset"/>
+                    <field name="fleet_id" string="Vehicle" attrs="{'invisible': [('type_asset','!=','1')]}"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_inherit_field_maintenance_template">
+             <field name="name">Inherit maintenance Template</field>
+             <field name="model">estate.vehicle.log.sparepart</field>
+             <field name="inherit_id" ref="estate_vehicle.fleet_vehicle_log_sparepart_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='vehicle_id']" position="after">
+                     <field name="maintenance_id" string="Maintenance" invisible="1"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_form_inherit_field_type_service_template">
+             <field name="name">Inherit type_service Template</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='asset_id']" position="after">
+                    <field name="type_service" string="Service Type"/>
+                 </xpath>
+             </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_form_inherit_field_sparepart_template">
+             <field name="name">Inherit Sparepart list Template</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Parts']" position="after">
+                    <page string="Sparepart Use">
+                        <tree>
+                            <field name="sparepartlog_ids" track_visibility="onchange"
+                                   attrs="{'invisible': [('type_service','!=','1')]}"
+                                   context="{'tree_view_ref' : 'estate_vehicle.fleet_vehicle_log_sparepart_tree',
+                                   'default_vehicle_id':asset_id,
+                                   'default_date':date_execution }"/>
+                        </tree>
+                    </page>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>
