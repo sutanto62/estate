@@ -13,6 +13,12 @@ class InheritSparepartLog(models.Model):
 
     maintenance_id = fields.Integer()
 
+class InheritProduct(models.Model):
+
+    _inherit = 'product.template'
+
+    part_number = fields.Char('Part Number')
+
 class InheritSparepartids(models.Model):
 
     _inherit = 'mro.order'
@@ -172,3 +178,46 @@ class MasterSheduleMaintenance(models.Model):
     date = fields.Date()
     odometer_min = fields.Float()
     odometer_max = fields.Float()
+
+
+class MasterCatalog(models.Model):
+
+    _name='estate.part.catalog'
+    _order = 'complete_name'
+
+    name=fields.Char('Master Catalog')
+    complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
+    parent_id = fields.Many2one('estate.part.catalog', "Parent Category", ondelete='restrict')
+    parent_left = fields.Integer("Parent Left",	index=True)
+    parent_right = fields.Integer("Parent Right", index=True)
+    child_ids = fields.One2many('estate.part.catalog', 'parent_id', "Child Type")
+    type= fields.Selection([('view', "View"),
+                             ('normal', "Normal")], "Type",
+                            required=True,
+                            help="Select View to create group of activities.")
+    asset_id = fields.Many2one('asset.asset')
+    categoryline_ids = fields.One2many('estate.part.catalogline','catalog_id','catalog_line')
+    category_id = fields.Many2one('master.category.unit')
+
+
+    @api.one
+    @api.depends('name', 'parent_id')
+    def _complete_name(self):
+        """ Forms complete name of location from parent category to child category.
+        """
+        if self.parent_id:
+            self.complete_name = self.parent_id.complete_name + ' / ' + self.name
+        else:
+            self.complete_name = self.name
+
+        return True
+
+class MasterCatalogLine(models.Model):
+
+    _name = 'estate.part.catalogline'
+
+    name = fields.Char('Catalog Line')
+    product_id = fields.Many2one('product.product')
+    part_number = fields.Char('Part Number')
+    quantity_part = fields.Float('Quantity Part')
+    catalog_id = fields.Integer()

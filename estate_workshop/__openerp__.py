@@ -25,7 +25,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/estate_asset.xml',
-        'views/estate_notification.xml'
+        'views/estate_notification.xml',
+        'views/estate_master_catalog.xml'
 
     ],
     # only loaded in demonstration mode

@@ -12,6 +12,17 @@
             </field>
         </record>
 
+         <record model="ir.ui.view" id="part_number_inherited">
+            <field name="name">Part Number Extension</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='name']" position="after">
+                     <field name="part_number" string="Part Number" invisible="1"/>
+                 </xpath>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_form_inherit_field_maintenance_template">
              <field name="name">Inherit maintenance Template</field>
              <field name="model">estate.vehicle.log.sparepart</field>
