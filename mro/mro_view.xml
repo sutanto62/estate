@@ -93,7 +93,7 @@
             <field name="context">{'search_default_open': 1}</field>
         </record>
 
-        <menuitem name="Maintenance Requests"
+        <menuitem name="Maintenance Notification"
             action="action_requests"
             id="menu_mro_request"
             parent="menu_mro_maintenance"
@@ -265,6 +265,12 @@
             id="menu_mro_order"
             parent="menu_mro_maintenance"
             sequence="10"/>
+
+         <menuitem name="Maintenance Repair"
+            action="mrp_repair.action_repair_order_tree"
+            id="menu_repair_maintenance"
+            parent="menu_mro_maintenance"
+            sequence="11"/>
             
         <!-- Parts menu -->
         <menuitem name="Parts"

@@ -308,7 +308,8 @@ class mro_task(osv.osv):
     _description = 'Maintenance Task'
 
     MAINTENANCE_TYPE_SELECTION = [
-        ('cm', 'Corrective')
+        ('cm', 'Corrective'),
+        ('pm', 'Preventive')
     ]
 
     _columns = {

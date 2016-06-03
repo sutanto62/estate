@@ -45,7 +45,7 @@ Required modules:
     'category': 'Enterprise Asset Management',
     'sequence': 0,
     'images': ['images/maintenance_requests.png','images/maintenance_orders.png','images/maintenance_order.png','images/maintenance_tasks.png','images/maintenance_task.png'],
-    'depends': ['asset','purchase'],
+    'depends': ['asset','purchase','mrp_repair'],
     'demo': ['mro_demo.xml'],
     'data': [
         'security/mro_security.xml',

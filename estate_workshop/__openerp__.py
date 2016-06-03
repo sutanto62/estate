@@ -19,12 +19,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','mro','asset','estate_vehicle'],
+    'depends': ['base','asset','mro','estate_vehicle'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/estate_asset.xml',
+        'views/estate_notification.xml'
 
     ],
     # only loaded in demonstration mode

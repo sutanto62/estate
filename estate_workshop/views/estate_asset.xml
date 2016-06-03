@@ -34,23 +34,23 @@
              </field>
         </record>
 
-        <record model="ir.ui.view" id="view_form_inherit_field_sparepart_template">
-             <field name="name">Inherit Sparepart list Template</field>
-             <field name="model">mro.order</field>
-             <field name="inherit_id" ref="mro.mro_order_form_view"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//page[@string='Parts']" position="after">
-                    <page string="Sparepart Use">
-                        <tree>
-                            <field name="sparepartlog_ids" track_visibility="onchange"
-                                   attrs="{'invisible': [('type_service','!=','1')]}"
-                                   context="{'tree_view_ref' : 'estate_vehicle.fleet_vehicle_log_sparepart_tree',
-                                   'default_vehicle_id':asset_id,
-                                   'default_date':date_execution }"/>
-                        </tree>
-                    </page>
-                 </xpath>
-             </field>
-         </record>
+        <!--<record model="ir.ui.view" id="view_form_inherit_field_sparepart_template">-->
+             <!--<field name="name">Inherit Sparepart list Template</field>-->
+             <!--<field name="model">mro.order</field>-->
+             <!--<field name="inherit_id" ref="mro.mro_order_form_view"/>-->
+             <!--<field name="arch" type="xml">-->
+                 <!--<xpath expr="//page[@string='Parts']" position="after">-->
+                    <!--<page string="Sparepart Use">-->
+                        <!--<tree>-->
+                            <!--<field name="sparepartlog_ids" track_visibility="onchange"-->
+                                   <!--attrs="{'invisible': [('type_service','!=','1')]}"-->
+                                   <!--context="{'tree_view_ref' : 'estate_vehicle.fleet_vehicle_log_sparepart_tree',-->
+                                   <!--'default_vehicle_id':asset_id,-->
+                                   <!--'default_date':date_execution }"/>-->
+                        <!--</tree>-->
+                    <!--</page>-->
+                 <!--</xpath>-->
+             <!--</field>-->
+         <!--</record>-->
     </data>
 </openerp>
