@@ -143,6 +143,7 @@ class MasterTaskLine(models.Model):
 class MasterTypeTask(models.Model):
 
     _name = 'estate.master.type.task'
+    _order = 'complete_name'
 
     name=fields.Char('Name Type')
     complete_name = fields.Char("Complete Name", compute="_complete_name", store=True)
@@ -220,4 +221,90 @@ class MasterCatalogLine(models.Model):
     product_id = fields.Many2one('product.product')
     part_number = fields.Char('Part Number')
     quantity_part = fields.Float('Quantity Part')
+    catalog_id = fields.Integer()
+
+class MecanicTimesheets(models.Model):
+
+    _name = 'estate.mecanic.timesheet'
+    _inherits = {'estate.timesheet.activity.transport':'timesheet_id'}
+
+    mastertask_id = fields.Many2one('estate.workshop.mastertask')
+    timesheet_id = fields.Many2one('estate.timesheet.activity.transport')
+    asset_id = fields.Many2one('asset.asset')
+
+class WorkshopCode(models.Model):
+
+    _name = 'estate.workshop.causepriority.code'
+
+    name=fields.Char('Code Name')
+    type=fields.Selection([('1','Failure'),('2','Priority'),('3','Reconciliation')])
+
+
+class InheritTimesheetMro(models.Model):
+
+    _inherit = 'mro.order'
+
+    mecanictimesheet_ids = fields.One2many('estate.mecanic.timesheet','owner_id')
+    employee_id = fields.Many2one('hr.employee')
+
+class InheritMaintenanceRequest(models.Model):
+
+    _inherit = 'mro.request'
+
+    code_id = fields.Many2one('estate.workshop.causepriority.code','Cause Failure',domain=[('type', '=', '1')])
+
+    #onchange
+    @api.multi
+    @api.onchange('code_id','cause')
+    def _onchange_cause(self):
+        if self.code_id:
+            self.cause = self.code_id.name
+
+class InheritMaintenanceOrder(models.Model):
+
+    _inherit = 'mro.order'
+
+    code_id = fields.Many2one('estate.workshop.causepriority.code','Priority',required=1,domain=[('type', '=', '2')])
+    reconcil_id = fields.Many2one('estate.workshop.causepriority.code',domain=[('type', '=', '3')])
+
+class MasterWorkshopShedulePlan(models.Model):
+
+    _name = 'estate.master.workshop.shedule.plan'
+    _order = 'complete_name'
+
+
+    name = fields.Char('Shedule Name')
+    complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
+    parent_id = fields.Many2one('estate.master.workshop.shedule.plan', "Parent Category", ondelete='restrict')
+    parent_left = fields.Integer("Parent Left",	index=True)
+    parent_right = fields.Integer("Parent Right", index=True)
+    child_ids = fields.One2many('estate.master.workshop.shedule.plan', 'parent_id', "Child Type")
+    type= fields.Selection([('view', "View"),
+                             ('normal', "Normal")], "Type",
+                            required=True,
+                            help="Select View to create group of activities.")
+    odometer = fields.Float('KM Plan')
+    asset_id = fields.Many2one('asset.asset')
+    mastersheduletask_ids = fields.One2many('estate.master.workshop.shedule.planline','catalog_id')
+    type_service=fields.Selection([('1','Weekly'),('2','Monthly'),('3','Yearly')])
+    category_id = fields.Many2one('master.category.unit')
+
+    @api.one
+    @api.depends('name', 'parent_id')
+    def _complete_name(self):
+        """ Forms complete name of location from parent category to child category.
+        """
+        if self.parent_id:
+            self.complete_name = self.parent_id.complete_name + ' / ' + self.name
+        else:
+            self.complete_name = self.name
+
+        return True
+
+class MasterWorkshopShedulePlanLine(models.Model):
+
+    _name = 'estate.master.workshop.shedule.planline'
+
+    name = fields.Char('master workshop shedule Line')
+    mastertask_id = fields.Many2one('estate.master.type.task',domain=[('type', '=', 'normal')])
     catalog_id = fields.Integer()

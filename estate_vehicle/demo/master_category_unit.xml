@@ -32,5 +32,9 @@
             <field name="name">Trailler</field>
             <field name="type">1</field>
         </record>
+         <record id="master_unit_9" model="master.category.unit">
+            <field name="name">Building</field>
+            <field name="type">2</field>
+        </record>
     </data>
 </openerp>

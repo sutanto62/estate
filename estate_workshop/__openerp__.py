@@ -26,7 +26,9 @@
         # 'security/ir.model.access.csv',
         'views/estate_asset.xml',
         'views/estate_notification.xml',
-        'views/estate_master_catalog.xml'
+        'views/estate_master_catalog.xml',
+        'views/estate_mecanic_timesheet.xml',
+        'views/estate_master_workshop_shedule.xml'
 
     ],
     # only loaded in demonstration mode

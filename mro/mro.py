@@ -403,7 +403,7 @@ class mro_request(osv.osv):
             If the request is rejected the status is set to 'Rejected'.\n\
             When the maintenance is over, the status is set to 'Done'."),
         'asset_id': fields.many2one('asset.asset', 'Asset', required=True, readonly=True, states={'draft': [('readonly', False)]}),
-        'cause': fields.char('Cause', size=64, translate=True, required=True, readonly=True, states={'draft': [('readonly', False)]}),
+        'cause': fields.char('Cause', size=64, translate=True, required=False, readonly=True, states={'draft': [('readonly', False)]}),
         'description': fields.text('Description', readonly=True, states={'draft': [('readonly', False)]}),
         'reject_reason': fields.text('Reject Reason', readonly=True),
         'requested_date': fields.datetime('Requested Date', required=True, select=1, readonly=True, states={'draft': [('readonly', False)]}, help="Date requested by the customer for maintenance."),

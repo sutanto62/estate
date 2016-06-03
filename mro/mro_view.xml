@@ -19,7 +19,7 @@
             <field name="name">mro.request.tree</field>
             <field name="model">mro.request</field>
             <field name="arch" type="xml">
-                <tree fonts="bold:message_unread==True" string="Maintenance Requests">
+                <tree fonts="bold:message_unread==True" string="Maintenance Notification">
                     <field name="message_unread" invisible="1"/>
                     <field name="name"/>
                     <field name="execution_date" string="Date"/>
@@ -34,7 +34,7 @@
             <field name="name">mro.request.form</field>
             <field name="model">mro.request</field>
             <field name="arch" type="xml">
-                <form string="Maintenance Request" version="7.0">
+                <form string="Maintenance Notification" version="7.0">
                     <header>
                         <button name="button_send_request" states="draft" string="Send Request" class="oe_highlight"/>
                         <button name="button_confirm_request" states="claim" string="Confirm Request" class="oe_highlight" groups="asset.group_mro_user"/>
@@ -49,7 +49,7 @@
                         <group>
                             <group>
                                 <field name="asset_id"/>
-                                <field name="cause"/>
+                                <field name="cause" readonly="1" invisible="1"/>
                                 <field name="breakdown"/>
                             </group>
                             <group>
@@ -76,7 +76,7 @@
             <field name="name">mro.request.search</field>
             <field name="model">mro.request</field>
             <field name="arch" type="xml">
-                <search string="Search Maintenance Request">
+                <search string="Search Maintenance Notification">
                     <filter icon="terp-mail-message-new" string="Unread Messages" name="message_unread" domain="[('message_unread','=',True)]"/>
                     <separator/>
                     <filter icon="terp-document-new" name="open" string="Open" domain="['|',('state','in',('draft','claim')),('message_unread','=',True)]" help="Undecided maintenance request"/>
@@ -90,7 +90,7 @@
             <field name="res_model">mro.request</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_open': 1}</field>
+            <!--<field name="context">{'search_default_open': 1}</field>-->
         </record>
 
         <menuitem name="Maintenance Notification"
@@ -217,7 +217,7 @@
                                 <field name="tools_description" placeholder="Specify the tools and mechanisms needed for execute this order..."/>
                             </page>
                             <page string="Labor">
-                                <separator string="Description for Labor"/>
+                                <separator string="Timesheet for Mecanic Labor"/>
                                 <field name="labor_description" placeholder="Specify the specialists needed for execute this order..."/>
                             </page>
                             <page string="Operations">

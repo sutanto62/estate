@@ -1,0 +1,98 @@
+<openerp>
+    <data>
+        <!-- View Tree: Activity List -->
+        <record id="view_master_shedule_workshop_tree" model="ir.ui.view" >
+            <field name="name">Master Shedule Workshop Tree</field>
+            <field name="model">estate.master.workshop.shedule.plan</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree colors="blue:type=='view'">
+                    <field name="complete_name"/>
+                    <field name="asset_id" string="Asset"/>
+                    <field name="category_id" string="Category"/>
+                    <field name="type" string="Type"/>
+                    <field name="type_service"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Activity -->
+        <record id="view_master_shedule_workshop_form" model="ir.ui.view">
+            <field name="name">Master Shedule Workshop Form</field>
+            <field name="model">estate.master.workshop.shedule.plan</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="asset_id" string="Asset"/>
+                        <field name="parent_id" string="Parent"/>
+                    </group>
+                    <group>
+                        <group>
+                            <group name="detail" string="Detail">
+                                <field name="category_id"/>
+                                <field name="odometer"/>
+                                <field name="type_service"/>
+                                <field name="type"/>
+                            </group>
+                        </group>
+                    </group>
+                    <group  name="tasklist" string="Task List"
+                            attrs="{'invisible': [('type', '=', 'view')]}">
+                         <notebook>
+                            <page>
+                                <field name="mastersheduletask_ids" context="{'tree_view_ref' : 'master_task_line_tree'}"/>
+                            </page>
+                        </notebook>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_master_shedule_workshop_tree">
+            <field name="name">Master Shedule Workshop Tree</field>
+            <field name="model">estate.master.workshop.shedule.planline</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="mastertask_id" string="Task List"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_shedule_workshop_search'>
+            <field name="name">Master  Shedule Workshop  search</field>
+            <field name="model">estate.master.workshop.shedule.plan</field>
+            <field name="arch" type="xml">
+                <search string="Master Part Catalog" >
+                    <field name="complete_name" />
+                    <field name="asset_id"/>
+                    <field name="category_id"/>
+                    <field name="type_service"/>
+                    <field name="type"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_asset" context="{'group_by' : 'asset_id'}" string="Asset"/>
+                        <filter name="groupby_category" context="{'group_by' : 'category_id'}" string="Category"/>
+                        <filter name="groupby_type" context="{'group_by' : 'type'}" string="Type"/>
+                        <filter name="groupby_complete" context="{'group_by' : 'complete_name'}" string="Complete Name"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_list_master_shedule_workshop">
+            <field name="name">Action Master Shedule Workshop </field>
+            <field name="res_model">estate.master.workshop.shedule.plan</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_groupby_category" : True}</field>
+        </record>
+
+        <menuitem id="estate_master_shedule_workshop" name="Master Shedule Plan"
+                  parent="asset.menu_maintenance_config"
+                  action="action_list_master_shedule_workshop"
+                  groups="base.group_no_one"/>
+
+        </data>
+</openerp>
