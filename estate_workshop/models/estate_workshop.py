@@ -371,7 +371,7 @@ class MasterWorkshopShedulePlanLine(models.Model):
     _name = 'estate.master.workshop.shedule.planline'
 
     name = fields.Char('master workshop shedule Line')
-    mastertask_id = fields.Many2one('estate.master.type.task',domain=[('type', '=', 'normal')])
+    mastertask_id = fields.Many2one('estate.workshop.mastertask')
     catalog_id = fields.Integer()
 
 class MasterMappingAssetActivity(models.Model):
