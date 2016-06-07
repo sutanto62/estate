@@ -7,12 +7,37 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='labor_description']" position="before">
-                     <field name="employee_id" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                      <field name="mecanictimesheet_ids" attrs="{'invisible': [('state', '!=', 'ready')]}"
-                             context="{'tree_view_ref' : 'estate_workshop.view_mecanic_timesheet_tree',
-                                   'default_employee_id':employee_id}"/>
+                             context="{'tree_view_ref' : 'estate_workshop.view_mecanic_timesheet_tree'}"/>
                  </xpath>
              </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_employee_planning">
+             <field name="name">Inherit Mecanic Planning</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Tools']" position="before">
+                     <page string="Planned Mecanic's">
+                         <separator string="Planned Mecanic's"/>
+                         <field name="employeeline_ids" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            context="{'tree_view_ref' : 'estate_workshop.view_workshop_employee_line_tree'}"/>
+                     </page>
+
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_workshop_employee_line_tree">
+            <field name="name">View Workshop Employee Line Tree</field>
+            <field name="model">estate.workshop.employeeline</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="employee_id" string="Employee"/>
+                </tree>
+            </field>
          </record>
 
          <record model="ir.ui.view" id="inherit_code_in_mrequest">

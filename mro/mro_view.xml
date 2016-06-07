@@ -212,12 +212,10 @@
                                         </field>
                                     </group>
                             </page>
-                            <page string="Tools">
-                                <separator string="Description for Tools"/>
+                            <page string="Tools" attrs="{'readonly': [('state', '!=', 'ready'),('state','!=','done')]}">
                                 <field name="tools_description" placeholder="Specify the tools and mechanisms needed for execute this order..."/>
                             </page>
-                            <page string="Labor">
-                                <separator string="Timesheet for Mecanic Labor"/>
+                            <page string="Labor" attrs="{'readonly': [('state', '!=', 'ready'),('state','!=','done')]}">
                                 <field name="labor_description" placeholder="Specify the specialists needed for execute this order..."/>
                             </page>
                             <page string="Operations">

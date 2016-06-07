@@ -1,0 +1,76 @@
+<openerp>
+    <data>
+         <record id="view_master_mapping_asset_tree" model="ir.ui.view" >
+            <field name="name">Master Mapping Asset Tree</field>
+            <field name="model">estate.workshop.mastermappingasset</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="mastergrouptask_id" string="Group Task"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Activity -->
+        <record id="view_master_mapping_asset_form" model="ir.ui.view">
+            <field name="name">Master Mapping AssetForm</field>
+            <field name="model">estate.workshop.mastermappingasset</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="mastergrouptask_id" string="Group Task" options="{'no_create_edit': True}"/>
+                    </group>
+                    <group  name="assetlist" string="Asset List">
+                         <notebook>
+                            <page>
+                                <field name="mastermappingline_ids"
+                                       context="{'tree_view_ref' : 'view_master_mapping_line_tree'}"/>
+                            </page>
+                        </notebook>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_master_mapping_line_tree">
+            <field name="name">Master Mapping Asset Line Tree</field>
+            <field name="model">estate.workshop.mastermappingassetline</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="asset_id" string="Asset List"  options="{'no_create_edit': True}"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_mapping_asset_search'>
+            <field name="name">Master Mapping Asset search</field>
+            <field name="model">estate.workshop.mastermappingasset</field>
+            <field name="arch" type="xml">
+                <search string="Master Part Catalog" >
+                    <field name="name" />
+                    <field name="mastergrouptask_id"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_mastertask" context="{'group_by' : 'mastergrouptask_id'}" string="Task Group"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="action_list_master_mapping_asset">
+            <field name="name">Action Master Mapping Asset</field>
+            <field name="res_model">estate.workshop.mastermappingasset</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_groupby_category" : True}</field>
+        </record>
+
+        <menuitem id="estate_master_mapping_asset" name="Master Mapping Asset"
+                  parent="asset.menu_maintenance_config"
+                  action="action_list_master_mapping_asset"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>

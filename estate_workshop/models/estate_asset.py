@@ -13,7 +13,7 @@ class InheritAssetVehicle(models.Model):
     _inherit= 'asset.asset'
     _description = 'inherit fleet_id to asset management'
 
-    type_asset = fields.Selection([('1','Vehicle'), ('2','Building'),('3','Machine'),('4','Computing'),('5','ALL')])
+    type_asset = fields.Selection([('1','Vehicle'), ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')])
     fleet_id = fields.Many2one('fleet.vehicle')
 
     #onchange

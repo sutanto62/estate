@@ -28,11 +28,15 @@
         'views/estate_notification.xml',
         'views/estate_master_catalog.xml',
         'views/estate_mecanic_timesheet.xml',
-        'views/estate_master_workshop_shedule.xml'
+        'views/estate_master_workshop_shedule.xml',
+        'views/estate_master_mapping_asset.xml',
+        'views/inherit_equipment.xml'
 
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
+        'demo/estate.activity.csv',
+        'demo/estate_workshop_code.xml',
     ],
 }
