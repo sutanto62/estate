@@ -300,7 +300,6 @@ class CullingLine(models.Model):
         self.ensure_one()
         if self.selection_id:
             self.product_id = self.selection_id.batch_id.product_id
-        return True
 
     #get  total qty abnormal
     @api.one
@@ -377,7 +376,6 @@ class CullinglineBatch(models.Model):
         self.ensure_one()
         if self.batch_id:
             self.product_id = self.batch_id.product_id
-        return True
 
     #Total qty abnormal seed batch
     @api.one
