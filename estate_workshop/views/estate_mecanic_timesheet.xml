@@ -7,7 +7,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='labor_description']" position="before">
-                     <field name="mecanictimesheet_ids" attrs="{'invisible': [('state', '!=', 'ready')]}"
+                     <field name="mecanictimesheet_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
                              context="{'tree_view_ref' : 'estate_workshop.view_mecanic_timesheet_tree'}"/>
                  </xpath>
              </field>
@@ -19,7 +19,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//page[@string='Tools']" position="before">
-                     <page string="Planned Mecanic's">
+                     <page string="Planned Labor's">
                          <separator string="Planned Mecanic's"/>
                          <field name="employeeline_ids" attrs="{'readonly': [('state', '!=', 'draft')]}"
                             context="{'tree_view_ref' : 'estate_workshop.view_workshop_employee_line_tree'}"/>

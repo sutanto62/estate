@@ -11,6 +11,59 @@
              </field>
         </record>
 
+
+        <record model="ir.ui.view" id="inherit_planned_task">
+             <field name="name">Inherit planned task</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Tools']" position="before">
+                      <page string="Planned Operations">
+                          <field name="task_ids"
+                             context="{'tree_view_ref' : 'estate_workshop.planned_task_tree'}"/>
+                      </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_actual_task">
+             <field name="name">Inherit Actual task</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='operations_description']" position="before">
+                      <page string="Actual Operations">
+                          <field name="actualtask_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
+                             context="{'tree_view_ref' : 'estate_workshop.actual_task_tree'}"/>
+                      </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model='ir.ui.view' id='planned_task_tree'>
+            <field name="name">Planned task line tree</field>
+            <field name="model">estate.workshop.plannedtask</field>
+            <field name="arch" type="xml">
+                <tree string="Planned Task line" editable="bottom">
+                    <field name="mastertask_id" string="Task For Maintenance"/>
+                    <field name="planned_hour" string="Planned Hour's"/>
+                    <field name="planned_manpower" string="Planned Manpower"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='actual_task_tree'>
+            <field name="name">Actual task line tree</field>
+            <field name="model">estate.workshop.actualtask</field>
+            <field name="arch" type="xml">
+                <tree string="Actual Task line" editable="bottom">
+                    <field name="mastertask_id" string="Task For Maintenance"/>
+                    <field name="planned_hour" string="Planned Hour's"/>
+                    <field name="planned_manpower" string="Planned Manpower"/>
+                </tree>
+            </field>
+        </record>
+
          <record model='ir.ui.view' id='master_task_form'>
             <field name="name">master task form</field>
             <field name="model">estate.workshop.mastertask</field>
@@ -20,6 +73,8 @@
                         <group col="2">
                             <group string="Master task">
                                 <field name="name" string="Name"/>
+                                <field name="planned_hour" string="Planned Hour's"/>
+                                <field name="planned_manpower" string="Planned Manpower"/>
                             </group>
                             <group string="Master Details">
                                 <field name="type_task" string="Type Task"/>
@@ -55,6 +110,8 @@
                 <tree string="Master Task">
                     <field name="name" />
                     <field name="type_task" string="Type Task"/>
+                    <field name="planned_hour" string="Planned Hour's"/>
+                    <field name="planned_manpower" string="Planned Manpower"/>
                 </tree>
             </field>
         </record>

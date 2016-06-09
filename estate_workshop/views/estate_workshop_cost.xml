@@ -1,0 +1,29 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="inherit_workshop_cost">
+             <field name="name">Inherit workshop cost</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Operations']" position="after">
+                     <page string="Cost">
+                        <field name="cost_ids"
+                             context="{'tree_view_ref' : 'estate_workshop.estate.workshop.cost'}"/>
+                     </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record id="view_workshop_cost_tree" model="ir.ui.view" >
+            <field name="name">workshop cost Tree</field>
+            <field name="model">estate.workshop.cost</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="component"/>
+                    <field name="amount" />
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

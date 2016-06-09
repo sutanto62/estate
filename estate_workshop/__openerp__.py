@@ -30,7 +30,9 @@
         'views/estate_mecanic_timesheet.xml',
         'views/estate_master_workshop_shedule.xml',
         'views/estate_master_mapping_asset.xml',
-        'views/inherit_equipment.xml'
+        'views/inherit_equipment.xml',
+        'views/estate_service_external.xml',
+        'views/estate_workshop_cost.xml'
 
     ],
     # only loaded in demonstration mode

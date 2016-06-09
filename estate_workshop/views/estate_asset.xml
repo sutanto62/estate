@@ -8,6 +8,20 @@
                 <field name="property_stock_asset" position="after">
                     <field name="type_asset" string="Type Asset"/>
                     <field name="fleet_id" string="Vehicle" attrs="{'invisible': [('type_asset','!=','1')]}"/>
+                    <field name="product_id" string="Tools" attrs="{'invisible': [('type_asset','!=','5'),('type_asset','!=','3')]}"/>
+                    <field name="asset_value" string="Asset Value"/>
+                </field>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="type_tools_form_inherited">
+            <field name="name">Estate Workshop Type Tools Extension</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <field name="active" position="after">
+                    <field name="type_tools" />
+                    <field name="type_machine" />
                 </field>
             </field>
         </record>

@@ -21,8 +21,8 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//page[@string='Tools']" position="before">
-                     <page string="Planned Equipment's">
-                         <separator string="Planned Equipment's"/>
+                     <page string="Planned Tools's">
+                         <separator string="Planned Tools's"/>
                          <field name="plannedtools_ids"
                             context="{'tree_view_ref' : 'estate_workshop.view_planned_equipment_tree'}"/>
                      </page>

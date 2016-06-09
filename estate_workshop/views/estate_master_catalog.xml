@@ -39,23 +39,26 @@
                             attrs="{'invisible': [('type', '=', 'view')]}">
                          <notebook>
                             <page>
-                                <field name="categoryline_ids" context="{'tree_view_ref' : 'master_task_line_tree'}"/>
+                                <field name="categoryline_ids" context="{'tree_view_ref' : 'estate_workshop.view_master_catalogline_tree'}"/>
                             </page>
                         </notebook>
                     </group>
                 </form>
             </field>
         </record>
-
+        <!--on_change="onchange_product_id(product_id)"-->
+        <!--on_change="onchange_uom(product_id, product_uom)"-->
         <record model="ir.ui.view" id="view_master_catalogline_tree">
             <field name="name">Catalog Line Tree</field>
             <field name="model">estate.part.catalogline</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="part_number" string="Part Number"/>
-                    <field name="product_id" string="Part"/>
+                    <field name="product_id"  string="Part"/>
+                    <field name="type"/>
                     <field name="quantity_part"/>
+                    <field name="qty_available"/>
+                    <field name="product_uom"  groups="product.group_uom"/>
                 </tree>
             </field>
         </record>
