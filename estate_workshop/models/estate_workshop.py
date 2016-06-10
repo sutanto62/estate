@@ -58,7 +58,7 @@ class InheritTypeAsset(models.Model):
         Update type_service into approved
         :return: True
         """
-        super(InheritTypeAsset, self).action_confirm()
+        # super(InheritTypeAsset, self).action_confirm()
 
         if self.type_asset:
             print 'terbaca'
@@ -84,7 +84,7 @@ class InheritTypeAsset(models.Model):
                     'type_service' : self.type_asset
                 }
                 self.create(type)
-            return request.id
+            return super(InheritTypeAsset, self).action_confirm()
 
             # return order_id
 
@@ -547,4 +547,23 @@ class InheritPlannedtask(models.Model):
 
     task_ids = fields.One2many('estate.workshop.plannedtask','owner_id')
     actualtask_ids = fields.One2many('estate.workshop.actualtask','owner_id')
+
+class InheritHrContract(models.Model):
+
+    _inherit = 'hr.contract'
+
+    weekly_wage = fields.Float(readonly=True)
+    daily_wage = fields.Float(readonly=True)
+    hourly_wage = fields.Float(readonly=True)
+    day = fields.Float()
+    hour = fields.Float()
+
+    #Onchange
+    @api.multi
+    @api.onchange('wage','weekly_wage','daily_wage','hourly_wage','day','hour')
+    def _onchange_wage(self):
+        if self.wage and self.hour and self.day:
+            self.weekly_wage = self.wage/int(4)
+            self.daily_wage = self.weekly_wage/float(self.day)
+            self.hourly_wage = self.daily_wage/float(self.hour)
 

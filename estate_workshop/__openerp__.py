@@ -32,7 +32,9 @@
         'views/estate_master_mapping_asset.xml',
         'views/inherit_equipment.xml',
         'views/estate_service_external.xml',
-        'views/estate_workshop_cost.xml'
+        'views/estate_workshop_cost.xml',
+        'views/inherit_hr_contract.xml',
+        'views/view_cost_workshop.xml'
 
     ],
     # only loaded in demonstration mode
@@ -40,5 +42,6 @@
         'demo/demo.xml',
         'demo/estate.activity.csv',
         'demo/estate_workshop_code.xml',
+
     ],
 }
