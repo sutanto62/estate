@@ -282,14 +282,16 @@
                             </page>
                             <page string="Material">
                                 <field name="material_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
-                                    <tree editable="True">
+                                    <tree editable="True" colors="orange: ratio_product_activity != prod_product_activity">
                                         <field name="product_id" string="Material"/>
                                         <field name="product_uom_id" string="UoM"/>
                                         <field name="unit_amount" string="Qty."/>
                                         <field name="amount"/>
                                         <field name="activity_id" string="Activity"/>
                                         <field name="activity_uom_id" string="UoM"/>
-                                        <!-- -->
+                                        <field name="ratio_product_activity" string="Ratio"/>
+                                        <!-- Do not remove field below -->
+                                        <field name="prod_product_activity" string="Norm" invisible="False"/>
                                         <!--<field name="activity_unit_amount" string="Qty. Act"/>-->
                                         <!--<field name="ratio_product_activity" string="Ratio"/>-->
                                         <!-- -->

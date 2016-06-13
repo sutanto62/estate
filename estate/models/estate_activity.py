@@ -50,6 +50,8 @@ class Activity(models.Model):
                                          string="Parameter Weight")
     activity_norm_ids = fields.One2many(comodel_name='estate.activity.norm', inverse_name='activity_id',
                                         string="Activity Norm")
+    material_norm_ids = fields.One2many(comodel_name='estate.material.norm', inverse_name='activity_id',
+                                        string="Standard Material")
     standard_price = fields.Float('Standard Price', digits=dp.get_precision('Standard Price'))
     piece_rate_price = fields.Float('Piece Rate Price', digits=dp.get_precision('Standard Price'),
                                     help='Empty value use standard price instead')
@@ -182,10 +184,8 @@ class Activity(models.Model):
     def _compute_norm(self):
         """Weight changes should update activity norm.
         """
-        print "Begin recompute activity norm"
         if self.parameter_weight_ids:
             for rec in self.activity_norm_ids:
-                print "Recompute for %s norm" % rec.parameter_id.name
                 rec.recompute_norm()
         return True
 
@@ -202,6 +202,20 @@ class Activity(models.Model):
         :return: floating number
         """
         return self.ratio_min
+
+    @api.multi
+    def get_material_ids(self):
+        """
+        Get option of material according to available quantity or daily planning request
+        :return: list of material object
+        """
+        material_obj = self.env['estate.material.norm']
+
+        for record in self:
+            material_ids = material_obj.search([('activity_id', 'in', record.ids),
+                                                ('option', '=', True)], order='option asc, product_id.name asc')
+            return material_ids
+
 
 class ParameterWeight(models.Model):
     """Provide weighted prorate for multi activity parameter
@@ -263,6 +277,27 @@ class ActivityNorm(models.Model):
     def recompute_norm(self):
         self._compute_qty_base()
         return True
+
+
+class MaterialNorm(models.Model):
+    _name = 'estate.material.norm'
+    _description = 'Standard required material of an activity'
+    _order = 'option asc'
+
+    activity_id = fields.Many2one('estate.activity', 'Activity')
+    option = fields.Integer('Option Group', help='Set 1, 2, 3, ... to be material option. Lowest number process first.'
+                                                 'One or more material could share same option number.'
+                                                 'Only first option will be used as reference')  # check stock, move next option if empty
+    product_id = fields.Many2one('product.product', 'Material', domain=[('categ_id.estate_product', '=', True)])
+    product_uom_id = fields.Many2one('product.uom', 'Material Unit of Measure', related='product_id.uom_id',
+                                      readonly=True)
+    standard_price = fields.Float('Standard Price', related='product_id.standard_price', digits=dp.get_precision('Account'))
+    unit_amount = fields.Float('Required Unit Amount', digits=dp.get_precision('Estate'),
+                               help="Define unit amount of material product UoM per activity UoM.")
+    qty_available = fields.Float('Quantity on Hand', related='product_id.qty_available',
+                                 digits=dp.get_precision('Product Unit of Measure'))  # todo use at daily planning purpose
+    comment = fields.Text('Additional Information', help='Notes for material mixing/usage.')
+
 
 class Operation(models.Model):
     """Record daily field operation
