@@ -1,4 +1,8 @@
 from openerp import models, fields, api, exceptions
+from psycopg2 import OperationalError
+
+from openerp import SUPERUSER_ID
+import openerp
 import openerp.addons.decimal_precision as dp
 from openerp.tools import float_compare, float_is_zero
 from datetime import datetime, date
@@ -26,7 +30,8 @@ class InheritSparepartids(models.Model):
     _inherit = 'mro.order'
 
     type_service = fields.Selection([('1','Vehicle'),
-                                     ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')],readonly=True)
+                                     ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')],
+                                    )
     # sparepartlog_ids=fields.One2many('estate.vehicle.log.sparepart','maintenance_id',"Part Log",
     #                                          readonly=True, states={'draft':[('readonly',False)]})
 
@@ -58,7 +63,7 @@ class InheritTypeAsset(models.Model):
         Update type_service into approved
         :return: True
         """
-        # super(InheritTypeAsset, self).action_confirm()
+        super(InheritTypeAsset, self).action_confirm()
 
         if self.type_asset:
             print 'terbaca'
@@ -83,8 +88,10 @@ class InheritTypeAsset(models.Model):
                     'problem_description': self.description,
                     'type_service' : self.type_asset
                 }
-                self.create(type)
-            return super(InheritTypeAsset, self).action_confirm()
+                self.write(type)
+            print 'jalankan'
+            print type
+            return request.id
 
             # return order_id
 
@@ -97,6 +104,7 @@ class MasterTask(models.Model):
     _description = 'Master task for maintenance'
 
     name=fields.Char('Master Task')
+    asset_id = fields.Many2one('asset.asset')
     planned_hour = fields.Float('Plan Hour')
     planned_manpower = fields.Float('ManPower')
     owner_id = fields.Integer()
@@ -168,6 +176,22 @@ class MasterTaskLine(models.Model):
     name=fields.Char('Master Task Line')
     task_id=fields.Many2one('mro.task')
     mastertask_id = fields.Integer()
+
+    #onchange
+    @api.multi
+    @api.onchange('task_id')
+    def _onchange_task_id(self):
+        arrMastertask = []
+        if self:
+            mastertask = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id)])
+            for task in mastertask:
+                arrMastertask.append(task.asset_id.id)
+            return {
+                'domain' :{
+                    'task_id' :[('asset_id.id','in',arrMastertask)]
+                }
+            }
+
 
 class MasterTypeTask(models.Model):
 
@@ -392,7 +416,7 @@ class MasterWorkshopShedulePlan(models.Model):
                             help="Select View to create group of activities.")
     odometer = fields.Float('KM Plan')
     asset_id = fields.Many2one('asset.asset')
-    mastersheduletask_ids = fields.One2many('estate.master.workshop.shedule.planline','catalog_id')
+    mastersheduletask_ids = fields.One2many('estate.master.workshop.shedule.planline','owner_id')
     type_service=fields.Selection([('1','Weekly'),('2','Monthly'),('3','Yearly')])
     category_id = fields.Many2one('master.category.unit')
 
@@ -414,7 +438,7 @@ class MasterWorkshopShedulePlanLine(models.Model):
 
     name = fields.Char('master workshop shedule Line')
     mastertask_id = fields.Many2one('estate.workshop.mastertask')
-    catalog_id = fields.Integer()
+    owner_id = fields.Integer()
 
 class MasterMappingAssetActivity(models.Model):
 
@@ -499,7 +523,7 @@ class ExternalOrder(models.Model):
         return model_id
 
     name = fields.Char()
-    service_id = fields.Many2one('fleet.vehicle.log.services')
+    service_id = fields.Many2one('fleet.vehicle.log.services',required=True,ondelete='cascade')
     owner_id = fields.Integer()
 
 class inheritCostWorkshop(models.Model):
@@ -523,6 +547,15 @@ class PlannedTask(models.Model):
 
     actualtask_id = fields.Many2one('estate.workshop.actualtask',required=True,ondelete='cascade')
 
+    #onchange
+    @api.multi
+    @api.onchange('planned_hour','planned_manpower','mastertask_id')
+    def _onchange_planhourn_maintenance(self):
+        if self:
+            if self.mastertask_id:
+                self.planned_hour += self.mastertask_id.planned_hour
+                self.planned_manpower += self.mastertask_id.planned_manpower
+
 class ActualTask(models.Model):
 
     _name = 'estate.workshop.actualtask'
@@ -532,14 +565,7 @@ class ActualTask(models.Model):
     planned_hour = fields.Float(readonly=True)
     planned_manpower = fields.Float(readonly=True)
 
-      #onchange
-    @api.multi
-    @api.onchange('planned_hours','planned_mainpower','mastertask_id')
-    def _onchange_planhourn_maintenance(self):
-        if self:
-            if self.mastertask_id:
-                self.planned_hour += self.mastertask_id.planned_hour
-                self.planned_manpower += self.mastertask_id.planned_manpower
+
 
 class InheritPlannedtask(models.Model):
 
@@ -567,3 +593,271 @@ class InheritHrContract(models.Model):
             self.daily_wage = self.weekly_wage/float(self.day)
             self.hourly_wage = self.daily_wage/float(self.hour)
 
+class PlannedSparepart(models.Model):
+    _inherits = {'estate.workshop.actual.sparepart':'actualpart_id'}
+    _name = 'estate.workshop.planned.sparepart'
+
+    actualpart_id = fields.Many2one('estate.workshop.actual.sparepart',required=True,ondelete='cascade')
+
+    @api.multi
+    @api.onchange('qty_available','product_id')
+    def _onchange_get_qty_available(self):
+        arrQty=[]
+        if self:
+            if self.product_id:
+                qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
+                for a in qty:
+                    arrQty.append(a.qty)
+                for a in arrQty:
+                    qty = float(a)
+                    self.qty_available = qty
+
+    @api.multi
+    @api.constrains('qty_available' , 'qty_product')
+    def _contraints_qty_product(self):
+        if self:
+            if self.qty_product > self.qty_available:
+                error_msg = "Qty Product not more than \"%s\" in Qty Available, Create PP " % self.qty_available
+                raise exceptions.ValidationError(error_msg)
+        return True
+
+class ActualSparepart(models.Model):
+
+    _name = 'estate.workshop.actual.sparepart'
+
+    name = fields.Char()
+    product_id = fields.Many2one('product.product')
+    qty_product = fields.Float()
+    uom_id = fields.Many2one('product.uom')
+    qty_available = fields.Float(readonly=True,store=True)
+    owner_id = fields.Integer()
+
+
+
+class InheritMroSparepart(models.Model):
+
+    _inherit = 'mro.order'
+
+    actualpart_ids = fields.One2many('estate.workshop.actual.sparepart','owner_id')
+    plannedpart_ids = fields.One2many('estate.workshop.planned.sparepart','owner_id')
+
+
+class ProcurPart(models.Model):
+
+    _inherits = {'procurement.order':'procur_id'}
+    _name = 'estate.workshop.procurement'
+    _inherit = ['mail.thread']
+
+    def _default_session(self):
+        return self.env['mro.order'].browse(self._context.get('active_id'))
+
+    procur_id = fields.Many2one('procurement.order',required=True,ondelete='cascade')
+    order_id = fields.Many2one('mro.order',default=_default_session)
+
+
+    def do_view_procurements(self, cr, uid, ids, context=None):
+        '''
+        This function returns an action that display existing procurement orders
+        of same procurement group of given ids.
+        '''
+        act_obj = self.pool.get('ir.actions.act_window')
+        action_id = self.pool.get('ir.model.data').xmlid_to_res_id(cr, uid, 'procurement.do_view_procurements', raise_if_not_found=True)
+        result = act_obj.read(cr, uid, [action_id], context=context)[0]
+        group_ids = set([proc.group_id.id for proc in self.browse(cr, uid, ids, context=context) if proc.group_id])
+        result['domain'] = "[('group_id','in',[" + ','.join(map(str, list(group_ids))) + "])]"
+        return result
+
+    @api.multi
+    @api.onchange('product_uom','product_uos','product_id')
+    def onchange_product_id(self):
+        """ Finds UoM and UoS of changed product.
+        @param product_id: Changed id of product.
+        @return: Dictionary of values.
+        """
+        if self.product_id:
+            w = self.env['product.product'].search([('id','=',self.product_id.id)])
+            self.product_uom = w.uom_id.id
+            self.product_uos =  w.uos_id and w.uos_id.id or w.uom_id.id
+
+    @api.multi
+    @api.onchange('order_id','product_id')
+    def _onchange_product_id(self):
+        arrProduct = []
+        if self.order_id:
+            listproduct = self.env['estate.workshop.planned.sparepart'].search([('owner_id','=',self.order_id.id)])
+            for product in listproduct:
+                arrProduct.append(product.product_id.id)
+            return {
+                 'domain':{
+                        'product_id':[('id','in',arrProduct)]
+                    }
+            }
+
+    @api.multi
+    @api.onchange('origin','order_id')
+    def _onchange_origin(self):
+        if self.order_id:
+            self.origin = self.order_id.name
+
+    def get_cancel_ids(self, cr, uid, ids, context=None):
+        return [proc.id for proc in self.browse(cr, uid, ids, context=context) if proc.state != 'done']
+
+    def cancel(self, cr, uid, ids, context=None):
+        #cancel only the procurements that aren't done already
+        to_cancel_ids = self.get_cancel_ids(cr, uid, ids, context=context)
+        if to_cancel_ids:
+            return self.write(cr, uid, to_cancel_ids, {'state': 'cancel'}, context=context)
+
+    def reset_to_confirmed(self, cr, uid, ids, context=None):
+        return self.write(cr, uid, ids, {'state': 'confirmed'}, context=context)
+
+    def run(self, cr, uid, ids, autocommit=False, context=None):
+        for procurement_id in ids:
+            #we intentionnaly do the browse under the for loop to avoid caching all ids which would be resource greedy
+            #and useless as we'll make a refresh later that will invalidate all the cache (and thus the next iteration
+            #will fetch all the ids again)
+            procurement = self.browse(cr, uid, procurement_id, context=context)
+            if procurement.state not in ("running", "done"):
+                try:
+                    if self._assign(cr, uid, procurement, context=context):
+                        res = self._run(cr, uid, procurement, context=context or {})
+                        if res:
+                            self.write(cr, uid, [procurement.id], {'state': 'running'}, context=context)
+                        else:
+                            self.write(cr, uid, [procurement.id], {'state': 'exception'}, context=context)
+                    else:
+                        self.message_post(cr, uid, [procurement.id], body='No rule matching this procurement', context=context)
+                        self.write(cr, uid, [procurement.id], {'state': 'exception'}, context=context)
+                    if autocommit:
+                        cr.commit()
+                except OperationalError:
+                    if autocommit:
+                        cr.rollback()
+                        continue
+                    else:
+                        raise
+        return True
+
+    def check(self, cr, uid, ids, autocommit=False, context=None):
+        done_ids = []
+        for procurement in self.browse(cr, uid, ids, context=context):
+            try:
+                result = self._check(cr, uid, procurement, context=context)
+                if result:
+                    done_ids.append(procurement.id)
+                if autocommit:
+                    cr.commit()
+            except OperationalError:
+                if autocommit:
+                    cr.rollback()
+                    continue
+                else:
+                    raise
+        if done_ids:
+            self.write(cr, uid, done_ids, {'state': 'done'}, context=context)
+        return done_ids
+
+    #
+    # Method to overwrite in different procurement modules
+    #
+    def _find_suitable_rule(self, cr, uid, procurement, context=None):
+        '''This method returns a procurement.rule that depicts what to do with the given procurement
+        in order to complete its needs. It returns False if no suiting rule is found.
+            :param procurement: browse record
+            :rtype: int or False
+        '''
+        return False
+
+    def _assign(self, cr, uid, procurement, context=None):
+        '''This method check what to do with the given procurement in order to complete its needs.
+        It returns False if no solution is found, otherwise it stores the matching rule (if any) and
+        returns True.
+            :param procurement: browse record
+            :rtype: boolean
+        '''
+        #if the procurement already has a rule assigned, we keep it (it has a higher priority as it may have been chosen manually)
+        if procurement.rule_id:
+            return True
+        elif procurement.product_id.type != 'service':
+            rule_id = self._find_suitable_rule(cr, uid, procurement, context=context)
+            if rule_id:
+                self.write(cr, uid, [procurement.id], {'rule_id': rule_id}, context=context)
+                return True
+        return False
+
+    def _run(self, cr, uid, procurement, context=None):
+        '''This method implements the resolution of the given procurement
+            :param procurement: browse record
+            :returns: True if the resolution of the procurement was a success, False otherwise to set it in exception
+        '''
+        return True
+
+    def _check(self, cr, uid, procurement, context=None):
+        '''Returns True if the given procurement is fulfilled, False otherwise
+            :param procurement: browse record
+            :rtype: boolean
+        '''
+        return False
+
+    #
+    # Scheduler
+    #
+    def run_scheduler(self, cr, uid, use_new_cursor=False, company_id = False, context=None):
+        '''
+        Call the scheduler to check the procurement order. This is intented to be done for all existing companies at
+        the same time, so we're running all the methods as SUPERUSER to avoid intercompany and access rights issues.
+
+        @param self: The object pointer
+        @param cr: The current row, from the database cursor,
+        @param uid: The current user ID for security checks
+        @param ids: List of selected IDs
+        @param use_new_cursor: if set, use a dedicated cursor and auto-commit after processing each procurement.
+            This is appropriate for batch jobs only.
+        @param context: A standard dictionary for contextual values
+        @return:  Dictionary of values
+        '''
+        if context is None:
+            context = {}
+        try:
+            if use_new_cursor:
+                cr = openerp.registry(cr.dbname).cursor()
+
+            # Run confirmed procurements
+            dom = [('state', '=', 'confirmed')]
+            if company_id:
+                dom += [('company_id', '=', company_id)]
+            prev_ids = []
+            while True:
+                ids = self.search(cr, SUPERUSER_ID, dom, context=context)
+                if not ids or prev_ids == ids:
+                    break
+                else:
+                    prev_ids = ids
+                self.run(cr, SUPERUSER_ID, ids, autocommit=use_new_cursor, context=context)
+                if use_new_cursor:
+                    cr.commit()
+
+            # Check if running procurements are done
+            offset = 0
+            dom = [('state', '=', 'running')]
+            if company_id:
+                dom += [('company_id', '=', company_id)]
+            prev_ids = []
+            while True:
+                ids = self.search(cr, SUPERUSER_ID, dom, offset=offset, context=context)
+                if not ids or prev_ids == ids:
+                    break
+                else:
+                    prev_ids = ids
+                self.check(cr, SUPERUSER_ID, ids, autocommit=use_new_cursor, context=context)
+                if use_new_cursor:
+                    cr.commit()
+
+        finally:
+            if use_new_cursor:
+                try:
+                    cr.close()
+                except Exception:
+                    pass
+
+        return {}

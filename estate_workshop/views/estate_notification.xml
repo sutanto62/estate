@@ -17,7 +17,7 @@
              <field name="model">mro.order</field>
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
-                 <xpath expr="//page[@string='Tools']" position="before">
+                 <xpath expr="//page[@string='Planned Parts']" position="before">
                       <page string="Planned Operations">
                           <field name="task_ids"
                              context="{'tree_view_ref' : 'estate_workshop.planned_task_tree'}"/>
@@ -73,6 +73,7 @@
                         <group col="2">
                             <group string="Master task">
                                 <field name="name" string="Name"/>
+                                <field name="asset_id" string="Asset"/>
                                 <field name="planned_hour" string="Planned Hour's"/>
                                 <field name="planned_manpower" string="Planned Manpower"/>
                             </group>
@@ -109,6 +110,7 @@
             <field name="arch" type="xml">
                 <tree string="Master Task">
                     <field name="name" />
+                    <field name="asset_id" string="Asset"/>
                     <field name="type_task" string="Type Task"/>
                     <field name="planned_hour" string="Planned Hour's"/>
                     <field name="planned_manpower" string="Planned Manpower"/>

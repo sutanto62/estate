@@ -34,7 +34,9 @@
         'views/estate_service_external.xml',
         'views/estate_workshop_cost.xml',
         'views/inherit_hr_contract.xml',
-        'views/view_cost_workshop.xml'
+        'views/view_cost_workshop.xml',
+        'views/estate_workshop_sparepart.xml',
+        'views/estate_workshop_procurement.xml'
 
     ],
     # only loaded in demonstration mode
