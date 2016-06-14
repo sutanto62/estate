@@ -791,6 +791,17 @@ class UpkeepMaterial(models.Model):
                 return res
             return False
 
+    @api.onchange('activity_id')
+    def _onchange_activity(self):
+        activity = self.upkeep_id.get_activity()
+        if activity:
+            return {
+                'domain': {'activity_id': [('complete_name', 'in', activity), ('type', '=', 'normal')]}
+            }
+        else:
+            error_msg = 'Upkeep activity should be defined.'
+            raise exceptions.ValidationError(error_msg)
+
     @api.depends('activity_id', 'product_id',)
     @api.multi
     def _compute_prod_product_activity(self):
