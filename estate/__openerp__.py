@@ -35,6 +35,8 @@
         'security/security.xml',
         'data/estate_uom_data.xml',
         'data/hr_data.xml',
+        'views/report_estate_division.xml',
+        'estate_report.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="estate_paperformat_a4" model="report.paperformat">
+            <field name="name">Estate Payslip Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">10</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="True"/>
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!-- QWeb Reports -->
+        <report
+            id="estate_division_report_action"
+            model="estate.division.report"
+            string="Division Report"
+            report_type="qweb-pdf"
+            name="estate.report_estate_division"
+            file="estate.report_estate_division"
+            menu="False"
+            auto="False"
+        />
+
+        <record id="estate_division_report_action" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="estate_paperformat_a4"/>
+        </record>
+
+    </data>
+</openerp>

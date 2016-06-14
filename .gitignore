@@ -14,6 +14,9 @@
 .idea/*.xml
 .idea/*.name
 /openerp-server.conf
+.idea/modules.xml
+.idea/odoo-dev.xml
+.idea/vcs.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -4,7 +4,7 @@
         <!-- Salary Rule -->
         <record id="hr_salary_rule_labour_daily_wage" model="hr.salary.rule">
             <field name="amount_select">code</field>
-            <field name="code">HK</field>
+            <field name="code">EDW</field>
             <field name="category_id" ref="hr_payroll.ALW"/>
             <field name="name">Labour Daily Wage</field>
             <field name="sequence" eval="17"/>

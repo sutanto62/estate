@@ -28,6 +28,10 @@
                             domain="[('state', 'in', ('draft','confirmed'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
+                    <filter name="filter_correction" string="Correction"
+                            domain="[('state', '=', 'correction')]"/>
+                    <filter name="filter_payslip" string="Payslip"
+                            domain="[('state', '=', 'payslip')]"/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
@@ -58,6 +62,10 @@
                             domain="[('state', 'in', ('draft','confirmed'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
+                    <filter name="filter_correction" string="Correction"
+                            domain="[('state', '=', 'correction')]"/>
+                    <filter name="filter_payslip" string="Payslip"
+                            domain="[('state', '=', 'payslip')]"/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
@@ -109,6 +117,10 @@
                             domain="[('state', 'in', ('draft','confirmed'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
+                    <filter name="filter_correction" string="Correction"
+                            domain="[('state', '=', 'correction')]"/>
+                    <filter name="filter_payslip" string="Payslip"
+                            domain="[('state', '=', 'payslip')]"/>
                     <filter icon="terp-go-month" string="This Month"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <group string="Group By">
@@ -238,7 +250,7 @@
                                             attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                                 </div>
                                 <field name="labour_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
-                                    <tree editable="True">
+                                    <tree editable="True" colors="orange:prod_quantity_day&lt;100">
                                         <field name="employee_id" string="Employee"/>
                                         <field name="contract_type" string="Type" readonly="True"/>
                                         <field name="activity_id" string="Activity"
@@ -254,12 +266,11 @@
                                         <field name="quantity_piece_rate" string="PR"
                                                 attrs="{'readonly':[('contract_type','=','1')]}"/>
                                         <field name="amount" groups="estate.group_assistant, estate.group_manager"/>
-                                        <field name="ratio_quantity_day" string="Q/D" invisible="False" groups="estate.group_assistant, estate.group_manager"/>
-                                        <field name="ratio_day_quantity" string="D/Q" invisible="False" groups="estate.group_assistant, estate.group_manager"/>
-                                        <field name="ratio_wage_quantity" string="W/Q" invisible="False" groups="estate.group_assistant, estate.group_manager"/>
                                         <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant, estate.group_manager"/>
                                         <!-- do not remove field below -->
-                                        <!--<field name="var_quantity_day" string="Var (%)" groups="estate.group_assistant, estate.group_manager"/>-->
+                                        <field name="ratio_quantity_day" string="Q/D" invisible="True" groups="estate.group_assistant, estate.group_manager"/>
+                                        <field name="ratio_day_quantity" string="D/Q" invisible="True" groups="estate.group_assistant, estate.group_manager"/>
+                                        <field name="ratio_wage_quantity" string="W/Q" invisible="True" groups="estate.group_assistant, estate.group_manager"/>
                                         <field name="upkeep_id" invisible="True"/>
                                         <field name="division_id" invisible="True"/>
                                         <field name="number_of_day" invisible="True"/>
@@ -286,6 +297,7 @@
                                 </field>
                             </page>
                         </notebook>
+                        <label string="Comment"/>
                         <field name="comment" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                     </sheet>
                 </form>
@@ -474,6 +486,10 @@
                             domain="[('state', 'in', ('draft','confirmed'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
+                    <filter name="filter_approved" string="Correction"
+                            domain="[('state', '=', 'correction')]"/>
+                    <filter name="filter_approved" string="Payslip"
+                            domain="[('state', '=', 'payslip')]"/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
@@ -565,11 +581,41 @@
             </field>
         </record>
 
+        <!-- Wizard -->
+        <record id="estate_division_report_view_form" model="ir.ui.view">
+            <field name="name">Estate Division Report View Form</field>
+            <field name="model">estate.division.report</field>
+            <field name="arch" type="xml">
+                <form string="Estate Division Report Options">
+                    <group colspan="4">
+                        <field name="period"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <!-- todo fix wrapper to print estate or division report -->
+                        <!--
+                        <field name="type"/>
+                        <field name="estate_id" attrs="{'invisible': [('type', 'not in', ('estate', 'division'))], 'required': [('type', '=', 'estate')]}"/>
+                        <field name="division_id" attrs="{'invisible': [('type', '!=', 'division')], 'required': [('type', '=', 'division')]}"/>
+                        -->
+                        <field name="type" invisible="True"/>
+                        <field name="estate_id" required="True"/>
+                        <field name="division_id" required="True"/>
+
+                    </group>
+                    <footer>
+                        <button name="check_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
         <record id="action_list_upkeep_activity" model="ir.actions.act_window" >
             <field name="name">Upkeep Activity</field>
             <field name="res_model">estate.upkeep.activity</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_activity': 1,'search_default_filter_approved': 1,'search_default_filter_month': 1}</field>
+            <field name="context">{'search_default_by_activity': 1, 'search_default_filter_month': 1}</field>
         </record>
 
         <menuitem id="estate_upkeep_activity" name="Activity"
@@ -581,7 +627,7 @@
             <field name="name">Upkeep Labour</field>
             <field name="res_model">estate.upkeep.labour</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_employee': 1, 'search_default_filter_approved': 1,'search_default_filter_month': 1}</field>
+            <field name="context">{'search_default_by_employee': 1, 'search_default_filter_month': 1}</field>
         </record>
 
         <menuitem id="estate_upkeep_labour" name="Labour"
@@ -593,7 +639,7 @@
             <field name="name">Upkeep Material</field>
             <field name="res_model">estate.upkeep.material</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_product': 1, 'search_default_filter_approved': 1,'search_default_filter_month': 1}</field>
+            <field name="context">{'search_default_by_product': 1, 'search_default_filter_month': 1}</field>
         </record>
 
         <menuitem id="estate_upkeep_material" name="Material"
@@ -601,5 +647,20 @@
                   action="action_list_upkeep_material"
                   groups="estate.group_user"/>
 
+
+        <record id="estate_division_report_action" model="ir.actions.act_window" >
+            <field name="name">Estate Division Report</field>
+            <field name="res_model">estate.division.report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="estate_division_report_view_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="estate_division_report_menu" name="Estate Division Report"
+                  parent="estate.menu_estate_reporting"
+                  action="estate_division_report_action"
+                  groups="estate.group_user"/>
     </data>
 </openerp>

@@ -56,7 +56,12 @@ class Activity(models.Model):
     activity_type = fields.Selection([('estate', 'Estate Activity'),
                                       ('vehicle', 'Vehicle activity'),
                                       ('general', 'General Affair Activity')],
-                                     'Activity Type')    
+                                     'Activity Type')
+    wage_method = fields.Selection([('standard', 'Standard Quantity'),
+                                    ('attendance', 'Attendance Code')], 'Wage Method',
+                                   default='standard',
+                                   help='* Standard Quantity, labour wage based on work result.'
+                                        '* Worked Day, labour wage based on attendance code.')
 
     @api.one
     @api.depends('name', 'parent_id')
