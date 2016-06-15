@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="inherited_attendance_view_form" model="ir.ui.view">
+            <field name="name">hr.attendance.view_form.inherit</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,approved,payslip"/>
+                    </header>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

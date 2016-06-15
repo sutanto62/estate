@@ -1,1 +1,2 @@
 import hr
+import inherited_resource_calendar

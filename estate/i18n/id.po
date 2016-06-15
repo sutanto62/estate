@@ -1,0 +1,2494 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* estate
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 8.0-20160525\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-06-16 03:37+0000\n"
+"PO-Revision-Date: 2016-06-16 15:09+0700\n"
+"Last-Translator: csutanto <c@sutanto.or.id>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"X-Generator: Poedit 1.5.4\n"
+
+#. module: estate
+#: help:estate.activity,wage_method:0
+msgid ""
+"* Standard Quantity, labour wage based on work result.* Worked Day, labour "
+"wage based on attendance code."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,usage:0 help:estate.block.template,usage:0
+msgid ""
+"* Supplier Location: Virtual location representing the source location for "
+"products coming from your suppliers\n"
+"                       \n"
+"* View: Virtual location used to create a hierarchical structures for your "
+"warehouse, aggregating its child locations ; can't directly contain "
+"products\n"
+"                       \n"
+"* Internal Location: Physical locations inside your own warehouses,\n"
+"                       \n"
+"* Customer Location: Virtual location representing the destination location "
+"for products sent to your customers\n"
+"                       \n"
+"* Inventory: Virtual location serving as counterpart for inventory "
+"operations used to correct stock levels (Physical inventories)\n"
+"                       \n"
+"* Procurement: Virtual location serving as temporary counterpart for "
+"procurement operations when the source (supplier or production) is not known "
+"yet. This location should be empty when the procurement scheduler has "
+"finished running.\n"
+"                       \n"
+"* Production: Virtual counterpart location for production operations: this "
+"location consumes the raw material and produces finished products\n"
+"                       \n"
+"* Transit Location: Counterpart location that should be used in inter-"
+"companies or inter-warehouses operations\n"
+"                      "
+msgstr ""
+
+#. module: estate
+#: help:estate.common.report,type:0 help:estate.division.report,type:0
+msgid ""
+"*By Estate, shows all activities.*By Division, group activities by Division."
+msgstr ""
+
+#. module: estate
+#: help:estate.hr.member,contract_period:0
+#: help:estate.upkeep.labour,contract_period:0
+msgid "*Monthly, Karyawan Bulanan, *Daily, Karyawan Harian."
+msgstr ""
+
+#. module: estate
+#: help:estate.hr.member,contract_type:0
+#: help:estate.upkeep.labour,contract_type:0
+msgid ""
+"*PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, *PKWT, Perjanjian Kerja Waktu "
+"Tertentu."
+msgstr ""
+
+#. module: estate
+#: help:estate.config.settings,default_max_entry_day:0
+msgid "0 is no limit."
+msgstr ""
+
+#. module: estate
+#: field:estate.block,qty_tree_mature_abnormal:0
+#: field:estate.block.template,qty_tree_mature_abnormal:0
+msgid "Abnormal Mature Tree"
+msgstr "Jumlah Pokok Menghasilkan Abnormal"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: view:estate.block.template:estate.view_form_block_config
+#: model:ir.ui.menu,name:estate.estate_account_menu
+#: view:website:estate.report_estate_division
+msgid "Account"
+msgstr ""
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Accounting"
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.labour,var_qty_base:0
+msgid "Achievement over standar in quantity."
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.labour,prod_quantity_day:0
+msgid "Achievement over standard in percentage."
+msgstr ""
+
+#. module: estate
+#: field:estate.block,active:0 field:estate.block.template,active:0
+#: field:estate.hr.team,active:0 selection:estate.hr.team,state:0
+#: field:estate.wage,active:0
+msgid "Active"
+msgstr "Aktif"
+
+#. module: estate
+#: help:estate.hr.team,state:0
+msgid "Active team allowed to be used as upkeep team."
+msgstr "Tim aktif untuk perawatan"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: field:estate.material.norm,activity_id:0
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: field:estate.upkeep.activity,activity_id:0
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: field:estate.upkeep.labour,activity_id:0
+#: view:estate.upkeep.material:estate.upkeep_material_view_form
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: field:estate.upkeep.material,activity_id:0
+#: model:ir.actions.act_window,name:estate.action_list_activity_config
+#: model:ir.ui.menu,name:estate.estate_activity
+#: model:ir.ui.menu,name:estate.estate_upkeep_activity
+#: view:website:estate.report_estate_division
+msgid "Activity"
+msgstr "Kegiatan"
+
+#. module: estate
+#: field:estate.activity,code:0
+msgid "Activity Code"
+msgstr "Kode Kegiatan"
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+msgid "Activity Cost"
+msgstr "Biaya Kegiatan"
+
+#. module: estate
+#: field:estate.activity,activity_norm_ids:0
+msgid "Activity Norm"
+msgstr "Norma Kegiatan"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Activity Standard"
+msgstr "Standar Kegiatan"
+
+#. module: estate
+#: field:estate.activity,activity_type:0
+msgid "Activity Type"
+msgstr "Tipe Kegiatan"
+
+#. module: estate
+#: field:estate.upkeep.material,activity_unit_amount:0
+msgid "Activity Unit"
+msgstr "Hasil Kerja"
+
+#. module: estate
+#: field:estate.activity.norm,activity_id:0
+#: field:estate.parameter.weight,activity_id:0
+msgid "Activity id"
+msgstr "ID Kegiatan"
+
+#. module: estate
+#: field:estate.upkeep,activity_line_ids:0
+msgid "Activity line ids"
+msgstr "Detail Kegiatan"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: field:estate.activity,comment:0 field:estate.block,comment:0
+#: field:estate.block.template,comment:0 field:estate.material.norm,comment:0
+#: field:estate.upkeep,comment:0 view:estate.wage:estate.estate_wage_view_form
+#: field:estate.wage,comment:0
+#: view:stock.location:estate.view_form_location_inherited
+msgid "Additional Information"
+msgstr "Keterangan"
+
+#. module: estate
+#: help:estate.upkeep.activity,ratio_day_quantity:0
+#: help:estate.upkeep.labour,ratio_day_quantity:0
+msgid "Amount of day required to finish a work."
+msgstr "Jumlah kebutuhan hari kerja."
+
+#. module: estate
+#: help:estate.upkeep.material,ratio_product_activity:0
+msgid "Amount of product required per activity."
+msgstr "Jumlah kebutuhan material."
+
+#. module: estate
+#: help:estate.upkeep.activity,ratio_wage_quantity:0
+#: help:estate.upkeep.labour,ratio_wage_quantity:0
+msgid "Amount of wage paid to finish a work"
+msgstr "Jumlah kebutuhan upah."
+
+#. module: estate
+#: help:estate.hr.team,employee_id:0
+#: help:estate.upkeep.labour,upkeep_team_employee_id:0
+msgid "An employee is only allowed to lead one active team."
+msgstr "Satu mandor hanya boleh aktif di satu Kemandoran."
+
+#. module: estate
+#: field:estate.activity,account_id:0 field:estate.block,account_id:0
+#: field:estate.block.template,account_id:0
+#: model:ir.model,name:estate.model_account_analytic_account
+msgid "Analytic Account"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.activity,account_id:0
+msgid "Analytic Account Line"
+msgstr ""
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_analytic
+msgid "Analytic Estate Journal Items"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.menu,name:estate.estate_account_analytic_menu
+msgid "Analytic Journal Entries"
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.activity,activity_id:0
+#: help:estate.upkeep.labour,activity_id:0
+#: help:estate.upkeep.material,activity_id:0
+msgid "Any update will reset Block."
+msgstr "Update akan mereset blok."
+
+#. module: estate
+#: help:estate.upkeep.labour,attendance_code_id:0
+msgid "Any update will reset employee's timesheet"
+msgstr ""
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+msgid "Apply"
+msgstr ""
+
+#. module: estate
+#: selection:estate.operation,state:0
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep:estate.upkeep_view_search
+#: selection:estate.upkeep,state:0
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "Approved"
+msgstr "Setuju"
+
+#. module: estate
+#: model:product.uom.categ,name:estate.product_uom_categ_area
+msgid "Area"
+msgstr "Area"
+
+#. module: estate
+#: help:estate.block,area_emplacement:0
+#: help:estate.block.template,area_emplacement:0
+msgid "Area for office and housing."
+msgstr ""
+
+#. module: estate
+#: view:estate.block.template:estate.view_form_block_config
+msgid "Areal Statement"
+msgstr ""
+
+#. module: estate
+#: view:estate.block.template:estate.view_form_block_config
+msgid "Assets"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,assistant_id:0
+#: field:estate.block.template,assistant_id:0
+#: field:estate.hr.team,assistant_id:0 field:estate.upkeep,assistant_id:0
+msgid "Assistant"
+msgstr "Asisten"
+
+#. module: estate
+#: field:estate.hr.attendance,name:0
+#: field:estate.upkeep.labour,attendance_code_id:0
+msgid "Attendance"
+msgstr "Kehadiran"
+
+#. module: estate
+#: selection:estate.activity,wage_method:0
+msgid "Attendance Code"
+msgstr "Kode Kehadiran"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Attn."
+msgstr "Kode Absen"
+
+#. module: estate
+#: help:estate.block,qty_sph_standard:0
+#: help:estate.block.template,qty_sph_standard:0
+msgid "Average stand per hectare by topography."
+msgstr "Rata-rata SPH berdasar topografi."
+
+#. module: estate
+#: help:estate.block,qty_sph_do:0 help:estate.block.template,qty_sph_do:0
+msgid "Average stand per hectare planted."
+msgstr "Rata-rata SP tertanam."
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_we
+msgid "Barat Timur"
+msgstr ""
+
+#. module: estate
+#: help:estate.block,company_id:0 help:estate.block.template,company_id:0
+msgid "Based on Consession License."
+msgstr "Berdasar Ijin Lokasi."
+
+#. module: estate
+#: help:estate.upkeep.material,activity_unit_amount:0
+msgid "Based on upkeep activity"
+msgstr "Berdasar kegiatan perawatan"
+
+#. module: estate
+#: field:estate.activity,uom_id:0
+msgid "Basic Unit of Measurements"
+msgstr "Satuan Dasar"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Batch/Location"
+msgstr "Batch/Lokasi"
+
+#. module: estate
+#: help:estate.block,account_id:0 help:estate.block.template,account_id:0
+msgid "Batch/Year Planted"
+msgstr "Batch/Tahun Tanam"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_hilly
+msgid "Berbukit"
+msgstr ""
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_wave
+msgid "Bergelombang"
+msgstr ""
+
+#. module: estate
+#: view:estate.block.template:estate.view_form_block_config
+#: selection:estate.parameter,level:0
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: selection:stock.location,estate_location_level:0
+msgid "Block"
+msgstr "Blok"
+
+#. module: estate
+#: model:stock.location,name:estate.block_1_stock_location
+msgid "Block 1"
+msgstr "Blok 1"
+
+#. module: estate
+#: model:stock.location,name:estate.block_2_stock_location
+msgid "Block 2"
+msgstr "Blok 2"
+
+#. module: estate
+#: model:stock.location,name:estate.block_3_stock_location
+msgid "Block 3"
+msgstr "Blok 3"
+
+#. module: estate
+#: model:stock.location,name:estate.block_4_stock_location
+msgid "Block 4"
+msgstr "Blok 4"
+
+#. module: estate
+#: model:stock.location,name:estate.block_5_stock_location
+msgid "Block 5"
+msgstr "Blok 5"
+
+#. module: estate
+#: model:stock.location,name:estate.block_6_stock_location
+msgid "Block 6"
+msgstr "Blok 6"
+
+#. module: estate
+#: field:estate.block,block_parameter_ids:0
+#: field:estate.block.template,block_parameter_ids:0
+msgid "Block Parameter"
+msgstr "Parameter Blok"
+
+#. module: estate
+#: model:ir.ui.menu,name:estate.estate_estate_block_menu
+msgid "Block Structure"
+msgstr "Struktur Blok"
+
+#. module: estate
+#: field:estate.block,block_template_id:0
+msgid "Block Template"
+msgstr "Template Blok"
+
+#. module: estate
+#: field:estate.block,block_ids:0 field:estate.block.template,block_ids:0
+msgid "Block Variants"
+msgstr "Varian Blok"
+
+#. module: estate
+#: selection:estate.common.report,type:0
+#: selection:estate.division.report,type:0
+msgid "By Division"
+msgstr "Per Divisi"
+
+#. module: estate
+#: selection:estate.common.report,type:0
+#: selection:estate.division.report,type:0
+msgid "By Estate"
+msgstr "Per Kebun"
+
+#. module: estate
+#: help:estate.block,active:0 help:estate.block.template,active:0
+msgid ""
+"By unchecking the active field, you may hide a location without deleting it."
+msgstr "Non aktif lokasi tanpa harus menghapus."
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Calculate Qty"
+msgstr "Bagi Hasil Kerja"
+
+#. module: estate
+#: help:estate.upkeep.activity,unit_amount:0
+msgid "Calculate labour's work result by dividing with attendance ratio."
+msgstr "Hitung hasil kerja KHT/L berdasar rasio kehadiran."
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid ""
+"Calculate labour's work result which has attendance code. It will reset "
+"previous entry."
+msgstr "Hitung hasil kerja yang memiliki kode absen. Reset hasil sebelumnya."
+
+#. module: estate
+#: help:estate.block,area_planted:0 help:estate.block.template,area_planted:0
+msgid "Calculated based on stand per hectare."
+msgstr "Hitung berdasar SPH."
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+#: view:estate.division.report:estate.estate_division_report_view_form
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Cancel"
+msgstr "Batal"
+
+#. module: estate
+#: help:estate.block,scrap_location:0
+#: help:estate.block.template,scrap_location:0
+msgid ""
+"Check this box to allow using this location to put scrapped/damaged goods."
+msgstr "Atur lokasi sebagai tempat penyimpanan barang rusak/dibuang."
+
+#. module: estate
+#: help:estate.block,is_smallholder:0
+#: help:estate.block.template,is_smallholder:0
+msgid "Check this box to mark Block as Smallholder area."
+msgstr "Atur lokasi sebagai blok koperasi."
+
+#. module: estate
+#: help:account.analytic.account,use_estate:0
+msgid "Check this field if this project manages estate"
+msgstr ""
+
+#. module: estate
+#: help:estate.parameter,mandatory:0
+msgid "Checking this option to make it as mandatory Block Parameter."
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,child_ids:0
+msgid "Child Activities"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,closing:0 field:estate.block.template,closing:0
+msgid "Closing Block"
+msgstr ""
+
+#. module: estate
+#: help:estate.block,area_gis:0 help:estate.block.template,area_gis:0
+msgid "Closing block area."
+msgstr ""
+
+#. module: estate
+#: field:estate.hr.attendance,code:0
+msgid "Code"
+msgstr "Kode"
+
+#. module: estate
+#: field:estate.activity.norm,coefficient:0
+msgid "Coefficient"
+msgstr "Koefisien"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Comment"
+msgstr "Keterangan"
+
+#. module: estate
+#: field:estate.block,company_id:0 field:estate.block.template,company_id:0
+msgid "Company"
+msgstr "Perusahaan"
+
+#. module: estate
+#: field:estate.activity,complete_name:0
+msgid "Complete Name"
+msgstr "Nama Lengkap"
+
+#. module: estate
+#: field:estate.hr.team,complete_name:0
+msgid "Complete name"
+msgstr "Nama lengkap"
+
+#. module: estate
+#: model:ir.ui.menu,name:estate.estate_config_menu
+#: model:ir.ui.menu,name:estate.estate_master_menu
+msgid "Configuration"
+msgstr "Konfigurasi"
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+#: model:ir.actions.act_window,name:estate.action_estate_configuration
+msgid "Configure Estate"
+msgstr "Konfigurasi Estate"
+
+#. module: estate
+#: selection:estate.operation,state:0
+#: view:estate.upkeep:estate.upkeep_view_form selection:estate.upkeep,state:0
+msgid "Confirmed"
+msgstr "Konfirm"
+
+#. module: estate
+#: field:estate.block,child_ids:0 field:estate.block.template,child_ids:0
+msgid "Contains"
+msgstr "Isi"
+
+#. module: estate
+#: field:product.category,estate_product:0
+msgid "Contains Estate Products"
+msgstr "Berisi Bahan Kebun"
+
+#. module: estate
+#: field:estate.hr.member,contract_period:0
+#: field:estate.upkeep.labour,contract_period:0
+msgid "Contract Period"
+msgstr "Periode Kontrak"
+
+#. module: estate
+#: field:estate.hr.member,contract_type:0
+#: field:estate.upkeep.labour,contract_type:0
+msgid "Contract Type"
+msgstr "Tipe Kontrak"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_search
+#: selection:estate.upkeep,state:0
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "Correction"
+msgstr "Koreksi"
+
+#. module: estate
+#: field:estate.block,posx:0 field:estate.block.template,posx:0
+msgid "Corridor (X)"
+msgstr "Koridor (X)"
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: field:estate.upkeep.activity,amount:0
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: field:estate.upkeep.material,amount:0
+#: view:website:estate.report_estate_division
+msgid "Cost"
+msgstr "Biaya"
+
+#. module: estate
+#: field:estate.upkeep.material,product_standard_price:0
+msgid "Cost Price"
+msgstr "Biaya"
+
+#. module: estate
+#: help:estate.material.norm,standard_price:0
+#: help:estate.upkeep.material,product_standard_price:0
+msgid ""
+"Cost price of the product template used for standard stock valuation in "
+"accounting and used as a base price on purchase orders. Expressed in the "
+"default unit of measure of the product."
+msgstr ""
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Cost/UoM"
+msgstr "Rp./Sat"
+
+#. module: estate
+#: help:estate.activity,name:0
+msgid "Create unique activity name."
+msgstr "Tulis nama kegiatan (harus unik)."
+
+#. module: estate
+#: field:estate.activity,create_uid:0 field:estate.activity.norm,create_uid:0
+#: field:estate.block,create_uid:0 field:estate.block.parameter,create_uid:0
+#: field:estate.block.template,create_uid:0
+#: field:estate.common.report,create_uid:0
+#: field:estate.config.settings,create_uid:0
+#: field:estate.division.report,create_uid:0
+#: field:estate.hr.attendance,create_uid:0 field:estate.hr.member,create_uid:0
+#: field:estate.hr.team,create_uid:0 field:estate.labour.type,create_uid:0
+#: field:estate.material.norm,create_uid:0 field:estate.object,create_uid:0
+#: field:estate.object.type,create_uid:0 field:estate.operation,create_uid:0
+#: field:estate.parameter,create_uid:0
+#: field:estate.parameter.value,create_uid:0
+#: field:estate.parameter.weight,create_uid:0
+#: field:estate.planted.year,create_uid:0
+#: field:estate.stand.hectare,create_uid:0 field:estate.upkeep,create_uid:0
+#: field:estate.upkeep.activity,create_uid:0
+#: field:estate.upkeep.labour,create_uid:0
+#: field:estate.upkeep.material,create_uid:0 field:estate.wage,create_uid:0
+msgid "Created by"
+msgstr "Dibuat oleh"
+
+#. module: estate
+#: field:estate.activity,create_date:0
+#: field:estate.activity.norm,create_date:0 field:estate.block,create_date:0
+#: field:estate.block.parameter,create_date:0
+#: field:estate.block.template,create_date:0
+#: field:estate.common.report,create_date:0
+#: field:estate.config.settings,create_date:0
+#: field:estate.division.report,create_date:0
+#: field:estate.hr.attendance,create_date:0
+#: field:estate.hr.member,create_date:0 field:estate.hr.team,create_date:0
+#: field:estate.labour.type,create_date:0
+#: field:estate.material.norm,create_date:0 field:estate.object,create_date:0
+#: field:estate.object.type,create_date:0 field:estate.operation,create_date:0
+#: field:estate.parameter,create_date:0
+#: field:estate.parameter.value,create_date:0
+#: field:estate.parameter.weight,create_date:0
+#: field:estate.planted.year,create_date:0
+#: field:estate.stand.hectare,create_date:0 field:estate.upkeep,create_date:0
+#: field:estate.upkeep.activity,create_date:0
+#: field:estate.upkeep.labour,create_date:0
+#: field:estate.upkeep.material,create_date:0 field:estate.wage,create_date:0
+msgid "Created on"
+msgstr "Dibuat pada"
+
+#. module: estate
+#: model:stock.location,name:estate.block_culling_1_stock_location
+msgid "Culling 1"
+msgstr "Pemusnahan 1"
+
+#. module: estate
+#: model:stock.location,name:estate.block_culling_2_stock_location
+msgid "Culling 2"
+msgstr "Pemusnahan 2"
+
+#. module: estate
+#: help:estate.material.norm,qty_available:0
+msgid ""
+"Current quantity of products.\n"
+"In a context with a single Stock Location, this includes goods stored at "
+"this Location, or any of its children.\n"
+"In a context with a single Warehouse, this includes goods stored in the "
+"Stock Location of this Warehouse, or any of its children.\n"
+"stored in the Stock Location of the Warehouse of this Shop, or any of its "
+"children.\n"
+"Otherwise, this includes goods stored in any Stock Location with 'internal' "
+"type."
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+msgid "D/Q"
+msgstr "HK/ha"
+
+#. module: estate
+#: field:estate.upkeep.labour,wage_number_of_day:0
+#: field:estate.wage,daily_wage:0
+msgid "Daily Wage"
+msgstr "Upah HK "
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_flat
+msgid "Datar"
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_search field:estate.upkeep,date:0
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: field:estate.upkeep.activity,upkeep_date:0
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: field:estate.upkeep.labour,upkeep_date:0
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: field:estate.upkeep.material,upkeep_date:0
+msgid "Date"
+msgstr "Tanggal"
+
+#. module: estate
+#: field:estate.hr.team,date_effective:0
+msgid "Date Effective"
+msgstr "Tanggal Efektif"
+
+#. module: estate
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: view:estate.wage:estate.estate_wage_view_tree
+msgid "Day(s)"
+msgstr "HK"
+
+#. module: estate
+#: field:estate.config.settings,default_analytic_account_id:0
+msgid "Default Analytic Account"
+msgstr ""
+
+#. module: estate
+#: field:estate.config.settings,default_journal_line_id:0
+msgid "Default Estate Journal"
+msgstr ""
+
+#. module: estate
+#: field:estate.config.settings,default_account_id:0
+msgid "Default General Account"
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.material,product_uom_id:0
+msgid "Default Unit of Measure used for all of stock operation"
+msgstr ""
+
+#. module: estate
+#: help:estate.material.norm,product_uom_id:0
+msgid "Default Unit of Measure used for all stock operation."
+msgstr ""
+
+#. module: estate
+#: help:estate.parameter,level:0
+msgid "Define block level parameter."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,block_parameter_ids:0
+#: help:estate.block.template,block_parameter_ids:0
+msgid "Define block parameter"
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.labour,quantity_piece_rate:0
+msgid "Define piece rate work result"
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.labour,quantity:0
+msgid "Define total work result"
+msgstr ""
+
+#. module: estate
+#: help:estate.material.norm,unit_amount:0
+msgid "Define unit amount of material product UoM per activity UoM."
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.labour,quantity_overtime:0
+msgid "Define wage based on hour(s)"
+msgstr ""
+
+#. module: estate
+#: help:estate.block,putaway_strategy_id:0
+#: help:estate.block.template,putaway_strategy_id:0
+msgid ""
+"Defines the default method used for suggesting the exact location (shelf) "
+"where to store the products. This method can be enforced at the product "
+"category level, and a fallback is made on the parent locations if none is "
+"set here."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,removal_strategy_id:0
+#: help:estate.block.template,removal_strategy_id:0
+msgid ""
+"Defines the default method used for suggesting the exact location (shelf) "
+"where to take the products from, which lot etc. for this location. This "
+"method can be enforced at the product category level, and a fallback is made "
+"on the parent locations if none is set here."
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep,description:0
+msgid "Description"
+msgstr ""
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Detail"
+msgstr ""
+
+#. module: estate
+#: field:account.analytic.account,display_name:0
+#: field:estate.activity,display_name:0
+#: field:estate.activity.norm,display_name:0 field:estate.block,display_name:0
+#: field:estate.block.parameter,display_name:0
+#: field:estate.block.template,display_name:0
+#: field:estate.common.report,display_name:0
+#: field:estate.config.settings,display_name:0
+#: field:estate.division.report,display_name:0
+#: field:estate.hr.attendance,display_name:0
+#: field:estate.hr.member,display_name:0 field:estate.hr.team,display_name:0
+#: field:estate.labour.type,display_name:0
+#: field:estate.material.norm,display_name:0
+#: field:estate.object,display_name:0 field:estate.object.type,display_name:0
+#: field:estate.operation,display_name:0 field:estate.parameter,display_name:0
+#: field:estate.parameter.value,display_name:0
+#: field:estate.parameter.weight,display_name:0
+#: field:estate.planted.year,display_name:0
+#: field:estate.stand.hectare,display_name:0
+#: field:estate.upkeep,display_name:0
+#: field:estate.upkeep.activity,display_name:0
+#: field:estate.upkeep.labour,display_name:0
+#: field:estate.upkeep.material,display_name:0
+#: field:estate.wage,display_name:0 field:product.category,display_name:0
+#: field:report.estate.report_estate_division,display_name:0
+#: field:stock.location,display_name:0
+msgid "Display Name"
+msgstr ""
+
+#. module: estate
+#: field:estate.common.report,division_id:0
+#: field:estate.division.report,division_id:0
+#: selection:estate.parameter,level:0 field:estate.upkeep,division_id:0
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: field:estate.upkeep.labour,division_id:0
+#: field:estate.upkeep.material,division_id:0
+#: selection:stock.location,estate_location_level:0
+msgid "Division"
+msgstr "Divisi"
+
+#. module: estate
+#: model:stock.location,name:estate.division_1_stock_location
+msgid "Division 1"
+msgstr "Divisi 1"
+
+#. module: estate
+#: model:stock.location,name:estate.division_2_stock_location
+msgid "Division 2"
+msgstr "Divisi 2"
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_upkeep_lha
+#: model:ir.actions.report.xml,name:estate.estate_division_report_action
+#: model:ir.model,name:estate.model_estate_division_report
+#: model:ir.ui.menu,name:estate.estate_division_lha_report
+msgid "Division Report"
+msgstr "Laporan Divisi"
+
+#. module: estate
+#: field:estate.upkeep.activity,division_id:0
+msgid "Division id"
+msgstr "ID Divisi"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Division:"
+msgstr "Divisi:"
+
+#. module: estate
+#: selection:estate.hr.team,state:0 selection:estate.operation,state:0
+#: selection:estate.upkeep,state:0
+msgid "Draft"
+msgstr "Draft"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Draft Upkeep"
+msgstr "Kegiatan Mandor"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_search
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "Draft/Confirmed"
+msgstr "Draft/Konfirm"
+
+#. module: estate
+#: selection:stock.location,estate_location_type:0
+msgid "Emplacement"
+msgstr "Eplasemen"
+
+#. module: estate
+#: field:estate.block,area_emplacement:0
+#: field:estate.block.template,area_emplacement:0
+msgid "Emplacement Area (ha)"
+msgstr "Area Emplasemen (ha)"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: field:estate.upkeep.labour,employee_id:0
+msgid "Employee"
+msgstr "Karyawan"
+
+#. module: estate
+#: help:estate.activity,piece_rate_price:0
+msgid "Empty value use standard price instead"
+msgstr "Kosongkan untuk menggunakan harga standar."
+
+#. module: estate
+#: field:estate.common.report,date_end:0
+#: field:estate.division.report,date_end:0
+msgid "End Date"
+msgstr "Tanggal Akhir"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "End Date:"
+msgstr "Tanggal Akhir:"
+
+#. module: estate
+#: code:addons/estate/wizard/estate_common_report.py:75
+#, python-format
+msgid "Error!"
+msgstr ""
+
+#. module: estate
+#: field:account.analytic.account,use_estate:0
+#: field:estate.common.report,estate_id:0
+#: field:estate.division.report,estate_id:0 selection:estate.parameter,level:0
+#: field:estate.upkeep,estate_id:0 field:estate.upkeep.labour,estate_id:0
+#: field:estate.upkeep.material,estate_id:0 field:estate.wage,estate_id:0
+#: model:ir.module.category,name:estate.module_category_estate
+#: model:ir.ui.menu,name:estate.estate_blocking_menu
+#: model:ir.ui.menu,name:estate.main_estate_menu
+#: model:ir.ui.menu,name:estate.menu_estate_configuration
+#: model:ir.ui.menu,name:estate.menu_estate_reporting
+#: selection:stock.location,estate_location_level:0
+msgid "Estate"
+msgstr "Kebun"
+
+#. module: estate
+#: selection:estate.activity,activity_type:0
+msgid "Estate Activity"
+msgstr "Kegiatan Kebun"
+
+#. module: estate
+#: model:res.groups,name:estate.group_agronomi
+msgid "Estate Agronomi"
+msgstr "Agronomi Kebun"
+
+#. module: estate
+#: model:res.groups,name:estate.group_assistant
+msgid "Estate Assistant"
+msgstr "Asisten Kebun"
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_attendance_code
+#: model:ir.ui.menu,name:estate.estate_estate_attendance_menu
+msgid "Estate Attendance"
+msgstr "Hari Kerja"
+
+#. module: estate
+#: field:estate.block.parameter,block_id:0
+#: view:estate.block.template:estate.view_tree_block_config
+msgid "Estate Block"
+msgstr "Blok Kemun"
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_common_report
+msgid "Estate Common Report"
+msgstr "Laporan Kebun"
+
+#. module: estate
+#: model:ir.ui.menu,name:estate.estate_division_report_menu
+#: view:website:estate.report_estate_division
+msgid "Estate Division Report"
+msgstr "Laporan Divisi"
+
+#. module: estate
+#: view:estate.division.report:estate.estate_division_report_view_form
+msgid "Estate Division Report Options"
+msgstr "Pilihan Laporan Divisi"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Estate Information"
+msgstr "Informasi Kebun"
+
+#. module: estate
+#: field:estate.block,estate_location:0
+#: field:estate.block.template,estate_location:0
+#: field:stock.location,estate_location:0
+msgid "Estate Location"
+msgstr "Lokasi Kebun"
+
+#. module: estate
+#: view:stock.location:estate.view_form_location_inherited
+msgid "Estate Location Information"
+msgstr "Informasi Lokasi Kebun"
+
+#. module: estate
+#: field:estate.block,estate_location_level:0
+#: field:estate.block.template,estate_location_level:0
+#: field:stock.location,estate_location_level:0
+msgid "Estate Location Level"
+msgstr "Tingkat Lokasi Kebun"
+
+#. module: estate
+#: field:estate.block,estate_location_type:0
+#: field:estate.block.template,estate_location_type:0
+#: field:stock.location,estate_location_type:0
+msgid "Estate Location Type"
+msgstr "Tipe Lokasi Kebun"
+
+#. module: estate
+#: model:res.groups,name:estate.group_manager
+msgid "Estate Manager"
+msgstr "Kepala Kebun"
+
+#. module: estate
+#: view:product.category:estate.inherited_product_category_form
+msgid "Estate Properties"
+msgstr "Kebun"
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_block_estate
+msgid "Estate Structure (Block)"
+msgstr "Struktur Kebun (Blok)"
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_estate_team
+#: model:ir.ui.menu,name:estate.estate_estate_team_menu
+msgid "Estate Team"
+msgstr "Kemandoran"
+
+#. module: estate
+#: model:res.groups,name:estate.group_user
+msgid "Estate User"
+msgstr "User Kebun"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Estate:"
+msgstr "Kebun:"
+
+#. module: estate
+#: field:estate.block,account_expense_id:0
+#: field:estate.block.template,account_expense_id:0
+msgid "Expense Account"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,area_gis:0 field:estate.block.template,area_gis:0
+msgid "GIS Area (ha)"
+msgstr "Luas GIS (ha)"
+
+#. module: estate
+#: help:estate.block,area_unplanted:0
+#: help:estate.block.template,area_unplanted:0
+msgid "GIS Area minus Planted area."
+msgstr "Luas GIS dikurangi luas ditanam"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_gambut
+msgid "Gambut"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,general_account_id:0
+msgid "General Account"
+msgstr ""
+
+#. module: estate
+#: selection:estate.activity,activity_type:0
+msgid "General Affair Activity"
+msgstr ""
+
+#. module: estate
+#: field:estate.common.report,type:0 field:estate.division.report,type:0
+#: view:estate.upkeep:estate.upkeep_view_search
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "Group By"
+msgstr "Kelompokkan"
+
+#. module: estate
+#: view:estate.parameter.value:estate.search_view_estate_parameter
+msgid "Group by..."
+msgstr "Kelompokkan ..."
+
+#. module: estate
+#: field:estate.block,posz:0 field:estate.block.template,posz:0
+msgid "Height (Z)"
+msgstr ""
+
+#. module: estate
+#: model:ir.module.category,description:estate.module_category_estate
+msgid "Helps you maintain nursery and plantation field."
+msgstr "Membantu mengelola pembibitan dan kebun."
+
+#. module: estate
+#: field:estate.hr.attendance,unit_amount:0
+msgid "Hour"
+msgstr "Jam"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_forest
+msgid "Hutan"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,id:0 field:estate.activity.norm,id:0
+#: field:estate.block,id:0 field:estate.block.parameter,id:0
+#: field:estate.block.template,id:0 field:estate.common.report,id:0
+#: field:estate.config.settings,id:0 field:estate.division.report,id:0
+#: field:estate.hr.attendance,id:0 field:estate.hr.member,id:0
+#: field:estate.hr.team,id:0 field:estate.labour.type,id:0
+#: field:estate.material.norm,id:0 field:estate.object,id:0
+#: field:estate.object.type,id:0 field:estate.operation,id:0
+#: field:estate.parameter,id:0 field:estate.parameter.value,id:0
+#: field:estate.parameter.weight,id:0 field:estate.planted.year,id:0
+#: field:estate.stand.hectare,id:0 field:estate.upkeep,id:0
+#: field:estate.upkeep.activity,id:0 field:estate.upkeep.labour,id:0
+#: field:estate.upkeep.material,id:0 field:estate.wage,id:0
+#: field:report.estate.report_estate_division,id:0
+msgid "ID"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,qty_tree_immature:0
+#: field:estate.block.template,qty_tree_immature:0
+msgid "Immature Tree"
+msgstr "Jumlah Pokok Belum Menghasilkan"
+
+#. module: estate
+#: field:estate.block,account_income_id:0
+#: field:estate.block.template,account_income_id:0
+msgid "Income Account"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,inherit_location_id:0
+#: field:estate.block.template,inherit_location_id:0
+msgid "Inherit location id"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_stock_location
+msgid "Inventory Locations"
+msgstr "Lokasi Inventaris"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_irregular
+msgid "Iregular"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,scrap_location:0
+#: field:estate.block.template,scrap_location:0
+msgid "Is a Scrap Location?"
+msgstr "Lokasi pembuangan?"
+
+#. module: estate
+#: help:estate.activity,qty_base_max:0
+msgid ""
+"It will be used when Activity Norm defined. Set as maximum work's result."
+msgstr ""
+"Digunakan saat norma kegiatan dibuat. Isi dengan nilai maksimum hasil kerja."
+
+#. module: estate
+#: help:estate.activity,qty_base_min:0
+msgid ""
+"It will be used when Activity Norm defined. Set as minimum work's result."
+msgstr ""
+"Digunakan saat norma kegiatan dibuat. Isi dengan nilai minimum hasil kerja."
+
+#. module: estate
+#: help:estate.activity,sequence:0
+msgid "Keep activity in order as plantation stages."
+msgstr "Digunakan untuk mengurutkan kegiatan sesuai dengan urutan kerja."
+
+#. module: estate
+#: model:stock.location,name:estate.estate_stock_location
+msgid "LYD"
+msgstr ""
+
+#. module: estate
+#: field:estate.hr.member,employee_id:0
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: model:ir.ui.menu,name:estate.estate_labour_menu
+#: model:ir.ui.menu,name:estate.estate_upkeep_labour
+#: view:website:estate.report_estate_division
+msgid "Labour"
+msgstr "Tenaga Kerja"
+
+#. module: estate
+#: field:estate.upkeep.activity,labour_unit_amount:0
+msgid "Labour Unit Amount"
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: field:estate.upkeep.activity,labour_amount:0
+msgid "Labour Wage"
+msgstr "Upah TK"
+
+#. module: estate
+#: field:estate.upkeep,labour_line_ids:0
+msgid "Labour line ids"
+msgstr "Detail Tenaga Kerja"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_thatch
+msgid "Lalang"
+msgstr ""
+
+#. module: estate
+#: help:estate.block,closing:0 help:estate.block.template,closing:0
+msgid "Land clearing has been finished."
+msgstr "LC selesai"
+
+#. module: estate
+#: field:account.analytic.account,__last_update:0
+#: field:estate.activity,__last_update:0
+#: field:estate.activity.norm,__last_update:0
+#: field:estate.block,__last_update:0
+#: field:estate.block.parameter,__last_update:0
+#: field:estate.block.template,__last_update:0
+#: field:estate.common.report,__last_update:0
+#: field:estate.config.settings,__last_update:0
+#: field:estate.division.report,__last_update:0
+#: field:estate.hr.attendance,__last_update:0
+#: field:estate.hr.member,__last_update:0 field:estate.hr.team,__last_update:0
+#: field:estate.labour.type,__last_update:0
+#: field:estate.material.norm,__last_update:0
+#: field:estate.object,__last_update:0
+#: field:estate.object.type,__last_update:0
+#: field:estate.operation,__last_update:0
+#: field:estate.parameter,__last_update:0
+#: field:estate.parameter.value,__last_update:0
+#: field:estate.parameter.weight,__last_update:0
+#: field:estate.planted.year,__last_update:0
+#: field:estate.stand.hectare,__last_update:0
+#: field:estate.upkeep,__last_update:0
+#: field:estate.upkeep.activity,__last_update:0
+#: field:estate.upkeep.labour,__last_update:0
+#: field:estate.upkeep.material,__last_update:0
+#: field:estate.wage,__last_update:0 field:product.category,__last_update:0
+#: field:report.estate.report_estate_division,__last_update:0
+#: field:stock.location,__last_update:0
+msgid "Last Modified on"
+msgstr "Dimodifikasi pada"
+
+#. module: estate
+#: field:estate.activity,write_uid:0 field:estate.activity.norm,write_uid:0
+#: field:estate.block,write_uid:0 field:estate.block.parameter,write_uid:0
+#: field:estate.block.template,write_uid:0
+#: field:estate.common.report,write_uid:0
+#: field:estate.config.settings,write_uid:0
+#: field:estate.division.report,write_uid:0
+#: field:estate.hr.attendance,write_uid:0 field:estate.hr.member,write_uid:0
+#: field:estate.hr.team,write_uid:0 field:estate.labour.type,write_uid:0
+#: field:estate.material.norm,write_uid:0 field:estate.object,write_uid:0
+#: field:estate.object.type,write_uid:0 field:estate.operation,write_uid:0
+#: field:estate.parameter,write_uid:0 field:estate.parameter.value,write_uid:0
+#: field:estate.parameter.weight,write_uid:0
+#: field:estate.planted.year,write_uid:0
+#: field:estate.stand.hectare,write_uid:0 field:estate.upkeep,write_uid:0
+#: field:estate.upkeep.activity,write_uid:0
+#: field:estate.upkeep.labour,write_uid:0
+#: field:estate.upkeep.material,write_uid:0 field:estate.wage,write_uid:0
+msgid "Last Updated by"
+msgstr "Dimodifikasi oleh"
+
+#. module: estate
+#: field:estate.activity,write_date:0 field:estate.activity.norm,write_date:0
+#: field:estate.block,write_date:0 field:estate.block.parameter,write_date:0
+#: field:estate.block.template,write_date:0
+#: field:estate.common.report,write_date:0
+#: field:estate.config.settings,write_date:0
+#: field:estate.division.report,write_date:0
+#: field:estate.hr.attendance,write_date:0 field:estate.hr.member,write_date:0
+#: field:estate.hr.team,write_date:0 field:estate.labour.type,write_date:0
+#: field:estate.material.norm,write_date:0 field:estate.object,write_date:0
+#: field:estate.object.type,write_date:0 field:estate.operation,write_date:0
+#: field:estate.parameter,write_date:0
+#: field:estate.parameter.value,write_date:0
+#: field:estate.parameter.weight,write_date:0
+#: field:estate.planted.year,write_date:0
+#: field:estate.stand.hectare,write_date:0 field:estate.upkeep,write_date:0
+#: field:estate.upkeep.activity,write_date:0
+#: field:estate.upkeep.labour,write_date:0
+#: field:estate.upkeep.material,write_date:0 field:estate.wage,write_date:0
+msgid "Last Updated on"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,leaf_analysis:0
+#: field:estate.block.template,leaf_analysis:0
+msgid "Leaf Analysis"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,parent_left:0 field:estate.block.template,parent_left:0
+msgid "Left Parent"
+msgstr ""
+
+#. module: estate
+#: view:estate.block.template:estate.view_form_block_config
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: field:estate.upkeep.activity,location_ids:0
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: field:estate.upkeep.labour,location_id:0
+msgid "Location"
+msgstr "Lokasi"
+
+#. module: estate
+#: field:estate.block,loc_barcode:0 field:estate.block.template,loc_barcode:0
+msgid "Location Barcode"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,complete_name:0 field:estate.block,name:0
+#: field:estate.block.template,complete_name:0
+#: field:estate.block.template,name:0
+msgid "Location Name"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,usage:0 field:estate.block.template,usage:0
+msgid "Location Type"
+msgstr ""
+
+#. module: estate
+#: model:stock.location,name:estate.block_mn_1_stock_location
+msgid "MN 1"
+msgstr ""
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "MTD"
+msgstr "BI"
+
+#. module: estate
+#: model:stock.location,name:estate.division_main_nursery_stock_location
+msgid "Main Nursery"
+msgstr ""
+
+#. module: estate
+#: field:estate.parameter,mandatory:0
+msgid "Mandatory"
+msgstr ""
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: field:estate.material.norm,product_id:0
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.material:estate.upkeep_material_view_form
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: field:estate.upkeep.material,product_id:0
+#: model:ir.ui.menu,name:estate.estate_upkeep_material
+#: view:website:estate.report_estate_division
+msgid "Material"
+msgstr "Bahan"
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: field:estate.upkeep.activity,material_amount:0
+msgid "Material Cost"
+msgstr "Biaya Bahan"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Material Norm"
+msgstr "Norma Bahan"
+
+#. module: estate
+#: field:estate.material.norm,product_uom_id:0
+msgid "Material Unit of Measure"
+msgstr "Satuan Bahan"
+
+#. module: estate
+#: field:estate.upkeep,material_line_ids:0
+msgid "Material line ids"
+msgstr "Detail Bahan"
+
+#. module: estate
+#: help:estate.upkeep.labour,number_of_day:0
+msgid "Maximum 1"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,ratio_max:0
+msgid "Maximum Work Result Ratio"
+msgstr "Rasio Maksimum Hasil Kerja"
+
+#. module: estate
+#: field:estate.activity,qty_base_max:0
+msgid "Maximum Work Result/Day"
+msgstr "Maksimum Hasil Kerja/HK"
+
+#. module: estate
+#: field:estate.config.settings,default_max_entry_day:0
+msgid "Maximum day(s) backdate transaction entry"
+msgstr ""
+
+#. module: estate
+#: field:estate.hr.team,member_ids:0
+msgid "Member ids"
+msgstr "Detail Anggota"
+
+#. module: estate
+#: help:estate.hr.member,employee_id:0
+msgid "Member should not be a Team Leader."
+msgstr "Anggota seharusnya tidak boleh menjadi kepala Kemandoran"
+
+#. module: estate
+#: field:estate.hr.team,member_total:0
+msgid "Member total"
+msgstr "Total Anggota"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_mineral
+msgid "Mineral"
+msgstr ""
+
+#. module: estate
+#: field:estate.wage,wage:0
+msgid "Minimum Regional Wage"
+msgstr "Upah Minimum Regional"
+
+#. module: estate
+#: help:estate.wage,daily_wage:0
+msgid "Minimum Regional Wage divide by Number of working days"
+msgstr "Upah Minimum Regional dibagi jumlah hari kerja."
+
+#. module: estate
+#: field:estate.activity,ratio_min:0
+msgid "Minimum Work Result Ratio"
+msgstr "Rasio Minimum Hasil Kerja"
+
+#. module: estate
+#: field:estate.activity,qty_base_min:0
+msgid "Minimum Work Result/Day"
+msgstr "Minimum Hasil Kerja/HK"
+
+#. module: estate
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+msgid "Month"
+msgstr "Bulan"
+
+#. module: estate
+#: field:estate.activity,name:0 field:estate.labour.type,name:0
+#: field:estate.object,name:0 field:estate.object.type,name:0
+#: field:estate.stand.hectare,name:0 field:estate.upkeep,name:0
+#: field:estate.upkeep.activity,name:0 field:estate.upkeep.labour,name:0
+#: field:estate.upkeep.material,name:0 field:estate.wage,name:0
+msgid "Name"
+msgstr "Nama"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Norm"
+msgstr "Norma"
+
+#. module: estate
+#: selection:estate.activity,type:0
+msgid "Normal"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,qty_tree_mature_normal:0
+#: field:estate.block.template,qty_tree_mature_normal:0
+msgid "Normal Mature Tree"
+msgstr "Jumlah Pokok Menghasilkan"
+
+#. module: estate
+#: code:addons/estate/wizard/estate_common_report.py:75
+#, python-format
+msgid "Not implemented."
+msgstr ""
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Note"
+msgstr "Catatan"
+
+#. module: estate
+#: help:estate.material.norm,comment:0
+msgid "Notes for material mixing/usage."
+msgstr "Catatan untuk pencampuran/penggunaan bahan"
+
+#. module: estate
+#: field:estate.upkeep.activity,labour_number_of_day:0
+msgid "Number of Day"
+msgstr "Hari Kerja"
+
+#. module: estate
+#: field:estate.wage,number_of_days:0
+msgid "Number of working days"
+msgstr "Jumlah hari kerja"
+
+#. module: estate
+#: selection:stock.location,estate_location_type:0
+#: model:stock.location,name:estate.division_nursery_stock_location
+msgid "Nursery"
+msgstr "Pembibitan"
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+msgid "Nursery Management"
+msgstr "Manajemen Pembibitan"
+
+#. module: estate
+#: help:estate.block,estate_location_type:0
+#: help:estate.block.template,estate_location_type:0
+#: help:stock.location,estate_location_type:0
+msgid ""
+"Nursery: location for nursery. Planted: location for planting. Emplacement: "
+"location for non-planting/nursery."
+msgstr ""
+"Pembibitan: lokasi untuk pembibitan. Ditanam: lokasi untuk tanam. "
+"Emplasemen: lokasi untuk non tanaman/pembibitan."
+
+#. module: estate
+#: help:estate.upkeep.material,prod_product_activity:0
+msgid "Only first option used as reference"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.menu,name:estate.estate_operation_menu
+msgid "Operation"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.menu,name:estate.estate_operation_control_menu
+msgid "Operation Control"
+msgstr "Kontrol Operasional"
+
+#. module: estate
+#: field:estate.material.norm,option:0
+msgid "Option Group"
+msgstr "Kelompok"
+
+#. module: estate
+#: help:estate.block,posx:0 help:estate.block,posy:0 help:estate.block,posz:0
+#: help:estate.block.template,posx:0 help:estate.block.template,posy:0
+#: help:estate.block.template,posz:0
+msgid "Optional localization details, for information purpose only"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.activity,labour_overtime_amount:0
+msgid "Over Time"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.labour,quantity_overtime:0
+#: view:website:estate.report_estate_division
+msgid "Overtime"
+msgstr "Lembur"
+
+#. module: estate
+#: field:estate.upkeep.labour,wage_overtime:0
+msgid "Overtime Wage"
+msgstr "Upah Lembur"
+
+#. module: estate
+#: field:estate.block,partner_id:0 field:estate.block.template,partner_id:0
+msgid "Owner"
+msgstr "Pemilik"
+
+#. module: estate
+#: help:estate.block,partner_id:0 help:estate.block.template,partner_id:0
+msgid "Owner of the location if not internal"
+msgstr "Pemilik blok (kemitraan)"
+
+#. module: estate
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+msgid "P/A"
+msgstr "B/K"
+
+#. module: estate
+#: model:stock.location,name:estate.block_pn_1_stock_location
+msgid "PN 1"
+msgstr ""
+
+#. module: estate
+#: model:stock.location,name:estate.block_pn_2_stock_location
+msgid "PN 2"
+msgstr ""
+
+#. module: estate
+#: model:stock.location,name:estate.block_pn_3_stock_location
+msgid "PN 3"
+msgstr ""
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: field:estate.activity.norm,parameter_id:0
+#: field:estate.block.parameter,parameter_id:0
+#: view:estate.parameter.value:estate.search_view_estate_parameter
+#: field:estate.parameter.value,parameter_id:0
+#: field:estate.parameter.weight,parameter_id:0
+#: model:ir.actions.act_window,name:estate.action_list_parameter_config
+#: model:ir.ui.menu,name:estate.estate_parameter_menu
+msgid "Parameter"
+msgstr ""
+
+#. module: estate
+#: field:estate.parameter,level:0
+msgid "Parameter Level"
+msgstr ""
+
+#. module: estate
+#: field:estate.parameter,name:0
+msgid "Parameter Name"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity.norm,parameter_value_id:0
+#: field:estate.block,parameter_value_ids:0
+msgid "Parameter Value"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,parameter_weight_ids:0
+msgid "Parameter Weight"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,parent_id:0
+msgid "Parent Category"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,parent_left:0
+msgid "Parent Left"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,location_id:0 field:estate.block.template,location_id:0
+msgid "Parent Location"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,parent_right:0
+msgid "Parent Right"
+msgstr ""
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_pasir
+msgid "Pasir"
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_search
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "Payslip"
+msgstr ""
+
+#. module: estate
+#: selection:estate.upkeep,state:0
+msgid "Payslip Processed"
+msgstr ""
+
+#. module: estate
+#: field:estate.common.report,period:0 field:estate.division.report,period:0
+msgid "Period"
+msgstr "Periode"
+
+#. module: estate
+#: field:estate.upkeep.activity,labour_piece_rate_amount:0
+#: field:estate.upkeep.labour,quantity_piece_rate:0
+#: view:website:estate.report_estate_division
+msgid "Piece Rate"
+msgstr "Target"
+
+#. module: estate
+#: field:estate.activity,piece_rate_price:0
+msgid "Piece Rate Price"
+msgstr "Harga Borongan"
+
+#. module: estate
+#: field:estate.upkeep.labour,wage_piece_rate:0
+msgid "Piece Rate Wage"
+msgstr "Upah Target"
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+msgid "Plantation"
+msgstr ""
+
+#. module: estate
+#: selection:stock.location,estate_location_type:0
+msgid "Planted"
+msgstr "Tanam"
+
+#. module: estate
+#: field:estate.block,area_planted:0
+#: field:estate.block.template,area_planted:0
+msgid "Planted Area (ha)"
+msgstr "Luas Tanam (ha)"
+
+#. module: estate
+#: field:estate.block,date_planted:0
+#: field:estate.block.template,date_planted:0
+msgid "Planted Date"
+msgstr "Tanggal Tanam"
+
+#. module: estate
+#: field:estate.block,planted_year_id:0
+#: field:estate.block.template,planted_year_id:0
+#: field:estate.planted.year,name:0
+msgid "Planted Year"
+msgstr "Tahun Tanam"
+
+#. module: estate
+#: model:stock.location,name:estate.division_pre_nursery_stock_location
+msgid "Pre Nursery"
+msgstr ""
+
+#. module: estate
+#: view:estate.division.report:estate.estate_division_report_view_form
+msgid "Print"
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+msgid "Prod (%)"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_product_category
+msgid "Product Category"
+msgstr "Kelompok Bahan"
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
+msgid "Productivity"
+msgstr "Produktifitas"
+
+#. module: estate
+#: field:estate.upkeep.material,prod_product_activity:0
+msgid "Productivity Material"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.labour,prod_quantity_day:0
+msgid "Productivity Qty/Day (%)"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,putaway_strategy_id:0
+#: field:estate.block.template,putaway_strategy_id:0
+msgid "Put Away Strategy"
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+msgid "Q/D"
+msgstr "Prod/HK"
+
+#. module: estate
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+msgid "Qty"
+msgstr "Jml"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+msgid "Qty."
+msgstr "Prod."
+
+#. module: estate
+#: field:estate.upkeep.labour,quantity:0
+#: view:website:estate.report_estate_division
+msgid "Quantity"
+msgstr "Jumlah"
+
+#. module: estate
+#: field:estate.hr.attendance,qty_ratio:0
+msgid "Quantity Ratio"
+msgstr "Rasio Jumlah"
+
+#. module: estate
+#: field:estate.material.norm,qty_available:0
+msgid "Quantity on Hand"
+msgstr "Jumlah Stok"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: field:estate.upkeep.labour,attendance_code_ratio:0
+#: view:estate.upkeep.material:estate.upkeep_material_view_form
+msgid "Ratio"
+msgstr "Rasio"
+
+#. module: estate
+#: field:estate.upkeep.activity,ratio_day_quantity:0
+#: field:estate.upkeep.labour,ratio_day_quantity:0
+msgid "Ratio Day/Quantity"
+msgstr "Rasio HK/ha"
+
+#. module: estate
+#: field:estate.upkeep.material,ratio_product_activity:0
+msgid "Ratio Product/Activity"
+msgstr "Rasio Bahan/Kegiatan"
+
+#. module: estate
+#: field:estate.upkeep.activity,ratio_quantity_day:0
+#: field:estate.upkeep.labour,ratio_quantity_day:0
+msgid "Ratio Quantity/Day"
+msgstr "Rasio Produktifitas/HK"
+
+#. module: estate
+#: field:estate.upkeep.activity,ratio_wage_quantity:0
+#: field:estate.upkeep.labour,ratio_wage_quantity:0
+msgid "Ratio Wage/Quantity"
+msgstr "Rasio Upah/ha"
+
+#. module: estate
+#: help:estate.upkeep.labour,var_quantity_day:0
+msgid "Reality to standard difference variance"
+msgstr ""
+
+#. module: estate
+#: help:estate.config.settings,module_estate_nursery:0
+msgid "Record receiving from purchase order, planting and selection."
+msgstr ""
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.estate_wage_action
+#: model:ir.ui.menu,name:estate.estate_estate_wage
+msgid "Regional Wage"
+msgstr "Upah Regional"
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_regular
+msgid "Regular"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.activity,comment:0 field:estate.upkeep.labour,comment:0
+#: field:estate.upkeep.material,comment:0
+msgid "Remark"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,removal_strategy_id:0
+#: field:estate.block.template,removal_strategy_id:0
+msgid "Removal Strategy"
+msgstr ""
+
+#. module: estate
+#: field:estate.material.norm,unit_amount:0
+msgid "Required Unit Amount"
+msgstr "Jumlah Bahan"
+
+#. module: estate
+#: field:estate.block,parent_right:0
+#: field:estate.block.template,parent_right:0
+msgid "Right Parent"
+msgstr ""
+
+#. module: estate
+#: field:estate.config.settings,module_estate_nursery:0
+msgid "Seed Management"
+msgstr "Manajemen Bibit"
+
+#. module: estate
+#: help:estate.activity,type:0
+msgid "Select View to create group of activities."
+msgstr ""
+
+#. module: estate
+#: selection:estate.common.report,period:0
+#: selection:estate.division.report,period:0
+msgid "Select dates"
+msgstr ""
+
+#. module: estate
+#: help:estate.common.report,period:0 help:estate.division.report,period:0
+msgid "Select period of activities to be displayed at report."
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,sequence:0
+msgid "Sequence"
+msgstr ""
+
+#. module: estate
+#: help:estate.material.norm,option:0
+msgid ""
+"Set 1, 2, 3, ... to be material option. Lowest number process first.One or "
+"more material could share same option number.Only first option will be used "
+"as reference"
+msgstr ""
+"Isi dengan angka 1, 2, 3, dst untuk pengelompokan bahan. Kelompok dengan "
+"nomor kecil akan diproses lebih dahulu. Hanya kelompok 1 yang akan digunakan "
+"sebagai referensi norma bahan."
+
+#. module: estate
+#: help:estate.stand.hectare,default:0
+msgid "Set True to make new block using this stand per hectare."
+msgstr ""
+
+#. module: estate
+#: help:estate.activity,account_id:0
+msgid "Set as default analytic account at Upkeep."
+msgstr ""
+
+#. module: estate
+#: field:estate.stand.hectare,default:0
+msgid "Set as default for new Block"
+msgstr ""
+
+#. module: estate
+#: help:estate.activity,general_account_id:0
+msgid "Set as default general account."
+msgstr ""
+
+#. module: estate
+#: help:estate.activity,qty_base:0
+#: help:estate.upkeep.labour,activity_standard_base:0
+msgid "Set as default work's result."
+msgstr ""
+
+#. module: estate
+#: help:estate.hr.team,assistant_id:0
+msgid "Set this as default Assistant, will be used to record at Upkeep."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,leaf_analysis:0
+#: help:estate.block.template,leaf_analysis:0
+msgid "Set true if leaf analysis has been done."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,soil_analysis:0
+#: help:estate.block.template,soil_analysis:0
+msgid "Set true if soil analysis has been done."
+msgstr ""
+
+#. module: estate
+#: help:product.category,estate_product:0
+msgid "Set true to set all childs products as Upkeep Material Line."
+msgstr ""
+
+#. module: estate
+#: help:estate.activity.norm,coefficient:0
+msgid "Set value between 0 ... 1."
+msgstr ""
+
+#. module: estate
+#: help:estate.wage,estate_id:0
+msgid "Set wage for all child locations if employee has no contract."
+msgstr ""
+
+#. module: estate
+#: help:estate.parameter.weight,weight:0
+msgid "Set weight value between 0 ... 1."
+msgstr ""
+
+#. module: estate
+#: field:estate.block,posy:0 field:estate.block.template,posy:0
+msgid "Shelves (Y)"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,is_smallholder:0
+#: field:estate.block.template,is_smallholder:0
+msgid "Smallholder Area"
+msgstr "Kemitraan"
+
+#. module: estate
+#: field:estate.block,soil_analysis:0
+#: field:estate.block.template,soil_analysis:0
+msgid "Soil Analysis"
+msgstr ""
+
+#. module: estate
+#: field:estate.stand.hectare,qty:0
+msgid "Stand Per Hectare"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,qty_sph_do:0 field:estate.block.template,qty_sph_do:0
+msgid "Stand per hectare"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,material_norm_ids:0
+msgid "Standard Material"
+msgstr "Bahan Standar"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: field:estate.activity,standard_price:0
+#: field:estate.material.norm,standard_price:0
+msgid "Standard Price"
+msgstr "Harga Standar"
+
+#. module: estate
+#: selection:estate.activity,wage_method:0
+msgid "Standard Quantity"
+msgstr "Jumlah Standar"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Standard Work Result and Ratio"
+msgstr "Standar Produktifitas dan Rasio"
+
+#. module: estate
+#: field:estate.activity,qty_base:0
+#: field:estate.upkeep.labour,activity_standard_base:0
+msgid "Standard Work Result/Day"
+msgstr "Standar Produkitifitas/HK"
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_material_norm
+msgid "Standard required material of an activity"
+msgstr "Kebutuhan bahan dari sebuah kegiatan"
+
+#. module: estate
+#: field:estate.block,qty_sph_standard:0
+#: field:estate.block.template,qty_sph_standard:0
+msgid "Standard stand per hectare"
+msgstr "Standar SPH"
+
+#. module: estate
+#: field:estate.common.report,date_start:0
+#: field:estate.division.report,date_start:0 field:estate.wage,date_start:0
+msgid "Start Date"
+msgstr "Tanggal Mulai"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Start Date:"
+msgstr ""
+
+#. module: estate
+#: field:estate.hr.team,state:0 field:estate.operation,state:0
+#: field:estate.upkeep,state:0 field:estate.upkeep.activity,state:0
+#: field:estate.upkeep.labour,state:0 field:estate.upkeep.material,state:0
+msgid "State"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,valuation_in_account_id:0
+#: field:estate.block.template,valuation_in_account_id:0
+msgid "Stock Valuation Account (Incoming)"
+msgstr ""
+
+#. module: estate
+#: field:estate.block,valuation_out_account_id:0
+#: field:estate.block.template,valuation_out_account_id:0
+msgid "Stock Valuation Account (Outgoing)"
+msgstr ""
+
+#. module: estate
+#: selection:estate.parameter,level:0
+#: selection:stock.location,estate_location_level:0
+msgid "Sub Block"
+msgstr "Sub Blok"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Sub Total"
+msgstr "Sub Total"
+
+#. module: estate
+#: help:estate.upkeep.activity,labour_number_of_day:0
+msgid "Sum of activity's labour work day(s)."
+msgstr "Jumlah HK tenaga kerja"
+
+#. module: estate
+#: help:estate.upkeep.activity,labour_overtime_amount:0
+msgid "Sum of activity's overtime."
+msgstr "Jumlah lembur tenaga kerja"
+
+#. module: estate
+#: help:estate.upkeep.activity,labour_piece_rate_amount:0
+msgid "Sum of activity's piece rate in same."
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.labour,amount:0
+msgid "Sum of daily, piece rate and overtime wage"
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.activity,amount:0
+msgid "Sum of labour wage and material cost."
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.activity,labour_amount:0
+msgid "Sum of labour's wage."
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.activity,labour_unit_amount:0
+msgid "Sum of labour's work result."
+msgstr ""
+
+#. module: estate
+#: help:estate.upkeep.activity,material_amount:0
+msgid "Sum of material's cost."
+msgstr ""
+
+#. module: estate
+#: selection:estate.hr.team,state:0
+msgid "Suspend"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.activity,unit_amount:0
+msgid "Target Unit Amount"
+msgstr ""
+
+#. module: estate
+#: field:estate.hr.member,team_id:0
+#: view:estate.upkeep:estate.upkeep_view_search field:estate.upkeep,team_id:0
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: field:estate.upkeep.labour,upkeep_team_id:0
+msgid "Team"
+msgstr "Kemandoran"
+
+#. module: estate
+#: field:estate.hr.team,employee_id:0
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
+#: field:estate.upkeep.labour,upkeep_team_employee_id:0
+msgid "Team Leader"
+msgstr "Kepala Kemandoran"
+
+#. module: estate
+#: field:estate.hr.team,name:0
+msgid "Team Name"
+msgstr "Nama Kemandoran"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+msgid "Team Work"
+msgstr "Kemandoran"
+
+#. module: estate
+#: selection:estate.common.report,period:0
+#: selection:estate.division.report,period:0
+#: view:estate.upkeep:estate.upkeep_view_search
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "This Month"
+msgstr "Bulan Ini"
+
+#. module: estate
+#: selection:estate.common.report,period:0
+#: selection:estate.division.report,period:0
+msgid "This Week"
+msgstr "Minggu Ini"
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: view:estate.upkeep.material:estate.upkeep_material_view_search
+msgid "This Year"
+msgstr "Sampai Bulan Ini"
+
+#. module: estate
+#: selection:estate.common.report,period:0
+#: selection:estate.division.report,period:0
+msgid "Today"
+msgstr "Hari Ini"
+
+#. module: estate
+#: field:estate.stand.hectare,parameter_value_id:0
+msgid "Topography"
+msgstr "Topografi"
+
+#. module: estate
+#: field:estate.block,qty_tree:0 field:estate.block.template,qty_tree:0
+msgid "Total Tree"
+msgstr "Jumlah Pokok"
+
+#. module: estate
+#: field:estate.block,qty_tree_mature_nofruit:0
+#: field:estate.block.template,qty_tree_mature_nofruit:0
+msgid "Tree Without Fruit"
+msgstr ""
+
+#. module: estate
+#: view:estate.parameter.weight:estate.view_activity_parameter_tree
+msgid "True"
+msgstr ""
+
+#. module: estate
+#: field:estate.activity,type:0 view:estate.upkeep:estate.upkeep_view_form
+msgid "Type"
+msgstr "Tipe"
+
+#. module: estate
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+msgid "Unit"
+msgstr "Jumlah"
+
+#. module: estate
+#: field:estate.upkeep.material,unit_amount:0
+msgid "Unit Amount"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.material,activity_uom_id:0
+#: field:estate.upkeep.material,product_uom_id:0
+msgid "Unit of Measure"
+msgstr "Satuan"
+
+#. module: estate
+#: field:estate.upkeep.activity,activity_uom_id:0
+#: field:estate.upkeep.labour,activity_uom_id:0
+msgid "Unit of Measurement"
+msgstr "Satuan"
+
+#. module: estate
+#: field:estate.block,area_unplanted:0
+#: field:estate.block.template,area_unplanted:0
+msgid "Unplanted Area (ha)"
+msgstr ""
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: view:website:estate.report_estate_division
+msgid "UoM"
+msgstr "Sat"
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+#: view:estate.upkeep:estate.upkeep_view_form
+#: field:estate.upkeep.activity,upkeep_id:0
+#: field:estate.upkeep.labour,upkeep_id:0
+#: field:estate.upkeep.material,upkeep_id:0
+#: model:ir.actions.act_window,name:estate.action_list_upkeep
+#: model:ir.ui.menu,name:estate.estate_upkeep
+#: model:ir.ui.menu,name:estate.menu_estate_upkeep_reporting
+msgid "Upkeep"
+msgstr "Kegiatan Mandor"
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: model:ir.actions.act_window,name:estate.action_list_upkeep_activity
+msgid "Upkeep Activity"
+msgstr "Kegiatan"
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_upkeep_labour
+msgid "Upkeep Labour"
+msgstr "Tenaga Kerja"
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_upkeep_material
+msgid "Upkeep Material"
+msgstr "Bahan"
+
+#. module: estate
+#: help:estate.hr.attendance,qty_ratio:0
+#: help:estate.upkeep.labour,attendance_code_ratio:0
+msgid "Use to calculate work result quantity."
+msgstr ""
+
+#. module: estate
+#: help:estate.config.settings,default_account_id:0
+msgid "Used at upkeep analytic entries (expenses)."
+msgstr ""
+
+#. module: estate
+#: help:estate.config.settings,default_journal_line_id:0
+msgid "Used at upkeep analytic entries if no other journal defined."
+msgstr ""
+
+#. module: estate
+#: help:estate.config.settings,default_analytic_account_id:0
+msgid "Used at upkeep analytic entries."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,valuation_in_account_id:0
+#: help:estate.block.template,valuation_in_account_id:0
+msgid ""
+"Used for real-time inventory valuation. When set on a virtual location (non "
+"internal type), this account will be used to hold the value of products "
+"being moved from an internal location into this location, instead of the "
+"generic Stock Output Account set on the product. This has no effect for "
+"internal locations."
+msgstr ""
+
+#. module: estate
+#: help:estate.block,valuation_out_account_id:0
+#: help:estate.block.template,valuation_out_account_id:0
+msgid ""
+"Used for real-time inventory valuation. When set on a virtual location (non "
+"internal type), this account will be used to hold the value of products "
+"being moved out of this location and into an internal location, instead of "
+"the generic Stock Output Account set on the product. This has no effect for "
+"internal locations."
+msgstr ""
+
+#. module: estate
+#: help:estate.activity,ratio_max:0 help:estate.activity,ratio_min:0
+msgid "Used to compute work day(s) per unit of measurement."
+msgstr ""
+
+#. module: estate
+#: model:estate.parameter.value,name:estate.parameter_value_ns
+msgid "Utara Selatan"
+msgstr ""
+
+#. module: estate
+#: field:estate.block.parameter,parameter_value_id:0
+#: field:estate.parameter.value,name:0
+msgid "Value"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.labour,var_quantity_day:0
+msgid "Variance Qty/Day (%)"
+msgstr ""
+
+#. module: estate
+#: field:estate.upkeep.labour,var_qty_base:0
+msgid "Variance to Standard"
+msgstr ""
+
+#. module: estate
+#: selection:estate.activity,activity_type:0
+msgid "Vehicle activity"
+msgstr ""
+
+#. module: estate
+#: selection:estate.activity,type:0
+msgid "View"
+msgstr ""
+
+#. module: estate
+#: view:estate.upkeep:estate.upkeep_view_form
+#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+msgid "W/Q"
+msgstr "Rp/ha"
+
+#. module: estate
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
+#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: field:estate.upkeep.labour,amount:0
+msgid "Wage"
+msgstr "Total Upah"
+
+#. module: estate
+#: field:estate.activity,wage_method:0
+msgid "Wage Method"
+msgstr "Metode Hitung Upah"
+
+#. module: estate
+#: field:estate.parameter.weight,weight:0
+msgid "Weight"
+msgstr "Bobot"
+
+#. module: estate
+#: field:estate.upkeep.labour,number_of_day:0
+msgid "Work Day"
+msgstr "Hari Kerja"
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "Work Day(s)"
+msgstr "Hari Kerja"
+
+#. module: estate
+#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
+msgid "Work Result"
+msgstr "Hasil Kerja"
+
+#. module: estate
+#: view:estate.activity:estate.view_activity_config_form
+msgid "Work Result Norm"
+msgstr "Norma Hasil Kerja"
+
+#. module: estate
+#: field:estate.activity.norm,ratio_base:0
+msgid "Work Result Ratio"
+msgstr "Rasio Hasil Kerja"
+
+#. module: estate
+#: field:estate.activity.norm,qty_base:0
+msgid "Work Result/Day"
+msgstr "Produktifitas/HK"
+
+#. module: estate
+#: help:estate.upkeep.activity,ratio_quantity_day:0
+#: help:estate.upkeep.labour,ratio_quantity_day:0
+msgid "Work result within a work day."
+msgstr "Produktifitas dalam hari kerja."
+
+#. module: estate
+#: view:website:estate.report_estate_division
+msgid "YTD"
+msgstr "SBI"
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_bag
+msgid "bag"
+msgstr ""
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_bibit
+msgid "bbt"
+msgstr ""
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_hectare
+msgid "ha"
+msgstr ""
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_kecambah
+msgid "kcb"
+msgstr ""
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_lubang
+msgid "lbg"
+msgstr ""
+
+#. module: estate
+#: view:estate.config.settings:estate.view_estate_configuration
+#: view:estate.division.report:estate.estate_division_report_view_form
+msgid "or"
+msgstr ""
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_pokok
+msgid "pkk"
+msgstr ""
+
+#. module: estate
+#: model:product.uom,name:estate.product_uom_tp
+msgid "tp"
+msgstr ""

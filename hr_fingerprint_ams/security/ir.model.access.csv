@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fingerprint_attendance,Fingerprint Attendance,model_hr_fingerprint_ams_attendance,estate.group_user,True,True,True,False
