@@ -141,7 +141,7 @@ class Upkeep(models.Model):
     @api.multi
     def get_activity(self):
         """Labour's activity should match with upkeep activity
-        :return: activity
+        :return: list of string (activity complete name)
         """
         activity = []
         records = self.activity_line_ids
@@ -151,6 +151,20 @@ class Upkeep(models.Model):
         if len(activity):
             return activity
         return False
+
+    @api.multi
+    def get_activity_location(self, activity_id):
+        """
+        Upkeep labour location required to match with upkeep activity
+        :param activity_id:
+        :return: list of location object
+        """
+        location_ids = []
+        for record in self:
+            if record.activity_line_ids:
+                for activity in record.activity_line_ids:
+                    location_ids.append(activity.location_ids)
+                return location_ids
 
     @api.multi
     def get_labour(self, activity):
@@ -272,6 +286,9 @@ class Upkeep(models.Model):
 
 
 class UpkeepActivity(models.Model):
+    """
+    Required for calculate quantity and constraints. Future use as Daily Plan.
+    """
     _name = 'estate.upkeep.activity'
     # _inherits = {'account.analytic.line': 'line_id'}
 
@@ -308,13 +325,13 @@ class UpkeepActivity(models.Model):
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
                                       digits=dp.get_precision('Estate'),
-                                      help='Included piece rate conversion to number of day based on activity standard base')
+                                      help='Work result within a work day.')
     ratio_day_quantity = fields.Float('Ratio Day/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
                                       digits=dp.get_precision('Estate'),
-                                      help='Included piece rate conversion to number of day based on activity standard base')
+                                      help='Amount of day required to finish a work.')
     ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
                                        digits=dp.get_precision('Account'),
-                                       help='Included piece rate conversion to number of day based on activity standard base')
+                                       help='Amount of wage paid to finish a work')
 
     @api.multi
     @api.depends('activity_id')
@@ -444,15 +461,16 @@ class UpkeepLabour(models.Model):
     #unit_extra_amount = fields.Float('Unit Extra') # Prestasi Premi
     #extra_amount = fields.Float('Extra Amount') # Premi
     amount = fields.Float('Wage', compute='_compute_amount', store=True, help='Sum of daily, piece rate and overtime wage')
-    ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True,
+
+    ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
                                       digits=dp.get_precision('Estate'),
-                                      help='Included piece rate conversion to number of day based on activity standard base')
-    ratio_day_quantity = fields.Float('Ratio Day/Quantity', compute='_compute_ratio', store=True,
+                                      help='Work result within a work day.')
+    ratio_day_quantity = fields.Float('Ratio Day/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
                                       digits=dp.get_precision('Estate'),
-                                      help='Included piece rate conversion to number of day based on activity standard base')
-    ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True,
+                                      help='Amount of day required to finish a work.')
+    ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
                                        digits=dp.get_precision('Account'),
-                                       help='Included piece rate conversion to number of day based on activity standard base')
+                                       help='Amount of wage paid to finish a work')
     var_quantity_day = fields.Float('Variance Qty/Day (%)', compute='_compute_variance', store=True, digits=(2,0),
                                     group_operator="avg", help='Reality to standard difference variance')
     prod_quantity_day = fields.Float('Productivity Qty/Day (%)', compute='_compute_prod', store=True, digits=(2, 0),
@@ -641,6 +659,25 @@ class UpkeepLabour(models.Model):
         for record in self:
             record.attendance_code_id = False
 
+            # Domain activity and location
+            activity = record.upkeep_id.get_activity()
+            location_ids = record.upkeep_id.get_activity_location(record.activity_id.id)
+            ids = []
+            if activity or location_ids:
+                for location in location_ids:
+                    # Handle many2many
+                    for a_location in location:
+                        ids.append(a_location.id)
+
+                if activity:
+                    return {
+                        'domain': {'activity_id': [('complete_name', 'in', activity), ('type', '=', 'normal')],
+                                   'location_id': [('id', 'in', ids)]}
+                    }
+                else:
+                    error_msg = 'Upkeep activity should be defined.'
+                    raise exceptions.ValidationError(error_msg)
+
     @api.multi
     @api.constrains('quantity_piece_rate')
     def _onchange_piece_rate(self):
@@ -700,7 +737,8 @@ class UpkeepMaterial(models.Model):
                                   required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measure', related='activity_id.uom_id',
                                       readonly=True)
-    activity_unit_amount = fields.Float('Activity Unit', compute='_compute_activity_unit_amount', help='Based on upkeep activity')
+    activity_unit_amount = fields.Float('Activity Unit', compute='_compute_activity_unit_amount',
+                                        help='Based on upkeep activity')
     product_id = fields.Many2one('product.product', 'Material',
                                  domain=[('categ_id.estate_product', '=', True)])
     product_standard_price = fields.Float(related='product_id.standard_price', store=True)
@@ -709,7 +747,12 @@ class UpkeepMaterial(models.Model):
                                      readonly=True)
     unit_amount = fields.Float('Unit Amount', help="")
     amount = fields.Float('Cost', compute='_compute_amount', store=True)
-    ratio_product_activity = fields.Float(compute='_compute_ratio', digits=(18, 6), group_operator="avg", store=True)
+    ratio_product_activity = fields.Float('Ratio Product/Activity', compute='_compute_ratio',
+                                          help='Amount of product required per activity.',
+                                          digits=dp.get_precision('Estate'), group_operator="avg", store=True)
+    prod_product_activity = fields.Float('Productivity Material', digits=dp.get_precision('Estate'),
+                                         help='Only first option used as reference',
+                                         compute='_compute_prod_product_activity', group_operator="avg", store=True)
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
@@ -734,17 +777,19 @@ class UpkeepMaterial(models.Model):
                 self.amount = res
 
     @api.depends('activity_unit_amount', 'unit_amount')
+    @api.multi
     def _compute_ratio(self):
-        activity = self.activity_unit_amount
-        product = self.unit_amount
-        if activity and product:
-            try:
-                res = product/activity
-            except ZeroDivisionError:
-                res = 0
-            self.ratio_product_activity = res
-            return res
-        return False
+        for record in self:
+            activity = record.activity_unit_amount
+            product = record.unit_amount
+            if activity and product:
+                try:
+                    res = product/activity
+                except ZeroDivisionError:
+                    res = 0
+                record.ratio_product_activity = res
+                return res
+            return False
 
     @api.onchange('activity_id')
     def _onchange_activity(self):
@@ -756,6 +801,40 @@ class UpkeepMaterial(models.Model):
         else:
             error_msg = 'Upkeep activity should be defined.'
             raise exceptions.ValidationError(error_msg)
+
+    @api.depends('activity_id', 'product_id',)
+    @api.multi
+    def _compute_prod_product_activity(self):
+        material_obj = self.env['estate.material.norm']
+        for record in self:
+            if record.activity_id and record.product_id:
+                # Only return first option
+                material_id = material_obj.search([('activity_id', '=', record.activity_id.id),
+                                                   ('product_id', '=', record.product_id.id),
+                                                   ('option', '=', 1)])
+                print 'Material ...%s, %s, %s' % (material_id.product_id.name, record.activity_id.name,
+                                                 record.product_id.name)
+                res = material_id.unit_amount
+                record.prod_product_activity = res
+                print '%s per activity uom ... %f' % (record.product_id.name, res)
+                return res
+
+    # #@api.onchange('upkeep_id')
+    # @api.multi
+    # def _compute_domain_activity(self):
+    #     """
+    #     Set domain for activity each time new record created.
+    #     """
+    #     for record in self:
+    #         activity = record.upkeep_id.get_activity()
+    #         if activity:
+    #             # return {
+    #             #     'domain': {'activity_id': [('complete_name', 'in', activity), ('type', '=', 'normal')]}
+    #             # }
+    #             return (103, 126)
+    #         else:
+    #             error_msg = 'Upkeep activity should be defined.'
+    #             raise exceptions.ValidationError(error_msg)
 
     @api.multi
     @api.depends('upkeep_id', 'activity_id')

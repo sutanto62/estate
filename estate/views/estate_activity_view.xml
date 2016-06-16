@@ -27,46 +27,73 @@
                         <field name="parent_id"/>
                     </group>
                     <group>
-                        <group>
-                            <group name="detail" string="Detail">
-                                <field name="uom_id"/>
-                                <field name="standard_price"/>
-                                <field name="piece_rate_price"/>
-                                <field name="code"/>
-                                <field name="type"/>
-                                <field name="account_id"/>
-                                <field name="general_account_id"/>
-                                <field name="activity_type"/>
-                                <field name="wage_method"/>
-                            </group>
+                        <group name="detail" string="Detail">
+                            <field name="type"/>
+                            <field name="uom_id"/>
                         </group>
-
-                        <!-- move to estate_account module
-                        <group name="account" string="Account">
-                            <field name="activity_income_id"/>
-                            <field name="activity_expense_id"/>
-                        </group>-->
-                        <group name="ratio" string="Standard Work Result and Ratio"
-                            attrs="{'invisible': [('type', '=', 'view')]}">
-                            <!--
-                            #todo add remark: change on these field have impact on activity parameter value's norm on save
-                            -->
-                            <group>
-                                <field name="qty_base" />
-                                <field name="qty_base_min" />
-                                <field name="qty_base_max"/>
-                            </group>
-                            <group>
-                                <field name="ratio_min" readonly="True"/>
-                                <field name="ratio_max" readonly="True"/>
-                            </group>
+                        <group name="type" string="Activity">
+                            <field name="code"/>
+                            <field name="activity_type"/>
                         </group>
                     </group>
+
+                    <!-- move to estate_account module
+                    <group name="account" string="Account">
+                        <field name="activity_income_id"/>
+                        <field name="activity_expense_id"/>
+                    </group>-->
+
                     <!-- # todo field masih lompat pakai context belum bisa - tanya oza -->
-                    <separator string="Activity Parameter Weight"/>
-                    <field name="parameter_weight_ids"/>
-                    <separator string="Activity Norm"/>
-                    <field name="activity_norm_ids"/>
+                    <notebook>
+                        <page string="Accounting">
+                            <group>
+                                <group string="Standard Price">
+                                    <field name="standard_price"/>
+                                    <field name="piece_rate_price"/>
+                                </group>
+                                <group string="Account">
+                                    <field name="wage_method"/>
+                                    <field name="account_id"/>
+                                    <field name="general_account_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Work Result Norm">
+                            <group name="ratio" string="Standard Work Result and Ratio"
+                                attrs="{'invisible': [('type', '=', 'view')]}">
+                                <!--
+                                #todo add remark: change on these field have impact on activity parameter value's norm on save
+                                -->
+                                <group>
+                                    <field name="qty_base" />
+                                    <field name="qty_base_min" />
+                                    <field name="qty_base_max"/>
+                                </group>
+                                <group>
+                                    <field name="ratio_min" readonly="True"/>
+                                    <field name="ratio_max" readonly="True"/>
+                                </group>
+                            </group>
+                            <separator string="Parameter"/>
+                            <field name="parameter_weight_ids"/>
+                            <separator string="Activity Standard"/>
+                            <field name="activity_norm_ids"/>
+                        </page>
+                        <page string="Material Norm">
+                            <separator string="Material"/>
+                            <field name="material_norm_ids">
+                                <tree editable="True" colors="red:qty_available==0">
+                                    <field name="option"/>
+                                    <field name="product_id"/>
+                                    <field name="product_uom_id" string="UoM"/>
+                                    <field name="unit_amount"/>
+                                    <field name="standard_price"/>
+                                    <field name="comment" string="Note"/>
+                                    <field name="qty_available" invisible="False"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                     <separator string="Additional Information"/>
                     <field name="comment"/>
                 </form>

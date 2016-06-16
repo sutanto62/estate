@@ -1,5 +1,6 @@
 <openerp>
     <data>
+    <!--<data noupdate="1">-->
 
         <record id="base.res_partner_ppks" model="res.partner">
             <field name="name">Pusat Penelitian Kelapa Sawit</field>
@@ -108,6 +109,50 @@
             <field name="default_code">090902</field>
             <field name="variety_id" ref="estate_nursery.variety_ten"/>
             <field name="seed" eval="True"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <record id="glifosat" model="product.product">
+            <field name="name">Glifosat</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="list_price">54500</field>
+            <field name="standard_price">54500</field>
+            <field name="type">product</field>
+            <field name="uom_id" ref="product.product_uom_litre"/>
+            <field name="uom_po_id" ref="product.product_uom_litre"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <record id="metil_metsulfuran" model="product.product">
+            <field name="name">Metil Metsulfuran</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="list_price">212500</field>
+            <field name="standard_price">212500</field>
+            <field name="type">product</field>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="uom_po_id" ref="product.product_uom_kgm"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <record id="carbofuran" model="product.product">
+            <field name="name">Carbofuran</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="list_price">32000</field>
+            <field name="standard_price">32000</field>
+            <field name="type">product</field>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="uom_po_id" ref="product.product_uom_kgm"/>
+            <field name="track_all" eval="True"/>
+        </record>
+
+        <record id="sipermetrin" model="product.product">
+            <field name="name">Sipermetrin</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="list_price">189000</field>
+            <field name="standard_price">189000</field>
+            <field name="type">product</field>
+            <field name="uom_id" ref="product.product_uom_litre"/>
+            <field name="uom_po_id" ref="product.product_uom_litre"/>
             <field name="track_all" eval="True"/>
         </record>
 

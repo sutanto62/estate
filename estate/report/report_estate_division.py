@@ -229,7 +229,6 @@ class estate_division_report(report_sxw.rml_parse):
         if res_quantity:
             # default precision 6
             ratio = qty_location/res_quantity[0]['quantity']
-            print 'Qty: %f, Total: %f = ratio %.6f' % (qty_location,res_quantity[0]['quantity'],ratio)
             # ratio should use 2 decimal precision
             query_materials = 'SELECT row_number() over(order by m.activity_id) as id, ' \
                               'm.activity_id as activity_id, pt.name as name, ' \
@@ -248,7 +247,6 @@ class estate_division_report(report_sxw.rml_parse):
                                self.date_start, self.date_end)
             self.cr.execute(query_materials)
             res_materials = self.cr.dictfetchall()
-            print 'Activity materials ... %s' % res_materials
             return res_materials
 
     def _get_location_name(self, list):
