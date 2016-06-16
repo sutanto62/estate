@@ -19,7 +19,7 @@
                           <button class="oe_inline oe_stat_button" name="%(workshop_procurement_action5)d"
                                   string="Part Request" target="new" type="action" icon="fa-shopping-cart">
                           </button>
-                          <field name="plannedpart_ids"
+                          <field name="plannedpart_ids"  attrs="{'readonly': [('state', '!=', 'draft')]}"
                              context="{'tree_view_ref' : 'estate_workshop.planned_sparepart_tree'}"/>
                       </page>
                  </xpath>
@@ -45,7 +45,7 @@
             <field name="model">estate.workshop.planned.sparepart</field>
             <field name="arch" type="xml">
                 <tree string="Planned Sparepart line" editable="bottom">
-                    <field name="product_id" string="Product"/>
+                    <field name="product_id" string="Product" />
                     <field name="qty_product" string="Product Qty"/>
                     <field name="uom_id" string="Uom"/>
                     <field name="qty_available" string="Qty Available"/>
@@ -58,7 +58,7 @@
             <field name="model">estate.workshop.actual.sparepart</field>
             <field name="arch" type="xml">
                 <tree string="Actual Sparepart line" editable="bottom">
-                    <field name="product_id" string="Product"/>
+                    <field name="product_id" string="Product" />
                     <field name="qty_product" string="Product Qty"/>
                     <field name="uom_id" string="Uom"/>
                     <field name="qty_available" string="Qty Available"/>

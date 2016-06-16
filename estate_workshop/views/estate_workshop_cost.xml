@@ -8,7 +8,7 @@
                  <xpath expr="//page[@string='Operations']" position="after">
                      <page string="Cost">
                         <field name="cost_ids"
-                             context="{'tree_view_ref' : 'estate_workshop.estate.workshop.cost'}"/>
+                             context="{'tree_view_ref' : 'estate_workshop.view_workshop_cost_tree'}"/>
                      </page>
                  </xpath>
              </field>
@@ -16,12 +16,12 @@
 
         <record id="view_workshop_cost_tree" model="ir.ui.view" >
             <field name="name">workshop cost Tree</field>
-            <field name="model">estate.workshop.cost</field>
+            <field name="model">v.summary.cost.workshop.detail</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="component"/>
-                    <field name="amount" />
+                    <field name="type_log" string="Type"/>
+                    <field name="total_amount" string="&#931; Amount"/>
                 </tree>
             </field>
         </record>

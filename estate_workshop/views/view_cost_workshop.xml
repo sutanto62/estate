@@ -2,16 +2,22 @@
     <data>
         <record model="ir.ui.view" id="view_totalamount_mecanic_tree">
             <field name="name">View Total Amount Mecanic Vehicle</field>
-            <field name="model">view.timesheet.mecanic.amounttotal</field>
+            <field name="model">view.timesheet.mecanic.totalamounts</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="employee_id" string="Date"/>
-                    <field name="total_time_per_day" string="&#931; Time Day"/>
-                    <field name="hourly_wage" string="Month" invisible="1"/>
-                    <field name="daily_wage" string="Start Location" />
-                    <field name="hour" invisible="1" />
                     <field name="total_amount" string="&#931; Amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_cost_sparepart_workshop_tree">
+            <field name="name">View Total Cost Sparepart Workshop </field>
+            <field name="model">view.cost.workshop.sparepart</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="total_amount" string="&#931; Amount" />
                 </tree>
             </field>
         </record>

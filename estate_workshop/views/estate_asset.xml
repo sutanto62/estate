@@ -54,7 +54,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
-                    <field name="type_service" string="Service Type"/>
+                    <field name="type_service" string="Service Type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                  </xpath>
              </field>
         </record>

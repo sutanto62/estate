@@ -19,7 +19,7 @@
              <field name="arch" type="xml">
                  <xpath expr="//page[@string='Planned Parts']" position="before">
                       <page string="Planned Operations">
-                          <field name="task_ids"
+                          <field name="task_ids" on_change="_onchange_part_line" attrs="{'readonly': [('state', '!=', 'draft')]}"
                              context="{'tree_view_ref' : 'estate_workshop.planned_task_tree'}"/>
                       </page>
                  </xpath>

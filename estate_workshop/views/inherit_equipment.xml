@@ -23,7 +23,7 @@
                  <xpath expr="//page[@string='Tools']" position="before">
                      <page string="Planned Tools's">
                          <separator string="Planned Tools's"/>
-                         <field name="plannedtools_ids"
+                         <field name="plannedtools_ids" attrs="{'readonly': [('state', '!=', 'draft')]}"
                             context="{'tree_view_ref' : 'estate_workshop.view_planned_equipment_tree'}"/>
                      </page>
                  </xpath>
