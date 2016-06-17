@@ -89,14 +89,6 @@ class InheritTypeAsset(models.Model):
                     'type_service' : self.type_asset
                 }
                 self.write(type)
-            print 'jalankan'
-            print type
-            return request.id
-
-            # return order_id
-
-
-
 
 class MasterTask(models.Model):
 
@@ -322,6 +314,12 @@ class MecanicTimesheets(models.Model):
         return super(MecanicTimesheets, self)._onchange_employee_id()
 
     @api.multi
+    @api.onchange('dc_type')
+    def _onchange_dc_type(self):
+        if self:
+            self.dc_type = 4
+
+    @api.multi
     @api.onchange('mastertask_id')
     def _onchange_mastertask_id(self):
         arrOrder = []
@@ -367,6 +365,12 @@ class MecanicTimesheets(models.Model):
                     }
                 }
         return super(MecanicTimesheets, self)._onchange_activity_id()
+
+    @api.multi
+    @api.onchange('vehicle_id','asset_id')
+    def _onchange_vehciel_id(self):
+        if self:
+            self.vehicle_id = self.asset_id.fleet_id
 
 class WorkshopCode(models.Model):
 

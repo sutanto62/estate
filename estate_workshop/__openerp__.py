@@ -36,7 +36,8 @@
         'views/inherit_hr_contract.xml',
         'views/view_cost_workshop.xml',
         'views/estate_workshop_sparepart.xml',
-        'views/estate_workshop_procurement.xml'
+        'views/estate_workshop_procurement.xml',
+        'views/view_master_effectivedate_calendar.xml'
 
     ],
     # only loaded in demonstration mode
