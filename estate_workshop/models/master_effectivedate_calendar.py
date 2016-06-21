@@ -18,6 +18,7 @@ class MasterCalendarWorkday(models.Model):
     date_start = fields.Datetime()
     date_stop = fields.Datetime()
     agendaholiday_id = fields.Many2one('agenda.holiday','Agenda Holiday')
+    role = fields.Selection([('1','HO'),('2','Non HO')])
     hex_value = fields.Char(
         string="Hex Value",
         related="agendaholiday_id.color",
