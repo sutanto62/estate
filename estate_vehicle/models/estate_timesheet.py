@@ -127,6 +127,11 @@ class TimesheetActivityTransport(models.Model):
                         'vehicle_id':[('id','in',arrVehicletransport)]
                         }
                     }
+    @api.multi
+    @api.onchange('dc_type')
+    def _onchange_dc_type(self):
+        if self:
+            self.dc_type = 3
 
     #Sequence Recovery code
     # def create(self, cr, uid, vals, context=None):
