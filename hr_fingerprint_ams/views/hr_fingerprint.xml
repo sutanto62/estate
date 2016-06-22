@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="fingerprint_attendance_view_form" model="ir.ui.view">
+            <field name="name"> Form</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group string="Fingerprint Data">
+                                <field name="employee_name"/>
+                                <field name="date"/>
+                                <field name="sign_in" widget="float_time"/>
+                                <field name="sign_out" widget="float_time"/>
+                                <field name="action_reason" attrs="{'invisible':[('absent','=',True)]}"/>
+                                <field name="absent" invisible="True"/>
+                            </group>
+                            <group string="Other Information">
+                                <field name="hour_late"/>
+                                <field name="hour_early_leave"/>
+                                <field name="hour_overtime"/>
+                            </group>
+                        </group>
+                        <field name="attendance_ids">
+                            <tree colors="red:state=='draft'" default_order="name">
+                                <field name="employee_id"/>
+                                <field name="name"/>
+                                <field name="action"/>
+                                <field name="state" invisible="True"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="fingerprint_attendance_view_tree" model="ir.ui.view">
+            <field name="name">Fingerprint Attendance Tree</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree colors="red:state in('draft')">
+                    <field name="employee_name"/>
+                    <field name="date"/>
+                    <field name="time_start" widget="float_time"/>
+                    <field name="time_end" widget="float_time"/>
+                    <field name="sign_in" widget="float_time"/>
+                    <field name="sign_out" widget="float_time"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_fingerprint_attendance" model="ir.actions.act_window" >
+            <field name="name">Fingerprint Attendance</field>
+            <field name="res_model">hr_fingerprint_ams.attendance</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
+                  parent="hr_attendance.menu_hr_attendance"
+                  action="action_fingerprint_attendance"
+                  groups="estate.group_user"/>
+    </data>
+</openerp>
