@@ -1,0 +1,51 @@
+<openerp>
+    <data>
+         <record id="view_status_vehicle_calendar_hour_tree" model="ir.ui.view">
+                <field name="name">view.status.vehicle.calendar.hour</field>
+                <field name="model">view.status.vehicle.calendar.hour</field>
+                <field name="type">tree</field>
+                <field name="priority" eval="1"/>
+                <field name="arch" type="xml">
+                    <tree string="Status Hour Vehicle Calendar">
+                        <field name="bulan" string="Month"/>
+                        <field name="tahun" widget="Year"/>
+                        <field name="vehicle_id" string="Vehicle"/>
+                        <field name="tanggal1" widget="Day 1"/>
+                        <field name="tanggal2" widget="Day 2"/>
+                        <field name="tanggal3" widget="Day 3"/>
+                        <field name="tanggal4" widget="Day 4"/>
+                        <field name="tanggal5" widget="Day 5"/>
+                        <field name="tanggal6" widget="Day 6"/>
+                        <field name="tanggal7" widget="Day 7"/>
+                        <field name="tanggal8" widget="Day 8"/>
+                        <field name="tanggal9" widget="Day 9"/>
+                        <field name="tanggal10" widget="Day 10"/>
+                        <field name="tanggal11" widget="Day 11"/>
+                        <field name="tanggal12" widget="Day 12"/>
+                        <field name="tanggal13" widget="Day 13"/>
+                        <field name="tanggal14" widget="Day 14"/>
+                        <field name="tanggal15" widget="Day 15"/>
+                        <field name="tanggal16" widget="Day 16"/>
+                        <field name="tanggal17" widget="Day 17"/>
+                        <field name="tanggal18" widget="Day 18"/>
+                        <field name="tanggal19" widget="Day 19"/>
+                        <field name="tanggal20" widget="Day 20"/>
+                        <field name="tanggal21" widget="Day 21"/>
+                        <field name="tanggal22" widget="Day 22"/>
+                        <field name="tanggal23" widget="Day 23"/>
+                        <field name="tanggal24" widget="Day 24"/>
+                        <field name="tanggal25" widget="Day 25"/>
+                        <field name="tanggal26" widget="Day 26"/>
+                        <field name="tanggal27" widget="Day 27"/>
+                        <field name="tanggal28" widget="Day 28"/>
+                        <field name="tanggal29" widget="Day 29"/>
+                        <field name="tanggal30" widget="Day 30"/>
+                        <field name="tanggal31" widget="Day 31"/>
+                        <field name="total_day_breakdown"/>
+                        <field name="total_day_available"/>
+                        <field name="total_day_standby"/>
+                    </tree>
+                 </field>
+            </record>
+    </data>
+</openerp>
