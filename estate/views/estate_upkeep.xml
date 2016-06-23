@@ -578,12 +578,12 @@
         <menuitem id="estate_operation_menu" name="Operation" parent="main_estate_menu" sequence="10"
                 groups="estate.group_user"/>
 
-        <menuitem id="estate_upkeep" name="_(Upkeep)"
+        <menuitem id="estate_upkeep" name="Upkeep"
                   parent="estate_operation_menu"
                   action="action_list_upkeep"
                   groups="estate.group_user"/>
 
-        <menuitem id="estate_operation_control_menu" name="_(Operation Control)" parent="main_estate_menu" sequence="20"
+        <menuitem id="estate_operation_control_menu" name="Operation Control" parent="main_estate_menu" sequence="20"
                 groups="estate.group_assistant"/>
 
         <!--<record id="action_list_estate_division_lha_report" model="ir.actions.act_window" >-->

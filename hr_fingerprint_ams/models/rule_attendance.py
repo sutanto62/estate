@@ -33,10 +33,10 @@ class SignOutSpecification(CompositeSpecification):
 
 if __name__ == '__main__':
     print '\nAttendance'
-    ade_attendance = Attendance(0, 0)
-    abas_attendance = Attendance(10, 0)
-    agus_attendance = Attendance(0, 5)
-    joni_attendance = Attendance(3, 2)
+    ade_attendance = Attendance(True, 0, 0)
+    abas_attendance = Attendance(True, 10, 0)
+    agus_attendance = Attendance(True, 0, 5)
+    joni_attendance = Attendance(True, 3, 2)
     attendance_specification = AttendanceSpecification().\
         and_specification(SignInSpecification()).\
         and_specification(SignOutSpecification())

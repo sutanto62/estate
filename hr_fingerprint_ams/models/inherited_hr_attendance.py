@@ -3,8 +3,9 @@
 import logging
 import pytz
 from openerp import models, fields, api, exceptions
-from datetime import datetime
+from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from math import floor
 from rule_attendance import *
 
@@ -16,6 +17,20 @@ class HrAttendance(models.Model):
 
     finger_attendance_id = fields.Many2one('hr_fingerprint_ams.attendance', ondelete='cascade')
     state = fields.Selection(related='finger_attendance_id.state', store=True)
+
+    @api.model
+    def get_attendance(self, employee, att_date, action='sign_in'):
+        # Attendance saved in UTC
+        local = pytz.timezone(self._context['tz'])
+        date_from = datetime.strptime(att_date, DF)
+        date_from_utc = local.localize(date_from, is_dst=None).astimezone(pytz.utc)
+        date_to_utc = date_from_utc + timedelta(days=1)
+
+        res = self.search([('employee_id', '=', employee.id),
+                           ('action', '=', action),
+                           ('name', '>=', date_from_utc.strftime(DT)),
+                           ('name', '<=', date_to_utc.strftime(DT))])
+        return res
 
 class FingerAttendance(models.Model):
     """
@@ -176,4 +191,3 @@ class FingerAttendance(models.Model):
         res = local_dt.astimezone(pytz.utc)
 
         return res
-
