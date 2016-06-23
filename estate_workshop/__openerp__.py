@@ -37,8 +37,8 @@
         'views/view_cost_workshop.xml',
         'views/estate_workshop_sparepart.xml',
         'views/estate_workshop_procurement.xml',
-        'views/view_master_effectivedate_calendar.xml'
-
+        'views/view_master_effectivedate_calendar.xml',
+        'views/view_summary_vehicle_status.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

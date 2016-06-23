@@ -1,5 +1,6 @@
 
-/* generate holiday per year
+/* generate holiday peryear */
+
 CREATE OR REPLACE FUNCTION insert_range_into_calendar(from_date date, to_date date)
   RETURNS void AS
 $BODY$
