@@ -15,9 +15,9 @@ CREATE OR REPLACE FUNCTION somefuncname(i_bulan int,i_tahun int,i_vehicle_id int
 				from
 					view_summary_vehicle_status_detail v
 				where
-					v.bulan::integer <= i_bulan
+					v.month_log_text::integer <= i_bulan
 					and
-					v.tahun::integer = i_tahun
+					v.year_log_text::integer = i_tahun
 					and
 					v.vehicle_id = i_vehicle_id;
 			  RETURN v_total_day_breakdown ;

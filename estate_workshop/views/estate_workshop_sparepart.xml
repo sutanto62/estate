@@ -15,7 +15,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//page[@string='Planned Parts']" position="after">
-                      <page string="Planned Sparepart's">
+                      <page string="Planned Sparepart's" attrs="{'readonly': [('state', '!=', 'draft')]}">
                           <button class="oe_inline oe_stat_button" name="%(workshop_procurement_action5)d"
                                   string="Part Request" target="new" type="action" icon="fa-shopping-cart">
                           </button>
@@ -32,7 +32,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//page[@string='Tools']" position="after">
-                      <page string="Sparepart">
+                      <page string="Sparepart" attrs="{'invisible': [('state', '!=', 'ready')]}">
                           <field name="actualpart_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
                              context="{'tree_view_ref' : 'estate_workshop.actual_sparepart_tree'}"/>
                       </page>

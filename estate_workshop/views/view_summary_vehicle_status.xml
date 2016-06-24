@@ -1,47 +1,46 @@
 <openerp>
     <data>
         <record model="ir.ui.view" id="view_summary_vehicle_available_tree">
-            <field name="name">view.summary.vehicle.available</field>
+            <field name="name">Vehicle Summary Available</field>
             <field name="model">view.summary.vehicle.available</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree editable="bottom">
-                    <field name="year_log_text" string="Year"/>
+                <tree>
                     <field name="month_log_text" string="Month"/>
                     <field name="hke_non_ho" string="Day Effective"/>
                     <field name="sbi_total_day_hke" string="YTD Day Effective"/>
                     <field name="vehicle_id" string="Vehicle"/>
-                    <field name="tanggal1" string="1" style="font:bold;"/>
-                    <field name="tanggal2" string="2"/>
-                    <field name="tanggal3" string="3"/>
-                    <field name="tanggal4" string="4"/>
-                    <field name="tanggal5" string="5"/>
-                    <field name="tanggal6" string="6"/>
-                    <field name="tanggal7" string="7"/>
-                    <field name="tanggal8" string="8"/>
-                    <field name="tanggal9" string="9"/>
-                    <field name="tanggal10" string="10"/>
-                    <field name="tanggal11" string="11"/>
-                    <field name="tanggal12" string="12"/>
-                    <field name="tanggal13" string="13"/>
-                    <field name="tanggal14" string="14"/>
-                    <field name="tanggal15" string="15"/>
-                    <field name="tanggal16" string="16"/>
-                    <field name="tanggal17" string="17"/>
-                    <field name="tanggal18" string="18"/>
-                    <field name="tanggal19" string="19"/>
-                    <field name="tanggal20" string="20"/>
-                    <field name="tanggal21" string="21"/>
-                    <field name="tanggal22" string="22"/>
-                    <field name="tanggal23" string="23"/>
-                    <field name="tanggal24" string="24"/>
-                    <field name="tanggal25" string="25"/>
-                    <field name="tanggal26" string="26"/>
-                    <field name="tanggal27" string="27"/>
-                    <field name="tanggal28" string="28"/>
-                    <field name="tanggal29" string="29"/>
-                    <field name="tanggal30" string="30"/>
-                    <field name="tanggal31" string="31"/>
+                    <field name="date1" string="1"/>
+                    <field name="date2" string="2"/>
+                    <field name="date3" string="3"/>
+                    <field name="date4" string="4"/>
+                    <field name="date5" string="5"/>
+                    <field name="date6" string="6"/>
+                    <field name="date7" string="7"/>
+                    <field name="date8" string="8"/>
+                    <field name="date9" string="9"/>
+                    <field name="date10" string="10"/>
+                    <field name="date11" string="11"/>
+                    <field name="date12" string="12"/>
+                    <field name="date13" string="13"/>
+                    <field name="date14" string="14"/>
+                    <field name="date15" string="15"/>
+                    <field name="date16" string="16"/>
+                    <field name="date17" string="17"/>
+                    <field name="date18" string="18"/>
+                    <field name="date19" string="19"/>
+                    <field name="date20" string="20"/>
+                    <field name="date21" string="21"/>
+                    <field name="date22" string="22"/>
+                    <field name="date23" string="23"/>
+                    <field name="date24" string="24"/>
+                    <field name="date25" string="25"/>
+                    <field name="date26" string="26"/>
+                    <field name="date27" string="27"/>
+                    <field name="date28" string="28"/>
+                    <field name="date29" string="29"/>
+                    <field name="date30" string="30"/>
+                    <field name="date31" string="31"/>
                     <field name="total_day_available" string="MTD Available"/>
                     <field name="sbi_total_day_available" string="YTD Available"/>
                     <field name="total_day_standby" string="MTD Standby"/>
@@ -54,7 +53,7 @@
         </record>
 
         <record model='ir.ui.view' id='view_summary_vehicle_available_form'>
-            <field name="name">view.summary.vehicle.available</field>
+            <field name="name">Vehicle Summary Available</field>
             <field name="model">view.summary.vehicle.available</field>
             <field name="arch" type="xml">
                 <form string="View Summary Vehicle Status">
@@ -77,41 +76,41 @@
                         </group>
                         <group>
                             <group>
-                                <field name="tanggal1" string="1"/>
-                                <field name="tanggal2" string="2"/>
-                                <field name="tanggal3" string="3"/>
-                                <field name="tanggal4" string="4"/>
-                                <field name="tanggal5" string="5"/>
-                                <field name="tanggal6" string="6"/>
-                                <field name="tanggal7" string="7"/>
-                                <field name="tanggal8" string="8"/>
-                                <field name="tanggal9" string="9"/>
-                                <field name="tanggal10" string="10"/>
+                                <field name="date1" string="1"/>
+                                <field name="date2" string="2"/>
+                                <field name="date3" string="3"/>
+                                <field name="date4" string="4"/>
+                                <field name="date5" string="5"/>
+                                <field name="date6" string="6"/>
+                                <field name="date7" string="7"/>
+                                <field name="date8" string="8"/>
+                                <field name="date9" string="9"/>
                             </group>
                             <group>
-                                <field name="tanggal11" string="11"/>
-                                <field name="tanggal12" string="12"/>
-                                <field name="tanggal13" string="13"/>
-                                <field name="tanggal14" string="14"/>
-                                <field name="tanggal15" string="15"/>
-                                <field name="tanggal16" string="16"/>
-                                <field name="tanggal17" string="17"/>
-                                <field name="tanggal18" string="18"/>
-                                <field name="tanggal19" string="19"/>
-                                <field name="tanggal20" string="20"/>
-                                <field name="tanggal21" string="21"/>
+                                <field name="date10" string="10"/>
+                                <field name="date11" string="11"/>
+                                <field name="date12" string="12"/>
+                                <field name="date13" string="13"/>
+                                <field name="date14" string="14"/>
+                                <field name="date15" string="15"/>
+                                <field name="date16" string="16"/>
+                                <field name="date17" string="17"/>
+                                <field name="date18" string="18"/>
+                                <field name="date19" string="19"/>
+                                <field name="date20" string="20"/>
                             </group>
                             <group>
-                                <field name="tanggal22" string="22"/>
-                                <field name="tanggal23" string="23"/>
-                                <field name="tanggal24" string="24"/>
-                                <field name="tanggal25" string="25"/>
-                                <field name="tanggal26" string="26"/>
-                                <field name="tanggal27" string="27"/>
-                                <field name="tanggal28" string="28"/>
-                                <field name="tanggal29" string="29"/>
-                                <field name="tanggal30" string="30"/>
-                                <field name="tanggal31" string="31"/>
+                                 <field name="date21" string="21"/>
+                                <field name="date22" string="22"/>
+                                <field name="date23" string="23"/>
+                                <field name="date24" string="24"/>
+                                <field name="date25" string="25"/>
+                                <field name="date26" string="26"/>
+                                <field name="date27" string="27"/>
+                                <field name="date28" string="28"/>
+                                <field name="date29" string="29"/>
+                                <field name="date30" string="30"/>
+                                <field name="date31" string="31"/>
                             </group>
                         </group>
                         <group col="2">
@@ -143,43 +142,43 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="tanggal1" string="1"/>
-                    <field name="tanggal2" string="2"/>
-                    <field name="tanggal3" string="3"/>
-                    <field name="tanggal4" string="4"/>
-                    <field name="tanggal5" string="5"/>
-                    <field name="tanggal6" string="6"/>
-                    <field name="tanggal7" string="7"/>
-                    <field name="tanggal8" string="8"/>
-                    <field name="tanggal9" string="9"/>
-                    <field name="tanggal10" string="10"/>
-                    <field name="tanggal11" string="11"/>
-                    <field name="tanggal12" string="12"/>
-                    <field name="tanggal13" string="13"/>
-                    <field name="tanggal14" string="14"/>
-                    <field name="tanggal15" string="15"/>
-                    <field name="tanggal16" string="16"/>
-                    <field name="tanggal17" string="17"/>
-                    <field name="tanggal18" string="18"/>
-                    <field name="tanggal19" string="19"/>
-                    <field name="tanggal20" string="20"/>
-                    <field name="tanggal21" string="21"/>
-                    <field name="tanggal22" string="22"/>
-                    <field name="tanggal23" string="23"/>
-                    <field name="tanggal24" string="24"/>
-                    <field name="tanggal25" string="25"/>
-                    <field name="tanggal26" string="26"/>
-                    <field name="tanggal27" string="27"/>
-                    <field name="tanggal28" string="28"/>
-                    <field name="tanggal29" string="29"/>
-                    <field name="tanggal30" string="30"/>
-                    <field name="tanggal31" string="31"/>
+                    <field name="date1" string="1"/>
+                    <field name="date2" string="2"/>
+                    <field name="date3" string="3"/>
+                    <field name="date4" string="4"/>
+                    <field name="date5" string="5"/>
+                    <field name="date6" string="6"/>
+                    <field name="date7" string="7"/>
+                    <field name="date8" string="8"/>
+                    <field name="date9" string="9"/>
+                    <field name="date10" string="10"/>
+                    <field name="date11" string="11"/>
+                    <field name="date12" string="12"/>
+                    <field name="date13" string="13"/>
+                    <field name="date14" string="14"/>
+                    <field name="date15" string="15"/>
+                    <field name="date16" string="16"/>
+                    <field name="date17" string="17"/>
+                    <field name="date18" string="18"/>
+                    <field name="date19" string="19"/>
+                    <field name="date20" string="20"/>
+                    <field name="date21" string="21"/>
+                    <field name="date22" string="22"/>
+                    <field name="date23" string="23"/>
+                    <field name="date24" string="24"/>
+                    <field name="date25" string="25"/>
+                    <field name="date26" string="26"/>
+                    <field name="date27" string="27"/>
+                    <field name="date28" string="28"/>
+                    <field name="date29" string="29"/>
+                    <field name="date30" string="30"/>
+                    <field name="date31" string="31"/>
                 </tree>
             </field>
         </record>
 
         <record model='ir.ui.view' id='view_summary_vehicle_available_search'>
-            <field name="name">view.summary.vehicle.available</field>
+            <field name="name">Vehicle Summary Available</field>
             <field name="model">view.summary.vehicle.available</field>
             <field name="arch" type="xml">
                 <search string="Vehicles Summary " >
@@ -192,18 +191,18 @@
                     <field name="total_downtime" string="Downtime"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
-                        <filter name="groupby_month" context="{'group_by' : 'month_log_text'}" string="Month"/>
                         <filter name="groupby_year" context="{'group_by' : 'year_log_text'}" string="Year"/>
+                        <filter name="groupby_month" context="{'group_by' : 'month'}" string="Month"/>
                     </group>
                 </search>
             </field>
         </record>
 
         <record model="ir.actions.act_window" id="action_list_view_summary_vehicle_available">
-                <field name="name">view.summary.vehicle.available</field>
+                <field name="name">Vehicle Summary Available</field>
                 <field name="res_model">view.summary.vehicle.available</field>
                 <field name="view_mode">tree</field>
-                <field name="context">{"search_default_groupby_year" : True}</field>
+                <field name="context">{"search_default_groupby_month":True,"search_default_groupby_year" : True}</field>
         </record>
 
         <menuitem id="estate_summary_vehicle_available" name="Vehicle Summary Available"
