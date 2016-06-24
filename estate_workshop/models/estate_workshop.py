@@ -13,14 +13,15 @@ import time
 import datetime
 from openerp import tools
 
-# class InheritMroOnchangeOwnerId(models.Model):
-#
-#     _inherit = 'mro.order'
-#
-#     @api.multi
-#     @api.onchange('owner_id','asset_id'):
-#     def _onchange_orner_id(self):
-#         if self.asset_id :
+class InheritMroOnchangeOwnerId(models.Model):
+
+    _inherit = 'mro.order'
+
+    @api.multi
+    @api.onchange('owner_id','asset_id')
+    def _onchange_orner_id(self):
+        if self.asset_id :
+            self.owner_id = self.asset_id.id
 
 class InheritSparepartLog(models.Model):
 
@@ -564,36 +565,24 @@ class PlannedTask(models.Model):
                 self.planned_manpower += self.mastertask_id.planned_manpower
 
     @api.multi
-    @api.onchange('mastertask_id','owner_id')
+    @api.onchange('mastertask_id','owner_id','asset_id','mro_id')
     def _onchange_mastertask_id(self):
         arrOrder = []
+       #todo onchange mastertask id tanpa di menunggu mro order tersimpan
+        self.owner_id = self.mro_id.owner_id
         if self:
-            order = self.env['mro.order'].search([('id','=',self.owner_id)])
-            for order in order:
-                arrOrder.append(order.asset_id.id)
             return {
                 'domain':{
-                    'mastertask_id' : [('asset_id','in',arrOrder)]
+                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
                 }
             }
-
-    # @api.multi
-    # @api.onchange('mastertask_id','owner_id','asset_id')
-    # def _onchange_owner_id(self):
-    #     self.owner_id = self.asset_id.id
-
-    # @api.multi
-    # @api.onchange('mastertask_id','owner_id')
-    # def _onchange_mastertask_id(self):
-
-
 
 class ActualTask(models.Model):
 
     _name = 'estate.workshop.actualtask'
 
     mastertask_id = fields.Many2one('estate.workshop.mastertask')
-    asset_id = fields.Many2one('asset.asset')
+    mro_id = fields.Many2one('mro.order')
     owner_id = fields.Integer()
     planned_hour = fields.Float(readonly=True)
     planned_manpower = fields.Float(readonly=True)
@@ -606,7 +595,7 @@ class InheritPlannedtask(models.Model):
 
     _inherit = 'mro.order'
 
-    task_ids = fields.One2many('estate.workshop.plannedtask','owner_id')
+    task_ids = fields.One2many('estate.workshop.plannedtask','mro_id')
     actualtask_ids = fields.One2many('estate.workshop.actualtask','owner_id')
 
 
