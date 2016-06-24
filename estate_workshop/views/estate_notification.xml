@@ -112,7 +112,7 @@
                 <tree string="Master Task">
                     <field name="name" />
                     <field name="asset_id" string="Asset"/>
-                    <field name="type_task" string="Type Task"/>
+                    <field name="type_task1" string="Type Task"/>
                     <field name="planned_hour" string="Planned Hour's"/>
                     <field name="planned_manpower" string="Planned Manpower"/>
                 </tree>

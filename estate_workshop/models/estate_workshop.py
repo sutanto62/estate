@@ -13,6 +13,15 @@ import time
 import datetime
 from openerp import tools
 
+# class InheritMroOnchangeOwnerId(models.Model):
+#
+#     _inherit = 'mro.order'
+#
+#     @api.multi
+#     @api.onchange('owner_id','asset_id'):
+#     def _onchange_orner_id(self):
+#         if self.asset_id :
+
 class InheritSparepartLog(models.Model):
 
     _inherit='estate.vehicle.log.sparepart'
@@ -105,7 +114,7 @@ class MasterTask(models.Model):
     type_task1 = fields.Many2one('estate.master.type.task',domain=[('type','=','view'),('parent_id','=',False)])
     type_subtask = fields.Many2one('estate.master.type.task','sub task')
     type_list_task = fields.Many2one('estate.master.type.task','List task')
-    type_task = fields.Selection([('1','Preventive'),('2','Corective')])
+
 
 
     #onchange
@@ -135,7 +144,7 @@ class MasterTask(models.Model):
                         'type_list_task':[('id','in',arrType)]
                     }
                 }
-        
+
 
 class MasterTaskLine(models.Model):
 
@@ -529,6 +538,7 @@ class ExternalOrder(models.Model):
 
     name = fields.Char()
     service_id = fields.Many2one('fleet.vehicle.log.services',required=True,ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee','Requester')
     owner_id = fields.Integer()
 
 class inheritCostWorkshop(models.Model):
@@ -567,14 +577,28 @@ class PlannedTask(models.Model):
                 }
             }
 
+    # @api.multi
+    # @api.onchange('mastertask_id','owner_id','asset_id')
+    # def _onchange_owner_id(self):
+    #     self.owner_id = self.asset_id.id
+
+    # @api.multi
+    # @api.onchange('mastertask_id','owner_id')
+    # def _onchange_mastertask_id(self):
+
+
+
 class ActualTask(models.Model):
 
     _name = 'estate.workshop.actualtask'
 
     mastertask_id = fields.Many2one('estate.workshop.mastertask')
+    asset_id = fields.Many2one('asset.asset')
     owner_id = fields.Integer()
     planned_hour = fields.Float(readonly=True)
     planned_manpower = fields.Float(readonly=True)
+
+
 
 
 

@@ -35,7 +35,7 @@
                         <group col="2">
                             <group string="Additional Details">
                                 <field name="date" />
-                                <field name="purchaser_id" />
+                                <field name="employee_id" string="Requester"/>
                                 <field name="vendor_id" context="{'default_supplier': True}"/>
                                 <field name="inv_ref" />
                             </group>
@@ -64,7 +64,7 @@
                     <field name="date" />
                     <field name="vehicle_id" />
                     <field name="cost_subtype_id"/>
-                    <field name="purchaser_id"/>
+                    <field name="employee_id"/>
                     <field name="vendor_id" />
                     <field name="inv_ref" />
                     <field name="notes" />
