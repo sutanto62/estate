@@ -47,7 +47,7 @@
                     <field name="sbi_total_day_standby" string="YTD Standby"/>
                     <field name="total_day_breakdown" string="MTD BreakDown"/>
                     <field name="sbi_total_day_breakdown" string="YTD Breakdown"/>
-                    <field name="total_downtime" string="&#931; Downtime"/>
+                    <field name="total_downtime" string="% Downtime"/>
                 </tree>
             </field>
         </record>

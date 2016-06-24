@@ -90,6 +90,7 @@ class InheritTypeAsset(models.Model):
                 }
                 self.write(type)
 
+
 class MasterTask(models.Model):
 
     _name = 'estate.workshop.mastertask'
@@ -101,64 +102,40 @@ class MasterTask(models.Model):
     planned_manpower = fields.Float('ManPower')
     owner_id = fields.Integer()
     mastertaskline_ids= fields.One2many('estate.workshop.mastertaskline','mastertask_id')
-    type_task = fields.Selection([('1','Preventiv'),('2','Corective')])
-    type_preventive = fields.Selection([('1','Periodic'),('2','Schedule Overhoul'),('3','Condition')],defaults=1)
-    type_corective = fields.Selection([('1','Repair'),('2','BreakDown')])
-    typetask_id = fields.Many2one('estate.master.type.task')
+    type_task1 = fields.Many2one('estate.master.type.task',domain=[('type','=','view'),('parent_id','=',False)])
+    type_subtask = fields.Many2one('estate.master.type.task','sub task')
+    type_list_task = fields.Many2one('estate.master.type.task','List task')
+    type_task = fields.Selection([('1','Preventive'),('2','Corective')])
+
 
     #onchange
     @api.multi
-    @api.onchange('type_task','type_preventive','type_corective','typetask_id')
-    def _onchange_typetask_id(self):
+    @api.onchange('type_task1','type_subtask')
+    def _onchange_subtask(self):
         arrType=[]
-        if self.type_task == '1':
-            if self.type_preventive == '1':
-                listtype = self.env['estate.master.type.task'].search([('type_task','=','1'),('type','=','normal')])
+        if self.type_task1:
+                listtype = self.env['estate.master.type.task'].search([('parent_id.id','=',self.type_task1.id)])
                 for a in listtype:
                     arrType.append(a.id)
                 return {
                     'domain':{
-                        'typetask_id':[('id','in',arrType)]
+                        'type_subtask':[('id','in',arrType)]
                     }
                 }
-            elif self.type_preventive == '2':
-                listtype = self.env['estate.master.type.task'].search([('type_task','=','2'),('type','=','normal')])
+    @api.multi
+    @api.onchange('type_subtask','type_list_task')
+    def _onchange_list_task(self):
+        arrType=[]
+        if self.type_subtask:
+                listtype = self.env['estate.master.type.task'].search([('parent_id.id','=',self.type_subtask.id)])
                 for a in listtype:
                     arrType.append(a.id)
                 return {
                     'domain':{
-                        'typetask_id':[('id','in',arrType)]
+                        'type_list_task':[('id','in',arrType)]
                     }
                 }
-            elif self.type_preventive == '3' :
-                listtype = self.env['estate.master.type.task'].search([('type_task','=','3'),('type','=','normal')])
-                for a in listtype:
-                    arrType.append(a.id)
-                return {
-                    'domain':{
-                        'typetask_id':[('id','in',arrType)]
-                    }
-                }
-
-        elif self.type_task == '2' :
-            if self.type_corective == '1' :
-                listtype = self.env['estate.master.type.task'].search([('type_task','=','4'),('type','=','normal')])
-                for a in listtype:
-                    arrType.append(a.id)
-                return {
-                    'domain':{
-                        'typetask_id':[('id','in',arrType)]
-                    }
-                }
-            elif self.type_corective == '2' :
-                listtype = self.env['estate.master.type.task'].search([('type_task','=','5'),('type','=','normal')])
-                for a in listtype:
-                    arrType.append(a.id)
-                return {
-                    'domain':{
-                        'typetask_id':[('id','in',arrType)]
-                    }
-                }
+        
 
 class MasterTaskLine(models.Model):
 
