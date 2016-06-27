@@ -164,7 +164,7 @@ class Culling(models.Model):
 
                     trash = self.env['estate.nursery.cullinglinebatch'].search([('batch_id', '=', locationbatch.id),
                                                                         ('culling_id', '=', self.id),
-                                                                                ('culling_location_id','=',locationbatch.id)])
+                                                                        ('culling_location_id','=',locationbatch.id)])
                     for i in trash:
                         qty_total_cullingbatch = i.total_qty_abnormal_batch
 
@@ -202,9 +202,9 @@ class Culling(models.Model):
                          qty_batch = b.qty_abnormal_selection
 
                  move_data = {
-                        'product_id': item.product_id.id,
-                        'product_uom_qty': qty_batch,
-                        'product_uom': item.product_id.uom_id.id,
+                        'product_id': item.batch_id.product_id.id,
+                        'product_uom_qty': item.qty_abnormal_selection,
+                        'product_uom': batchitem.batch_id.product_id.uom_id.id,
                         'name': 'Culling Abnormal Bibit for %s:'%(self.culling_code),
                         'date_expected': self.culling_date,
                         'location_id': item.culling_location_id.inherit_location_id.id,
@@ -249,16 +249,41 @@ class CullingLine(models.Model):
                                           ,store=True,related='selection_id.culling_location_id',readonly=True)
 
     @api.multi
-    @api.onchange('selection_id')
+    @api.onchange('batch_id')
     def _onchange_batch_id(self):
         cullinglist = self.env['estate.nursery.cullingline'].search([])
         if self:
             arrCullinglist = []
-            for a in cullinglist:
-                arrCullinglist.append(a.selection_id.id)
+            for batch in cullinglist:
+                arrCullinglist.append(batch.batch_id.id)
             return {
-                'domain': {'selection_id': [('id','not in',arrCullinglist),('qty_abnormal','>',0)]}
+                'domain': {'batch_id': [('id','not in',arrCullinglist)]}
             }
+
+    @api.multi
+    @api.onchange('batch_id','selection_id')
+    def _onchange_selection_id(self):
+        arrBatch=[]
+        if self:
+            if self.batch_id:
+                batchline = self.env['estate.nursery.selection'].search([('batch_id.id','=',self.batch_id[0].id)])
+                for batch in batchline:
+                    arrBatch.append(batch.batch_id.id)
+                return {
+                'domain': {'selection_id': [('batch_id.id','in',arrBatch)]}
+            }
+
+    # @api.multi
+    # @api.onchange('selection_id')
+    # def _onchange_selection_id(self):
+    #     cullinglist = self.env['estate.nursery.cullingline'].search([])
+    #     if self:
+    #         arrCullinglist = []
+    #         for a in cullinglist:
+    #             arrCullinglist.append(a.selection_id.id)
+    #         return {
+    #             'domain': {'selection_id': [('id','not in',arrCullinglist),('qty_abnormal','>',0)]}
+    #         }
 
     #get qty total do batch
     @api.onchange('selection_id','total_seed_dobatch')
@@ -268,31 +293,33 @@ class CullingLine(models.Model):
 
 
     #get qty normal batch
+    @api.multi
     @api.onchange('selection_id','allqty_normal_batch')
     def _get_total_allnormal_dobatch(self):
         self.allqty_normal_batch=self.selection_id.batch_id.qty_normal
-        self.write({'allqty_normal_batch':self.allqty_normal_batch})
+        # self.write({'allqty_normal_batch':self.allqty_normal_batch})
 
 
     #get qty normal Selection
+    @api.multi
     @api.onchange('batch_id','selection_id','qty_normal_selection')
     def _get_qty_abnormalselection(self):
             self.qty_normal_selection=self.selection_id.qty_normal
-            self.write({'qty_normal_selection':self.qty_normal_selection})
+            # self.write({'qty_normal_selection':self.qty_normal_selection})
 
 
     #get qty abnormal batch
     @api.onchange('selection_id','allqty_abnormal_batch')
     def _get_total_allabnormal_dobatch(self):
         self.allqty_abnormal_batch=self.selection_id.batch_id.qty_abnormal
-        self.write({'allqty_abnormal_batch':self.allqty_abnormal_batch})
+        # self.write({'allqty_abnormal_batch':self.allqty_abnormal_batch})
 
     #get qty Planted
+    @api.multi
     @api.onchange('selection_id','total_transplanted')
     def _get_total_allplanted(self):
         self.total_transplanted=self.selection_id.qty_plant
-        self.write({'total_transplanted':self.total_transplanted})
-        print self.total_transplanted
+        # self.write({'total_transplanted':self.total_transplanted})
 
     @api.multi
     @api.onchange('product_id','selection_id')
@@ -340,17 +367,19 @@ class CullinglineBatch(models.Model):
                                           ,store=True,related='batch_id.culling_location_id',readonly=True)
 
     #get qty Transplanted
+    @api.multi
     @api.onchange('batch_id','qty_transplanted')
     def _get_qty_tranplanted(self):
         self.qty_transplanted=self.batch_id.qty_planted_temp
-        self.write({'qty_transplanted':self.qty_transplanted})
+        # self.write({'qty_transplanted':self.qty_transplanted})
 
 
     #get qty normal seed receive perbatch
+    @api.multi
     @api.onchange('batch_id','qty_normal_batch')
     def _get_normal(self):
             self.qty_normal_batch=self.batch_id.qty_normal
-            self.write({'qty_normal_batch':self.qty_normal_batch})
+            # self.write({'qty_normal_batch':self.qty_normal_batch})
 
     @api.multi
     @api.onchange('batch_id')
@@ -365,10 +394,11 @@ class CullinglineBatch(models.Model):
             }
 
     #get qty seed receive perbatch
+    @api.multi
     @api.onchange('batch_id','total_seed_DO')
     def _get_receive(self):
             self.total_seed_DO=self.batch_id.qty_received
-            self.write({'total_seed_DO':self.total_seed_DO})
+            # self.write({'total_seed_DO':self.total_seed_DO})
 
     @api.multi
     @api.onchange('product_id','batch_id')

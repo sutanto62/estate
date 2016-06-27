@@ -426,18 +426,20 @@ class Selection(models.Model):
     def _changestage_id(self):
         self.stage_id=self.selectionstage_id.stage_id
 
-    #onchange Stage
-    @api.multi
-    @api.onchange('selectionstage_id')
-    def _onchange_batch_id(self):
-        selectionstagelist = self.env['estate.nursery.selection'].search([])
-        if self:
-            arrSelectionstagelist = []
-            for a in selectionstagelist:
-                arrSelectionstagelist.append(a.selectionstage_id.id)
-            return {
-                'domain': {'selectionstage_id': [('id','not in',arrSelectionstagelist)]}
-            }
+    #todo change stage untuk setiap selection
+    # #onchange Stage
+    # @api.multi
+    # @api.onchange('selectionstage_id')
+    # def _onchange_batch_id(self):
+    #     selectionstagelist = self.env['estate.nursery.selection'].search([('batch_id.id','=',self.batch_id.id)])
+    #     if self:
+    #         arrSelectionstagelist = []
+    #         for a in selectionstagelist:
+    #             arrSelectionstagelist.append(a.selectionstage_id.id)
+    #         return {
+    #             'domain': {'selectionstage_id': [('id','not in',arrSelectionstagelist)]}
+    #         }
+
     #onchange qty Normal
     @api.onchange('qty_normal')
     def onchange_normal(self):
