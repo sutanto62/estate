@@ -1,20 +1,23 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* estate
-#
+# * estate
+# Odoo, 2016.
+# Odoo, 2016.
+# Odoo, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-06-16 03:37+0000\n"
-"PO-Revision-Date: 2016-06-16 15:09+0700\n"
-"Last-Translator: csutanto <c@sutanto.or.id>\n"
+"PO-Revision-Date: 2016-06-27 15:03+0700\n"
+"Last-Translator: Odoo <>\n"
 "Language-Team: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: \n"
-"X-Generator: Poedit 1.5.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #. module: estate
 #: help:estate.activity,wage_method:0
@@ -91,22 +94,22 @@ msgstr "Jumlah Pokok Menghasilkan Abnormal"
 #: model:ir.ui.menu,name:estate.estate_account_menu
 #: view:website:estate.report_estate_division
 msgid "Account"
-msgstr ""
+msgstr "Akun"
 
 #. module: estate
 #: view:estate.activity:estate.view_activity_config_form
 msgid "Accounting"
-msgstr ""
+msgstr "Akuntansi"
 
 #. module: estate
 #: help:estate.upkeep.labour,var_qty_base:0
 msgid "Achievement over standar in quantity."
-msgstr ""
+msgstr "Pencapaian lebih basis (kuantitas)."
 
 #. module: estate
 #: help:estate.upkeep.labour,prod_quantity_day:0
 msgid "Achievement over standard in percentage."
-msgstr ""
+msgstr "Pencapaian lebih basis (%)."
 
 #. module: estate
 #: field:estate.block,active:0 field:estate.block.template,active:0
@@ -118,7 +121,7 @@ msgstr "Aktif"
 #. module: estate
 #: help:estate.hr.team,state:0
 msgid "Active team allowed to be used as upkeep team."
-msgstr "Tim aktif untuk perawatan"
+msgstr "Kemandoran aktif yang diperkenankan dicatat pada BKM."
 
 #. module: estate
 #: view:estate.activity:estate.view_activity_config_form
@@ -220,12 +223,12 @@ msgstr "Satu mandor hanya boleh aktif di satu Kemandoran."
 #: field:estate.block.template,account_id:0
 #: model:ir.model,name:estate.model_account_analytic_account
 msgid "Analytic Account"
-msgstr ""
+msgstr "Akun Analisa"
 
 #. module: estate
 #: field:estate.upkeep.activity,account_id:0
 msgid "Analytic Account Line"
-msgstr ""
+msgstr "Detail Akun Analisa"
 
 #. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_analytic
@@ -242,12 +245,12 @@ msgstr ""
 #: help:estate.upkeep.labour,activity_id:0
 #: help:estate.upkeep.material,activity_id:0
 msgid "Any update will reset Block."
-msgstr "Update akan mereset blok."
+msgstr "Perubahan akan menghapus data Blok."
 
 #. module: estate
 #: help:estate.upkeep.labour,attendance_code_id:0
 msgid "Any update will reset employee's timesheet"
-msgstr ""
+msgstr "Perubahan akan menghapus timesheet karyawan"
 
 #. module: estate
 #: view:estate.config.settings:estate.view_estate_configuration
@@ -274,24 +277,24 @@ msgstr "Area"
 #: help:estate.block,area_emplacement:0
 #: help:estate.block.template,area_emplacement:0
 msgid "Area for office and housing."
-msgstr ""
+msgstr "Area kantor dan perumahan"
 
 #. module: estate
 #: view:estate.block.template:estate.view_form_block_config
 msgid "Areal Statement"
-msgstr ""
+msgstr "Laporan Area"
 
 #. module: estate
 #: view:estate.block.template:estate.view_form_block_config
 msgid "Assets"
-msgstr ""
+msgstr "Aset"
 
 #. module: estate
 #: field:estate.block,assistant_id:0
 #: field:estate.block.template,assistant_id:0
 #: field:estate.hr.team,assistant_id:0 field:estate.upkeep,assistant_id:0
 msgid "Assistant"
-msgstr "Asisten"
+msgstr "Asisten Divisi"
 
 #. module: estate
 #: field:estate.hr.attendance,name:0
@@ -1320,13 +1323,13 @@ msgstr "Dimodifikasi oleh"
 #: field:estate.upkeep.labour,write_date:0
 #: field:estate.upkeep.material,write_date:0 field:estate.wage,write_date:0
 msgid "Last Updated on"
-msgstr ""
+msgstr "Update terakhir pada"
 
 #. module: estate
 #: field:estate.block,leaf_analysis:0
 #: field:estate.block.template,leaf_analysis:0
 msgid "Leaf Analysis"
-msgstr ""
+msgstr "Analisa Daun"
 
 #. module: estate
 #: field:estate.block,parent_left:0 field:estate.block.template,parent_left:0
@@ -1346,24 +1349,24 @@ msgstr "Lokasi"
 #. module: estate
 #: field:estate.block,loc_barcode:0 field:estate.block.template,loc_barcode:0
 msgid "Location Barcode"
-msgstr ""
+msgstr "Barcode Lokasi"
 
 #. module: estate
 #: field:estate.block,complete_name:0 field:estate.block,name:0
 #: field:estate.block.template,complete_name:0
 #: field:estate.block.template,name:0
 msgid "Location Name"
-msgstr ""
+msgstr "Nama Lokasi"
 
 #. module: estate
 #: field:estate.block,usage:0 field:estate.block.template,usage:0
 msgid "Location Type"
-msgstr ""
+msgstr "Tipe Lokasi"
 
 #. module: estate
 #: model:stock.location,name:estate.block_mn_1_stock_location
 msgid "MN 1"
-msgstr ""
+msgstr "MN 1"
 
 #. module: estate
 #: view:website:estate.report_estate_division
@@ -1378,7 +1381,7 @@ msgstr ""
 #. module: estate
 #: field:estate.parameter,mandatory:0
 msgid "Mandatory"
-msgstr ""
+msgstr "Wajib Isi"
 
 #. module: estate
 #: view:estate.activity:estate.view_activity_config_form
@@ -1417,7 +1420,7 @@ msgstr "Detail Bahan"
 #. module: estate
 #: help:estate.upkeep.labour,number_of_day:0
 msgid "Maximum 1"
-msgstr ""
+msgstr "Maksimum 1"
 
 #. module: estate
 #: field:estate.activity,ratio_max:0
@@ -1432,7 +1435,7 @@ msgstr "Maksimum Hasil Kerja/HK"
 #. module: estate
 #: field:estate.config.settings,default_max_entry_day:0
 msgid "Maximum day(s) backdate transaction entry"
-msgstr ""
+msgstr "Maksimum hari pencatatan transaksi backdate"
 
 #. module: estate
 #: field:estate.hr.team,member_ids:0
@@ -1549,18 +1552,18 @@ msgid ""
 "Nursery: location for nursery. Planted: location for planting. Emplacement: "
 "location for non-planting/nursery."
 msgstr ""
-"Pembibitan: lokasi untuk pembibitan. Ditanam: lokasi untuk tanam. "
-"Emplasemen: lokasi untuk non tanaman/pembibitan."
+"Pembibitan: lokasi untuk pembibitan. Ditanam: lokasi untuk tanam. Emplasemen:"
+" lokasi untuk non tanaman/pembibitan."
 
 #. module: estate
 #: help:estate.upkeep.material,prod_product_activity:0
 msgid "Only first option used as reference"
-msgstr ""
+msgstr "Pilihan pertama akan menjadi referensi"
 
 #. module: estate
 #: model:ir.ui.menu,name:estate.estate_operation_menu
 msgid "Operation"
-msgstr ""
+msgstr "Operasio"
 
 #. module: estate
 #: model:ir.ui.menu,name:estate.estate_operation_control_menu
@@ -1582,7 +1585,7 @@ msgstr ""
 #. module: estate
 #: field:estate.upkeep.activity,labour_overtime_amount:0
 msgid "Over Time"
-msgstr ""
+msgstr "Lembur"
 
 #. module: estate
 #: field:estate.upkeep.labour,quantity_overtime:0
@@ -1640,28 +1643,28 @@ msgstr ""
 #. module: estate
 #: field:estate.parameter,level:0
 msgid "Parameter Level"
-msgstr ""
+msgstr "Tingkat Parameter"
 
 #. module: estate
 #: field:estate.parameter,name:0
 msgid "Parameter Name"
-msgstr ""
+msgstr "Nama Parameter"
 
 #. module: estate
 #: field:estate.activity.norm,parameter_value_id:0
 #: field:estate.block,parameter_value_ids:0
 msgid "Parameter Value"
-msgstr ""
+msgstr "Nilai Parameter"
 
 #. module: estate
 #: field:estate.activity,parameter_weight_ids:0
 msgid "Parameter Weight"
-msgstr ""
+msgstr "Bobot Parameter"
 
 #. module: estate
 #: field:estate.activity,parent_id:0
 msgid "Parent Category"
-msgstr ""
+msgstr "Kategori Utama"
 
 #. module: estate
 #: field:estate.activity,parent_left:0
@@ -1671,7 +1674,7 @@ msgstr ""
 #. module: estate
 #: field:estate.block,location_id:0 field:estate.block.template,location_id:0
 msgid "Parent Location"
-msgstr ""
+msgstr "Lokasi Utama"
 
 #. module: estate
 #: field:estate.activity,parent_right:0
@@ -1688,12 +1691,12 @@ msgstr ""
 #: view:estate.upkeep.activity:estate.upkeep_activity_view_search
 #: view:estate.upkeep.material:estate.upkeep_material_view_search
 msgid "Payslip"
-msgstr ""
+msgstr "Payslip"
 
 #. module: estate
 #: selection:estate.upkeep,state:0
 msgid "Payslip Processed"
-msgstr ""
+msgstr "Payslip sudah diproses"
 
 #. module: estate
 #: field:estate.common.report,period:0 field:estate.division.report,period:0
@@ -1710,7 +1713,7 @@ msgstr "Target"
 #. module: estate
 #: field:estate.activity,piece_rate_price:0
 msgid "Piece Rate Price"
-msgstr "Harga Borongan"
+msgstr "Harga Target"
 
 #. module: estate
 #: field:estate.upkeep.labour,wage_piece_rate:0
@@ -1720,7 +1723,7 @@ msgstr "Upah Target"
 #. module: estate
 #: view:estate.config.settings:estate.view_estate_configuration
 msgid "Plantation"
-msgstr ""
+msgstr "Perkebunan"
 
 #. module: estate
 #: selection:stock.location,estate_location_type:0
@@ -1754,7 +1757,7 @@ msgstr ""
 #. module: estate
 #: view:estate.division.report:estate.estate_division_report_view_form
 msgid "Print"
-msgstr ""
+msgstr "Cetak"
 
 #. module: estate
 #: view:estate.upkeep:estate.upkeep_view_form
@@ -1782,7 +1785,7 @@ msgstr ""
 #. module: estate
 #: field:estate.upkeep.labour,prod_quantity_day:0
 msgid "Productivity Qty/Day (%)"
-msgstr ""
+msgstr "Produktifitas/HK (%)"
 
 #. module: estate
 #: field:estate.block,putaway_strategy_id:0
@@ -1860,7 +1863,7 @@ msgstr "Rasio Upah/ha"
 #. module: estate
 #: help:estate.upkeep.labour,var_quantity_day:0
 msgid "Reality to standard difference variance"
-msgstr ""
+msgstr "Perbedaan realisasi terhadap standar norma"
 
 #. module: estate
 #: help:estate.config.settings,module_estate_nursery:0
@@ -1882,7 +1885,7 @@ msgstr ""
 #: field:estate.upkeep.activity,comment:0 field:estate.upkeep.labour,comment:0
 #: field:estate.upkeep.material,comment:0
 msgid "Remark"
-msgstr ""
+msgstr "Keterangan"
 
 #. module: estate
 #: field:estate.block,removal_strategy_id:0
@@ -1915,17 +1918,17 @@ msgstr ""
 #: selection:estate.common.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Select dates"
-msgstr ""
+msgstr "Pilih tanggal"
 
 #. module: estate
 #: help:estate.common.report,period:0 help:estate.division.report,period:0
 msgid "Select period of activities to be displayed at report."
-msgstr ""
+msgstr "Pilih periode BKM untuk ditampilkan pada laporan."
 
 #. module: estate
 #: field:estate.activity,sequence:0
 msgid "Sequence"
-msgstr ""
+msgstr "Urutan"
 
 #. module: estate
 #: help:estate.material.norm,option:0
@@ -1941,17 +1944,17 @@ msgstr ""
 #. module: estate
 #: help:estate.stand.hectare,default:0
 msgid "Set True to make new block using this stand per hectare."
-msgstr ""
+msgstr "Pilih untuk mengaktifkan SPH pada Blok baru."
 
 #. module: estate
 #: help:estate.activity,account_id:0
 msgid "Set as default analytic account at Upkeep."
-msgstr ""
+msgstr "Pilih sebagai Akun Analisa pada BKM."
 
 #. module: estate
 #: field:estate.stand.hectare,default:0
 msgid "Set as default for new Block"
-msgstr ""
+msgstr "Pilih sebagai nilai baku pada Blok baru."
 
 #. module: estate
 #: help:estate.activity,general_account_id:0
@@ -1967,19 +1970,19 @@ msgstr ""
 #. module: estate
 #: help:estate.hr.team,assistant_id:0
 msgid "Set this as default Assistant, will be used to record at Upkeep."
-msgstr ""
+msgstr "Pilih sebagai Asisten Divisi baku, akan digunakan pada catatan BKM."
 
 #. module: estate
 #: help:estate.block,leaf_analysis:0
 #: help:estate.block.template,leaf_analysis:0
 msgid "Set true if leaf analysis has been done."
-msgstr ""
+msgstr "Pilih bila analisa daun telah dilakukan."
 
 #. module: estate
 #: help:estate.block,soil_analysis:0
 #: help:estate.block.template,soil_analysis:0
 msgid "Set true if soil analysis has been done."
-msgstr ""
+msgstr "Pilih bila analisa tanah telah dilakukan."
 
 #. module: estate
 #: help:product.category,estate_product:0
@@ -2016,17 +2019,17 @@ msgstr "Kemitraan"
 #: field:estate.block,soil_analysis:0
 #: field:estate.block.template,soil_analysis:0
 msgid "Soil Analysis"
-msgstr ""
+msgstr "Analisa Tanah"
 
 #. module: estate
 #: field:estate.stand.hectare,qty:0
 msgid "Stand Per Hectare"
-msgstr ""
+msgstr "Tegakan/ha"
 
 #. module: estate
 #: field:estate.block,qty_sph_do:0 field:estate.block.template,qty_sph_do:0
 msgid "Stand per hectare"
-msgstr ""
+msgstr "Tegakan per hektar"
 
 #. module: estate
 #: field:estate.activity,material_norm_ids:0
@@ -2076,14 +2079,14 @@ msgstr "Tanggal Mulai"
 #. module: estate
 #: view:website:estate.report_estate_division
 msgid "Start Date:"
-msgstr ""
+msgstr "Tanggal Mulai"
 
 #. module: estate
 #: field:estate.hr.team,state:0 field:estate.operation,state:0
 #: field:estate.upkeep,state:0 field:estate.upkeep.activity,state:0
 #: field:estate.upkeep.labour,state:0 field:estate.upkeep.material,state:0
 msgid "State"
-msgstr ""
+msgstr "State"
 
 #. module: estate
 #: field:estate.block,valuation_in_account_id:0
@@ -2121,32 +2124,32 @@ msgstr "Jumlah lembur tenaga kerja"
 #. module: estate
 #: help:estate.upkeep.activity,labour_piece_rate_amount:0
 msgid "Sum of activity's piece rate in same."
-msgstr ""
+msgstr "Jumlah pencapaian target kegiatan kebun."
 
 #. module: estate
 #: help:estate.upkeep.labour,amount:0
 msgid "Sum of daily, piece rate and overtime wage"
-msgstr ""
+msgstr "Jumlah upah HK, target dan lembur."
 
 #. module: estate
 #: help:estate.upkeep.activity,amount:0
 msgid "Sum of labour wage and material cost."
-msgstr ""
+msgstr "Jumlah upah dan biaya bahan."
 
 #. module: estate
 #: help:estate.upkeep.activity,labour_amount:0
 msgid "Sum of labour's wage."
-msgstr ""
+msgstr "Jumlah upah tenaga kerja."
 
 #. module: estate
 #: help:estate.upkeep.activity,labour_unit_amount:0
 msgid "Sum of labour's work result."
-msgstr ""
+msgstr "Jumlah hasil kerja tenaga kerja."
 
 #. module: estate
 #: help:estate.upkeep.activity,material_amount:0
 msgid "Sum of material's cost."
-msgstr ""
+msgstr "Jumlah biaya bahan."
 
 #. module: estate
 #: selection:estate.hr.team,state:0
@@ -2156,7 +2159,7 @@ msgstr ""
 #. module: estate
 #: field:estate.upkeep.activity,unit_amount:0
 msgid "Target Unit Amount"
-msgstr ""
+msgstr "Satuan Target"
 
 #. module: estate
 #: field:estate.hr.member,team_id:0
@@ -2227,7 +2230,7 @@ msgstr "Jumlah Pokok"
 #: field:estate.block,qty_tree_mature_nofruit:0
 #: field:estate.block.template,qty_tree_mature_nofruit:0
 msgid "Tree Without Fruit"
-msgstr ""
+msgstr "Tanaman Tanpa Buah"
 
 #. module: estate
 #: view:estate.parameter.weight:estate.view_activity_parameter_tree
@@ -2247,7 +2250,7 @@ msgstr "Jumlah"
 #. module: estate
 #: field:estate.upkeep.material,unit_amount:0
 msgid "Unit Amount"
-msgstr ""
+msgstr "Jumlah Unit"
 
 #. module: estate
 #: field:estate.upkeep.material,activity_uom_id:0
@@ -2265,7 +2268,7 @@ msgstr "Satuan"
 #: field:estate.block,area_unplanted:0
 #: field:estate.block.template,area_unplanted:0
 msgid "Unplanted Area (ha)"
-msgstr ""
+msgstr "Luas Tidak Tertanam (ha)"
 
 #. module: estate
 #: view:estate.activity:estate.view_activity_config_form
@@ -2310,7 +2313,7 @@ msgstr "Bahan"
 #: help:estate.hr.attendance,qty_ratio:0
 #: help:estate.upkeep.labour,attendance_code_ratio:0
 msgid "Use to calculate work result quantity."
-msgstr ""
+msgstr "Digunakan untuk menghitung hasil kerja."
 
 #. module: estate
 #: help:estate.config.settings,default_account_id:0

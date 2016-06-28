@@ -3,8 +3,9 @@
 import logging
 import pytz
 from openerp import models, fields, api, exceptions
-from datetime import datetime
+from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from math import floor
 from rule_attendance import *
 
@@ -16,6 +17,20 @@ class HrAttendance(models.Model):
 
     finger_attendance_id = fields.Many2one('hr_fingerprint_ams.attendance', ondelete='cascade')
     state = fields.Selection(related='finger_attendance_id.state', store=True)
+
+    @api.model
+    def get_attendance(self, employee, att_date, action='sign_in'):
+        # Attendance saved in UTC
+        local = pytz.timezone(self._context['tz'])
+        date_from = datetime.strptime(att_date, DF)
+        date_from_utc = local.localize(date_from, is_dst=None).astimezone(pytz.utc)
+        date_to_utc = date_from_utc + timedelta(days=1)
+
+        res = self.search([('employee_id', '=', employee.id),
+                           ('action', '=', action),
+                           ('name', '>=', date_from_utc.strftime(DT)),
+                           ('name', '<=', date_to_utc.strftime(DT))])
+        return res
 
 class FingerAttendance(models.Model):
     """
@@ -176,4 +191,37 @@ class FingerAttendance(models.Model):
         res = local_dt.astimezone(pytz.utc)
 
         return res
+
+    @api.one
+    def button_confirmed(self):
+        self.write({
+            'state': 'confirmed'
+        })
+
+    @api.one
+    def button_approved(self):
+        """Create analytic journal entry
+        """
+        self.write({
+            'state': 'approved'
+        })
+
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
+        """Remove sum of .
+        """
+
+        # No need to sum time_start, time_end, sign_in and sign_out
+        if 'time_start' in fields:
+            fields.remove('time_start')
+
+        if 'time_end' in fields:
+            fields.remove('time_end')
+
+        if 'sign_in' in fields:
+            fields.remove('sign_in')
+
+        if 'sign_out' in fields:
+            fields.remove('sign_out')
+
+        return super(FingerAttendance, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
 

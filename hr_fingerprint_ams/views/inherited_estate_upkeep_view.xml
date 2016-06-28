@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Inherited View -->
+        <record id="inherited_estate_upkeep_labour_view_form" model="ir.ui.view">
+            <field name="name">estate.upkeep.labour.view.form.inherit</field>
+            <field name="model">estate.upkeep.labour</field>
+            <field name="inherit_id" ref="estate.upkeep_labour_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@string='Productivity']" position="after">
+                    <group string="Fingerprint">
+                        <field name="attendance_in"/>
+                        <field name="attendance_out"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
