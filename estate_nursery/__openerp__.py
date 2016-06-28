@@ -6,7 +6,18 @@
         Manage Nursery.""",
 
     'description': """
-        Long description of module's purpose
+        This module for selection nursery,transfer to MN , Transplanting to PN, and
+        include :
+        - Purhcasing  seed
+        - Transfer seed
+        - Selection Batch receiving
+        - Selection PN and MN
+        - Transfer Seed To MN
+        - Transplanting
+            - Create Seed Request order
+            - Create Seed Delivery order
+        - Culling Seed
+
     """,
 
     'author': "Palma Group",

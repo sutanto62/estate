@@ -661,7 +661,7 @@ class ViewSummaryVehicleStatusDetail(models.Model):
 
 class ViewSummaryVehicleStatusAvailable(models.Model):
 
-    _name ='view_hke_hko'
+    _name ='view.hke.hko'
     _description = "view for day of week"
     _auto = False
     _order='bulan'
