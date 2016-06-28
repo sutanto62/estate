@@ -6,7 +6,7 @@
         Modul Workshop for Estate""",
 
     'description': """
-        Long description of module's purpose
+        This module to maintenance every asset in companies,
     """,
 
     'author': "Mahroza And Probo",
@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/estate_asset.xml',
         'views/estate_notification.xml',
         'views/estate_master_catalog.xml',
