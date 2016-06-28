@@ -6,7 +6,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//page[@string='Operations']" position="after">
-                     <page string="Cost" attrs="{'invisible': [('state', '!=', 'ready')]}">
+                     <page string="Cost" attrs="{'invisible': [('state', '!=', 'ready'),('state', '!=', 'done')]}">
                         <field name="cost_ids"
                              context="{'tree_view_ref' : 'estate_workshop.view_workshop_cost_tree'}"/>
                      </page>

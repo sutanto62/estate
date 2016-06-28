@@ -379,7 +379,9 @@ class EmployeeLine(models.Model):
 
     _name = 'estate.workshop.employeeline'
 
-    employee_id = fields.Many2one('hr.employee')
+    employee_id = fields.Many2one('hr.employee',
+                                  domain=[('contract_type','!=','Null'),
+                                          ('contract_period','!=','Null'),('job_id.name','=','Mecanic')])
     mro_id = fields.Integer()
 
 class InheritMaintenanceRequest(models.Model):

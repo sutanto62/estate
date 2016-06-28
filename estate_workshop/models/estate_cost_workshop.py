@@ -23,7 +23,7 @@ class ViewTotalAmountTimesheetMecanic(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_timesheet_mecanic_totalamounts as
-                select row_number() over()id,a.mo_id mo_id, sum(a.total_amount) total_amount,month_log,year_log,vehicle_id from (
+            select row_number() over()id,a.mo_id mo_id, sum(a.total_amount) total_amount,month_log,year_log,vehicle_id from (
                         select row_number() over()id,mo_id,
                                total_time_per_day,
                                hourly_wage,
@@ -58,15 +58,15 @@ class ViewTotalAmountTimesheetMecanic(models.Model):
                                 create_date,mo_id,
                                 mastertask_id,employee_id,activity_id,start_time,end_time
                                 from estate_mecanic_timesheet mt
-                                inner join (
-                                select mo.id as mo_id,et_id,employee_id,activity_id,start_time,end_time,vehicle_id from mro_order mo inner join(
+                                left join (
+                                select mo.id as mo_id,et_id,employee_id,activity_id,start_time,end_time,vehicle_id from mro_order mo left join(
                                 select
                                     et.id as et_id,
                                     employee_id,
                                     activity_id,
                                     start_time,
-                                    end_time,owner_id,vehicle_id
-                                from estate_timesheet_activity_transport et where dc_type is null
+                                    end_time,owner_id,vehicle_id,dc_type
+                                from estate_timesheet_activity_transport et where dc_type is not null
                                 )moa on mo.id = moa.owner_id group by mo_id,et_id,employee_id,activity_id,start_time,end_time,vehicle_id
                                 )etat on mt.timesheet_id=etat.et_id
                                 )c left join (
@@ -77,13 +77,13 @@ class ViewTotalAmountTimesheetMecanic(models.Model):
                                     daily_wage,
                                     hourly_wage,
                                     day,
-                                    hour from hr_employee hre right join hr_contract hrc on hre.id=hrc.employee_id
-                                )hrcon on c.employee_id = hrcon.id
-                                )b group by day, hour,hourly_wage,daily_wage,month_log,year_log,asset,vehicle_id,mo_id)a group by mo_id,total_time_per_day,
+                                    hour from hr_employee hre right join hr_contract hrc on hre.id=hrc.employee_id where hre.job_id = 11
+                                    )hrcon on c.employee_id = hrcon.id
+                                    )b group by day, hour,hourly_wage,daily_wage,month_log,year_log,asset,vehicle_id,mo_id)a group by mo_id,total_time_per_day,
                                hourly_wage,
                                daily_wage,total_amount,
                                hour,month_log,year_log,vehicle_id
-                        ) a group by a.mo_id,month_log,year_log,vehicle_id """)
+                        ) a group by a.mo_id,month_log,year_log,vehicle_id""")
 
 
 class ViewTotalCostDetailWorkshopSparepart(models.Model):
