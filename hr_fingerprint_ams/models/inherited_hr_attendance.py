@@ -191,3 +191,37 @@ class FingerAttendance(models.Model):
         res = local_dt.astimezone(pytz.utc)
 
         return res
+
+    @api.one
+    def button_confirmed(self):
+        self.write({
+            'state': 'confirmed'
+        })
+
+    @api.one
+    def button_approved(self):
+        """Create analytic journal entry
+        """
+        self.write({
+            'state': 'approved'
+        })
+
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
+        """Remove sum of .
+        """
+
+        # No need to sum time_start, time_end, sign_in and sign_out
+        if 'time_start' in fields:
+            fields.remove('time_start')
+
+        if 'time_end' in fields:
+            fields.remove('time_end')
+
+        if 'sign_in' in fields:
+            fields.remove('sign_in')
+
+        if 'sign_out' in fields:
+            fields.remove('sign_out')
+
+        return super(FingerAttendance, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
+

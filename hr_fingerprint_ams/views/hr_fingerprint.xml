@@ -8,6 +8,15 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <!-- HR or Estate responsibility? -->
+                        <button class="oe_highlight" name="button_confirmed" string="Confirmed"
+                                type="object" states="draft" groups="estate.group_assistant"/>
+                        <button class="oe_highlight" name="button_approved" string="Approved"
+                                type="object" states="confirmed" groups="estate.group_manager"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,approved"/>
+                    </header>
                     <sheet>
                         <group>
                             <group string="Fingerprint Data">
@@ -19,9 +28,9 @@
                                 <field name="absent" invisible="True"/>
                             </group>
                             <group string="Other Information">
-                                <field name="hour_late"/>
-                                <field name="hour_early_leave"/>
-                                <field name="hour_overtime"/>
+                                <field name="hour_late" widget="float_time"/>
+                                <field name="hour_early_leave" widget="float_time"/>
+                                <field name="hour_overtime" widget="float_time"/>
                             </group>
                         </group>
                         <field name="attendance_ids">
@@ -34,6 +43,33 @@
                         </field>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="fingerprint_attendance_view_search" model="ir.ui.view">
+            <field name="name">Fingerprint Attendance Search</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_name"/>
+                    <field name="date"/>
+                    <filter name="filter_new" string="Draft/Confirmed"
+                            domain="[('state', 'in', ('draft','confirmed','attendance'))]"/>
+                    <filter name="filter_approved" string="Approved"
+                            domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+
+                    <group string="Group By">
+                        <filter name="by_employee" string="Employee"
+                                context="{'group_by': 'employee_name'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
@@ -51,18 +87,6 @@
                     <field name="sign_out" widget="float_time"/>
                     <field name="state"/>
                 </tree>
-            </field>
-        </record>
-
-        <record id="inherited_estate_upkeep_labour_view_search" model="ir.ui.view">
-            <field name="name">estate.upkeep.labour.view.search.inherit</field>
-            <field name="model">estate.upkeep.labour</field>
-            <field name="inherit_id" ref="estate.upkeep_labour_view_search"/>
-            <field name="arch" type="xml">
-                <xpath expr="//filter[@name='filter_approved']" position="after">
-                    <filter name="filter_fingerprint" string="No Fingerprint"
-                            domain="[('attendance_out', '=', False)]"/>
-                </xpath>
             </field>
         </record>
 
@@ -87,6 +111,8 @@
                                 context="{'group_by': 'assistant_id'}"/>
                         <filter name="by_team" string="Team"
                                 context="{'group_by': 'team_id'}"/>
+                        <filter name="by_employee" string="Employee"
+                                context="{'group_by': 'employee_id'}"/>
                         <filter name="by_date" string="Date"
                                 context="{'group_by': 'date'}"/>
                     </group>
@@ -111,15 +137,16 @@
         </record>
 
         <!-- Attendance -->
-        <record id="action_fingerprint_attendance" model="ir.actions.act_window" >
+        <record id="fingerprint_attendance_action" model="ir.actions.act_window" >
             <field name="name">Fingerprint Attendance</field>
             <field name="res_model">hr_fingerprint_ams.attendance</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_by_employee': 1, 'search_default_filter_new': 1}</field>
         </record>
 
         <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
                   parent="hr_attendance.menu_hr_attendance"
-                  action="action_fingerprint_attendance"
+                  action="fingerprint_attendance_action"
                   groups="estate.group_user"/>
 
 
@@ -130,7 +157,7 @@
             <field name="priority">1</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="labour_fingerprint_view_tree"/>
-            <!--<field name="context">{'search_default_by_assistant': 1, 'search_default_filter_no_sign_in': 1}</field>-->
+            <field name="context">{'search_default_by_assistant': 1, 'search_default_filter_no_sign_in': 1}</field>
         </record>
 
         <menuitem id="labour_fingerprint_report_menu" name="Labour Fingerprint Report"
