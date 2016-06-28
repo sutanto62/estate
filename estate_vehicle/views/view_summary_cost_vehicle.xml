@@ -153,6 +153,7 @@
                     <field name="total_trip_vehicle" string="&#931; Trip Vehicle"/>
                     <field name="employee_id" string="Employee"/>
                     <field name="total_trip" string="&#931; Trip"/>
+                    <field name="amount" string="&#931; Amount"/>
                 </tree>
             </field>
         </record>

@@ -95,6 +95,7 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
 
     id = fields.Integer()
     mo_id = fields.Integer()
+    parent_id = fields.Integer()
     total_amount = fields.Float()
     year_log = fields.Char()
     month_log = fields.Char()
@@ -102,9 +103,9 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_cost_workshop_sparepart as
-                select row_number() over()id,mo_id, sum(total_cost) as total_amount,fleet_id as vehicle_id,month_log,year_log from(
+                select row_number() over()id,mo_id, sum(total_cost) as total_amount,fleet_id as vehicle_id,month_log,year_log,parent_id from(
                 select row_number() over()id,
-                    (month_log::text||year_log::text||asset_id::text||mo_id::text)::Integer parent_id,
+                    (month_log::text||year_log::text||fleet_id::text)::Integer parent_id,
                     mo_id,
                     asset_id,fleet_id,month_log,year_log,
                     b.product_id,
@@ -129,7 +130,7 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
                 )c on ewas.product_id = c.id
                 )ewas on mo.id = ewas.owner_id)b
                 group by month_log,year_log,asset_id,mo_id,product_id,qty_product,cost,fleet_id,month_log,year_log)a
-                group by mo_id,fleet_id,month_log,year_log""")
+                group by mo_id,fleet_id,month_log,year_log,parent_id""")
 
 class ViewCostTotalWorkshop(models.Model):
 
@@ -146,10 +147,11 @@ class ViewCostTotalWorkshop(models.Model):
     year_log = fields.Char()
     month_log = fields.Char()
     vehicle_id = fields.Many2one('fleet.vehicle')
+    parent_id = fields.Many2one('v.summary.cost.vehicle')
 
     def init(self, cr):
         cr.execute("""create or replace view v_summary_cost_workshop_detail as
-            select detail.* from(
+ 	select detail.*, (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id from(
                 select row_number() over()id,type_log,mo_id,"count",total_amount,year_log,month_log,vehicle_id from(
                 select 'Cost Labour' as type_log,mo_id,count(*)"count",sum(total_amount) as total_amount,year_log,month_log,vehicle_id from(
                 select * from view_timesheet_mecanic_totalamounts

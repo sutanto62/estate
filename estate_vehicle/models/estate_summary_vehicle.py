@@ -101,6 +101,7 @@ class ViewSummaryCostVehicle(models.Model):
     servicesummary_ids = fields.One2many('view.service.vehicle.detail','parent_id')
     sparepartsummary_ids = fields.One2many('view.sparepart.vehicle.detail','parent_id')
     otherservicesummary_ids = fields.One2many('view.otherservice.vehicle.detail','parent_id')
+    # workshopamount_ids = fields.One2many('v.summary.cost.workshop.detail','parent_id')
     basispremi_ids = fields.One2many('view.basispremi.vehicle.detail','parent_id')
     timesheetsummary_ids = fields.One2many('view.summary.timesheet.vehicle','parent_id')
     month_log_text = fields.Text('Month')
