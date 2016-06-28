@@ -1,88 +1,93 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* hr_fingerprint_ams
-#
+# * hr_fingerprint_ams
+# Odoo, 2016.
+# Odoo, 2016.
+# Odoo, 2016.
+# Odoo, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-06-27 07:46+0000\n"
-"PO-Revision-Date: 2016-06-27 07:46+0000\n"
-"Last-Translator: <>\n"
+"PO-Revision-Date: 2016-06-27 14:48+0700\n"
+"Last-Translator: Odoo <>\n"
 "Language-Team: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,absent:0
 msgid "Absent"
-msgstr ""
+msgstr "Mangkir"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,action_reason:0
 msgid "Action Reason"
-msgstr ""
+msgstr "Tipe Presensi"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: selection:hr_fingerprint_ams.attendance,state:0
 msgid "Approved"
-msgstr ""
+msgstr "Setuju"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 #: field:hr_fingerprint_ams.fingerprint,assistant_id:0
 msgid "Assistant"
-msgstr ""
+msgstr "Asisten Divisi"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model,name:hr_fingerprint_ams.model_hr_attendance
 msgid "Attendance"
-msgstr ""
+msgstr "Kehadiran"
 
 #. module: hr_fingerprint_ams
 #: help:hr_fingerprint_ams.attendance,action_reason:0
 msgid "Attendance Action Desc"
-msgstr ""
+msgstr "Deskripsi tipe kehadiran"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_attendance:0
 msgid "Attendance Hour"
-msgstr ""
+msgstr "Jam Kehadiran"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,auto_assign:0
 msgid "Auto Assign"
-msgstr ""
+msgstr "Jam Otomatis"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint
 msgid "Compare number of day with fingerprint"
-msgstr ""
+msgstr "Membandingkan jumlah HK dg presensi sidik jari"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 #: selection:hr_fingerprint_ams.attendance,state:0
 msgid "Confirmed"
-msgstr ""
+msgstr "Konfirm"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 msgid "Correction"
-msgstr ""
+msgstr "Koreksi"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,create_uid:0
 msgid "Created by"
-msgstr ""
+msgstr "Dibuat oleh"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,create_date:0
 msgid "Created on"
-msgstr ""
+msgstr "Dibuat pada"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
@@ -90,255 +95,259 @@ msgstr ""
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 #: field:hr_fingerprint_ams.fingerprint,date:0
 msgid "Date"
-msgstr ""
+msgstr "Tanggal"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,department:0
 msgid "Department"
-msgstr ""
+msgstr "Departemen"
 
 #. module: hr_fingerprint_ams
 #: field:hr.attendance,display_name:0
 #: field:hr_fingerprint_ams.attendance,display_name:0
 #: field:hr_fingerprint_ams.fingerprint,display_name:0
 msgid "Display Name"
-msgstr ""
+msgstr "Nama Lengkap"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 msgid "Draft"
-msgstr ""
+msgstr "Draft"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 msgid "Draft/Confirmed"
-msgstr ""
+msgstr "Draft/Confirmed"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_early_leave:0
 msgid "Early Out"
-msgstr ""
+msgstr "Pulang Cepat"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 #: field:hr_fingerprint_ams.fingerprint,employee_id:0
 msgid "Employee"
-msgstr ""
+msgstr "Karyawan"
 
 #. module: hr_fingerprint_ams
 #: help:hr_fingerprint_ams.fingerprint,name:0
 msgid "Employee ID and Upkeep Date"
-msgstr ""
+msgstr "ID Karyawan dan Tanggal BKM"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,employee_name:0
 msgid "Employee Name"
-msgstr ""
+msgstr "Nama Karyawan"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_attendance
 msgid "Extend Attendance with Solution Attendance Management System data."
 msgstr ""
+"Menambah fitur membaca hasil pengolahan sidik jari dari Solution Attendance "
+"Management System."
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,day_finger:0
 msgid "Finger Day"
-msgstr ""
+msgstr "Hari dg Sidik Jari"
 
 #. module: hr_fingerprint_ams
 #: field:hr.attendance,finger_attendance_id:0
 msgid "Finger attendance id"
-msgstr ""
+msgstr "ID kehadiran sidik jari"
 
 #. module: hr_fingerprint_ams
 #: view:estate.upkeep.labour:hr_fingerprint_ams.inherited_estate_upkeep_labour_view_form
 msgid "Fingerprint"
-msgstr ""
+msgstr "Sidik Jari"
 
 #. module: hr_fingerprint_ams
 #: model:ir.actions.act_window,name:hr_fingerprint_ams.fingerprint_attendance_action
 #: model:ir.ui.menu,name:hr_fingerprint_ams.fingerprint_attendance
 msgid "Fingerprint Attendance"
-msgstr ""
+msgstr "Sidik Jari"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Fingerprint Data"
-msgstr ""
+msgstr "Data Sidik Jari"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Group By"
-msgstr ""
+msgstr "Pengelompokan"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,attendance_ids:0
 msgid "HR Attendance"
-msgstr ""
+msgstr "Kehadiran"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,day_holiday:0
 msgid "Holiday"
-msgstr ""
+msgstr "Hari Libur"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_ot_holiday:0
 msgid "Holiday Work Hour"
-msgstr ""
+msgstr "Jam Kerja Hari Libur"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,id:0
 #: field:hr_fingerprint_ams.fingerprint,id:0
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,db_id:0
 msgid "ID MDB"
-msgstr ""
+msgstr "ID MDB"
 
 #. module: hr_fingerprint_ams
 #: help:hr_fingerprint_ams.attendance,state:0
 msgid "Import will update fingerprint attendance with draft state only."
 msgstr ""
+"Impor hanya mengupdate kehadiran dengan sidik jari pada data dengan status "
+"Draft."
 
 #. module: hr_fingerprint_ams
 #: help:hr_fingerprint_ams.fingerprint,worked_hours:0
 msgid "Included time rest"
-msgstr ""
+msgstr "Termasuk jam istirahat"
 
 #. module: hr_fingerprint_ams
 #: model:ir.actions.act_window,name:hr_fingerprint_ams.labour_fingerprint_report_action
 #: model:ir.ui.menu,name:hr_fingerprint_ams.labour_fingerprint_report_menu
 msgid "Labour Fingerprint Report"
-msgstr ""
+msgstr "Kontrol HK & Sidik Jari"
 
 #. module: hr_fingerprint_ams
 #: field:hr.attendance,__last_update:0
 #: field:hr_fingerprint_ams.attendance,__last_update:0
 #: field:hr_fingerprint_ams.fingerprint,__last_update:0
 msgid "Last Modified on"
-msgstr ""
+msgstr "Modifikasi terakhir pada"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,write_uid:0
 msgid "Last Updated by"
-msgstr ""
+msgstr "Update terakhir oleh"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,write_date:0
 msgid "Last Updated on"
-msgstr ""
+msgstr "Update terakhir pada"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_late:0
 msgid "Late In"
-msgstr ""
+msgstr "Terlambat Masuk"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,nik:0
 msgid "NIK"
-msgstr ""
+msgstr "NIK"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 msgid "No Attendance Created"
-msgstr ""
+msgstr "Kehadiran tidak dibuat"
 
 #. module: hr_fingerprint_ams
 #: view:estate.upkeep.labour:hr_fingerprint_ams.inherited_estate_upkeep_labour_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "No Fingerprint"
-msgstr ""
+msgstr "Tanpa Sidik jari"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,day_normal:0
 msgid "Normal Day"
-msgstr ""
+msgstr "Hari Normal"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.fingerprint,number_of_day:0
 msgid "Number of Days"
-msgstr ""
+msgstr "HK"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Other Information"
-msgstr ""
+msgstr "Informasi Lain"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_overtime:0
 msgid "Overtime"
-msgstr ""
+msgstr "Lembur"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_ot_normal:0
 msgid "Overtime Hour"
-msgstr ""
+msgstr "Jam Lembur"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 msgid "Payslip"
-msgstr ""
+msgstr "Payslip"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,required_in:0
 msgid "Required Sign In"
-msgstr ""
+msgstr "Harus Sign In"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,required_out:0
 msgid "Required Sign Out"
-msgstr ""
+msgstr "Harus Sign Out"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.fingerprint,name:0
 msgid "Row Name"
-msgstr ""
+msgstr "Baris"
 
 #. module: hr_fingerprint_ams
 #: field:estate.upkeep.labour,attendance_in:0
 #: field:hr_fingerprint_ams.attendance,sign_in:0
 #: field:hr_fingerprint_ams.fingerprint,sign_in:0
 msgid "Sign In"
-msgstr ""
+msgstr "Sign In"
 
 #. module: hr_fingerprint_ams
 #: field:estate.upkeep.labour,attendance_out:0
 #: field:hr_fingerprint_ams.attendance,sign_out:0
 #: field:hr_fingerprint_ams.fingerprint,sign_out:0
 msgid "Sign Out"
-msgstr ""
+msgstr "Sign Out"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,state:0
 msgid "State"
-msgstr ""
+msgstr "State"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 #: field:hr_fingerprint_ams.fingerprint,team_id:0
 msgid "Team"
-msgstr ""
+msgstr "Kemandoran"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,terminal_id:0
 msgid "Terminal ID"
-msgstr ""
+msgstr "ID Terminal"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "This Month"
-msgstr ""
+msgstr "Bulan Ini"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "This Year"
-msgstr ""
+msgstr "Sampai Bulan Ini"
 
 #. module: hr_fingerprint_ams
 #: help:hr_fingerprint_ams.attendance,hour_attendance:0
@@ -354,45 +363,47 @@ msgstr ""
 #: help:hr_fingerprint_ams.attendance,time_end:0
 #: help:hr_fingerprint_ams.attendance,time_start:0
 msgid "Time format in hh:mm"
-msgstr ""
+msgstr "Format waktu hh:mm"
 
 #. module: hr_fingerprint_ams
 #: help:hr_fingerprint_ams.attendance,work_schedules:0
 msgid "Used to look up resource calendar."
-msgstr ""
+msgstr "Digunakan untuk mencari kalender resource terkait."
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,day_weekend:0
 msgid "Weekend Day"
-msgstr ""
+msgstr "Hari Kerja Akhir Minggu"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_ot_weekend:0
 msgid "Weekend Work Hour"
-msgstr ""
+msgstr "Jam Kerja Akhir Minggu"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,hour_work:0
 msgid "Work Hour"
-msgstr ""
+msgstr "Jam Kerja"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.fingerprint,worked_hours:0
 msgid "Worked Hours"
-msgstr ""
+msgstr "Jam Kerja"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,work_schedules:0
 msgid "Working Schedule"
-msgstr ""
+msgstr "Kalender Kerja"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,time_end:0
 msgid "Working Time End"
-msgstr ""
+msgstr "Jam Pulang"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,time_start:0
 msgid "Working Time Start"
-msgstr ""
+msgstr "Jam Masuk"
 
+#~ msgid "_(\"Fingerprint Attendance\")"
+#~ msgstr "Sidik Jari"

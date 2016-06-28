@@ -158,8 +158,6 @@
                                 type="object" states="draft" groups="estate.group_assistant"/>
                         <button class="oe_highlight" name="button_approved" string="Approved"
                                 type="object" states="confirmed" groups="estate.group_manager"/>
-                        <button class="oe_highlight" name="button_cancel" string="Cancel"
-                                type="object" states="confirmed,approved" groups="estate.group_manager"/>
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,approved,payslip"/>
                     </header>
@@ -429,19 +427,22 @@
             <field name="context" eval="{'search_default_employee_id': 1}"/>
             <field name="arch" type="xml">
                 <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100">
+                    <!--
+                    Use 2 decimal digits to shorten width
+                    -->
                     <field name="upkeep_date" string="Date"/>
                     <field name="upkeep_team_id" string="Team"/>
                     <field name="employee_id" string="Employee"/>
-                    <field name="quantity" string="Qty."/>
+                    <field name="quantity" digits="(8,2)" string="Qty."/>
                     <field name="location_id" string="Location"/>
                     <field name="activity_id" string="Activity"/>
                     <field name="activity_uom_id" string="UoM"/>
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
-                    <field name="quantity_overtime" string="OT" sum="OT"/>
-                    <field name="quantity_piece_rate" string="PR"/>
-                    <field name="ratio_quantity_day" string="Q/D"/>
-                    <field name="ratio_day_quantity" string="D/Q"/>
-                    <field name="ratio_wage_quantity" string="W/Q"/>
+                    <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
+                    <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
+                    <field name="ratio_quantity_day" digits="(8,2)" string="Q/D"/>
+                    <field name="ratio_day_quantity" digits="(8,2)" string="D/Q"/>
+                    <field name="ratio_wage_quantity" digits="(12,2)" string="W/Q"/>
                     <!-- remove to shorten tree
                     <field name="wage_number_of_day" string="W_HK" groups="base.group_hr_manager,estate.group_assistant"/>
                     <field name="wage_overtime" string="W_OT" groups="base.group_hr_manager,estate.group_assistant"/>
