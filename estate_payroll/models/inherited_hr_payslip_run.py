@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, osv
+from openerp import models, fields, api, exceptions, _
 from datetime import datetime
 from dateutil import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -64,7 +64,16 @@ class PayslipRun(models.Model):
             for record in self.slip_ids:
                 employees.append(record.employee_id.id)
         upkeep_list = upkeep_obj.get_upkeep_by_employee(employees, self.date_start, self.date_end, 'approved')
+
+        # Update upkeep state to payslip  state
         upkeep_obj.payslip_upkeep(upkeep_list)
+
+        # Update fingerprint to approved
+        self.env['hr_fingerprint_ams.attendance'].search([('date', '>=', self.date_start),
+                                                          ('date', '<=', self.date_end)]).write({'state': 'approved'})
+
+        # Update payslip to done
+        self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'done'})
 
         return super(PayslipRun, self).close_payslip_run()
 
@@ -86,13 +95,35 @@ class PayslipRun(models.Model):
             for record in self.slip_ids:
                 employees.append(record.employee_id.id)
         upkeep_list = upkeep_obj.get_upkeep_by_employee(employees, self.date_start, self.date_end, 'payslip')
+
+        # Update upkeep state to approved state
         upkeep_obj.approved_upkeep(upkeep_list)
+
+        # Update fingerprint to draft (case: no separate fingerprint approval)
+        self.env['hr_fingerprint_ams.attendance'].search([('date', '>=', self.date_start),
+                                                          ('date', '<=', self.date_end)]).write({'state': 'draft'})
+
+        # Update payslip to draft
+        self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'draft'})
 
         return super(PayslipRun, self).draft_payslip_run()
 
-# class PayslipRunReport(models.Model):
-#     """Payslip List Report required to group by Team
-#     """
-#     _inherit = 'hr.payslip.run'
-#
-#     # team_ids = fields.Many2one('estate')
+    @api.multi
+    def unlink(self):
+        """
+        No payslip should exists after its parent deleted
+        :return:
+        """
+        if self.state == 'close':
+            error_msg = _('You cannot delete closed Payslip.')
+            raise exceptions.ValidationError(error_msg)
+
+        self.env['hr.payslip'].search([('id', 'in', self.slip_ids.ids)]).unlink()
+        return super(PayslipRun, self).unlink()
+
+class PayslipRunReport(models.Model):
+    """Payslip List Report required to group by Team
+    """
+    _inherit = 'hr.payslip.run'
+
+    team_ids = fields.Many2one('estate')

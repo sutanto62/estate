@@ -13,5 +13,11 @@
             <field name="groups" eval="[(4,ref('estate.group_user'))]"/>
         </record>
 
+        <record id="base.group_hr_ho_user" model="res.groups">
+            <field name="name">HO Officer</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="category_id" ref="base.module_category_human_resources"/>
+        </record>
+
     </data>
 </openerp>

@@ -50,7 +50,6 @@
         'data/estate.stand.hectare.csv',
         'data/product.template.csv',
         #'data/res.users.csv',
-        #'data/hr_demo.xml',
         #'data/demo.xml',
         'data/hr_contract_demo.xml',
         'data/estate_hr_team_demo.xml',

@@ -5,12 +5,14 @@
 # Odoo, 2016.
 # Odoo, 2016.
 # Odoo, 2016.
+# Odoo, 2016.
+# Odoo, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-27 07:46+0000\n"
-"PO-Revision-Date: 2016-06-27 14:48+0700\n"
+"POT-Creation-Date: 2016-06-29 03:37+0000\n"
+"PO-Revision-Date: 2016-06-29 10:41+0700\n"
 "Last-Translator: Odoo <>\n"
 "Language-Team: \n"
 "Language: en\n"
@@ -34,6 +36,8 @@ msgstr "Tipe Presensi"
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Approved"
 msgstr "Setuju"
 
@@ -71,11 +75,13 @@ msgstr "Membandingkan jumlah HK dg presensi sidik jari"
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Confirmed"
 msgstr "Konfirm"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Correction"
 msgstr "Koreksi"
 
@@ -88,6 +94,14 @@ msgstr "Dibuat oleh"
 #: field:hr_fingerprint_ams.attendance,create_date:0
 msgid "Created on"
 msgstr "Dibuat pada"
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:126
+#, python-format
+msgid "Data (db_id %s) did not satisfy attendance rule (employee, sign-in, sign-out)."
+msgstr ""
+"Fingerprint dg db_id %s tidak memenuhi syarat data yg valid (karyawan, sign-"
+"in dan sign-out)"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
@@ -111,11 +125,13 @@ msgstr "Nama Lengkap"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Draft"
 msgstr "Draft"
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Draft/Confirmed"
 msgstr "Draft/Confirmed"
 
@@ -173,6 +189,11 @@ msgstr "Sidik Jari"
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Fingerprint Data"
 msgstr "Data Sidik Jari"
+
+#. module: hr_fingerprint_ams
+#: help:hr_fingerprint_ams.fingerprint,state:0
+msgid "Fingerprint state."
+msgstr "Status Sidik Jari."
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
@@ -253,11 +274,11 @@ msgstr "NIK"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "No Attendance Created"
 msgstr "Kehadiran tidak dibuat"
 
 #. module: hr_fingerprint_ams
-#: view:estate.upkeep.labour:hr_fingerprint_ams.inherited_estate_upkeep_labour_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "No Fingerprint"
 msgstr "Tanpa Sidik jari"
@@ -289,6 +310,8 @@ msgstr "Jam Lembur"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Payslip"
 msgstr "Payslip"
 
@@ -323,6 +346,7 @@ msgstr "Sign Out"
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,state:0
+#: field:hr_fingerprint_ams.fingerprint,state:0
 msgid "State"
 msgstr "State"
 
@@ -404,6 +428,12 @@ msgstr "Jam Pulang"
 #: field:hr_fingerprint_ams.attendance,time_start:0
 msgid "Working Time Start"
 msgstr "Jam Masuk"
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:175
+#, python-format
+msgid "You cannot delete approved Fingerprint records."
+msgstr "Tidak boleh menghapus data fingprint yang telah disetujui."
 
 #~ msgid "_(\"Fingerprint Attendance\")"
 #~ msgstr "Sidik Jari"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
 
         <!-- Salary Rule -->
         <record id="hr_salary_rule_labour_daily_wage" model="hr.salary.rule">
@@ -25,16 +25,16 @@
             <field name="amount_select">code</field>
             <field name="code">PR</field>
             <field name="category_id" ref="hr_payroll.ALW"/>
-            <field name="name">Pice Rate</field>
+            <field name="name">Piece Rate</field>
             <field name="sequence" eval="17"/>
             <field name="amount_python_compute">result = inputs.PR and inputs.PR.amount</field>
          </record>
 
-        <record id="hr_salary_rule_bpjs_pkwt_c" model="hr.salary.rule">
+        <record id="hr_salary_rule_bpjs_pkwtt_c" model="hr.salary.rule">
             <field name="amount_select">code</field>
-            <field name="code">BPJSPKWTC</field>
+            <field name="code">BPJSPKWTTC</field>
             <field name="category_id" ref="hr_payroll.COMP"/>
-            <field name="name">BPJS PWKT Company</field>
+            <field name="name">BPJS PWKTT Company</field>
             <field name="sequence" eval="20"/>
             <field name="amount_python_compute"># Available variables:
 #----------------------
@@ -53,11 +53,11 @@ wage_overtime = inputs.OT and inputs.OT.amount
 result = 0.04 * (wage_days + wage_piece_rate + wage_overtime)</field>
          </record>
 
-        <record id="hr_salary_rule_bpjs_pkwt_e" model="hr.salary.rule">
+        <record id="hr_salary_rule_bpjs_pkwtt_e" model="hr.salary.rule">
             <field name="amount_select">code</field>
-            <field name="code">BPJSPKWTE</field>
+            <field name="code">BPJSPKWTTE</field>
             <field name="category_id" ref="hr_payroll.DED"/>
-            <field name="name">BPJS PWKT Employee</field>
+            <field name="name">BPJS PWKTT Employee</field>
             <field name="sequence" eval="20"/>
             <field name="amount_python_compute"># Available variables:
 #----------------------
@@ -179,22 +179,21 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
         <record id="hr_payroll.structure_estate_tl" model="hr.payroll.structure">
             <field name="name">Checkroll Estate TL 1</field>
             <field name="code">CHKBASETL</field>
-            <field name="parent_id" ref=""/>
-            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwt_c'),
-            ref('hr_salary_rule_bpjs_pkwt_e'),
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwtt_c'),
+            ref('hr_salary_rule_bpjs_pkwtt_e'),
             ref('hr_salary_rule_jkm_c'),
             ref('hr_salary_rule_jkk_c'),
             ref('hr_salary_rule_jht_e'),
             ref('hr_salary_rule_jht_c')])]"/>
         </record>
 
-        <record id="hr_payroll.structure_estate_pkwt_m" model="hr.payroll.structure">
-            <field name="name">Checkroll Estate PKWT Monthly</field>
+        <record id="hr_payroll.structure_estate_pkwtt_d" model="hr.payroll.structure">
+            <field name="name">Checkroll Estate PKWTT Daily</field>
             <field name="code">CHKINSM</field>
             <field name="parent_id" ref="hr_payroll.structure_estate"/>
             <field name="company_id" ref="base.main_company"/>
-            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwt_c'),
-            ref('hr_salary_rule_bpjs_pkwt_e'),
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwtt_c'),
+            ref('hr_salary_rule_bpjs_pkwtt_e'),
             ref('hr_salary_rule_jkm_c'),
             ref('hr_salary_rule_jkk_c'),
             ref('hr_salary_rule_jht_e'),

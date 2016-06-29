@@ -15,6 +15,36 @@
                     <field name="estate_id" attrs="{'invisible': [('type', 'not in', ('estate', 'division'))], 'required': [('type', '=', 'estate')]}"/>
                     <field name="division_id" attrs="{'invisible': [('type', '!=', 'division')], 'required': [('type', '=', 'division')]}"/>
                 </xpath>
+                <xpath expr="//button[@name='close_payslip_run']" position="attributes">
+                    <attribute name="confirm">Are you sure to close this payslip run?</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <act_window name="Payslip Upkeep Labour Details"
+                    context="{'default_employee_id': active_id}"
+                    res_model="estate.upkeep.labour"
+                    src_model="hr.payslip"
+                    id="action_list_upkeep_labour"/>
+
+        <record id="inherited_hr_payslip_form" model="ir.ui.view">
+            <field name="name">hr.payslip.form.inherit</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='contract_id']" position="after">
+                    <field name="contract_type_id" invisible="True"/>
+                </xpath>
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <!-- todo use xml id for Estate Worker instead of 4 -->
+                    <button name="action_open_labour"
+                        class="oe_stat_button"
+                        icon="fa-wrench"
+                        type="object"
+                        attrs="{'invisible': [('contract_type_id', '!=', 4)]}">
+                        <field name="upkeep_labour_count" widget="statinfo" string="Upkeep Labour" help="Payslip Upkeep Labour Details"/>
+                    </button>
+                </xpath>
             </field>
         </record>
 
@@ -34,8 +64,8 @@
             <field name="model">hr.payslip</field>
             <field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='state']" position="after">
-                    <field name="team_id"/>
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="contract_type_id"/>
                 </xpath>
             </field>
         </record>

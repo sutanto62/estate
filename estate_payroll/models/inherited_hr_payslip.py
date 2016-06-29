@@ -12,6 +12,8 @@ class Payslip(models.Model):
     team_id = fields.Many2one('estate.hr.team', 'Team', compute='_get_team', store=True, help="Employee's original Team")
     payroll_location_id = fields.Many2one(related='team_id.payroll_location_id',
                                           store=True, readonly=True)
+    contract_type_id = fields.Many2one(related='contract_id.type_id', readonly=True)
+    upkeep_labour_count = fields.Integer(compute='_compute_upkeep_labour', string='Payslip Upkeep Labour Details')
 
     #@api.multi
     @api.depends('employee_id')
@@ -20,11 +22,20 @@ class Payslip(models.Model):
         """
         for payslip in self:
             for member in self.env['estate.hr.member'].search([('employee_id', '=', payslip.employee_id.id)], limit=1):
-                if member:
+                if member.team_id.state != 'draft':
                     payslip.team_id = member.team_id.id
                     return True
                 else:
                     return False
+
+    @api.multi
+    def _compute_upkeep_labour(self):
+        upkeep_labour_obj = self.env['estate.upkeep.labour']
+        res = upkeep_labour_obj.search([('upkeep_date', '>=', self.date_from),
+                                        ('upkeep_date', '<=', self.date_to),
+                                        ('employee_id', '=', self.employee_id.id),
+                                        ('state', '=', 'approved')])
+        self.upkeep_labour_count = len(res)
 
     @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):
@@ -104,3 +115,29 @@ class Payslip(models.Model):
                 return res
             else:
                 return super(Payslip, self).get_inputs(contract_ids, date_from, date_to)
+
+    @api.multi
+    def action_open_labour(self):
+        """HR cross check related upkeep labour
+        """
+        context = self._context.copy()
+        view_id = self.env.ref('estate.upkeep_labour_view_tree').id
+
+        # Only display selected employee within payslip period
+        upkeep_labour_filter = [('employee_id', '=', self.employee_id.id),
+                                ('upkeep_date', '>=', self.date_from),
+                                ('upkeep_date', '<=', self.date_to)]
+
+        res = {
+            'name': _('Upkeep Labour Records %s' % self.employee_id.name),
+            'view_type': 'form',
+            'view_mode': 'tree',
+            'views': [(view_id, 'tree')],
+            'res_model': 'estate.upkeep.labour',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'domain': upkeep_labour_filter
+        }
+
+        return res

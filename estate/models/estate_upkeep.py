@@ -453,7 +453,7 @@ class UpkeepActivity(models.Model):
     ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
                                        digits=dp.get_precision('Account'),
                                        help='Amount of wage paid to finish a work')
-    activity_contract = fields.Boolean('Activity Contract', related='activity_id.contract')
+    activity_contract = fields.Boolean('Activity Contract', related='activity_id.contract', readonly=True)  # Different ACL
     contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
 
     @api.multi
