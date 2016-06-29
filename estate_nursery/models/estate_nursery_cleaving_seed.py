@@ -15,6 +15,8 @@ class CleavingPolytone(models.Model):
     partner_id=fields.Many2one('res.partner')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
     progeny = fields.Char("Seed Progeny",related="batch_id.progeny_id.name")
+    date_planted = fields.Date('Date Planted')
+    age_seed_clv =fields.Integer('age_seed_clv',store=True)
     cleaving_code=fields.Char()
     cleaving_date=fields.Date("Date of Cleaving polytone",required=True)
     cleavingline_ids=fields.One2many('estate.nursery.cleavingln','cleaving_id',"Cleaving line")
@@ -46,11 +48,32 @@ class CleavingPolytone(models.Model):
         res=super(CleavingPolytone, self).create(cr, uid, vals)
         return res
 
-    # #get quantity Single
+    #get quantity Single
     @api.onchange('qty_singlebatch','batch_id')
     def _get_value_single(self):
        self.qty_singlebatch=self.batch_id.qty_single
        self.write({'qty_singlebatch':self.qty_singlebatch})
+
+    @api.onchange('age_seed_clv','cleaving_date','date_planted')
+    def change_age_seed(self):
+        fmt = '%Y-%m-%d'
+        if self.cleaving_date:
+            from_date = self.cleaving_date
+            to_date = self.date_planted
+            conv_fromdate=datetime.strptime(str(from_date),fmt)
+            conv_todate = datetime.strptime(str(to_date), fmt)
+            d1 = from_date.month
+            d2 = conv_todate.month
+            rangeyear = conv_todate.year
+            rangeyear1 = from_date.year
+            rsult = rangeyear - rangeyear1
+            yearresult = rsult * 12
+            if yearresult == 0 :
+                    ageseed = (d1-d2)
+                    self.age_seed_clv = ageseed
+            elif yearresult > 0:
+                    ageseed = (d1 + yearresult) - d2
+                    self.age_seed_clv = ageseed
 
     #get quantity Double
     @api.onchange('qty_doublebatch','batch_id')

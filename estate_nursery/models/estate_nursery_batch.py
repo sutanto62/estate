@@ -293,6 +293,31 @@ class Batch(models.Model):
                 temp[date.id] = date_value_name
             return temp
 
+    #constraint age_cleaving
+    @api.multi
+    @api.constrains('cleaving_ids')
+    def _constraints_date_cleaving(self):
+        if self.cleaving_ids:
+            for age in self.cleaving_ids:
+                age_seed_clv = age.age_seed_clv
+                if age_seed_clv < self.age_seed_range:
+                    error_msg = "Age Seed Cleaving is set more than Age seed batch !!"
+                    raise exceptions.ValidationError(error_msg)
+            return True
+
+    #constraint Age recovery
+    @api.one
+    @api.constrains('recovery_ids')
+    def _constraints_date_recovery(self):
+        if self.recovery_ids:
+            for age in self.recovery_ids:
+                age_seed_clv = age.age_seed_recovery
+                if age_seed_clv < self.age_seed_range:
+                    error_msg = "Age Seed Recovery is set more than Age seed batch!!"
+                    raise exceptions.ValidationError(error_msg)
+            return True
+
+
     # set constraint to Quantity in batch line not more than quantity DO
     @api.multi
     @api.constrains('batchline_ids')
@@ -473,7 +498,6 @@ class Batch(models.Model):
         fmt = '%Y-%m-%d'
         today = datetime.now()
         if today:
-            print today
             from_date = today
             to_date = self.date_planted
             conv_todate = datetime.strptime(str(to_date), fmt)

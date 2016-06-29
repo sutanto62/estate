@@ -17,6 +17,8 @@ class NurseryRecovery(models.Model):
     batch_id= fields.Many2one('estate.nursery.batch','batch')
     partner_id=fields.Many2one('res.partner')
     recovery_date=fields.Date("Recovery Date")
+    date_planted = fields.Date("Date Planted")
+    age_seed_recovery = fields.Integer("Age Seed Recovery",store=True)
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
     qty_recovery= fields.Integer("Quantity Recovery",compute="_compute_qty_recovery")
     qty_plant=fields.Integer()
@@ -165,6 +167,27 @@ class NurseryRecovery(models.Model):
             for item in self.recovery_line_ids:
                 self.qty_normal += item.qty_normal
         return True
+
+    @api.onchange('age_seed_recovery','recovery_date','date_planted')
+    def change_age_seed(self):
+        fmt = '%Y-%m-%d'
+        if self.recovery_date:
+            from_date = self.recovery_date
+            to_date = self.date_planted
+            conv_fromdate=datetime.strptime(str(from_date),fmt)
+            conv_todate = datetime.strptime(str(to_date), fmt)
+            d1 = from_date.month
+            d2 = conv_todate.month
+            rangeyear = conv_todate.year
+            rangeyear1 = from_date.year
+            rsult = rangeyear - rangeyear1
+            yearresult = rsult * 12
+            if yearresult == 0 :
+                    ageseed = (d1-d2)
+                    self.age_seed_recovery = ageseed
+            elif yearresult > 0:
+                    ageseed = (d1 + yearresult) - d2
+                    self.age_seed_recovery = ageseed
 
 class RecoveryLine(models.Model):
 
