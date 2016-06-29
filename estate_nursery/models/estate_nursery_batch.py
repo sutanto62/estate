@@ -92,11 +92,13 @@ class Batch(models.Model):
     variety_id = fields.Many2one('estate.nursery.variety', "Seed Variety", required=True, ondelete="restrict")
     progeny_id = fields.Many2one('estate.nursery.progeny', "Seed Progeny", required=True, ondelete="restrict",
                                  domain="[('variety_id','=',variety_id)]")
+
+    selection_id = fields.Many2one("estate.nursery.selection",store=True)
     date_received = fields.Date("Received Date",required=False,readonly=True)
     date_planted = fields.Date("Planted Date",required=False,readonly=False)
-    age_seed_range=fields.Integer("Seed age",readonly=True,store=True,track_visibility='onchange')
-    selection_id = fields.Many2one("estate.nursery.selection",store=True)
-    age_seed = fields.Integer("Seed Age Received",required=True)
+    age_seed_range=fields.Integer("Seed Age",readonly=True,store=True,track_visibility='onchange')
+    age_seed_planted=fields.Integer("Seed Age",store=True)
+    age_seed = fields.Integer("Seed Age Received",required=True,store=True)
     selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count")
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
@@ -133,8 +135,6 @@ class Batch(models.Model):
     stage_id=fields.Many2one("estate.nursery.stage")
     status =fields.Boolean("Status test")
     status_age=fields.Boolean("Status age")
-    month=fields.Integer()
-    date_selection=fields.Date()
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -287,7 +287,7 @@ class Batch(models.Model):
             temp={}
             for date in self.selection_ids:
                 date_value_name = date.selection_date
-                if date_value_name < temp.values():
+                if date_value_name in temp.values():
                     error_msg = "Selection Date  is set more than Selection Older "
                     raise exceptions.ValidationError(error_msg)
                 temp[date.id] = date_value_name
@@ -467,6 +467,30 @@ class Batch(models.Model):
                 self.status_age = False
         return False
 
+
+    @api.onchange('age_seed','age_seed_planted','date_planted')
+    def compute_age_planted(self):
+        fmt = '%Y-%m-%d'
+        today = datetime.now()
+        if today:
+            print today
+            from_date = today
+            to_date = self.date_planted
+            conv_todate = datetime.strptime(str(to_date), fmt)
+            d1 = from_date.month
+            d2 = conv_todate.month
+            rangeyear = conv_todate.year
+            rangeyear1 = from_date.year
+            rsult = rangeyear - rangeyear1
+            yearresult = rsult * 12
+            if today:
+                if yearresult == 0 :
+                    ageseed = (d1-d2)
+                    self.age_seed_planted = ageseed + int(self.age_seed)
+                elif yearresult > 0:
+                    ageseed = (d1 + yearresult) - d2
+                    self.age_seed_planted = ageseed + int(self.age_seed)
+
     #computed age seed from cleaving,selection,recovery selection
     @api.multi
     @api.onchange('month','selection_ids','cleaving_ids','recovery_ids','age_seed','date_planted','age_seed_range')
@@ -485,7 +509,7 @@ class Batch(models.Model):
                 rsult = rangeyear - rangeyear1
                 yearresult = rsult * 12
                 if yearresult == 0 :
-                    ageseed = (d2-d1)
+                    ageseed = (d1-d2)
                     self.age_seed_range = ageseed + int(self.age_seed)
                 elif yearresult > 0:
                     ageseed = (d1 + yearresult) - d2
@@ -498,10 +522,10 @@ class Batch(models.Model):
                 conv_todate = datetime.strptime(str(date_selection), fmt)
                 date_conv_tomonth = conv_todate.month
                 date_conv_frommonth = conv_fromdate.month
-                self.month=date_conv_tomonth-date_conv_frommonth
-                self.date_selection=date_selection
-                self.age_seed_range += self.month
+                month=date_conv_tomonth-date_conv_frommonth
+                self.age_seed_range += month
                 print self.month
+
 
 class Batchline(models.Model):
     """Batch Line to record seed selection and planting by box/bag."""

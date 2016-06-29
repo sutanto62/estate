@@ -31,7 +31,7 @@ class Selection(models.Model):
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",ondelete='cascade')
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True)
 
-    age_seed = fields.Integer("Seed Age",store=True)
+    age_seed = fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,
                                         default=lambda self: self.selectionstage_id.search([
@@ -44,15 +44,10 @@ class Selection(models.Model):
     qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange')
     qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery",store=True)
     qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,digit=(2.2),compute='compute_total_recovery')
-    qty_abn_batch=fields.Integer(related='batch_id.qty_abnormal')
-    qty_nor_batch=fields.Integer(related='batch_id.qty_normal')
-    qty_tpr_batch=fields.Integer(related='batch_id.qty_planted')
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
 
     selection_date = fields.Date("Selection Date",required=True,store=True)
     selec = fields.Integer(related='selectionstage_id.age_selection')
-    maxa = fields.Integer(related='selectionstage_id.age_limit_max')
-    mina = fields.Integer(related='selectionstage_id.age_limit_min')
     comment = fields.Text("Additional Information")
     selectionline_count=fields.Integer("selection Cause",compute="_get_selectionline_count",store=True)
     nursery_information = fields.Selection([('draft','Draft'),
@@ -321,32 +316,32 @@ class Selection(models.Model):
 
     #compute planning max date
     @api.one
-    @api.depends('date_plant','nursery_plandate','maxa','selectionstage_id')
+    @api.depends('date_plant','nursery_plandate','selectionstage_id')
     def calculateplandatemax(self):
 
          fmt = '%Y-%m-%d'
-         a = self.maxa
-         b = int(a)
+         max = self.selectionstage_id.age_limit_max
+         convmax = int(max)
          if self.date_plant and self.selectionstage_id:
              from_date = self.date_plant
              d1=datetime.strptime(str(from_date),fmt)
-             date_after_month = datetime.date(d1)+ relativedelta(months=b)
+             date_after_month = datetime.date(d1)+ relativedelta(months=convmax)
              compute = date_after_month.strftime(fmt)
              self.nursery_plandatemax = compute
              return True
 
     #compute planning min date
     @api.one
-    @api.depends('date_plant','nursery_plandate','mina','selectionstage_id')
+    @api.depends('date_plant','nursery_plandate','selectionstage_id')
     def calculateplandatemin(self):
 
          fmt = '%Y-%m-%d'
-         a = self.mina
-         b = int(a)
+         min = self.selectionstage_id.age_limit_min
+         convmin = int(min)
          if self.date_plant and self.selectionstage_id:
              from_date = self.date_plant
              d1=datetime.strptime(str(from_date),fmt)
-             date_after_month = datetime.date(d1)+ relativedelta(months=b)
+             date_after_month = datetime.date(d1)+ relativedelta(months=convmin)
              compute = date_after_month.strftime(fmt)
              self.nursery_plandatemin = compute
              return True
@@ -405,9 +400,24 @@ class Selection(models.Model):
                 return True
 
     #onchange age seed
-    @api.onchange('age_seed')
-    def _change_age_seed(self):
-        self.age_seed = self.batch_id.age_seed_range
+    @api.depends('age_seed','date_plant','selection_date')
+    def _compute_age_seed(self):
+        res={}
+        fmt = '%Y-%m-%d'
+        if self.date_plant and self.selection_date:
+            from_date = self.date_plant
+            to_date = self.selection_date
+            conv_fromdate = datetime.strptime(str(from_date), fmt)
+            conv_todate = datetime.strptime(str(to_date), fmt)
+            d1 = conv_fromdate.month
+            d2 = conv_todate.month
+            rangeyear = conv_todate.year
+            rangeyear1 = conv_fromdate.year
+            rsult = rangeyear - rangeyear1
+            yearresult = rsult * 12
+            self.age_seed = (d2 + yearresult) - d1
+        return res
+
 
     #onchange Stage id
     @api.one
