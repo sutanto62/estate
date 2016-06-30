@@ -246,7 +246,7 @@ class ViewStatusHourVehicle(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_status_vehicle_calendar_hour as
-                select
+               select
                     row_number() over()id,
                     (k.bulan::text||tahun::text||vehicle_id::text)::Integer date_id,
                     k.bulan,
@@ -254,109 +254,124 @@ class ViewStatusHourVehicle(models.Model):
                     k.vehicle_id,
                     count(*)filter(where total_time < 0) total_day_breakdown,
                     count (*)filter(where total_time > 0)total_day_available,
-                    case when ((select to_char(now(),'MM')::integer) = k.bulan::integer and (select to_char(now(),'YYYY')::integer) = k.tahun::integer)
-                    then
-                        (select to_char(now(),'DD')::integer) - count(*)filter(where total_time < 0) - count (*)filter(where total_time > 0)
-                    else
-                        (SELECT DATE_PART('days',DATE_TRUNC('month', (select to_date('01/'||k.bulan||'/'||k.tahun, 'DD/MM/YYYY')))+'1 MONTH'::INTERVAL-'1 DAY'::INTERVAL)) - count(*)filter(where total_time < 0) - count (*)filter(where total_time > 0)
-                    END total_day_standby,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '1'
-                        THEN k.total_time ELSE 0 END) tanggal1,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '2'
-                        THEN k.total_time ELSE 0 END) tanggal2,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '3'
-                        THEN k.total_time ELSE 0 END) tanggal3,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '4'
-                        THEN k.total_time ELSE 0 END) tanggal4,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '5'
-                        THEN k.total_time ELSE 0 END) tanggal5,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '6'
-                        THEN k.total_time ELSE 0 END) tanggal6,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '7'
-                        THEN k.total_time ELSE 0 END) tanggal7,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '8'
-                        THEN k.total_time ELSE 0 END) tanggal8,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '9'
-                        THEN k.total_time ELSE 0 END) tanggal9,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '10'
-                        THEN k.total_time ELSE 0 END) tanggal10,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '11'
-                        THEN k.total_time ELSE 0 END) tanggal11,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '12'
-                        THEN k.total_time ELSE 0 END) tanggal12,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '13'
-                        THEN k.total_time ELSE 0 END) tanggal13,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '14'
-                        THEN k.total_time ELSE 0 END) tanggal14,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '15'
-                        THEN k.total_time ELSE 0 END) tanggal15,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '16'
-                        THEN k.total_time ELSE 0 END) tanggal16,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '17'
-                        THEN k.total_time ELSE 0 END) tanggal17,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '18'
-                        THEN k.total_time ELSE 0 END) tanggal18,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '19'
-                        THEN k.total_time ELSE 0 END) tanggal19,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '20'
-                        THEN k.total_time ELSE 0 END) tanggal20,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '21'
-                        THEN k.total_time ELSE 0 END) tanggal21,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '22'
-                        THEN k.total_time ELSE 0 END) tanggal22,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '23'
-                        THEN k.total_time ELSE 0 END) tanggal23,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '24'
-                        THEN k.total_time ELSE 0 END) tanggal24,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '25'
-                        THEN k.total_time ELSE 0 END) tanggal25,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '26'
-                        THEN k.total_time ELSE 0 END) tanggal26,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '27'
-                        THEN k.total_time ELSE 0 END) tanggal27,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '28'
-                        THEN k.total_time ELSE 0 END) tanggal28,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '29'
-                        THEN k.total_time ELSE 0 END) tanggal29,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '30'
-                        THEN k.total_time ELSE 0 END) tanggal30,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '31'
+                    (
+                            SELECT
+                            DATE_PART(
+                            'days',
+                            DATE_TRUNC(
+                            'month', (select to_date('01/'||k.bulan||'/'||k.tahun, 'DD/MM/YYYY')))
+                            +
+                            '1 MONTH'::INTERVAL
+                            -
+                            '1 DAY'::INTERVAL
+                            ))
+                            -
+                            (select count(*) from master_calendar_effective_date
+                            where
+                                to_char(date_start, 'MM')::integer = k.bulan::integer and
+                                to_char(date_start, 'YYYY')::integer = k.tahun::integer and
+                                role = '2'
+                            ) -  count(*)filter(where total_time < 0) -( count (*)filter(where total_time > 0)) total_day_standby,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '1'
+                            THEN k.total_time ELSE 0 END) tanggal1,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '2'
+                            THEN k.total_time ELSE 0 END) tanggal2,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '3'
+                            THEN k.total_time ELSE 0 END) tanggal3,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '4'
+                            THEN k.total_time ELSE 0 END) tanggal4,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '5'
+                            THEN k.total_time ELSE 0 END) tanggal5,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '6'
+                            THEN k.total_time ELSE 0 END) tanggal6,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '7'
+                            THEN k.total_time ELSE 0 END) tanggal7,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '8'
+                            THEN k.total_time ELSE 0 END) tanggal8,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '9'
+                            THEN k.total_time ELSE 0 END) tanggal9,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '10'
+                            THEN k.total_time ELSE 0 END) tanggal10,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '11'
+                            THEN k.total_time ELSE 0 END) tanggal11,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '12'
+                            THEN k.total_time ELSE 0 END) tanggal12,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '13'
+                            THEN k.total_time ELSE 0 END) tanggal13,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '14'
+                            THEN k.total_time ELSE 0 END) tanggal14,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '15'
+                            THEN k.total_time ELSE 0 END) tanggal15,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '16'
+                            THEN k.total_time ELSE 0 END) tanggal16,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '17'
+                            THEN k.total_time ELSE 0 END) tanggal17,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '18'
+                            THEN k.total_time ELSE 0 END) tanggal18,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '19'
+                            THEN k.total_time ELSE 0 END) tanggal19,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '20'
+                            THEN k.total_time ELSE 0 END) tanggal20,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '21'
+                            THEN k.total_time ELSE 0 END) tanggal21,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '22'
+                            THEN k.total_time ELSE 0 END) tanggal22,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '23'
+                            THEN k.total_time ELSE 0 END) tanggal23,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '24'
+                            THEN k.total_time ELSE 0 END) tanggal24,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '25'
+                            THEN k.total_time ELSE 0 END) tanggal25,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '26'
+                            THEN k.total_time ELSE 0 END) tanggal26,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '27'
+                            THEN k.total_time ELSE 0 END) tanggal27,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '28'
+                            THEN k.total_time ELSE 0 END) tanggal28,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '29'
+                            THEN k.total_time ELSE 0 END) tanggal29,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '30'
+                            THEN k.total_time ELSE 0 END) tanggal30,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '31'
                         THEN k.total_time ELSE 0 END) tanggal31 from(
-                select create_date,vehicle_id,hari,bulan,tahun,total_time from(
-                select
-                    b.parent_id,
-                    total_time ,
-                    create_date,
-                    vehicle_id,hari,
-                    bulan,
-                    tahun,
-                    b.dctype
-                    from (
-                select
-                    total_time ,
-                    create_date,
-                    vehicle_id,hari,
-                    bulan,
-                    tahun,
-                    dc_type::text dctype,
-                    (bulan::text||hari::text||tahun::text)::Integer parent_id from (
-                select
-                    case when dc_type = '4'
-                    then sum(start_time - end_time)
-                    when dc_type ='2' or dc_type = '1' or dc_type ='3' or dc_type is null
-                    then sum(end_time - start_time)
-                    end total_time,
-                    date_trunc('day',etat.date_activity_transport) create_date,
-                    vehicle_id, to_char(etat.date_activity_transport,'MM') bulan, to_char(etat.date_activity_transport,'DD') hari,
-                    to_char(etat.date_activity_transport,'yyyy') tahun,dc_type
-                from estate_timesheet_activity_transport etat
-                left join (select * from estate_mecanic_timesheet)emt on emt.timesheet_id = etat.id
-                 group by date_trunc('day',etat.date_activity_transport), dc_type,vehicle_id, to_char(etat.date_activity_transport,'MM'),to_char(etat.date_activity_transport,'DD'),
-                to_char(etat.date_activity_transport,'yyyy')
-                )d
-                )b
-                )c
-                )k group by bulan,tahun,vehicle_id""")
+                        select create_date,vehicle_id,hari,bulan,tahun,total_time from(
+                            select
+                                b.parent_id,
+                                total_time ,
+                                create_date,
+                                vehicle_id,hari,
+                                bulan,
+                                tahun,
+                                b.dctype
+                                    from (
+                                        select
+                                            total_time ,
+                                            create_date,
+                                            vehicle_id,hari,
+                                            bulan,
+                                            tahun,
+                                            dc_type::text dctype,
+                                            (bulan::text||hari::text||tahun::text)::Integer parent_id from (
+                                                select
+                                                    case
+                                                        when dc_type = '4'
+                                                            then sum(start_time - end_time)
+                                                        when dc_type ='2' or dc_type = '1' or dc_type ='3' or dc_type is null
+                                                            then sum(end_time - start_time)
+                                                        else
+                                                            0
+                                                    end total_time,
+                                                    date_trunc('day',etat.date_activity_transport) create_date,
+                                                    vehicle_id, to_char(etat.date_activity_transport,'MM') bulan, to_char(etat.date_activity_transport,'DD') hari,
+                                                    to_char(etat.date_activity_transport,'yyyy') tahun,dc_type
+                                                from estate_timesheet_activity_transport etat
+                                            left join (select * from estate_mecanic_timesheet)emt on emt.timesheet_id = etat.id
+                                             group by date_trunc('day',etat.date_activity_transport), dc_type,vehicle_id, to_char(etat.date_activity_transport,'MM'),to_char(etat.date_activity_transport,'DD'),
+                                            to_char(etat.date_activity_transport,'yyyy')
+                                            )d
+                                         )b
+                                    )c
+                                 )k group by bulan,tahun,vehicle_id""")
 
 
 class ViewStatusDayVehicle(models.Model):
