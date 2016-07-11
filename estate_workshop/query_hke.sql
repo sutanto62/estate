@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION somefuncname(i_bulan int,i_tahun int,i_vehicle_id int, i_status int) RETURNS int LANGUAGE plpgsql AS $BODY$
+CREATE OR REPLACE FUNCTION somefuncname(i_bulan int,i_tahun int,i_vehicle_id int, i_status int) RETURNS int LANGUAGE plpgsql AS \$BODY\$
 			DECLARE
 				v_total_day_breakdown int;
 			BEGIN
@@ -22,4 +22,4 @@ CREATE OR REPLACE FUNCTION somefuncname(i_bulan int,i_tahun int,i_vehicle_id int
 					v.vehicle_id = i_vehicle_id;
 			  RETURN v_total_day_breakdown ;
 			END
-			$BODY$;
+			\$BODY\$;

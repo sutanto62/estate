@@ -23,141 +23,142 @@ class ViewTotalAmountTimesheetMecanic(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_timesheet_mecanic_totalamounts as
-                                    select row_number() over()id,
-                                    date,mo_id,
-                                    sum(amount) total_amount,
-                                    month_log,year_log,vehicle_id from (
-                                    select
-                                        create_date date,
-                                        (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
-                                        month_log,
-                                        year_log,vehicle_id,
-                                        total_time ,
-                                        mo_id,
-                                        wage,
-                                        total_hour_per_day,total_hour_per_week,
-                                        contract_type,
-                                        contract_period,
-                                        case
-                                        when contract_type = '1' and contract_period = '2'
-                                            then
-                                                case when total_time < total_hour_per_day
-                                                    then
-                                                        round(((wage /(total_hour_per_week))/total_hour_per_day)*total_time)
-                                                    when total_time >= total_hour_per_day
-                                                    then
-                                                        round((wage /(total_hour_per_week))/total_hour_per_day)
-                                                end
-                                        when contract_type = '1' and contract_period = '1'
+                                   select
+                                        row_number() over()id,
+                                        date,mo_id,
+                                        sum(amount) total_amount,
+                                        month_log,year_log,vehicle_id from (
+                                        select
+                                            create_date date,
+                                            (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
+                                            month_log,
+                                            year_log,vehicle_id,
+                                            total_time ,
+                                            mo_id,
+                                            wage,
+                                            total_hour_per_day,total_hour_per_week,
+                                            contract_type,
+                                            contract_period,
+                                            case
+                                            when contract_type = '1' and contract_period = '2'
                                                 then
-                                                case
-                                                    when total_time < (total_hour_per_week*4)
+                                                    case when total_time < total_hour_per_day
                                                         then
-                                                            (((wage /(total_hour_per_week * 4)))*total_time)
-                                                    when total_time >= (total_hour_per_week*4)
-                                                        then
-                                                            wage
-                                                end
-                                        when contract_type = '2' and contract_period = '1'
-                                            then
-                                                case
-                                                    when total_time >= (total_hour_per_week*4)
-                                                        then
-                                                            wage
-                                                    else
-                                                        round(((wage /(total_hour_per_week))/total_hour_per_day)*total_time)
-                                                        end
-                                        when contract_type = '2' and contract_period = '2'
-                                            then
-                                                case
-                                                    when total_time < total_hour_per_day
+                                                            round(((wage /(total_hour_per_week))/total_hour_per_day)*total_time)
+                                                        when total_time >= total_hour_per_day
                                                         then
                                                             round((wage /(total_hour_per_week))/total_hour_per_day)
-                                                     when total_time >= total_hour_per_day
-                                                        then
-                                                            round((wage /(total_hour_per_week))/total_hour_per_day)
-                                                end
-                                        end amount
-                                        from(
-                                            select
-                                                create_date::Date,
-                                                date_part('month', create_date) month_log,
-                                                date_part('year', create_date) year_log,
-                                                vehicle_id,
-                                                asset_id asset,
-                                                mo_id,
-                                                mastertask_id,
-                                                etat.employee_id employee_id,
-                                                activity_id,start_time,end_time,
-                                                wage,total_hour_per_day,total_hour_per_week,
-                                                contract_type,
-                                                contract_period,
-                                                sum(end_time-start_time) as total_time
-                                                from estate_mecanic_timesheet mt
-                                                left join (
-                                                    select
-                                                        mo.id as mo_id,
-                                                        et_id,
-                                                        employee_id,
-                                                        activity_id,
-                                                        start_time,
-                                                        end_time,
-                                                        vehicle_id from mro_order mo
-                                                        left join(
-                                                            select
-                                                                et.id as et_id,
-                                                                employee_id,
-                                                                activity_id,
-                                                                start_time,
-                                                                end_time,owner_id,vehicle_id,dc_type
-                                                            from estate_timesheet_activity_transport et where dc_type is not null
-                                                            )moa on mo.id = moa.owner_id
-                                                                group by mo_id,et_id,employee_id,activity_id,start_time,end_time,vehicle_id
-                                                            )etat on mt.timesheet_id=etat.et_id
-                                                left join (
+                                                    end
+                                            when contract_type = '1' and contract_period = '1'
+                                                    then
+                                                    case
+                                                        when total_time < (total_hour_per_week*4)
+                                                            then
+                                                                round((((wage /(total_hour_per_week))/total_hour_per_day))*total_time)
+                                                        when total_time >= (total_hour_per_week*4)
+                                                            then
+                                                                round((wage /(total_hour_per_week))/total_hour_per_day)
+                                                    end
+                                            when contract_type = '2' and contract_period = '1'
+                                                then
+                                                    case
+                                                        when total_time >= (total_hour_per_week*4)
+                                                            then
+                                                                round((wage /(total_hour_per_week))/total_hour_per_day)
+                                                        else
+                                                            round(((wage /(total_hour_per_week))/total_hour_per_day)*total_time)
+                                                            end
+                                            when contract_type = '2' and contract_period = '2'
+                                                then
+                                                    case
+                                                        when total_time < total_hour_per_day
+                                                            then
+                                                                round(((wage /(total_hour_per_week))/total_hour_per_day)*total_time)
+                                                         when total_time >= total_hour_per_day
+                                                            then
+                                                                round((wage /(total_hour_per_week))/total_hour_per_day)
+                                                    end
+                                            end amount
+                                            from(
                                                 select
-                                                    employee_id,
-                                                    wage ,
-                                                    total_hour_per_day,(total_hour_per_day * 5) total_hour_per_week,
+                                                    create_date::Date,
+                                                    date_part('month', create_date) month_log,
+                                                    date_part('year', create_date) year_log,
+                                                    vehicle_id,
+                                                    asset_id asset,
+                                                    mo_id,
+                                                    mastertask_id,
+                                                    etat.employee_id employee_id,
+                                                    activity_id,start_time,end_time,
+                                                    wage,total_hour_per_day,total_hour_per_week,
                                                     contract_type,
-                                                    contract_period from hr_employee hre
-                                                    left join hr_contract hrc on hre.id = hrc.employee_id
-                                                    inner join (
+                                                    contract_period,
+                                                    sum(end_time-start_time) as total_time
+                                                    from estate_mecanic_timesheet mt
+                                                    left join (
                                                         select
-                                                            rc_id,
-                                                            dayofweek,
-                                                            sum(hour_work) as total_hour_per_day from (
-                                                        select
-                                                            rc_id,
+                                                            mo.id as mo_id,
+                                                            et_id,
+                                                            employee_id,
+                                                            activity_id,
+                                                            start_time,
+                                                            end_time,
+                                                            vehicle_id from mro_order mo
+                                                            left join(
+                                                                select
+                                                                    et.id as et_id,
+                                                                    employee_id,
+                                                                    activity_id,
+                                                                    start_time,
+                                                                    end_time,owner_id,vehicle_id,dc_type
+                                                                from estate_timesheet_activity_transport et where dc_type is not null
+                                                                )moa on mo.id = moa.owner_id
+                                                                    group by mo_id,et_id,employee_id,activity_id,start_time,end_time,vehicle_id
+                                                                )etat on mt.timesheet_id=etat.et_id
+                                                    left join (
+                                                    select
+                                                        employee_id,
+                                                        wage ,
+                                                        total_hour_per_day,(total_hour_per_day * 5) total_hour_per_week,
+                                                        contract_type,
+                                                        contract_period from hr_employee hre
+                                                        left join hr_contract hrc on hre.id = hrc.employee_id
+                                                        inner join (
+                                                            select
+                                                                rc_id,
+                                                                dayofweek,
+                                                                sum(hour_work) as total_hour_per_day from (
+                                                            select
+                                                                rc_id,
+                                                                nameday,
+                                                                count(dayofweek)"day",
+                                                                dayofweek,
+                                                                hour_work from (
+                                                            select *,
+                                                                rc.id rc_id,
+                                                                rca.name as nameday,
+                                                                (hour_to - hour_from) hour_work from  resource_calendar rc
+                                                                left join resource_calendar_attendance rca on rc.id = rca.calendar_id
+                                                                group by dayofweek,rc.id,rca.id order by dayofweek
+                                                        )a group by
+                                                            hour_to,
+                                                            hour_from,
                                                             nameday,
-                                                            count(dayofweek)"day",
+                                                            rc_id,
                                                             dayofweek,
-                                                            hour_work from (
-                                                        select *,
-                                                            rc.id rc_id,
-                                                            rca.name as nameday,
-                                                            (hour_to - hour_from) hour_work from  resource_calendar rc
-                                                            left join resource_calendar_attendance rca on rc.id = rca.calendar_id
-                                                            group by dayofweek,rc.id,rca.id order by dayofweek
-                                                    )a group by
-                                                        hour_to,
-                                                        hour_from,
-                                                        nameday,
-                                                        rc_id,
-                                                        dayofweek,
-                                                        hour_work order by nameday asc)b
-                                                        group by rc_id,dayofweek
-                                                )a on hrc.working_hours = a.rc_id group by employee_id , wage,total_hour_per_day,contract_type, contract_period
-                                                )b on b.employee_id = etat.employee_id group by create_date,vehicle_id,
-                                                asset,
-                                                mo_id,
-                                                mastertask_id,
-                                                etat.employee_id,activity_id,start_time,end_time,
-                                                wage,total_hour_per_day,total_hour_per_week,
-                                                contract_type,
-                                                contract_period
-                                        )c
-                                        )d group by mo_id,date,month_log,year_log,vehicle_id""")
+                                                            hour_work order by nameday asc)b
+                                                            group by rc_id,dayofweek
+                                                    )a on hrc.working_hours = a.rc_id group by employee_id , wage,total_hour_per_day,contract_type, contract_period
+                                                    )b on b.employee_id = etat.employee_id group by create_date,vehicle_id,
+                                                    asset,
+                                                    mo_id,
+                                                    mastertask_id,
+                                                    etat.employee_id,activity_id,start_time,end_time,
+                                                    wage,total_hour_per_day,total_hour_per_week,
+                                                    contract_type,
+                                                    contract_period
+                                            )c
+                                            )d group by mo_id,date,month_log,year_log,vehicle_id""")
 
 
 class ViewTotalCostDetailWorkshopSparepart(models.Model):
