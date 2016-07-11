@@ -3,7 +3,7 @@
 
 CREATE OR REPLACE FUNCTION insert_range_into_calendar(from_date date, to_date date)
   RETURNS void AS
-\$BODY\$
+$BODY$
 
 DECLARE
     this_date date := from_date;
@@ -27,6 +27,6 @@ BEGIN
         this_date = this_date + interval '1 day';
     end loop;
 END;
-\$BODY\$
+$BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
