@@ -19,18 +19,16 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
-                    <group>
-                        <field name="name"/>
-                        <field name="mastergrouptask_id" string="Group Task" options="{'no_create_edit': True}"/>
-                    </group>
-                    <group  name="assetlist" string="Asset List">
-                         <notebook>
-                            <page>
-                                <field name="mastermappingline_ids"
-                                       context="{'tree_view_ref' : 'view_master_mapping_line_tree'}"/>
-                            </page>
-                        </notebook>
-                    </group>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="mastergrouptask_id" string="Group Task" options="{'no_create_edit': True}"/>
+                        </group>
+                        <group  name="assetlist" string="Asset List">
+                             <field name="mastermappingline_ids" nolabel="1"
+                                           context="{'tree_view_ref' : 'view_master_mapping_line_tree'}"/>
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -62,7 +60,7 @@
 
 
         <record model="ir.actions.act_window" id="action_list_master_mapping_asset">
-            <field name="name">Action Master Mapping Asset</field>
+            <field name="name">Master Mapping Asset</field>
             <field name="res_model">estate.workshop.mastermappingasset</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{"search_default_groupby_category" : True}</field>

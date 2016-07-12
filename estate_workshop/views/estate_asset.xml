@@ -19,10 +19,10 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                <field name="active" position="after">
+                 <xpath expr="//field[@name='property_account_income_id']" position="after">
                     <field name="type_tools" />
                     <field name="type_machine" />
-                </field>
+                 </xpath>
             </field>
         </record>
 
@@ -47,17 +47,6 @@
                  </xpath>
              </field>
          </record>
-
-        <record model="ir.ui.view" id="view_form_inherit_field_type_service_template">
-             <field name="name">Inherit type_service Template</field>
-             <field name="model">mro.order</field>
-             <field name="inherit_id" ref="mro.mro_order_form_view"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//field[@name='asset_id']" position="after">
-                    <field name="type_service" string="Service Type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                 </xpath>
-             </field>
-        </record>
 
         <!--<record model="ir.ui.view" id="view_form_inherit_field_sparepart_template">-->
              <!--<field name="name">Inherit Sparepart list Template</field>-->

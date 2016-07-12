@@ -1,0 +1,71 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_actual_equipment_tree">
+            <field name="name">View Actual Equipment Tree</field>
+            <field name="model">estate.workshop.actualequipment</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="asset_id" string="Equipment"/>
+                    <field name="unit_plan" string="Unit Plan"/>
+                    <field name="unit_actual" string="Actual"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="ownership" string="Ownership"/>
+                    <field name="description" string="Description"/>
+                </tree>
+            </field>
+         </record>
+
+         <record model="ir.ui.view" id="view_planned_equipment_tree">
+            <field name="name">View Planned Equipment Tree</field>
+            <field name="model">estate.workshop.plannedequipment</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="asset_id" string="Equipment"/>
+                    <field name="unit_plan" string="Unit"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="ownership" string="Ownership"/>
+                    <field name="description" string="Description"/>
+                </tree>
+            </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_parent_equipment_tree">
+            <field name="name">ParentEquipment Tree</field>
+            <field name="model">equipment.maintenance.order</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="asset_id" string="Equipment"/>
+                    <field name="unit_plan" string="Unit"/>
+                    <field name="unit_actual" string="Actual"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="ownership" string="Ownership"/>
+                    <field name="description" string="Description"/>
+                </tree>
+            </field>
+         </record>
+
+         <record model='ir.ui.view' id='parent_equipment_form'>
+            <field name="name">parent Equipment form</field>
+            <field name="model">equipment.maintenance.order</field>
+            <field name="arch" type="xml">
+                <form string="Parent Equipment">
+                    <sheet>
+                        <group col="2">
+                            <group string="Parent  Equipment">
+                                <field name="asset_id" string="Equipment"/>
+                                <field name="unit_plan" string="Unit"/>
+                                <field name="unit_actual" string="Actual"/>
+                                <field name="uom_id" string="Uom"/>
+                                <field name="ownership" string="Ownership"/>
+                                <field name="description" string="Description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

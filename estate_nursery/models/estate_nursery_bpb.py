@@ -203,7 +203,6 @@ class RequestLine(models.Model):
     def _onchange_batch_id(self):
         #domain batch
         arrBatch=[]
-        arrRecordBatch=[]
         batch = self.env['estate.nursery.batch'].search([('age_seed_range','>',6),('qty_planted','>',0)])
         if self:
             for a in batch:
@@ -236,7 +235,7 @@ class RequestLine(models.Model):
     #constraint qty Request not moree than standard qty sph
     @api.one
     @api.constrains('qty_request','block_location_id','batch_id')
-    def check_qty_request(self):
+    def _check_qty_request(self):
         qty_standard = self.block_location_id.qty_sph_standard
         # qty_do = self.inherit_location_id.qty_sph_do
         total=0

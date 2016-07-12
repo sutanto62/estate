@@ -8,6 +8,7 @@ import calendar
 class TransferStocktoMn(models.Model):
 
     _name='estate.nursery.transfermn'
+    _description = "Seed Batch Transfer From PN to MN"
     _inherit = ['mail.thread',]
 
     def _default_session(self):
@@ -15,7 +16,7 @@ class TransferStocktoMn(models.Model):
 
     name=fields.Char()
     transfermn_code=fields.Char()
-    batch_id=fields.Many2one('estate.nursery.batch',string="Batch No", required=True, default=_default_session,ondelete="cascade")
+    batch_id=fields.Many2one('estate.nursery.batch',string="Batch No", default=_default_session,ondelete="cascade")
     partner_id = fields.Many2one('res.partner')
     qty_move =fields.Integer('Quantity Move',compute="_compute_total_normal" , store=True)
     location_mn_id = fields.Many2one('estate.block.template', "Plot",
@@ -28,7 +29,7 @@ class TransferStocktoMn(models.Model):
     vehicle_timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id')
     transfermnline_ids=fields.One2many('estate.nursery.transfermnline','transfermn_id')
 
-    date_transfer = fields.Date('Date Transfer Mn',required=True,store=True)
+    date_transfer = fields.Date('Date Transfer Mn',store=True)
 
     state= fields.Selection([
         ('draft', 'Draft'),
@@ -193,8 +194,6 @@ class transferpntomnline(models.Model):
                 qty = self.env['stock.quant'].search([('lot_id.id','=',idlot[0].lot_id.id),('location_id.id','=',stock[0].id)])
                 if qty[0].qty > 0:
                     arrBatchline.append(a.location_id.id)
-
-            print arrBatchline
             return {
                     'domain': {'location_pn_id': [('id','in',arrBatchline)]},
             }
