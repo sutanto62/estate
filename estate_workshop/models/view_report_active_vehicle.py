@@ -9,6 +9,7 @@ import time
 import re
 
 
+
 class ViewStatusAvailableVehicle(models.Model):
 
     _name ='view.status.vehicle.calendar'
@@ -96,23 +97,23 @@ class ViewStatusAvailableVehicle(models.Model):
                 select k.bulan,
                     k.tahun,
                     k.vehicle_id,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '1'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '01'
                         THEN k.total_time ELSE 0 END) tanggal1,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '2'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '02'
                         THEN k.total_time ELSE 0 END) tanggal2,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '3'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '03'
                         THEN k.total_time ELSE 0 END) tanggal3,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '4'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '04'
                         THEN k.total_time ELSE 0 END) tanggal4,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '5'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '05'
                         THEN k.total_time ELSE 0 END) tanggal5,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '6'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '06'
                         THEN k.total_time ELSE 0 END) tanggal6,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '7'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '07'
                         THEN k.total_time ELSE 0 END) tanggal7,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '8'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '08'
                         THEN k.total_time ELSE 0 END) tanggal8,
-                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '9'
+                    SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '09'
                         THEN k.total_time ELSE 0 END) tanggal9,
                     SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '10'
                         THEN k.total_time ELSE 0 END) tanggal10,
@@ -245,15 +246,16 @@ class ViewStatusHourVehicle(models.Model):
     tanggal31 = fields.Char()
 
     def init(self, cr):
-        cr.execute("""create or replace view view_status_vehicle_calendar_hour as
-               select
+        cr.execute("""
+                    create or replace view view_status_vehicle_calendar_hour as
+                    select
                     row_number() over()id,
                     (k.bulan::text||tahun::text||vehicle_id::text)::Integer date_id,
                     k.bulan,
                     k.tahun,
                     k.vehicle_id,
-                    count(*)filter(where total_time < 0) total_day_breakdown,
-                    count (*)filter(where total_time > 0)total_day_available,
+                    count (total_time < 0 OR NULL) total_day_breakdown,
+                    count (total_time > 0 OR NULL) total_day_available,
                     (
                             SELECT
                             DATE_PART(
@@ -271,24 +273,24 @@ class ViewStatusHourVehicle(models.Model):
                                 to_char(date_start, 'MM')::integer = k.bulan::integer and
                                 to_char(date_start, 'YYYY')::integer = k.tahun::integer and
                                 role = '2'
-                            ) -  count(*)filter(where total_time < 0) -( count (*)filter(where total_time > 0)) total_day_standby,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '1'
+                            ) -  count(total_time < 0 OR NULL) -( count (total_time > 0 OR NULL)) total_day_standby,
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '01'
                             THEN k.total_time ELSE 0 END) tanggal1,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '2'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '02'
                             THEN k.total_time ELSE 0 END) tanggal2,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '3'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '03'
                             THEN k.total_time ELSE 0 END) tanggal3,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '4'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '04'
                             THEN k.total_time ELSE 0 END) tanggal4,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '5'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '05'
                             THEN k.total_time ELSE 0 END) tanggal5,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '6'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '06'
                             THEN k.total_time ELSE 0 END) tanggal6,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '7'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '07'
                             THEN k.total_time ELSE 0 END) tanggal7,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '8'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '08'
                             THEN k.total_time ELSE 0 END) tanggal8,
-                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '9'
+                        SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '09'
                             THEN k.total_time ELSE 0 END) tanggal9,
                         SUM(CASE WHEN TO_CHAR(k.create_date, 'DD') = '10'
                             THEN k.total_time ELSE 0 END) tanggal10,
@@ -426,23 +428,23 @@ class ViewStatusDayVehicle(models.Model):
                     k.bulan,
                     k.tahun,
                     k.vehicle_id,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '1'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '01'
                         THEN k.status_day ELSE 0 END) tanggal1,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '2'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '02'
                         THEN k.status_day ELSE 0 END) tanggal2,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '3'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '03'
                         THEN k.status_day ELSE 0 END) tanggal3,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '4'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '04'
                         THEN k.status_day ELSE 0 END) tanggal4,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '5'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '05'
                         THEN k.status_day ELSE 0 END) tanggal5,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '6'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '06'
                         THEN k.status_day ELSE 0 END) tanggal6,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '7'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '07'
                         THEN k.status_day ELSE 0 END) tanggal7,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '8'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '08'
                         THEN k.status_day ELSE 0 END) tanggal8,
-                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '9'
+                    MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '09'
                         THEN k.status_day ELSE 0 END) tanggal9,
                     MAX(CASE WHEN TO_CHAR(k.create_date, 'DD') = '10'
                         THEN k.status_day ELSE 0 END) tanggal10,
@@ -536,12 +538,71 @@ class ViewStatusDayVehicle(models.Model):
                                     )calendars on b.parent_id=calendars.parent_id
                                     )k group by bulan,tahun,vehicle_id,status_day""")
 
+class ViewSummaryVehicleStatusAvailable(models.Model):
+
+    _name ='view.hke.hko'
+    _description = "view for day of week"
+    _auto = False
+    _order='bulan'
+
+    id = fields.Integer()
+    parent_id = fields.Integer()
+    bulan = fields.Char()
+    tahun = fields.Char()
+    hke_ho= fields.Integer()
+    hke_non_ho = fields.Integer()
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_hke_hko as
+                select
+                row_number() over()id,
+                vcs.bulan,
+                vcs.tahun,
+                (vcs.bulan::text||vcs.tahun::text)::integer parent_id,
+                (
+                SELECT
+                DATE_PART(
+                'days',
+                DATE_TRUNC(
+                'month', (select to_date('01/'||vcs.bulan||'/'||vcs.tahun, 'DD/MM/YYYY')))
+                +
+                '1 MONTH'::INTERVAL
+                -
+                '1 DAY'::INTERVAL
+                ))
+                -
+                (select count(*) from master_calendar_effective_date
+                where
+                    to_char(date_start, 'MM')::integer = 6 and
+                    to_char(date_start, 'YYYY')::integer = 2016 and
+                    role = '1'
+                )hke_ho,
+                (
+                SELECT
+                DATE_PART(
+                'days',
+                DATE_TRUNC(
+                'month', (select to_date('01/'||vcs.bulan||'/'||vcs.tahun, 'DD/MM/YYYY')))
+                +
+                '1 MONTH'::INTERVAL
+                -
+                '1 DAY'::INTERVAL
+                ))
+                -
+                (select count(*) from master_calendar_effective_date
+                where
+                    to_char(date_start, 'MM')::integer = vcs.bulan::integer and
+                    to_char(date_start, 'YYYY')::integer = vcs.tahun::integer and
+                    role = '2'
+                )hke_non_ho
+                from (select bulan, tahun from view_calendar_status_detail group by bulan, tahun) vcs""")
+
 class ViewSummaryVehicleStatusDetail(models.Model):
 
     _name ='view.summary.vehicle.status.detail'
     _description = "view for status detail in month"
     _auto = False
-    _order='bulan'
+    _order='month_log_text'
 
     id = fields.Integer()
     date_id = fields.Integer()
@@ -674,64 +735,7 @@ class ViewSummaryVehicleStatusDetail(models.Model):
                                 view_calendar_status_detail vc on vc.date_id = vs.date_id and vc.date_id = vsh.date_id )status
                     inner join view_hke_hko hke on status.parent_id = hke.parent_id)a""")
 
-class ViewSummaryVehicleStatusAvailable(models.Model):
 
-    _name ='view.hke.hko'
-    _description = "view for day of week"
-    _auto = False
-    _order='bulan'
-
-    id = fields.Integer()
-    parent_id = fields.Integer()
-    bulan = fields.Char()
-    tahun = fields.Char()
-    hke_ho= fields.Integer()
-    hke_non_ho = fields.Integer()
-
-    def init(self, cr):
-        cr.execute("""create or replace view view_hke_hko as
-                select
-                row_number() over()id,
-                vcs.bulan,
-                vcs.tahun,
-                (vcs.bulan::text||vcs.tahun::text)::integer parent_id,
-                (
-                SELECT
-                DATE_PART(
-                'days',
-                DATE_TRUNC(
-                'month', (select to_date('01/'||vcs.bulan||'/'||vcs.tahun, 'DD/MM/YYYY')))
-                +
-                '1 MONTH'::INTERVAL
-                -
-                '1 DAY'::INTERVAL
-                ))
-                -
-                (select count(*) from master_calendar_effective_date
-                where
-                    to_char(date_start, 'MM')::integer = 6 and
-                    to_char(date_start, 'YYYY')::integer = 2016 and
-                    role = '1'
-                )hke_ho,
-                (
-                SELECT
-                DATE_PART(
-                'days',
-                DATE_TRUNC(
-                'month', (select to_date('01/'||vcs.bulan||'/'||vcs.tahun, 'DD/MM/YYYY')))
-                +
-                '1 MONTH'::INTERVAL
-                -
-                '1 DAY'::INTERVAL
-                ))
-                -
-                (select count(*) from master_calendar_effective_date
-                where
-                    to_char(date_start, 'MM')::integer = vcs.bulan::integer and
-                    to_char(date_start, 'YYYY')::integer = vcs.tahun::integer and
-                    role = '2'
-                )hke_non_ho
-                from (select bulan, tahun from view_calendar_status group by bulan, tahun) vcs""")
 
 class ViewSummaryVehicleStatus(models.Model):
 
@@ -833,8 +837,8 @@ class ViewSummaryVehicleStatus(models.Model):
                     date30,
                     date31,
                     total_day_breakdown,total_day_available,total_day_standby,total_downtime,
-                    somefuncname(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,1) sbi_total_day_breakdown,
-                    somefuncname(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,2) sbi_total_day_available,
-                    somefuncname(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,3) sbi_total_day_standby,
-                    somefuncname(k.month_log_text::integer,k.year_log_text::Integer,k.vehicle_id,4) sbi_total_day_hke
+                    function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,1) sbi_total_day_breakdown,
+                    function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,2) sbi_total_day_available,
+                    function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,3) sbi_total_day_standby,
+                    function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::Integer,k.vehicle_id,4) sbi_total_day_hke
                 from view_summary_vehicle_status_detail	k	order by month asc""")

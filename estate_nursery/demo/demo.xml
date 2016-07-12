@@ -75,7 +75,7 @@
         -->
         <record id="seed_dami" model="product.product">
             <field name="name">Kecambah Dami Mas</field>
-            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="categ_id" ref="product.product_category_estate"/>
             <field name="standard_price">8090</field>
             <field name="type">consu</field>
             <field name="uom_id" ref="product.product_uom_unit"/>
@@ -88,7 +88,7 @@
 
         <record id="seed_ppks" model="product.product">
             <field name="name">Kecambah PPKS</field>
-            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="categ_id" ref="product.product_category_estate"/>
             <field name="standard_price">7500</field>
             <field name="type">consu</field>
             <field name="uom_id" ref="product.product_uom_unit"/>
@@ -101,7 +101,7 @@
 
         <record id="seed_topaz" model="product.product">
             <field name="name">Kecambah Topaz</field>
-            <field name="categ_id" ref="product.product_category_10"/>
+            <field name="categ_id" ref="product.product_category_estate"/>
             <field name="standard_price">7750</field>
             <field name="type">consu</field>
             <field name="uom_id" ref="product.product_uom_unit"/>
@@ -397,6 +397,7 @@
         depend on: group_stock_packaging = true at stock.config.settings
         -->
         <record id="packaging_seed_1" model="product.packaging">
+            <field name="name">Packaging 1</field>
             <field name="qty">200</field>
             <field name="ul" ref="estate_nursery.seed_bag_200"/>
             <field name="ul_container" ref="estate_nursery.seed_box"/>
@@ -407,6 +408,7 @@
         </record>
 
         <record id="packaging_seed_2" model="product.packaging">
+            <field name="name">Packaging 2</field>
             <field name="qty">250</field>
             <field name="ul" ref="estate_nursery.seed_bag_100"/>
             <field name="ul_container" ref="estate_nursery.seed_box"/>

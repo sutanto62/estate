@@ -1,17 +1,5 @@
 <openerp>
     <data>
-        <record model="ir.ui.view" id="inherit_estate_workshop_external_services">
-             <field name="name">Inherit estate workshop external services</field>
-             <field name="model">mro.order</field>
-             <field name="inherit_id" ref="mro.mro_order_form_view"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//page[@string='External']" position="inside">
-                     <field name="serviceexternal_ids" attrs="{'readonly': [('state', '!=', 'draft')]}"
-                             context="{'tree_view_ref' : 'estate_workshop.estate_workshop_external_services_tree'}"/>
-                 </xpath>
-             </field>
-         </record>
-
         <record model='ir.ui.view' id='estate_workshop_external_services_form'>
             <field name="name">estate workshop external services form</field>
             <field name="model">estate.workshop.external.service</field>
@@ -20,14 +8,15 @@
                     <sheet>
                         <group col="2">
                             <group string="Services Details">
-                                <field name="vehicle_id" on_change="on_change_vehicle(vehicle_id)"/>
+                                <field name="asset_id" string="Asset"/>
+                                <field name="vehicle_id" invisible="1" on_change="on_change_vehicle(vehicle_id)"/>
                                 <field name="cost_subtype_id" string="Service Type" domain="['|',('category','=','service'),('category','=','both')]" required="1"/>
                                 <field name="amount"/>
                             </group>
                             <group string="Odometer Details">
                                 <label for="odometer"/>
                                 <div>
-                                    <field name="odometer" class="oe_inline"/>
+                                    <field name="odometer" readonly="0" class="oe_inline"/>
                                     <field name="odometer_unit" class="oe_inline"/>
                                 </div>
                             </group>
@@ -35,9 +24,9 @@
                         <group col="2">
                             <group string="Additional Details">
                                 <field name="date" />
-                                <field name="employee_id" string="Requester"/>
+                                <field name="employee_id" string="Requester" readonly="0"/>
                                 <field name="vendor_id" context="{'default_supplier': True}"/>
-                                <field name="inv_ref" />
+                                <field name="inv_ref" readonly="0"/>
                             </group>
                         </group>
                         <group string="Included Services">
@@ -62,7 +51,8 @@
             <field name="arch" type="xml">
                 <tree string="Services Logs">
                     <field name="date" />
-                    <field name="vehicle_id" />
+                    <field name="asset_id" string="Asset"/>
+                    <field name="vehicle_id" invisible="1"/>
                     <field name="cost_subtype_id"/>
                     <field name="employee_id"/>
                     <field name="vendor_id" />

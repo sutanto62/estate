@@ -128,3 +128,21 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 "view_summary_vehicle_available_manager","view_summary_vehicle_available","estate_workshop.model_view_summary_vehicle_available","estate.group_manager","True","False","True","False"
 "view_summary_vehicle_available_assistant","view_summary_vehicle_available","estate_workshop.model_view_summary_vehicle_available","estate.group_assistant","True","False","False","False"
 
+"function_get_totalday_breakdown_user","function_get_totalday_breakdown","estate_workshop.model_function_get_totalday_breakdown","estate.group_user","True","False","False","False"
+"function_get_totalday_breakdown_manager","function_get_totalday_breakdown","estate_workshop.model_function_get_totalday_breakdown","estate.group_manager","True","False","True","False"
+"function_get_totalday_breakdown_assistant","function_get_totalday_breakdown","estate_workshop.model_function_get_totalday_breakdown","estate.group_assistant","True","False","False","False"
+
+"insert_range_into_calendar_user","insert_range_into_calendar","estate_workshop.model_insert_range_into_calendar","estate.group_user","True","False","False","False"
+"insert_range_into_calendar_manager","insert_range_into_calendar","estate_workshop.model_insert_range_into_calendar","estate.group_manager","True","False","True","False"
+"insert_range_into_calendar_assistant","insert_range_into_calendar","estate_workshop.model_insert_range_into_calendar","estate.group_assistant","True","False","False","False"
+
+"create_mo_preventive_user","create_mo_preventive","estate_workshop.model_create_mo_preventive","estate.group_user","True","False","False","False"
+"create_mo_preventive_manager","create_mo_preventive","estate_workshop.model_create_mo_preventive","estate.group_manager","True","False","True","False"
+"create_mo_preventive_assistant","create_mo_preventive","estate_workshop.model_create_mo_preventive","estate.group_assistant","True","False","False","False"
+
+"vehicle_preventive_odometer_user","vehicle_preventive_odometer","estate_workshop.model_vehicle_preventive_odometer","estate.group_user","True","False","False","False"
+"vehicle_preventive_odometer_manager","vehicle_preventive_odometer","estate_workshop.model_vehicle_preventive_odometer","estate.group_manager","True","False","True","False"
+"vehicle_preventive_odometer_assistant","vehicle_preventive_odometer","estate_workshop.model_vehicle_preventive_odometer","estate.group_assistant","True","False","False","False"
+
+
+

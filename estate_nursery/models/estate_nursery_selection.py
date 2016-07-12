@@ -28,43 +28,43 @@ class Selection(models.Model):
     selectionline_ids = fields.One2many('estate.nursery.selectionline', 'selection_id', "Selection Lines",store=True)
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",default=_default_session)
-    stage_id = fields.Many2one('estate.nursery.stage',"Stage",required=True,store=True)
+    stage_id = fields.Many2one('estate.nursery.stage',"Stage",store=True)
 
-    age_seed = fields.Integer('Age Seed Batch')
+    age_seed = fields.Integer('Age Seed Batch',store=True)
     age_seed_calculate =fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
                                         required=True,
                                         store=True)
 
     qty_normal = fields.Integer("Normal Seed Quantity",compute="_compute_plannormal",store=True,track_visibility='onchange')
-    qty_abnormal = fields.Integer("Abnormal Seed Quantity",compute='_compute_total',store=True,track_visibility='onchange')
-    date_plant = fields.Date("Planted Date",required=False,readonly=True,store=True,)
+    qty_abnormal = fields.Integer("Abnormal Seed Quantity",store=True,compute='_compute_total',track_visibility='onchange')
+    date_plant = fields.Date("Planted Date",required=False,store=True)
     qty_plant = fields.Integer("Planted Quantity",compute="_compute_plannormal",store=True)
-    qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange')
+    qty_plante = fields.Integer("Seed Planted Qty" , track_visibility='onchange',store=True)
     qty_recovery = fields.Integer("Quantity Recovery",compute="_compute_total_recovery",store=True)
-    qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,digit=(2.2),compute='compute_total_recovery')
+    qty_recoveryabn = fields.Integer("Quantity Total Abnormal Selection and Recovery" ,
+                                     digit=(2.2),compute='_compute_total_recovery_abnormal')
     qty_batch = fields.Integer("DO Quantity",required=False,readonly=True,related='batch_id.qty_received',store=True)
 
     selection_date = fields.Date("Selection Date",required=True,store=True)
     selec = fields.Integer(related='selectionstage_id.age_selection')
     comment = fields.Text("Additional Information")
     selectionline_count=fields.Integer("selection Cause",compute="_get_selectionline_count",store=True)
-    nursery_information = fields.Selection([('draft','Draft'),
-                                            ('0','untimely'),
+    nursery_information = fields.Selection([('0','untimely'),
                                             ('1','late'),('2','passed'),
                                             ('3','very late/Not recomend'),('4','very untimely')],
-                                           compute='dateinformation', default='draft', string="Information Time" ,
-                                           readonly=True,required=False,store=True)
+                                           default='0', string="Information Time" ,
+                                           readonly=True,compute='_compute_dateinformation',store=True)
 
     nursery_lapseday = fields.Integer(string="Information Lapse of Day",
-                                      required=False,readonly=True,compute='calculatedays',multi='sums',store=True)
+                                      required=False,readonly=True,compute='_compute_calculatedays',multi='sums',store=True)
     nursery_lapsemonth = fields.Integer(string="Information Lapse of Month",
-                                        required=False,readonly=True,compute='calculatemonth',multi='sums',store=True)
-    nursery_plandate = fields.Char('Planning Date',readonly=True,compute="calculateplandate",visible=True)
-    nursery_plandatemax = fields.Char('Planning Date max',readonly=True,compute="calculateplandatemax",visible=True)
-    nursery_plandatemin = fields.Char('Planning Date min',readonly=True,compute="calculateplandatemin",visible=True)
-    nursery_persentagen = fields.Float('Nursery Persentage Normal',digit=(2.2),compute='computepersentage',store=True)
-    nursery_persentagea = fields.Float('Nursery Persentage Abnormal',digit=(2.2),compute='computepersentage',store=True)
+                                        required=False,readonly=True,compute='_compute_calculatemonth',multi='sums',store=True)
+    nursery_plandate = fields.Char('Planning Date',readonly=True,compute='_compute_calculateplandate')
+    nursery_plandatemax = fields.Char('Planning Date max',readonly=True,compute="_compute_calculateplandatemax",visible=True)
+    nursery_plandatemin = fields.Char('Planning Date min',readonly=True,compute="_compute_calculateplandatemin",visible=True)
+    nursery_persentagen = fields.Float('Nursery Persentage Normal',digit=(2.2),compute='_compute_persentage',store=True)
+    nursery_persentagea = fields.Float('Nursery Persentage Abnormal',digit=(2.2),compute='_compute_persentage',store=True)
 
     flag_recovery=fields.Boolean("is Recovery ?")
     state = fields.Selection([
@@ -98,20 +98,23 @@ class Selection(models.Model):
 
 
     #workflow state
-    @api.one
+    @api.multi
     def action_draft(self):
         """Set Selection State to Draft."""
+        self.ensure_one()
         self.write({'qty_normal': self.qty_normal})
         self.state = 'draft'
 
-    @api.one
+    @api.multi
     def action_confirmed(self):
         """Set Selection state to Confirmed."""
+        self.ensure_one()
         self.state = 'confirmed'
 
-    @api.one
+    @api.multi
     def action_approved(self):
         """Approved Selection is planted Seed."""
+        self.ensure_one()
         stage = self.selectionstage_id.name
         batch = self.batch_id.name
         self.write({'name':"Selection %s for %s" %(stage,batch)})
@@ -119,8 +122,9 @@ class Selection(models.Model):
         self.state = 'done'
 
 
-    @api.one
+    @api.multi
     def action_receive(self):
+        self.ensure_one()
         normal = self.qty_normal
         abnormal = self.qty_abnormal
         selectionlineids = self.selectionline_ids
@@ -131,9 +135,9 @@ class Selection(models.Model):
         self.action_move()
         return True
 
-    @api.one
+    @api.multi
     def action_move(self):
-
+        self.ensure_one()
         location_ids = set()
         for item in self.selectionline_ids:
             if item.location_id and item.qty > 0: # todo do not include empty quantity location
@@ -195,11 +199,12 @@ class Selection(models.Model):
             move.action_confirm()
             move.action_done()
 
-    #compute fucntion
+    #compute function
     #compute qtyplant :
     @api.one
     @api.depends('qty_plant','qty_abnormal','flag_recovery','qty_plante','selectionline_ids','recoverytemp_ids','qty_recoveryabn')
     def _compute_plannormal(self):
+        # self.ensure_one()
         plante = int(self.qty_plante)
         if self.flag_recovery == True:
             if self.selectionline_ids and self.recoverytemp_ids:
@@ -217,7 +222,8 @@ class Selection(models.Model):
     #compute abnormal and recovery :
     @api.one
     @api.depends('qty_recovery','qty_abnormal','qty_recoveryabn')
-    def compute_total_recovery(self):
+    def _compute_total_recovery_abnormal(self):
+        # self.ensure_one()
         self.qty_recoveryabn = 0
         if self.qty_abnormal and self.qty_recovery:
             self.qty_recoveryabn = self.qty_abnormal + self.qty_recovery
@@ -232,38 +238,43 @@ class Selection(models.Model):
         for r in self:
             r.selectionline_count = len(r.selectionline_ids)
 
-    #compute selectionLine
+    # compute selectionLine
     @api.one
     @api.depends('selectionline_ids')
     def _compute_total(self):
+        # self.ensure_one()
         self.qty_abnormal = 0
-        for item in self.selectionline_ids:
-            self.qty_abnormal += item.qty
+        if self.selectionline_ids:
+            for item in self.selectionline_ids:
+                self.qty_abnormal += item.qty
         return True
-
 
     #compute recoveryLine
     @api.one
     @api.depends('recoverytemp_ids')
     def _compute_total_recovery(self):
+        # self.ensure_one()
         self.qty_recovery = 0
-        for item in self.recoverytemp_ids:
-            self.qty_recovery += item.qty_abn_recovery
+        if self.recoverytemp_ids:
+            for item in self.recoverytemp_ids:
+                self.qty_recovery += item.qty_abn_recovery
         return True
 
     #compute persentage
     @api.one
     @api.depends('qty_normal','qty_recoveryabn')
-    def computepersentage(self):
+    def _compute_persentage(self):
+        # self.ensure_one()
         total = self.qty_normal+self.qty_recoveryabn
         if total:
             self.nursery_persentagea =float(self.qty_recoveryabn)/float(total)*100.00
             self.nursery_persentagen =float(self.qty_normal)/float(total)*100.00
 
     #compute lapseday
-    @api.one
+    @api.multi
     @api.depends('date_plant','selection_date',)
-    def calculatedays(self):
+    def _compute_calculatedays(self):
+        self.ensure_one()
         res={}
         fmt = '%Y-%m-%d'
         if self.date_plant and self.selection_date :
@@ -278,9 +289,10 @@ class Selection(models.Model):
         return res
 
     #compute lapse month
-    @api.one
+    @api.multi
     @api.depends('date_plant','selection_date')
-    def calculatemonth(self):
+    def _compute_calculatemonth(self):
+        self.ensure_one()
         res={}
         fmt = '%Y-%m-%d'
         if self.date_plant and self.selection_date:
@@ -298,10 +310,10 @@ class Selection(models.Model):
         return res
 
     #compute planning date
-    @api.one
+    @api.multi
     @api.depends('date_plant','nursery_plandate','selec','selectionstage_id')
-    def calculateplandate(self):
-
+    def _compute_calculateplandate(self):
+         self.ensure_one()
          fmt = '%Y-%m-%d'
 
          a = self.selec
@@ -312,13 +324,13 @@ class Selection(models.Model):
              date_after_month = datetime.date(d1)+ relativedelta(months=b)
              compute = date_after_month.strftime(fmt)
              self.nursery_plandate = compute
-             return True
+             # return True
 
     #compute planning max date
     @api.one
     @api.depends('date_plant','nursery_plandate','selectionstage_id')
-    def calculateplandatemax(self):
-
+    def _compute_calculateplandatemax(self):
+         # self.ensure_one()
          fmt = '%Y-%m-%d'
          max = self.selectionstage_id.age_limit_max
          convmax = int(max)
@@ -333,8 +345,8 @@ class Selection(models.Model):
     #compute planning min date
     @api.one
     @api.depends('date_plant','nursery_plandate','selectionstage_id')
-    def calculateplandatemin(self):
-
+    def _compute_calculateplandatemin(self):
+         # self.ensure_one()
          fmt = '%Y-%m-%d'
          min = self.selectionstage_id.age_limit_min
          convmin = int(min)
@@ -350,8 +362,8 @@ class Selection(models.Model):
     @api.one
     @api.depends('nursery_information','nursery_lapsemonth','nursery_plandate','selection_date',
                  'nursery_plandatemin','nursery_plandatemax')
-    def dateinformation(self):
-
+    def _compute_dateinformation(self):
+         # self.ensure_one()
          fmt = '%Y-%m-%d'
 
          if  self.selection_date:
@@ -397,11 +409,13 @@ class Selection(models.Model):
                          self.nursery_information ='1'
                      elif date_convfromdtM <= dmin :
                          self.nursery_information = '4'# very untimely
-                return True
+                # return True
 
-    #onchange age seed
+    #Computed age seed
+    @api.one
     @api.depends('age_seed','date_plant','selection_date','age_seed_calculate')
     def _compute_age_seed(self):
+        # self.ensure_one()
         res={}
         fmt = '%Y-%m-%d'
         if self.age_seed and self.selection_date:
@@ -420,11 +434,13 @@ class Selection(models.Model):
         return res
 
 
-    #onchange Stage id
-    @api.one
+    #Onchange Stage id
+    @api.multi
     @api.onchange('stage_id','selectionstage_id','selectionline_ids')
     def _changestage_id(self):
-        self.stage_id=self.selectionstage_id.stage_id
+        self.ensure_one()
+        if self.selectionstage_id:
+            self.stage_id=self.selectionstage_id.stage_id
 
     #todo change stage untuk setiap selection
     # #onchange Stage
@@ -440,9 +456,11 @@ class Selection(models.Model):
     #             'domain': {'selectionstage_id': [('id','not in',arrSelectionstagelist)]}
     #         }
 
-    #onchange qty Normal
+    # onchange qty Normal
+    @api.one
     @api.onchange('qty_normal')
-    def onchange_normal(self):
+    def _onchange_normal(self):
+        # self.ensure_one()
         if self.selectionline_ids or self.selectionline_ids and self.recoverytemp_ids:
             self.write({'qty_normal' : self.qty_normal})
 
@@ -476,8 +494,6 @@ class Selection(models.Model):
                     raise exceptions.ValidationError(error_msg)
 
 
-
-
 class SelectionStage(models.Model):
     _name = 'estate.nursery.selectionstage'
 
@@ -489,7 +505,7 @@ class SelectionStage(models.Model):
                              ('1','Age selection not more than age limit max'),
                              ('2','passed'),("3","Age Limit min not less than 1"),
                              ("4","Age Limit min not more than 12")],
-                            compute='calculateinfo', default='draft', string="Information" ,
+                            compute='_compute_calculateinfo', default='draft', string="Information" ,
                             readonly=True,required=False)
     comment = fields.Text(string="Description or command")
     stage_id = fields.Many2one('estate.nursery.stage',"Nursery Stage",required=True)
@@ -518,7 +534,8 @@ class SelectionStage(models.Model):
     #Limit age
     @api.one
     @api.depends("age_limit_max","age_limit_min","age_selection","info",)
-    def calculateinfo(self):
+    def _compute_calculateinfo(self):
+        # self.ensure_one()
         maxa =self.age_limit_max
         mina=self.age_limit_min
         limitmax = self.age_limit_max
@@ -571,8 +588,9 @@ class SelectionLine(models.Model):
     @api.multi
     @api.onchange('stage_a_id','selection_id','cause_id','location_id','batch_id')
     def _change_domain_causeid(self):
-        self.stage_a_id=self.selection_id.stage_id
+
         if self:
+            self.stage_a_id=self.selection_id.stage_id
             arrTransferSeed = []
             if self.stage_a_id.code == 'PN':
                 batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.batch_id.id),('location_id.id','!=',False)])
@@ -638,8 +656,9 @@ class TempRecovery(models.Model):
     @api.onchange('stage_a_id','selection_id','location_id')
     def _change_domain_locationid(self):
         # causestage = self.env['estate.nursery.cause'].browse([('stage_id.id', '=', self.stage_a_id.id)])
-        self.stage_a_id=self.selection_id.stage_id
+
         if self:
+            self.stage_a_id=self.selection_id.stage_id
             arrRecoverySeed = []
             if self.stage_a_id.code == 'PN':
                 batchTransferPn =self.env['estate.nursery.batchline'].search([('batch_id.id','=',self.selection_id.batch_id.id),

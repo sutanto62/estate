@@ -36,7 +36,7 @@
             <field name="name">Cleaving Polytone</field>
             <field name="model">estate.nursery.cleaving</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Cleaving Tree View">
+                <tree string="Nursery Cleaving Tree View" version="9.0" >
                     <field name="cleaving_code" string="Cleaving ID" delete="false"/>
                     <field name="cleaving_date" string="Cleaving Date"/>
                     <field name="qty_plantedbatch" string="Qty Planted"/>
@@ -104,7 +104,9 @@
                         <group>
                             <group>
                                 <field name="batch_id" invisible="1"/>
-                                <field name="date_planted"/>
+                                <field name="age_seed"  string="Last Age Seed"/>
+                                <field name="age_seed_clv" invisible="1"/>
+                                <field name="date_planted" attrs="{'readonly': [('state','=','done')]}"/>
                                 <field name="cleaving_date" string="Cleaving Date" attrs="{'readonly': [('state','=','done')]}"/>
                                 <field name="qty_plante" string="Quantity Last planted" invisible="1"/>
                                 <field name="qty_doublebatch" string="Quantity Last planted" invisible="1"/>
@@ -180,10 +182,10 @@
          </record>
 
         <!-- MENU -->
-        <menuitem id="nursery_seed_cleaving"
-                  name="Cleaving Seed"
-                  parent="nursery_seed_batch"
-                  action="action_list_cleaving" sequence="16"
-                  groups="estate.group_agronomi"/>
+        <!--<menuitem id="nursery_seed_cleaving"-->
+                  <!--name="Cleaving Seed"-->
+                  <!--parent="nursery_seed_batch"-->
+                  <!--action="action_list_cleaving" sequence="16"-->
+                  <!--groups="estate.group_agronomi"/>-->
     </data>
 </openerp>

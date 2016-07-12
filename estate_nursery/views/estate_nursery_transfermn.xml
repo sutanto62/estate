@@ -19,7 +19,7 @@
             <field name="name">Transfer PN to MN</field>
             <field name="model">estate.nursery.transfermn</field>
             <field name="arch" type="xml">
-                <tree string="Nursery transfer Pn to Pn View" delete="false">
+                <tree string="Nursery transfer Pn to Pn View" version="9.0" delete="false">
                     <field name="transfermn_code" string="Transfer Code"/>
                     <field name="batch_id" string="Batch"/>
                     <field name="date_transfer" string="Date of Transfer"/>
@@ -92,7 +92,7 @@
                             <notebook>
                                 <page name='transfer_information' string="Transfer  Information">
                                         <tree>
-                                            <field name="transfermnline_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
+                                            <field name="transfermnline_ids" track_visibility="onchange" attrs="{
                                                 'readonly': [('state','=','done')]}"
                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_transfermnline_seed',
                                                    'default_batch_id': batch_id}"/>
@@ -100,7 +100,7 @@
                                 </page>
                                 <page string="Vehicle Information">
                                     <tree>
-                                        <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
+                                        <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{
                                                 'readonly': [('state','=','done')]}"
                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_timesheet_activity_transport',
                                                    'default_dc_type' : 2}"/>

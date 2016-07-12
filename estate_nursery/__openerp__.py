@@ -33,7 +33,7 @@
     'depends': ['estate','base',
                 'fleet','purchase',
                 'report','board',
-                'readonly_bypass','mail','estate_vehicle'],
+                'web_readonly_bypass','mail','estate_vehicle'],
     # always loaded
     'data': [
         'demo/partner_data.xml',

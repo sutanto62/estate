@@ -89,7 +89,7 @@
         </record>
 
          <record model="ir.actions.act_window" id="action_estate_timesheet_activity_transport">
-            <field name="name">Action Estate Timesheet Activity Transport</field>
+            <field name="name">Vehicle Timesheet</field>
             <field name="res_model">estate.timesheet.activity.transport</field>
             <field name="view_mode">tree</field>
          </record>
