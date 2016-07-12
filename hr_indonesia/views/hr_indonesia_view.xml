@@ -45,6 +45,8 @@
             </field>
         </record>
 
+        <!-- todo error while installed -->
+        <!--
         <record id="action_work_schedule" model="ir.actions.act_window" >
             <field name="name">Work Schedule</field>
             <field name="res_model">resource.calendar</field>
@@ -52,6 +54,6 @@
         </record>
 
         <menuitem id="work_schedule" parent="hr.menu_open_view_attendance_reason_new_config" name="Work Schedule" action="action_work_schedule" groups="base.group_hr_attendance"/>
-
+        -->
     </data>
 </openerp>
