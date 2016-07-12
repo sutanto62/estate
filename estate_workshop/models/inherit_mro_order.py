@@ -179,19 +179,6 @@ class InheritMroOrder(models.Model):
                 if countLineExternal == 0:
                     error_msg = "Tab Service External Must be Filled"
                     raise exceptions.ValidationError(error_msg)
-                for external in self.serviceexternal_ids :
-                    if external.amount == 0 :
-                            print external.amount
-                            error_msg = "Field Amount Must be Filled"
-                            raise exceptions.ValidationError(error_msg)
-                    if external.date != self.env['mro.order'].search([('id','=',self.owner_id)]).date_planned:
-                            print external.date
-                            error_msg = "Field Date Must be Match With Date in Maintenance Order"
-                            raise exceptions.ValidationError(error_msg)
-                    if external.vendor_id != True:
-                            print external.vendor_id
-                            error_msg = "Field Vendor Must be Filled"
-                            raise exceptions.ValidationError(error_msg)
             super(InheritMroOrder,self).test_if_parts()
 
     @api.multi
