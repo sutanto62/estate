@@ -7,7 +7,7 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@string='HR Settings']" position="after">
+                <xpath expr="//notebook" position="inside">
                     <page string="HR Indonesia">
                         <group>
                             <group string="Employee Type" name="employee_type">
