@@ -32,7 +32,7 @@
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
-        'data/hr.attendance.demo.csv',
-        'data/hr.attendance.demo.csv',
+        # 'data/hr.attendance.demo.csv',
+        # 'data/hr.attendance.demo.csv',
     ],
 }

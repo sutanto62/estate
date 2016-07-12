@@ -1,0 +1,139 @@
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="inherit_mecanic_timesheet">
+             <field name="name">Inherit Mecanic Timesheet</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='labor_description']" position="before">
+                     <field name="mecanictimesheet_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
+                             context="{'tree_view_ref' : 'estate_workshop.view_mecanic_timesheet_tree'}"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_employee_planning">
+             <field name="name">Inherit Mecanic Planning</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Tools']" position="before">
+                     <page string="Planned Labor's">
+                         <separator string="Planned Mecanic's"/>
+                         <field name="employeeline_ids" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            context="{'tree_view_ref' : 'estate_workshop.view_workshop_employee_line_tree'}"/>
+                     </page>
+
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_workshop_employee_line_tree">
+            <field name="name">View Workshop Employee Line Tree</field>
+            <field name="model">estate.workshop.employeeline</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="employee_id" string="Employee"/>
+                </tree>
+            </field>
+         </record>
+
+         <record model="ir.ui.view" id="inherit_code_in_mrequest">
+             <field name="name">Inherit Code In Maintenance Request</field>
+             <field name="model">mro.request</field>
+             <field name="inherit_id" ref="mro.mro_request_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='cause']" position="before">
+                     <field name="code_id" options="{'no_create_edit': True}"/>
+                 </xpath>
+             </field>
+         </record>
+
+         <record model="ir.ui.view" id="inherit_code_in_morder">
+             <field name="name">Inherit Code In Maintenance Order</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='origin']" position="before">
+                     <field name="code_id" string='Priority' attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            options="{'no_create_edit': True}"/>
+                     <field name="reconcil_id" string='Reconcil' attrs="{'invisible': [('state', '!=', 'ready'),('state','!=','done')]}"
+                            options="{'no_create_edit': True}"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_code_in_morder_tree">
+             <field name="name">Inherit Code In Maintenance Order Tree</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_tree_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='origin']" position="before">
+                     <field name="code_id" string='Priority' attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            options="{'no_create_edit': True}"/>
+                     <field name="reconcil_id" string='Reconcil' attrs="{'invisible': [('state', '!=', 'ready'),('state','!=','done')]}"
+                            options="{'no_create_edit': True}"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_estate_code_tree">
+            <field name="name">View Estate Code Tree</field>
+            <field name="model">estate.workshop.causepriority.code</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" />
+                    <field name="type" string="Type"/>
+                </tree>
+            </field>
+         </record>
+
+         <record id="view_mecanic_timesheet_tree" model="ir.ui.view" >
+            <field name="name">Mecanic Timesheet Tree</field>
+            <field name="model">estate.mecanic.timesheet</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="id" invisible="1"/>
+                    <field name="date_activity_transport" string="Date Activity"/>
+                    <field name="owner_id"  invisible="1" readonly="1"/>
+                    <field name="dc_type" invisible="0" readonly="1"/>
+                    <field name="asset_id" string="Asset" options="{'no_create_edit': True}"/>
+                    <field name="vehicle_id" readonly="1"/>
+                    <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
+                    <field name="mastertask_id" string="Task"/>
+                    <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
+                    <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
+                    <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
+                    <field name="total_time" string="&#916; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_mecanic_timesheet">
+            <field name="name">Action Mecanic Timesheet Activity </field>
+            <field name="res_model">estate.mecanic.timesheet</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_estate_failure_code">
+            <field name="name">Action Failure And Priority Code</field>
+            <field name="res_model">estate.workshop.causepriority.code</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+         <menuitem id="estate_mecanic_timesheet_activity" name="Mecanic Timesheet"
+                  parent="asset.menu_maintenance_config"
+                  action="action_mecanic_timesheet"
+                  groups="base.group_no_one"/>
+
+        <menuitem id="estate_dailure_code" name="Master Failure And Priority Code"
+                  parent="asset.menu_maintenance_config"
+                  action="action_estate_failure_code"
+                  groups="base.group_no_one"/>
+
+    </data>
+</openerp>

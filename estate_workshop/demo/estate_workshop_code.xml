@@ -1,0 +1,60 @@
+<openerp>
+    <data>
+         <record id="workshop_code_1" model="estate.workshop.causepriority.code">
+            <field name="name">Engine Oveheat</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_2" model="estate.workshop.causepriority.code">
+            <field name="name">Flat Tyre</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_3" model="estate.workshop.causepriority.code">
+            <field name="name">As Broken</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_4" model="estate.workshop.causepriority.code">
+            <field name="name">Radiator Leak</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_5" model="estate.workshop.causepriority.code">
+            <field name="name">Blow Engine</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_6" model="estate.workshop.causepriority.code">
+            <field name="name">Check Up Accu</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_7" model="estate.workshop.causepriority.code">
+            <field name="name">Charger Accu</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_8" model="estate.workshop.causepriority.code">
+            <field name="name">Change Fan Belt</field>
+            <field name="type">1</field>
+        </record>
+         <record id="workshop_code_9" model="estate.workshop.causepriority.code">
+            <field name="name">High</field>
+            <field name="type">2</field>
+        </record>
+         <record id="workshop_code_10" model="estate.workshop.causepriority.code">
+            <field name="name">Normal</field>
+            <field name="type">2</field>
+        </record>
+         <record id="workshop_code_11" model="estate.workshop.causepriority.code">
+            <field name="name">Low</field>
+            <field name="type">2</field>
+        </record>
+         <record id="workshop_code_12" model="estate.workshop.causepriority.code">
+            <field name="name">Fixed Completely</field>
+            <field name="type">3</field>
+        </record>
+         <record id="workshop_code_13" model="estate.workshop.causepriority.code">
+            <field name="name">Fixed Partially</field>
+            <field name="type">3</field>
+        </record>
+         <record id="workshop_code_14" model="estate.workshop.causepriority.code">
+            <field name="name">Not Posible To Fix</field>
+            <field name="type">3</field>
+        </record>
+    </data>
+</openerp>

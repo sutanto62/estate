@@ -115,12 +115,14 @@
             <field name="model">estate.nursery.cullingline</field>
             <field name="arch" type="xml">
                 <tree string="Nursery Culling line View" editable="bottom">
+                    <field name="batch_id" string="Batch"/>
                     <field name="selection_id" string="Selection Seed " options="{'no_create_edit': True}"/>
                     <field name="selectionstage_id" invisible="1" string="Selection Stage" />
+                    <field name="product_id" invisible="1">{‘readonly_by_pass’: True}</field>
                     <field name="qty_abnormal_selection" string="&#931;Abn Selection"/>
                     <field name="qty_normal_selection" readonly="1" string="&#931;Nor Selection">{‘readonly_by_pass’: True}</field>
                     <field name="culling_location_id" string="Location Culling"/>
-                    <field name="total_abnormal" string="&#931; Pemusnahan"/>
+                    <field name="total_abnormal" string="&#931; Culling"/>
                     <field name="total_transplanted" readonly="1" string="&#931; Transplanted">{‘readonly_by_pass’: True}</field>
                 </tree>
             </field>

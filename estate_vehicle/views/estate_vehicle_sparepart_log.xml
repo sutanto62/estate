@@ -65,12 +65,12 @@
             <field name="model">estate.vehicle.log.sparepart</field>
             <field name="arch" type="xml">
                 <search string="Vehicles sparepart Logs" >
-                    <field name="vehicle_id" />
-                    <field name="date"/>
-                    <field name="purchaser_id" />
-                    <field name="product_id"/>
-                    <field name="unit" />
-                    <field name="total_amount" sum="Price"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="date" string="Date"/>
+                    <field name="purchaser_id" string="Purchaser"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="unit" string="Unit"/>
+                    <field name="total_amount" sum="Price" string="Amount"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
                     </group>
@@ -106,6 +106,6 @@
             </field>
         </record>
 
-        <menuitem action="estate_vehicle.fleet_vehicle_log_sparepart_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_sparepart_menu" groups="fleet.group_fleet_user"/>
+        <!--<menuitem action="estate_vehicle.fleet_vehicle_log_sparepart_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_sparepart_menu" groups="fleet.group_fleet_user"/>-->
     </data>
 </openerp>

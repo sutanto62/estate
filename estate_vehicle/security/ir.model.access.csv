@@ -8,6 +8,10 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 "summary_manager","v_summary_cost_vehicle","estate_vehicle.model_v_summary_cost_vehicle","estate.group_manager","True","True","True","False"
 "summary_assistant","v_summary_cost_vehicle","estate_vehicle.model_v_summary_cost_vehicle","estate.group_assistant","True","True","False","False"
 
+"summarydetail_user","v_summary_cost_vehicle_detail","estate_vehicle.model_v_summary_cost_vehicle_detail","estate.group_user","True","False","False","False"
+"summarydetail_manager","v_summary_cost_vehicle_detail","estate_vehicle.model_v_summary_cost_vehicle_detail","estate.group_manager","True","False","True","False"
+"summarydetail_assistant","v_summary_cost_vehicle_detail","estate_vehicle.model_v_summary_cost_vehicle_detail","estate.group_assistant","True","False","False","False"
+
 "summary_fuel_detail_user","view_fuel_vehicle_detail","estate_vehicle.model_view_fuel_vehicle_detail","estate.group_user","True","True","False","False"
 "summary_fuel_detail_manager","view_fuel_vehicle_detail","estate_vehicle.model_view_fuel_vehicle_detail","estate.group_manager","True","True","True","False"
 "summary_fuel_detail_assistant","view_fuel_vehicle_detail","estate_vehicle.model_view_fuel_vehicle_detail","estate.group_assistant","True","True","False","False"

@@ -1,0 +1,63 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="inherit_actual_equipments">
+             <field name="name">Inherit Actual Equipments</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='tools_description']" position="before">
+                     <page string="Actual Equipment's">
+                         <separator string="Actual Equipment's"/>
+                         <field name="actualtools_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
+                            context="{'tree_view_ref' : 'estate_workshop.view_actual_equipment_tree'}"/>
+                     </page>
+                 </xpath>
+             </field>
+         </record>
+
+         <record model="ir.ui.view" id="inherit_planned_equipment">
+             <field name="name">Inherit Mecanic Equipments</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Tools']" position="before">
+                     <page string="Planned Tools's">
+                         <separator string="Planned Tools's"/>
+                         <field name="plannedtools_ids" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                            context="{'tree_view_ref' : 'estate_workshop.view_planned_equipment_tree'}"/>
+                     </page>
+                 </xpath>
+             </field>
+         </record>
+        <!--attrs="{'readonly': [('state', '!=', 'draft')]}"-->
+        <record model="ir.ui.view" id="view_actual_equipment_tree">
+            <field name="name">View Actual Equipment Tree</field>
+            <field name="model">estate.workshop.actualequipment</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="asset_id" string="Equipment"/>
+                    <field name="unit" string="Unit"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="ownership" string="Ownership"/>
+                    <field name="description" string="Description"/>
+                </tree>
+            </field>
+         </record>
+
+         <record model="ir.ui.view" id="view_planned_equipment_tree">
+            <field name="name">View Planned Equipment Tree</field>
+            <field name="model">estate.workshop.plannedequipment</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="asset_id" string="Equipment"/>
+                    <field name="unit" string="Unit"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="ownership" string="Ownership"/>
+                    <field name="description" string="Description"/>
+                </tree>
+            </field>
+         </record>
+    </data>
+</openerp>

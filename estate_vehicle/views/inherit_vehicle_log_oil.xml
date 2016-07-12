@@ -7,13 +7,13 @@
              <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
-                     <button name="%(fleet_vehicle_log_oil_act)d"
-                         type="action"
-                         class="oe_stat_button"
-                         icon="fa-flask"
-                         help="show the oil logs for this vehicle">
-                         <field name="oil_log_count" widget="statinfo" string="Oil"/>
-                     </button>
+                     <!--<button name="%(fleet_vehicle_log_oil_act)d"-->
+                         <!--type="action"-->
+                         <!--class="oe_stat_button"-->
+                         <!--icon="fa-flask"-->
+                         <!--help="show the oil logs for this vehicle">-->
+                         <!--<field name="oil_log_count" widget="statinfo" string="Oil"/>-->
+                     <!--</button>-->
 
                      <button name="%(fleet_vehicle_log_otherservice_act)d"
                          type="action"
@@ -23,16 +23,40 @@
                          <field name="other_service_log_count" widget="statinfo" string="Other Service"/>
                      </button>
 
-                     <button name="%(fleet_vehicle_log_sparepart_act)d"
-                         type="action"
-                         class="oe_stat_button"
-                         icon="fa-wrench"
-                         help="show the Sparepart logs for this vehicle">
-                         <field name="sparepart_log_count" widget="statinfo" string="Sparepart"/>
-                     </button>
+                     <!--<button name="%(fleet_vehicle_log_sparepart_act)d"-->
+                         <!--type="action"-->
+                         <!--class="oe_stat_button"-->
+                         <!--icon="fa-wrench"-->
+                         <!--help="show the Sparepart logs for this vehicle">-->
+                         <!--<field name="sparepart_log_count" widget="statinfo" string="Sparepart"/>-->
+                     <!--</button>-->
                  </xpath>
              </field>
          </record>
+
+         <record model="ir.ui.view" id="inherit_replace_attribute_button_vehicle">
+             <field name="name">Inherit Replace attribute</field>
+             <field name="model">fleet.vehicle</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//button[@icon='fa-wrench']" position="attributes">
+                      <attribute name="attrs">{'invisible': True}</attribute>
+                 </xpath>
+             </field>
+         </record>
+
+        <!--Hidden menu in fleet.vehicle-->
+        <record model="res.groups" id="group_invisible">
+            <field name="name">Hidden items</field>
+        </record>
+
+        <menuitem action="fleet.fleet_vehicle_log_contract_act"
+            id="fleet.fleet_vehicle_log_contract_menu" parent="fleet.fleet_vehicles" groups="group_invisible"
+            />
+        <menuitem action="fleet.fleet_vehicle_odometer_act" parent="fleet.fleet_vehicles"  id="fleet.fleet_vehicle_odometer_menu" groups="group_invisible"/>
+        <menuitem action="fleet.fleet_vehicle_log_fuel_act"  parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_log_fuel_menu" groups="group_invisible"/>
+        <menuitem action="fleet.fleet_vehicle_log_services_act" parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_log_services_menu" groups="group_invisible"/>
+        <menuitem action="fleet.fleet_vehicle_costs_act" parent="fleet.fleet_vehicles" id="fleet.fleet_vehicle_costs_menu" groups="group_invisible"/>
 
         <record model="ir.ui.view" id="inheritview_field_product_id_vehicle_log">
              <field name="name">Inherit Vehicle Log Fuel</field>

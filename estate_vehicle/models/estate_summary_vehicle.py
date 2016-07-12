@@ -33,7 +33,7 @@ class ViewSummaryCostVehicleDetail(models.Model):
                                 ) a group by vehicle_id, month_log, year_log
                             union
                             select
-                                'Service' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(cost_amount) amount
+                                'External Service' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(cost_amount) amount
                             from (
                                     select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log from fleet_vehicle_cost fvc inner join fleet_vehicle_log_services fvlf on fvc.id = fvlf.cost_id
                                 ) a group by vehicle_id, month_log, year_log
@@ -44,11 +44,12 @@ class ViewSummaryCostVehicleDetail(models.Model):
                                     select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log from fleet_vehicle_cost fvc inner join estate_vehicle_log_oil fvlf on fvc.id = fvlf.cost_id
                                 ) a group by vehicle_id, month_log, year_log
                             union
-                            select
-                                'Sparepart' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(amount) amount
-                            from (
-                                    select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log,(fvlf.price_per_unit * fvlf.unit) amount from fleet_vehicle_cost fvc inner join estate_vehicle_log_sparepart fvlf on fvc.id = fvlf.cost_id
-                                ) a group by vehicle_id, month_log, year_log
+                            select 'Workshop Mecanic' as type_log,vehicle_id,count(*) "count",month_log,year_log,sum(total_amount) amount from(
+                            	select * from view_timesheet_mecanic_totalamounts
+                            )workmec group by vehicle_id, month_log, year_log
+                            union
+                            select 'Workshop Sparepart' as type_log,vehicle_id,count(*) "count",month_log,year_log,sum(total_amount) amount from(
+                            		select * from view_cost_workshop_sparepart)workpart group by vehicle_id, month_log, year_log
                             union
                             select
                                 'Other Service' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(amount) amount
@@ -100,11 +101,12 @@ class ViewSummaryCostVehicle(models.Model):
     servicesummary_ids = fields.One2many('view.service.vehicle.detail','parent_id')
     sparepartsummary_ids = fields.One2many('view.sparepart.vehicle.detail','parent_id')
     otherservicesummary_ids = fields.One2many('view.otherservice.vehicle.detail','parent_id')
+    # workshopamount_ids = fields.One2many('v.summary.cost.workshop.detail','parent_id')
     basispremi_ids = fields.One2many('view.basispremi.vehicle.detail','parent_id')
     timesheetsummary_ids = fields.One2many('view.summary.timesheet.vehicle','parent_id')
     month_log_text = fields.Text('Month')
     year_log_text = fields.Text('Year')
-    total_time = fields.Integer('Total Time')
+    total_time = fields.Float('Total Time')
     total_amount_per_month = fields.Float('Amount')
     amount_per_hour = fields.Float('Amount Per Hour')
     # parent_id = fields.Text()
@@ -117,7 +119,8 @@ class ViewSummaryCostVehicle(models.Model):
             e.vehicle_id,
             Total_time as total_time,
             Total_amount_per_Month as total_amount_per_month,
-            (total_amount_per_month / total_time) as amount_per_hour
+            case when Total_time is null then  Total_amount_per_Month
+            	else (total_amount_per_month / total_time) end amount_per_hour
             from (
                     select
                         (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,

@@ -1,0 +1,22 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="inherit_hr_conract_wage">
+             <field name="name">Inherit wage</field>
+             <field name="model">hr.contract</field>
+             <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='wage']" position="after">
+                     <group>
+                          <field name="weekly_wage" string="Weekly Wage"/>
+                          <field name="daily_wage" string="Daily Wage"/>
+                          <field name="hourly_wage" string="Hourly Wage"/>
+                     </group>
+                     <group>
+                         <field name="day" string="Day"/>
+                         <field name="hour" string="Hour"/>
+                     </group>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>

@@ -1,0 +1,25 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_totalamount_mecanic_tree">
+            <field name="name">View Total Amount Mecanic Vehicle</field>
+            <field name="model">view.timesheet.mecanic.totalamounts</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="total_amount" string="&#931; Amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_cost_sparepart_workshop_tree">
+            <field name="name">View Total Cost Sparepart Workshop </field>
+            <field name="model">view.cost.workshop.sparepart</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="total_amount" string="&#931; Amount" />
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

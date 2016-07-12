@@ -1,0 +1,69 @@
+<openerp>
+    <data>
+         <record id="workshop_procurement_action5" model="ir.actions.act_window">
+            <field name="name">Procurement Exceptions</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">estate.workshop.procurement</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','exception')]</field>
+        </record>
+
+         <record model="ir.ui.view" id="inherit_planned_sparepart">
+             <field name="name">Inherit planned sparepart</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Planned Parts']" position="after">
+                      <page string="Planned Sparepart's" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                          <button class="oe_inline oe_stat_button" name="%(workshop_procurement_action5)d"
+                                  string="Part Request" target="new" type="action" icon="fa-shopping-cart">
+                          </button>
+                          <field name="plannedpart_ids"  attrs="{'readonly': [('state', '!=', 'draft')]}"
+                             context="{'tree_view_ref' : 'estate_workshop.planned_sparepart_tree'}"/>
+                      </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_actual_sparepart">
+             <field name="name">Inherit Actual sparepart</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Tools']" position="after">
+                      <page string="Sparepart" attrs="{'invisible': [('state', '!=', 'ready')]}">
+                          <field name="actualpart_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
+                             context="{'tree_view_ref' : 'estate_workshop.actual_sparepart_tree'}"/>
+                      </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model='ir.ui.view' id='planned_sparepart_tree'>
+            <field name="name">Planned Sparepart line tree</field>
+            <field name="model">estate.workshop.planned.sparepart</field>
+            <field name="arch" type="xml">
+                <tree string="Planned Sparepart line" editable="bottom">
+                    <field name="product_id" string="Product" />
+                    <field name="qty_product" string="Product Qty"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="qty_available" string="Qty Available"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='actual_sparepart_tree'>
+            <field name="name">Actual task line tree</field>
+            <field name="model">estate.workshop.actual.sparepart</field>
+            <field name="arch" type="xml">
+                <tree string="Actual Sparepart line" editable="bottom">
+                    <field name="product_id" string="Product" />
+                    <field name="qty_product" string="Product Qty"/>
+                    <field name="uom_id" string="Uom"/>
+                    <field name="qty_available" string="Qty Available"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

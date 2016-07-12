@@ -1,0 +1,206 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_form_inherit_field_type_asset_request">
+             <field name="name">Inherit type_service Template</field>
+             <field name="model">mro.request</field>
+             <field name="inherit_id" ref="mro.mro_request_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='asset_id']" position="after">
+                    <field name="type_asset" string="Service Type"/>
+                 </xpath>
+             </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="inherit_planned_task">
+             <field name="name">Inherit planned task</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@string='Planned Parts']" position="before">
+                      <page string="Planned Operations">
+                          <field name="task_ids" on_change="_onchange_part_line" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                             context="{'tree_view_ref' : 'estate_workshop.planned_task_tree'}"/>
+                      </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_actual_task">
+             <field name="name">Inherit Actual task</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="mro.mro_order_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='operations_description']" position="before">
+                      <page string="Actual Operations">
+                          <field name="actualtask_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
+                             context="{'tree_view_ref' : 'estate_workshop.actual_task_tree'}"/>
+                      </page>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model='ir.ui.view' id='planned_task_tree'>
+            <field name="name">Planned task line tree</field>
+            <field name="model">estate.workshop.plannedtask</field>
+            <field name="arch" type="xml">
+                <tree string="Planned Task line" editable="bottom">
+                    <field name="mastertask_id" string="Task For Maintenance"/>
+                    <field name="planned_hour" string="Planned Hour's"/>
+                    <field name="planned_manpower" string="Planned Manpower"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='actual_task_tree'>
+            <field name="name">Actual task line tree</field>
+            <field name="model">estate.workshop.actualtask</field>
+            <field name="arch" type="xml">
+                <tree string="Actual Task line" editable="bottom">
+                    <field name="mastertask_id" string="Task For Maintenance"/>
+                    <field name="planned_hour" string="Planned Hour's"/>
+                    <field name="planned_manpower" string="Planned Manpower"/>
+                </tree>
+            </field>
+        </record>
+
+         <record model='ir.ui.view' id='master_task_form'>
+            <field name="name">master task form</field>
+            <field name="model">estate.workshop.mastertask</field>
+            <field name="arch" type="xml">
+                <form string="Master Task">
+                    <sheet>
+                        <group col="2">
+                            <group string="Master task">
+                                <field name="name" string="Name"/>
+                                <field name="asset_id" string="Asset"/>
+                                <field name="planned_hour" string="Planned Hour's"/>
+                                <field name="planned_manpower" string="Planned Manpower"/>
+                            </group>
+                            <group string="Master Details">
+                                <field name="type_task1" options="{'no_create_edit': True}" string="Type Task"/>
+                                <field name="type_subtask" options="{'no_create_edit': True}"
+                                       attrs="{'invisible': [('type_task1','=',False)]}" string="Sub Task"/>
+                                <field name="type_list_task" options="{'no_create_edit': True}"
+                                       attrs="{'invisible': [('type_subtask','=',False)]}" string="List Task"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page>
+                                <field name="mastertaskline_ids" context="{'tree_view_ref' : 'master_task_line_tree'}"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_task_line_tree'>
+            <field name="name">master task line tree</field>
+            <field name="model">estate.workshop.mastertaskline</field>
+            <field name="arch" type="xml">
+                <tree string="Master Task line" editable="bottom">
+                    <field name="task_id" string="Task For Maintenance"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_task_tree'>
+            <field name="name">master task tree</field>
+            <field name="model">estate.workshop.mastertask</field>
+            <field name="arch" type="xml">
+                <tree string="Master Task">
+                    <field name="name" />
+                    <field name="asset_id" string="Asset"/>
+                    <field name="type_task1" string="Type Task"/>
+                    <field name="planned_hour" string="Planned Hour's"/>
+                    <field name="planned_manpower" string="Planned Manpower"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_task_type_tree'>
+            <field name="name">master task type tree</field>
+            <field name="model">estate.master.type.task</field>
+            <field name="arch" type="xml">
+                <tree string="Master Task">
+                    <field name="complete_name" />
+                    <field name="type_task" string="Type Task"/>
+                    <field name="description" string="Description"/>
+                </tree>
+            </field>
+        </record>
+
+         <record model='ir.ui.view' id='master_task_type_form'>
+            <field name="name">master task form</field>
+            <field name="model">estate.master.type.task</field>
+            <field name="arch" type="xml">
+                <form string="Master Task">
+                    <sheet>
+                        <group col="2">
+                            <group string="Master Task Type">
+                                <field name="name" />
+                                <field name="parent_id"/>
+                                <field name="type_task" string="Type Task"/>
+                                <field name="type" string="Type View"/>
+                            </group>
+                            <group string="Details">
+                                 <field name="description" string="Description"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_task_search'>
+            <field name="name">master task search</field>
+            <field name="model">estate.workshop.mastertask</field>
+            <field name="arch" type="xml">
+                <search string="Master Task" >
+                    <field name="name" />
+                    <field name="type_task1"/>
+                    <field name="type_subtask"/>
+                    <field name="type_list_task"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_typetask" context="{'group_by' : 'type_task1'}" string="Type Task"/>
+                        <filter name="groupby_subtask" context="{'group_by' : 'type_subtask'}" string="Sub Task Preventive"/>
+                        <filter name="groupby_listtask" context="{'group_by' : 'type_list_task'}" string="list Task"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='master_task_act'>
+            <field name="name">Master Task Action</field>
+            <field name="res_model">estate.workshop.mastertask</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_groupby_typetask" : True}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new master task.
+              </p><p>
+                Here you can add Master Task
+              </p>
+            </field>
+        </record>
+
+        <record model='ir.actions.act_window' id='master_task_type_act'>
+            <field name="name">Master Task Type</field>
+            <field name="res_model">estate.master.type.task</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new master task.
+              </p><p>
+                Here you can add Master Task
+              </p>
+            </field>
+        </record>
+
+        <menuitem action="estate_workshop.master_task_act" parent="mro.menu_maintenance_tasks" id="master_task_menu" sequence="99"/>
+        <menuitem action="estate_workshop.master_task_type_act" parent="asset.menu_maintenance_config" id="master_task_type_menu" sequence="99"/>
+    </data>
+</openerp>

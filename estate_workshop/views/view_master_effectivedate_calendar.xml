@@ -1,0 +1,85 @@
+<openerp>
+    <data>
+
+            <!-- Create the tree view -->
+            <record id="agenda_status_holiday_tree_view" model="ir.ui.view">
+                <field name="name">agenda.status.holiday.tree.view</field>
+                <field name="model">agenda.holiday</field>
+                <field name="type">tree</field>
+                <field name="priority" eval="1"/>
+                <field name="arch" type="xml">
+                    <tree string="Status">
+                        <field name="name"/>
+                        <field name="color" widget="color"/>
+                    </tree>
+                 </field>
+            </record>
+
+            <!-- Create the form view -->
+            <record id="agenda_status_holiday_form_view" model="ir.ui.view">
+                <field name="name">agenda.status.holiday.form.view</field>
+                <field name="model">agenda.holiday</field>
+                <field name="type">form</field>
+                <field name="priority" eval="1"/>
+                <field name="arch" type="xml">
+                    <form string="Status">
+                        <group col="2">
+                            <field name="name"/>
+                            <field name="color" widget="color"/>
+                         </group>
+                    </form>
+                 </field>
+            </record>
+
+            <!-- Create an action for the menuitem -->
+            <record model="ir.actions.act_window" id="open_view_agenda_holiday_coloring">
+                <field name="name">Agenda Holiday Statuses</field>
+                <field name="res_model">agenda.holiday</field>
+                <field name="view_type">form</field>
+                <field name='view_mode'>tree,form</field>
+                <field name='view_id' ref='agenda_status_holiday_tree_view'/>
+            </record>
+
+        <!--Add a new menuitem -->
+            <menuitem action="open_view_agenda_holiday_coloring"
+                id="menu_agenda_holiday"
+                name="Agenda Holiday"
+                parent="asset.menu_maintenance_config"
+                sequence="10"/>
+
+
+        <template id="web_task_color_assets_backend"
+                  name="web_task_color_assets_backend"
+                  inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <!--Be sure to call your module name in place of estate_workshop. This is the name of my module! -->
+                <script src="/estate_workshop/static/src/js/web_task_color.js"
+                        type="text/javascript"></script>
+            </xpath>
+        </template>
+
+
+        <record id="master_calendar" model="ir.ui.view">
+            <field name="name">Master Calendar</field>
+            <field name="model">master.calendar.effective.date</field>
+            <field name="arch" type="xml">
+                    <calendar string="Master Calendar " color="name" date_start="date_start" date_stop="date_stop">
+                        <field name="agendaholiday_id" string="Holiday"/>
+                        <field name="role"/>
+                        <field name="name" string="Name" readonly="1" invisible="1"/>
+                    </calendar>
+             </field>
+        </record>
+
+        <record id="action_master_calendar" model="ir.actions.act_window">
+            <field name="name">Master Calendar</field>
+            <field name="res_model">master.calendar.effective.date</field>
+            <field name="view_mode">calendar,tree,form</field>
+        </record>
+
+        <menuitem id="estate_master_calendar" name="Master Calendar"
+                  parent="asset.menu_maintenance_config"
+                  action="action_master_calendar"
+                  groups="base.group_no_one"/>
+    </data>
+</openerp>
