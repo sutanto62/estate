@@ -51,10 +51,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="work_schedule" name="Work Schedule"
-                  parent="hr.menu_open_view_attendance_reason_new_config"
-                  action="action_work_schedule"
-                  groups="estate.group_user"/>
+        <menuitem id="work_schedule" parent="hr.menu_open_view_attendance_reason_new_config" name="Work Schedule" action="action_work_schedule" groups="base.group_hr_attendance"/>
 
     </data>
 </openerp>
