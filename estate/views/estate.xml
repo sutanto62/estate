@@ -184,7 +184,7 @@
                   groups="base.group_no_one"/>
 
         <!-- Estate Reporting -->
-        <menuitem id="menu_estate_reporting" name="Reports" parent="main_estate_menu" sequence="5"/>
+        <menuitem id="menu_estate_reporting" name="Reports" parent="main_estate_menu" sequence="120"/>
         <menuitem id="menu_estate_upkeep_reporting" name="Upkeep" parent="menu_estate_reporting" sequence="20"/>
     </data>
 </openerp>
