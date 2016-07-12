@@ -238,4 +238,82 @@ class ViewCostTotalWorkshop(models.Model):
                 )utot)detail
             """)
 
+class ViewSummaryCostVehicleDetail(models.Model):
 
+    _name="v.summary.cost.vehicle.detail"
+    _description = "Detail for cost every month vehicle"
+    _auto = False
+    _order='vehicle_id'
+
+    id = fields.Integer('id')
+    type_log = fields.Text('Type Log')
+    vehicle_id = fields.Many2one('fleet.vehicle')
+    count = fields.Integer('')
+    month_log_text = fields.Text('Month')
+    year_log_text = fields.Text('Year')
+    amount = fields.Float('Amount')
+    parent_id = fields.Many2one('v.summary.cost.vehicle')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_summary_cost_vehicle_detail as
+                select detail.*, (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id from (
+                    select row_number() over()id, type_log, vehicle_id, "count", to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text, year_log::text as year_log_text, amount, month_log, year_log  from (
+                            select
+                                'Fuel' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(cost_amount) amount
+                            from (
+                                    select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log from fleet_vehicle_cost fvc inner join fleet_vehicle_log_fuel fvlf on fvc.id = fvlf.cost_id
+                                ) a group by vehicle_id, month_log, year_log
+                            union
+                            select
+                                'External Service' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(cost_amount) amount
+                            from (
+                                    select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log from fleet_vehicle_cost fvc inner join fleet_vehicle_log_services fvlf on fvc.id = fvlf.cost_id
+                                ) a group by vehicle_id, month_log, year_log
+                            union
+                            select
+                                'Oil' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(cost_amount) amount
+                            from (
+                                    select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log from fleet_vehicle_cost fvc inner join estate_vehicle_log_oil fvlf on fvc.id = fvlf.cost_id
+                                ) a group by vehicle_id, month_log, year_log
+                            union
+                            select 'Workshop Mecanic' as type_log,vehicle_id,count(*) "count",month_log,year_log,sum(total_amount) amount from(
+                            	select * from view_timesheet_mecanic_totalamounts
+                            )workmec group by vehicle_id, month_log, year_log
+                            union
+                            select 'Workshop Sparepart' as type_log,vehicle_id,count(*) "count",month_log,year_log,sum(total_amount) amount from(
+                            		select * from view_cost_workshop_sparepart)workpart group by vehicle_id, month_log, year_log
+                            union
+                            select
+                                'Other Service' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(amount) amount
+                            from (
+                                    select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log,(fvlf.price_per_service * fvlf.unit) amount from fleet_vehicle_cost fvc inner join estate_vehicle_log_otherservice fvlf on fvc.id = fvlf.cost_id
+                                ) a group by vehicle_id, month_log, year_log
+                            union
+                            select 'Basis Premi' as type_log,c.vehicle_id,count(*) "count",c.month_log ,c.year_log,
+                            CASE WHEN hrc.wage is null THEN 0
+                                ELSE ((c.total_trip/c.total_trip_vehicle)* hrc.wage)
+                               END amount
+                                from (
+                            select
+                                'Timesheet' as timesheet, a.employee_id, a.month_log, a.year_log, a.vehicle_id , a.total_trip,
+                                b.total_trip_vehicle
+                                from (
+                                    select ts.vehicle_id, count(ts.id) total_trip,ts.employee_id,
+                                    date_part('month', ts.date_activity_transport) month_log,
+                                    date_part('year', ts.date_activity_transport) year_log
+                                        from estate_timesheet_activity_transport ts
+                                        inner join fleet_vehicle fv on ts.vehicle_id = fv.id
+                                    group by vehicle_id, month_log,year_log ,employee_id
+                            )a inner join
+                            (
+                                select count(ts.id) total_trip_vehicle,
+                                    ts.employee_id,
+                                    ts.vehicle_id,
+                                    date_part('month', ts.date_activity_transport) month_log,
+                                    date_part('year', ts.date_activity_transport) year_log
+                                        from estate_timesheet_activity_transport ts
+                                    group by  month_log,year_log ,employee_id,ts.vehicle_id
+                            )b on a.vehicle_id = b.vehicle_id and a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
+                        ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null group by c.vehicle_id, c.month_log , c.year_log , hrc.wage , c.total_trip, c.total_trip_vehicle order by month_log
+                        ) a order by type_log, month_log, year_log asc
+        )detail""")

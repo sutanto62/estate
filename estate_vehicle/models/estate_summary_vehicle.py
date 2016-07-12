@@ -44,13 +44,6 @@ class ViewSummaryCostVehicleDetail(models.Model):
                                     select fvlf.*,fvc.vehicle_id, date_part('month', fvlf.create_date) month_log, date_part('year', fvlf.create_date) year_log from fleet_vehicle_cost fvc inner join estate_vehicle_log_oil fvlf on fvc.id = fvlf.cost_id
                                 ) a group by vehicle_id, month_log, year_log
                             union
-                            select 'Workshop Mecanic' as type_log,vehicle_id,count(*) "count",month_log,year_log,sum(total_amount) amount from(
-                            	select * from view_timesheet_mecanic_totalamounts
-                            )workmec group by vehicle_id, month_log, year_log
-                            union
-                            select 'Workshop Sparepart' as type_log,vehicle_id,count(*) "count",month_log,year_log,sum(total_amount) amount from(
-                            		select * from view_cost_workshop_sparepart)workpart group by vehicle_id, month_log, year_log
-                            union
                             select
                                 'Other Service' as type_log, vehicle_id,count(*) "count",month_log, year_log, sum(amount) amount
                             from (
