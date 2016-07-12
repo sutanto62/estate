@@ -701,8 +701,15 @@
                                 string="Seed Quants"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
                      <button name="%(stock.action_production_lot_form)d"
                                 string="Seed Move"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
-                     <button name="%(estate_nursery.action_list_selection)d"
-                                string="Seed Selection"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                     <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Selection"
+                                icon="fa-arrow-up"
+                                context="{'xml_id':'action_list_selection'}">
+                     </button>
+                     <!--<button name="%(estate_nursery.action_list_selection)d" -->
+                                <!--string="Seed Selection"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>-->
                      <button name="%(estate_nursery.action_list_cleaving)d"
                                 string="Seed Cleaving"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
                      <button name="%(estate_nursery.action_list_recovery)d"
