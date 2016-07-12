@@ -1,9 +1,16 @@
 __author__ = 'odoo'
 
+
+import estate_query_function
 import estate_asset
 import estate_workshop
 import estate_cost_workshop
 import master_effectivedate_calendar
 import view_report_active_vehicle
-import estate_query_function
 import view_job_schedulling
+import inherit_mro_order
+import inherit_mro_request
+import inherit_mro_task
+import inherit_hr_contract
+import task_workshop
+import equipment_workshop

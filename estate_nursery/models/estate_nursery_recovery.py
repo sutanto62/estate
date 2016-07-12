@@ -8,6 +8,7 @@ import calendar
 class NurseryRecovery(models.Model):
 
     _name ='estate.nursery.recovery'
+    _description = "Seed Batch Recovery"
     _inherit = ['mail.thread']
 
     def _default_session(self):
@@ -20,7 +21,7 @@ class NurseryRecovery(models.Model):
     stage_id = fields.Many2one('estate.nursery.stage','Stage Selection',required=True)
     step_id = fields.Many2one('estate.nursery.steprecovery','Step Recovery',store=True,required=True)
     recovery_date=fields.Date("Recovery Date",store=True)
-    date_planted = fields.Date("Date Planted",store=True,readonly=True)
+    date_planted = fields.Date("Date Planted",store=True)
     age_seed_recovery = fields.Integer("Age Seed Recovery",compute='_compute_age_seed',store=True)
     age_seed = fields.Integer('Age Seed')
     recovery_line_ids = fields.One2many('estate.nursery.recoveryline','recovery_seed_id','Recovery Line')
@@ -39,7 +40,7 @@ class NurseryRecovery(models.Model):
                                           ,store=True,required=True)
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
-        ('done', 'Transfere to Batch')],string="Recovery State")
+        ('done', 'Transfer to Batch')],string="Recovery State")
 
     #Sequence Recovery code
     def create(self, cr, uid, vals, context=None):
@@ -187,7 +188,7 @@ class NurseryRecovery(models.Model):
                 self.qty_normal += item.qty_normal
                 self.qty_dead += item.qty_dead
             self.qty_total = int(self.qty_plante) + self.qty_normal
-        return True
+            return True
 
     @api.depends('age_seed_recovery','recovery_date','date_planted','age_seed')
     def _compute_age_seed(self):

@@ -1,0 +1,110 @@
+<openerp>
+    <data>
+         <record model='ir.ui.view' id='planned_task_tree'>
+            <field name="name">Planned task line tree</field>
+            <field name="model">estate.workshop.plannedtask</field>
+            <field name="arch" type="xml">
+                <tree string="Planned Task line" editable="bottom">
+                    <field name="owner_id" invisible="1"/>
+                    <field name="mastertask_id" string="Master Task Action"/>
+                    <field name="planned_hour" string="Planned Hour's" readonly="False"/>
+                    <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+                </tree>
+            </field>
+        </record>
+
+         <record model='ir.ui.view' id='master_plannedtask_form'>
+            <field name="name">master planned task form</field>
+            <field name="model">estate.workshop.plannedtask</field>
+            <field name="arch" type="xml">
+                <form string="Master Task">
+                    <sheet>
+                        <group col="2">
+                            <group string="Planned Task">
+                                <field name="owner_id" invisible="1"/>
+                                <field name="mastertask_id" string="Master Task"/>
+                                <field name="planned_hour" string="Planned Hour's" readonly="False"/>
+                                <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='actual_task_tree'>
+            <field name="name">Actual task line tree</field>
+            <field name="model">estate.workshop.actualtask</field>
+            <field name="arch" type="xml">
+                <tree string="Actual Task line" editable="bottom">
+                    <field name="owner_id" invisible="1" string="Owner"/>
+                    <field name="mastertask_id" string="Maintenance Task"/>
+                    <field name="planned_hour" string="Planned Hour's" readonly="False"/>
+                    <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+                    <field name="actual_hour" string="Actual Hour's" readonly="False"/>
+                    <field name="actual_manpower" string="Actual Manpower" readonly="False"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='master_actualtask_form'>
+            <field name="name">master actual task form</field>
+            <field name="model">estate.workshop.actualtask</field>
+            <field name="arch" type="xml">
+                <form string="Actual Task">
+                    <sheet>
+                        <group col="2">
+                            <group string="Actual Task">
+                                <field name="mro_id" invisible="1"/>
+                                <field name="owner_id" invisible="1" string="Owner"/>
+                                <field name="mastertask_id" string="Maintenance Task"/>
+                                <field name="planned_hour" string="Planned Hour's" readonly="False"/>
+                                <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+                                <field name="actual_hour" string="Actual Hour's" readonly="False"/>
+                                <field name="actual_manpower" string="Actual Manpower" readonly="False"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='parent_task_tree'>
+            <field name="name">Parent task line tree</field>
+            <field name="model">task.maintenance.order</field>
+            <field name="arch" type="xml">
+                <tree string="Parent Task line" editable="bottom">
+                    <field name="mro_id" string="MRO ID" invisible="0"/>
+                    <field name="owner_id" invisible="0" string="Owner"/>
+                    <field name="mastertask_id" string="Maintenance Task"/>
+                    <field name="planned_hour" string="Planned Hour's" readonly="False"/>
+                    <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+                    <field name="actual_hour" string="Actual Hour's" readonly="False"/>
+                    <field name="actual_manpower" string="Actual Manpower" readonly="False"/>
+                </tree>
+            </field>
+        </record>
+
+         <record model='ir.ui.view' id='parent_task_form'>
+            <field name="name">parent task form</field>
+            <field name="model">task.maintenance.order</field>
+            <field name="arch" type="xml">
+                <form string="Parent Task">
+                    <sheet>
+                        <group col="2">
+                            <group string="Parent  Task">
+                                <field name="mro_id" string="MRO ID" invisible="0"/>
+                                <field name="owner_id" invisible="0" string="Owner"/>
+                                <field name="mastertask_id" string="Maintenance Task"/>
+                                <field name="planned_hour" string="Planned Hour's" readonly="False"/>
+                                <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+                                <field name="actual_hour" string="Actual Hour's" readonly="False"/>
+                                <field name="actual_manpower" string="Actual Manpower" readonly="False"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

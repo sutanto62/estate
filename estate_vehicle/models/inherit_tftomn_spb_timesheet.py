@@ -15,10 +15,11 @@ class InheritSPB(models.Model):
 
     timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id','Timesheet ids')
 
-    @api.one
+    @api.multi
     @api.constrains('timesheet_ids')
     def _constraints_timesheet(self):
         #constraint timesheet for quantity unit not more than bpb
+        self.ensure_one()
         qty_unit = 0
         qty_seed = 0
         if self.timesheet_ids:
@@ -31,10 +32,11 @@ class InheritSPB(models.Model):
                 raise exceptions.ValidationError(error_msg)
         return True
 
-    @api.one
+    @api.multi
     @api.constrains('timesheet_ids')
     def _constraint_date_timesheet(self):
         #constraint date in timesheet must be same in seed do
+        self.ensure_one()
         if self.timesheet_ids:
             for vehicletimesheet in self.timesheet_ids:
                 date = vehicletimesheet.date_activity_transport
@@ -51,10 +53,11 @@ class InheritTransfertoMN(models.Model):
 
     vehicle_timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id')
 
-    @api.one
+    @api.multi
     @api.constrains('vehicle_timesheet_ids')
     def _constraints_timesheet_unit(self):
         #constraint timesheet for quantity unit not more than qty move
+        self.ensure_one()
         qty_unit = 0
         if self.vehicle_timesheet_ids:
             for timesheet in self.vehicle_timesheet_ids:
@@ -64,10 +67,11 @@ class InheritTransfertoMN(models.Model):
                 raise exceptions.ValidationError(error_msg)
         return True
 
-    @api.one
+    @api.multi
     @api.constrains('vehicle_timesheet_ids')
     def _constraint_date_timesheet(self):
         #constraint date in move to mn must be same in time sheet ids
+        self.ensure_one()
         if self.vehicle_timesheet_ids:
             for vehicletimesheet in self.vehicle_timesheet_ids:
                 date = vehicletimesheet.date_activity_transport

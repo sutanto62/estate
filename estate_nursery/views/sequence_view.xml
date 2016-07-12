@@ -2,10 +2,10 @@
 <openerp>
     <data>
         <!-- Sequences for separation code -->
-        <record id="clv_code_sequence" model="ir.sequence.type">
-            <field name="name">Seed Cleaving</field>
-            <field name="code">estate.nursery.cleaving</field>
-        </record>
+        <!--<record id="clv_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Seed Cleaving</field>-->
+            <!--<field name="code">estate.nursery.cleaving</field>-->
+        <!--</record>-->
 
         <record id="seq_cleaving_seed" model="ir.sequence">
             <field name="name">Seed Cleaving</field>
@@ -16,10 +16,10 @@
         </record>
 
         <!-- Sequences for Recovery code -->
-        <record id="recov_code_sequence" model="ir.sequence.type">
-            <field name="name">Seed Recovery</field>
-            <field name="code">estate.nursery.recovery</field>
-        </record>
+        <!--<record id="recov_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Seed Recovery</field>-->
+            <!--<field name="code">estate.nursery.recovery</field>-->
+        <!--</record>-->
 
         <record id="recovery_cleaving_seed" model="ir.sequence">
             <field name="name">Seed Recovery</field>
@@ -31,10 +31,10 @@
 
 
         <!-- Sequences for culling code -->
-        <record id="cll_code_sequence" model="ir.sequence.type">
-            <field name="name">culling Request </field>
-            <field name="code">estate.nursery.culling</field>
-        </record>
+        <!--<record id="cll_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">culling Request </field>-->
+            <!--<field name="code">estate.nursery.culling</field>-->
+        <!--</record>-->
 
         <record id="seq_request_culling" model="ir.sequence">
             <field name="name">culling Request</field>
@@ -46,10 +46,10 @@
         <!-- End of Sequence code for culling code -->
 
         <!-- Sequences for selection code -->
-        <record id="sfb_code_sequence" model="ir.sequence.type">
-            <field name="name">Selection No </field>
-            <field name="code">estate.nursery.selection</field>
-        </record>
+        <!--<record id="sfb_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Selection No </field>-->
+            <!--<field name="code">estate.nursery.selection</field>-->
+        <!--</record>-->
 
         <record id="seq_request_selection" model="ir.sequence">
             <field name="name">Selection No</field>

@@ -6,20 +6,27 @@
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
             <field name="arch" type="xml">
-                <group string="Additional Properties" position="before">
-                    <!--<group string="Vehicle Information">-->
-                        <!--<field name="no_vehicle"/>-->
-                        <!--<field name="vehicle_type"/>-->
-                    <!--</group>-->
-                    <group string="Vehicle Capacity &amp; status">
+                <xpath expr="//group[1]" position="before">
+                     <group string="Vehicle Capacity &amp; status">
                         <field name="category_unit_id" string="Category"/>
                         <field name="status_vehicle"/>
                         <field name="capacity_vehicle"/>
                     </group>
-                    <!--<group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >-->
+                 </xpath>
+                <!--<group string="Additional Properties" position="before">-->
+                    <!--&lt;!&ndash;<group string="Vehicle Information">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<field name="no_vehicle"/>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<field name="vehicle_type"/>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</group>&ndash;&gt;-->
+                    <!--<group string="Vehicle Capacity &amp; status">-->
+                        <!--<field name="category_unit_id" string="Category"/>-->
+                        <!--<field name="status_vehicle"/>-->
+                        <!--<field name="capacity_vehicle"/>-->
+                    <!--</group>-->
+                     <!--<group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >-->
                         <!--<field name="employee_driver_id" string="Driver Internal" options="{'no_create_edit': True}"/>-->
                     <!--</group>-->
-                </group>
+                <!--</group>-->
             </field>
         </record>
 

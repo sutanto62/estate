@@ -23,17 +23,19 @@
                 <field name="priority" eval="1"/>
                 <field name="arch" type="xml">
                     <form string="Status">
-                        <group col="2">
-                            <field name="name"/>
-                            <field name="color" widget="color"/>
-                         </group>
+                        <sheet>
+                              <group col="2">
+                                <field name="name"/>
+                                <field name="color" widget="color"/>
+                              </group>
+                        </sheet>
                     </form>
                  </field>
             </record>
 
             <!-- Create an action for the menuitem -->
             <record model="ir.actions.act_window" id="open_view_agenda_holiday_coloring">
-                <field name="name">Agenda Holiday Statuses</field>
+                <field name="name">Agenda Holiday</field>
                 <field name="res_model">agenda.holiday</field>
                 <field name="view_type">form</field>
                 <field name='view_mode'>tree,form</field>
@@ -48,15 +50,15 @@
                 sequence="10"/>
 
 
-        <template id="web_task_color_assets_backend"
-                  name="web_task_color_assets_backend"
-                  inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <!--Be sure to call your module name in place of estate_workshop. This is the name of my module! -->
-                <script src="/estate_workshop/static/src/js/web_task_color.js"
-                        type="text/javascript"></script>
-            </xpath>
-        </template>
+        <!--<template id="web_task_color_assets_backend"-->
+                  <!--name="web_task_color_assets_backend"-->
+                  <!--inherit_id="web.assets_backend">-->
+            <!--<xpath expr="." position="inside">-->
+                <!--&lt;!&ndash;Be sure to call your module name in place of estate_workshop. This is the name of my module! &ndash;&gt;-->
+                <!--<script src="/estate_workshop/static/src/js/web_task_color.js"-->
+                        <!--type="text/javascript"></script>-->
+            <!--</xpath>-->
+        <!--</template>-->
 
 
         <record id="master_calendar" model="ir.ui.view">

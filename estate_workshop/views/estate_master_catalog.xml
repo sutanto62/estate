@@ -22,27 +22,29 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
-                    <group>
-                        <field name="name"/>
-                        <field name="asset_id" string="Asset"/>
-                        <field name="parent_id" string="Parent"/>
-                    </group>
-                    <group>
+                    <sheet>
+                         <group>
+                            <field name="name"/>
+                            <field name="asset_id" string="Asset"/>
+                            <field name="parent_id" string="Parent"/>
+                        </group>
                         <group>
-                            <group name="detail" string="Detail">
-                                <field name="category_id"/>
-                                <field name="type"/>
+                            <group>
+                                <group name="detail" string="Detail">
+                                    <field name="category_id"/>
+                                    <field name="type"/>
+                                </group>
                             </group>
                         </group>
-                    </group>
-                    <group  name="partlist" string="Part List"
-                            attrs="{'invisible': [('type', '=', 'view')]}">
-                         <notebook>
-                            <page>
-                                <field name="categoryline_ids" context="{'tree_view_ref' : 'estate_workshop.view_master_catalogline_tree'}"/>
-                            </page>
-                        </notebook>
-                    </group>
+                        <group  name="partlist" string="Part List"
+                                attrs="{'invisible': [('type', '=', 'view')]}">
+                             <notebook>
+                                <page>
+                                    <field name="categoryline_ids" context="{'tree_view_ref' : 'estate_workshop.view_master_catalogline_tree'}"/>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -84,7 +86,7 @@
 
 
         <record model="ir.actions.act_window" id="action_list_master_catalog">
-            <field name="name">Action Master Catalog</field>
+            <field name="name">Master Catalog</field>
             <field name="res_model">estate.part.catalog</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{"search_default_groupby_category" : True}</field>

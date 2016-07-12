@@ -31,11 +31,13 @@
         'views/estate_notification.xml',
         'views/estate_master_catalog.xml',
         'views/estate_mecanic_timesheet.xml',
-        'views/estate_master_workshop_shedule.xml',
+        'views/estate_master_workshop_schedule.xml',
         'views/estate_master_mapping_asset.xml',
-        'views/inherit_equipment.xml',
+        'views/equipment_maintenance_order.xml',
         'views/estate_service_external.xml',
         'views/estate_workshop_cost.xml',
+        'views/inherit_mro_order.xml',
+        'views/task_maintenance_order.xml',
         'views/inherit_hr_contract.xml',
         'views/view_cost_workshop.xml',
         'views/estate_workshop_sparepart.xml',
@@ -47,6 +49,7 @@
     'demo': [
         'demo/demo.xml',
         'demo/estate.activity.csv',
+        'demo/estate_job_employee.xml',
         'demo/estate_workshop_code.xml',
 
     ],

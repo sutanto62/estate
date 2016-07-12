@@ -107,6 +107,6 @@
             </field>
         </record>
 
-        <!--<menuitem action="estate_vehicle.fleet_vehicle_log_oil_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_oil_menu" groups="fleet.group_fleet_user"/>-->
+        <menuitem action="estate_vehicle.fleet_vehicle_log_oil_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_oil_menu" groups="fleet.group_fleet_user"/>
     </data>
 </openerp>

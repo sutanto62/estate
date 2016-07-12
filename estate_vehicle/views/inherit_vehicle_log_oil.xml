@@ -22,14 +22,13 @@
                          help="show the Other Service logs for this vehicle">
                          <field name="other_service_log_count" widget="statinfo" string="Other Service"/>
                      </button>
-
-                     <!--<button name="%(fleet_vehicle_log_sparepart_act)d"-->
-                         <!--type="action"-->
-                         <!--class="oe_stat_button"-->
-                         <!--icon="fa-wrench"-->
-                         <!--help="show the Sparepart logs for this vehicle">-->
-                         <!--<field name="sparepart_log_count" widget="statinfo" string="Sparepart"/>-->
-                     <!--</button>-->
+                     <button name="%(fleet_vehicle_log_oil_act)d"
+                         type="action"
+                         class="oe_stat_button"
+                         icon="fa-book"
+                         help="Show the Oil logs for this vehicle">
+                         <field name="other_service_log_count" widget="statinfo" string="Oil"/>
+                     </button>
                  </xpath>
              </field>
          </record>

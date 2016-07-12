@@ -35,7 +35,7 @@ class TimesheetActivityTransport(models.Model):
     total_distance = fields.Float(digits=(2,2),compute='_compute_total_distance',store=True)
     start_location = fields.Many2one('estate.block.template',store=True)
     end_location = fields.Many2one('estate.block.template',store=True)
-    distance_location = fields.Float('Distance Location',store=True)
+    distance_location = fields.Float('Distance Location',store=True,compute='_onchange_distance_location')
     start_time = fields.Float(digits=(2,2))
     end_time = fields.Float(digits=(2,2))
     total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
@@ -77,7 +77,7 @@ class TimesheetActivityTransport(models.Model):
         }
 
     @api.multi
-    @api.onchange('distance_location','end_location','start_location')
+    @api.depends('distance_location','end_location','start_location')
     def _onchange_distance_location(self):
         #to change distance location same master path location
         if self:
@@ -88,6 +88,7 @@ class TimesheetActivityTransport(models.Model):
                 for c in distancelocation:
                     arrDistance += c.distance_location
                 self.distance_location = arrDistance
+        return True
 
     @api.multi
     @api.onchange('employee_id')
@@ -147,7 +148,11 @@ class TimesheetActivityTransport(models.Model):
         #to compute total_time
         if self:
             if self.start_time and self.end_time:
-                self.total_time = self.end_time - self.start_time
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                self.total_time =calculate_endtime-calculate_starttime
+                if self.total_time < 0 :
+                    self.total_time = 0
         return True
 
     @api.multi
@@ -160,50 +165,72 @@ class TimesheetActivityTransport(models.Model):
                 self.total_distance = self.end_km - self.start_km
             return True
 
-    # @api.depends('fleet.vehicle.status_vehicle')
-    # def _compute_status_vehicle(self):
-    #
-    #     if self.activity_id.status == '2':
-    #         for rec in self.
-
-
-
     #Constraint ALL
 
     @api.multi
     @api.constrains('start_km','end_km')
     def _constraint_startkm_endkm(self):
+
         if self:
             if self.end_km < self.start_km:
                 error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
                 raise exceptions.ValidationError(error_msg)
             return True
 
+    @api.multi
+    @api.constrains('start_time','end_time')
+    def _constraint_starttime_endtime(self):
+        Max = float(24.0)
+        Min = float(0.0)
+        if self:
+            if self.start_time < Min:
+                error_msg = "Start Time Not More Less Than 00:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time < Min:
+                error_msg = "End Time Not More Less Than 00:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.start_time >  Max:
+                error_msg = "Start Time Not More Than 24:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time > Max :
+                error_msg = "End Time Not More Than 24:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time < self.start_time:
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                error_msg="End Time  %s is set more less than Start Time %s " %(calculate_endtime,calculate_starttime)
+                raise exceptions.ValidationError(error_msg)
+            return True
+
     #state for Cleaving
-    @api.one
+    @api.multi
     def action_draft(self):
-        """Set Selection State to Draft."""
+
+        self.ensure_one()
         self.state = 'draft'
 
-    @api.one
+    @api.multi
     def action_confirmed(self):
-        """Set Selection state to Confirmed."""
+
+        self.ensure_one()
         self.state = 'confirmed'
 
-    @api.one
+    @api.multi
     def action_approved1(self):
-        """Set Selection state to Confirmed."""
+
+        self.ensure_one()
         self.state = 'approved1'
 
-    @api.one
+    @api.multi
     def action_approved2(self):
-        """Set Selection state to Confirmed."""
+
+        self.ensure_one()
         self.state = 'approved2'
 
-    @api.one
+    @api.multi
     def action_approved(self):
-        """Approved Selection is planted Seed to batch."""
-        # self.action_receive()
+
+        self.ensure_one()
         self.state = 'done'
 
     # @api.one

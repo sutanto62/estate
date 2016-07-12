@@ -9,12 +9,12 @@ import decimal
 
 class CreateFunctionName(models.Model):
 
-    _name = "somefuncname"
+    _name = "function.get.totalday.breakdown"
     _description = "Function to Create Name"
     _auto = False
 
     def init(self, cr):
-        cr.execute("""CREATE OR REPLACE FUNCTION somefuncname(i_bulan int,i_tahun int,i_vehicle_id int, i_status int)
+        cr.execute("""CREATE OR REPLACE FUNCTION function_get_totalday_breakdown(i_month_log_text int,i_year_log_text int,i_vehicle_id int, i_status int)
                     RETURNS int LANGUAGE plpgsql AS $BODY$
                     DECLARE
                         v_total_day_breakdown int;
@@ -32,9 +32,9 @@ class CreateFunctionName(models.Model):
                         from
                             view_summary_vehicle_status_detail v
                         where
-                            v.month_log_text::integer <= i_bulan
+                            v.month_log_text::integer <= i_month_log_text
                             and
-                            v.year_log_text::integer = i_tahun
+                            v.year_log_text::integer = i_year_log_text
                             and
                             v.vehicle_id = i_vehicle_id;
                       RETURN v_total_day_breakdown ;
@@ -82,10 +82,10 @@ class CreateFunctionGenerateHolidayPeryear(models.Model):
                   COST 100;
                    """)
 
-class CountMultiplyOdometer(models.Model):
+class CreateFunctionCountMultiplyOdometer(models.Model):
 
     _name = "count.multiply.odometer"
-    _description = "Function to Jobs Sheduling"
+    _description = "Function to count multiply odometer"
     _auto = False
 
     def init(self, cr):
@@ -107,86 +107,90 @@ class CountMultiplyOdometer(models.Model):
                       LANGUAGE plpgsql VOLATILE
                       COST 100;
                    """)
-
-class CreatemoPreventive(models.Model):
+        
+class CreateFunctionMoPreventive(models.Model):
 
     _name = "create.mo.preventive"
-    _description = "Function to Jobs Sheduling"
+    _description = "Function to create MO preventive"
     _auto = False
 
     def init(self, cr):
         cr.execute("""CREATE OR REPLACE FUNCTION create_mo_preventive()
-                  RETURNS boolean AS
-                $BODY$
-                declare
-                    v_seq_id integer;
-                    v_name_mro text;
-                    v_vpo RECORD;
-                begin
+                      RETURNS boolean AS
+                    $BODY$
+                    declare
+                        v_seq_id integer;
+                        v_name_mro text;
+                        v_vpo RECORD;
+                    begin
 
-                    FOR v_vpo IN
-                        select
-                            fleet_id,
-                            asset_id,
-                            odometer,
-                            odometer_current,
-                            count_multiply,
-                            odometer_remain,
-                            odometer_threshold
-                        from
-                            vehicle_preventive_odometer
-                        where
-                            odometer_remain < odometer_threshold
-                    LOOP
-                        select nextval('mro_order_id_seq') into v_seq_id;
-                        select substring('MRO00000' from 0 for char_length('MRO00000')-char_length(v_seq_id::text)+1)||v_seq_id into v_name_mro;
-                        INSERT INTO public.mro_order
-                            (
-                                id,
-                                origin,
-                                create_date,
-                                write_uid,
+                        FOR v_vpo IN
+                            select
+                                fleet_id,
                                 asset_id,
-                                create_uid,
-                                company_id,
-                                state,
-                                maintenance_type,
-                                description,
-                                write_date,
-                                "name",
-                                date_planned,
-                                date_execution,
-                                date_scheduled,
-                                type_service,
-                                code_id
-                            )
-                        VALUES
-                            (
-                                v_seq_id,
-                                v_vpo.odometer||'-'|| v_vpo.odometer_threshold,
-                                now(),
-                                1,
-                                v_vpo.asset_id,
-                                1,
-                                1,
-                                'draft',
-                                'pm',
-                                v_vpo.odometer||'-'|| v_vpo.odometer_threshold,
-                                now(),
-                                v_name_mro,
-                                now(),
-                                now(),
-                                now(),
-                                '1',
-                                11
-                            );
-                    END LOOP;
+                                odometer,
+                                odometer_current,
+                                count_multiply,
+                                odometer_remain,
+                                odometer_threshold
+                            from
+                                vehicle_preventive_odometer
+                            where
+                                odometer_remain < odometer_threshold
+                        LOOP
+                            select nextval('mro_order_id_seq') into v_seq_id;
+                            select substring('MRO00000' from 0 for char_length('MRO00000')-char_length(v_seq_id::text)+1)||v_seq_id into v_name_mro;
+                            INSERT INTO public.mro_order
+                                (
+                                    id,
+                                    origin,
+                                    create_date,
+                                    write_uid,
+                                    asset_id,
+                                    create_uid,
+                                    company_id,
+                                    state,
+                                    maintenance_type,
+                                    description,
+                                    write_date,
+                                    "name",
+                                    date_planned,
+                                    date_execution,
+                                    date_scheduled,
+                                    type_service,
+                                    code_id
+                                )
+                            VALUES
+                                (
+                                    v_seq_id,
+                                    v_vpo.odometer||'-'|| v_vpo.odometer_threshold,
+                                    now(),
+                                    1,
+                                    v_vpo.asset_id,
+                                    1,
+                                    1,
+                                    'draft',
+                                    'pm',
+                                    v_vpo.odometer||'-'|| v_vpo.odometer_threshold,
+                                    now(),
+                                    v_name_mro,
+                                    now(),
+                                    now(),
+                                    now(),
+                                    '1',
+                                    11
+                                );
+                        END LOOP;
 
-                    return true;
-                end;
-                $BODY$
-                  LANGUAGE plpgsql VOLATILE
-                  COST 100;""")
+                        return true;
+                    end;
+                    $BODY$
+                      LANGUAGE plpgsql VOLATILE
+                      COST 100;
+                   """)
+
+
+
 
 
 

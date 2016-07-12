@@ -2,10 +2,10 @@
 <openerp>
     <data>
         <!-- Sequences for planting code -->
-        <record id="plt_code_sequence" model="ir.sequence.type">
-            <field name="name">Seed Delivery Order</field>
-            <field name="code">estate.nursery.seeddo</field>
-        </record>
+        <!--<record id="plt_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Seed Delivery Order</field>-->
+            <!--<field name="code">estate.nursery.seeddo</field>-->
+        <!--</record>-->
 
         <record id="seq_planting" model="ir.sequence">
             <field name="name">Seed Delivery Order</field>
@@ -16,10 +16,10 @@
         </record>
 
          <!-- Sequences for Transfer to Mn code -->
-        <record id="trfmn_code_sequence" model="ir.sequence.type">
-            <field name="name">Nursery Transfer To Mn</field>
-            <field name="code">estate.nursery.transfermn</field>
-        </record>
+        <!--<record id="trfmn_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Nursery Transfer To Mn</field>-->
+            <!--<field name="code">estate.nursery.transfermn</field>-->
+        <!--</record>-->
 
         <record id="seq_transfermn" model="ir.sequence">
             <field name="name">Nursery Transfer To Mn</field>
@@ -30,10 +30,10 @@
         </record>
 
         <!-- Sequences for request code -->
-        <record id="rsq_code_sequence" model="ir.sequence.type">
-            <field name="name">Seed Request </field>
-            <field name="code">estate.nursery.request</field>
-        </record>
+        <!--<record id="rsq_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Seed Request </field>-->
+            <!--<field name="code">estate.nursery.request</field>-->
+        <!--</record>-->
 
         <record id="seq_request_seed" model="ir.sequence">
             <field name="name">Seed Request</field>

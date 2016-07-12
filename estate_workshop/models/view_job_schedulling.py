@@ -6,10 +6,12 @@ from pytz import timezone
 import calendar
 import decimal
 
-class CreateFunctionGenerateHolidayPeryear(models.Model):
 
-    _name = "insert.range.into.calendar"
-    _description = "Function to Generate Holiday Per Year"
+
+class ViewVehiclePreventiveOdometer(models.Model):
+
+    _name = "vehicle.preventive.odometer"
+    _description = "Function to Vehicle Preventive Odometer "
     _auto = False
 
     def init(self, cr):
