@@ -250,7 +250,7 @@ class MasterCatalogLine(models.Model):
     product_id = fields.Many2one('product.product')
     part_number = fields.Char('Part Number')
     quantity_part = fields.Float('Quantity Part',)
-    product_qty = fields.Float('Product Quantity', required=True),
+    product_qty = fields.Float('Product Quantity', required=True)
     qty_available = fields.Float(digits=(2,2))
     product_uom = fields.Many2one('product.uom')
     type = fields.Selection([('normal', 'Normal'), ('phantom', 'Phantom')], 'BoM Line Type', required=True,
