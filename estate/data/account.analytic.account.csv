@@ -1,5 +1,0 @@
-"id","name","state","type","company_id/id","use_estate"
-"account.analytic_estate_main","Estate","In Progress","Analytic View","base.main_company","True"
-"account.analytic_estate_lyd","LYD Estate","In Progress","Analytic View","base.main_company","True"
-"account.analytic_estate_nursery","Nursery","In Progress","Analytic Account","base.main_company","True"
-"account.analytic_estate_upkeep","Upkeep","In Progress","Analytic Account","base.main_company","True"

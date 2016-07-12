@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Analytic Account -->
+        <record id="account.analytic_estate_main" model="account.analytic.account">
+            <field name="name">Estate</field>
+            <field name="state">open</field>
+            <field name="type">view</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="use_estate">True</field>
+        </record>
+
+        <record id="account.analytic_estate_lyd" model="account.analytic.account">
+            <field name="name">LYD Estate</field>
+            <field name="state">open</field>
+            <field name="type">view</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="use_estate">True</field>
+        </record>
+
+        <record id="account.analytic_estate_nursery" model="account.analytic.account">
+            <field name="name">Nursery</field>
+            <field name="state">open</field>
+            <field name="type">normal</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="use_estate">True</field>
+        </record>
+
+        <record id="account.analytic_estate_upkeep" model="account.analytic.account">
+            <field name="name">Upkeep</field>
+            <field name="state">open</field>
+            <field name="type">normal</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="use_estate">True</field>
+        </record>
+
+        <!-- Journal Account -->
+        <record id="account.estate_journal" model="account.analytic.journal">
+            <field name="name">Estate Journal</field>
+            <field name="type">general</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="code">EST</field>
+        </record>
+
+    </data>
+</openerp>

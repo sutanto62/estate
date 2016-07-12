@@ -40,9 +40,7 @@
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
-        'data/account.analytic.account.csv',
-        'data/account.analytic.journal.csv',
-        'data/estate.activity.csv',
+        'data/account_analytic.xml',
         'data/stock.location.csv',
         'data/estate.block.template.csv',
         #'data/estate.hr.team.csv',
