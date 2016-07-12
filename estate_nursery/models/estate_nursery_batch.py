@@ -90,6 +90,20 @@ class Condition(models.Model):
 
 class Batch(models.Model):
     """Delegation Inheritance Product for Seed Batch. Created from Transfer."""
+
+    def return_action_to_open(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current Batch """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'estate_nursery', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_batch_id': ids[0]})
+            res['domain'] = [('batch_id','=', ids[0])]
+            return res
+        return False
+
+
     _name = 'estate.nursery.batch'
     _description = "Seed Batch"
     _inherit=['mail.thread']
@@ -125,7 +139,6 @@ class Batch(models.Model):
     selection_count = fields.Integer("Selection Seed Count", compute="_get_selection_count")
     comment = fields.Text("Additional Information")
     month=fields.Integer("Month Rule",compute="_rule_month",store=True)
-
     qty_received = fields.Integer("Quantity Received")
     qty_normal = fields.Integer("Normal Seed Quantity",track_visibility='onchange',store=True)
     qty_single= fields.Integer("single Seed Quantity",compute='_compute_single',store=True)
