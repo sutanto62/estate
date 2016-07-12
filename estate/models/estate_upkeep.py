@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, exceptions, _
+from openerp import models, fields, api, _
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
@@ -141,10 +141,10 @@ class Upkeep(models.Model):
             delta = (d2 - d1).days
             if config.default_max_entry_day == 0 and abs(delta) > config.default_max_entry_day:
                 error_msg = _("Transaction date should be today")
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
             elif config.default_max_entry_day != 0 and abs(delta) > config.default_max_entry_day:
                 error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % config.default_max_entry_day)
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
             else:
                 return True
 
@@ -334,7 +334,7 @@ class Upkeep(models.Model):
         # Nothing to be confirmed.
         if not self.labour_line_ids and self.state == 'draft':
             error_msg = _("No Upkeep Labour need to be confirmed")
-            raise exceptions.ValidationError(error_msg)
+            raise ValidationError(error_msg)
 
         self.write({
             'state': 'confirmed'
@@ -345,7 +345,7 @@ class Upkeep(models.Model):
         # Nothing to be approved.
         if not self.labour_line_ids and self.state == 'draft':
             error_msg = _("No Upkeep Labour need to be confirmed")
-            raise exceptions.ValidationError(error_msg)
+            raise ValidationError(error_msg)
 
         # todo create analytic journal entry here
 
@@ -453,6 +453,8 @@ class UpkeepActivity(models.Model):
     ratio_wage_quantity = fields.Float('Ratio Wage/Quantity', compute='_compute_ratio', store=True, group_operator="avg",
                                        digits=dp.get_precision('Account'),
                                        help='Amount of wage paid to finish a work')
+    activity_contract = fields.Boolean('Activity Contract', related='activity_id.contract')
+    contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
 
     @api.multi
     @api.depends('activity_id')
@@ -589,6 +591,7 @@ class UpkeepLabour(models.Model):
     activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal')],
                                   help='Any update will reset Block.', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
+    activity_wage_method = fields.Selection('Wage Method', related='activity_id.wage_method', readonly=True)
     activity_standard_base = fields.Float(related='activity_id.qty_base')
     location_id = fields.Many2one('estate.block.template', 'Location')
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
@@ -603,9 +606,9 @@ class UpkeepLabour(models.Model):
     quantity_overtime = fields.Float('Overtime', track_visibility='onchange',
                                      help='Define wage based on hour(s)', digits=dp.get_precision('Estate'))
     number_of_day = fields.Float('Work Day', help='Maximum 1', compute='_compute_number_of_day', store=True)
-    wage_number_of_day = fields.Float('Daily Wage', compute='_compute_wage_number_of_day', store=True)
+    wage_number_of_day = fields.Float('Daily/Target Wage', compute='_compute_wage_number_of_day', store=True)
     wage_overtime = fields.Float('Overtime Wage', compute='_compute_wage_overtime', store=True)
-    wage_piece_rate = fields.Float('Piece Rate Wage', compute='_compute_piece_rate', store=True)
+    wage_piece_rate = fields.Float('Piece Rate Wage', compute='_compute_wage_piece_rate', store=True)
     amount = fields.Float('Wage', compute='_compute_amount', store=True, help='Sum of daily, piece rate and overtime wage')
 
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
@@ -626,6 +629,8 @@ class UpkeepLabour(models.Model):
                                 help='Achievement over standar in quantity.')
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
+    activity_contract = fields.Boolean('Upkeep Activity Contract', compute='_compute_activity_contract',
+                                       help='Contract based upkeep required no attendance')
 
     @api.multi
     @api.depends('employee_id')
@@ -644,14 +649,16 @@ class UpkeepLabour(models.Model):
     @api.depends('attendance_code_ratio', 'activity_standard_base', 'quantity')
     def _compute_number_of_day(self):
         """Define number of days based on attendance code and work result
-        Condition if activity.wage_method = 'standard':
+
+        Standard based condition
         1. A day work and work result > activity standard = 1 day.
         2. A day work and work result more than half of standard = 0.5 day.
         3. A half day work and work result more than half of standard = 0.5 day.
         4. Else = 1 * attendance ratio day.
+        5. If contract based return 0
 
-        Condition if activity.wage_method = 'attendance':
-        1. based on attendance ratio.
+        Attendance based condition
+        1. Return attendance code ratio
         """
         att_ratio = self.attendance_code_ratio
         base = self.activity_standard_base # todo adjust base to estate block parameter
@@ -665,24 +672,32 @@ class UpkeepLabour(models.Model):
             result = 0
 
         if self.activity_id.wage_method == 'standard':
-            self.number_of_day = result
+            if not self.activity_contract:
+                self.number_of_day = result
+            else:
+                # Number of day for target based activity created confusion.
+                self.number_of_day = 0
         elif self.activity_id.wage_method == 'attendance':
             self.number_of_day = att_ratio
 
     @api.one
-    @api.depends('number_of_day', 'employee_id', 'upkeep_date', 'estate_id')
+    @api.depends('number_of_day', 'employee_id', 'upkeep_date', 'estate_id', 'quantity')
     def _compute_wage_number_of_day(self):
-        """Daily wage calculated from number of days exclude. Use regional minimum wage if employee
+        """Daily/quantity wage calculated from number of days exclude. Use regional minimum wage if employee
         has no contract.
         """
-        # Get regional wage
+        # Get latest regional wage before upkeep date
         wage = self.env['estate.wage'].search([('active', '=', True),
                                                ('date_start', '<=', self.upkeep_date),
                                                ('estate_id', '=', self.estate_id.id)],
                                               order='date_start desc',
                                               limit=1)
 
-        # Check contract if any (before upkeep date)
+        if not wage:
+            error_msg = _("No Regional Wage defined.")
+            raise ValidationError(error_msg)
+
+        # Use latest contract before upkeep date if any
         newest_contract = self.env['hr.contract'].search([('employee_id', '=', self.employee_id.id),
                                                           ('date_start', '<=', self.upkeep_date)],
                                                          order='date_start desc',
@@ -697,7 +712,11 @@ class UpkeepLabour(models.Model):
         else:
             daily_wage = wage.daily_wage
 
-        self.wage_number_of_day = self.number_of_day * daily_wage
+        # Use wage_number_of_day to save cost from number of day or target activity.
+        if self.attendance_code_id:
+            self.wage_number_of_day = self.number_of_day * daily_wage
+        elif self.activity_contract and self.employee_id.contract_type == '2' and self.employee_id.contract_period == '2':
+            self.wage_number_of_day = self.quantity * self.activity_id.standard_price
 
     @api.one
     @api.depends('quantity_overtime')
@@ -711,7 +730,7 @@ class UpkeepLabour(models.Model):
 
     @api.one
     @api.depends('quantity_piece_rate', 'activity_id', 'quantity', 'location_id', 'attendance_code_id')
-    def _compute_piece_rate(self):
+    def _compute_wage_piece_rate(self):
         """"Piece rate applied only for PKWT labour (see view xml)
         """
         # Piece rate wage based on piece rate price unless it not defined.
@@ -722,14 +741,8 @@ class UpkeepLabour(models.Model):
             unit_price = self.activity_id.standard_price
 
         # Piece rate as bonus after standard quantity achieved
-        if self.quantity_piece_rate:
+        if self.quantity_piece_rate and self.quantity > self.activity_id.qty_base:
             self.wage_piece_rate = self.quantity_piece_rate * unit_price
-
-        # Some activity cannot greater than standard quantity due to field condition (PWKT Daily Target)
-        # All work result record at qty
-        if (not self.attendance_code_id and self.activity_id.wage_method == 'standard' and not self.location_id.closing
-            and self.quantity_piece_rate == 0):
-            self.wage_piece_rate = self.quantity * unit_price
 
     @api.one
     @api.depends('wage_number_of_day', 'wage_overtime', 'wage_piece_rate')
@@ -806,6 +819,16 @@ class UpkeepLabour(models.Model):
                 record.var_qty_base = record.quantity - record.activity_id.qty_base
 
     @api.multi
+    @api.depends('activity_id')
+    def _compute_activity_contract(self):
+        """ Differentiate Target vs Daily Target """
+        for record in self:
+            if not record.upkeep_id:
+                return
+            res = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)], limit=1)
+            record.activity_contract = res.contract
+
+    @api.multi
     @api.onchange('upkeep_id')
     def _onchange_upkeep(self):
         """Labour should be created within Daily Upkeep and has upkeep activity set
@@ -849,7 +872,7 @@ class UpkeepLabour(models.Model):
                     }
                 else:
                     error_msg = _("Upkeep Activity should be defined first")
-                    raise exceptions.ValidationError(error_msg)
+                    raise ValidationError(error_msg)
 
     @api.onchange('location_id')
     def _onchange_location_id(self):
@@ -887,10 +910,18 @@ class UpkeepLabour(models.Model):
             result = quantity - (base * att_ratio)
             if result < 0:
                 error_msg = _("%s not allowed to have piece rate due to under achievement of %s" % (employee, activity))
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
             elif self.quantity_piece_rate > result:
                 error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, result))
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
+
+    @api.constrains('attendance_code_id')
+    def _check_attendance_code(self):
+        """ Attendance code ratio should follow work result number of day calculation """
+        if self.attendance_code_id.qty_ratio < self.number_of_day:
+            error_msg = _(
+                "%s has %s number of day. Please change attendance code." % (self.employee_id.name, self.number_of_day))
+            raise ValidationError(error_msg)
 
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
@@ -1030,7 +1061,7 @@ class UpkeepMaterial(models.Model):
                 }
             else:
                 error_msg = _("Upkeep activity should be defined.")
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
 
     # #@api.onchange('upkeep_id')
     # @api.multi
@@ -1047,5 +1078,5 @@ class UpkeepMaterial(models.Model):
     #             return (103, 126)
     #         else:
     #             error_msg = 'Upkeep activity should be defined.'
-    #             raise exceptions.ValidationError(error_msg)
+    #             raise ValidationError(error_msg)
 

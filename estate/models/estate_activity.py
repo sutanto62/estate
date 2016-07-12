@@ -65,6 +65,7 @@ class Activity(models.Model):
                                    default='standard',
                                    help='* Standard Quantity, labour wage based on work result.'\
                                         '* Worked Day, labour wage based on attendance code.')
+    contract = fields.Boolean('Contract', default=False, help='Contract based activity allows upkeep record without number of day')
 
     @api.one
     @api.depends('name', 'parent_id')
