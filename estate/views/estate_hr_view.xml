@@ -124,6 +124,7 @@
 
         <!-- Menu -->
         <menuitem id="estate_labour_menu"
+                  sequence="40"
                   name="Labour"
                   parent="estate_config_menu"
                   groups="base.group_no_one"/>

@@ -133,7 +133,7 @@
             <field name="view_mode">tree,form</field>
         </record>
 
-        <menuitem id="estate_activity" name="Activity"
+        <menuitem id="estate_activity" name="Activities"
                   parent="estate_blocking_menu"
                   action="action_list_activity_config"
                   groups="base.group_no_one"/>

@@ -13,7 +13,7 @@ class EstateConfigSettings(models.TransientModel):
                                            help="0 is no limit.",
                                            default_model='estate.config.settings')
     # Upkeep inherits account analytic entries - mandatory field
-    default_journal_line_id = fields.Many2one('account.analytic.journal', 'Default Estate Journal',
+    default_journal_line_id = fields.Many2one('account.journal', 'Default Estate Journal',
                                              help='Used at upkeep analytic entries if no other journal defined.')
     default_analytic_account_id = fields.Many2one('account.analytic.account', 'Default Analytic Account',
                                             help='Used at upkeep analytic entries.')

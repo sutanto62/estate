@@ -7,6 +7,7 @@
             <field name="model">estate.block.template</field>
             <field name="inherit_id" ref="estate.view_form_block_config"/>
             <field name="arch" type="xml">
+                <!-- todo find alternate without using string -->
                 <xpath expr="//group[@string='Location']" position="inside">
                     <field name="the_area" widget="geo_edit_map"/>
                 </xpath>

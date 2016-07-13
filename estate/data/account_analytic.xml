@@ -35,13 +35,11 @@
         </record>
 
         <!-- Journal Account -->
-        <!-- module project?
-        <record id="account.estate_journal" model="account.analytic.journal">
+        <record id="account.estate_journal" model="account.journal">
             <field name="name">Estate Journal</field>
             <field name="type">general</field>
             <field name="company_id" ref="base.main_company"/>
             <field name="code">EST</field>
         </record>
-        -->
     </data>
 </openerp>

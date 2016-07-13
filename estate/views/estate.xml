@@ -125,7 +125,7 @@
 
         <!-- Action -->
         <record model="ir.actions.act_window" id="action_list_block_estate">
-            <field name="name">Estate Structure (Block)</field>
+            <field name="name">Estate Block</field>
             <field name="res_model">estate.block.template</field>
             <field name="domain">[('estate_location','=','True')]</field>
             <field name="view_mode">tree,form,geoengine</field>
@@ -143,7 +143,7 @@
         <record id="action_list_analytic" model="ir.actions.act_window" >
             <field name="name">Analytic Estate Journal Items</field>
             <field name="res_model">account.analytic.line</field>
-            <field name="domain">[('journal_id','=',5)]</field>
+            <field name="domain">[('account_id.use_estate','=', True)]</field>
             <field name="view_mode">tree,form</field>
         </record>
 
@@ -153,9 +153,13 @@
         <!-- Menu -->
         <menuitem id="main_estate_menu" name="Estate"/>
 
-        <menuitem id="estate_config_menu" name="Configuration" parent="main_estate_menu" sequence="100"/>
+        <menuitem id="estate_config_menu" name="Configuration"
+                  sequence="100"
+                  parent="main_estate_menu"
+                  groups="base.group_no_one"/>
 
         <menuitem id="estate_blocking_menu"
+                  sequence="20"
                   name="Estate"
                   parent="estate_config_menu"
                   groups="base.group_no_one"/>
@@ -165,11 +169,14 @@
                   action="action_list_block_estate"
                   groups="base.group_no_one"/>
 
+        <!-- restructure to Estate menu
         <menuitem id="estate_master_menu" name="Configuration"
                   parent="estate_config_menu"
                   groups="base.group_no_one"/>
+        -->
 
         <menuitem id="estate_account_menu" name="Account"
+                  sequence="30"
                   parent="estate_config_menu"
                   groups="base.group_no_one"/>
 
@@ -178,13 +185,13 @@
                   action="action_list_analytic"
                   groups="base.group_no_one"/>
 
-        <menuitem id="estate_parameter_menu" name="Parameter"
-                  parent="estate_master_menu"
+        <menuitem id="estate_parameter_menu" name="Block Parameter"
+                  parent="estate_blocking_menu"
                   action="action_list_parameter_config"
                   groups="base.group_no_one"/>
 
         <!-- Estate Reporting -->
-        <menuitem id="menu_estate_reporting" name="Reports" parent="main_estate_menu" sequence="120"/>
+        <menuitem id="menu_estate_reporting" name="Reports" parent="main_estate_menu" sequence="90"/>
         <menuitem id="menu_estate_upkeep_reporting" name="Upkeep" parent="menu_estate_reporting" sequence="20"/>
     </data>
 </openerp>

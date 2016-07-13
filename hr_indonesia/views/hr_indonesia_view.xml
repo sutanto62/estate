@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//notebook" position="inside">
-                    <page string="HR Indonesia">
+                    <page string="HR Indonesia" groups="base.group_hr_user">
                         <group>
                             <group string="Employee Type" name="employee_type">
                                 <field name="contract_type"/>

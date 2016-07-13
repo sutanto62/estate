@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 8.0-20160525\n"
+"Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-16 08:04+0000\n"
-"PO-Revision-Date: 2016-06-16 08:04+0000\n"
+"POT-Creation-Date: 2016-07-19 07:34+0000\n"
+"PO-Revision-Date: 2016-07-19 07:34+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,14 +16,44 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: estate
-#: help:estate.activity,wage_method:0
+#: code:addons/estate/models/estate_upkeep.py:710
+#, python-format
+msgid "%s not allowed to have piece rate due to under achievement of %s"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:713
+#, python-format
+msgid "%s work at %s piece rate quantity should not exceed %s"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_common_report_type
+#: model:ir.model.fields,help:estate.field_estate_division_report_type
+msgid "* By Estate, shows all activities.* By Division, group activities by Division."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_hr_member_contract_period
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_contract_period
+msgid "* Monthly, Karyawan Bulanan, * Daily, Karyawan Harian."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_hr_member_contract_type
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_contract_type
+msgid "* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja Waktu Tertentu."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_activity_wage_method
 msgid "* Standard Quantity, labour wage based on work result.* Worked Day, labour wage based on attendance code."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,usage:0
-#: help:estate.block.template,usage:0
-msgid "* Supplier Location: Virtual location representing the source location for products coming from your suppliers\n"
+#: model:ir.model.fields,help:estate.field_estate_block_template_usage
+#: model:ir.model.fields,help:estate.field_estate_block_usage
+msgid "* Vendor Location: Virtual location representing the source location for products coming from your vendors\n"
 "                       \n"
 "* View: Virtual location used to create a hierarchical structures for your warehouse, aggregating its child locations ; can't directly contain products\n"
 "                       \n"
@@ -31,9 +61,9 @@ msgid "* Supplier Location: Virtual location representing the source location fo
 "                       \n"
 "* Customer Location: Virtual location representing the destination location for products sent to your customers\n"
 "                       \n"
-"* Inventory: Virtual location serving as counterpart for inventory operations used to correct stock levels (Physical inventories)\n"
+"* Inventory Loss: Virtual location serving as counterpart for inventory operations used to correct stock levels (Physical inventories)\n"
 "                       \n"
-"* Procurement: Virtual location serving as temporary counterpart for procurement operations when the source (supplier or production) is not known yet. This location should be empty when the procurement scheduler has finished running.\n"
+"* Procurement: Virtual location serving as temporary counterpart for procurement operations when the source (vendor or production) is not known yet. This location should be empty when the procurement scheduler has finished running.\n"
 "                       \n"
 "* Production: Virtual counterpart location for production operations: this location consumes the raw material and produces finished products\n"
 "                       \n"
@@ -42,179 +72,175 @@ msgid "* Supplier Location: Virtual location representing the source location fo
 msgstr ""
 
 #. module: estate
-#: help:estate.common.report,type:0
-#: help:estate.division.report,type:0
-msgid "*By Estate, shows all activities.*By Division, group activities by Division."
-msgstr ""
-
-#. module: estate
-#: help:estate.hr.member,contract_period:0
-#: help:estate.upkeep.labour,contract_period:0
-msgid "*Monthly, Karyawan Bulanan, *Daily, Karyawan Harian."
-msgstr ""
-
-#. module: estate
-#: help:estate.hr.member,contract_type:0
-#: help:estate.upkeep.labour,contract_type:0
-msgid "*PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, *PKWT, Perjanjian Kerja Waktu Tertentu."
-msgstr ""
-
-#. module: estate
-#: help:estate.config.settings,default_max_entry_day:0
+#: model:ir.model.fields,help:estate.field_estate_config_settings_default_max_entry_day
 msgid "0 is no limit."
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_tree_mature_abnormal:0
-#: field:estate.block.template,qty_tree_mature_abnormal:0
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+msgid "<br/>\n"
+"                            End Date:"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+msgid "<br/>\n"
+"                            Estate:"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_tree_mature_abnormal
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_tree_mature_abnormal
 msgid "Abnormal Mature Tree"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: view:estate.block.template:estate.view_form_block_config
 #: model:ir.ui.menu,name:estate.estate_account_menu
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_form_block_config
 msgid "Account"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Accounting"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,var_qty_base:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_var_qty_base
 msgid "Achievement over standar in quantity."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,prod_quantity_day:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_prod_quantity_day
 msgid "Achievement over standard in percentage."
 msgstr ""
 
 #. module: estate
-#: field:estate.block,active:0
-#: field:estate.block.template,active:0
-#: field:estate.hr.team,active:0
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
+msgid "Act. Qty"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "Act. Qty."
+msgstr ""
+
+#. module: estate
 #: selection:estate.hr.team,state:0
-#: field:estate.wage,active:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_active
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_active
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_active
+#: model:ir.model.fields,field_description:estate.field_estate_wage_active
 msgid "Active"
 msgstr ""
 
 #. module: estate
-#: help:estate.hr.team,state:0
+#: model:ir.model.fields,help:estate.field_estate_hr_team_state
 msgid "Active team allowed to be used as upkeep team."
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: field:estate.material.norm,activity_id:0
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: field:estate.upkeep.activity,activity_id:0
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: field:estate.upkeep.labour,activity_id:0
-#: view:estate.upkeep.material:estate.upkeep_material_view_form
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
-#: field:estate.upkeep.material,activity_id:0
-#: model:ir.actions.act_window,name:estate.action_list_activity_config
 #: model:ir.ui.menu,name:estate.estate_activity
-#: model:ir.ui.menu,name:estate.estate_upkeep_activity
-#: view:website:estate.report_estate_division
+msgid "Activities"
+msgstr ""
+
+#. module: estate
+#: model:ir.actions.act_window,name:estate.action_list_activity_config
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_activity_id
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_activity_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_activity_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_activity_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_activity_id
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Activity"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,code:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_code
 msgid "Activity Code"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
 msgid "Activity Cost"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,activity_norm_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_activity_norm_ids
 msgid "Activity Norm"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Activity Standard"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,activity_type:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_activity_type
 msgid "Activity Type"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.material,activity_unit_amount:0
-msgid "Activity Unit"
-msgstr ""
-
-#. module: estate
-#: field:estate.activity.norm,activity_id:0
-#: field:estate.parameter.weight,activity_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_activity_id
 msgid "Activity id"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep,activity_line_ids:0
-msgid "Activity line ids"
-msgstr ""
-
-#. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: field:estate.activity,comment:0
-#: field:estate.block,comment:0
-#: field:estate.block.template,comment:0
-#: field:estate.material.norm,comment:0
-#: field:estate.upkeep,comment:0
-#: view:estate.wage:estate.estate_wage_view_form
-#: field:estate.wage,comment:0
-#: view:stock.location:estate.view_form_location_inherited
+#: model:ir.model.fields,field_description:estate.field_estate_activity_comment
+#: model:ir.model.fields,field_description:estate.field_estate_block_comment
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_comment
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_comment
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_comment
+#: model:ir.model.fields,field_description:estate.field_estate_wage_comment
+#: model:ir.ui.view,arch_db:estate.estate_wage_view_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Additional Information"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,ratio_day_quantity:0
-#: help:estate.upkeep.labour,ratio_day_quantity:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_ratio_day_quantity
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_ratio_day_quantity
 msgid "Amount of day required to finish a work."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.material,ratio_product_activity:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_material_ratio_product_activity
 msgid "Amount of product required per activity."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,ratio_wage_quantity:0
-#: help:estate.upkeep.labour,ratio_wage_quantity:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_ratio_wage_quantity
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_ratio_wage_quantity
 msgid "Amount of wage paid to finish a work"
 msgstr ""
 
 #. module: estate
-#: help:estate.hr.team,employee_id:0
-#: help:estate.upkeep.labour,upkeep_team_employee_id:0
+#: model:ir.model.fields,help:estate.field_estate_hr_team_employee_id
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_upkeep_team_employee_id
 msgid "An employee is only allowed to lead one active team."
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,account_id:0
-#: field:estate.block,account_id:0
-#: field:estate.block.template,account_id:0
 #: model:ir.model,name:estate.model_account_analytic_account
+#: model:ir.model.fields,field_description:estate.field_estate_activity_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_account_id
 msgid "Analytic Account"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,account_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_account_id
 msgid "Analytic Account Line"
 msgstr ""
 
@@ -229,30 +255,30 @@ msgid "Analytic Journal Entries"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,activity_id:0
-#: help:estate.upkeep.labour,activity_id:0
-#: help:estate.upkeep.material,activity_id:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_activity_id
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_activity_id
+#: model:ir.model.fields,help:estate.field_estate_upkeep_material_activity_id
 msgid "Any update will reset Block."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,attendance_code_id:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_attendance_code_id
 msgid "Any update will reset employee's timesheet"
 msgstr ""
 
 #. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Apply"
 msgstr ""
 
 #. module: estate
 #: selection:estate.operation,state:0
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep:estate.upkeep_view_search
 #: selection:estate.upkeep,state:0
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Approved"
 msgstr ""
 
@@ -262,33 +288,38 @@ msgid "Area"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,area_emplacement:0
-#: help:estate.block.template,area_emplacement:0
+#: model:ir.model.fields,help:estate.field_estate_block_area_emplacement
+#: model:ir.model.fields,help:estate.field_estate_block_template_area_emplacement
 msgid "Area for office and housing."
 msgstr ""
 
 #. module: estate
-#: view:estate.block.template:estate.view_form_block_config
+#: model:ir.ui.view,arch_db:estate.view_form_block_config
 msgid "Areal Statement"
 msgstr ""
 
 #. module: estate
-#: view:estate.block.template:estate.view_form_block_config
+#: model:ir.ui.view,arch_db:estate.view_form_block_config
 msgid "Assets"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,assistant_id:0
-#: field:estate.block.template,assistant_id:0
-#: field:estate.hr.team,assistant_id:0
-#: field:estate.upkeep,assistant_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_assistant_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_assistant_id
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_assistant_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_assistant_id
 msgid "Assistant"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.attendance,name:0
-#: field:estate.upkeep.labour,attendance_code_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_attendance_code_id
 msgid "Attendance"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
+msgid "Attendance & Productivity"
 msgstr ""
 
 #. module: estate
@@ -297,19 +328,19 @@ msgid "Attendance Code"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Attn."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,qty_sph_standard:0
-#: help:estate.block.template,qty_sph_standard:0
+#: model:ir.model.fields,help:estate.field_estate_block_qty_sph_standard
+#: model:ir.model.fields,help:estate.field_estate_block_template_qty_sph_standard
 msgid "Average stand per hectare by topography."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,qty_sph_do:0
-#: help:estate.block.template,qty_sph_do:0
+#: model:ir.model.fields,help:estate.field_estate_block_qty_sph_do
+#: model:ir.model.fields,help:estate.field_estate_block_template_qty_sph_do
 msgid "Average stand per hectare planted."
 msgstr ""
 
@@ -319,29 +350,36 @@ msgid "Barat Timur"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,company_id:0
-#: help:estate.block.template,company_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_barcode
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_barcode
+msgid "Barcode"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_activity.py:103
+#, python-format
+msgid "Base quantity must be in between of minimum and maximum quantity."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_block_company_id
+#: model:ir.model.fields,help:estate.field_estate_block_template_company_id
 msgid "Based on Consession License."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.material,activity_unit_amount:0
-msgid "Based on upkeep activity"
-msgstr ""
-
-#. module: estate
-#: field:estate.activity,uom_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_uom_id
 msgid "Basic Unit of Measurements"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Batch/Location"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,account_id:0
-#: help:estate.block.template,account_id:0
+#: model:ir.model.fields,help:estate.field_estate_block_account_id
+#: model:ir.model.fields,help:estate.field_estate_block_template_account_id
 msgid "Batch/Year Planted"
 msgstr ""
 
@@ -356,46 +394,53 @@ msgid "Bergelombang"
 msgstr ""
 
 #. module: estate
-#: view:estate.block.template:estate.view_form_block_config
 #: selection:estate.parameter,level:0
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.view_form_block_config
 #: selection:stock.location,estate_location_level:0
 msgid "Block"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_1
 #: model:stock.location,name:estate.block_1_stock_location
 msgid "Block 1"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_2
 #: model:stock.location,name:estate.block_2_stock_location
 msgid "Block 2"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_3
 #: model:stock.location,name:estate.block_3_stock_location
 msgid "Block 3"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_4
 #: model:stock.location,name:estate.block_4_stock_location
 msgid "Block 4"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_5
 #: model:stock.location,name:estate.block_5_stock_location
 msgid "Block 5"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_6
 #: model:stock.location,name:estate.block_6_stock_location
 msgid "Block 6"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,block_parameter_ids:0
-#: field:estate.block.template,block_parameter_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_block_parameter_ids
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_block_parameter_ids
+#: model:ir.ui.menu,name:estate.estate_parameter_menu
 msgid "Block Parameter"
 msgstr ""
 
@@ -405,13 +450,13 @@ msgid "Block Structure"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,block_template_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_block_template_id
 msgid "Block Template"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,block_ids:0
-#: field:estate.block.template,block_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_block_ids
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_block_ids
 msgid "Block Variants"
 msgstr ""
 
@@ -428,268 +473,275 @@ msgid "By Estate"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,active:0
-#: help:estate.block.template,active:0
+#: model:ir.model.fields,help:estate.field_estate_block_active
+#: model:ir.model.fields,help:estate.field_estate_block_template_active
 msgid "By unchecking the active field, you may hide a location without deleting it."
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Calculate Qty"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,unit_amount:0
-msgid "Calculate labour's work result by dividing with attendance ratio."
-msgstr ""
-
-#. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Calculate labour's work result which has attendance code. It will reset previous entry."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,area_planted:0
-#: help:estate.block.template,area_planted:0
+#: model:ir.model.fields,help:estate.field_estate_block_area_planted
+#: model:ir.model.fields,help:estate.field_estate_block_template_area_planted
 msgid "Calculated based on stand per hectare."
 msgstr ""
 
 #. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
-#: view:estate.division.report:estate.estate_division_report_view_form
-#: view:estate.upkeep:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Cancel"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,scrap_location:0
-#: help:estate.block.template,scrap_location:0
+#: model:product.product,name:estate.product_product_c
+#: model:product.template,name:estate.product_product_c_product_template
+msgid "Carbofuran 3%"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_block_return_location
+#: model:ir.model.fields,help:estate.field_estate_block_template_return_location
+msgid "Check this box to allow using this location as a return location."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_block_scrap_location
+#: model:ir.model.fields,help:estate.field_estate_block_template_scrap_location
 msgid "Check this box to allow using this location to put scrapped/damaged goods."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,is_smallholder:0
-#: help:estate.block.template,is_smallholder:0
+#: model:ir.model.fields,help:estate.field_estate_block_is_smallholder
+#: model:ir.model.fields,help:estate.field_estate_block_template_is_smallholder
 msgid "Check this box to mark Block as Smallholder area."
 msgstr ""
 
 #. module: estate
-#: help:account.analytic.account,use_estate:0
+#: model:ir.model.fields,help:estate.field_account_analytic_account_use_estate
 msgid "Check this field if this project manages estate"
 msgstr ""
 
 #. module: estate
-#: help:estate.parameter,mandatory:0
+#: model:ir.model.fields,help:estate.field_estate_parameter_mandatory
 msgid "Checking this option to make it as mandatory Block Parameter."
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,child_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_child_ids
 msgid "Child Activities"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,closing:0
-#: field:estate.block.template,closing:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_closing
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_closing
 msgid "Closing Block"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,area_gis:0
-#: help:estate.block.template,area_gis:0
+#: model:ir.model.fields,help:estate.field_estate_block_area_gis
+#: model:ir.model.fields,help:estate.field_estate_block_template_area_gis
 msgid "Closing block area."
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.attendance,code:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_code
 msgid "Code"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity.norm,coefficient:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_coefficient
 msgid "Coefficient"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
+#: code:addons/estate/models/estate_activity.py:273
+#, python-format
+msgid "Coefficient should in between 0 and 1"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Comment"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,company_id:0
-#: field:estate.block.template,company_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_company_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_company_id
 msgid "Company"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,complete_name:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_complete_name
 msgid "Complete Name"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,complete_name:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_complete_name
 msgid "Complete name"
 msgstr ""
 
 #. module: estate
 #: model:ir.ui.menu,name:estate.estate_config_menu
-#: model:ir.ui.menu,name:estate.estate_master_menu
 msgid "Configuration"
 msgstr ""
 
 #. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
 #: model:ir.actions.act_window,name:estate.action_estate_configuration
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Configure Estate"
 msgstr ""
 
 #. module: estate
 #: selection:estate.operation,state:0
-#: view:estate.upkeep:estate.upkeep_view_form
 #: selection:estate.upkeep,state:0
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Confirmed"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,child_ids:0
-#: field:estate.block.template,child_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_child_ids
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_child_ids
 msgid "Contains"
 msgstr ""
 
 #. module: estate
-#: field:product.category,estate_product:0
+#: model:ir.model.fields,field_description:estate.field_product_category_estate_product
 msgid "Contains Estate Products"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.member,contract_period:0
-#: field:estate.upkeep.labour,contract_period:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_contract_period
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_contract_period
 msgid "Contract Period"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.member,contract_type:0
-#: field:estate.upkeep.labour,contract_type:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_contract_type
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_contract_type
 msgid "Contract Type"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_search
 #: selection:estate.upkeep,state:0
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Correction"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,posx:0
-#: field:estate.block.template,posx:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_posx
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_posx
 msgid "Corridor (X)"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: field:estate.upkeep.activity,amount:0
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
-#: field:estate.upkeep.material,amount:0
-#: view:website:estate.report_estate_division
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_amount
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_amount
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_product_standard_price
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
 msgid "Cost"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.material,product_standard_price:0
-msgid "Cost Price"
+#: model:ir.model.fields,help:estate.field_estate_material_norm_standard_price
+#: model:ir.model.fields,help:estate.field_estate_upkeep_material_product_standard_price
+msgid "Cost of the product template used for standard stock valuation in accounting and used as a base price on purchase orders. Expressed in the default unit of measure of the product."
 msgstr ""
 
 #. module: estate
-#: help:estate.material.norm,standard_price:0
-#: help:estate.upkeep.material,product_standard_price:0
-msgid "Cost price of the product template used for standard stock valuation in accounting and used as a base price on purchase orders. Expressed in the default unit of measure of the product."
-msgstr ""
-
-#. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Cost/UoM"
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,name:0
+#: model:ir.model.fields,help:estate.field_estate_activity_name
 msgid "Create unique activity name."
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,create_uid:0
-#: field:estate.activity.norm,create_uid:0
-#: field:estate.block,create_uid:0
-#: field:estate.block.parameter,create_uid:0
-#: field:estate.block.template,create_uid:0
-#: field:estate.common.report,create_uid:0
-#: field:estate.config.settings,create_uid:0
-#: field:estate.division.report,create_uid:0
-#: field:estate.hr.attendance,create_uid:0
-#: field:estate.hr.member,create_uid:0
-#: field:estate.hr.team,create_uid:0
-#: field:estate.labour.type,create_uid:0
-#: field:estate.material.norm,create_uid:0
-#: field:estate.object,create_uid:0
-#: field:estate.object.type,create_uid:0
-#: field:estate.operation,create_uid:0
-#: field:estate.parameter,create_uid:0
-#: field:estate.parameter.value,create_uid:0
-#: field:estate.parameter.weight,create_uid:0
-#: field:estate.planted.year,create_uid:0
-#: field:estate.stand.hectare,create_uid:0
-#: field:estate.upkeep,create_uid:0
-#: field:estate.upkeep.activity,create_uid:0
-#: field:estate.upkeep.labour,create_uid:0
-#: field:estate.upkeep.material,create_uid:0
-#: field:estate.wage,create_uid:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_block_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_object_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_operation_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_wage_create_uid
 msgid "Created by"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,create_date:0
-#: field:estate.activity.norm,create_date:0
-#: field:estate.block,create_date:0
-#: field:estate.block.parameter,create_date:0
-#: field:estate.block.template,create_date:0
-#: field:estate.common.report,create_date:0
-#: field:estate.config.settings,create_date:0
-#: field:estate.division.report,create_date:0
-#: field:estate.hr.attendance,create_date:0
-#: field:estate.hr.member,create_date:0
-#: field:estate.hr.team,create_date:0
-#: field:estate.labour.type,create_date:0
-#: field:estate.material.norm,create_date:0
-#: field:estate.object,create_date:0
-#: field:estate.object.type,create_date:0
-#: field:estate.operation,create_date:0
-#: field:estate.parameter,create_date:0
-#: field:estate.parameter.value,create_date:0
-#: field:estate.parameter.weight,create_date:0
-#: field:estate.planted.year,create_date:0
-#: field:estate.stand.hectare,create_date:0
-#: field:estate.upkeep,create_date:0
-#: field:estate.upkeep.activity,create_date:0
-#: field:estate.upkeep.labour,create_date:0
-#: field:estate.upkeep.material,create_date:0
-#: field:estate.wage,create_date:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_block_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_object_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_operation_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_wage_create_date
 msgid "Created on"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_culling_1
 #: model:stock.location,name:estate.block_culling_1_stock_location
 msgid "Culling 1"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_culling_2
 #: model:stock.location,name:estate.block_culling_2_stock_location
 msgid "Culling 2"
 msgstr ""
 
 #. module: estate
-#: help:estate.material.norm,qty_available:0
+#: model:ir.model.fields,help:estate.field_estate_material_norm_qty_available
 msgid "Current quantity of products.\n"
 "In a context with a single Stock Location, this includes goods stored at this Location, or any of its children.\n"
 "In a context with a single Warehouse, this includes goods stored in the Stock Location of this Warehouse, or any of its children.\n"
@@ -698,16 +750,26 @@ msgid "Current quantity of products.\n"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "D/Q"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,wage_number_of_day:0
-#: field:estate.wage,daily_wage:0
+#: model:ir.ui.menu,name:estate.estate_upkeep
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "Daily Upkeep"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "Daily Upkeep Draft"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_wage_number_of_day
+#: model:ir.model.fields,field_description:estate.field_estate_wage_daily_wage
 msgid "Daily Wage"
 msgstr ""
 
@@ -717,161 +779,160 @@ msgid "Datar"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_search
-#: field:estate.upkeep,date:0
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: field:estate.upkeep.activity,upkeep_date:0
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
-#: field:estate.upkeep.labour,upkeep_date:0
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
-#: field:estate.upkeep.material,upkeep_date:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_upkeep_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_upkeep_date
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Date"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,date_effective:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_date_effective
 msgid "Date Effective"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
-#: view:estate.wage:estate.estate_wage_view_tree
+#: model:ir.ui.view,arch_db:estate.estate_wage_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
 msgid "Day(s)"
 msgstr ""
 
 #. module: estate
-#: field:estate.config.settings,default_analytic_account_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_default_analytic_account_id
 msgid "Default Analytic Account"
 msgstr ""
 
 #. module: estate
-#: field:estate.config.settings,default_journal_line_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_default_journal_line_id
 msgid "Default Estate Journal"
 msgstr ""
 
 #. module: estate
-#: field:estate.config.settings,default_account_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_default_account_id
 msgid "Default General Account"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.material,product_uom_id:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_material_product_uom_id
 msgid "Default Unit of Measure used for all of stock operation"
 msgstr ""
 
 #. module: estate
-#: help:estate.material.norm,product_uom_id:0
+#: model:ir.model.fields,help:estate.field_estate_material_norm_product_uom_id
 msgid "Default Unit of Measure used for all stock operation."
 msgstr ""
 
 #. module: estate
-#: help:estate.parameter,level:0
+#: model:ir.model.fields,help:estate.field_estate_parameter_level
 msgid "Define block level parameter."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,block_parameter_ids:0
-#: help:estate.block.template,block_parameter_ids:0
+#: model:ir.model.fields,help:estate.field_estate_block_block_parameter_ids
+#: model:ir.model.fields,help:estate.field_estate_block_template_block_parameter_ids
 msgid "Define block parameter"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,quantity_piece_rate:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_quantity_piece_rate
 msgid "Define piece rate work result"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,quantity:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_quantity
 msgid "Define total work result"
 msgstr ""
 
 #. module: estate
-#: help:estate.material.norm,unit_amount:0
+#: model:ir.model.fields,help:estate.field_estate_material_norm_unit_amount
 msgid "Define unit amount of material product UoM per activity UoM."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,quantity_overtime:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_quantity_overtime
 msgid "Define wage based on hour(s)"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,putaway_strategy_id:0
-#: help:estate.block.template,putaway_strategy_id:0
+#: model:ir.model.fields,help:estate.field_estate_block_putaway_strategy_id
+#: model:ir.model.fields,help:estate.field_estate_block_template_putaway_strategy_id
 msgid "Defines the default method used for suggesting the exact location (shelf) where to store the products. This method can be enforced at the product category level, and a fallback is made on the parent locations if none is set here."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,removal_strategy_id:0
-#: help:estate.block.template,removal_strategy_id:0
+#: model:ir.model.fields,help:estate.field_estate_block_removal_strategy_id
+#: model:ir.model.fields,help:estate.field_estate_block_template_removal_strategy_id
 msgid "Defines the default method used for suggesting the exact location (shelf) where to take the products from, which lot etc. for this location. This method can be enforced at the product category level, and a fallback is made on the parent locations if none is set here."
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep,description:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_description
 msgid "Description"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Detail"
 msgstr ""
 
 #. module: estate
-#: field:account.analytic.account,display_name:0
-#: field:estate.activity,display_name:0
-#: field:estate.activity.norm,display_name:0
-#: field:estate.block,display_name:0
-#: field:estate.block.parameter,display_name:0
-#: field:estate.block.template,display_name:0
-#: field:estate.common.report,display_name:0
-#: field:estate.config.settings,display_name:0
-#: field:estate.division.report,display_name:0
-#: field:estate.hr.attendance,display_name:0
-#: field:estate.hr.member,display_name:0
-#: field:estate.hr.team,display_name:0
-#: field:estate.labour.type,display_name:0
-#: field:estate.material.norm,display_name:0
-#: field:estate.object,display_name:0
-#: field:estate.object.type,display_name:0
-#: field:estate.operation,display_name:0
-#: field:estate.parameter,display_name:0
-#: field:estate.parameter.value,display_name:0
-#: field:estate.parameter.weight,display_name:0
-#: field:estate.planted.year,display_name:0
-#: field:estate.stand.hectare,display_name:0
-#: field:estate.upkeep,display_name:0
-#: field:estate.upkeep.activity,display_name:0
-#: field:estate.upkeep.labour,display_name:0
-#: field:estate.upkeep.material,display_name:0
-#: field:estate.wage,display_name:0
-#: field:product.category,display_name:0
-#: field:report.estate.report_estate_division,display_name:0
-#: field:stock.location,display_name:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_block_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_object_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_operation_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_wage_display_name
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division_display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: estate
-#: field:estate.common.report,division_id:0
-#: field:estate.division.report,division_id:0
 #: selection:estate.parameter,level:0
-#: field:estate.upkeep,division_id:0
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: field:estate.upkeep.labour,division_id:0
-#: field:estate.upkeep.material,division_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_division_id
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_division_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_division_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_division_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_division_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 #: selection:stock.location,estate_location_level:0
 msgid "Division"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.division_1
 #: model:stock.location,name:estate.division_1_stock_location
 msgid "Division 1"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.division_2
 #: model:stock.location,name:estate.division_2_stock_location
 msgid "Division 2"
 msgstr ""
@@ -880,17 +941,21 @@ msgstr ""
 #: model:ir.actions.act_window,name:estate.action_list_upkeep_lha
 #: model:ir.actions.report.xml,name:estate.estate_division_report_action
 #: model:ir.model,name:estate.model_estate_division_report
-#: model:ir.ui.menu,name:estate.estate_division_lha_report
 msgid "Division Report"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,division_id:0
+#: model:ir.ui.menu,name:estate.estate_division_lha_report
+msgid "Division Upkeep"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_division_id
 msgid "Division id"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Division:"
 msgstr ""
 
@@ -902,15 +967,10 @@ msgid "Draft"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-msgid "Draft Upkeep"
-msgstr ""
-
-#. module: estate
-#: view:estate.upkeep:estate.upkeep_view_search
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Draft/Confirmed"
 msgstr ""
 
@@ -920,55 +980,54 @@ msgid "Emplacement"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,area_emplacement:0
-#: field:estate.block.template,area_emplacement:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_area_emplacement
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_area_emplacement
 msgid "Emplacement Area (ha)"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: field:estate.upkeep.labour,employee_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_employee_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Employee"
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,piece_rate_price:0
+#: model:ir.model.fields,help:estate.field_estate_activity_piece_rate_price
 msgid "Empty value use standard price instead"
 msgstr ""
 
 #. module: estate
-#: field:estate.common.report,date_end:0
-#: field:estate.division.report,date_end:0
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_date_end
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_date_end
 msgid "End Date"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
-msgid "End Date:"
+#: code:addons/estate/wizard/estate_common_report.py:107
+#, python-format
+msgid "End Date cannot be set before Start Date."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/wizard/estate_common_report.py:75
+#: code:addons/estate/wizard/estate_common_report.py:119
 #, python-format
 msgid "Error!"
 msgstr ""
 
 #. module: estate
-#: field:account.analytic.account,use_estate:0
-#: field:estate.common.report,estate_id:0
-#: field:estate.division.report,estate_id:0
 #: selection:estate.parameter,level:0
-#: field:estate.upkeep,estate_id:0
-#: field:estate.upkeep.labour,estate_id:0
-#: field:estate.upkeep.material,estate_id:0
-#: field:estate.wage,estate_id:0
+#: model:ir.model.fields,field_description:estate.field_account_analytic_account_use_estate
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_wage_estate_id
 #: model:ir.module.category,name:estate.module_category_estate
 #: model:ir.ui.menu,name:estate.estate_blocking_menu
 #: model:ir.ui.menu,name:estate.main_estate_menu
-#: model:ir.ui.menu,name:estate.menu_estate_configuration
-#: model:ir.ui.menu,name:estate.menu_estate_reporting
 #: selection:stock.location,estate_location_level:0
 msgid "Estate"
 msgstr ""
@@ -995,8 +1054,9 @@ msgid "Estate Attendance"
 msgstr ""
 
 #. module: estate
-#: field:estate.block.parameter,block_id:0
-#: view:estate.block.template:estate.view_tree_block_config
+#: model:ir.actions.act_window,name:estate.action_list_block_estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_block_id
+#: model:ir.ui.view,arch_db:estate.view_tree_block_config
 msgid "Estate Block"
 msgstr ""
 
@@ -1007,43 +1067,38 @@ msgstr ""
 
 #. module: estate
 #: model:ir.ui.menu,name:estate.estate_division_report_menu
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Estate Division Report"
 msgstr ""
 
 #. module: estate
-#: view:estate.division.report:estate.estate_division_report_view_form
+#: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 msgid "Estate Division Report Options"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-msgid "Estate Information"
-msgstr ""
-
-#. module: estate
-#: field:estate.block,estate_location:0
-#: field:estate.block.template,estate_location:0
-#: field:stock.location,estate_location:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_estate_location
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_estate_location
+#: model:ir.model.fields,field_description:estate.field_stock_location_estate_location
 msgid "Estate Location"
 msgstr ""
 
 #. module: estate
-#: view:stock.location:estate.view_form_location_inherited
+#: model:ir.ui.view,arch_db:estate.view_form_location_inherited
 msgid "Estate Location Information"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,estate_location_level:0
-#: field:estate.block.template,estate_location_level:0
-#: field:stock.location,estate_location_level:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_estate_location_level
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_estate_location_level
+#: model:ir.model.fields,field_description:estate.field_stock_location_estate_location_level
 msgid "Estate Location Level"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,estate_location_type:0
-#: field:estate.block.template,estate_location_type:0
-#: field:stock.location,estate_location_type:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_estate_location_type
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_estate_location_type
+#: model:ir.model.fields,field_description:estate.field_stock_location_estate_location_type
 msgid "Estate Location Type"
 msgstr ""
 
@@ -1053,13 +1108,13 @@ msgid "Estate Manager"
 msgstr ""
 
 #. module: estate
-#: view:product.category:estate.inherited_product_category_form
+#: model:ir.ui.view,arch_db:estate.inherited_product_category_form
 msgid "Estate Properties"
 msgstr ""
 
 #. module: estate
-#: model:ir.actions.act_window,name:estate.action_list_block_estate
-msgid "Estate Structure (Block)"
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
+msgid "Estate Settings"
 msgstr ""
 
 #. module: estate
@@ -1074,25 +1129,32 @@ msgid "Estate User"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
-msgid "Estate:"
-msgstr ""
-
-#. module: estate
-#: field:estate.block,account_expense_id:0
-#: field:estate.block.template,account_expense_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_account_expense_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_account_expense_id
 msgid "Expense Account"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,area_gis:0
-#: field:estate.block.template,area_gis:0
+#: model:product.product,name:estate.product_product_fr
+#: model:product.template,name:estate.product_product_fr_product_template
+msgid "Feromon"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_complete_name
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_complete_name
+msgid "Full Location Name"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_area_gis
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_area_gis
 msgid "GIS Area (ha)"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,area_unplanted:0
-#: help:estate.block.template,area_unplanted:0
+#: model:ir.model.fields,help:estate.field_estate_block_area_unplanted
+#: model:ir.model.fields,help:estate.field_estate_block_template_area_unplanted
 msgid "GIS Area minus Planted area."
 msgstr ""
 
@@ -1102,7 +1164,7 @@ msgid "Gambut"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,general_account_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_general_account_id
 msgid "General Account"
 msgstr ""
 
@@ -1112,23 +1174,23 @@ msgid "General Affair Activity"
 msgstr ""
 
 #. module: estate
-#: field:estate.common.report,type:0
-#: field:estate.division.report,type:0
-#: view:estate.upkeep:estate.upkeep_view_search
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_type
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_type
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Group By"
 msgstr ""
 
 #. module: estate
-#: view:estate.parameter.value:estate.search_view_estate_parameter
+#: model:ir.ui.view,arch_db:estate.search_view_estate_parameter
 msgid "Group by..."
 msgstr ""
 
 #. module: estate
-#: field:estate.block,posz:0
-#: field:estate.block.template,posz:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_posz
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_posz
 msgid "Height (Z)"
 msgstr ""
 
@@ -1138,7 +1200,7 @@ msgid "Helps you maintain nursery and plantation field."
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.attendance,unit_amount:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_unit_amount
 msgid "Hour"
 msgstr ""
 
@@ -1148,51 +1210,51 @@ msgid "Hutan"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,id:0
-#: field:estate.activity.norm,id:0
-#: field:estate.block,id:0
-#: field:estate.block.parameter,id:0
-#: field:estate.block.template,id:0
-#: field:estate.common.report,id:0
-#: field:estate.config.settings,id:0
-#: field:estate.division.report,id:0
-#: field:estate.hr.attendance,id:0
-#: field:estate.hr.member,id:0
-#: field:estate.hr.team,id:0
-#: field:estate.labour.type,id:0
-#: field:estate.material.norm,id:0
-#: field:estate.object,id:0
-#: field:estate.object.type,id:0
-#: field:estate.operation,id:0
-#: field:estate.parameter,id:0
-#: field:estate.parameter.value,id:0
-#: field:estate.parameter.weight,id:0
-#: field:estate.planted.year,id:0
-#: field:estate.stand.hectare,id:0
-#: field:estate.upkeep,id:0
-#: field:estate.upkeep.activity,id:0
-#: field:estate.upkeep.labour,id:0
-#: field:estate.upkeep.material,id:0
-#: field:estate.wage,id:0
-#: field:report.estate.report_estate_division,id:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_id
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_id
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_id
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_id
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_id
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_id
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_id
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_id
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_id
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_id
+#: model:ir.model.fields,field_description:estate.field_estate_object_id
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_id
+#: model:ir.model.fields,field_description:estate.field_estate_operation_id
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_id
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_id
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_id
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_id
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_id
+#: model:ir.model.fields,field_description:estate.field_estate_wage_id
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division_id
 msgid "ID"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_tree_immature:0
-#: field:estate.block.template,qty_tree_immature:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_tree_immature
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_tree_immature
 msgid "Immature Tree"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,account_income_id:0
-#: field:estate.block.template,account_income_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_account_income_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_account_income_id
 msgid "Income Account"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,inherit_location_id:0
-#: field:estate.block.template,inherit_location_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_inherit_location_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_inherit_location_id
 msgid "Inherit location id"
 msgstr ""
 
@@ -1207,55 +1269,61 @@ msgid "Iregular"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,scrap_location:0
-#: field:estate.block.template,scrap_location:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_return_location
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_return_location
+msgid "Is a Return Location?"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_scrap_location
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_scrap_location
 msgid "Is a Scrap Location?"
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,qty_base_max:0
+#: model:ir.model.fields,help:estate.field_estate_activity_qty_base_max
 msgid "It will be used when Activity Norm defined. Set as maximum work's result."
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,qty_base_min:0
+#: model:ir.model.fields,help:estate.field_estate_activity_qty_base_min
 msgid "It will be used when Activity Norm defined. Set as minimum work's result."
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,sequence:0
+#: model:ir.model.fields,help:estate.field_estate_activity_sequence
 msgid "Keep activity in order as plantation stages."
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.estate
 #: model:stock.location,name:estate.estate_stock_location
 msgid "LYD"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.member,employee_id:0
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_employee_id
 #: model:ir.ui.menu,name:estate.estate_labour_menu
-#: model:ir.ui.menu,name:estate.estate_upkeep_labour
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Labour"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,labour_unit_amount:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_unit_amount
 msgid "Labour Unit Amount"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
-#: field:estate.upkeep.activity,labour_amount:0
-msgid "Labour Wage"
+#: model:ir.ui.menu,name:estate.estate_upkeep_labour
+msgid "Labour Usage"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep,labour_line_ids:0
-msgid "Labour line ids"
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_amount
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+msgid "Labour Wage"
 msgstr ""
 
 #. module: estate
@@ -1264,233 +1332,221 @@ msgid "Lalang"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,closing:0
-#: help:estate.block.template,closing:0
+#: model:ir.model.fields,help:estate.field_estate_block_closing
+#: model:ir.model.fields,help:estate.field_estate_block_template_closing
 msgid "Land clearing has been finished."
 msgstr ""
 
 #. module: estate
-#: field:account.analytic.account,__last_update:0
-#: field:estate.activity,__last_update:0
-#: field:estate.activity.norm,__last_update:0
-#: field:estate.block,__last_update:0
-#: field:estate.block.parameter,__last_update:0
-#: field:estate.block.template,__last_update:0
-#: field:estate.common.report,__last_update:0
-#: field:estate.config.settings,__last_update:0
-#: field:estate.division.report,__last_update:0
-#: field:estate.hr.attendance,__last_update:0
-#: field:estate.hr.member,__last_update:0
-#: field:estate.hr.team,__last_update:0
-#: field:estate.labour.type,__last_update:0
-#: field:estate.material.norm,__last_update:0
-#: field:estate.object,__last_update:0
-#: field:estate.object.type,__last_update:0
-#: field:estate.operation,__last_update:0
-#: field:estate.parameter,__last_update:0
-#: field:estate.parameter.value,__last_update:0
-#: field:estate.parameter.weight,__last_update:0
-#: field:estate.planted.year,__last_update:0
-#: field:estate.stand.hectare,__last_update:0
-#: field:estate.upkeep,__last_update:0
-#: field:estate.upkeep.activity,__last_update:0
-#: field:estate.upkeep.labour,__last_update:0
-#: field:estate.upkeep.material,__last_update:0
-#: field:estate.wage,__last_update:0
-#: field:product.category,__last_update:0
-#: field:report.estate.report_estate_division,__last_update:0
-#: field:stock.location,__last_update:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_block___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_block_template___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_common_report___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_division_report___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_object___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_object_type___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_operation___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_parameter___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_wage___last_update
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division___last_update
 msgid "Last Modified on"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,write_uid:0
-#: field:estate.activity.norm,write_uid:0
-#: field:estate.block,write_uid:0
-#: field:estate.block.parameter,write_uid:0
-#: field:estate.block.template,write_uid:0
-#: field:estate.common.report,write_uid:0
-#: field:estate.config.settings,write_uid:0
-#: field:estate.division.report,write_uid:0
-#: field:estate.hr.attendance,write_uid:0
-#: field:estate.hr.member,write_uid:0
-#: field:estate.hr.team,write_uid:0
-#: field:estate.labour.type,write_uid:0
-#: field:estate.material.norm,write_uid:0
-#: field:estate.object,write_uid:0
-#: field:estate.object.type,write_uid:0
-#: field:estate.operation,write_uid:0
-#: field:estate.parameter,write_uid:0
-#: field:estate.parameter.value,write_uid:0
-#: field:estate.parameter.weight,write_uid:0
-#: field:estate.planted.year,write_uid:0
-#: field:estate.stand.hectare,write_uid:0
-#: field:estate.upkeep,write_uid:0
-#: field:estate.upkeep.activity,write_uid:0
-#: field:estate.upkeep.labour,write_uid:0
-#: field:estate.upkeep.material,write_uid:0
-#: field:estate.wage,write_uid:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_activity_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_block_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_object_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_operation_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_wage_write_uid
 msgid "Last Updated by"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,write_date:0
-#: field:estate.activity.norm,write_date:0
-#: field:estate.block,write_date:0
-#: field:estate.block.parameter,write_date:0
-#: field:estate.block.template,write_date:0
-#: field:estate.common.report,write_date:0
-#: field:estate.config.settings,write_date:0
-#: field:estate.division.report,write_date:0
-#: field:estate.hr.attendance,write_date:0
-#: field:estate.hr.member,write_date:0
-#: field:estate.hr.team,write_date:0
-#: field:estate.labour.type,write_date:0
-#: field:estate.material.norm,write_date:0
-#: field:estate.object,write_date:0
-#: field:estate.object.type,write_date:0
-#: field:estate.operation,write_date:0
-#: field:estate.parameter,write_date:0
-#: field:estate.parameter.value,write_date:0
-#: field:estate.parameter.weight,write_date:0
-#: field:estate.planted.year,write_date:0
-#: field:estate.stand.hectare,write_date:0
-#: field:estate.upkeep,write_date:0
-#: field:estate.upkeep.activity,write_date:0
-#: field:estate.upkeep.labour,write_date:0
-#: field:estate.upkeep.material,write_date:0
-#: field:estate.wage,write_date:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_activity_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_block_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_object_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_operation_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_wage_write_date
 msgid "Last Updated on"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,leaf_analysis:0
-#: field:estate.block.template,leaf_analysis:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_leaf_analysis
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_leaf_analysis
 msgid "Leaf Analysis"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,parent_left:0
-#: field:estate.block.template,parent_left:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_parent_left
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_parent_left
 msgid "Left Parent"
 msgstr ""
 
 #. module: estate
-#: view:estate.block.template:estate.view_form_block_config
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: field:estate.upkeep.activity,location_ids:0
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: field:estate.upkeep.labour,location_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_location_ids
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_location_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.view_form_block_config
 msgid "Location"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,loc_barcode:0
-#: field:estate.block.template,loc_barcode:0
-msgid "Location Barcode"
-msgstr ""
-
-#. module: estate
-#: field:estate.block,complete_name:0
-#: field:estate.block,name:0
-#: field:estate.block.template,complete_name:0
-#: field:estate.block.template,name:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_name
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_name
 msgid "Location Name"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,usage:0
-#: field:estate.block.template,usage:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_usage
+#: model:ir.model.fields,field_description:estate.field_estate_block_usage
 msgid "Location Type"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_mn_1
 #: model:stock.location,name:estate.block_mn_1_stock_location
 msgid "MN 1"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "MTD"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.division_main_nursery
 #: model:stock.location,name:estate.division_main_nursery_stock_location
 msgid "Main Nursery"
 msgstr ""
 
 #. module: estate
-#: field:estate.parameter,mandatory:0
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_mandatory
 msgid "Mandatory"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: field:estate.material.norm,product_id:0
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.material:estate.upkeep_material_view_form
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
-#: field:estate.upkeep.material,product_id:0
-#: model:ir.ui.menu,name:estate.estate_upkeep_material
-#: view:website:estate.report_estate_division
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_product_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_product_id
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Material"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
-#: field:estate.upkeep.activity,material_amount:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_material_amount
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
 msgid "Material Cost"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Material Norm"
 msgstr ""
 
 #. module: estate
-#: field:estate.material.norm,product_uom_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_product_uom_id
 msgid "Material Unit of Measure"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep,material_line_ids:0
-msgid "Material line ids"
+#: model:ir.ui.menu,name:estate.estate_upkeep_material
+msgid "Material Usage"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,number_of_day:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_number_of_day
 msgid "Maximum 1"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,ratio_max:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_ratio_max
 msgid "Maximum Work Result Ratio"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,qty_base_max:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_qty_base_max
 msgid "Maximum Work Result/Day"
 msgstr ""
 
 #. module: estate
-#: field:estate.config.settings,default_max_entry_day:0
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_default_max_entry_day
 msgid "Maximum day(s) backdate transaction entry"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,member_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_member_ids
 msgid "Member ids"
 msgstr ""
 
 #. module: estate
-#: help:estate.hr.member,employee_id:0
+#: model:ir.model.fields,help:estate.field_estate_hr_member_employee_id
 msgid "Member should not be a Team Leader."
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,member_total:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_member_total
 msgid "Member total"
 msgstr ""
 
@@ -1500,47 +1556,65 @@ msgid "Mineral"
 msgstr ""
 
 #. module: estate
-#: field:estate.wage,wage:0
+#: model:ir.model.fields,field_description:estate.field_estate_wage_wage
 msgid "Minimum Regional Wage"
 msgstr ""
 
 #. module: estate
-#: help:estate.wage,daily_wage:0
+#: model:ir.model.fields,help:estate.field_estate_wage_daily_wage
 msgid "Minimum Regional Wage divide by Number of working days"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,ratio_min:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_ratio_min
 msgid "Minimum Work Result Ratio"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,qty_base_min:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_qty_base_min
 msgid "Minimum Work Result/Day"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
+#: code:addons/estate/models/estate_activity.py:100
+#, python-format
+msgid "Minimum should less than maximum."
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 msgid "Month"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,name:0
-#: field:estate.labour.type,name:0
-#: field:estate.object,name:0
-#: field:estate.object.type,name:0
-#: field:estate.stand.hectare,name:0
-#: field:estate.upkeep,name:0
-#: field:estate.upkeep.activity,name:0
-#: field:estate.upkeep.labour,name:0
-#: field:estate.upkeep.material,name:0
-#: field:estate.wage,name:0
+#: selection:estate.common.report,period:0
+#: selection:estate.division.report,period:0
+msgid "Monthly"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_activity_name
+#: model:ir.model.fields,field_description:estate.field_estate_labour_type_name
+#: model:ir.model.fields,field_description:estate.field_estate_object_name
+#: model:ir.model.fields,field_description:estate.field_estate_object_type_name
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_name
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_name
+#: model:ir.model.fields,field_description:estate.field_estate_wage_name
 msgid "Name"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Norm"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_activity.py:129
+#, python-format
+msgid "Norm's Parameter \"%s\" is not registered at Parameter Weight"
 msgstr ""
 
 #. module: estate
@@ -1549,57 +1623,65 @@ msgid "Normal"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_tree_mature_normal:0
-#: field:estate.block.template,qty_tree_mature_normal:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_tree_mature_normal
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_tree_mature_normal
 msgid "Normal Mature Tree"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/wizard/estate_common_report.py:75
+#: code:addons/estate/wizard/estate_common_report.py:119
 #, python-format
 msgid "Not implemented."
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Note"
 msgstr ""
 
 #. module: estate
-#: help:estate.material.norm,comment:0
+#: model:ir.model.fields,help:estate.field_estate_material_norm_comment
 msgid "Notes for material mixing/usage."
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,labour_number_of_day:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_number_of_day
 msgid "Number of Day"
 msgstr ""
 
 #. module: estate
-#: field:estate.wage,number_of_days:0
+#: model:ir.model.fields,field_description:estate.field_estate_wage_number_of_days
 msgid "Number of working days"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.division_nursery
 #: selection:stock.location,estate_location_type:0
 #: model:stock.location,name:estate.division_nursery_stock_location
 msgid "Nursery"
 msgstr ""
 
 #. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Nursery Management"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,estate_location_type:0
-#: help:estate.block.template,estate_location_type:0
-#: help:stock.location,estate_location_type:0
+#: model:ir.model.fields,help:estate.field_estate_block_estate_location_type
+#: model:ir.model.fields,help:estate.field_estate_block_template_estate_location_type
+#: model:ir.model.fields,help:estate.field_stock_location_estate_location_type
 msgid "Nursery: location for nursery. Planted: location for planting. Emplacement: location for non-planting/nursery."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.material,prod_product_activity:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "OT"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_upkeep_material_prod_product_activity
 msgid "Only first option used as reference"
 msgstr ""
 
@@ -1609,119 +1691,139 @@ msgid "Operation"
 msgstr ""
 
 #. module: estate
-#: field:estate.material.norm,option:0
+#: model:ir.ui.menu,name:estate.estate_operation_control_menu
+msgid "Operation Control"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_option
 msgid "Option Group"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,posx:0
-#: help:estate.block,posy:0
-#: help:estate.block,posz:0
-#: help:estate.block.template,posx:0
-#: help:estate.block.template,posy:0
-#: help:estate.block.template,posz:0
+#: model:ir.model.fields,help:estate.field_estate_block_posx
+#: model:ir.model.fields,help:estate.field_estate_block_posy
+#: model:ir.model.fields,help:estate.field_estate_block_posz
+#: model:ir.model.fields,help:estate.field_estate_block_template_posx
+#: model:ir.model.fields,help:estate.field_estate_block_template_posy
+#: model:ir.model.fields,help:estate.field_estate_block_template_posz
 msgid "Optional localization details, for information purpose only"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,labour_overtime_amount:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_overtime_amount
 msgid "Over Time"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,quantity_overtime:0
-#: view:website:estate.report_estate_division
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_quantity_overtime
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Overtime"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,wage_overtime:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_wage_overtime
 msgid "Overtime Wage"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,partner_id:0
-#: field:estate.block.template,partner_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_partner_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_partner_id
 msgid "Owner"
 msgstr ""
 
 #. module: estate
-#: help:estate.block,partner_id:0
-#: help:estate.block.template,partner_id:0
+#: model:ir.model.fields,help:estate.field_estate_block_partner_id
+#: model:ir.model.fields,help:estate.field_estate_block_template_partner_id
 msgid "Owner of the location if not internal"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
 msgid "P/A"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_pn_1
 #: model:stock.location,name:estate.block_pn_1_stock_location
 msgid "PN 1"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_pn_2
 #: model:stock.location,name:estate.block_pn_2_stock_location
 msgid "PN 2"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.block_pn_3
 #: model:stock.location,name:estate.block_pn_3_stock_location
 msgid "PN 3"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: field:estate.activity.norm,parameter_id:0
-#: field:estate.block.parameter,parameter_id:0
-#: view:estate.parameter.value:estate.search_view_estate_parameter
-#: field:estate.parameter.value,parameter_id:0
-#: field:estate.parameter.weight,parameter_id:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "PR"
+msgstr ""
+
+#. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_parameter_config
-#: model:ir.ui.menu,name:estate.estate_parameter_menu
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_parameter_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_parameter_id
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_parameter_id
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_parameter_id
+#: model:ir.ui.view,arch_db:estate.search_view_estate_parameter
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Parameter"
 msgstr ""
 
 #. module: estate
-#: field:estate.parameter,level:0
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_level
 msgid "Parameter Level"
 msgstr ""
 
 #. module: estate
-#: field:estate.parameter,name:0
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_name
 msgid "Parameter Name"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity.norm,parameter_value_id:0
-#: field:estate.block,parameter_value_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_parameter_value_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_value_ids
 msgid "Parameter Value"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,parameter_weight_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_parameter_weight_ids
 msgid "Parameter Weight"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,parent_id:0
+#: code:addons/estate/models/estate_activity.py:125
+#, python-format
+msgid "Parameter value \"%s\" is set more than once"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_activity_parent_id
 msgid "Parent Category"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,parent_left:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_parent_left
 msgid "Parent Left"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,location_id:0
-#: field:estate.block.template,location_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_location_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_location_id
 msgid "Parent Location"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,parent_right:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_parent_right
 msgid "Parent Right"
 msgstr ""
 
@@ -1731,9 +1833,9 @@ msgid "Pasir"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_search
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Payslip"
 msgstr ""
 
@@ -1743,31 +1845,26 @@ msgid "Payslip Processed"
 msgstr ""
 
 #. module: estate
-#: field:estate.common.report,period:0
-#: field:estate.division.report,period:0
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_period
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_period
 msgid "Period"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,labour_piece_rate_amount:0
-#: field:estate.upkeep.labour,quantity_piece_rate:0
-#: view:website:estate.report_estate_division
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_piece_rate_amount
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_quantity_piece_rate
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Piece Rate"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,piece_rate_price:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_piece_rate_price
 msgid "Piece Rate Price"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,wage_piece_rate:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_wage_piece_rate
 msgid "Piece Rate Wage"
-msgstr ""
-
-#. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
-msgid "Plantation"
 msgstr ""
 
 #. module: estate
@@ -1776,38 +1873,39 @@ msgid "Planted"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,area_planted:0
-#: field:estate.block.template,area_planted:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_area_planted
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_area_planted
 msgid "Planted Area (ha)"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,date_planted:0
-#: field:estate.block.template,date_planted:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_date_planted
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_date_planted
 msgid "Planted Date"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,planted_year_id:0
-#: field:estate.block.template,planted_year_id:0
-#: field:estate.planted.year,name:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_planted_year_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_planted_year_id
+#: model:ir.model.fields,field_description:estate.field_estate_planted_year_name
 msgid "Planted Year"
 msgstr ""
 
 #. module: estate
+#: model:estate.block.template,name:estate.division_pre_nursery
 #: model:stock.location,name:estate.division_pre_nursery_stock_location
 msgid "Pre Nursery"
 msgstr ""
 
 #. module: estate
-#: view:estate.division.report:estate.estate_division_report_view_form
+#: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 msgid "Print"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Prod (%)"
 msgstr ""
 
@@ -1817,101 +1915,105 @@ msgid "Product Category"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
 msgid "Productivity"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.material,prod_product_activity:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_prod_product_activity
 msgid "Productivity Material"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,prod_quantity_day:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_prod_quantity_day
 msgid "Productivity Qty/Day (%)"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,putaway_strategy_id:0
-#: field:estate.block.template,putaway_strategy_id:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
+msgid "Productivity is less than 100%"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_putaway_strategy_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_putaway_strategy_id
 msgid "Put Away Strategy"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Q/D"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
 msgid "Qty"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Qty."
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,quantity:0
-#: view:website:estate.report_estate_division
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_quantity
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_activity_unit_amount
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Quantity"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.attendance,qty_ratio:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_qty_ratio
 msgid "Quantity Ratio"
 msgstr ""
 
 #. module: estate
-#: field:estate.material.norm,qty_available:0
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_qty_available
 msgid "Quantity on Hand"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: field:estate.upkeep.labour,attendance_code_ratio:0
-#: view:estate.upkeep.material:estate.upkeep_material_view_form
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_attendance_code_ratio
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Ratio"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,ratio_day_quantity:0
-#: field:estate.upkeep.labour,ratio_day_quantity:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_ratio_day_quantity
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_ratio_day_quantity
 msgid "Ratio Day/Quantity"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.material,ratio_product_activity:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_ratio_product_activity
 msgid "Ratio Product/Activity"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,ratio_quantity_day:0
-#: field:estate.upkeep.labour,ratio_quantity_day:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_ratio_quantity_day
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_ratio_quantity_day
 msgid "Ratio Quantity/Day"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,ratio_wage_quantity:0
-#: field:estate.upkeep.labour,ratio_wage_quantity:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_ratio_wage_quantity
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_ratio_wage_quantity
 msgid "Ratio Wage/Quantity"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,var_quantity_day:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_var_quantity_day
 msgid "Reality to standard difference variance"
 msgstr ""
 
 #. module: estate
-#: help:estate.config.settings,module_estate_nursery:0
+#: model:ir.model.fields,help:estate.field_estate_config_settings_module_estate_nursery
 msgid "Record receiving from purchase order, planting and selection."
 msgstr ""
 
@@ -1927,162 +2029,183 @@ msgid "Regular"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,comment:0
-#: field:estate.upkeep.labour,comment:0
-#: field:estate.upkeep.material,comment:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_comment
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_comment
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_comment
 msgid "Remark"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,removal_strategy_id:0
-#: field:estate.block.template,removal_strategy_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_removal_strategy_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_removal_strategy_id
 msgid "Removal Strategy"
 msgstr ""
 
 #. module: estate
-#: field:estate.material.norm,unit_amount:0
+#: model:ir.ui.menu,name:estate.menu_estate_reporting
+msgid "Reports"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_unit_amount
 msgid "Required Unit Amount"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,parent_right:0
-#: field:estate.block.template,parent_right:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_unit_amount
+msgid "Required to distribute work result of labour based on activity and attendance ratio."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_parent_right
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_parent_right
 msgid "Right Parent"
 msgstr ""
 
 #. module: estate
-#: field:estate.config.settings,module_estate_nursery:0
+#: model:ir.model.fields,field_description:estate.field_estate_config_settings_module_estate_nursery
 msgid "Seed Management"
-msgstr ""
-
-#. module: estate
-#: help:estate.activity,type:0
-msgid "Select View to create group of activities."
 msgstr ""
 
 #. module: estate
 #: selection:estate.common.report,period:0
 #: selection:estate.division.report,period:0
-msgid "Select dates"
+msgid "Select Dates"
 msgstr ""
 
 #. module: estate
-#: help:estate.common.report,period:0
-#: help:estate.division.report,period:0
+#: model:ir.model.fields,help:estate.field_estate_activity_type
+msgid "Select View to create group of activities."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_common_report_period
+#: model:ir.model.fields,help:estate.field_estate_division_report_period
 msgid "Select period of activities to be displayed at report."
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,sequence:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_sequence
 msgid "Sequence"
 msgstr ""
 
 #. module: estate
-#: help:estate.material.norm,option:0
+#: model:ir.model.fields,help:estate.field_estate_material_norm_option
 msgid "Set 1, 2, 3, ... to be material option. Lowest number process first.One or more material could share same option number.Only first option will be used as reference"
 msgstr ""
 
 #. module: estate
-#: help:estate.stand.hectare,default:0
+#: model:ir.model.fields,help:estate.field_estate_stand_hectare_default
 msgid "Set True to make new block using this stand per hectare."
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,account_id:0
+#: model:ir.model.fields,help:estate.field_estate_activity_account_id
 msgid "Set as default analytic account at Upkeep."
 msgstr ""
 
 #. module: estate
-#: field:estate.stand.hectare,default:0
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_default
 msgid "Set as default for new Block"
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,general_account_id:0
+#: model:ir.model.fields,help:estate.field_estate_activity_general_account_id
 msgid "Set as default general account."
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,qty_base:0
-#: help:estate.upkeep.labour,activity_standard_base:0
+#: model:ir.model.fields,help:estate.field_estate_activity_qty_base
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_activity_standard_base
 msgid "Set as default work's result."
 msgstr ""
 
 #. module: estate
-#: help:estate.hr.team,assistant_id:0
+#: model:ir.model.fields,help:estate.field_estate_hr_team_assistant_id
 msgid "Set this as default Assistant, will be used to record at Upkeep."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,leaf_analysis:0
-#: help:estate.block.template,leaf_analysis:0
+#: model:ir.model.fields,help:estate.field_estate_block_leaf_analysis
+#: model:ir.model.fields,help:estate.field_estate_block_template_leaf_analysis
 msgid "Set true if leaf analysis has been done."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,soil_analysis:0
-#: help:estate.block.template,soil_analysis:0
+#: model:ir.model.fields,help:estate.field_estate_block_soil_analysis
+#: model:ir.model.fields,help:estate.field_estate_block_template_soil_analysis
 msgid "Set true if soil analysis has been done."
 msgstr ""
 
 #. module: estate
-#: help:product.category,estate_product:0
+#: model:ir.model.fields,help:estate.field_product_category_estate_product
 msgid "Set true to set all childs products as Upkeep Material Line."
 msgstr ""
 
 #. module: estate
-#: help:estate.activity.norm,coefficient:0
+#: model:ir.model.fields,help:estate.field_estate_activity_norm_coefficient
 msgid "Set value between 0 ... 1."
 msgstr ""
 
 #. module: estate
-#: help:estate.wage,estate_id:0
+#: model:ir.model.fields,help:estate.field_estate_wage_estate_id
 msgid "Set wage for all child locations if employee has no contract."
 msgstr ""
 
 #. module: estate
-#: help:estate.parameter.weight,weight:0
+#: model:ir.model.fields,help:estate.field_estate_parameter_weight_weight
 msgid "Set weight value between 0 ... 1."
 msgstr ""
 
 #. module: estate
-#: field:estate.block,posy:0
-#: field:estate.block.template,posy:0
+#: model:ir.ui.menu,name:estate.menu_estate_configuration
+msgid "Settings"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_posy
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_posy
 msgid "Shelves (Y)"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,is_smallholder:0
-#: field:estate.block.template,is_smallholder:0
+#: model:product.product,name:estate.product_product_sp
+#: model:product.template,name:estate.product_product_sp_product_template
+msgid "Sipermetrin"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_is_smallholder
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_is_smallholder
 msgid "Smallholder Area"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,soil_analysis:0
-#: field:estate.block.template,soil_analysis:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_soil_analysis
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_soil_analysis
 msgid "Soil Analysis"
 msgstr ""
 
 #. module: estate
-#: field:estate.stand.hectare,qty:0
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_qty
 msgid "Stand Per Hectare"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_sph_do:0
-#: field:estate.block.template,qty_sph_do:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_sph_do
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_sph_do
 msgid "Stand per hectare"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,material_norm_ids:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_material_norm_ids
 msgid "Standard Material"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: field:estate.activity,standard_price:0
-#: field:estate.material.norm,standard_price:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_standard_price
+#: model:ir.model.fields,field_description:estate.field_estate_material_norm_standard_price
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Standard Price"
 msgstr ""
 
@@ -2092,13 +2215,13 @@ msgid "Standard Quantity"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Standard Work Result and Ratio"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,qty_base:0
-#: field:estate.upkeep.labour,activity_standard_base:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_qty_base
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_activity_standard_base
 msgid "Standard Work Result/Day"
 msgstr ""
 
@@ -2108,42 +2231,42 @@ msgid "Standard required material of an activity"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_sph_standard:0
-#: field:estate.block.template,qty_sph_standard:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_sph_standard
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_sph_standard
 msgid "Standard stand per hectare"
 msgstr ""
 
 #. module: estate
-#: field:estate.common.report,date_start:0
-#: field:estate.division.report,date_start:0
-#: field:estate.wage,date_start:0
+#: model:ir.model.fields,field_description:estate.field_estate_common_report_date_start
+#: model:ir.model.fields,field_description:estate.field_estate_division_report_date_start
+#: model:ir.model.fields,field_description:estate.field_estate_wage_date_start
 msgid "Start Date"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Start Date:"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,state:0
-#: field:estate.operation,state:0
-#: field:estate.upkeep,state:0
-#: field:estate.upkeep.activity,state:0
-#: field:estate.upkeep.labour,state:0
-#: field:estate.upkeep.material,state:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_state
+#: model:ir.model.fields,field_description:estate.field_estate_operation_state
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_state
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_state
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_state
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_state
 msgid "State"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,valuation_in_account_id:0
-#: field:estate.block.template,valuation_in_account_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_valuation_in_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_valuation_in_account_id
 msgid "Stock Valuation Account (Incoming)"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,valuation_out_account_id:0
-#: field:estate.block.template,valuation_out_account_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_valuation_out_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_block_valuation_out_account_id
 msgid "Stock Valuation Account (Outgoing)"
 msgstr ""
 
@@ -2154,47 +2277,52 @@ msgid "Sub Block"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Sub Total"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,labour_number_of_day:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_labour_number_of_day
 msgid "Sum of activity's labour work day(s)."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,labour_overtime_amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_labour_overtime_amount
 msgid "Sum of activity's overtime."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,labour_piece_rate_amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_labour_piece_rate_amount
 msgid "Sum of activity's piece rate in same."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.labour,amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_amount
 msgid "Sum of daily, piece rate and overtime wage"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_material_activity_unit_amount
+msgid "Sum of labour activity quantity."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_amount
 msgid "Sum of labour wage and material cost."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,labour_amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_labour_amount
 msgid "Sum of labour's wage."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,labour_unit_amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_labour_unit_amount
 msgid "Sum of labour's work result."
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,material_amount:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_material_amount
 msgid "Sum of material's cost."
 msgstr ""
 
@@ -2204,57 +2332,49 @@ msgid "Suspend"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,unit_amount:0
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "Target Qty."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_unit_amount
 msgid "Target Unit Amount"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.member,team_id:0
-#: view:estate.upkeep:estate.upkeep_view_search
-#: field:estate.upkeep,team_id:0
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: field:estate.upkeep.labour,upkeep_team_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_member_team_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_team_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_team_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Team"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,employee_id:0
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
-#: field:estate.upkeep.labour,upkeep_team_employee_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_employee_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_team_employee_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
 msgid "Team Leader"
 msgstr ""
 
 #. module: estate
-#: field:estate.hr.team,name:0
+#: model:ir.model.fields,field_description:estate.field_estate_hr_team_name
 msgid "Team Name"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-msgid "Team Work"
-msgstr ""
-
-#. module: estate
-#: selection:estate.common.report,period:0
-#: selection:estate.division.report,period:0
-#: view:estate.upkeep:estate.upkeep_view_search
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "This Month"
 msgstr ""
 
 #. module: estate
-#: selection:estate.common.report,period:0
-#: selection:estate.division.report,period:0
-msgid "This Week"
-msgstr ""
-
-#. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_search
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_search
-#: view:estate.upkeep.material:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
 msgid "This Year"
 msgstr ""
 
@@ -2265,87 +2385,112 @@ msgid "Today"
 msgstr ""
 
 #. module: estate
-#: field:estate.stand.hectare,parameter_value_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_stand_hectare_parameter_value_id
 msgid "Topography"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_tree:0
-#: field:estate.block.template,qty_tree:0
+#: code:addons/estate/models/estate_upkeep.py:138
+#, python-format
+msgid "Total %s labour's amount should equal or less than %s"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_activity.py:143
+#, python-format
+msgid "Total Activity Parameter Weight should be less than or equal to 1"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
+msgid "Total Amount"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_tree
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_tree
 msgid "Total Tree"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,qty_tree_mature_nofruit:0
-#: field:estate.block.template,qty_tree_mature_nofruit:0
+#: code:addons/estate/models/estate_upkeep.py:116
+#, python-format
+msgid "Transaction date should not be less than or equal to %s day(s)"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_qty_tree_mature_nofruit
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_qty_tree_mature_nofruit
 msgid "Tree Without Fruit"
 msgstr ""
 
 #. module: estate
-#: view:estate.parameter.weight:estate.view_activity_parameter_tree
+#: model:ir.ui.view,arch_db:estate.view_activity_parameter_tree
 msgid "True"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,type:0
-#: view:estate.upkeep:estate.upkeep_view_form
+#: model:ir.model.fields,field_description:estate.field_estate_activity_type
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Type"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
 msgid "Unit"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.material,unit_amount:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_unit_amount
 msgid "Unit Amount"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.material,activity_uom_id:0
-#: field:estate.upkeep.material,product_uom_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_activity_uom_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_product_uom_id
 msgid "Unit of Measure"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.activity,activity_uom_id:0
-#: field:estate.upkeep.labour,activity_uom_id:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_activity_uom_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_activity_uom_id
 msgid "Unit of Measurement"
 msgstr ""
 
 #. module: estate
-#: field:estate.block,area_unplanted:0
-#: field:estate.block.template,area_unplanted:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_area_unplanted
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_area_unplanted
 msgid "Unplanted Area (ha)"
 msgstr ""
 
 #. module: estate
-#: view:estate.activity:estate.view_activity_config_form
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.material:estate.upkeep_material_view_tree
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "UoM"
 msgstr ""
 
 #. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
-#: view:estate.upkeep:estate.upkeep_view_form
-#: field:estate.upkeep.activity,upkeep_id:0
-#: field:estate.upkeep.labour,upkeep_id:0
-#: field:estate.upkeep.material,upkeep_id:0
 #: model:ir.actions.act_window,name:estate.action_list_upkeep
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_upkeep_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_upkeep_id
 #: model:ir.ui.menu,name:estate.menu_estate_upkeep_reporting
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Upkeep"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: model:ir.actions.act_window,name:estate.action_list_upkeep_activity
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Upkeep Activity"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_line_ids
+msgid "Upkeep Activity Line"
 msgstr ""
 
 #. module: estate
@@ -2354,46 +2499,63 @@ msgid "Upkeep Labour"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_line_ids
+msgid "Upkeep Labour Line"
+msgstr ""
+
+#. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_upkeep_material
 msgid "Upkeep Material"
 msgstr ""
 
 #. module: estate
-#: help:estate.hr.attendance,qty_ratio:0
-#: help:estate.upkeep.labour,attendance_code_ratio:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_line_ids
+msgid "Upkeep Material Line"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:692
+#: code:addons/estate/models/estate_upkeep.py:852
+#, python-format
+msgid "Upkeep activity should be defined."
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_hr_attendance_qty_ratio
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_attendance_code_ratio
 msgid "Use to calculate work result quantity."
 msgstr ""
 
 #. module: estate
-#: help:estate.config.settings,default_account_id:0
+#: model:ir.model.fields,help:estate.field_estate_config_settings_default_account_id
 msgid "Used at upkeep analytic entries (expenses)."
 msgstr ""
 
 #. module: estate
-#: help:estate.config.settings,default_journal_line_id:0
+#: model:ir.model.fields,help:estate.field_estate_config_settings_default_journal_line_id
 msgid "Used at upkeep analytic entries if no other journal defined."
 msgstr ""
 
 #. module: estate
-#: help:estate.config.settings,default_analytic_account_id:0
+#: model:ir.model.fields,help:estate.field_estate_config_settings_default_analytic_account_id
 msgid "Used at upkeep analytic entries."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,valuation_in_account_id:0
-#: help:estate.block.template,valuation_in_account_id:0
+#: model:ir.model.fields,help:estate.field_estate_block_template_valuation_in_account_id
+#: model:ir.model.fields,help:estate.field_estate_block_valuation_in_account_id
 msgid "Used for real-time inventory valuation. When set on a virtual location (non internal type), this account will be used to hold the value of products being moved from an internal location into this location, instead of the generic Stock Output Account set on the product. This has no effect for internal locations."
 msgstr ""
 
 #. module: estate
-#: help:estate.block,valuation_out_account_id:0
-#: help:estate.block.template,valuation_out_account_id:0
+#: model:ir.model.fields,help:estate.field_estate_block_template_valuation_out_account_id
+#: model:ir.model.fields,help:estate.field_estate_block_valuation_out_account_id
 msgid "Used for real-time inventory valuation. When set on a virtual location (non internal type), this account will be used to hold the value of products being moved out of this location and into an internal location, instead of the generic Stock Output Account set on the product. This has no effect for internal locations."
 msgstr ""
 
 #. module: estate
-#: help:estate.activity,ratio_max:0
-#: help:estate.activity,ratio_min:0
+#: model:ir.model.fields,help:estate.field_estate_activity_ratio_max
+#: model:ir.model.fields,help:estate.field_estate_activity_ratio_min
 msgid "Used to compute work day(s) per unit of measurement."
 msgstr ""
 
@@ -2403,18 +2565,18 @@ msgid "Utara Selatan"
 msgstr ""
 
 #. module: estate
-#: field:estate.block.parameter,parameter_value_id:0
-#: field:estate.parameter.value,name:0
+#: model:ir.model.fields,field_description:estate.field_estate_block_parameter_parameter_value_id
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_value_name
 msgid "Value"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,var_quantity_day:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_var_quantity_day
 msgid "Variance Qty/Day (%)"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,var_qty_base:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_var_qty_base
 msgid "Variance to Standard"
 msgstr ""
 
@@ -2429,80 +2591,76 @@ msgid "View"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep:estate.upkeep_view_form
-#: view:estate.upkeep.activity:estate.upkeep_activity_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "W/Q"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_tree
-#: view:estate.upkeep.labour:estate.upkeep_lha_view_tree
-#: field:estate.upkeep.labour,amount:0
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_amount
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
+#: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
 msgid "Wage"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity,wage_method:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_wage_method
 msgid "Wage Method"
 msgstr ""
 
 #. module: estate
-#: field:estate.parameter.weight,weight:0
+#: selection:estate.common.report,period:0
+#: selection:estate.division.report,period:0
+msgid "Weekly"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_parameter_weight_weight
 msgid "Weight"
 msgstr ""
 
 #. module: estate
-#: field:estate.upkeep.labour,number_of_day:0
+#: code:addons/estate/models/estate_activity.py:235
+#, python-format
+msgid "Weight value should between 0 and 1"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_number_of_day
 msgid "Work Day"
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Work Day(s)"
 msgstr ""
 
 #. module: estate
-#: view:estate.upkeep.labour:estate.upkeep_labour_view_form
-msgid "Work Result"
-msgstr ""
-
-#. module: estate
-#: view:estate.activity:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_config_form
 msgid "Work Result Norm"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity.norm,ratio_base:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_ratio_base
 msgid "Work Result Ratio"
 msgstr ""
 
 #. module: estate
-#: field:estate.activity.norm,qty_base:0
+#: model:ir.model.fields,field_description:estate.field_estate_activity_norm_qty_base
 msgid "Work Result/Day"
 msgstr ""
 
 #. module: estate
-#: help:estate.upkeep.activity,ratio_quantity_day:0
-#: help:estate.upkeep.labour,ratio_quantity_day:0
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_ratio_quantity_day
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_ratio_quantity_day
 msgid "Work result within a work day."
 msgstr ""
 
 #. module: estate
-#: view:website:estate.report_estate_division
+#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "YTD"
-msgstr ""
-
-#. module: estate
-#: model:ir.ui.menu,name:estate.estate_operation_control_menu
-msgid "_(Operation Control)"
-msgstr ""
-
-#. module: estate
-#: model:ir.ui.menu,name:estate.estate_upkeep
-msgid "_(Upkeep)"
 msgstr ""
 
 #. module: estate
@@ -2513,6 +2671,131 @@ msgstr ""
 #. module: estate
 #: model:product.uom,name:estate.product_uom_bibit
 msgid "bbt"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+msgid "currency/unit"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+msgid "day/unit"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_activity
+msgid "estate.activity"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_activity_norm
+msgid "estate.activity.norm"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_block
+msgid "estate.block"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_block_parameter
+msgid "estate.block.parameter"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_block_template
+msgid "estate.block.template"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_config_settings
+msgid "estate.config.settings"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_hr_attendance
+msgid "estate.hr.attendance"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_hr_member
+msgid "estate.hr.member"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_hr_team
+msgid "estate.hr.team"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_labour_type
+msgid "estate.labour.type"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_object
+msgid "estate.object"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_object_type
+msgid "estate.object.type"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_operation
+msgid "estate.operation"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_parameter
+msgid "estate.parameter"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_parameter_value
+msgid "estate.parameter.value"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_parameter_weight
+msgid "estate.parameter.weight"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_planted_year
+msgid "estate.planted.year"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_stand_hectare
+msgid "estate.stand.hectare"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_upkeep
+msgid "estate.upkeep"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_upkeep_activity
+msgid "estate.upkeep.activity"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_upkeep_labour
+msgid "estate.upkeep.labour"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_upkeep_material
+msgid "estate.upkeep.material"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_wage
+msgid "estate.wage"
 msgstr ""
 
 #. module: estate
@@ -2531,8 +2814,8 @@ msgid "lbg"
 msgstr ""
 
 #. module: estate
-#: view:estate.config.settings:estate.view_estate_configuration
-#: view:estate.division.report:estate.estate_division_report_view_form
+#: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
+#: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "or"
 msgstr ""
 
@@ -2542,7 +2825,17 @@ msgid "pkk"
 msgstr ""
 
 #. module: estate
+#: model:ir.model,name:estate.model_report_estate_report_estate_division
+msgid "report.estate.report_estate_division"
+msgstr ""
+
+#. module: estate
 #: model:product.uom,name:estate.product_uom_tp
 msgid "tp"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
+msgid "unit/day"
 msgstr ""
 

@@ -8,11 +8,9 @@
             <field name="model">estate.upkeep.labour</field>
             <field name="inherit_id" ref="estate.upkeep_labour_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='ratio_wage_quantity']" position="after">
-                    <group string="Fingerprint">
-                        <field name="attendance_in"/>
-                        <field name="attendance_out"/>
-                    </group>
+                <xpath expr="//group[@name='attendance']" position="inside">
+                    <field name="attendance_in"/>
+                    <field name="attendance_out"/>
                 </xpath>
             </field>
         </record>

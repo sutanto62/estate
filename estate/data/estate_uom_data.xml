@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <!--<data noupdate="1">-->
-    <data>
-        <!-- product.uom.categ -->
+    <data noupdate="1">
+        <!-- Product Category-->
         <record id="product_uom_categ_area" model="product.uom.categ">
             <field name="name">Area</field>
         </record>
 
-        <!-- product.uom -->
+        <!-- Product UOM -->
         <record id="product_uom_hectare" model="product.uom">
             <field name="category_id" ref="product_uom_categ_area"/>
             <field name="name">ha</field>
@@ -42,6 +41,16 @@
         <record id="product_uom_tp" model="product.uom">
             <field name="category_id" ref="product.product_uom_categ_unit"/>
             <field name="name">tp</field>
+        </record>
+
+        <!-- Decimal Precision -->
+        <record id="decimal_estate" model="decimal.precision">
+            <field name="name">Estate</field>
+            <field name="digits">6</field>
+        </record>
+        <record id="decimal_standard_price" model="decimal.precision">
+            <field name="name">Standard Price</field>
+            <field name="digits">6</field>
         </record>
     </data>
 </openerp>

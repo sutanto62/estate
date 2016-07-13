@@ -26,7 +26,7 @@
                         or
                         <button string="Cancel" type="object" name="cancel" class="oe_link"/>
                     </header>
-                    <separator string="Plantation"/>
+                    <separator string="Estate Settings"/>
                     <group name="nursery_grp">
                         <label for="id" string="Nursery Management"/>
                         <div name="nursery">
@@ -69,8 +69,12 @@
             <field name="target">inline</field>
         </record>
 
-        <menuitem id="menu_estate_configuration" name="Estate" parent="base.menu_config"
-            sequence="70" action="action_estate_configuration"/>
+        <menuitem id="menu_estate_configuration"
+                  sequence="10"
+                  name="Settings"
+                  parent="estate.estate_config_menu"
+                  action="action_estate_configuration"
+                  groups="base.group_no_one"/>
 
     </data>
 </openerp>

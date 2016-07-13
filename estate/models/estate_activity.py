@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, osv, exceptions
+from openerp import models, fields, api, osv, exceptions, _
 import openerp.addons.decimal_precision as dp
 
 class Activity(models.Model):
@@ -62,7 +62,7 @@ class Activity(models.Model):
     wage_method = fields.Selection([('standard', 'Standard Quantity'),
                                     ('attendance', 'Attendance Code')], 'Wage Method',
                                    default='standard',
-                                   help='* Standard Quantity, labour wage based on work result.'
+                                   help='* Standard Quantity, labour wage based on work result.'\
                                         '* Worked Day, labour wage based on attendance code.')
 
     @api.one
@@ -97,10 +97,10 @@ class Activity(models.Model):
         """
         if self.qty_base_min or self.qty_base_max:
             if self.qty_base_min > self.qty_base_max:
-                error_msg = "Minimum should less than maximum."
+                error_msg = _("Minimum should less than maximum.")
                 raise exceptions.ValidationError(error_msg)
             if self.qty_base < self.qty_base_min or self.qty_base > self.qty_base_max:
-                error_msg = "Base quantity must be in between of minimum and maximum quantity."
+                error_msg = _("Base quantity must be in between of minimum and maximum quantity.")
                 raise exceptions.ValidationError(error_msg)
 
         return True
@@ -122,11 +122,11 @@ class Activity(models.Model):
                 param_value_name = rec_value.parameter_value_id.name
                 param_parent_name = rec_value.parameter_id.name
                 if param_value_name in param_value.values():
-                    error_msg = "Parameter value \"%s\" is set more than once" % param_value_name
+                    error_msg = _("Parameter value \"%s\" is set more than once" % param_value_name)
                     raise exceptions.ValidationError(error_msg)
                 param_value[rec_value.id] = param_value_name
                 if param_parent_name not in param_name_value.values():
-                    error_msg = "Norm's Parameter \"%s\" is not registered at Parameter Weight" % param_parent_name
+                    error_msg = _("Norm's Parameter \"%s\" is not registered at Parameter Weight" % param_parent_name)
                     raise exceptions.ValidationError(error_msg)
             return param_value
 
@@ -140,7 +140,7 @@ class Activity(models.Model):
             for rec in self.parameter_weight_ids:
                 total_weight += rec.weight
             if total_weight > 1.00:
-                error_msg = "Total Activity Parameter Weight should be less than or equal to 1"
+                error_msg = _("Total Activity Parameter Weight should be less than or equal to 1")
                 raise exceptions.ValidationError(error_msg)
             return True
 
@@ -232,7 +232,7 @@ class ParameterWeight(models.Model):
     @api.constrains('weight')
     def _check_weight(self):
         if not 1 >= self.weight >= 0:
-            error_msg = "Weight value should between 0 and 1"
+            error_msg = _("Weight value should between 0 and 1")
             raise exceptions.ValidationError(error_msg)
         return True
 
@@ -242,7 +242,7 @@ class ActivityNorm(models.Model):
     _name = 'estate.activity.norm'
     _order = 'parameter_id, parameter_value_id'
 
-    activity_id = fields.Many2one('estate.activity')
+    activity_id = fields.Many2one('estate.activity', string='Activity')
     parameter_id = fields.Many2one('estate.parameter', string="Parameter")
     parameter_value_id = fields.Many2one('estate.parameter.value', string="Parameter Value",
                                          domain="[('parameter_id', '=', parameter_id)]")
@@ -270,7 +270,7 @@ class ActivityNorm(models.Model):
     @api.constrains('coefficient')
     def _check_coefficient(self):
         if not 1 >= self.coefficient >= 0:
-            error_msg = "Coefficient should in between 0 and 1"
+            error_msg = _("Coefficient should in between 0 and 1")
             raise exceptions.ValidationError(error_msg)
 
     @api.one
@@ -285,8 +285,8 @@ class MaterialNorm(models.Model):
     _order = 'option asc'
 
     activity_id = fields.Many2one('estate.activity', 'Activity')
-    option = fields.Integer('Option Group', help='Set 1, 2, 3, ... to be material option. Lowest number process first.'
-                                                 'One or more material could share same option number.'
+    option = fields.Integer('Option Group', help='Set 1, 2, 3, ... to be material option. Lowest number process first.'\
+                                                 'One or more material could share same option number.'\
                                                  'Only first option will be used as reference')  # check stock, move next option if empty
     product_id = fields.Many2one('product.product', 'Material', domain=[('categ_id.estate_product', '=', True)])
     product_uom_id = fields.Many2one('product.uom', 'Material Unit of Measure', related='product_id.uom_id',

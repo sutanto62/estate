@@ -162,18 +162,22 @@
                                statusbar_visible="draft,confirmed,approved,payslip"/>
                     </header>
                     <sheet string="Upkeep">
-                        <h1>
-                            <label string="Draft Upkeep"/>
-                        </h1>
+                        <div class="oe_title">
+                            <label string="Daily Upkeep Draft " attrs="{'invisible': [('state','!=','draft')]}"/>
+                            <label string="Daily Upkeep " attrs="{'invisible': [('state','=', 'draft')]}"/>
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
                         <group>
-                            <group string="Team Work">
+                            <group name="team_work">
                                 <field name="date" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="team_id" options="{'no_create': True}"
                                        attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="assistant_id" options="{'no_create': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                             </group>
-                            <group string="Estate Information">
+                            <group name="division_information">
                                 <field name="division_id" options="{'no_create': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="estate_id" options="{'no_create': True}"
@@ -193,10 +197,10 @@
                                                options="{'no_create': True}"
                                                widget="many2many_tags"
                                                domain="[('inherit_location_id.location_id', '=', division_id)]"/>
-                                        <field name="unit_amount" string="Qty."/>
+                                        <field name="unit_amount" string="Target Qty."/>
                                         <field name="amount"/>
                                         <!-- do not remove field below -->
-                                        <field name="account_id"/>
+                                        <field name="account_id" options="{'no_create': True}"/>
                                         <field name="upkeep_id" invisible="True"/>
 
                                         <!--
@@ -246,12 +250,12 @@
                                 </div>
                                 <field name="labour_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
                                     <tree editable="True" colors="orange:prod_quantity_day&lt;100">
-                                        <field name="employee_id" string="Employee"/>
+                                        <field name="employee_id" string="Employee" options="{'no_create': True}"/>
                                         <field name="contract_type" string="Type" readonly="True"/>
                                         <field name="activity_id" string="Activity"
                                                 options="{'no_create': True}"/>
                                         <field name="activity_uom_id" string="UoM" readonly="True"/>
-                                        <field name="location_id" string="Location"
+                                        <field name="location_id" string="Location" options="{'no_create': True}"
                                                 domain="[('inherit_location_id.location_id', '=', division_id)]"/>
                                         <field name="attendance_code_id" string="Attn."
                                                 options="{'no_create': True}"/>
@@ -278,15 +282,17 @@
                             <page string="Material">
                                 <field name="material_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
                                     <tree editable="True" colors="orange: ratio_product_activity != prod_product_activity">
-                                        <field name="product_id" string="Material"/>
+                                        <!-- TODO add future feature - proposed material? -->
+                                        <field name="product_id" string="Material" options="{'no_create': True}"/>
                                         <field name="product_uom_id" string="UoM"/>
                                         <field name="unit_amount" string="Qty."/>
                                         <field name="amount"/>
-                                        <field name="activity_id" string="Activity"/>
+                                        <field name="activity_id" string="Activity" options="{'no_create': True}"/>
                                         <field name="activity_uom_id" string="UoM"/>
-                                        <field name="ratio_product_activity" string="Ratio"/>
                                         <!-- Do not remove field below -->
-                                        <field name="prod_product_activity" string="Norm" invisible="False"/>
+                                        <field name="activity_unit_amount" string="Act. Qty." invisible="True"/>
+                                        <field name="ratio_product_activity" string="Ratio"/>
+                                        <field name="prod_product_activity" string="Norm" invisible="True" groups="estate.estate_manager"/>
                                         <!--<field name="activity_unit_amount" string="Qty. Act"/>-->
                                         <!--<field name="ratio_product_activity" string="Ratio"/>-->
                                         <!-- -->
@@ -318,49 +324,59 @@
                             <h1>
                                 <field name="upkeep_id" readonly="True"/>
                             </h1>
+                            <field name="division_id" readonly="True"/>
                         </div>
                         <group>
-                            <group name="top" string="Activity" colspan="4">
+                            <group name="top" colspan="4">
                                 <field name="activity_id" readonly="True"
-                                       options="{'no_create': True, 'no_open': True}"/>
+                                       options="{'no_create': True}"/>
                                 <field name="activity_uom_id" readonly="True"
-                                       string="Unit" options="{'no_create': True, 'no_open': True}"/>
+                                       string="Unit" options="{'no_create': True}"/>
                                 <field name="location_ids" readonly="True"
-                                       options="{'no_create': True, 'no_open': True}"
+                                       options="{'no_create': True}"
                                        widget="many2many_tags"/>
+                                <field name="unit_amount"/>
                             </group>
                         </group>
-                        <group>
-                            <group string="Labour">
-                                <field name="labour_unit_amount"/>
-                                <field name="labour_number_of_day"/>
-                                <field name="labour_overtime_amount"/>
-                                <field name="labour_piece_rate_amount"/>
-
-                                <!-- do not remove field below -->
-                                <!--
-
-                                <field name="name" invisible="True"/>
-                                <field name="account_id" domain="[('type','=','normal'),('use_estate','=',1)]"
-                                       options="{'no_open': True, 'no_create': True}" invisible="True"/>
-                                <field name="general_account_id" invisible="True"/>
-                                <field name="journal_id" string="Journal" options="{'no_create': True}" invisible="True"/>
-                                <field name="date" invisible="True"/>
-                                <field name="amount" invisible="True"/>
-                                -->
-                            </group>
-                            <group name="cost" string="Cost">
-                                <field name="labour_amount" string="Labour Wage"/>
-                                <field name="material_amount" string="Material Cost"/>
-                                <field name="amount" string="Activity Cost"/>
-                                <field name="account_id" readonly="True"/>
-                            </group>
-                            <group string="Productivity">
-                                <field name="ratio_quantity_day"/>
-                                <field name="ratio_day_quantity"/>
-                                <field name="ratio_wage_quantity"/>
-                            </group>
-                        </group>
+                        <notebook>
+                            <page name="labour" string="Labour">
+                                <group>
+                                    <field name="labour_unit_amount"/>
+                                    <field name="labour_number_of_day"/>
+                                    <field name="labour_overtime_amount"/>
+                                    <field name="labour_piece_rate_amount"/>
+                                </group>
+                            </page>
+                            <page name="account" string="Account">
+                                <group>
+                                    <group name="cost">
+                                        <field name="labour_amount" string="Labour Wage"/>
+                                        <field name="material_amount" string="Material Cost"/>
+                                        <field name="amount" string="Activity Cost"/>
+                                    </group>
+                                    <group name="account">
+                                        <field name="account_id" options="{'no_create': True}"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="productivity" string="Productivity">
+                                <group name="productivity">
+                                    <label for="ratio_quantity_day"/>
+                                    <div>
+                                        <field name="ratio_quantity_day" class="oe_inline"/> unit/day
+                                    </div>
+                                    <label for="ratio_day_quantity"/>
+                                    <div>
+                                        <field name="ratio_day_quantity" class="oe_inline"/> day/unit
+                                    </div>
+                                    <label for="ratio_wage_quantity"/>
+                                    <div>
+                                        <!-- TODO get currency from context -->
+                                        <field name="ratio_wage_quantity" class="oe_inline"/> currency/unit
+                                    </div>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -377,44 +393,72 @@
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,approved,payslip"/>
                     </header>
+
                     <sheet>
+                        <div class="oe_button_box oe_right" style="color:orange"
+                             attrs="{'invisible': [('prod_quantity_day','&gt;=', 100)]}"
+                                placeholder="Productivity is less than 100%">
+                            <i class="fa fa-exclamation-circle fa-2x fa-fw"></i>
+                            <field name="prod_quantity_day" invisible="True"/>
+                        </div>
                         <div class="oe_title">
                             <label for="Upkeep" class="oe_edit_only"/>
                             <h1>
                                 <field name="upkeep_id" readonly="True"/>
                             </h1>
+                            <field name="division_id" readonly="True"/>
                         </div>
 
                         <group>
-                            <group name="top" colspan="4">
-                                <field name="employee_id"/>
-                                <field name="upkeep_team_employee_id" string="Team Leader"/>
+                            <group name="top">
+                                <field name="employee_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="contract_type" readonly="True"/>
                                 <field name="contract_period" readonly="True"/>
-                                <field name="activity_id"/>
-                                <field name="activity_uom_id" readonly="True"/>
-                                <field name="location_id"/>
-                                <field name="division_id"/>
+                                <field name="upkeep_team_employee_id" string="Team Leader" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                             </group>
-                            <group string="Work Result">
-                                <field name="quantity"/>
-                                <field name="quantity_overtime"/>
-                                <field name="quantity_piece_rate"/>
-                                <field name="attendance_code_id"/>
-                                <field name="number_of_day"/>
-                            </group>
-                            <group string="Wage">
-                                <field name="wage_number_of_day"/>
-                                <field name="wage_overtime"/>
-                                <field name="wage_piece_rate"/>
-                                <field name="amount"/>
-                            </group>
-                            <group string="Productivity">
-                                <field name="ratio_quantity_day"/>
-                                <field name="ratio_day_quantity"/>
-                                <field name="ratio_wage_quantity"/>
-                            </group>
+
                         </group>
+                        <notebook>
+                            <page name="labour_activity" string="Activity">
+                                <group>
+                                    <group>
+                                        <field name="activity_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                        <field name="activity_uom_id" readonly="True" class="oe_inline"/>
+                                        <field name="location_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                    </group>
+                                    <group>
+                                        <field name="quantity" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                        <field name="quantity_overtime" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                        <field name="quantity_piece_rate" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="labour_wage" string="Wage">
+                                <group>
+                                    <group name="wage">
+                                        <field name="wage_number_of_day"/>
+                                        <field name="wage_overtime"/>
+                                        <field name="wage_piece_rate"/>
+                                    </group>
+                                    <group name="amount">
+                                        <field name="amount" string="Total Amount"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page name="productivity" string="Attendance &amp; Productivity">
+                                <group>
+                                    <group name="attendance">
+                                        <field name="attendance_code_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                        <field name="number_of_day"/>
+                                    </group>
+                                    <group name="productivity">
+                                        <field name="ratio_quantity_day"/>
+                                        <field name="ratio_day_quantity"/>
+                                        <field name="ratio_wage_quantity"/>
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -431,12 +475,12 @@
                     Use 2 decimal digits to shorten width
                     -->
                     <field name="upkeep_date" string="Date"/>
-                    <field name="upkeep_team_id" string="Team"/>
-                    <field name="employee_id" string="Employee"/>
-                    <field name="quantity" digits="(8,2)" string="Qty."/>
-                    <field name="location_id" string="Location"/>
+                    <field name="upkeep_team_id" string="Team" invisible="True"/>
+                    <field name="employee_id" string="Employee" invisible="True"/>
                     <field name="activity_id" string="Activity"/>
                     <field name="activity_uom_id" string="UoM"/>
+                    <field name="quantity" digits="(8,2)" string="Qty."/>
+                    <field name="location_id" string="Location"/>
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
                     <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
                     <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
@@ -463,6 +507,7 @@
             <field name="arch" type="xml">
                 <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100">
                     <field name="upkeep_date" string="Date"/>
+                    <field name="employee_id"/>
                     <field name="location_id" string="Block"/>
                     <field name="quantity" string="Qty."/>
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
@@ -486,12 +531,12 @@
             <field name="arch" type="xml">
                 <tree colors="red:state in ('draft','confirmed')">
                     <field name="upkeep_date" string="Date"/>
+                    <field name="product_id" string="Material" invisible="True"/>
+                    <field name="unit_amount" string="Qty"/>
+                    <field name="product_uom_id" string="UoM"/>
                     <field name="activity_id" string="Activity"/>
                     <field name="activity_uom_id" string="UoM"/>
-                    <field name="activity_unit_amount" string="Qty"/>
-                    <field name="product_id" string="Material"/>
-                    <field name="product_uom_id" string="UoM"/>
-                    <field name="unit_amount" string="Qty"/>
+                    <field name="activity_unit_amount" string="Act. Qty"/>
                     <field name="amount" string="Cost"/>
                     <field name="ratio_product_activity" string="P/A"/>
                     <!-- invisible field -->
@@ -539,6 +584,9 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approved"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label for="Upkeep" class="oe_edit_only"/>
@@ -546,24 +594,21 @@
                                 <field name="upkeep_id" readonly="True"/>
                             </h1>
                         </div>
+
                         <group>
-                            <group string="Activity">
-                                <field name="activity_id"/>
-                                <field name="activity_uom_id"/>
-                                <field name="activity_unit_amount"/>
-                            </group>
-                            <group string="Material">
+                            <group name="material">
                                 <field name="product_id" readonly="True"/>
                                 <field name="product_uom_id"/>
                                 <field name="unit_amount" readonly="True"/>
                                 <field name="amount"/>
                             </group>
-                            <group string="Ratio">
+                            <group name="activity">
+                                <field name="activity_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                <field name="activity_uom_id"/>
+                                <field name="activity_unit_amount"/>
                                 <field name="ratio_product_activity"/>
                             </group>
                         </group>
-                        <!-- invisible field -->
-                        <field name="state" invisible="True"/>
                     </sheet>
                 </form>
             </field>
@@ -579,7 +624,7 @@
         <menuitem id="estate_operation_menu" name="Operation" parent="main_estate_menu" sequence="10"
                 groups="estate.group_user"/>
 
-        <menuitem id="estate_upkeep" name="Upkeep"
+        <menuitem id="estate_upkeep" name="Daily Upkeep"
                   parent="estate_operation_menu"
                   action="action_list_upkeep"
                   groups="estate.group_user"/>
@@ -610,12 +655,13 @@
             <field name="context">{'search_default_by_division': 1, 'search_default_by_activity': 1}</field>
         </record>
 
-        <menuitem id="estate_division_lha_report" name="Division Report"
+        <menuitem id="estate_division_lha_report" name="Division Upkeep"
                   parent="estate_operation_control_menu"
                   action="action_list_upkeep_lha"
                   groups="estate.group_assistant"/>
 
-        <!-- temporer -->
+        <!-- Use Division Upkeep re it shows work result -->
+        <!--
         <record id="upkeep_activity_view_tree" model="ir.ui.view" >
             <field name="name">Upkeep Activity Tree</field>
             <field name="model">estate.upkeep.activity</field>
@@ -626,7 +672,7 @@
                     <field name="activity_id"/>
                     <field name="activity_uom_id" string="UoM"/>
                     <field name="location_ids" string="Location"/>
-                    <field name="labour_unit_amount" string="Qty."/>
+                    <field name="labour_unit_amount" string="Target Qty."/>
                     <field name="labour_overtime_amount" string="OT"/>
                     <field name="labour_piece_rate_amount" string="PR"/>
                     <field name="amount" string="Cost" sum="Cost"/>
@@ -637,6 +683,7 @@
                 </tree>
             </field>
         </record>
+        -->
 
         <!-- Wizard -->
         <record id="estate_division_report_view_form" model="ir.ui.view">
@@ -668,6 +715,8 @@
             </field>
         </record>
 
+        <!-- Use Division Upkeep re it shows work result -->
+        <!--
         <record id="action_list_upkeep_activity" model="ir.actions.act_window" >
             <field name="name">Upkeep Activity</field>
             <field name="res_model">estate.upkeep.activity</field>
@@ -675,11 +724,11 @@
             <field name="context">{'search_default_by_activity': 1, 'search_default_filter_month': 1}</field>
         </record>
 
-        <menuitem id="estate_upkeep_activity" name="Activity"
-                  parent="estate_upkeep"
+        <menuitem id="estate_upkeep_activity" name="Upkeep Activity"
+                  parent="estate_operation_menu"
                   action="action_list_upkeep_activity"
                   groups="estate.group_user"/>
-
+        -->
         <record id="action_list_upkeep_labour" model="ir.actions.act_window" >
             <field name="name">Upkeep Labour</field>
             <field name="res_model">estate.upkeep.labour</field>
@@ -687,8 +736,8 @@
             <field name="context">{'search_default_filter_month': 1, 'search_default_by_employee': 1}</field>
         </record>
 
-        <menuitem id="estate_upkeep_labour" name="Labour"
-                  parent="estate_upkeep"
+        <menuitem id="estate_upkeep_labour" name="Labour Usage"
+                  parent="estate_operation_menu"
                   action="action_list_upkeep_labour"
                   groups="estate.group_user"/>
 
@@ -699,8 +748,8 @@
             <field name="context">{'search_default_by_product': 1, 'search_default_filter_month': 1}</field>
         </record>
 
-        <menuitem id="estate_upkeep_material" name="Material"
-                  parent="estate_upkeep"
+        <menuitem id="estate_upkeep_material" name="Material Usage"
+                  parent="estate_operation_menu"
                   action="action_list_upkeep_material"
                   groups="estate.group_user"/>
 

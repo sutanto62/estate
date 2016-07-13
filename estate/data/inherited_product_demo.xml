@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
+
         <!-- Product Category -->
         <record id="product.product_category_pg" model="product.category">
             <field name="name">Palma Group</field>
@@ -17,6 +18,40 @@
             <field name="name">Chemical</field>
             <field name="estate_product">True</field>
             <field name="type">normal</field>
+        </record>
+
+        <!-- Product -->
+        <record id="product_product_c" model="product.product">
+            <field name="name">Carbofuran 3%</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="standard_price">10.0</field>
+            <field name="list_price">47.0</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="uom_po_id" ref="product.product_uom_ton"/>
+            <field name="default_code">CARB5MG</field>
+        </record>
+
+        <record id="product_product_fr" model="product.product">
+            <field name="name">Feromon</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="standard_price">5.0</field>
+            <field name="list_price">47.0</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="uom_po_id" ref="product.product_uom_ton"/>
+            <field name="default_code">FRMN</field>
+        </record>
+
+        <record id="product_product_sp" model="product.product">
+            <field name="name">Sipermetrin</field>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="standard_price">15.0</field>
+            <field name="list_price">47.0</field>
+            <field name="type">consu</field>
+            <field name="uom_id" ref="product.product_uom_litre"/>
+            <field name="uom_po_id" ref="product.product_uom_litre"/>
+            <field name="default_code">SIPER</field>
         </record>
     </data>
 </openerp>

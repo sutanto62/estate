@@ -18,8 +18,8 @@ class Condition(models.Model):
 
     resource_calendar_id = fields.Many2one('resource.calendar', 'Resource Calendar')
     name = fields.Char('Condition')
-    time = fields.Float('Time', help='*negative value, early-in\n'
-                                     '*positive value, late-out.')
+    time = fields.Float('Time', help='* negative value, early-in'\
+                                     '* positive value, late-out.')
     type = fields.Selection([('in', 'Mandatory Early In'),
                              ('out', 'Mandatory Early Out'),
                              ('optional', 'Optional In/Out')],

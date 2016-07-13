@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <!-- Department -->
+        <record id="dep_est" model="hr.department">
+            <field name="name">Estate</field>
+        </record>
+
+        <!-- Job -->
+        <record id="job_estate_manager" model="hr.job">
+            <field name="name">Estate Manager</field>
+            <field name="department_id" ref="dep_est"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <record id="job_estate_assistant" model="hr.job">
+            <field name="name">Estate Assistant</field>
+            <field name="department_id" ref="dep_est"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <record id="job_estate_agronomy" model="hr.job">
+            <field name="name">Agronomy</field>
+            <field name="department_id" ref="dep_est"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <record id="job_estate_user" model="hr.job">
+            <field name="name">Estate Administration</field>
+            <field name="department_id" ref="dep_est"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <record id="job_hr_manager" model="hr.job">
+            <field name="name">Human Resource Manager</field>
+            <field name="department_id" ref="hr.dep_administration"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+        <record id="job_hr_staff" model="hr.job">
+            <field name="name">Human Resource Staff</field>
+            <field name="department_id" ref="hr.dep_administration"/>
+            <field name="no_of_recruitment">1</field>
+        </record>
+
+
+        <!-- Employee -->
+
+        <record id="employee_estate_manager" model="hr.employee">
+            <field name="name">Johnny Depp</field>
+            <field name="user_id" ref="res.users_estate_manager"/>
+            <field name="department_id" ref="dep_est"/>
+            <field name="parent_id" ref="hr.employee_fp"/>
+            <field name="job_id" ref="job_estate_manager"/>
+            <field name="work_location">Site</field>
+            <field name="image" type="base64" file="hr_indonesia/static/img/manager.jpg"/>
+        </record>
+
+        <record id="employee_estate_assistant" model="hr.employee">
+            <field name="name">Ari Lasso</field>
+            <field name="user_id" ref="res.users_estate_assistant"/>
+            <field name="department_id" ref="dep_est"/>
+            <field name="parent_id" ref="employee_estate_manager"/>
+            <field name="job_id" ref="job_estate_assistant"/>
+            <field name="work_location">Site</field>
+            <field name="image" type="base64" file="hr_indonesia/static/img/assistant.jpg"/>
+        </record>
+
+        <record id="employee_estate_user" model="hr.employee">
+            <field name="name">Ayu Rosmalina</field>
+            <field name="user_id" ref="res.users_estate_admin"/>
+            <field name="department_id" ref="dep_est"/>
+            <field name="parent_id" ref="employee_estate_assistant"/>
+            <field name="job_id" ref="job_estate_user"/>
+            <field name="work_location">Site</field>
+            <field name="image" type="base64" file="hr_indonesia/static/img/user.jpg"/>
+        </record>
+
+        <record id="employee_estate_agronomy" model="hr.employee">
+            <field name="name">Vin Diesel</field>
+            <field name="user_id" ref="res.users_estate_agronomy"/>
+            <field name="department_id" ref="dep_est"/>
+            <field name="parent_id" ref="hr.employee_fp"/>
+            <field name="job_id" ref="job_estate_agronomy"/>
+            <field name="work_location">Site</field>
+            <field name="image" type="base64" file="hr_indonesia/static/img/agronomy.jpg"/>
+        </record>
+
+        <record id="employee_hrm" model="hr.employee">
+            <field name="name">Nadya Hutagalung</field>
+            <field name="user_id" ref="res.users_hr_ho"/>
+            <field name="department_id" ref="hr.dep_administration"/>
+            <field name="parent_id" ref="hr.employee_fp"/>
+            <field name="job_id" ref="job_hr_manager"/>
+            <field name="work_location">Jakarta</field>
+            <field name="image" type="base64" file="hr_indonesia/static/img/hrho.jpg"/>
+        </record>
+
+        <record id="employee_hr_staff" model="hr.employee">
+            <field name="name">Agnes Monica</field>
+            <field name="user_id" ref="res.users_hr_staff"/>
+            <field name="department_id" ref="hr.dep_administration"/>
+            <field name="parent_id" ref="employee_hrm"/>
+            <field name="job_id" ref="job_hr_staff"/>
+            <field name="work_location">Jakarta</field>
+            <field name="image" type="base64" file="hr_indonesia/static/img/hrstaff.jpg"/>
+        </record>
+
+
+    </data>
+</openerp>
+
+

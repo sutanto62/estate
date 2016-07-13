@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Estate Upkeep -->
+        <record id="estate_upkeep_1" model="estate.upkeep">
+            <field name="team_id" ref="estate.team_syukur"/>
+            <field name="assistant_id" ref="hr.employee_al"/>
+            <field name="date" eval="time.strftime('%Y-%m-01')"/>
+            <field name="division_id" ref="stock.stock_division_1"/>
+            <field name="estate_id" ref="stock.stock_main_estate"/>
+        </record>
+        <record id="estate_upkeep_2" model="estate.upkeep">
+            <field name="team_id" ref="estate.team_gilles"/>
+            <field name="assistant_id" ref="hr.employee_al"/>
+            <field name="date" eval="time.strftime('%Y-%m-02')"/>
+            <field name="division_id" ref="stock.stock_division_1"/>
+            <field name="estate_id" ref="stock.stock_main_estate"/>
+        </record>
+
+        <!-- Activity: Semprot Oryctes -->
+        <record id="estate_upk_act_1" model="estate.upkeep.activity">
+            <field name="upkeep_id" ref="estate_upkeep_1"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="location_ids" eval="[(6, 0, [ref('estate.block_1')])]"/>
+            <field name="unit_amount">6.5</field>
+        </record>
+
+        <record id="estate_upk_act_2" model="estate.upkeep.activity">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="location_ids" eval="[(6, 0, [ref('estate.block_1'),ref('estate.block_2')])]"/>
+            <field name="unit_amount">15.5</field>
+        </record>
+
+        <record id="estate_upk_lbr_1" model="estate.upkeep.labour">
+            <field name="upkeep_id" ref="estate_upkeep_1"/>
+            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="location_id" ref="estate.block_1"/>
+            <field name="attendance_code_id" ref="hr_attendance_k"/>
+            <field name="quantity">6.5</field>
+            <field name="quantity_piece_rate">1.5</field>
+        </record>
+
+        <record id="estate_upk_lbr_2" model="estate.upkeep.labour">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="location_id" ref="estate.block_1"/>
+            <field name="attendance_code_id" ref="hr_attendance_k"/>
+            <field name="quantity">8</field>
+            <field name="quantity_piece_rate">3</field>
+        </record>
+
+        <record id="estate_upk_lbr_3" model="estate.upkeep.labour">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="employee_id" ref="hr_employee.khl_3"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="location_id" ref="estate.block_2"/>
+            <field name="attendance_code_id" ref="hr_attendance_k"/>
+            <field name="quantity">5</field>
+        </record>
+
+        <record id="estate_upk_lbr_4" model="estate.upkeep.labour">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="employee_id" ref="hr_employee.khl_4"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="location_id" ref="estate.block_2"/>
+            <field name="attendance_code_id" ref="hr_attendance_k2"/>
+            <field name="quantity">2.5</field>
+        </record>
+
+        <record id="estate_upk_mat_1" model="estate.upkeep.material">
+            <field name="upkeep_id" ref="estate_upkeep_1"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="product_id" ref="product_product_sp"/>
+            <field name="unit_amount">1.3</field>
+        </record>
+        <record id="estate_upk_mat_2" model="estate.upkeep.material">
+            <field name="upkeep_id" ref="estate_upkeep_1"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="product_id" ref="product_product_fr"/>
+            <field name="unit_amount">3.7</field>
+        </record>
+        <record id="estate_upk_mat_3" model="estate.upkeep.material">
+            <field name="upkeep_id" ref="estate_upkeep_1"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="product_id" ref="product_product_c"/>
+            <field name="unit_amount">4.68</field>
+        </record>
+
+        <record id="estate_upk_mat_4" model="estate.upkeep.material">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="product_id" ref="product_product_sp"/>
+            <field name="unit_amount">1.3</field>
+        </record>
+        <record id="estate_upk_mat_5" model="estate.upkeep.material">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="product_id" ref="product_product_fr"/>
+            <field name="unit_amount">8</field>
+        </record>
+        <record id="estate_upk_mat_6" model="estate.upkeep.material">
+            <field name="upkeep_id" ref="estate_upkeep_2"/>
+            <field name="activity_id" ref="estate.activity_134"/>
+            <field name="product_id" ref="product_product_c"/>
+            <field name="unit_amount">3.1</field>
+        </record>
+    </data>
+</openerp>

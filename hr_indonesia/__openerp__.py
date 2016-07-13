@@ -32,5 +32,7 @@
     'demo': [
         'demo.xml',
         'data/hr.employee.csv',
+        'data/res.users.csv',
+        'data/hr_estate_demo.xml',
     ],
 }

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
-
-
         <!-- Attendance Code -->
         <record id="hr_attendance_k" model="estate.hr.attendance">
             <field name="name">Kerja 1 hari</field>
@@ -10,6 +8,7 @@
             <field name="unit_amount">7.0</field>
             <field name="qty_ratio">1</field>
         </record>
+
         <record id="hr_attendance_k2" model="estate.hr.attendance">
             <field name="name">Kerja 0.5 hari</field>
             <field name="code">K2</field>
