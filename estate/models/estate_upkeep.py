@@ -34,7 +34,9 @@ class Upkeep(models.Model):
     Team activity records. It record upkeep activity, labour and material usage.
     """
     _name = 'estate.upkeep'
+    _description = 'Upkeep'
     _order = 'date, team_id'
+    _inherit = 'mail.thread'
 
     name = fields.Char("Name", compute="_compute_upkeep_name", store=True)
     assistant_id = fields.Many2one('hr.employee', "Assistant", required=True)  # constrains: if team_id.assistant_id = true
@@ -52,7 +54,7 @@ class Upkeep(models.Model):
                               ('confirmed', 'Confirmed'),
                               ('approved', 'Approved'),
                               ('correction', 'Correction'),
-                              ('payslip', 'Payslip Processed')], "State", default="draft")
+                              ('payslip', 'Payslip Processed')], "State", default="draft", track_visibility="onchange")
     activity_line_ids = fields.One2many('estate.upkeep.activity', string='Upkeep Activity Line', inverse_name='upkeep_id')
     labour_line_ids = fields.One2many('estate.upkeep.labour', string='Upkeep Labour Line', inverse_name='upkeep_id')
     # constrains: material_ids.product_id = activity_ids.product_id
@@ -118,7 +120,7 @@ class Upkeep(models.Model):
             else:
                 return True
 
-    @api.one
+    #@api.one
     @api.constrains('labour_line_ids')
     def _check_quantity(self):
         """Check total unit amount of labour equal or less than upkeep unit amount
@@ -134,9 +136,11 @@ class Upkeep(models.Model):
                 upkeep_unit_amount = self.activity_line_ids.search(filter_activity).unit_amount
                 activity = self.env['estate.activity'].search([('id', '=', record)]).name
 
-                if labour_quantity > upkeep_unit_amount:
-                    error_msg = _("Total %s labour's amount should equal or less than %s" % (activity, upkeep_unit_amount))
-                    raise exceptions.ValidationError(error_msg)
+                # Only check quantity if upkeep_unit_amount return result
+                if upkeep_unit_amount:
+                    if labour_quantity > upkeep_unit_amount:
+                        error_msg = _("Total %s labour's amount should equal or less than %s" % (activity, upkeep_unit_amount))
+                        raise exceptions.ValidationError(error_msg)
         return True
 
     @api.multi
@@ -291,19 +295,22 @@ class UpkeepActivity(models.Model):
     Required for calculate quantity and constraints. Future use as Daily Plan.
     """
     _name = 'estate.upkeep.activity'
+    _description = 'Upkeep Activity'
+    _inherit = 'mail.thread'
     # _inherits = {'account.analytic.line': 'line_id'}
 
     name = fields.Char('Name', compute='_compute_name')
     upkeep_id = fields.Many2one('estate.upkeep', string='Upkeep', ondelete='cascade')
     upkeep_date = fields.Date(related='upkeep_id.date', store=True)
     # line_id = fields.Many2one('account.analytic.line', 'Analytic Line', ondelete='cascade', required=True),
-    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal')],
+    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal')], track_visibility='onchange',
                                   help='Any update will reset Block.', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
 
-    location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id', string='Location')
+    location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id', string='Location',
+                                    track_visibility='onchange')
     division_id = fields.Many2one('stock.location', compute='_compute_division')
-    unit_amount = fields.Float('Target Unit Amount', digits=dp.get_precision('Estate'),
+    unit_amount = fields.Float('Target Unit Amount', digits=dp.get_precision('Estate'), track_visibility='onchange',
                                help="Required to distribute work result of labour "\
                                     "based on activity and attendance ratio.") # constrains sum of labour activity quantity
     amount = fields.Float('Cost', compute='_compute_amount', store=True,
@@ -423,11 +430,29 @@ class UpkeepActivity(models.Model):
                 'domain': {'location_ids': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id)]}
             }
 
+    @api.onchange('location_ids')
+    def _onchange_location_ids(self):
+        """Division should be defined first
+        """
+        if not self.upkeep_id:
+            return
+
+        division = self.upkeep_id.division_id
+
+        if not division:
+            warning = {
+                    'title': _('Warning!'),
+                    'message': _('You must first select a Division!'),
+                }
+            return {'warning': warning}
+
 class UpkeepLabour(models.Model):
     """
     Maintain work result and its work day(s) equivalent.
     """
     _name = 'estate.upkeep.labour'
+    _description = 'Upkeep Labour'
+    _inherit = 'mail.thread'
     _order = 'employee_id asc'
 
     name = fields.Char('Name', compute='_compute_name')
@@ -435,7 +460,7 @@ class UpkeepLabour(models.Model):
     upkeep_date = fields.Date(related='upkeep_id.date', string='Date', store=True)
     upkeep_team_id = fields.Many2one(related='upkeep_id.team_id', string='Team', store=True)
     upkeep_team_employee_id = fields.Many2one(related='upkeep_id.team_id.employee_id', string='Team Leader', store=True)
-    employee_id = fields.Many2one('hr.employee', 'Employee', required=True,
+    employee_id = fields.Many2one('hr.employee', 'Employee', required=True, track_visibility='onchange',
                                   domain=[('contract_type', 'in', ['1', '2'])])
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
@@ -446,13 +471,14 @@ class UpkeepLabour(models.Model):
     location_id = fields.Many2one('estate.block.template', 'Location')
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
     division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
-    attendance_code_id = fields.Many2one('estate.hr.attendance', 'Attendance',
+    attendance_code_id = fields.Many2one('estate.hr.attendance', 'Attendance', track_visibility='onchange',
                                     help='Any update will reset employee\'s timesheet')
     attendance_code_ratio = fields.Float('Ratio', digits=(4,2), related='attendance_code_id.qty_ratio')
-    quantity = fields.Float('Quantity', help='Define total work result', digits=dp.get_precision('Estate'))
-    quantity_piece_rate = fields.Float('Piece Rate',
+    quantity = fields.Float('Quantity', track_visibility='onchange',
+                            help='Define total work result', digits=dp.get_precision('Estate'))
+    quantity_piece_rate = fields.Float('Piece Rate', track_visibility='onchange',
                                        help='Define piece rate work result', digits=dp.get_precision('Estate'))
-    quantity_overtime = fields.Float('Overtime',
+    quantity_overtime = fields.Float('Overtime', track_visibility='onchange',
                                      help='Define wage based on hour(s)', digits=dp.get_precision('Estate'))
     number_of_day = fields.Float('Work Day', help='Maximum 1', compute='_compute_number_of_day', store=True)
     wage_number_of_day = fields.Float('Daily Wage', compute='_compute_wage_number_of_day', store=True)
@@ -692,6 +718,22 @@ class UpkeepLabour(models.Model):
                     error_msg = _("Upkeep activity should be defined.")
                     raise exceptions.ValidationError(error_msg)
 
+    @api.onchange('location_id')
+    def _onchange_location_id(self):
+        """Division should be defined first
+        """
+        if not self.upkeep_id:
+            return
+
+        division = self.upkeep_id.division_id
+
+        if not division:
+            warning = {
+                'title': _('Warning!'),
+                'message': _('You must first select a Division!'),
+                }
+            return {'warning': warning}
+
     @api.multi
     @api.constrains('quantity_piece_rate')
     def _onchange_piece_rate(self):
@@ -742,22 +784,25 @@ class UpkeepMaterial(models.Model):
     Record material usage by activity. Limit activity domain based on upkeep's activities and locations
     """
     _name = 'estate.upkeep.material'
+    _description = 'Upkeep Material'
+    _inherit = 'mail.thread'
 
     name = fields.Char('Name', compute='_compute_name')
     upkeep_id = fields.Many2one('estate.upkeep', 'Upkeep', ondelete='cascade')
     upkeep_date = fields.Date(related='upkeep_id.date', string='Date', store=True)
     activity_id = fields.Many2one('estate.activity', 'Activity', help='Any update will reset Block.',
-                                  required=True)
+                                  track_visibility='onchange', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measure', related='activity_id.uom_id',
                                       readonly=True)
     activity_unit_amount = fields.Float('Quantity', compute='_compute_activity_unit_amount',
                                         help='Sum of labour activity quantity.')
-    product_id = fields.Many2one('product.product', 'Material', domain=[('categ_id.estate_product', '=', True)])
+    product_id = fields.Many2one('product.product', 'Material', track_visibility='onchange',
+                                 domain=[('categ_id.estate_product', '=', True)])
     product_standard_price = fields.Float(related='product_id.standard_price', store=True)
     product_uom_id = fields.Many2one('product.uom', 'Unit of Measure', related='product_id.uom_id',
                                      help="Default Unit of Measure used for all of stock operation",
                                      readonly=True)
-    unit_amount = fields.Float('Unit Amount', help="")
+    unit_amount = fields.Float('Unit Amount', track_visibility='onchange', help="")
     amount = fields.Float('Cost', compute='_compute_amount', store=True)
     ratio_product_activity = fields.Float('Ratio Product/Activity', compute='_compute_ratio',
                                           help='Amount of product required per activity.',
