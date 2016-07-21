@@ -26,6 +26,5 @@ access_estate_upkeep_activity,estate.upkeep.activity,model_estate_upkeep_activit
 access_estate_upkeep_labour,estate.upkeep.labour,model_estate_upkeep_labour,estate.group_user,True,True,True,True
 access_estate_material,estate.upkeep.material,model_estate_upkeep_material,estate.group_user,True,True,True,True
 access_estate_wage,estate.wage,model_estate_wage,estate.group_user,True,True,True,False
-access_estate_stock_move,purchase.model.stock.move estate,purchase.model_stock_move,estate.group_user,True,False,False,False
 access_estate_stock_warehouse_orderpoint,stock.warehouse.orderpoint estate user,stock.model_stock_warehouse_orderpoint,estate.group_user,True,False,False,False
 access_hr_contract,hr.contract estate,hr_contract.model_hr_contract,estate.group_user,True,False,False,False

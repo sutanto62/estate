@@ -36,7 +36,7 @@ class Team(models.Model):
             val += 1
         self.member_total = val
         # validate double member
-        print 'Validate double member'
+        # print 'Validate double member'
 
     @api.constrains('employee_id', 'member_ids')
     def _validate_leader(self):

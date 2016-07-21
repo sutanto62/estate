@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
+
         <!-- Salary Rule -->
         <record id="hr_salary_rule_labour_daily_wage" model="hr.salary.rule">
             <field name="amount_select">code</field>
@@ -29,21 +30,184 @@
             <field name="amount_python_compute">result = inputs.PR and inputs.PR.amount</field>
          </record>
 
+        <record id="hr_salary_rule_bpjs_pkwt_c" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">BPJSPKWTC</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="name">BPJS PWKT Company</field>
+            <field name="sequence" eval="20"/>
+            <field name="amount_python_compute"># Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+
+# Note: returned value have to be set in the variable 'result'
+wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
+wage_piece_rate = inputs.PR and inputs.PR.amount
+wage_overtime = inputs.OT and inputs.OT.amount
+result = 0.04 * (wage_days + wage_piece_rate + wage_overtime)</field>
+         </record>
+
+        <record id="hr_salary_rule_bpjs_pkwt_e" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">BPJSPKWTE</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="name">BPJS PWKT Employee</field>
+            <field name="sequence" eval="20"/>
+            <field name="amount_python_compute"># Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+
+# Note: returned value have to be set in the variable 'result'
+wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
+wage_piece_rate = inputs.PR and inputs.PR.amount
+wage_overtime = inputs.OT and inputs.OT.amount
+result = 0.01 * (wage_days + wage_piece_rate + wage_overtime)</field>
+         </record>
+
+        <record id="hr_salary_rule_jht_c" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">JHTC</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="name">JHT Company</field>
+            <field name="sequence" eval="20"/>
+            <field name="amount_python_compute"># Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+
+# Note: returned value have to be set in the variable 'result'
+wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
+wage_piece_rate = inputs.PR and inputs.PR.amount
+wage_overtime = inputs.OT and inputs.OT.amount
+result = 0.037 * (wage_days + wage_piece_rate + wage_overtime)</field>
+         </record>
+
+        <record id="hr_salary_rule_jht_e" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">JHTE</field>
+            <field name="category_id" ref="hr_payroll.DED"/>
+            <field name="name">JHT Employee</field>
+            <field name="sequence" eval="20"/>
+            <field name="amount_python_compute"># Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+
+# Note: returned value have to be set in the variable 'result'
+wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
+wage_piece_rate = inputs.PR and inputs.PR.amount
+wage_overtime = inputs.OT and inputs.OT.amount
+result = 0.02 * (wage_days + wage_piece_rate + wage_overtime)</field>
+         </record>
+
+        <record id="hr_salary_rule_jkk_c" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">JKKC</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="name">JKK Company</field>
+            <field name="sequence" eval="20"/>
+            <field name="amount_python_compute"># Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+
+# Note: returned value have to be set in the variable 'result'
+wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
+wage_piece_rate = inputs.PR and inputs.PR.amount
+wage_overtime = inputs.OT and inputs.OT.amount
+result = 0.054 * (wage_days + wage_piece_rate + wage_overtime)</field>
+         </record>
+
+        <record id="hr_salary_rule_jkm_c" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">JKMC</field>
+            <field name="category_id" ref="hr_payroll.COMP"/>
+            <field name="name">JKM Company</field>
+            <field name="sequence" eval="20"/>
+            <field name="amount_python_compute"># Available variables:
+#----------------------
+# payslip: object containing the payslips
+# employee: hr.employee object
+# contract: hr.contract object
+# rules: object containing the rules code (previously computed)
+# categories: object containing the computed salary rule categories (sum of amount of all rules belonging to that category).
+# worked_days: object containing the computed worked days.
+# inputs: object containing the computed inputs.
+
+# Note: returned value have to be set in the variable 'result'
+wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
+wage_piece_rate = inputs.PR and inputs.PR.amount
+wage_overtime = inputs.OT and inputs.OT.amount
+result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
+         </record>
+
         <!-- Checkroll Scructure -->
         <record id="hr_payroll.structure_estate" model="hr.payroll.structure">
             <field name="code">CHKBASE</field>
             <field name="name">Checkroll Estate</field>
-            <field eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'), ref('hr_salary_rule_flat_overtime'),ref('hr_salary_rule_piece_rate')])]" name="rule_ids"/>
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'), ref('hr_salary_rule_flat_overtime'),ref('hr_salary_rule_piece_rate')])]"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <record id="hr_payroll.structure_estate_tl" model="hr.payroll.structure">
             <field name="name">Checkroll Estate TL 1</field>
             <field name="code">CHKBASETL</field>
-            <field name="parent_id" ref="hr_payroll.structure_estate"/>
+            <field name="parent_id" ref=""/>
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwt_c'),
+            ref('hr_salary_rule_bpjs_pkwt_e'),
+            ref('hr_salary_rule_jkm_c'),
+            ref('hr_salary_rule_jkk_c'),
+            ref('hr_salary_rule_jht_e'),
+            ref('hr_salary_rule_jht_c')])]"/>
         </record>
 
+        <record id="hr_payroll.structure_estate_pkwt_m" model="hr.payroll.structure">
+            <field name="name">Checkroll Estate PKWT Monthly</field>
+            <field name="code">CHKINSM</field>
+            <field name="parent_id" ref="hr_payroll.structure_estate"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwt_c'),
+            ref('hr_salary_rule_bpjs_pkwt_e'),
+            ref('hr_salary_rule_jkm_c'),
+            ref('hr_salary_rule_jkk_c'),
+            ref('hr_salary_rule_jht_e'),
+            ref('hr_salary_rule_jht_c')])]"/>
+        </record>
 
+        <record id="hr_payroll.structure_estate_pkwt_d" model="hr.payroll.structure">
+            <field name="name">Checkroll Estate PKWT Daily</field>
+            <field name="code">CHKINSD</field>
+            <field name="parent_id" ref="hr_payroll.structure_estate"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_jkm_c'), ref('hr_salary_rule_jkk_c')])]"/>
+        </record>
 
     </data>
 </openerp>

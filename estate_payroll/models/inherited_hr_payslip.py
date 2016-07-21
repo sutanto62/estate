@@ -13,16 +13,18 @@ class Payslip(models.Model):
     payroll_location_id = fields.Many2one(related='team_id.payroll_location_id',
                                           store=True, readonly=True)
 
-    @api.multi
+    #@api.multi
     @api.depends('employee_id')
     def _get_team(self):
-        """Labour wage disbursed by Team (assigned).
+        """Estate worker's payslip disbursed per team
         """
-        team_member_obj = self.env['estate.hr.member']
         for payslip in self:
-            for member in team_member_obj.search([('employee_id', '=', self.employee_id.id)], limit=1):
-                if member.team_id.state != 'draft':
+            for member in self.env['estate.hr.member'].search([('employee_id', '=', payslip.employee_id.id)], limit=1):
+                if member:
                     payslip.team_id = member.team_id.id
+                    return True
+                else:
+                    return False
 
     @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):

@@ -2,15 +2,26 @@
 <openerp>
     <!--<data noupdate="1">-->
     <data>
+
+        <!-- Partner -->
+        <record id="base.users_pkwt_res_partner" model="res.partner">
+            <field name="name">PKWT</field>
+        </record>
+
+        <record id="base.users_pkwtt_res_partner" model="res.partner">
+            <field name="name">PWKTT</field>
+        </record>
+
+        <!-- Users -->
         <record id="users_pkwt" model="res.users">
-            <field name="partner_id" ref="res.users_pkwt_res_partner"/>
+            <field name="partner_id" ref="base.users_pkwt_res_partner"/>
             <field name="login">pkwt_nologin</field>
             <field name="password">pkwt_nologin</field>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
         <record id="users_pkwtt" model="res.users">
-            <field name="partner_id" ref="res.users_pkwtt_res_partner"/>
+            <field name="partner_id" ref="base.users_pkwtt_res_partner"/>
             <field name="login">pkwtt_nologin</field>
             <field name="password">pkwtt_nologin</field>
             <field name="company_id" ref="base.main_company"/>
@@ -56,5 +67,40 @@
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
         </record>
+
+        <record id="hrho" model="res.users">
+            <field name="name">Human Resources Manager</field>
+            <field name="login">hrho</field>
+            <field name="password">hrho</field>
+            <field name="groups_id" eval="[(4, ref('base.group_hr_manager'))]"/>
+            <field name="image" type="base64" file="estate/static/img/hrho.jpg"/>
+            <!--<field name="lang" eval="id_ID"/>-->
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="hrstaff" model="res.users">
+            <field name="name">HR Staff</field>
+            <field name="login">hrstaff</field>
+            <field name="password">hrstaff</field>
+            <field name="groups_id" eval="[(4, ref('base.group_hr_user'))]"/>
+            <field name="image" type="base64" file="estate/static/img/hrstaff.jpg"/>
+            <!--<field name="lang" eval="id_ID"/>-->
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Update Employee's Related User -->
+        <record id="hr_indonesia.employee_estate_manager" model="hr.employee">
+            <field name="user_id" ref="estate_manager"/>
+        </record>
+        <record id="hr_indonesia.employee_estate_agronomy" model="hr.employee">
+            <field name="user_id" ref="estate_agronomy"/>
+        </record>
+        <record id="hr_indonesia.employee_estate_assistant" model="hr.employee">
+            <field name="user_id" ref="estate_assistant"/>
+        </record>
+        <record id="hr_indonesia.employee_estate_user" model="hr.employee">
+            <field name="user_id" ref="estate_user"/>
+        </record>
+
     </data>
 </openerp>

@@ -49,19 +49,21 @@ class PayslipRun(models.Model):
     @api.multi
     def close_payslip_run(self):
         """
-        Update upkeep state once payslip closed
+        Update payslip done andd upkeep state payslip
         :return: True
         """
+        self.ensure_one()
         upkeep_obj = self.env['estate.upkeep']
         employees = []
 
-        # Get employee
+        # Close payslip
+        self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'done'})
+
+        # Close upkeep
         if self.slip_ids:
             for record in self.slip_ids:
                 employees.append(record.employee_id.id)
-
         upkeep_list = upkeep_obj.get_upkeep_by_employee(employees, self.date_start, self.date_end, 'approved')
-
         upkeep_obj.payslip_upkeep(upkeep_list)
 
         return super(PayslipRun, self).close_payslip_run()
@@ -72,23 +74,25 @@ class PayslipRun(models.Model):
         Update upkeep state back into approved
         :return: True
         """
+        self.ensure_one()
         upkeep_obj = self.env['estate.upkeep']
         employees = []
 
-        # Get employee
+        # Open payslip
+        self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'draft'})
+
+        # Open upkeep
         if self.slip_ids:
             for record in self.slip_ids:
                 employees.append(record.employee_id.id)
-
         upkeep_list = upkeep_obj.get_upkeep_by_employee(employees, self.date_start, self.date_end, 'payslip')
-
         upkeep_obj.approved_upkeep(upkeep_list)
 
         return super(PayslipRun, self).draft_payslip_run()
 
-class PayslipRunReport(models.Model):
-    """Payslip List Report required to group by Team
-    """
-    _inherit = 'hr.payslip.run'
-
-    team_ids = fields.Many2one('estate')
+# class PayslipRunReport(models.Model):
+#     """Payslip List Report required to group by Team
+#     """
+#     _inherit = 'hr.payslip.run'
+#
+#     # team_ids = fields.Many2one('estate')

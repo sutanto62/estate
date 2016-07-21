@@ -15,7 +15,7 @@ class Upkeep(models.Model):
         :param ids: upkeep ids
         :return:
         """
-        upkeeps = self.env['estate.upkeep'].search([('id', '=', ids)])
+        upkeeps = self.env['estate.upkeep'].search([('id', 'in', ids)])
         upkeeps.write({'state': 'payslip'})
 
     @api.multi
@@ -25,7 +25,7 @@ class Upkeep(models.Model):
         :param ids: upkeep ids
         :return:
         """
-        upkeeps = self.env['estate.upkeep'].search([('id', '=', ids)])
+        upkeeps = self.env['estate.upkeep'].search([('id', 'in', ids)])
         upkeeps.write({'state': 'approved'})
 
     @api.multi
