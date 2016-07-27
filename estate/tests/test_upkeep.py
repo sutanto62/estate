@@ -171,6 +171,4 @@ class TestUpkeep(TransactionCase):
 
         # Imitate onchange division event
         upkeep._onchange_division_id()
-        self.assertEqual(upkeep['estate_id']['name'], 'LYD', 'Estate: _onchange_division_id is failed')# -*- coding: utf-8 -*-
-
-    # def test_02_compute_wage_overtime(self):
+        self.assertEqual(upkeep['estate_id']['name'], 'LYD', 'Estate: _onchange_division_id is failed')

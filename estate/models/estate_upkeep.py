@@ -87,16 +87,34 @@ class Upkeep(models.Model):
         :return: first block and set to division_id
         """
         # todo consider to deprecated - only return first block's division?
-        if self.assistant_id:
-            block = self.env['estate.block.template'].search([('assistant_id', '=', self.assistant_id.id)],
-                                                             limit=1,
-                                                             order='id')
+        if not self.assistant_id:
+            return
 
-            stock_id = self.env['stock.location'].search([('id', '=', block.inherit_location_id.id)])
-            res = stock_id.get_division(stock_id.id)
-            if res:
-                self.division_id = res.id
-            return res
+        # Limit 1
+        block = self.env['estate.block.template'].search([('assistant_id', '=', self.assistant_id.id)],
+                                                         limit=1,
+                                                         order='id')
+        block_level = block.estate_location_level
+
+        if int(block_level) > 2:
+            # Block is level 3 or 4
+            # print '_onchange_assistant_id #2: Block level 3/4 ... cari divisi nya'
+            res = self.env['stock.location'].get_division(block.inherit_location_id.id)
+            self.division_id = res.id
+        elif int(block_level) == 2:
+            # Block is level 2
+            self.division_id = block.inherit_location_id.id
+        else:
+            # Blok is level 1
+            return
+
+        # if block:
+        #     stock_id = self.env['stock.location'].search([('id', '=', block.inherit_location_id.id)])
+        #     print '_onchange_assistant_id #2: ... find %s' % stock_id.name
+        #     res = stock_id.get_division(stock_id.id)
+        #     if res:
+        #         self.division_id = res.id
+        #     return res
 
     @api.one
     @api.onchange('division_id')
@@ -313,14 +331,24 @@ class Upkeep(models.Model):
 
     @api.one
     def button_confirmed(self):
+        # Nothing to be confirmed.
+        if not self.labour_line_ids and self.state == 'draft':
+            error_msg = _("No Upkeep Labour need to be confirmed")
+            raise exceptions.ValidationError(error_msg)
+
         self.write({
             'state': 'confirmed'
         })
 
     @api.one
     def button_approved(self):
-        """Create analytic journal entry
-        """
+        # Nothing to be approved.
+        if not self.labour_line_ids and self.state == 'draft':
+            error_msg = _("No Upkeep Labour need to be confirmed")
+            raise exceptions.ValidationError(error_msg)
+
+        # todo create analytic journal entry here
+
         self.write({
             'state': 'approved'
         })

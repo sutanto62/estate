@@ -226,5 +226,4 @@ class TestMasterActivity(TransactionCase):
 
     def test_04_get_current_overtime(self):
         regional_wage = self.env['estate.wage']
-        self.assertEqual(regional_wage.get_current_overtime(self.env.ref('estate.estate_stock_location')), 10000,
-                         'Estate: get_current_overtime failed to get current overtime of regional wage')
+        self.assertEqual(regional_wage.get_current_overtime(self.env.ref('estate.estate_stock_location')), 8000)

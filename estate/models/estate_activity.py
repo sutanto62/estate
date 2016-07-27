@@ -31,7 +31,7 @@ class Activity(models.Model):
     child_ids = fields.One2many('estate.activity', 'parent_id', "Child Activities")
     uom_id = fields.Many2one('product.uom', string="Basic Unit of Measurements")
     account_id = fields.Many2one('account.analytic.account', 'Analytic Account',
-                                 domain=[('use_estate', '=', True),('type', '=', 'normal')],
+                                 domain=[('use_estate', '=', True), ('account_type', '=', 'normal')], # v9 use account_type
                                  help='Set as default analytic account at Upkeep.')
     general_account_id = fields.Many2one('account.account', 'General Account',
                                          help='Set as default general account.')
