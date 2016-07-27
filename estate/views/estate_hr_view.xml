@@ -94,6 +94,7 @@
                             <field name="wage"/>
                             <field name="number_of_days"/>
                             <field name="daily_wage"/>
+                            <field name="overtime_amount"/>
                         </group>
                     </group>
                     <separator string="Additional Information"/>

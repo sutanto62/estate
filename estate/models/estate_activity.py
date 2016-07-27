@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, osv, exceptions, _
+from openerp import models, fields, api, osv, _
+from openerp.exceptions import ValidationError
 import openerp.addons.decimal_precision as dp
 
 class Activity(models.Model):
@@ -98,10 +99,10 @@ class Activity(models.Model):
         if self.qty_base_min or self.qty_base_max:
             if self.qty_base_min > self.qty_base_max:
                 error_msg = _("Minimum should less than maximum.")
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
             if self.qty_base < self.qty_base_min or self.qty_base > self.qty_base_max:
                 error_msg = _("Base quantity must be in between of minimum and maximum quantity.")
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
 
         return True
 
@@ -123,12 +124,12 @@ class Activity(models.Model):
                 param_parent_name = rec_value.parameter_id.name
                 if param_value_name in param_value.values():
                     error_msg = _("Parameter value \"%s\" is set more than once" % param_value_name)
-                    raise exceptions.ValidationError(error_msg)
+                    raise ValidationError(error_msg)
                 param_value[rec_value.id] = param_value_name
                 if param_parent_name not in param_name_value.values():
                     # Empty parameter raise exceptions
                     error_msg = _("Norm's Parameter \"%s\" is not registered at Parameter Weight" % param_parent_name)
-                    raise exceptions.ValidationError(error_msg)
+                    raise ValidationError(error_msg)
             return param_value
 
     @api.one
@@ -142,7 +143,7 @@ class Activity(models.Model):
                 total_weight += rec.weight
             if total_weight > 1.00:
                 error_msg = _("Total Activity Parameter Weight should be less than or equal to 1")
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
             return True
 
     @api.one
@@ -189,7 +190,7 @@ class ParameterWeight(models.Model):
     def _check_weight(self):
         if not 1 >= self.weight >= 0:
             error_msg = _("Weight value should between 0 and 1")
-            raise exceptions.ValidationError(error_msg)
+            raise ValidationError(error_msg)
         return True
 
 class ActivityNorm(models.Model):

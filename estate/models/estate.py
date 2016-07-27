@@ -29,6 +29,19 @@ class EstateLocation(models.Model):
         else:
             return self.get_estate(parent.id)
 
+    def get_division(self, id):
+        """
+        Get division of a location
+        :param id: a location
+        :return: division location
+        """
+        parent = self.env['stock.location'].search([('id', '=', id)]).location_id
+        if parent.estate_location_level == '2':
+            return parent
+        else:
+            return self.get_estate(parent.id)
+
+
 class LabourType(models.Model):
     _name = 'estate.labour.type'
 
@@ -92,7 +105,7 @@ class EstateBlockTemplate(geo_model.GeoModel):
     block_ids = fields.One2many('estate.block', 'block_template_id', "Block Variants")
     block_parameter_ids = fields.One2many('estate.block.parameter', 'block_id', "Block Parameter",
                                           help="Define block parameter")
-    closing = fields.Boolean("Closing Block", help="Land clearing has been finished.")
+    closing = fields.Boolean("Closing Block", help="Standard work result applied.")
     account_id = fields.Many2one('account.analytic.account', 'Analytic Account', help="Batch/Year Planted")
 
     # Set default value embedded object (stock location)

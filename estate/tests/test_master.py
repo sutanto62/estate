@@ -8,6 +8,8 @@ class TestMasterActivity(TransactionCase):
     def setUp(self):
         super(TestMasterActivity, self).setUp()
         self.MasterActivity = self.env['estate.activity']
+        self.Block = self.env['estate.block.template']
+        self.StockLocation = self.env['stock.location']
 
         vals = {
             'name': 'Activity',
@@ -204,3 +206,25 @@ class TestMasterActivity(TransactionCase):
     def test_01_compute_norm(self):
         self.assertEqual(self.master.activity_norm_ids[0]['qty_base'], 2, 'Estate: _compute_qty_ratio did not return 2')
         self.assertEqual(self.master.activity_norm_ids[0]['ratio_base'], 0.5, 'Estate: _compute_qty_ratio did not return 0.2')
+
+    def test_02_get_stand_hectare(self):
+
+        block_val = {
+            'name': 'Estate',
+            'scrap_location': False,
+            'qty_sph_standard': 130
+        }
+        block = self.Block.create(block_val)
+
+        # Check stock location creation
+        self.assertTrue(block.inherit_location_id, 'Estate: create failed to inherit stock location record')
+
+    def test_03_get_estate(self):
+        block_id = self.env.ref('stock.stock_block_1')
+        estate_id = self.StockLocation.get_estate(block_id.id)
+        self.assertEqual(estate_id.name, 'LYD', 'Estate: stock_location.get_estate failed to get estate location (LYD)')
+
+    def test_04_get_current_overtime(self):
+        regional_wage = self.env['estate.wage']
+        self.assertEqual(regional_wage.get_current_overtime(self.env.ref('estate.estate_stock_location')), 10000,
+                         'Estate: get_current_overtime failed to get current overtime of regional wage')

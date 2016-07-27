@@ -19,12 +19,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'base_geoengine'],
+    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'base_geoengine','mail'],
 
     # always loaded
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'security/record_rules.xml',
         'templates.xml',
         'views/estate.xml',
         'views/estate_activity_view.xml',

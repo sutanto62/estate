@@ -72,6 +72,7 @@
                         </group>
 
                         <group string="Areal Statement" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
+                            <field name="closing"/>
                             <field name="planted_year_id"
                                    attrs="{'invisible': [('estate_location_level','in', ('1','2'))]}"/>
                             <field name="qty_tree"/>
