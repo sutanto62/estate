@@ -6,7 +6,7 @@
              <field name="model">fleet.vehicle</field>
              <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
              <field name="arch" type="xml">
-                 <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
+                 <xpath expr="//div[@class='oe_button_box']" position="inside">
                      <!--<button name="%(fleet_vehicle_log_oil_act)d"-->
                          <!--type="action"-->
                          <!--class="oe_stat_button"-->
