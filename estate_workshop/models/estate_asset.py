@@ -13,10 +13,10 @@ class InheritAssetVehicle(models.Model):
     _inherit= 'asset.asset'
     _description = 'inherit fleet_id to asset management'
 
-    type_asset = fields.Selection([('1','Vehicle'), ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')])
+    type_asset = fields.Selection([('1','Vehicle'), ('2','Building'),
+                                   ('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')])
     fleet_id = fields.Many2one('fleet.vehicle')
-    product_id = fields.Many2one('product.template',domain=[('type','=','product'),('type_tools','=','1'),
-                                                            ('type_machine','=','1')])
+    product_id = fields.Many2one('product.template')
     asset_value = fields.Float()
 
     #onchange
@@ -35,6 +35,29 @@ class InheritAssetVehicle(models.Model):
             self.asset_value = self.product_id.standard_price
         if self.fleet_id:
             self.asset_value = self.fleet_id.car_value
+
+    @api.multi
+    @api.onchange('product_id','type_asset')
+    def _onchange_product_id(self):
+        arrProduct = []
+        if self.type_asset == '5':
+            product = self.env['product.template'].search([('type','=','product'),('type_tools','=','1')])
+            for idproduct in product:
+                arrProduct.append(idproduct.id)
+            return {
+                    'domain' : {
+                        'product_id' : [('id','in',arrProduct)]
+                    }
+                }
+        if self.type_asset == '3':
+            product =  self.env['product.template'].search([('type','=','product'),('type_machine','=','1')])
+            for idproduct in product:
+                arrProduct.append(idproduct.id)
+            return {
+                'domain' : {
+                        'product_id' : [('id','=',arrProduct)]
+                    }
+                }
 
 class InheritTypetoolsProductTemplate(models.Model):
 

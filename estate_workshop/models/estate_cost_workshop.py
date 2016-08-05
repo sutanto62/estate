@@ -178,7 +178,7 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_cost_workshop_sparepart as
-                select row_number() over()id,mo_id, sum(total_cost) as total_amount,fleet_id as vehicle_id,month_log,year_log,parent_id from(
+                 select row_number() over()id,mo_id, sum(total_cost) as total_amount,fleet_id as vehicle_id,month_log,year_log,parent_id from(
                 select row_number() over()id,
                     (month_log::text||year_log::text||fleet_id::text)::Integer parent_id,
                     mo_id,
@@ -195,14 +195,12 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
                                         from mro_order mo
                                       	inner join asset_asset aa on aa.id = mo.asset_id
                 inner join (
-                    select owner_id,product_id,qty_product,cost from estate_workshop_actual_sparepart ewas
+                    select owner_id,c.product_id,qty_product,cost from estate_workshop_actual_sparepart ewas
                 inner join (
-                    select pp.id,cost from product_product pp
-                inner join (
-                    select pt.id,cost from product_template pt
-                inner join (
-                        select * from product_price_history)pph on pt.id=pph.product_template_id )a on a.id = pp.product_tmpl_id
-                )c on ewas.product_id = c.id
+                    select pp.id as product_id,pt.id product_tmpl_id,cost from product_product pp
+                    inner join product_template pt on pp.product_tmpl_id = pt.id
+                    inner join product_price_history pph on pp.id=pph.product_id
+                )c on ewas.product_id = c.product_id
                 )ewas on mo.id = ewas.owner_id)b
                 group by month_log,year_log,asset_id,mo_id,product_id,qty_product,cost,fleet_id,month_log,year_log)a
                 group by mo_id,fleet_id,month_log,year_log,parent_id""")

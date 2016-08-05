@@ -8,13 +8,14 @@ import calendar
 class CleavingPolytone(models.Model):
 
     _name = "estate.nursery.cleaving"
+    _description = "Seed Batch Cleaving"
     _inherit = ['mail.thread']
 
     name=fields.Char("Cleaving polytone Code",related='batch_id.name')
     batch_id=fields.Many2one('estate.nursery.batch',"Batch")
     partner_id=fields.Many2one('res.partner')
     variety = fields.Char("Seed Variety",related="batch_id.variety_id.name")
-    date_planted = fields.Date('Date Planted',store=True,readonly=True)
+    date_planted = fields.Date('Date Planted',store=True)
     age_seed=fields.Integer('Age seed')
     age_seed_clv =fields.Integer('Age Seed Cleaving',compute='_compute_age_seed',store=True)
     cleaving_code=fields.Char()
@@ -23,8 +24,8 @@ class CleavingPolytone(models.Model):
     stock_quant = fields.Many2one('stock.quant')
     qty_plantedbatch=fields.Integer(related='batch_id.qty_planted')
     qty_plante=fields.Integer()
-    qty_singlebatch=fields.Integer()
-    qty_doublebatch=fields.Integer()
+    qty_singlebatch=fields.Integer('Quantity Single Batch',compute='_get_value_single')
+    qty_doublebatch=fields.Integer('Quantity Double Batch',compute='_get_value_double',store=True)
     qty_abnormal=fields.Integer("Quantity Abnormal",store=True,compute="_compute_total_abnormal",track_visibility='onchange')
     qty_total=fields.Integer("Total All Seed ",store=True,compute="_compute_subtotal",track_visibility='onchange')
     qty_normal=fields.Integer("Quantity Normal",compute="_compute_total_normal",track_visibility='onchange')
@@ -49,17 +50,18 @@ class CleavingPolytone(models.Model):
         return res
 
     #get quantity Single
-    @api.onchange('qty_singlebatch','batch_id')
+    @api.one
+    @api.depends('qty_singlebatch','batch_id')
     def _get_value_single(self):
        self.qty_singlebatch=self.batch_id.qty_single
-       self.write({'qty_singlebatch':self.qty_singlebatch})
 
-
+    @api.one
     @api.depends('age_seed_clv','cleaving_date','date_planted','age_seed')
     def _compute_age_seed(self):
         res={}
         fmt = '%Y-%m-%d'
         if self.age_seed and self.cleaving_date:
+            # date_selection = self.env['estate.nursery.selection'].search([('batch_id.id','=',self.batch_id.id)],limit = 1).selection_date
             from_date = self.date_planted
             age_seed = self.age_seed
             to_date = self.cleaving_date
@@ -71,15 +73,14 @@ class CleavingPolytone(models.Model):
             rangeyear1 = conv_fromdate.year
             rsult = rangeyear - rangeyear1
             yearresult = rsult * 12
-            self.age_seed_clv =((d2 + yearresult) - d1)-int(age_seed)
-        return res
-
+            age_total =((d2 + yearresult) - d1)-int(age_seed)
+            self.age_seed_clv = age_total+age_seed
 
     #get quantity Double
-    @api.onchange('qty_doublebatch','batch_id')
+    @api.one
+    @api.depends('qty_doublebatch','batch_id')
     def _get_value_double(self):
        self.qty_doublebatch=self.batch_id.qty_double
-       self.write({'qty_doublebatch':self.qty_doublebatch})
 
     @api.one
     @api.depends('cleavingline_ids')
@@ -250,27 +251,35 @@ class CleavingLine(models.Model):
                                                                              ('usage','=','inventory'),
                                                                              ],store=True,required=True,
                                   default=lambda self: self.location_type.search([('name','=','Cleaving')]))
-    qty_planted=fields.Integer()
-    qty_single=fields.Integer()
-    qty_double=fields.Integer()
+    qty_planted=fields.Integer('Quantity Planted',compute='_get_value_planted')
+    qty_single=fields.Integer('Quantity Single',compute='_get_value_single')
+    qty_double=fields.Integer('Quantity Double',compute='_get_value_double')
     qty_normal_double=fields.Integer("Normal Double Seed",store=True)
     comment=fields.Text("Description or Comment")
 
     # get quantity Planted
-    @api.onchange('qty_planted','cleaving_id')
+    @api.one
+    @api.onchange('qty_planted')
     def _get_value_planted(self):
-       self.qty_planted=self.cleaving_id.qty_plante
+       if self:
+            batch = self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)]).qty_planted
+            self.qty_planted = batch
 
     # get quantity Single
-    @api.onchange('qty_single','cleaving_id')
+    @api.one
+    @api.onchange('qty_single')
     def _get_value_single(self):
-       self.qty_single=self.cleaving_id.qty_singlebatch
-
+       if self:
+            batch = self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)]).qty_single
+            self.qty_single=batch
 
     #get quantity Double
-    @api.onchange('qty_double','cleaving_id')
+    @api.one
+    @api.onchange('qty_double')
     def _get_value_double(self):
-       self.qty_double=self.cleaving_id.qty_doublebatch
+       if self:
+            batch = self.env['estate.nursery.batch'].search([('id','=',self.batch_id.id)]).qty_double
+            self.qty_double=batch
 
     @api.multi
     @api.onchange('location_id','batch_id')

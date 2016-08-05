@@ -19,7 +19,7 @@
             <field name="name">Recovery Seed Tree</field>
             <field name="model">estate.nursery.recovery</field>
             <field name="arch" type="xml">
-                <tree string="Nursery Recovery Tree View" delete="false">
+                <tree string="Nursery Recovery Tree View" version="9.0" delete="false">
                     <field name="recovery_code" string="Recovery ID"/>
                     <field name="stage_id"/>
                     <field name="recovery_date"/>
@@ -105,12 +105,12 @@
                         </group>
                         <group attrs="{'invisible': [('state','!=','done')]}" string="Detail Information">
                             <group>
-                                <field name="qty_plante" string="Quantity Last planted" invisible="0" readonly="1"/>
-                                <field name="qty_recovery" readonly="1" string="Quantity Recovery " invisible="0">{‘readonly_by_pass’: True}</field>
+                                <field name="qty_plante" string="Quantity Last planted" invisible="0" readonly="0"/>
+                                <field name="qty_recovery" string="Quantity Recovery " invisible="0" readonly="0" />
                             </group>
                             <group>
-                                <field name="qty_normal" readonly="1" string="Quantity Normal">{‘readonly_by_pass’: True}</field>
-                                <field name="qty_dead" readonly="1" string="Quantity Dead">{‘readonly_by_pass’: True}</field>
+                                <field name="qty_normal" readonly="1" string="Quantity Normal"/>
+                                <field name="qty_dead" readonly="1" string="Quantity Dead"/>
                                 <field name="qty_abnormal" string="Quantity Abnormal " invisible="0"/>
                             </group>
                         </group>
@@ -153,15 +153,15 @@
             <field name="name">Recovery</field>
             <field name="res_model">estate.nursery.recovery</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_Date': 1}</field>
+            <field name="context">{'search_default_by_Date': 1,'readonly_by_pass': True}</field>
             <field name="view_search_recovery" ref="estate_nursery.view_form_recovery_nursery"/>
         </record>
 
         <!-- MENU -->
-        <menuitem id="nursery_seed_recovery"
-                  name="Recovery Seed"
-                  parent="nursery_seed_batch"
-                  action="action_list_recovery" sequence="17"
-                  groups="estate.group_agronomi"/>
+        <!--<menuitem id="nursery_seed_recovery"-->
+                  <!--name="Recovery Seed"-->
+                  <!--parent="nursery_seed_batch"-->
+                  <!--action="action_list_recovery" sequence="17"-->
+                  <!--groups="estate.group_agronomi"/>-->
     </data>
 </openerp>

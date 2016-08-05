@@ -3,17 +3,117 @@
 <openerp>
     <data>
 
+        <!-- Inherit view stock.pack.operation -->
+        <record model="ir.ui.view" id="view_stock_packaging_form_inherited">
+            <field name="name">Stock - Seed  Variety Tree Extension</field>
+            <field name="model">stock.pack.operation</field>
+            <field name="inherit_id" ref="stock.view_pack_operation_details_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='qty_done']" position="after">
+                     <field name="is_seed" string="Seed"/>
+                     <field name="variety_id" string="Variety"/>
+                 </xpath>
+            </field>
+        </record>
+
+        <!-- View Menu product ul-->
+        <record id="product_ul_form_view" model="ir.ui.view">
+            <field name="name">product.ul.form.view</field>
+            <field name="model">product.ul</field>
+            <field name="arch" type="xml">
+                <form string="Logistic Units">
+                    <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type"/>
+                    </group>
+                    <group>
+                        <field name="height"/>
+                        <field name="width"/>
+                        <field name="length"/>
+                        <field name="weight"/>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="product_ul_tree" model="ir.ui.view">
+            <field name="name">product.ul.tree</field>
+            <field name="model">product.ul</field>
+            <field name="arch" type="xml">
+                <tree string="Logistic Units">
+                    <field name="name"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="product_ul_form_action" model="ir.actions.act_window">
+            <field name="name">Logistic Units</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">product.ul</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new Logistic Unit
+              </p><p>
+                The logistic unit defines the container used for the package.
+                It has a type (e.g. pallet, box, ...) and you can specify its
+                size.
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            action="product_ul_form_action" groups="product.group_stock_packaging" id="menu_product_ul_form_action" parent="product.prod_config_main" sequence="5"/>
+
+        <!--Extend View Product Packaging -->
+        <record model="ir.ui.view" id="view_product_packaging_tree_inherited">
+            <field name="name">Product - Product Packaging Tree Extension</field>
+            <field name="model">product.packaging</field>
+            <field name="inherit_id" ref="product.product_packaging_tree_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='qty']" position="after">
+                     <field name="ul"/>
+                     <field name="ul_qty"/>
+                     <field name="ul_container"/>
+                 </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_product_packaging_form_inherited">
+            <field name="name">Product - Product Packaging Form Extension</field>
+            <field name="model">product.packaging</field>
+            <field name="inherit_id" ref="product.product_packaging_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='qty']" position="after">
+                     <field name="ul"/>
+                     <field name="ul_qty"/>
+                     <field name="ul_container"/>
+                     <field name="ean"/>
+                     <field name="rows"/>
+                     <field name="code"/>
+                     <field name="weight"/>
+                 </xpath>
+            </field>
+        </record>
+
         <!-- Extend View -->
         <record model="ir.ui.view" id="view_form_location_inherited">
             <field name="name">Location - Estate Extension</field>
             <field name="model">stock.location</field>
             <field name="inherit_id" ref="stock.view_location_form"/>
             <field name="arch" type="xml">
-                <group string="Additional Information" position="after">
-                    <group string="Nursery Location Information">
+                <xpath expr="//group[1]/group[1]" position="after">
+                      <group string="Nursery Location Information">
                         <field name="stage_id"/>
                     </group>
-                </group>
+                 </xpath>
+                <!--<group string="Additional Information" position="after">-->
+                   <!-- -->
+                <!--</group>-->
             </field>
         </record>
 
@@ -23,16 +123,19 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                <field name="type" position="after">
-                </field>
-                <page string="Sales" position="after">
+                <xpath expr="//notebook/page[4]" position="after">
                     <page string="Plantation">
                         <group>
                             <field name="seed"/>
                             <field name="variety_id"/>
                         </group>
                     </page>
-                </page>
+                 </xpath>
+                <!--<field name="type" position="after">-->
+                <!--</field>-->
+                <!--<page string="Sales" position="after">-->
+                    <!-- -->
+                <!--</page>-->
             </field>
         </record>
 
@@ -113,25 +216,28 @@
         </record>
 
         <!-- View, Extend Stock Picking -->
-        <record model="ir.ui.view" id="view_form_selection">
-            <field name="name">Form - Seed Selection</field>
-            <field name="model">stock.picking</field>
-            <field name="inherit_id" ref="stock.view_picking_form"/>
-            <field name="arch" type="xml">
-                <page string="Additional Info" position="after">
-                    <page string="Receiving Selection">
-                        <group string="Seed Packaging">
-                            Quantity Bag/Box
-                            Quantity Seed/Bag
-                        </group>
-                        <group string="Receiving">
-                            Box
-                            Bag/Box | Quantity | Cause | Type
-                        </group>
-                    </page>
-                </page>
-            </field>
-        </record>
+        <!--<record model="ir.ui.view" id="view_form_selection">-->
+            <!--<field name="name">Form - Seed Selection</field>-->
+            <!--<field name="model">stock.picking</field>-->
+            <!--<field name="inherit_id" ref="stock.view_picking_form"/>-->
+            <!--<field name="arch" type="xml">-->
+                 <!--<xpath expr="//notebook/page[3]" position="after">-->
+                    <!--<page string="Receiving Selection">-->
+                        <!--<group string="Seed Packaging">-->
+                            <!--Quantity Bag/Box-->
+                            <!--Quantity Seed/Bag-->
+                        <!--</group>-->
+                        <!--<group string="Receiving">-->
+                            <!--Box-->
+                            <!--Bag/Box | Quantity | Cause | Type-->
+                        <!--</group>-->
+                    <!--</page>-->
+                 <!--</xpath>-->
+                <!--&lt;!&ndash;<page string="Additional Info" position="after">&ndash;&gt;-->
+
+                <!--&lt;!&ndash;</page>&ndash;&gt;-->
+            <!--</field>-->
+        <!--</record>-->
 
         <!-- View, Seed Batch -->
          <record id="view_graph_batch" model ="ir.ui.view">
@@ -188,7 +294,7 @@
             <field name="name">Seed Batch List</field>
             <field name="model">estate.nursery.batch</field>
             <field name="arch" type="xml">
-                <tree string="Seed Batch List" colors="red:state in ('draft')">
+                <tree string="Seed Batch List" version="9.0" create="false" colors="red:state in ('draft')">
                     <field name="name"/>
                     <field name="variety_id"/>
                     <field name="date_received"/>
@@ -205,7 +311,7 @@
             <field name="model">estate.nursery.batch</field>
             <field name="priority">100</field>
             <field name="arch" type="xml">
-                <form string="Seed Batch Form">
+                <form string="Seed Batch Form" version="9.0" create="false">
                     <header>
                         <!--
                         <button name="draft" type="workflow"
@@ -229,24 +335,6 @@
                                 class="oe_highlight"
                                 states="confirmed"
                                 groups="estate.group_manager"/>
-
-                        <!--<button name="signal_selection_batch" type="workflow"-->
-                                <!--string="Selection"-->
-                                <!--class="oe_highlight"-->
-                                <!--states="done,cleaving,recovery"-->
-                                <!--groups="estate.group_manager"/>-->
-
-                        <!--<button name="signal_cleaving" type="workflow"-->
-                                <!--string="Cleaving"-->
-                                <!--class="oe_highlight"-->
-                                <!--states="selection"-->
-                                <!--groups="estate.group_manager"/>-->
-
-                        <!--<button name="signal_recovery" type="workflow"-->
-                                <!--string="Recovery"-->
-                                <!--class="oe_highlight"-->
-                                <!--states="selection"-->
-                                <!--groups="estate.group_manager"/>-->
 
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,confirmed,done"
@@ -299,9 +387,9 @@
                                         </group>
                                         <group name="bottom_right">
                                             <field name="qty_single" string="Single Seed Quantity" readonly="1"/>
-                                            <field name="qty_double"  readonly="1" invisible="0"/>
+                                            <field name="qty_double"  string="Double Seed Quantity" readonly="1" />
                                             <field name="qty_planted"  string="Planted Seed Quantity" attrs="{'readonly': [('state','!=','draft')]}" invisible="0"/>
-                                            <field name="qty_recovery" string="Recovery Seed Quantity" invisible="0"/>
+                                            <field name="qty_recovery" string="Recovery Seed Quantity" />
                                         </group>
                                     </group>
                                 </page>
@@ -313,17 +401,15 @@
 
                                 <page string="Selection" attrs="{'readonly' : ['|',('selection_count', 'like', 6),('selection_count', '>', 6)],
                                 'invisible' : [('state','!=','done')]}">
-                                    <field name="selection_ids"  string="Create Selection" attrs="{
-                                    'required' : [('state', '=', 'draft')]}"
+                                    <field name="selection_ids"  string="Selection"
                                            context="{'tree_view_ref' : 'estate_nursery.view_tree_selection_nursery',
                                            'default_batch_id':id,
-                                           'default_qty_plante': qty_planted,'default_date_plant': date_planted,
+                                           'default_qty_plante': qty_planted, 'default_date_plant': date_planted,
                                            'default_age_seed': age_seed_range}"/>
                                 </page>
 
                                 <page string="Transfer Mn" attrs="{'invisible' : [('age_seed_range','&lt;',2)]}">
-                                    <field name="transfermn_ids"  string="Create Selection" attrs="{
-                                    'required' : [('state', '=', 'draft')]}"
+                                    <field name="transfermn_ids"  string="Transfer MN"
                                            context="{'tree_view_ref' : 'estate_nursery.view_tree_transfermn',
                                            'default_batch_id':id}"/>
                                 </page>
@@ -338,7 +424,7 @@
                                            'default_age_seed' : age_seed_range}"/>
                                 </page>
 
-                                <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery','=',0)]}">
+                                <page string="Recovery Seed" attrs="{'invisible' : [('qty_recovery','&lt;=',0)]}">
                                     <field name="recovery_ids" string="Create Recovery Seed"
                                            context="{'tree_view_ref' : 'estate_nursery.view_tree_recovery_seed',
                                            'default_batch_id':id,
@@ -459,25 +545,24 @@
 
         <!-- View, Extend Stock Transfer todo create separate view for next release -->
         <!--stock.view_stock_enter_transfer_details-->
-        <record model="ir.ui.view" id="view_form_selection">
-            <field name="name">Enter Transfers Detail Extended</field>
-            <field name="model">stock.transfer_details</field>
-            <field name="inherit_id" ref="stock.view_stock_enter_transfer_details"/>
+        <record model="ir.ui.view" id="view_form_transfer_picking">
+            <field name="name">Enter Transfers Picking Extended</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
-                <field name="picking_destination_location_id" position="after">
-                    <group name="top" string="Batch Information">
-                        <field name="age_seed"/> month
-                    </group>
-                </field>
-                <field name="lot_id" position="after">
-                    <!-- Hide field using invisible
-                    <field name="is_seed" invisible="True"/>
-                    <field name="variety_id" string="Var" attrs="{'invisible': [('is_seed','=',False)]}"/>
-                    -->
-                    <field name="variety_id" string="Variety" groups="estate.group_user"/>
-                </field>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                        <field name="age_seed"/>
+                 </xpath>
+                <!--<field name="lot_id" position="after">-->
+                    <!--&lt;!&ndash; Hide field using invisible-->
+                    <!--<field name="is_seed" invisible="True"/>-->
+                    <!--<field name="variety_id" string="Var" attrs="{'invisible': [('is_seed','=',False)]}"/>-->
+                    <!--&ndash;&gt;-->
+                    <!--<field name="variety_id" string="Variety" groups="estate.group_user"/>-->
+                <!--</field>-->
             </field>
         </record>
+
 
         <!-- View, Batch Planting Form -->
         <record model="ir.ui.view" id="view_seed_batch_planting_form">
@@ -566,11 +651,10 @@
              <field name="model">stock.quant</field>
              <field name="inherit_id" ref="stock.quant_search_view"/>
              <field name="arch" type="xml">
-                     <filter name="internal_loc" string="Internal Locations"
-                             domain="[('location_id.usage','=', 'internal')]" position="replace">
-                        <filter name="product_name" string="Product Seed" domain="[('product_id.seed','=',True)]"
+                     <xpath expr="//group[1]" position="inside">
+                         <filter name="product_name" string="Product Seed" domain="[('product_id.seed','=',True)]"
                                 context="{'group_by' : 'product_id'}" />
-                     </filter>
+                     </xpath>
              </field>
         </record>
 
@@ -579,15 +663,15 @@
              <field name="model">stock.quant</field>
              <field name="inherit_id" ref="stock.quant_search_view"/>
              <field name="arch" type="xml">
-                 <group expand="0" string="Group by..." position="replace">
-                       <filter name="productgroup" string="Product" context="{'group_by' : 'product_id'}" invisible="0"/>
+                 <xpath expr="//group[2]" position="replace">
+                          <filter name="productgroup" string="Product" context="{'group_by' : 'product_id'}" invisible="0"/>
                        <filter string="Owner" context="{'group_by' : 'owner_id'}" groups="stock.group_tracking_owner" invisible="1"/>
                        <filter string="Lot" context="{'group_by' : 'lot_id'}" groups="stock.group_production_lot"/>
                        <filter name="locationgroup" string="Location" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'location_id'}"/>
                        <filter string="Package" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'package_id'}" groups="stock.group_tracking_lot"/>
                        <filter string="Packaging" icon="terp-stock_symbol-selection" domain="[]" context="{'group_by' : 'packaging_type_id'}" groups="stock.group_tracking_lot"/>
                        <filter string="Company" icon="terp-go-home" domain="[]" context="{'group_by' : 'company_id'}" groups="base.group_multi_company" />
-                 </group>
+                 </xpath>
              </field>
         </record>
 
@@ -596,12 +680,11 @@
              <field name="model">stock.production.lot</field>
              <field name="inherit_id" ref="stock.search_product_lot_filter"/>
              <field name="arch" type="xml">
-                 <filter string="Product" icon="terp-accessories-archiver" domain="[]"
-                                context="{'group_by':'product_id'}" position="after">
-                     <filter name="product_name" string="Product Seed" icon="terp-accessories-archiver"
+                  <xpath expr="//group[1]" position="inside">
+                         <filter name="product_name" string="Product Seed" icon="terp-accessories-archiver"
                              domain="[('product_id.seed','=',True)]"
                                 context="{'group_by':'product_id'}" />
-                 </filter>
+                  </xpath>
              </field>
         </record>
 
@@ -648,7 +731,7 @@
             <field name="name">Transfer MN</field>
             <field name="res_model">estate.nursery.transfermn</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_Date': 1}</field>
+            <field name="context">{'search_default_by_Date': 1,'readonly_by_pass': True}</field>
             <field name="view_search_recovery" ref="estate_nursery.view_form_transferto_mn"/>
         </record>
 
@@ -661,6 +744,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">form,tree</field>
             <field name="domain">[('state','!=','draft')]</field>
+            <field name="context">{'readonly_by_pass': True}</field>
         </record>
 
         <record id="action_list_batch_planting_tree" model="ir.actions.act_window.view">
@@ -706,20 +790,40 @@
                                 class="oe_stat_button"
                                 string="Selection"
                                 icon="fa-arrow-up"
-                                context="{'xml_id':'action_list_selection'}">
+                                context="{'xml_id':'action_list_selection'}"
+                                groups="estate.group_agronomi">
                      </button>
-                     <!--<button name="%(estate_nursery.action_list_selection)d" -->
-                                <!--string="Seed Selection"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>-->
-                     <button name="%(estate_nursery.action_list_cleaving)d"
-                                string="Seed Cleaving"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
-                     <button name="%(estate_nursery.action_list_recovery)d"
-                                string="Seed Recovery"  class="oe_stat_button" type="action" icon="fa-arrow-up"/>
+                     <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Cleaving"
+                                icon="fa-arrow-up"
+                                context="{'xml_id':'action_list_cleaving'}"
+                                groups="estate.group_agronomi">
+                     </button>
+                     <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Transfer MN"
+                                icon="fa-arrow-up"
+                                context="{'xml_id':'action_list_transfermn'}"
+                                groups="estate.group_agronomi">
+                     </button>
+                      <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Recovery"
+                                icon="fa-arrow-up"
+                                context="{'xml_id':'action_list_recovery'}"
+                                groups="estate.group_agronomi">
+                     </button>
                  </xpath>
              </field>
          </record>
 
 
         <!-- Menu -->
+        <!--<menuitem id="estate_nursery_menu" parent='estate.estate_config_menu'  name='Nursery'/>-->
         <menuitem id="estate_nursery_menu"
                   name="Nursery"
                   parent="estate.main_estate_menu"
@@ -745,28 +849,28 @@
 
 
 
-        <menuitem id="estate_seed_menu" name="Seed" parent="estate_nursery_menu" />
+        <menuitem id="estate_seed_menu" name="Nursery" sequence="10" parent="estate.estate_config_menu"/>
         <menuitem id="config_seed_variety"
                   name="Seed Variety"
-                  parent="estate.estate_master_menu"
+                  parent="estate_seed_menu"
                   action="action_list_variety"
                   groups="estate.group_agronomi"/>
 
         <menuitem id="config_seed_progeny"
                   name="Seed Progeny"
-                  parent="estate.estate_master_menu"
+                  parent="estate_seed_menu"
                   action="action_list_progeny"
                   groups="estate.group_agronomi"/>
 
         <menuitem id="config_nursery_stage"
                   name="Nursery Stage"
-                  parent="estate.estate_master_menu"
+                  parent="estate_seed_menu"
                   action="action_list_stage"
                   groups="estate.group_agronomi"/>
 
         <menuitem id="config_nursery_step"
                   name="Nursery Step Recovery"
-                  parent="estate.estate_master_menu"
+                  parent="estate_seed_menu"
                   action="action_list_step"
                   groups="estate.group_agronomi"/>
     </data>

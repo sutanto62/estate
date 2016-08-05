@@ -7,8 +7,20 @@ import calendar
 
 class ReturnSeed(models.Model):
 
+    def return_action_to_open(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current Batch """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'estate_nursery', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_seeddo_id': ids[0]})
+            res['domain'] = [('seeddo_id','=', ids[0])]
+            return res
+        return False
+
     _name = "estate.nursery.returnseed"
-    _description = "return seed after transfer to block"
+    _description = "Return Seed After Transfer to Block"
     _inherit=['mail.thread']
 
     def _default_session(self):

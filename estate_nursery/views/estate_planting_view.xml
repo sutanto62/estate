@@ -21,7 +21,7 @@
             <field name="model">fleet.vehicle</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
             <field name="arch" type="xml">
-                <group string="Additional Properties" position="before">
+                <xpath expr="//group[1]" position="before">
                     <group string="Vehicle Information">
                         <!--<field name="no_vehicle"/>-->
                         <field name="vehicle_type"/>
@@ -29,7 +29,10 @@
                     <group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >
                         <field name="employee_driver_id" string="Driver Internal" options="{'no_create_edit': True}"/>
                     </group>
-                </group>
+                </xpath>
+                <!--<group string="Additional Properties" position="before">-->
+                   <!-- -->
+                <!--</group>-->
             </field>
         </record>
 
@@ -75,6 +78,9 @@
                                statusbar_color='{"draft":"blue",}'/>
                     </header>
                     <sheet>
+                        <div class="oe_right oe_button_box">
+
+                         </div>
                         <div class="oe_title" colors="blue">
                              <h1>
                                 <label string="Seed Delivery Order For"
@@ -294,7 +300,7 @@
                                 <page string="Return Line Information">
                                         <tree>
                                             <field name="returnseedline_ids" track_visibility="onchange"
-                                                   attrs="{'required': [('state','=','draft')],
+                                                   attrs="{
                                                 'readonly': [('state','=','done')]}"
                                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_returnseedline',
                                                    'default_bpb_id' : bpb_id}"/>
@@ -529,21 +535,39 @@
              </field>
          </record>
 
+        <!--inherit button -->
+         <record model="ir.ui.view" id="view_form_inherit_button_traceability_planting">
+             <field name="name">Button Traceability</field>
+             <field name="model">estate.nursery.seeddo</field>
+             <field name="inherit_id" ref="estate_nursery.view_form_seeddo"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//div[@class='oe_right oe_button_box']" position="inside">
+                     <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Return Seed"
+                                icon="fa-arrow-up"
+                                context="{'xml_id':'action_list_returnplanting'}"
+                                groups="estate.group_agronomi">
+                     </button>
+                 </xpath>
+             </field>
+         </record>
 
         
         <!--Menu View-->
         <menuitem id="estate_nursery_planting" name="Transplanting" parent="estate_nursery_menu" sequence="17"
                   groups="estate.group_user"/>
          <!-- MENU -->
-        <menuitem id="nursery_transfer_mn"
-                  name="Request Transfer Pn to Mn"
-                  parent="estate_nursery_planting"
-                  action="action_list_transfermn" sequence="18"
-                  groups="estate.group_user"/>
+        <!--<menuitem id="nursery_transfer_mn"-->
+                  <!--name="Request Transfer Pn to Mn"-->
+                  <!--parent="estate_nursery_planting"-->
+                  <!--action="action_list_transfermn" sequence="18"-->
+                  <!--groups="estate.group_user"/>-->
         <menuitem id="request_seed_planting" name="Request Seed Planting" parent="estate_nursery_planting"
                   action="action_list_requestplanting" sequence="19" groups="estate.group_user"/>
-        <menuitem id="return_seed_planting" name="Return Seed Planting" parent="estate_nursery_planting"
-                  action="action_list_returnplanting" sequence="20" groups="estate.group_user"/>
+        <!--<menuitem id="return_seed_planting" name="Return Seed Planting" parent="estate_nursery_planting"-->
+                  <!--action="action_list_returnplanting" sequence="20" groups="estate.group_user"/>-->
         <menuitem id="planting_seed" name="Seed Delivery Order" parent="estate_nursery_planting"
                   action="action_list_seeddo" sequence="21" groups="estate.group_user"/>
     </data>
