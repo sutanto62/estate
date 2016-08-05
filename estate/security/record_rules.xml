@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="estate_activity_no_delete" model="ir.rule">
+            <field name="name">Estate Activity (No Delete Unless Draft)</field>
+            <field name="model_id" ref="model_estate_upkeep_activity"/>
+            <field name="domain_force">[('state','=','draft')]</field>
+            <field name="global" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="estate_labour_no_delete" model="ir.rule">
+            <field name="name">Estate Labour Usage (No Delete Unless Draft)</field>
+            <field name="model_id" ref="model_estate_upkeep_labour"/>
+            <field name="domain_force">[('state','=','draft')]</field>
+            <field name="global" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+        <record id="estate_material_no_delete" model="ir.rule">
+            <field name="name">Estate Material Usage (No Delete Unless Draft)</field>
+            <field name="model_id" ref="model_estate_upkeep_material"/>
+            <field name="domain_force">[('state','=','draft')]</field>
+            <field name="global" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+    </data>
+</openerp>

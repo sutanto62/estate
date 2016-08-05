@@ -29,6 +29,27 @@ class EstateLocation(models.Model):
         else:
             return self.get_estate(parent.id)
 
+    def get_division(self, id):
+        """
+        Get division of a location
+        :param id: a location
+        :return: division location
+        """
+        parent = self.env['stock.location'].search([('id', '=', id)], limit=1).location_id
+        level = parent.estate_location_level
+
+        if not parent:
+            return
+
+        if level == '2':
+            return parent
+        elif level in ['3', '4']:
+            return self.get_division(parent.id)
+        else:
+            # If have new estate level location
+            return
+
+
 class LabourType(models.Model):
     _name = 'estate.labour.type'
 
@@ -92,8 +113,9 @@ class EstateBlockTemplate(geo_model.GeoModel):
     block_ids = fields.One2many('estate.block', 'block_template_id', "Block Variants")
     block_parameter_ids = fields.One2many('estate.block.parameter', 'block_id', "Block Parameter",
                                           help="Define block parameter")
-    closing = fields.Boolean("Closing Block", help="Land clearing has been finished.")
-    account_id = fields.Many2one('account.analytic.account', 'Analytic Account', help="Batch/Year Planted")
+    closing = fields.Boolean("Closing Block", help="Standard work result applied.")
+    account_id = fields.Many2one('account.analytic.account', 'Analytic Account',
+                                 domain=[('use_estate', '=', True), ('account_type', '=', 'normal')], help="Analytic Account by Batch/Year Planted")
 
     # Set default value embedded object (stock location)
     _defaults = {

@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, exceptions
+from openerp import models, fields, api
+from datetime import datetime
+import openerp.addons.decimal_precision as dp
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
+from openerp.exceptions import ValidationError
 
 class Team(models.Model):
     """Group of Estate Employee. Responsible to Assistant.
@@ -52,21 +56,21 @@ class Team(models.Model):
                                ('state', '=', 'active')])
             if res:
                 msg = '%s is a leader at Team %s' % (self.employee_id.name, res.name)
-                raise exceptions.ValidationError(msg)
+                raise ValidationError(msg)
 
         if self.member_ids:
             for rec in self.member_ids:
                 # validate double job
                 if self.employee_id == rec.employee_id:
                     msg = '%s has been registered as a Team Leader.' % rec.employee_id.name
-                    raise exceptions.ValidationError(msg)
+                    raise ValidationError(msg)
                 # todo error in validating in another team
                 # constrains: add double team (config)
                 # validate double team
                 # res = self.env['estate.hr.member'].search([('team_id.state', '=', 'active'),
                 #         ('employee_id', '=', rec.employee_id.id)])
                 # msg = '%s has been registered in another active Team.' % rec.employee_id.name
-                # raise exceptions.ValidationError(msg)
+                # raise ValidationError(msg)
 
 class TeamMember(models.Model):
     """List of Team Member
@@ -111,4 +115,21 @@ class Wage(models.Model):
                               compute='_compute_daily_wage')
     number_of_days = fields.Float('Number of working days', default='25')
     comment = fields.Text('Additional Information')
+    overtime_amount = fields.Float('Flat Overtime', digits=dp.get_precision('Account'))
 
+    @api.multi
+    def get_current_overtime(self, estate):
+        """
+        Required to get current overtime by calling public method
+        :param estate: estate instances
+        :return: float
+        """
+        today = datetime.today().strftime(DATE_FORMAT)
+        current = self.env['estate.wage'].search([('active', '=', True), ('date_start', '<=', today), ('estate_id', '=', estate.id)],
+                              order='date_start desc', limit=1)
+        for record in current:
+            if record.overtime_amount:
+                return record.overtime_amount
+            else:
+                return 0
+        return False

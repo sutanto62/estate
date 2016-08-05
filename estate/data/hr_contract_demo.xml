@@ -9,6 +9,7 @@
             <field name="estate_id" ref="estate.estate_stock_location"/>
             <field name="wage">1600000</field>
             <field name="number_of_days">25</field>
+            <field name="overtime_amount">10000</field>
         </record>
 
         <record id="estate_wage_2" model="estate.wage">
@@ -18,6 +19,7 @@
             <field name="estate_id" ref="estate.estate_stock_location"/>
             <field name="wage">1875000</field>
             <field name="number_of_days">25</field>
+            <field name="overtime_amount">9500</field>
         </record>
 
         <record id="estate_wage_3" model="estate.wage">
@@ -27,6 +29,7 @@
             <field name="estate_id" ref="estate.estate_stock_location"/>
             <field name="wage">1950000</field>
             <field name="number_of_days">25</field>
+            <field name="overtime_amount">8000</field>
         </record>
 
     </data>
