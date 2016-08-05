@@ -5,6 +5,8 @@ from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 import openerp.addons.decimal_precision as dp
+from openerp.exceptions import ValidationError
+from lxml import etree
 
 estate_working_days = 25 # todo create working calendar
 overtime_amount = 10000
@@ -84,14 +86,35 @@ class Upkeep(models.Model):
         """No need to entry block (division level)
         :return: first block and set to division_id
         """
-        if self.assistant_id:
-            block = self.env['estate.block.template'].search([('assistant_id', '=', self.assistant_id.id)],
-                                                             limit=1,
-                                                             order='id')
-            res = self.env['stock.location'].search([('id', '=', block.inherit_location_id.id)])
-            if res:
-                self.division_id = res
-            return res
+        # todo consider to deprecated - only return first block's division?
+        if not self.assistant_id:
+            return
+
+        # Limit 1
+        block = self.env['estate.block.template'].search([('assistant_id', '=', self.assistant_id.id)],
+                                                         limit=1,
+                                                         order='id')
+        block_level = block.estate_location_level
+
+        if int(block_level) > 2:
+            # Block is level 3 or 4
+            # print '_onchange_assistant_id #2: Block level 3/4 ... cari divisi nya'
+            res = self.env['stock.location'].get_division(block.inherit_location_id.id)
+            self.division_id = res.id
+        elif int(block_level) == 2:
+            # Block is level 2
+            self.division_id = block.inherit_location_id.id
+        else:
+            # Blok is level 1
+            return
+
+        # if block:
+        #     stock_id = self.env['stock.location'].search([('id', '=', block.inherit_location_id.id)])
+        #     print '_onchange_assistant_id #2: ... find %s' % stock_id.name
+        #     res = stock_id.get_division(stock_id.id)
+        #     if res:
+        #         self.division_id = res.id
+        #     return res
 
     @api.one
     @api.onchange('division_id')
@@ -105,7 +128,10 @@ class Upkeep(models.Model):
     @api.one
     @api.constrains('date')
     def _check_date(self):
-        """Didn't support different timezone
+        """Upkeep date should be limited. Didn't support different timezone
+        Condition:
+        1. Zero value of max entry day = today transaction should be entry today.
+        2. Positive value of max entry day = allowed back/future dated transaction.
         """
         config = self.env['estate.config.settings'].search([], order='id desc', limit=1)
         if self.date:
@@ -113,35 +139,85 @@ class Upkeep(models.Model):
             d1 = datetime.strptime(self.date, fmt)
             d2 = datetime.strptime(fields.Date.today(), fmt)
             delta = (d2 - d1).days
-            if config.default_max_entry_day:
-                if delta >= config.default_max_entry_day:
-                    error_msg = _("Transaction date should not be less than or equal to %s day(s)" % config.default_max_entry_day)
-                    raise exceptions.ValidationError(error_msg)
+            if config.default_max_entry_day == 0 and abs(delta) > config.default_max_entry_day:
+                error_msg = _("Transaction date should be today")
+                raise exceptions.ValidationError(error_msg)
+            elif config.default_max_entry_day != 0 and abs(delta) > config.default_max_entry_day:
+                error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % config.default_max_entry_day)
+                raise exceptions.ValidationError(error_msg)
             else:
                 return True
 
-    #@api.one
+    @api.multi
+    @api.constrains('activity_line_ids')
+    def _check_activity_line(self):
+        """ Upkeep activity should only set once.
+        """
+        for record in self:
+            domains = []
+            if not record.activity_line_ids:
+                return
+
+            for activity in record.activity_line_ids.mapped('activity_id'):
+                domains = ([('upkeep_id', 'in', self.ids), ('activity_id', '=', activity.id)])
+                res = record.activity_line_ids.search(domains)
+
+                # Upkeep activity should set once
+                if len(res) > 1:
+                    error_msg = _("Upkeep Activity %s should only set once" % activity.name)
+                    raise ValidationError(error_msg)
+
+                labour_line = self.labour_line_ids.search(domains)
+                sum_labour_quantity = sum(line.quantity for line in labour_line)
+                unit_amount = res.unit_amount
+
+                # Sum of labour quantity less than or equal to unit amount
+                if sum_labour_quantity > unit_amount:
+                    error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, unit_amount))
+                    raise ValidationError(error_msg)
+
+        return True
+
+    @api.multi
     @api.constrains('labour_line_ids')
-    def _check_quantity(self):
+    def _check_labour_line(self):
         """Check total unit amount of labour equal or less than upkeep unit amount
         """
-        if self.labour_line_ids:
-            # Get unique labour's activity
-            labour_activity = self.get_labour_activity()
+        for record in self:
+            # End if empty
+            if not record.labour_line_ids:
+                return
 
-            # Check amount activity unit amount
-            for record in labour_activity:
-                filter_activity = [('activity_id', '=', record), ('upkeep_id', 'in', self.ids)]
-                labour_quantity = sum(line.quantity for line in self.labour_line_ids.search(filter_activity))
-                upkeep_unit_amount = self.activity_line_ids.search(filter_activity).unit_amount
-                activity = self.env['estate.activity'].search([('id', '=', record)]).name
+            for activity in record.labour_line_ids.mapped('activity_id'):
+                # Check labour activity in upkeep activity
+                if not activity in record.activity_line_ids.mapped('activity_id'):
+                    error_msg = _('There is no %s in Upkeep Activity list' % activity.name)
+                    raise ValidationError(error_msg)
 
-                # Only check quantity if upkeep_unit_amount return result
-                if upkeep_unit_amount:
-                    if labour_quantity > upkeep_unit_amount:
-                        error_msg = _("Total %s labour's amount should equal or less than %s" % (activity, upkeep_unit_amount))
-                        raise exceptions.ValidationError(error_msg)
-        return True
+                domains = ([('upkeep_id', 'in', self.ids), ('activity_id', '=', activity.id)])
+                sum_quantity = sum(line.quantity for line in record.labour_line_ids.search(domains))
+                res = record.activity_line_ids.search(domains)
+
+                # Check sum of labour quantity
+                if sum_quantity > res.unit_amount:
+                    error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, res.unit_amount))
+                    raise ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('material_line_ids')
+    def _check_material_line(self):
+        """Check activity of material usage
+        """
+        for record in self:
+            # End if empty
+            if not record.material_line_ids:
+                return
+
+            for activity in record.material_line_ids.mapped('activity_id'):
+                # Check material usage activity in upkeep activity
+                if not activity in record.activity_line_ids.mapped('activity_id'):
+                    error_msg = _('There is no %s in Upkeep Activity list' % activity.name)
+                    raise ValidationError(error_msg)
 
     @api.multi
     def get_activity(self):
@@ -181,17 +257,18 @@ class Upkeep(models.Model):
             return labour
         return False
 
-    @api.multi
-    def get_labour_activity(self):
-        """Return set of labour's activity
-        :return: list of activity or False
-        """
-        labour_line_activity = []
-        for activity in self.labour_line_ids:
-            labour_line_activity.append(activity.activity_id.id)
-        if len(labour_line_activity):
-            return set(labour_line_activity)
-        return False
+    # Deprecated
+    # @api.multi
+    # def get_labour_activity(self):
+    #     """Return set of labour's activity
+    #     :return: list of activity or False
+    #     """
+    #     labour_line_activity = []
+    #     for activity in self.labour_line_ids:
+    #         labour_line_activity.append(activity.activity_id.id)
+    #     if len(labour_line_activity):
+    #         return set(labour_line_activity)
+    #     return False
 
     @api.multi
     def get_labour_attendance(self, activity):
@@ -254,14 +331,24 @@ class Upkeep(models.Model):
 
     @api.one
     def button_confirmed(self):
+        # Nothing to be confirmed.
+        if not self.labour_line_ids and self.state == 'draft':
+            error_msg = _("No Upkeep Labour need to be confirmed")
+            raise exceptions.ValidationError(error_msg)
+
         self.write({
             'state': 'confirmed'
         })
 
     @api.one
     def button_approved(self):
-        """Create analytic journal entry
-        """
+        # Nothing to be approved.
+        if not self.labour_line_ids and self.state == 'draft':
+            error_msg = _("No Upkeep Labour need to be confirmed")
+            raise exceptions.ValidationError(error_msg)
+
+        # todo create analytic journal entry here
+
         self.write({
             'state': 'approved'
         })
@@ -288,6 +375,33 @@ class Upkeep(models.Model):
         for record in self.labour_line_ids.search([('activity_id', '=', activity)]):
             record.quantity = record.attendance_code_ratio * ratio
 
+
+    @api.multi
+    def reset_all_quantity(self, activity):
+        """
+        Upkeep activity onchange required to reset all quantity, overtime and piecerate
+        :return:
+        """
+        # for record in self.labour_line_ids:
+        #     record.write({'quantity':0, 'quantity_overtime': 0, 'quantity_piece_rate': 0})
+
+        # for labour in self.labour_line_ids.search([('activity_id', '=', activity.id)]):
+        for labour in self.labour_line_ids:
+            val = {
+                'quantity': 0,
+                'quantity_overtime': 0,
+                'quantity_piece_rate': 0,
+                'number_of_day': 0,
+                'attendance_code_id': False,
+            }
+            labour.write(val)
+
+        # for activity in self.activity_line_ids.search([('activity_id', '=', activity.id)]):
+        for activity in self.activity_line_ids:
+            val = {
+                'amount': 0,
+            }
+            activity.write(val)
 
 
 class UpkeepActivity(models.Model):
@@ -371,6 +485,7 @@ class UpkeepActivity(models.Model):
             self.labour_number_of_day = sum(record.number_of_day for record in labour_cost)
             self.labour_overtime_amount = sum(record.quantity_overtime for record in labour_cost)
             self.labour_piece_rate_amount = sum(record.quantity_piece_rate for record in labour_cost)
+            self.labour_amount = upkeep_labour_sum
 
         if self.upkeep_id.material_line_ids:
             material_cost = self.env['estate.upkeep.material'].search([('upkeep_id', '=', self.upkeep_id.id),
@@ -425,6 +540,13 @@ class UpkeepActivity(models.Model):
     def _onchange_upkeep(self):
         """Set domain for location while create new record
         """
+        if not self.upkeep_id:
+            warning = {
+                    'title': _('Warning!'),
+                    'message': _('Material Usage should be created within Daily Upkeep'),
+                }
+            return {'warning': warning}
+
         if self.upkeep_id.division_id:
             return {
                 'domain': {'location_ids': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id)]}
@@ -477,16 +599,13 @@ class UpkeepLabour(models.Model):
     quantity = fields.Float('Quantity', track_visibility='onchange',
                             help='Define total work result', digits=dp.get_precision('Estate'))
     quantity_piece_rate = fields.Float('Piece Rate', track_visibility='onchange',
-                                       help='Define piece rate work result', digits=dp.get_precision('Estate'))
+                                       help='Define piece rate work result.', digits=dp.get_precision('Estate'))
     quantity_overtime = fields.Float('Overtime', track_visibility='onchange',
                                      help='Define wage based on hour(s)', digits=dp.get_precision('Estate'))
     number_of_day = fields.Float('Work Day', help='Maximum 1', compute='_compute_number_of_day', store=True)
     wage_number_of_day = fields.Float('Daily Wage', compute='_compute_wage_number_of_day', store=True)
     wage_overtime = fields.Float('Overtime Wage', compute='_compute_wage_overtime', store=True)
     wage_piece_rate = fields.Float('Piece Rate Wage', compute='_compute_piece_rate', store=True)
-    #unit_amount = fields.Float('Unit Amount') # deprecated
-    #unit_extra_amount = fields.Float('Unit Extra') # Prestasi Premi
-    #extra_amount = fields.Float('Extra Amount') # Premi
     amount = fields.Float('Wage', compute='_compute_amount', store=True, help='Sum of daily, piece rate and overtime wage')
 
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
@@ -511,6 +630,7 @@ class UpkeepLabour(models.Model):
     @api.multi
     @api.depends('employee_id')
     def _compute_name(self):
+        # domain = {}
         for record in self:
             record.name = record.employee_id.name
 
@@ -584,22 +704,32 @@ class UpkeepLabour(models.Model):
     def _compute_wage_overtime(self):
         """Overtime applied only for PKWTT labour (see view xml)
         """
-        if self.quantity_overtime:
-            self.wage_overtime = self.quantity_overtime * overtime_amount
+        # Get overtime
+        estate_overtime = self.env['estate.wage'].get_current_overtime(self.estate_id)
+        if estate_overtime:
+            self.wage_overtime = estate_overtime * self.quantity_overtime
 
     @api.one
-    @api.depends('quantity_piece_rate', 'activity_id')
+    @api.depends('quantity_piece_rate', 'activity_id', 'quantity', 'location_id', 'attendance_code_id')
     def _compute_piece_rate(self):
         """"Piece rate applied only for PKWT labour (see view xml)
         """
-        if self.quantity_piece_rate:
-            # Use standard price if piece rate not set
-            if self.activity_id.piece_rate_price:
-                result = self.activity_id.piece_rate_price
-            else:
-                result = self.activity_id.standard_price
+        # Piece rate wage based on piece rate price unless it not defined.
+        unit_price = 0.00
+        if self.activity_id.piece_rate_price:
+            unit_price = self.activity_id.piece_rate_price
+        else:
+            unit_price = self.activity_id.standard_price
 
-            self.wage_piece_rate = self.quantity_piece_rate * result
+        # Piece rate as bonus after standard quantity achieved
+        if self.quantity_piece_rate:
+            self.wage_piece_rate = self.quantity_piece_rate * unit_price
+
+        # Some activity cannot greater than standard quantity due to field condition (PWKT Daily Target)
+        # All work result record at qty
+        if (not self.attendance_code_id and self.activity_id.wage_method == 'standard' and not self.location_id.closing
+            and self.quantity_piece_rate == 0):
+            self.wage_piece_rate = self.quantity * unit_price
 
     @api.one
     @api.depends('wage_number_of_day', 'wage_overtime', 'wage_piece_rate')
@@ -676,17 +806,23 @@ class UpkeepLabour(models.Model):
                 record.var_qty_base = record.quantity - record.activity_id.qty_base
 
     @api.multi
-    @api.constrains('quantity')
-    def _check_quantity(self):
+    @api.onchange('upkeep_id')
+    def _onchange_upkeep(self):
+        """Labour should be created within Daily Upkeep and has upkeep activity set
         """
-        Upkeep Labour has separate view form.
-        :return:
-        """
-        self.ensure_one()
-        upkeep_id = self.env['estate.upkeep'].search([('id', '=', self.upkeep_id.id)])
-        if upkeep_id:
-            res = upkeep_id._check_quantity()
-        return res
+        if not self.upkeep_id:
+            warning = {
+                    'title': _('Warning!'),
+                    'message': _('Labour Usage should be created within Daily Upkeep'),
+                }
+            return {'warning': warning}
+
+        if not self.upkeep_id.activity_line_ids:
+            warning = {
+                'title': _('Warning!'),
+                'message': _('Upkeep Activity should be defined first'),
+            }
+            return {'warning': warning}
 
     @api.multi
     @api.onchange('activity_id')
@@ -700,22 +836,19 @@ class UpkeepLabour(models.Model):
             record.attendance_code_id = False
 
             # Domain activity and location
-            activity = record.upkeep_id.get_activity()
-            location_ids = record.upkeep_id.get_activity_location(record.activity_id.id)
-            ids = []
-            if activity or location_ids:
-                for location in location_ids:
-                    # Handle many2many
-                    for a_location in location:
-                        ids.append(a_location.id)
+            activity_ids = record.upkeep_id.activity_line_ids.mapped('activity_id')
+            location_ids = record.upkeep_id.activity_line_ids.mapped('location_ids')
 
-                if activity:
+            if activity_ids or location_ids:
+                if activity_ids:
                     return {
-                        'domain': {'activity_id': [('complete_name', 'in', activity), ('type', '=', 'normal')],
-                                   'location_id': [('id', 'in', ids)]}
+                        'domain': {
+                            'activity_id': [('id', 'in', activity_ids.ids)],
+                            'location_id': [('id', 'in', location_ids.ids)]
+                        }
                     }
                 else:
-                    error_msg = _("Upkeep activity should be defined.")
+                    error_msg = _("Upkeep Activity should be defined first")
                     raise exceptions.ValidationError(error_msg)
 
     @api.onchange('location_id')
@@ -737,9 +870,12 @@ class UpkeepLabour(models.Model):
     @api.multi
     @api.constrains('quantity_piece_rate')
     def _onchange_piece_rate(self):
-        """Piece rate should not exceed variance of daily standard and activity quantity
+        """Piece rate should be:
+        1. Not excedd variance of daily standard and activity quantity.
+        2. Used to calculate PKWT Daily Target achievement (condition: no attendance, unclosed block)
         """
         self.ensure_one()
+
         base = self.activity_standard_base
         att_ratio = self.attendance_code_ratio
         quantity = self.quantity
@@ -747,6 +883,7 @@ class UpkeepLabour(models.Model):
         activity = self.activity_id.name
 
         if self.quantity_piece_rate:
+            # Validate labour quantity and piece rate to standard activity
             result = quantity - (base * att_ratio)
             if result < 0:
                 error_msg = _("%s not allowed to have piece rate due to under achievement of %s" % (employee, activity))
@@ -754,17 +891,6 @@ class UpkeepLabour(models.Model):
             elif self.quantity_piece_rate > result:
                 error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, result))
                 raise exceptions.ValidationError(error_msg)
-
-    # @api.one
-    # @api.onchange('upkeep_id')
-    # def _onchange_upkeep(self):
-    #     """
-    #     Set domain for location while create new record
-    #     """
-    #     if self.upkeep_id.division_id:
-    #         return {
-    #             'domain': {'location_id': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id)]}
-    #         }
 
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
@@ -858,11 +984,8 @@ class UpkeepMaterial(models.Model):
                 material_id = material_obj.search([('activity_id', '=', record.activity_id.id),
                                                    ('product_id', '=', record.product_id.id),
                                                    ('option', '=', 1)])
-                # print 'Material ...%s, %s, %s' % (material_id.product_id.name, record.activity_id.name,
-                #                                  record.product_id.name)
                 res = material_id.unit_amount
                 record.prod_product_activity = res
-                # print '%s per activity uom ... %f' % (record.product_id.name, res)
                 return res
 
     @api.multi
@@ -883,6 +1006,18 @@ class UpkeepMaterial(models.Model):
                 labour_activity_ids = self.env['estate.upkeep.labour'].search([('upkeep_id', '=', record.upkeep_id.id),
                                                                                ('activity_id', '=', record.activity_id.id)])
                 record.activity_unit_amount = sum(activity.quantity for activity in labour_activity_ids)
+
+    @api.multi
+    @api.onchange('upkeep_id')
+    def _onchange_upkeep(self):
+        """Material should be created within Daily Upkeep
+        """
+        if not self.upkeep_id:
+            warning = {
+                    'title': _('Warning!'),
+                    'message': _('Material Usage should be created within Daily Upkeep'),
+                }
+            return {'warning': warning}
 
     @api.multi
     @api.onchange('activity_id')
@@ -913,3 +1048,4 @@ class UpkeepMaterial(models.Model):
     #         else:
     #             error_msg = 'Upkeep activity should be defined.'
     #             raise exceptions.ValidationError(error_msg)
+

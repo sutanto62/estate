@@ -5,14 +5,14 @@
         <record id="estate_upkeep_1" model="estate.upkeep">
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="assistant_id" ref="hr.employee_al"/>
-            <field name="date" eval="time.strftime('%Y-%m-01')"/>
+            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
         <record id="estate_upkeep_2" model="estate.upkeep">
             <field name="team_id" ref="estate.team_gilles"/>
             <field name="assistant_id" ref="hr.employee_al"/>
-            <field name="date" eval="time.strftime('%Y-%m-02')"/>
+            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -21,7 +21,7 @@
         <record id="estate_upkeep_3" model="estate.upkeep">
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="assistant_id" ref="hr.employee_al"/>
-            <field name="date" eval="time.strftime('%Y-%m-03')"/>
+            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
