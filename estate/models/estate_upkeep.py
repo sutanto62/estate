@@ -892,6 +892,14 @@ class UpkeepLabour(models.Model):
                 error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, result))
                 raise exceptions.ValidationError(error_msg)
 
+    @api.constrains('attendance_code_id')
+    def _check_attendance_code(self):
+        """ Attendance code ratio should follow work result number of day calculation """
+        if self.attendance_code_id.qty_ratio < self.number_of_day:
+            error_msg = _(
+                "%s has %s number of day. Please change attendance code." % (self.employee_id.name, self.number_of_day))
+            raise exceptions.ValidationError(error_msg)
+
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
         """
