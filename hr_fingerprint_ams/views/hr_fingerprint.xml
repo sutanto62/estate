@@ -145,7 +145,7 @@
         </record>
 
         <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
-                  parent="hr_attendance.menu_hr_attendance"
+                  parent="hr_attendance.menu_hr_attendance_root"
                   action="fingerprint_attendance_action"
                   groups="estate.group_user"/>
 

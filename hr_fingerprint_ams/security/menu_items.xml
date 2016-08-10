@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- Default Attendance menu is not open for non technical user -->
+        <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_hr_attendance'),ref('estate.group_user'),ref('base.group_hr_user')])]"/>
+        </record>
+    </data>
+</openerp>

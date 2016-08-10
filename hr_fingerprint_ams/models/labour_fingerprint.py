@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, tools
+from openerp.exceptions import MissingError
 
 class LabourFingerprint(models.Model):
     """
@@ -23,6 +24,37 @@ class LabourFingerprint(models.Model):
     number_of_day = fields.Float('Number of Days')
 
     def init(self, cr):
+        """ Initialize tablefunc module
+            The tablefunc module includes various functions that return tables (that is, multiple rows).
+            These functions are useful both in their own right and as examples of how to write C functions
+            that return multiple rows.
+            """
+        cr.execute("""
+                SELECT
+                    extname
+                FROM
+                    pg_extension
+                WHERE
+                    extname='tablefunc';
+            """)
+        check = cr.fetchone()
+        if check:
+            return {}
+        try:
+            cr.execute("""
+                CREATE EXTENSION tablefunc;
+            """)
+        except Exception:
+            raise MissingError(
+                "Error, can not automatically initialize tablefunc support. "
+                "Database user may have to be superuser and postgres/postgis "
+                "extentions with their devel header have to be installed. "
+                "If you do not want Odoo to connect with a super user "
+                "you can manually prepare your database. To do this"
+                "open a client to your database using a super user and run: \n"
+                "CREATE EXTENSION tablefunc;\n"
+            )
+
         cr.execute("""
             CREATE OR REPLACE FUNCTION total_number_of_day (employee_id int, upkeep_date date)
             RETURNS decimal AS $total$
