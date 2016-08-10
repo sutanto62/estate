@@ -193,6 +193,7 @@
                                                options="{'no_create': True}"/>
                                         <field name="activity_uom_id" readonly="True"
                                                string="UoM"/>
+                                        <field name="contract" string="Ctr." attrs="{'invisible': [('activity_contract', '=', False)]}"/>
                                         <field name="location_ids"
                                                options="{'no_create': True}"
                                                widget="many2many_tags"
@@ -202,6 +203,7 @@
                                         <!-- do not remove field below -->
                                         <field name="account_id" options="{'no_create': True}"/>
                                         <field name="upkeep_id" invisible="True"/>
+                                        <field name="activity_contract" invisible="True"/>
 
                                         <!--
                                         <field name="name"
@@ -266,9 +268,13 @@
                                                 options="{'no_create': True}"/>
                                         <field name="quantity" string="Qty."/>
                                         <field name="quantity_overtime" widget="float_time" string="OT"
-                                                attrs="{'readonly':[('contract_type','=','2')]}"/>
+                                            attrs="{'readonly':[('activity_wage_method','!=','attendance')]}"/>
                                         <field name="quantity_piece_rate" string="PR"
-                                                attrs="{'readonly':[('contract_type','=','1')]}"/>
+                                            attrs="{'readonly':[('activity_wage_method','!=','standard')]}"/>
+                                        <!--<field name="quantity_overtime" widget="float_time" string="OT"-->
+                                                <!--attrs="{'readonly':[('activity_id.wage_method','=','attendance')]}"/>-->
+                                        <!--<field name="quantity_piece_rate" string="PR"-->
+                                                <!--attrs="{'readonly':[('activity_id.wage_method','=','standard')]}"/>-->
                                         <field name="amount" groups="estate.group_assistant, estate.group_manager"/>
                                         <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant, estate.group_manager"/>
                                         <!-- do not remove field below -->
@@ -281,6 +287,8 @@
                                         <field name="wage_number_of_day" invisible="True"/>
                                         <field name="wage_overtime" invisible="True"/>
                                         <field name="wage_piece_rate" invisible="True"/>
+                                        <field name="activity_contract" invisible="True"/>
+                                        <field name="activity_wage_method" invisible="True"/>
                                     </tree>
                                 </field>
                             </page>
@@ -461,6 +469,7 @@
                             <page name="productivity" string="Attendance &amp; Productivity">
                                 <group>
                                     <group name="attendance">
+                                        <field name="activity_contract"/>
                                         <field name="attendance_code_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                         <field name="number_of_day"/>
                                     </group>
