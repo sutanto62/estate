@@ -50,6 +50,6 @@
         <menuitem id="estate_timesheet_premi" name="Vehicle Piece Rate"
                   parent="fleet.menu_fleet_reporting"
                   action="action_list_view_timesheet_config"
-                  groups="base.group_no_one" sequence="13"/>
+                  groups="fleet.group_fleet_manager" sequence="13"/>
     </data>
 </openerp>

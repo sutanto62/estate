@@ -82,6 +82,6 @@
         <menuitem id="estate_master_calendar" name="Master Calendar"
                   parent="asset.menu_maintenance_config"
                   action="action_master_calendar"
-                  groups="base.group_no_one"/>
+                  groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>

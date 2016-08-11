@@ -208,6 +208,6 @@
         <menuitem id="estate_summary_vehicle_available" name="Vehicle Summary Available"
                   parent="fleet.menu_fleet_reporting"
                   action="action_list_view_summary_vehicle_available"
-                  groups="base.group_no_one" sequence="14"/>
+                   groups="fleet.group_fleet_manager" sequence="14"/>
     </data>
 </openerp>
