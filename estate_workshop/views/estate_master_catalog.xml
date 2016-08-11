@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <tree colors="blue:type=='view'">
                     <field name="complete_name"/>
-                    <field name="asset_id" string="Asset"/>
-                    <field name="category_id" string="Category"/>
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                    <field name="category_id" options="{'no_create_edit': True}" string="Category"/>
                     <field name="type"/>
                 </tree>
             </field>
@@ -25,13 +25,13 @@
                     <sheet>
                          <group>
                             <field name="name"/>
-                            <field name="asset_id" string="Asset"/>
-                            <field name="parent_id" string="Parent"/>
+                            <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                            <field name="parent_id" options="{'no_create_edit': True}" string="Parent"/>
                         </group>
                         <group>
                             <group>
                                 <group name="detail" string="Detail">
-                                    <field name="category_id"/>
+                                    <field name="category_id" options="{'no_create_edit': True}"/>
                                     <field name="type"/>
                                 </group>
                             </group>
@@ -56,7 +56,7 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="product_id"  string="Part"/>
+                    <field name="product_id"  options="{'no_create_edit': True}" string="Part"/>
                     <field name="type"/>
                     <field name="quantity_part"/>
                     <field name="qty_available"/>
@@ -71,8 +71,8 @@
             <field name="arch" type="xml">
                 <search string="Master Part Catalog" >
                     <field name="complete_name" />
-                    <field name="asset_id"/>
-                    <field name="category_id"/>
+                    <field name="asset_id" options="{'no_create_edit': True}"/>
+                    <field name="category_id" options="{'no_create_edit': True}"/>
                     <field name="type"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_asset" context="{'group_by' : 'asset_id'}" string="Asset"/>
@@ -95,7 +95,7 @@
         <menuitem id="estate_master_part_catalog" name="Master Part Catalog"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_catalog"
-                  groups="base.group_no_one"/>
+                 groups="fleet.group_fleet_manager"/>
 
         </data>
 </openerp>

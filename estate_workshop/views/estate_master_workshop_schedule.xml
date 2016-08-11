@@ -8,8 +8,8 @@
             <field name="arch" type="xml">
                 <tree colors="blue:type=='view'">
                     <field name="complete_name"/>
-                    <field name="asset_id" string="Asset"/>
-                    <field name="category_id" string="Category" invisible="1"/>
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                    <field name="category_id" options="{'no_create_edit': True}" string="Category" invisible="1"/>
                     <field name="type" string="Type"/>
                     <field name="type_service"/>
                 </tree>
@@ -27,13 +27,13 @@
                         <group>
                             <field name="name"/>
                             <field name="type"/>
-                            <field name="asset_id" string="Asset"/>
-                            <field name="parent_id" string="Parent"/>
+                            <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                            <field name="parent_id" options="{'no_create_edit': True}" string="Parent"/>
                         </group>
                         <group>
                             <group>
                             <group name="detail">
-                                <field name="category_id" invisible="1"/>
+                                <field name="category_id" options="{'no_create_edit': True}" invisible="1"/>
                                 <field name="odometer"/>
                                 <field name="type_service"/>
                             </group>
@@ -54,7 +54,7 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="mastertask_id" string="Task List"/>
+                    <field name="mastertask_id" options="{'no_create_edit': True}" string="Task List"/>
                 </tree>
             </field>
         </record>
@@ -90,7 +90,7 @@
         <menuitem id="estate_master_shedule_workshop" name="Master Schedule Plan"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_shedule_workshop"
-                  groups="base.group_no_one"/>
+                 groups="fleet.group_fleet_manager"/>
 
         </data>
 </openerp>

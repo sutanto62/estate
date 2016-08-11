@@ -7,8 +7,9 @@
             <field name="arch" type="xml">
                 <field name="property_stock_asset" position="after">
                     <field name="type_asset" string="Type Asset"/>
-                    <field name="fleet_id" string="Vehicle" attrs="{'invisible': [('type_asset','!=','1')]}"/>
-                    <field name="product_id" string="Tools" attrs="{'invisible': [('type_asset','!=','5'),('type_asset','!=','3')]}"/>
+                    <field name="fleet_id" string="Vehicle" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','1')]}"/>
+                    <field name="product_id" string="Product" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','5'),
+                    ('type_asset','!=','4'),('type_asset','!=','6'),('type_asset','!=','3')]}"/>
                     <field name="asset_value" string="Asset Value"/>
                 </field>
             </field>
@@ -20,8 +21,9 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                  <xpath expr="//field[@name='property_account_income_id']" position="after">
-                    <field name="type_tools" />
-                    <field name="type_machine" />
+                    <field name="type_tools" attrs="{'readonly': ['|',('type_machine','=',True),('type_computing','=',True)]}"/>
+                    <field name="type_machine" attrs="{'readonly': ['|',('type_tools','=',True),('type_computing','=',True)]}"/>
+                     <field name="type_computing" attrs="{'readonly': ['|',('type_machine','=',True),('type_tools','=',True)]}"/>
                  </xpath>
             </field>
         </record>
@@ -37,34 +39,26 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="account_id_inherited">
+            <field name="name">Account ID Extension</field>
+            <field name="model">asset.asset</field>
+            <field name="inherit_id" ref="asset.assets_form_view"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='property_stock_asset']" position="before">
+                     <field name="account_id" string="General Account*" options="{'no_create_edit': True}"/>
+                 </xpath>
+            </field>
+        </record>
+
         <record model="ir.ui.view" id="view_form_inherit_field_maintenance_template">
              <field name="name">Inherit maintenance Template</field>
              <field name="model">estate.vehicle.log.sparepart</field>
              <field name="inherit_id" ref="estate_vehicle.fleet_vehicle_log_sparepart_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='vehicle_id']" position="after">
-                     <field name="maintenance_id" string="Maintenance" invisible="1"/>
+                     <field name="maintenance_id" options="{'no_create_edit': True}" string="Maintenance" invisible="1"/>
                  </xpath>
              </field>
          </record>
-
-        <!--<record model="ir.ui.view" id="view_form_inherit_field_sparepart_template">-->
-             <!--<field name="name">Inherit Sparepart list Template</field>-->
-             <!--<field name="model">mro.order</field>-->
-             <!--<field name="inherit_id" ref="mro.mro_order_form_view"/>-->
-             <!--<field name="arch" type="xml">-->
-                 <!--<xpath expr="//page[@string='Parts']" position="after">-->
-                    <!--<page string="Sparepart Use">-->
-                        <!--<tree>-->
-                            <!--<field name="sparepartlog_ids" track_visibility="onchange"-->
-                                   <!--attrs="{'invisible': [('type_service','!=','1')]}"-->
-                                   <!--context="{'tree_view_ref' : 'estate_vehicle.fleet_vehicle_log_sparepart_tree',-->
-                                   <!--'default_vehicle_id':asset_id,-->
-                                   <!--'default_date':date_execution }"/>-->
-                        <!--</tree>-->
-                    <!--</page>-->
-                 <!--</xpath>-->
-             <!--</field>-->
-         <!--</record>-->
     </data>
 </openerp>
