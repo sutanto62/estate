@@ -6,10 +6,10 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="asset_id" string="Equipment"/>
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Equipment"/>
                     <field name="unit_plan" string="Unit Plan"/>
                     <field name="unit_actual" string="Actual"/>
-                    <field name="uom_id" string="Uom"/>
+                    <field name="uom_id" options="{'no_create_edit': True}" string="Uom"/>
                     <field name="ownership" string="Ownership"/>
                     <field name="description" string="Description"/>
                 </tree>
@@ -22,9 +22,9 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="asset_id" string="Equipment"/>
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Equipment"/>
                     <field name="unit_plan" string="Unit"/>
-                    <field name="uom_id" string="Uom"/>
+                    <field name="uom_id" options="{'no_create_edit': True}" string="Uom"/>
                     <field name="ownership" string="Ownership"/>
                     <field name="description" string="Description"/>
                 </tree>
@@ -37,10 +37,10 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree editable="bottom">
-                    <field name="asset_id" string="Equipment"/>
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Equipment"/>
                     <field name="unit_plan" string="Unit"/>
                     <field name="unit_actual" string="Actual"/>
-                    <field name="uom_id" string="Uom"/>
+                    <field name="uom_id" options="{'no_create_edit': True}" string="Uom"/>
                     <field name="ownership" string="Ownership"/>
                     <field name="description" string="Description"/>
                 </tree>
@@ -55,10 +55,10 @@
                     <sheet>
                         <group col="2">
                             <group string="Parent  Equipment">
-                                <field name="asset_id" string="Equipment"/>
+                                <field name="asset_id" string="Equipment" options="{'no_create_edit': True}"/>
                                 <field name="unit_plan" string="Unit"/>
                                 <field name="unit_actual" string="Actual"/>
-                                <field name="uom_id" string="Uom"/>
+                                <field name="uom_id" string="Uom" options="{'no_create_edit': True}"/>
                                 <field name="ownership" string="Ownership"/>
                                 <field name="description" string="Description"/>
                             </group>

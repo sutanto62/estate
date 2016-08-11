@@ -529,12 +529,16 @@ class ExternalOrder(models.Model):
 
 
 class PlannedSparepart(models.Model):
-    _inherits = {'estate.workshop.actual.sparepart':'actualpart_id'}
+
     _name = 'estate.workshop.planned.sparepart'
     _description = 'Planning Sparepart'
 
-    actualpart_id = fields.Many2one('estate.workshop.actual.sparepart','Actual Part',required=True,ondelete='cascade')
+    name = fields.Char('Planned Sparepart')
     qty_available = fields.Float('Quantity Available',readonly=True,store=True,compute='_onchange_get_qty_available')
+    product_id = fields.Many2one('product.product','Product')
+    qty_product = fields.Float('Quantity Product')
+    uom_id = fields.Many2one('product.uom','UOM')
+    owner_id = fields.Integer('Owner')
 
     @api.multi
     @api.depends('qty_available','product_id')
@@ -613,6 +617,27 @@ class ActualSparepart(models.Model):
                     qty = float(a)
                     self.qty_available = qty
             return True
+
+    @api.multi
+    @api.onchange('uom_id','product_id')
+    def _onchange_uom_id(self):
+        """ Finds UoM and UoS of changed product.
+        @param product_id: Changed id of product.
+        @return: Dictionary of values.
+        """
+        if self.product_id:
+            w = self.env['product.product'].search([('id','=',self.product_id.id)])
+            self.uom_id = w.uom_id.id
+
+
+    @api.multi
+    @api.constrains('qty_available' , 'qty_product')
+    def _contraints_qty_product(self):
+        if self:
+            if self.qty_product > self.qty_available:
+                error_msg = "Qty Product not more than \"%s\" in Qty Available, Create PP " % self.qty_available
+                raise exceptions.ValidationError(error_msg)
+        return True
 
 class ProcurPart(models.Model):
 

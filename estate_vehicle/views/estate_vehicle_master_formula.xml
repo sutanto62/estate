@@ -56,6 +56,6 @@
         <menuitem id="estate_formula_premi" name="Master Formula Category"
                   parent="estate.estate_blocking_menu"
                   action="action_list_master_formula_config"
-                  groups="base.group_no_one"/>
+                  groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>

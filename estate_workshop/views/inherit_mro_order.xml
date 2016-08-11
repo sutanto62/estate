@@ -21,7 +21,7 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='cause']" position="after">
-                     <field name="typetask_id" string="Maintenance Type" readonly="1"/>
+                     <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type" readonly="1"/>
                  </xpath>
              </field>
          </record>
@@ -45,7 +45,7 @@
              <field name="inherit_id" ref="mro.mro_order_tree_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='cause']" position="after">
-                     <field name="typetask_id" string="Maintenance Type"/>
+                     <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
                  </xpath>
              </field>
         </record>
