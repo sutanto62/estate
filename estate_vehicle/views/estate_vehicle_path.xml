@@ -52,6 +52,6 @@
         <menuitem id="estate_path_location" name="Master Path Location"
                   parent="estate.estate_blocking_menu"
                   action="action_list_path_location_config"
-                  groups="base.group_no_one"/>
+                 groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>

@@ -177,19 +177,16 @@ class InheritMroOrder(models.Model):
                 for itemexternalline in self:
                     countLineExternal += len(itemexternalline.serviceexternal_ids)
                 if countLineExternal == 0:
-                    error_msg = "Tab Service External Must be Filled"
+                    error_msg = "Tab External Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 for external in self.serviceexternal_ids :
                     if external.amount == 0 :
-                            print external.amount
-                            error_msg = "Field Amount Must be Filled"
+                            error_msg = "Field Total Price Must be Filled"
                             raise exceptions.ValidationError(error_msg)
-                    if external.date != self.env['mro.order'].search([('id','=',self.owner_id)]).date_planned:
-                            print external.date
+                    if external.date != self.env['mro.order'].search([('id','=',external.owner_id)]).date_planned:
                             error_msg = "Field Date Must be Match With Date in Maintenance Order"
                             raise exceptions.ValidationError(error_msg)
-                    if external.vendor_id != True:
-                            print external.vendor_id
+                    if external.vendor_id.id == False:
                             error_msg = "Field Vendor Must be Filled"
                             raise exceptions.ValidationError(error_msg)
             super(InheritMroOrder,self).test_if_parts()
@@ -224,9 +221,59 @@ class InheritMroOrder(models.Model):
                     raise exceptions.ValidationError(error_msg)
             super(InheritMroOrder,self).action_done()
 
+
+    @api.multi
+    def action_ready(self):
+        self.do_create_actualtask()
+        self.do_create_actualsparepart()
+        self.do_create_actualequipment()
+        self.write({'state': 'ready'})
+
+    @api.multi
+    def do_create_actualtask(self):
+        task_data = False
+        for task in self.env['estate.workshop.plannedtask'].search([('mro_id.id','=',self.id)]):
+            task_data = {
+                'name':'Actual Task',
+                'mastertask_id': task.mastertask_id.id,
+                'planned_hour': task.planned_hour,
+                'planned_manpower': task.planned_manpower,
+                'mro_id' : task.mro_id.id
+            }
+        return self.env['estate.workshop.actualtask'].create(task_data)
+
+    @api.multi
+    def do_create_actualsparepart(self):
+        part_data = False
+        for part in self.env['estate.workshop.planned.sparepart'].search([('owner_id','=',self.id)]):
+            part_data = {
+                'name' : 'Actual Sparepart',
+                'product_id' :  part.product_id.id,
+                'qty_product' : part.qty_product,
+                'uom_id' : part.uom_id.id,
+                'qty_available' : part.qty_available,
+                'owner_id' : part.owner_id
+            }
+        return self.env['estate.workshop.actual.sparepart'].create(part_data)
+
+    @api.multi
+    def do_create_actualequipment(self):
+        tool_data = False
+        for tool in self.env['estate.workshop.plannedequipment'].search([('mro_id','=',self.id)]):
+            tool_data = {
+                'name':'Actual Equipment',
+                'asset_id' : tool.asset_id.id,
+                'ownership' : tool.ownership,
+                'uom_id' : tool.uom_id.id,
+                'unit_plan' : tool.unit_plan,
+                'description' : tool.description,
+                'mro_id' : tool.mro_id
+            }
+        return self.env['estate.workshop.actualequipment'].create(tool_data)
+
     @api.multi
     @api.onchange('plannedtask_ids','actualtask_ids')
-    def _onchange_owner_id(self):
+    def _onchange_plannedtask_id(self):
         if self.state == 'draft':
             for owner in self.plannedtask_ids:
                 owner.owner_id = self.owner_id
