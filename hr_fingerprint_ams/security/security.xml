@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record id="hr_attendance.property_rule_attendace_estate" model="ir.rule">
+            <field name="name">Estate Attendance</field>
+            <field name="model_id" ref="hr_attendance.model_hr_attendance"/>
+            <field name="active" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[(1,'=',1),('employee_id.contract_type', 'in', ['1','2']), ('employee_id.contract_period', '=', '2')]</field>
+            <field name="groups" eval="[(4,ref('estate.group_user'))]"/>
+        </record>
+
+    </data>
+</openerp>

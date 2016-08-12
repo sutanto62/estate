@@ -17,6 +17,7 @@
             <field name="login">pkwt_nologin</field>
             <field name="password">pkwt_nologin</field>
             <field name="company_id" ref="base.main_company"/>
+            <field name="tz">Asia/Makassar</field>
         </record>
 
         <record id="users_pkwtt" model="res.users">
@@ -25,6 +26,7 @@
             <field name="password">pkwtt_nologin</field>
             <field name="company_id" ref="base.main_company"/>
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Makassar</field>
         </record>
 
         <record id="estate_manager" model="res.users">
@@ -35,6 +37,7 @@
             <field name="image" type="base64" file="estate/static/img/manager.jpg"/>
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Makassar</field>
         </record>
 
         <record id="estate_agronomy" model="res.users">
@@ -45,6 +48,7 @@
             <field name="image" type="base64" file="estate/static/img/agronomy.jpg"/>
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Makassar</field>
         </record>
 
         <record id="estate_assistant" model="res.users">
@@ -55,6 +59,7 @@
             <field name="image" type="base64" file="estate/static/img/assistant.jpg"/>
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Makassar</field>
         </record>
 
         <record id="estate_user" model="res.users">
@@ -65,6 +70,7 @@
             <field name="image" type="base64" file="estate/static/img/user.jpg"/>
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Makassar</field>
         </record>
 
         <record id="hrho" model="res.users">
@@ -75,6 +81,7 @@
             <field name="image" type="base64" file="estate/static/img/hrho.jpg"/>
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Jakarta</field>
         </record>
 
         <record id="hrstaff" model="res.users">
@@ -85,6 +92,7 @@
             <field name="image" type="base64" file="estate/static/img/hrstaff.jpg"/>
             <!--<field name="lang" eval="id_ID"/>-->
             <field name="active" eval="True"/>
+            <field name="tz">Asia/Jakarta</field>
         </record>
 
         <!-- Update Employee's Related User -->
