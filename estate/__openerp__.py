@@ -41,7 +41,7 @@
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
         'data/demo.xml',
-        'data/account_analytic.xml',
+        'data/account_analytic_demo.xml',
         'data/stock.location.csv',
         'data/estate.block.template.csv',
         #'data/estate.hr.team.csv',
@@ -56,7 +56,7 @@
         'data/estate_hr_team_demo.xml',
         'data/inherited_product_demo.xml',
         'data/estate.activity.csv',
-        'data/activity_material.xml',
+        'data/activity_material_demo.xml',
         'data/upkeep_demo.xml',
         #'data/hr.employee.csv', # fix demo product.template & product.product. hr.employee.product_id using product.product
     ],
