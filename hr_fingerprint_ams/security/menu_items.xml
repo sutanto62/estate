@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="0">
+
         <!-- Default Attendance menu is not open for non technical user -->
         <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
             <field name="groups_id" eval="[(6, 0, [ref('base.group_hr_attendance'),ref('estate.group_user'),ref('base.group_hr_user')])]"/>
+        </record>
+
+        <!-- Add group to existing menu -->
+        <record id="hr_fingerprint_ams.fingerprint_attendance" model="ir.ui.menu">
+            <!-- Use the special many2many value syntax to add a child record,
+            and the `ref()` method to resolve the group XML ID -->
+            <field name="groups_id" eval="[(4,[ref('base.group_hr_attendance'),ref('base.group_hr_user')])]"/>
         </record>
     </data>
 </openerp>

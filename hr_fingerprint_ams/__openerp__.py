@@ -24,12 +24,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'security/menu_items.xml',
         'security/security.xml',
         'templates.xml',
         'views/hr_fingerprint.xml',
         'views/inherited_hr_attendance_view.xml',
         'views/inherited_estate_upkeep_view.xml',
+        'security/menu_items.xml',  # call this xml after all views xml setup
     ],
     # only loaded in demonstration mode
     'demo': [
