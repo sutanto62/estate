@@ -22,7 +22,7 @@ class InheritHrContract(models.Model):
     hourly_wage = fields.Float(readonly=False)
     day = fields.Float()
     hour = fields.Float()
-    active = fields.Boolean('Contract Active',defaults=False)
+    contract_active = fields.Boolean('Contract Active',defaults=False)
 
     #Onchange
     @api.multi
@@ -53,11 +53,19 @@ class InheritHrContract(models.Model):
         return True
 
     @api.multi
+    @api.onchange('date_end','contract_active')
+    def _onchange_contract_active(self):
+            if self.date_end:
+                self.contract_active = False
+            if self.date_end == False:
+                self.contract_active = True
+
+    @api.multi
     @api.constrains('working_hours')
     def _constraint_workinghours(self):
         for workingHours in self:
             if workingHours.working_hours.id != True :
-                error_msg = "Working Hours Field Must be Filled"
+                error_msg = "Working Schedule Field Must be Filled"
                 raise exceptions.ValidationError(error_msg)
                 return False
         return True

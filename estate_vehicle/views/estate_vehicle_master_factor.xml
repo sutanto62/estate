@@ -42,6 +42,6 @@
         <menuitem id="estate_factor_category" name="Master Factor Category"
                   parent="estate.estate_blocking_menu"
                   action="action_list_master_factor_config"
-                  groups="base.group_no_one"/>
+                  groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>

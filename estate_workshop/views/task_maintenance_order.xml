@@ -6,7 +6,7 @@
             <field name="arch" type="xml">
                 <tree string="Planned Task line" editable="bottom">
                     <field name="owner_id" invisible="1"/>
-                    <field name="mastertask_id" string="Master Task Action"/>
+                    <field name="mastertask_id" options="{'no_create_edit': True}" string="Master Task Action"/>
                     <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                     <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                 </tree>
@@ -22,7 +22,7 @@
                         <group col="2">
                             <group string="Planned Task">
                                 <field name="owner_id" invisible="1"/>
-                                <field name="mastertask_id" string="Master Task"/>
+                                <field name="mastertask_id" options="{'no_create_edit': True}" string="Master Task"/>
                                 <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                                 <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                             </group>
@@ -38,7 +38,7 @@
             <field name="arch" type="xml">
                 <tree string="Actual Task line" editable="bottom">
                     <field name="owner_id" invisible="1" string="Owner"/>
-                    <field name="mastertask_id" string="Maintenance Task"/>
+                    <field name="mastertask_id" options="{'no_create_edit': True}" string="Maintenance Task"/>
                     <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                     <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                     <field name="actual_hour" string="Actual Hour's" readonly="False"/>
@@ -55,9 +55,9 @@
                     <sheet>
                         <group col="2">
                             <group string="Actual Task">
-                                <field name="mro_id" invisible="1"/>
+                                <field name="mro_id" options="{'no_create_edit': True}" invisible="1"/>
                                 <field name="owner_id" invisible="1" string="Owner"/>
-                                <field name="mastertask_id" string="Maintenance Task"/>
+                                <field name="mastertask_id" options="{'no_create_edit': True}" string="Maintenance Task"/>
                                 <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                                 <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                                 <field name="actual_hour" string="Actual Hour's" readonly="False"/>
@@ -74,9 +74,9 @@
             <field name="model">task.maintenance.order</field>
             <field name="arch" type="xml">
                 <tree string="Parent Task line" editable="bottom">
-                    <field name="mro_id" string="MRO ID" invisible="0"/>
+                    <field name="mro_id" options="{'no_create_edit': True}" string="MRO ID" invisible="0"/>
                     <field name="owner_id" invisible="0" string="Owner"/>
-                    <field name="mastertask_id" string="Maintenance Task"/>
+                    <field name="mastertask_id" options="{'no_create_edit': True}" string="Maintenance Task"/>
                     <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                     <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                     <field name="actual_hour" string="Actual Hour's" readonly="False"/>
@@ -93,9 +93,9 @@
                     <sheet>
                         <group col="2">
                             <group string="Parent  Task">
-                                <field name="mro_id" string="MRO ID" invisible="0"/>
+                                <field name="mro_id" options="{'no_create_edit': True}" string="MRO ID" invisible="0"/>
                                 <field name="owner_id" invisible="0" string="Owner"/>
-                                <field name="mastertask_id" string="Maintenance Task"/>
+                                <field name="mastertask_id" options="{'no_create_edit': True}" string="Maintenance Task"/>
                                 <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                                 <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                                 <field name="actual_hour" string="Actual Hour's" readonly="False"/>

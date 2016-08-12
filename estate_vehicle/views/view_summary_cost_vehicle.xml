@@ -304,12 +304,12 @@
         <menuitem id="estate_summary_cost_vehicle" name="Vehicle Cost"
                   parent="fleet.menu_fleet_reporting"
                   action="action_list_view_summary_vehicle"
-                  groups="base.group_no_one" sequence="14"/>
+                 groups="fleet.group_fleet_manager" sequence="14"/>
 
         <menuitem id="estate_summary_cost_vehicle_detail" name="Vehicle Cost Detail"
                   parent="fleet.menu_fleet_reporting"
                   action="action_list_view_summary_vehicle_detail"
-                  groups="base.group_no_one" sequence="15"/>
+                 groups="fleet.group_fleet_manager" sequence="15"/>
 
     </data>
 </openerp>

@@ -35,6 +35,7 @@ class ActualTask(models.Model):
     _description = 'Actual Task'
 
     name = fields.Char('Actual Task')
+    mro_id = fields.Many2one('mro.order','MRO',store=True)
     parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
 
     @api.one
@@ -64,6 +65,7 @@ class PlannedTask(models.Model):
     _inherits = {'task.maintenance.order':'parenttask_id'}
 
     name = fields.Char('Planned Task')
+    mro_id = fields.Many2one('mro.order','MRO',store=True)
     parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
 
     # # #onchange planned hour and manpower

@@ -17,7 +17,7 @@
              <field name="inherit_id" ref="mro.mro_task_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
-                    <field name="typetask_id" string="Maintenance Type"/>
+                    <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
                  </xpath>
              </field>
         </record>
@@ -28,7 +28,7 @@
              <field name="inherit_id" ref="mro.mro_request_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='maintenance_type']" position="before">
-                    <field name="typetask_id" string="Maintenance Type"/>
+                    <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
                  </xpath>
              </field>
         </record>
@@ -39,9 +39,9 @@
              <field name="inherit_id" ref="mro.mro_request_tree_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='cause']" position="before">
-                     <field name="code_id" string="Cause Failure"
+                     <field name="code_id" options="{'no_create_edit': True}" string="Cause Failure"
                             attrs="{'readonly': [('state','!=','draft')]}"/>
-                     <field name="typetask_id" string="Maintenance Type"
+                     <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"
                            attrs="{'readonly': [('state','!=','draft')]}"/>
                  </xpath>
              </field>
@@ -53,7 +53,7 @@
              <field name="inherit_id" ref="mro.mro_task_tree_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='name']" position="after">
-                    <field name="typetask_id" string="Maintenance Type"/>
+                    <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
                  </xpath>
              </field>
         </record>
@@ -67,7 +67,7 @@
                         <group col="2">
                             <group string="Master Task">
                                 <field name="name" string="Name"/>
-                                <field name="asset_id" string="Asset"/>
+                                <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
                                 <field name="planned_hour" string="Planned Hour's"/>
                                 <field name="planned_manpower" string="Planned Manpower"/>
                             </group>
@@ -92,7 +92,7 @@
             <field name="model">estate.workshop.mastertaskline</field>
             <field name="arch" type="xml">
                 <tree string="Master Task line" editable="bottom" nolabel="1">
-                    <field name="task_id" string="Maintenance Task"/>
+                    <field name="task_id" options="{'no_create_edit': True}" string="Maintenance Task"/>
                 </tree>
             </field>
         </record>
@@ -103,7 +103,7 @@
             <field name="arch" type="xml">
                 <tree string="Master Task">
                     <field name="name" />
-                    <field name="asset_id" string="Asset"/>
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
                     <field name="type_task1" string="Type Task"/>
                     <field name="planned_hour" string="Planned Hour's" readonly="True"/>
                     <field name="planned_manpower" string="Planned Manpower" readonly="True"/>
@@ -220,7 +220,9 @@
             </field>
         </record>
 
-        <menuitem action="estate_workshop.master_task_act" parent="mro.menu_maintenance_tasks" id="master_task_menu" sequence="99"/>
-        <menuitem action="estate_workshop.master_task_type_act" parent="asset.menu_maintenance_config" id="master_task_type_menu" sequence="99"/>
+        <menuitem action="estate_workshop.master_task_act" parent="mro.menu_maintenance_tasks" id="master_task_menu"
+                  groups="fleet.group_fleet_manager" sequence="99"/>
+        <menuitem action="estate_workshop.master_task_type_act" parent="asset.menu_maintenance_config"
+                  id="master_task_type_menu" groups="fleet.group_fleet_manager" sequence="99"/>
     </data>
 </openerp>

@@ -49,12 +49,7 @@ class ActualEquipment(models.Model):
             w = self.env['product.template'].search([('id','=',self.asset_id.product_id.id)])
             self.uom_id = w.uom_id.id
 
-    @api.one
-    @api.onchange('unit_plan','asset_id')
-    def _onchange_actualunitplan(self):
-        if self.asset_id:
-            self.unit_plan = self.env['estate.workshop.plannedequipment'].search([('mro_id','=',self.mro_id)]).unit_plan
-        return True
+
 
 class PlannedEquipment(models.Model):
 

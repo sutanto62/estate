@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="name"/>
-                    <field name="mastergrouptask_id" string="Group Task"/>
+                    <field name="mastergrouptask_id" options="{'no_create_edit': True}" string="Group Task"/>
                 </tree>
             </field>
         </record>
@@ -69,6 +69,6 @@
         <menuitem id="estate_master_mapping_asset" name="Master Mapping Asset"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_mapping_asset"
-                  groups="base.group_no_one"/>
+                  groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>
