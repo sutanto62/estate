@@ -36,6 +36,6 @@
         <menuitem id="estate_category_unit" name="Master Category Unit"
                   parent="estate.estate_blocking_menu"
                   action="action_list_master_categoryunit_config"
-                  groups="base.group_no_one"/>
+                  groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>

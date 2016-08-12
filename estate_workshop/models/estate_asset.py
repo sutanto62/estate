@@ -15,8 +15,11 @@ class InheritAssetVehicle(models.Model):
 
     type_asset = fields.Selection([('1','Vehicle'), ('2','Building'),
                                    ('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')])
+    location_id = fields.Many2one('stock.location','Sub Location')
+    assign_date = fields.Date('Assign Date')
     fleet_id = fields.Many2one('fleet.vehicle')
     product_id = fields.Many2one('product.template')
+    account_id = fields.Many2one('account.account','General Account')
     asset_value = fields.Float()
 
     #onchange
@@ -58,6 +61,50 @@ class InheritAssetVehicle(models.Model):
                         'product_id' : [('id','=',arrProduct)]
                     }
                 }
+        if self.type_asset == '4':
+            product =  self.env['product.template'].search([('type','=','product'),('type_computing','=','1')])
+            for idproduct in product:
+                arrProduct.append(idproduct.id)
+            return {
+                'domain' : {
+                        'product_id' : [('id','=',arrProduct)]
+                    }
+                }
+
+    @api.multi
+    @api.constrains('account_id','criticality','start_date','asset_number','model','type_asset','fleet_id','product_id','user_id')
+    def _constraint_asset(self):
+        for asset in self:
+            if asset.account_id.id == False:
+                error_msg = "General Account Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if asset.type_asset == False:
+                error_msg = "Type Asset Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if asset.type_asset == '5' or asset.type_asset == '3' or asset.type_asset == '6' or asset.type_asset == '4' :
+                if asset.product_id.id == False:
+                    error_msg = "Product Must be Filled"
+                    raise exceptions.ValidationError(error_msg)
+            if asset.type_asset == '1':
+                if asset.fleet_id.id == False:
+                    error_msg = "Vehicle Must be Filled"
+                    raise exceptions.ValidationError(error_msg)
+            if asset.criticality == False:
+                error_msg = "Criticality Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if asset.user_id.id == False:
+                error_msg = "Assigned Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if asset.asset_number == False:
+                error_msg = "Asset Number Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if asset.model == False:
+                error_msg = "Model Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if asset.start_date == False:
+                error_msg = "Start Date Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+
 
 class InheritTypetoolsProductTemplate(models.Model):
 
@@ -65,4 +112,6 @@ class InheritTypetoolsProductTemplate(models.Model):
 
     type_tools = fields.Boolean('Type Tools',default=False)
     type_machine = fields.Boolean('Type Machine',default=False)
+    type_computing = fields.Boolean('Type Computing',default=False)
+
 

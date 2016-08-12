@@ -14,9 +14,9 @@
             <field name="model">estate.workshop.planned.sparepart</field>
             <field name="arch" type="xml">
                 <tree string="Planned Sparepart line" editable="bottom">
-                    <field name="product_id" string="Product" />
+                    <field name="product_id" options="{'no_create_edit': True}" string="Product" />
                     <field name="qty_product" string="Product Qty"/>
-                    <field name="uom_id" string="Uom"/>
+                    <field name="uom_id" options="{'no_create_edit': True}" string="Uom"/>
                     <field name="qty_available" string="Qty Available"/>
                 </tree>
             </field>
@@ -27,9 +27,9 @@
             <field name="model">estate.workshop.actual.sparepart</field>
             <field name="arch" type="xml">
                 <tree string="Actual Sparepart line" editable="bottom">
-                    <field name="product_id" string="Product" />
+                    <field name="product_id" options="{'no_create_edit': True}" string="Product" />
                     <field name="qty_product" string="Product Qty"/>
-                    <field name="uom_id" string="Uom"/>
+                    <field name="uom_id" options="{'no_create_edit': True}" string="Uom"/>
                     <field name="qty_available" string="Qty Available"/>
                 </tree>
             </field>

@@ -8,9 +8,9 @@
                     <sheet>
                         <group col="2">
                             <group string="Services Details">
-                                <field name="asset_id" string="Asset"/>
-                                <field name="vehicle_id" invisible="1" on_change="on_change_vehicle(vehicle_id)"/>
-                                <field name="cost_subtype_id" string="Service Type" domain="['|',('category','=','service'),('category','=','both')]" required="1"/>
+                                <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                                <field name="vehicle_id" options="{'no_create_edit': True}" invisible="1" on_change="on_change_vehicle(vehicle_id)"/>
+                                <field name="cost_subtype_id" options="{'no_create_edit': True}" string="Service Type" domain="['|',('category','=','service'),('category','=','both')]" required="1"/>
                                 <field name="amount"/>
                             </group>
                             <group string="Odometer Details">
@@ -24,8 +24,8 @@
                         <group col="2">
                             <group string="Additional Details">
                                 <field name="date" />
-                                <field name="employee_id" string="Requester" readonly="0"/>
-                                <field name="vendor_id" context="{'default_supplier': True}"/>
+                                <field name="employee_id" options="{'no_create_edit': True}" string="Requester" readonly="0"/>
+                                <field name="vendor_id" options="{'no_create_edit': True}" context="{'default_supplier': True}"/>
                                 <field name="inv_ref" readonly="0"/>
                             </group>
                         </group>
@@ -51,11 +51,11 @@
             <field name="arch" type="xml">
                 <tree string="Services Logs">
                     <field name="date" />
-                    <field name="asset_id" string="Asset"/>
-                    <field name="vehicle_id" invisible="1"/>
-                    <field name="cost_subtype_id"/>
-                    <field name="employee_id"/>
-                    <field name="vendor_id" />
+                    <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                    <field name="vehicle_id"  options="{'no_create_edit': True}" invisible="1"/>
+                    <field name="cost_subtype_id" options="{'no_create_edit': True}" />
+                    <field name="employee_id" options="{'no_create_edit': True}"/>
+                    <field name="vendor_id" options="{'no_create_edit': True}"/>
                     <field name="inv_ref" />
                     <field name="notes" />
                     <field name="amount" sum="Total"/>
