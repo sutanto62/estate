@@ -27,6 +27,9 @@
                                 <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
                             </group>
                         </group>
+                         <group>
+                                <field name="mastertaskline_ids"/>
+                         </group>
                     </sheet>
                 </form>
             </field>
@@ -63,6 +66,9 @@
                                 <field name="actual_hour" string="Actual Hour's" readonly="False"/>
                                 <field name="actual_manpower" string="Actual Manpower" readonly="False"/>
                             </group>
+                        </group>
+                        <group>
+                            <field name="mastertaskline_ids"/>
                         </group>
                     </sheet>
                 </form>

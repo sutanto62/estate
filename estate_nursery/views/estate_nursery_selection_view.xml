@@ -251,7 +251,7 @@
                                  <field name="selection_code" class="oe_inline" readonly="1" />
                                  <label string="For "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
-                                 <field name="batch_id" class="oe_inline" readonly="1" />
+                                 <field name="batch_name" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
 
@@ -271,7 +271,6 @@
                                 <field name="age_seed" attrs="{'readonly': [('state','=','done')],
                                        'invisible': [('state','!=','done')]}" readonly="0"/>
                                 <field name="age_seed_calculate" readonly="1" invisible="1"/>
-
                             </group>
 
                             <group coolspan="10">
@@ -298,8 +297,8 @@
                                                     string="Quantity Seed Recovery"/>
                             </group>
                             <group>
-                                <field name="qty_recoveryabn" string="Total Quantity Abnormal"
-                                                    attrs="{'invisible':[('flag_recovery','=', False)]}"/>
+                                 <field name="qty_recoveryabn" string="Total Quantity Abnormal"
+                                                  attrs="{'invisible':[('flag_recovery','=', False)]}"/>
                                 <field name="qty_normal" string="Quantity Normal"
                                                     attrs="{'invisible':[('state','=','done')]}"/>
                             </group>

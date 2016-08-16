@@ -315,3 +315,5 @@ class ViewSummaryCostVehicleDetail(models.Model):
                         ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null group by c.vehicle_id, c.month_log , c.year_log , hrc.wage , c.total_trip, c.total_trip_vehicle order by month_log
                         ) a order by type_log, month_log, year_log asc
         )detail""")
+
+

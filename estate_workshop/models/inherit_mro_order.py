@@ -35,6 +35,7 @@ class InheritMroOrder(models.Model):
     type_service = fields.Selection([('1','Vehicle'),
                                      ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')],
                                     )
+    image = fields.Binary('image',help="Select image here")
 
     # Group code constraint
     @api.multi

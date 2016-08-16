@@ -96,7 +96,7 @@
 
          <menuitem id="estate_vehicle_timesheet_menu"
                   name="Vehicle Activity"
-                  parent="estate.main_estate_menu"
+                  parent="fleet.menu_root"
                   sequence="10"/>
 
          <menuitem id="estate_vehicle_timesheet_activity" name="Vehicle Timesheet"

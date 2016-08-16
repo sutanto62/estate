@@ -91,23 +91,23 @@
                                 </page>
                                 <page string="Detail Cost Vehicle">
                                     <notebook>
-                                        <page string="Detail Basis &amp; Premi">
+                                        <page name="detail_basis" string="Detail Basis &amp; Premi">
                                             <field name="basispremi_ids"/>
                                         </page>
-                                        <page string="Detail Service">
+                                        <page name="detail_service" string="Detail Service External">
                                             <field name="servicesummary_ids"/>
                                         </page>
-                                        <page string="Detail Other Service">
-                                            <field name="otherservicesummary_ids"/>
-                                        </page>
-                                        <page string="Detail Fuel">
+                                        <!--<page string="Detail Other Service">-->
+                                            <!--<field name="otherservicesummary_ids"/>-->
+                                        <!--</page>-->
+                                        <page name="detail_fuel" string="Detail Fuel">
                                                 <field name="fuelsummary_ids"/>
                                         </page>
-                                        <page string="Detail Oil">
+                                        <page name="detail_oil" string="Detail Oil">
                                                 <field name="oilsummary_ids"/>
                                         </page>
-                                        <page string="Detail Sparepart">
-                                                <field name="sparepartsummary_ids"/>
+                                        <page name="detail_sparepart" string="Detail Workshop Sparepart">
+                                                <!--<field name="sparepartsummary_ids"/>-->
                                         </page>
                                     </notebook>
                                 </page>

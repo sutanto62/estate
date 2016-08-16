@@ -14,3 +14,4 @@ import inherit_mro_task
 import inherit_hr_contract
 import task_workshop
 import equipment_workshop
+import inherit_fleet_vehicle

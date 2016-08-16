@@ -120,7 +120,7 @@ class TimesheetActivityTransport(models.Model):
                         }
                     }
             else :
-                vehicle=self.env['fleet.vehicle'].search([('status_vehicle','=','1')])
+                vehicle=self.env['fleet.vehicle'].search([('maintenance_state_id.id','=',21)])
                 for v in vehicle:
                     arrVehicletransport.append(v.id)
                 return {
@@ -233,14 +233,6 @@ class TimesheetActivityTransport(models.Model):
         self.ensure_one()
         self.state = 'done'
 
-    # @api.one
-    # def action_receive(self):
-    #     self.action_move()
-    #
-    # @api.one
-    # def action_move(self):
-
-
 
 class MasterPath(models.Model):
 
@@ -352,12 +344,7 @@ class ViewTimesheetPremi(models.Model):
                 master_formula_activity_vehicle fa
                 on pl.distance_location >= fa.range_start and pl.distance_location <= fa.range_end""")
 
-# class CreateTrigger(models.Model):
-#
-#     _name = 'trigger.status.vehicle'
-#
-#     def init(self, cr):
-#         cr.execute("""""")
+
 
 
 

@@ -3,7 +3,7 @@
 
         <!--view , Planting-->
         <record model="ir.ui.view" id="view_tree_seeddo">
-            <field name="name">Planting Seed</field>
+            <field name="name">Seed Delivery Order</field>
             <field name="model">estate.nursery.seeddo</field>
             <field name="arch" type="xml">
                 <tree string="Request planting View"
@@ -490,19 +490,19 @@
 
         <!--Action-->
         <record model="ir.actions.act_window" id="action_list_requestplanting" >
-            <field name="name">Request seed</field>
+            <field name="name">Request Seed</field>
             <field name="res_model">estate.nursery.request</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <record model="ir.actions.act_window" id="action_list_returnplanting" >
-            <field name="name">Return seed</field>
+            <field name="name">Return Seed</field>
             <field name="res_model">estate.nursery.returnseed</field>
             <field name="view_mode">tree,form</field>
         </record>
 
         <record model="ir.actions.act_window" id="action_list_seeddo" >
-            <field name="name">Planting Seed</field>
+            <field name="name">Seed Delivery Order</field>
             <field name="res_model">estate.nursery.seeddo</field>
             <field name="view_mode">tree,form</field>
         </record>

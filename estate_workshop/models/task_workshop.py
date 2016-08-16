@@ -27,6 +27,7 @@ class TaskMaintenanceOrder(models.Model):
     planned_manpower = fields.Float('Planned Manpower',store=True,readonly=True)
     actual_hour = fields.Float('Actual Hour',store=True,readonly=True)
     actual_manpower = fields.Float('Actual Manpower',store=True,readonly=True)
+    mastertaskline_ids = fields.One2many('estate.workshop.mastertaskline','mastertask_id','Maintenance Task')
 
 class ActualTask(models.Model):
 
@@ -92,3 +93,20 @@ class PlannedTask(models.Model):
                     'mastertask_id' : [('asset_id.id','=',self.owner_id)]
                 }
             }
+
+    # @api.multi
+    # @api.onchange('mastertaskline_ids','mastertask_id')
+    # def _onchange_mastertaskline_ids(self):
+    #     if self.mastertask_id:
+    #         arrTask = []
+    #         taskline = self.env['estate.workshop.mastertaskline'].search([('mastertask_id.id','=',self.mastertask_id[0].id)])
+    #         for task in self.mastertaskline_ids:
+    #             task.task_id = taskline[0].task_id.id
+    #             print "Coba coba"
+    #             print task.task_id
+    #         print "coba pop up line"
+    #         print taskline[0].task_id.id
+    #         # self.mastertaskline_ids.task_id = taskline[0].task_id.id
+    #         print "coba pop up line"
+    #         print self.mastertaskline_ids
+

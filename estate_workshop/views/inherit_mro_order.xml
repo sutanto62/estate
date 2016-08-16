@@ -15,13 +15,14 @@
              </field>
          </record>
 
-        <record model="ir.ui.view" id="inherit_maintenance_type_in_morder_tree">
-             <field name="name">Inherit maintenance type In Maintenance Order Tree</field>
+        <record model="ir.ui.view" id="inherit_maintenance_type_in_morder_form">
+             <field name="name">Inherit maintenance type In Maintenance Order</field>
              <field name="model">mro.order</field>
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='cause']" position="after">
                      <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type" readonly="1"/>
+                     <field name="image" string="Accident Image"/>
                  </xpath>
              </field>
          </record>

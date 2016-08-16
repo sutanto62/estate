@@ -41,8 +41,6 @@ class MasterTask(models.Model):
     type_subtask = fields.Many2one('estate.master.type.task','Sub Task')
     type_list_task = fields.Many2one('estate.master.type.task','List task')
 
-
-
     #onchange
     @api.multi
     @api.onchange('type_task1','type_subtask')
@@ -500,32 +498,6 @@ class ExternalOrder(models.Model):
                     raise exceptions.ValidationError(error_msg)
                 temp[costtype.id] = costtype_value_name
             return temp
-
-    @api.multi
-    @api.constrains('vendor_id','amount','date')
-    def _constraint_vendor_id(self):
-        fmt = '%Y-%m-%d'
-        for external in self.read(['vendor_id','amount','date']):
-            if external['amount'] == 0 :
-                    error_msg = "Field Amount Must be Filled"
-                    raise exceptions.ValidationError(error_msg)
-            if external['date'] != self.env['mro.order'].search([('id','=',self.owner_id)]).date_planned:
-                    error_msg = "Field Date Must be Match With Date in Maintenance Order"
-                    raise exceptions.ValidationError(error_msg)
-            if external['vendor_id'] != True:
-                    error_msg = "Field Vendor Must be Filled"
-                    raise exceptions.ValidationError(error_msg)
-            return False
-        return True
-            # if self.amount == 0 :
-            #         error_msg = "Field Amount Must be Filled"
-            #         raise exceptions.ValidationError(error_msg)
-            # if self.date != self.env['mro.order'].search([('id','=',self.owner_id)]).date_planned:
-            #         error_msg = "Field Date Must be Match With Date in Maintenance Order"
-            #         raise exceptions.ValidationError(error_msg)
-            # if self.vendor_id != True:
-            #         error_msg = "Field Vendor Must be Filled"
-            #         raise exceptions.ValidationError(error_msg)
 
 
 class PlannedSparepart(models.Model):
