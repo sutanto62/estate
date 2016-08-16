@@ -14,25 +14,36 @@ from openerp import tools
 
 class NurseryVehicle(models.Model):
 
-
     _inherit="fleet.vehicle"
     _description = "inherit information detail to fleet management"
 
-    @api.model
-    @api.onchange('other_service_log_count','oil_log_count','sparepart_log_count')
-    def _count_all_service(self):
-        if self:
+    def return_action_to_open_oil(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current vehicle """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'fleet', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_vehicle_id': ids[0]})
+            res['domain'] = [('vehicle_id','=', ids[0])]
+            return res
+        return False
+
+    @api.multi
+    @api.depends('other_service_log_count','oil_log_count','sparepart_log_count')
+    def _count_all_service(self,field_name,arg):
+            Oil = self.env['estate.vehicle.log.oil']
             return {
                 vehicle_id:
                     {
-                     'oil_log_count': self.env['estate.vehicle.log.oil'].search_count([('vehicle_id', '=', vehicle_id)]),
-                     'other_service_log_count': self.env['estate.vehicle.log.otherservice'].search_count([('vehicle_id', '=', vehicle_id)]),
-                     'sparepart_log_count': self.env['estate.vehicle.log.sparepart'].search_count([('vehicle_id', '=', vehicle_id)])
+                     'oil_log_count': Oil.search_count([('vehicle_id.id', '=', vehicle_id.id)]),
+                     # 'other_service_log_count': self.env['estate.vehicle.log.otherservice'].search_count([('vehicle_id', '=', vehicle_id)]),
+                     # 'sparepart_log_count': self.env['estate.vehicle.log.sparepart'].search_count([('vehicle_id', '=', vehicle_id)])
                     }
                 for vehicle_id in self.ids
             }
 
-    oil_log_count = fields.Integer('Oil Log Count')
+    oil_log_count = fields.Integer('Oil Log Count',compute='_count_all_service')
     other_service_log_count = fields.Integer('Other Service Log Count')
     sparepart_log_count = fields.Integer('Sparepart Log Count')
     category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
@@ -40,7 +51,8 @@ class NurseryVehicle(models.Model):
     # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
     # employee_driver_id=fields.Many2one('hr.employee')
     capacity_vehicle = fields.Integer('Capacity')
-    status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+    # status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+
 
 
 
@@ -58,13 +70,6 @@ class InheritFuel(models.Model):
 
     product_id = fields.Many2one('product.product',domain="[('type','=','consu'),('uom_id','=',11)]")
 
-    # #onchange
-    # @api.multi
-    # @api.onchange('price_pre_liter','product_id')
-    # def _onchange_priceperliter(self):
-    #     if self.product_id:
-    #         price_per_liter = self.product_id.standard_price
-    #     return True
 
 class VehicleOilLog(models.Model):
 
@@ -78,9 +83,12 @@ class VehicleOilLog(models.Model):
         vehicle = self.pool.get('fleet.vehicle').browse(cr, uid, vehicle_id, context=context)
         odometer_unit = vehicle.odometer_unit
         driver = vehicle.driver_id.id
+        cr.execute('select max(value) as value_odometer from fleet_vehicle_odometer where vehicle_id = %d' %(vehicle.id))
+        odometer = cr.fetchone()[0]
         return {
             'value': {
                 'odometer_unit': odometer_unit,
+                'odometer': odometer,
                 'purchaser_id': driver,
             }
         }
@@ -132,7 +140,6 @@ class VehicleOilLog(models.Model):
             model_id = False
         return model_id
 
-    name=fields.Char()
     cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade',required=True)
     cost_type_id = fields.Many2one('fleet.service.type')
     purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
@@ -148,9 +155,6 @@ class VehicleOilLog(models.Model):
         'cost_subtype_id': _get_default_service_type,
         'cost_type': 'fuel',
     }
-
-
-
 
 class VehicleSparepartLog(models.Model):
 
@@ -268,12 +272,6 @@ class MasterCategoryUnit(models.Model):
     name=fields.Char()
     type=fields.Selection([('1','Vehicle'), ('2','Unit ALL')])
 
-# class InheritActivityBreakDown(models.Model):
-#
-#     _inherit ='estate.activity'
-#     _description = "inherit to estate activity for type Break down"
-#
-#     type_breakdown = fields.Boolean('Type Breakdown')
 
 
 

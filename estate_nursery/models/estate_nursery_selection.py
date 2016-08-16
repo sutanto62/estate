@@ -29,7 +29,7 @@ class Selection(models.Model):
     recoverytemp_ids = fields.One2many('estate.nursery.recoverytemp','selection_id')
     batch_id = fields.Many2one('estate.nursery.batch', "Batch",default=_default_session)
     stage_id = fields.Many2one('estate.nursery.stage',"Stage",store=True)
-
+    batch_name = fields.Char('Batch Name',related='batch_id.name',store=True)
     age_seed = fields.Integer('Age Seed Batch',store=True)
     age_seed_calculate =fields.Integer("Seed Age",compute='_compute_age_seed',store=True)
     selectionstage_id = fields.Many2one('estate.nursery.selectionstage',"Selection Stage",track_visibility='onchange',
@@ -213,10 +213,16 @@ class Selection(models.Model):
             elif self.recoverytemp_ids:
                 self.qty_normal = plante - self.qty_recoveryabn
                 self.qty_plant = plante - self.qty_recoveryabn
+            else:
+                self.qty_normal = plante
+                self.qty_plant = plante
         if self.flag_recovery == False:
             if self.selectionline_ids :
                 self.qty_normal = plante - self.qty_abnormal
                 self.qty_plant = plante - self.qty_abnormal
+            else :
+                self.qty_normal = plante
+                self.qty_plant = plante
 
 
     #compute abnormal and recovery :
@@ -574,7 +580,7 @@ class SelectionLine(models.Model):
     batch_id=fields.Many2one('estate.nursery.batch',"Selection",readonly=True,invisible=True,default=_default_session)
     stage_a_id=fields.Many2one('estate.nursery.stage')
     selection_id = fields.Many2one('estate.nursery.selection',"Selection",readonly=True,invisible=True)
-    location_id = fields.Many2one('estate.block.template', "Bedengan",
+    location_id = fields.Many2one('estate.block.template', "Location",
                                     domain=[('estate_location', '=', True),
                                             ('estate_location_level', '=', '3'),
                                             ('estate_location_type', '=', 'nursery'),

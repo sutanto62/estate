@@ -89,7 +89,7 @@
             </field>
         </record>
 
-        <record model='ir.actions.act_window' id='fleet_vehicle_log_otherservice_act'>
+        <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_otherservice_act'>
             <field name="name">Vehicles Other Service Logs</field>
             <field name="res_model">estate.vehicle.log.otherservice</field>
             <field name="view_type">form</field>

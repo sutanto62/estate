@@ -1,0 +1,33 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_form_vehicle_maintenance_inherited">
+            <field name="name">Vehicle - Maintenance Extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="before">
+                     <group string="Vehicle Status Operation">
+                        <field name="maintenance_state_id" string="Status" options="{'no_create_edit': True}"/>
+                        <field name="maintenance_state_color" readonly="1" string="Color"/>
+                    </group>
+                 </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_kanban_inherited">
+            <field name="name">Vehicle - Kanban Extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_kanban"/>
+            <field name="arch" type="xml">
+                <kanban position="inside">
+                    <field name="maintenance_state_color"/>
+                    <field name="maintenance_state_id"/>
+                    <templates>
+                        <div t-attf-title="#{record.maintenance_state_id.value}"
+                             t-attf-class="codup_status_color_#{record.maintenance_state_color.raw_value} codup_status"></div>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+    </data>
+</openerp>
