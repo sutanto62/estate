@@ -40,17 +40,6 @@ class estate_payslip_run_report(report_sxw.rml_parse):
             #'get_payslip_lines': self.get_payslip_lines,
         })
 
-    # def get_payslip_lines(self, obj):
-    #     payslip_line = self.pool.get('hr.payslip.line')
-    #     res = []
-    #     ids = []
-    #     for id in range(len(obj)):
-    #         if obj[id].appears_on_payslip is True:
-    #             ids.append(obj[id].id)
-    #     if ids:
-    #         res = payslip_line.browse(self.cr, self.uid, ids)
-    #     return res
-
     def get_payslip(self, ids):
         res = []
         team = []
@@ -64,7 +53,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
 
     def get_team(self, obj):
         """
-        Get team intances
+        Get team instances
         :param obj: payslip object
         :return: list of team instances
         """
@@ -84,13 +73,14 @@ class estate_payslip_run_report(report_sxw.rml_parse):
 
     def get_payslip_team(self, id):
         """
-        Get payslip at any state. Use xml report to filter state.
+        Get estate worker payslip at any state. Use xml report to filter state.
         :param id: Team
         :return: list of payslip instances
         """
         payslip_obj = self.pool.get('hr.payslip')
-        # search return ids, browse return instances
-        ids = payslip_obj.search(self.cr, self.uid, [('team_id', '=', id)], order='employee_id')
+        # note: search return ids, browse return instances
+        ids = payslip_obj.search(self.cr, self.uid, [('contract_type_id', '=', 'Estate Worker'),
+                                                     ('team_id', '=', id)], order='employee_id')
         res = payslip_obj.browse(self.cr, self.uid, ids)
         return res
 
@@ -117,23 +107,13 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         :param code: salary rule code (EDW,OT,PR)
         :return: total amount
         """
-        # payslip_obj = self.pool.get('hr.payslip')
-        # worked_obj = self.pool.get('hr.payslip.worked_days')
-        # payslip = payslip_obj.browse(self.cr, self.uid, id)
-        #
-        # if line == 'worked':
-        #     worked_id = worked_obj.search(self.cr, self.uid, [('payslip_id', '=', payslip),
-        #                                                       ('code', '=', 'WORK300')])
-        #     return worked_obj.browse(self.cr, self.uid, worked_id)
         line_obj = self.pool.get('hr.payslip.line')
 
-        # if line == 'worked':
         line_id = line_obj.search(self.cr, self.uid, [('slip_id', '=', id),
                                                       ('employee_id', '=', employee_id),
                                                       ('code', '=', code)])
         line = line_obj.browse(self.cr, self.uid, line_id)
         return line.total
-        # elif line == 'overtime':
 
     def get_payslip_total(self, obj):
         """

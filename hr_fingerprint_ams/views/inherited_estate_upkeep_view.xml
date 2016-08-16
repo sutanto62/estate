@@ -9,8 +9,8 @@
             <field name="inherit_id" ref="estate.upkeep_labour_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@name='attendance']" position="inside">
-                    <field name="attendance_in"/>
-                    <field name="attendance_out"/>
+                    <field name="attendance_in" options="{'no_open': True}"/>
+                    <field name="attendance_out" options="{'no_open': True}"/>
                 </xpath>
             </field>
         </record>

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-27 07:46+0000\n"
-"PO-Revision-Date: 2016-06-27 07:46+0000\n"
+"POT-Creation-Date: 2016-06-29 03:37+0000\n"
+"PO-Revision-Date: 2016-06-29 03:37+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,6 +29,8 @@ msgstr ""
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Approved"
 msgstr ""
 
@@ -66,11 +68,13 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Confirmed"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Correction"
 msgstr ""
 
@@ -82,6 +86,12 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,create_date:0
 msgid "Created on"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:126
+#, python-format
+msgid "Data (db_id %s) did not satisfy attendance rule (employee, sign-in, sign-out)."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -106,11 +116,13 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Draft"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Draft/Confirmed"
 msgstr ""
 
@@ -165,6 +177,11 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: view:hr_fingerprint_ams.attendance:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Fingerprint Data"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: help:hr_fingerprint_ams.fingerprint,state:0
+msgid "Fingerprint state."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -244,11 +261,11 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "No Attendance Created"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: view:estate.upkeep.labour:hr_fingerprint_ams.inherited_estate_upkeep_labour_view_search
 #: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "No Fingerprint"
 msgstr ""
@@ -280,6 +297,8 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
+#: view:hr_fingerprint_ams.fingerprint:hr_fingerprint_ams.labour_fingerprint_view_search
+#: selection:hr_fingerprint_ams.fingerprint,state:0
 msgid "Payslip"
 msgstr ""
 
@@ -314,6 +333,7 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,state:0
+#: field:hr_fingerprint_ams.fingerprint,state:0
 msgid "State"
 msgstr ""
 
@@ -394,5 +414,11 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: field:hr_fingerprint_ams.attendance,time_start:0
 msgid "Working Time Start"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:175
+#, python-format
+msgid "You cannot delete approved Fingerprint records."
 msgstr ""
 

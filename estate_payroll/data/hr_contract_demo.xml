@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <!-- Employee Contract -->
         <record id="hr_contract_abasakumali_1" model="hr.contract">
             <field name="name">Abas Akumali</field>
@@ -30,7 +30,7 @@
             <field name="employee_id" ref="hr_employee.khl_3"/>
             <field eval="1875000.0" name="wage"/>
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
-            <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_m"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate_pkwtt_d"/>
         </record>
         <record id="hr_contract_kanonodesta_1" model="hr.contract">
             <field name="name">Kanono Desta</field>
@@ -60,7 +60,7 @@
             <field name="employee_id" ref="hr_employee.khl_6"/>
             <field eval="1875000.0" name="wage"/>
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
-            <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_m"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate_pkwtt_d"/>
         </record>
         <record id="hr_contract_lasena_1" model="hr.contract">
             <field name="name">Lasena</field>

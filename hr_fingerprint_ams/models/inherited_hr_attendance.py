@@ -2,7 +2,7 @@
 
 import logging
 import pytz
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
 from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
@@ -68,12 +68,12 @@ class FingerAttendance(models.Model):
         3. Has sign-out.
         """
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
+
+        # Update only when state is in draft
         current = f_attendance_obj.search([('db_id', '=', vals['db_id']),
                                            ('terminal_id', '=', vals['terminal_id']),
                                            ('employee_name', '=', vals['employee_name']),
-                                           ('date', '=', vals['date']),
-                                           ('state', '=', 'draft')])
-
+                                           ('date', '=', vals['date'])])
         # Override create should return a recordset
         res = self
 
@@ -88,11 +88,16 @@ class FingerAttendance(models.Model):
 
         if att_rule.is_satisfied_by(attendance):
             if current:
-                # todo record its history
-                current.write(vals)
-                res = current
-                self._create_attendance(res, vals, 'sign_in', True)
-                self._create_attendance(res, vals, 'sign_out', True)
+                # Only update fingerprint attendance with draft status
+                if current.state == 'draft':
+                    update_vals = {
+                        'sign_in': vals['sign_in'],
+                        'sign_out': vals['sign_out']
+                    }
+                    current.write(update_vals)
+                    res = current
+                    self._create_attendance(res, vals, 'sign_in', True)
+                    self._create_attendance(res, vals, 'sign_out', True)
             else:
                 res = super(FingerAttendance, self).create(vals)
                 self._create_attendance(res, vals)
@@ -138,8 +143,20 @@ class FingerAttendance(models.Model):
             res.write(att)
         else:
             res = self.env['hr.attendance'].create(att)
-
         return res
+
+    @api.multi
+    def unlink(self):
+        """
+        Attendance follow Fingerprint
+        :return:
+        """
+        for f_attendance in self:
+            if f_attendance.state != 'draft':
+                error_msg = _('You cannot delete approved Fingerprint records.')
+                raise ValidationError(error_msg)
+
+        return super(FingerAttendance, self).unlink()
 
     @api.model
     def _get_employee(self, employee_name):

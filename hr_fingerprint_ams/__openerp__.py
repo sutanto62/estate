@@ -3,7 +3,7 @@
     'name': "Fingerprint Solution",
 
     'summary': """
-        Attendance, Fingerprint, Solution""",
+        Attendance, Fingerprint, Payroll""",
 
     'description': """
         Extend attendance to use export data from AMS solution.co.id
@@ -19,7 +19,8 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr_attendance', 'hr_indonesia'],
+    # please include estate_payroll to override get_worked_days
+    'depends': ['base', 'hr_attendance', 'hr_indonesia', 'estate_payroll'],
 
     # always loaded
     'data': [
@@ -33,8 +34,6 @@
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo.xml',
-        # 'data/hr.attendance.demo.csv',
-        # 'data/hr.attendance.demo.csv',
+        'demo.xml'
     ],
 }
