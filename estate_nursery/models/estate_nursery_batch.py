@@ -554,6 +554,9 @@ class Batch(models.Model):
             if self.selection_ids:
                 for qty_selection in self.selection_ids:
                     self.qty_planted -= qty_selection.qty_recoveryabn
+                    print "coba seleksi"
+                    print self.qty_planted
+                    print qty_selection.qty_recoveryabn
             if self.cleaving_ids :
                 for totalcleaving in self.cleaving_ids:
                     self.qty_planted -= totalcleaving.qty_doublebatch

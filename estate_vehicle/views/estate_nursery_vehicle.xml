@@ -7,9 +7,8 @@
             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[1]" position="before">
-                     <group string="Vehicle Capacity &amp; status">
+                     <group string="Vehicle Category">
                         <field name="category_unit_id" string="Category"/>
-                        <field name="status_vehicle"/>
                         <field name="capacity_vehicle"/>
                     </group>
                  </xpath>
@@ -30,7 +29,7 @@
             </field>
         </record>
 
-          <!-- Extend Form to include Nursery fields -->
+        <!-- Extend Form to include Nursery fields -->
         <record model="ir.ui.view" id="type_vehicle_form_inherited">
             <field name="name">Estate Vehicle Extension</field>
             <field name="model">product.template</field>

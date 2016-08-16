@@ -90,7 +90,7 @@
             </field>
         </record>
 
-        <record model='ir.actions.act_window' id='fleet_vehicle_log_oil_act'>
+        <record model='ir.actions.act_window' id='fleet.fleet_vehicle_log_oil_act'>
             <field name="name">Vehicles Oil Logs</field>
             <field name="res_model">estate.vehicle.log.oil</field>
             <field name="view_type">form</field>
@@ -107,6 +107,6 @@
             </field>
         </record>
 
-        <menuitem action="estate_vehicle.fleet_vehicle_log_oil_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_oil_menu" groups="fleet.group_fleet_manager"/>
+        <menuitem action="fleet.fleet_vehicle_log_oil_act" parent="fleet.fleet_vehicles" id="fleet_vehicle_log_oil_menu" groups="fleet.group_fleet_manager"/>
     </data>
 </openerp>

@@ -44,6 +44,7 @@
         'views/estate_workshop_procurement.xml',
         'views/view_master_effectivedate_calendar.xml',
         'views/view_summary_vehicle_status.xml',
+        'views/inherit_fleet_vehicle.xml'
     ],
     # only loaded in demonstration mode
     'demo': [

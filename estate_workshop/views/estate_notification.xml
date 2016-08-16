@@ -11,6 +11,17 @@
              </field>
         </record>
 
+        <record model="ir.ui.view" id="view_form_inherit_field_image">
+             <field name="name">Inherit Image Template</field>
+             <field name="model">mro.request</field>
+             <field name="inherit_id" ref="mro.mro_request_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='location_id']" position="after">
+                    <field name="image" string="Accident Image" widget="image"/>
+                 </xpath>
+             </field>
+        </record>
+
         <record model="ir.ui.view" id="view_field_inherit_form_type_task">
              <field name="name">Inherit Type Task Template</field>
              <field name="model">mro.task</field>
