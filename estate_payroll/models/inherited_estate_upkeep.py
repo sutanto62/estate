@@ -15,7 +15,7 @@ class Upkeep(models.Model):
         :param ids: upkeep ids
         :return:
         """
-        self.env['estate.upkeep'].search([('id', '=', ids)]).write({'state': 'payslip'})
+        self.env['estate.upkeep'].search([('id', 'in', ids)]).write({'state': 'payslip'})
         self.env['estate.upkeep.activity'].search([('upkeep_id', 'in', ids)]).write({'state': 'payslip'})
         self.env['estate.upkeep.labour'].search([('upkeep_id', 'in', ids)]).write({'state': 'payslip'})
         self.env['estate.upkeep.material'].search([('upkeep_id', 'in', ids)]).write({'state': 'payslip'})

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Upkeep Data -->
+        <record id="estate_upkeep_4" model="estate.upkeep">
+            <field name="team_id" ref="estate.team_syukur"/>
+            <field name="assistant_id" ref="hr.employee_al"/>
+            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="division_id" ref="stock.stock_division_1"/>
+            <field name="estate_id" ref="stock.stock_main_estate"/>
+            <field name="state">approved</field>
+        </record>
+        <record id="estate_upk_act_4" model="estate.upkeep.activity">
+            <field name="upkeep_id" ref="estate_upkeep_4"/>
+            <field name="activity_id" ref="estate.activity_135"/>
+            <field name="location_ids" eval="[(6, 0, [ref('estate.block_3')])]"/>
+            <field name="unit_amount">25</field>
+            <field name="state">approved</field>
+        </record>
+        <record id="estate_upk_lbr_7" model="estate.upkeep.labour">
+            <field name="upkeep_id" ref="estate_upkeep_4"/>
+            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field name="activity_id" ref="estate.activity_135"/>
+            <field name="location_id" ref="estate.block_1"/>
+            <field name="attendance_code_id" ref="estate.hr_attendance_k"/>
+            <field name="quantity">12</field>
+            <field name="quantity_piece_rate">2</field>
+            <field name="state">approved</field>
+        </record>
+
+        <record id="estate_upk_lbr_8" model="estate.upkeep.labour">
+            <field name="upkeep_id" ref="estate_upkeep_4"/>
+            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field name="activity_id" ref="estate.activity_135"/>
+            <field name="location_id" ref="estate.block_1"/>
+            <field name="attendance_code_id" ref="estate.hr_attendance_k"/>
+            <field name="quantity">13</field>
+            <field name="quantity_piece_rate">3</field>
+            <field name="state">approved</field>
+        </record>
+
+        <!-- Payroll Run -->
+        <record id="estate_payroll_1" model="hr.payslip.run">
+            <field name="name">Payslip Run</field>
+            <field name="date_start" eval="(datetime.today() + relativedelta(day=1)).strftime('%Y-%m-%d')"/>
+            <field name="date_end" eval="(datetime.today() + relativedelta(day=1, months=1, days=-1)).strftime('%Y-%m-%d')"/>
+            <field name="type">estate</field>
+            <field name="estate_id" ref="stock.stock_main_estate"/>
+        </record>
+
+        <!-- Payslip 1 -->
+        <record id="estate_payslip_1" model="hr.payslip">
+            <field name="payslip_run_id" ref="estate_payroll_1"/>
+            <field name="name">SLIP/AKUMALI</field>
+            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field name="date_from" eval="(datetime.today() + relativedelta(day=1)).strftime('%Y-%m-%d')"/>
+            <field name="date_to" eval="(datetime.today() + relativedelta(day=1, months=1, days=-1)).strftime('%Y-%m-%d')"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
+            <field name="contract_id" ref="estate_payroll.hr_contract_abasakumali_1"/>
+        </record>
+        <record id="payslip_line_1" model="hr.payslip.worked_days">
+            <field name="name">Estate Upkeep Working Days paid at 100%</field>
+            <field name="payslip_id" ref="estate_payroll.estate_payslip_1"/>
+            <field name="sequence">10</field>
+            <field name="code">WORK300</field>
+            <field name="number_of_days">1</field>
+            <field name="number_of_hours">7.0</field>
+            <field name="contract_id" ref="estate_payroll.hr_contract_abasakumali_1"/>
+        </record>
+        <record id="payslip_line_2" model="hr.payslip.input">
+            <field name="name">Piece Rate</field>
+            <field name="payslip_id" ref="estate_payroll.estate_payslip_1"/>
+            <field name="sequence">10</field>
+            <field name="code">PR</field>
+            <field name="amount">15000</field>
+            <field name="contract_id" ref="estate_payroll.hr_contract_abasakumali_1"/>
+        </record>
+        <function name="compute_sheet" model="hr.payslip" eval="[ref('estate_payslip_1')]"/>
+
+        <!-- Payslip 2 -->
+        <record id="estate_payslip_2" model="hr.payslip">
+            <field name="payslip_run_id" ref="estate_payroll_1"/>
+            <field name="name">SLIP/DEPO</field>
+            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field name="date_from" eval="(datetime.today() + relativedelta(day=1)).strftime('%Y-%m-%d')"/>
+            <field name="date_to" eval="(datetime.today() + relativedelta(day=1, months=1, days=-1)).strftime('%Y-%m-%d')"/>
+            <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
+            <field name="contract_id" ref="estate_payroll.hr_contract_abasdepo_1"/>
+        </record>
+        <record id="payslip_line_3" model="hr.payslip.worked_days">
+            <field name="name">Estate Upkeep Working Days paid at 100%</field>
+            <field name="payslip_id" ref="estate_payroll.estate_payslip_2"/>
+            <field name="sequence">10</field>
+            <field name="code">WORK300</field>
+            <field name="number_of_days">1</field>
+            <field name="number_of_hours">7.0</field>
+            <field name="contract_id" ref="estate_payroll.hr_contract_abasdepo_1"/>
+        </record>
+        <record id="payslip_line_4" model="hr.payslip.input">
+            <field name="name">Piece Rate</field>
+            <field name="payslip_id" ref="estate_payroll.estate_payslip_2"/>
+            <field name="sequence">10</field>
+            <field name="code">PR</field>
+            <field name="amount">22500</field>
+            <field name="contract_id" ref="estate_payroll.hr_contract_abasdepo_1"/>
+        </record>
+        <function name="compute_sheet" model="hr.payslip" eval="[ref('estate_payslip_2')]"/>
+
+    </data>
+</openerp>

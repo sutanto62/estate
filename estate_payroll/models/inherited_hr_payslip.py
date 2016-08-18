@@ -30,6 +30,7 @@ class Payslip(models.Model):
 
     @api.multi
     def _compute_upkeep_labour(self):
+        """ Display number of upkeep did by the labour in payslip """
         upkeep_labour_obj = self.env['estate.upkeep.labour']
         res = upkeep_labour_obj.search([('upkeep_date', '>=', self.date_from),
                                         ('upkeep_date', '<=', self.date_to),
@@ -123,10 +124,11 @@ class Payslip(models.Model):
         context = self._context.copy()
         view_id = self.env.ref('estate.upkeep_labour_view_tree').id
 
-        # Only display selected employee within payslip period
+        # Payslip only processed approved upkeep labour of selected employee within payslip period
         upkeep_labour_filter = [('employee_id', '=', self.employee_id.id),
                                 ('upkeep_date', '>=', self.date_from),
-                                ('upkeep_date', '<=', self.date_to)]
+                                ('upkeep_date', '<=', self.date_to),
+                                ('state', '=', 'approved')]
 
         res = {
             'name': _('Upkeep Labour Records %s' % self.employee_id.name),
