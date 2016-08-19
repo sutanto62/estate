@@ -69,9 +69,17 @@ class PayslipRun(models.Model):
         upkeep_obj.payslip_upkeep(upkeep_list)
 
         # Update fingerprint to approved
-        self.env['hr_fingerprint_ams.attendance'].search([('date', '>=', self.date_start),
-                                                          ('date', '<=', self.date_end)]).write({'state': 'approved'})
+        for employee_id in self.slip_ids.mapped('employee_id'):
+            print 'employee %s' % employee_id.name
+            fingerprint_obj = self.env['hr_fingerprint_ams.attendance']
+            finger_emp_id = fingerprint_obj.search([('employee_name', '=', employee_id.name)])
+            # self.env['hr_fingerprint_ams.attendance'].search([('employee_name', '=', employee_id.name),
+            #                                                   ('date', '>=', self.date_start),
+            #                                                   ('date', '<=', self.date_end)]).write({'state': 'approved'})
+            print 'write state approved'
 
+        # for employee_id in employee_ids:
+        #     print 'update fingerprint attendance for employee %s' % employee_id.name
         # Update payslip to done
         self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'done'})
 
@@ -100,8 +108,10 @@ class PayslipRun(models.Model):
         upkeep_obj.approved_upkeep(upkeep_list)
 
         # Update fingerprint to draft (case: no separate fingerprint approval)
-        self.env['hr_fingerprint_ams.attendance'].search([('date', '>=', self.date_start),
-                                                          ('date', '<=', self.date_end)]).write({'state': 'draft'})
+        for employee_id in self.slip_ids.mapped('employee_id'):
+            self.env['h r_fingerprint_ams.attendance'].search([('employee_name', '=', employee_id.name),
+                                                              ('date', '>=', self.date_start),
+                                                              ('date', '<=', self.date_end)]).write({'state': 'draft'})
 
         # Update payslip to draft
         self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'draft'})
@@ -114,12 +124,13 @@ class PayslipRun(models.Model):
         No payslip should exists after its parent deleted
         :return:
         """
-        if self.state == 'close':
-            error_msg = _('You cannot delete closed Payslip.')
-            raise exceptions.ValidationError(error_msg)
+        for record in self:
+            if record.state == 'close':
+                error_msg = _('You cannot delete closed Payslip.')
+                raise exceptions.ValidationError(error_msg)
 
-        self.env['hr.payslip'].search([('id', 'in', self.slip_ids.ids)]).unlink()
-        return super(PayslipRun, self).unlink()
+            self.env['hr.payslip'].search([('id', 'in', record.slip_ids.ids)]).unlink()
+            return super(PayslipRun, record).unlink()
 
 class PayslipRunReport(models.Model):
     """Payslip List Report required to group by Team

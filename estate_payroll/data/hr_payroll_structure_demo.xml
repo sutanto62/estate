@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <!-- Salary Rule -->
         <record id="hr_salary_rule_labour_daily_wage" model="hr.salary.rule">
@@ -172,6 +172,7 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
         <record id="hr_payroll.structure_estate" model="hr.payroll.structure">
             <field name="code">CHKBASE</field>
             <field name="name">Checkroll Estate</field>
+            <field name="parent_id" eval="False"/>
             <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'), ref('hr_salary_rule_flat_overtime'),ref('hr_salary_rule_piece_rate')])]"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
@@ -179,6 +180,7 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
         <record id="hr_payroll.structure_estate_tl" model="hr.payroll.structure">
             <field name="name">Checkroll Estate TL 1</field>
             <field name="code">CHKBASETL</field>
+            <field name="parent_id" eval="False"/>
             <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_bpjs_pkwtt_c'),
             ref('hr_salary_rule_bpjs_pkwtt_e'),
             ref('hr_salary_rule_jkm_c'),
