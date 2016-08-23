@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from math import floor
-from hr_fingerprint_ams.rules.rule_attendance import *
+from rule_attendance import *
 
 _logger = logging.getLogger(__name__)
 

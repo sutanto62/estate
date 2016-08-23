@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
-from hr_fingerprint_ams.rules.rule_attendance import *
+from rule_attendance import *
 
 class UpkeepLabour(models.Model):
     """
