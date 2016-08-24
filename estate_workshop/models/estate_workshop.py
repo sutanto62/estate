@@ -350,31 +350,37 @@ class MasterWorkshopShedulePlan(models.Model):
 
         return True
 
-    @api.multi
-    @api.onchange('asset_id','category_id')
-    def _onchange_category_id(self):
-        arrUnit=[]
-        if self.asset_id:
-            if self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
-                asset = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id
-                fleet = self.env['fleet.vehicle'].search([('id','=',asset[0].id)]).category_unit_id
-                categunit = self.env['master.category.unit'].search([('id','=',fleet[0].id)])
-                for unit in categunit:
-                    arrUnit.append(unit.id)
-                    return {
-                        'domain':{
-                         'category_id' : [('id','in',arrUnit)]
-                        }
-                    }
-            elif self.asset_id != self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
-                categunit = self.env['master.category.unit'].search([('type','=','2')])
-                for unit in categunit:
-                    arrUnit.append(unit.id)
-                    return {
-                        'domain':{
-                         'category_id' : [('id','in',arrUnit)]
-                        }
-                    }
+    # @api.multi
+    # @api.onchange('asset_id','category_id')
+    # def _onchange_category_id(self):
+    #     arrUnit=[]
+    #     if self.asset_id:
+    #         if self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
+    #             asset = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id
+    #             fleet = self.env['fleet.vehicle'].search([('id','=',asset[0].id)]).category_unit_id
+    #             categunit = self.env['master.category.unit'].search([('id','=',fleet[0].id)])
+    #             for unit in categunit:
+    #                 arrUnit.append(unit.id)
+    #                 return {
+    #                     'domain':{
+    #                      'category_id' : [('id','in',arrUnit)]
+    #                     }
+    #                 }
+    #         elif self.asset_id != self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
+    #             categunit = self.env['master.category.unit'].search([('type','=','2')])
+    #             for unit in categunit:
+    #                 arrUnit.append(unit.id)
+    #                 return {
+    #                     'domain':{
+    #                      'category_id' : [('id','in',arrUnit)]
+    #                     }
+    #                 }
+    #         else:
+    #             return {
+    #                 'domain':{
+    #                      'category_id' : [('id','=',False)]
+    #                     }
+    #             }
 
 class MasterWorkshopShedulePlanLine(models.Model):
 

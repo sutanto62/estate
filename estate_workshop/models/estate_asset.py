@@ -114,4 +114,22 @@ class InheritTypetoolsProductTemplate(models.Model):
     type_machine = fields.Boolean('Type Machine',default=False)
     type_computing = fields.Boolean('Type Computing',default=False)
 
+    @api.multi
+    @api.constrains('type_tools','type_machine','type_computing')
+    def _constraint_type(self):
+        if self.type_tools and self.type_computing and self.type_machine:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_tools and self.type_computing:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_tools and self.type_machine:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_computing and self.type_machine:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+
+
+
 

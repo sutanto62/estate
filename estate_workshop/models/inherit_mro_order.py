@@ -198,6 +198,9 @@ class InheritMroOrder(models.Model):
             if order.reconcil_id.id == False:
                 error_msg = "Reconcil Field Must be Filled"
                 raise exceptions.ValidationError(error_msg)
+            if order.image == None:
+                    error_msg = "Accident Image Must be Filled"
+                    raise exceptions.ValidationError(error_msg)
             if order.type_service_handling == "1":
                 countLineEmployee = 0
                 countLineActualpart = 0
