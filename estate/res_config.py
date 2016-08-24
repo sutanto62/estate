@@ -11,7 +11,8 @@ class EstateConfigSettings(models.TransientModel):
                                            default_model='estate.config.settings')
     default_max_entry_day = fields.Integer("Maximum day(s) backdate transaction entry",
                                            help="0 is today.",
-                                           default_model='estate.config.settings')
+                                           default_model='estate.config.settings',
+                                           default=7)
     # Upkeep inherits account analytic entries - mandatory field
     default_journal_line_id = fields.Many2one('account.journal', 'Default Estate Journal',
                                              help='Used at upkeep analytic entries if no other journal defined.')

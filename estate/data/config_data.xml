@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="estate_config_max_entry_day" model="estate.config.settings">
+            <field name="default_max_entry_day">100</field>
+        </record>
+
+        <!-- Turn off base geoengine menu -->
+    </data>
+</openerp>

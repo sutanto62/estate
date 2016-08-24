@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from openerp import models, fields, api, exceptions, _
 from datetime import datetime
 from dateutil import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+
+_logger = logging.getLogger(__name__)
+
 
 class PayslipRun(models.Model):
     """Estate might process payroll batches by estate or division.
@@ -49,11 +53,11 @@ class PayslipRun(models.Model):
     @api.multi
     def close_payslip_run(self):
         """
-        Update payslip done andd upkeep state payslip
+        Update payslip done and upkeep state payslip
         :return: True
         """
-        self.ensure_one()
         upkeep_obj = self.env['estate.upkeep']
+        # attendance_obj = self.env['hr_fingerprint_ams.attendance']
         employees = []
 
         # Close payslip
@@ -70,18 +74,11 @@ class PayslipRun(models.Model):
 
         # Update fingerprint to approved
         for employee_id in self.slip_ids.mapped('employee_id'):
-            print 'employee %s' % employee_id.name
-            fingerprint_obj = self.env['hr_fingerprint_ams.attendance']
-            finger_emp_id = fingerprint_obj.search([('employee_name', '=', employee_id.name)])
-            # self.env['hr_fingerprint_ams.attendance'].search([('employee_name', '=', employee_id.name),
-            #                                                   ('date', '>=', self.date_start),
-            #                                                   ('date', '<=', self.date_end)]).write({'state': 'approved'})
-            print 'write state approved'
+            self.env['hr_fingerprint_ams.attendance'].search([('employee_name', '=', employee_id.name),
+                                                              ('date', '>=', self.date_start),
+                                                              ('date', '<=', self.date_end)]).write({'state': 'payslip'})
 
-        # for employee_id in employee_ids:
-        #     print 'update fingerprint attendance for employee %s' % employee_id.name
-        # Update payslip to done
-        self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'done'})
+        # self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'done'})
 
         return super(PayslipRun, self).close_payslip_run()
 
@@ -109,7 +106,7 @@ class PayslipRun(models.Model):
 
         # Update fingerprint to draft (case: no separate fingerprint approval)
         for employee_id in self.slip_ids.mapped('employee_id'):
-            self.env['h r_fingerprint_ams.attendance'].search([('employee_name', '=', employee_id.name),
+            self.env['hr_fingerprint_ams.attendance'].search([('employee_name', '=', employee_id.name),
                                                               ('date', '>=', self.date_start),
                                                               ('date', '<=', self.date_end)]).write({'state': 'draft'})
 
@@ -132,9 +129,22 @@ class PayslipRun(models.Model):
             self.env['hr.payslip'].search([('id', 'in', record.slip_ids.ids)]).unlink()
             return super(PayslipRun, record).unlink()
 
+    def get_qrcode(self):
+        """ Printed report required to traceback to systetm """
+        print_datetime = datetime.today()
+        current_user = self.env.user
+        report_name = 'Payroll'
+
+        # Log to validate qr
+        _logger.info(_('System print-out Payroll report: %s;%s;%s;%s' % (print_datetime, current_user.name, report_name,self.name)))
+
+        # Return value to report
+        return '%s;%s;%s;%s' % (print_datetime, current_user.name, report_name, self.name)
+
+
 class PayslipRunReport(models.Model):
     """Payslip List Report required to group by Team
     """
     _inherit = 'hr.payslip.run'
 
-    team_ids = fields.Many2one('estate')
+    team_ids = fields.Many2one('estate.hr.team')

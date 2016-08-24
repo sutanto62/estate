@@ -33,6 +33,7 @@
         'views/estate_upkeep.xml',
         'views/inherited_product_category_view.xml',
         'res_config_view.xml',
+        'data/config_data.xml',
         'data/estate_uom_data.xml',
         'data/hr_data.xml',
         'views/report_estate_division.xml',

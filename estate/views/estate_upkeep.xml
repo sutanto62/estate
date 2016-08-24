@@ -71,6 +71,8 @@
                                 context="{'group_by': 'division_id'}"/>
                         <filter name="by_team" string="Team"
                                 context="{'group_by': 'upkeep_team_id'}"/>
+                        <filter name="by_cross_team" string="Team (Cross Team)"
+                                context="{'group_by': 'number_of_day_team_id'}"/>
                         <filter name="by_employee" string="Employee"
                                 context="{'group_by': 'employee_id'}"/>
                         <filter name="by_date" string="Month"
@@ -190,18 +192,18 @@
                                     <tree editable="true">
                                         <field name="activity_id"
                                                options="{'no_create_edit': True}"/>
-                                        <field name="activity_uom_id" readonly="True"
-                                               string="UoM"/>
                                         <field name="contract" string="Ctr." attrs="{'invisible': [('activity_contract', '=', False)]}"/>
                                         <field name="location_ids"
                                                options="{'no_create_edit': True}"
                                                widget="many2many_tags"
                                                domain="[('inherit_location_id.location_id', '=', division_id)]"/>
-                                        <field name="unit_amount" string="Target Qty."/>
+                                        <field name="unit_amount" string="Qty."/>
+                                        <field name="activity_uom_id" readonly="True"
+                                               string="UoM"/>
                                         <field name="amount"/>
                                         <!-- do not remove field below -->
                                         <field name="division_id" invisible="True"/>
-                                        <field name="account_id" options="{'no_create': True}"/>
+                                        <field name="account_id" options="{'no_create_edit': True}" invisible="False"/>
                                         <field name="upkeep_id" invisible="True"/>
                                         <field name="activity_contract" invisible="True"/>
                                     </tree>
@@ -223,21 +225,22 @@
                                 <field name="labour_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
                                     <tree editable="True" colors="orange:prod_quantity_day&lt;100">
                                         <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
-                                        <field name="contract_type" string="Type" readonly="True"/>
+                                        <field name="nik_number" string="NIK" readonly="True"/>
                                         <field name="activity_id" string="Activity"
                                                 options="{'no_create_edit': True}"/>
-                                        <field name="activity_uom_id" string="UoM" readonly="True"/>
-                                        <field name="location_id" string="Location" options="{'no_create_edit': True}"
-                                                domain="[('inherit_location_id.location_id', '=', division_id)]"/>
+                                        <field name="location_id" string="Location" options="{'no_create_edit': True}"/>
+                                        <field name="activity_location_ids"/>
                                         <field name="attendance_code_id" string="Attn."
                                                 options="{'no_create': True}"/>
                                         <field name="quantity" string="Qty."/>
+                                        <field name="activity_uom_id" string="UoM" readonly="True"/>
                                         <field name="quantity_overtime" widget="float_time" string="OT"
                                             attrs="{'readonly':[('activity_wage_method','!=','attendance')]}"/>
                                         <field name="quantity_piece_rate" string="PR"
                                             attrs="{'readonly':[('activity_wage_method','!=','standard')]}"/>
                                         <field name="amount" groups="estate.group_assistant"/>
                                         <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant"/>
+                                        <field name="cross_team_id"/>
                                         <!-- do not remove field below -->
                                         <field name="ratio_quantity_day" string="Q/D" invisible="True" groups="estate.group_assistant"/>
                                         <field name="ratio_day_quantity" string="D/Q" invisible="True" groups="estate.group_assistant"/>
@@ -258,8 +261,8 @@
                                     <tree editable="True" colors="orange: ratio_product_activity != prod_product_activity">
                                         <!-- TODO add future feature - proposed material? -->
                                         <field name="product_id" string="Material" options="{'no_create': True}"/>
-                                        <field name="product_uom_id" string="UoM"/>
                                         <field name="unit_amount" string="Qty."/>
+                                        <field name="product_uom_id" string="UoM"/>
                                         <field name="amount"/>
                                         <field name="activity_id" string="Activity" options="{'no_create': True}"/>
                                         <field name="activity_uom_id" string="UoM"/>
@@ -519,11 +522,11 @@
                 <tree colors="red:state in ('draft','confirmed')">
                     <field name="upkeep_date" string="Date"/>
                     <field name="product_id" string="Material" invisible="True"/>
-                    <field name="unit_amount" string="Qty"/>
+                    <field name="unit_amount" string="Qty."/>
                     <field name="product_uom_id" string="UoM"/>
                     <field name="activity_id" string="Activity"/>
                     <field name="activity_uom_id" string="UoM"/>
-                    <field name="activity_unit_amount" string="Act. Qty"/>
+                    <field name="activity_unit_amount" string="Act. Qty."/>
                     <field name="amount" string="Cost"/>
                     <field name="ratio_product_activity" string="P/A"/>
                     <!-- invisible field -->

@@ -18,16 +18,30 @@
             <field name="use_estate">True</field>
         </record>
 
-        <record id="account.analytic_estate_nursery" model="account.analytic.account">
-            <field name="name">Nursery</field>
+        <record id="account.analytic_estate_nursery_1" model="account.analytic.account">
+            <field name="name">B1 Batch 1</field>
+            <field name="state">open</field>
+            <field name="type">normal</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="use_estate">True</field>
+        </record>
+        <record id="account.analytic_estate_nursery_2" model="account.analytic.account">
+            <field name="name">B2 Batch 2</field>
             <field name="state">open</field>
             <field name="type">normal</field>
             <field name="company_id" ref="base.main_company"/>
             <field name="use_estate">True</field>
         </record>
 
-        <record id="account.analytic_estate_upkeep" model="account.analytic.account">
-            <field name="name">Upkeep</field>
+        <record id="account.analytic_estate_yearplanted_2015" model="account.analytic.account">
+            <field name="name">15 Planted Year 2015</field>
+            <field name="state">open</field>
+            <field name="type">normal</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="use_estate">True</field>
+        </record>
+        <record id="account.analytic_estate_yearplanted_2016" model="account.analytic.account">
+            <field name="name">16 Planted Year 2016</field>
             <field name="state">open</field>
             <field name="type">normal</field>
             <field name="company_id" ref="base.main_company"/>

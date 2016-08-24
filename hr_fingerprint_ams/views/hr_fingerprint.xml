@@ -15,11 +15,12 @@
                         <button class="oe_highlight" name="button_approved" string="Approved"
                                 type="object" states="confirmed" groups="estate.group_manager"/>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,approved"/>
+                               statusbar_visible="draft,payslip"/>
                     </header>
                     <sheet>
                         <group>
                             <group string="Fingerprint Data">
+                                <field name="db_id"/>
                                 <field name="employee_name"/>
                                 <field name="date"/>
                                 <field name="sign_in" widget="float_time"/>

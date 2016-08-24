@@ -3,7 +3,7 @@
     <data>
         <!-- Team -->
         <record id="team_syukur" model="estate.hr.team">
-            <field name="name">Kemandoran Syukur</field>
+            <field name="name">1RA</field>
             <field name="active">True</field>
             <field name="date_effective" eval="time.strftime('%Y-%m')+'-1'"/>
             <field name="employee_id" ref="hr_employee.kht_mandor"/>
@@ -11,7 +11,7 @@
             <field name="state">active</field>
         </record>
         <record id="team_gilles" model="estate.hr.team">
-            <field name="name">Kemandoran Gilles</field>
+            <field name="name">2RA</field>
             <field name="active">True</field>
             <field name="date_effective" eval="time.strftime('%Y-%m')+'-1'"/>
             <field name="employee_id" ref="hr.employee_qdp"/>
