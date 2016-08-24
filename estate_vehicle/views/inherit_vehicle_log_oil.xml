@@ -12,7 +12,7 @@
                          class="oe_stat_button"
                          icon="fa-book" context="{'xml_id':'fleet_vehicle_log_oil_act'}"
                          help="Show the Oil logs for this vehicle">
-                         <field name="other_service_log_count" widget="statinfo" string="Oil"/>
+                         <field name="oil_log_count" widget="statinfo" string="Oil"/>
                      </button>
                  </xpath>
              </field>

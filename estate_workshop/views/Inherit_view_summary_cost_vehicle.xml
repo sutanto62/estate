@@ -1,0 +1,29 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="inherit_view_summary_cost_vehicle">
+             <field name="name">Inherit service internal</field>
+             <field name="model">v.summary.cost.vehicle</field>
+             <field name="inherit_id" ref="estate_vehicle.view_summary_cost_vehicle_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//page[@name='detail_sparepart']" position="inside">
+                     <field name="service_internal_ids"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_summary_sevice_internal_vehicle_tree">
+            <field name="name">View Summary Service Internal Vehicle</field>
+            <field name="model">view.service.internal.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="license_plate" string="License Plate"/>
+                    <field name="requester_id" string="Requester"/>
+                    <field name="cause" string="Cause"/>
+                    <field name="accident_location" string="Accident Location"/>
+                    <field name="total_amount" string="Amount"/>
+                </tree>
+            </field>
+        </record>
+    </data>
+</openerp>

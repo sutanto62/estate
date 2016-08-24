@@ -8,69 +8,6 @@ import datetime
 from openerp import tools
 
 
-# def str_to_datetime(strdate):
-#     return datetime.datetime.strptime(strdate, tools.DEFAULT_SERVER_DATE_FORMAT)
-
-
-class NurseryVehicle(models.Model):
-
-    _inherit="fleet.vehicle"
-    _description = "inherit information detail to fleet management"
-
-    def return_action_to_open_oil(self, cr, uid, ids, context=None):
-        """ This opens the xml view specified in xml_id for the current vehicle """
-        if context is None:
-            context = {}
-        if context.get('xml_id'):
-            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'fleet', context['xml_id'], context=context)
-            res['context'] = context
-            res['context'].update({'default_vehicle_id': ids[0]})
-            res['domain'] = [('vehicle_id','=', ids[0])]
-            return res
-        return False
-
-    @api.multi
-    @api.depends('other_service_log_count','oil_log_count','sparepart_log_count')
-    def _count_all_service(self,field_name,arg):
-            Oil = self.env['estate.vehicle.log.oil']
-            return {
-                vehicle_id:
-                    {
-                     'oil_log_count': Oil.search_count([('vehicle_id.id', '=', vehicle_id.id)]),
-                     # 'other_service_log_count': self.env['estate.vehicle.log.otherservice'].search_count([('vehicle_id', '=', vehicle_id)]),
-                     # 'sparepart_log_count': self.env['estate.vehicle.log.sparepart'].search_count([('vehicle_id', '=', vehicle_id)])
-                    }
-                for vehicle_id in self.ids
-            }
-
-    oil_log_count = fields.Integer('Oil Log Count',compute='_count_all_service')
-    other_service_log_count = fields.Integer('Other Service Log Count')
-    sparepart_log_count = fields.Integer('Sparepart Log Count')
-    category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
-    no_vehicle=fields.Char('No Vehicle')
-    # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
-    # employee_driver_id=fields.Many2one('hr.employee')
-    capacity_vehicle = fields.Integer('Capacity')
-    # status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
-
-
-
-
-class InheritActivity(models.Model):
-
-    _inherit = 'estate.activity'
-    _description = 'inherit status'
-
-    status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
-
-class InheritFuel(models.Model):
-
-    _inherit ='fleet.vehicle.log.fuel'
-    _description = 'inherit product_id in fuel'
-
-    product_id = fields.Many2one('product.product',domain="[('type','=','consu'),('uom_id','=',11)]")
-
-
 class VehicleOilLog(models.Model):
 
     _name="estate.vehicle.log.oil"
@@ -155,6 +92,58 @@ class VehicleOilLog(models.Model):
         'cost_subtype_id': _get_default_service_type,
         'cost_type': 'fuel',
     }
+
+class NurseryVehicle(models.Model):
+
+    _inherit="fleet.vehicle"
+    _description = "inherit information detail to fleet management"
+
+    def return_action_to_open_oil(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current vehicle """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'fleet', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_vehicle_id': ids[0]})
+            res['domain'] = [('vehicle_id','=', ids[0])]
+            return res
+        return False
+
+    @api.multi
+    @api.depends('oil_log_count')
+    def _count_all_service(self):
+             if self:
+                 count = self.env['estate.vehicle.log.oil'].search([('vehicle_id.id','=',self.id)])
+                 self.oil_log_count = len(count)
+
+    oil_log_count = fields.Integer('Oil Log Count',compute='_count_all_service')
+    other_service_log_count = fields.Integer('Other Service Log Count')
+    sparepart_log_count = fields.Integer('Sparepart Log Count')
+    category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
+    no_vehicle=fields.Char('No Vehicle')
+    # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
+    # employee_driver_id=fields.Many2one('hr.employee')
+    capacity_vehicle = fields.Integer('Capacity')
+    # status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+
+
+
+
+class InheritActivity(models.Model):
+
+    _inherit = 'estate.activity'
+    _description = 'inherit status'
+
+    status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+
+class InheritFuel(models.Model):
+
+    _inherit ='fleet.vehicle.log.fuel'
+    _description = 'inherit product_id in fuel'
+
+    product_id = fields.Many2one('product.product',domain="[('type','=','consu'),('uom_id','=',11)]")
+
 
 class VehicleSparepartLog(models.Model):
 

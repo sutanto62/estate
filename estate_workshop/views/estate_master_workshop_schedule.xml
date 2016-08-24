@@ -9,7 +9,7 @@
                 <tree colors="blue:type=='view'">
                     <field name="complete_name"/>
                     <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
-                    <field name="category_id" options="{'no_create_edit': True}" string="Category" invisible="1"/>
+                    <!--<field name="category_id" options="{'no_create_edit': True}" string="Category" invisible="1"/>-->
                     <field name="type" string="Type"/>
                     <field name="type_service"/>
                 </tree>
@@ -33,7 +33,7 @@
                         <group>
                             <group>
                             <group name="detail">
-                                <field name="category_id" options="{'no_create_edit': True}" invisible="1"/>
+                                <!--<field name="category_id" options="{'no_create_edit': True}" invisible="1"/>-->
                                 <field name="odometer"/>
                                 <field name="type_service"/>
                             </group>
@@ -66,12 +66,12 @@
                 <search string="Master Part Catalog" >
                     <field name="complete_name" />
                     <field name="asset_id"/>
-                    <field name="category_id"/>
+                    <!--<field name="category_id"/>-->
                     <field name="type_service"/>
                     <field name="type"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_asset" context="{'group_by' : 'asset_id'}" string="Asset"/>
-                        <filter name="groupby_category" context="{'group_by' : 'category_id'}" string="Category"/>
+                        <!--<filter name="groupby_category" context="{'group_by' : 'category_id'}" string="Category"/>-->
                         <filter name="groupby_type" context="{'group_by' : 'type'}" string="Type"/>
                         <filter name="groupby_complete" context="{'group_by' : 'complete_name'}" string="Complete Name"/>
                     </group>

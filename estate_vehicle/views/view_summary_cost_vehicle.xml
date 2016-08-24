@@ -46,8 +46,9 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <!--<field name="id" readonly="1" invisible="0"/>-->
-                    <field name="year_log_text" string="Year"/>
-                    <field name="month_log_text" string="Month"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="create_date" string="Date" invisible="1"/>
                     <field name="vehicle_id" string="Vehicle"/>
                     <field name="vehicle_id" string="Vehicle"/>
                     <field name="total_amount_per_month" string="Total Amount"/>
@@ -67,9 +68,7 @@
                              <h3>
                                  <label string="Summary Cost Vehicle "/>
                                  <field name="vehicle_id" class="oe_inline" readonly="1"/>
-                                 <!--<label string="Month"/>-->
                                  <field name="month_log_text" string="Month" class="oe_inline" readonly="1" />
-                                 <!--<label string="Year"/>-->
                                  <field name="year_log_text" class="oe_inline" readonly="1" />
                              </h3>
                         </div>
@@ -97,6 +96,9 @@
                                         <page name="detail_service" string="Detail Service External">
                                             <field name="servicesummary_ids"/>
                                         </page>
+                                        <page name="detail_sparepart" string="Detail Service Internal">
+                                                <!--<field name="sparepartsummary_ids"/>-->
+                                        </page>
                                         <!--<page string="Detail Other Service">-->
                                             <!--<field name="otherservicesummary_ids"/>-->
                                         <!--</page>-->
@@ -105,9 +107,6 @@
                                         </page>
                                         <page name="detail_oil" string="Detail Oil">
                                                 <field name="oilsummary_ids"/>
-                                        </page>
-                                        <page name="detail_sparepart" string="Detail Workshop Sparepart">
-                                                <!--<field name="sparepartsummary_ids"/>-->
                                         </page>
                                     </notebook>
                                 </page>
@@ -129,10 +128,12 @@
                     <field name="total_amount_per_month" string="Total Amount"/>
                     <field name="total_time" string="Total Amount"/>
                     <field name="amount_per_hour" string="Total Amount"/>
+                    <field name="create_date" string="Date"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
                         <filter name="groupby_month" context="{'group_by' : 'month_log_text'}" string="Month"/>
                         <filter name="groupby_year" context="{'group_by' : 'year_log_text'}" string="Year"/>
+                        <filter name="groupby_date" context="{'group_by' : 'create_date'}" string="Date"/>
                     </group>
                 </search>
             </field>
@@ -298,7 +299,7 @@
                 <field name="name">View Summary Cost Vehicle</field>
                 <field name="res_model">v.summary.cost.vehicle</field>
                 <field name="view_mode">tree,form</field>
-                <field name="context">{"search_default_groupby_year" : True}</field>
+                <field name="context">{"search_default_groupby_date" : True}</field>
         </record>
 
         <menuitem id="estate_summary_cost_vehicle" name="Vehicle Cost"

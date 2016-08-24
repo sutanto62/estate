@@ -175,10 +175,11 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
     year_log = fields.Char()
     month_log = fields.Char()
     vehicle_id = fields.Many2one('fleet.vehicle')
+    product_id = fields.Many2one('product.product')
 
     def init(self, cr):
         cr.execute("""create or replace view view_cost_workshop_sparepart as
-                 select row_number() over()id,mo_id, sum(total_cost) as total_amount,fleet_id as vehicle_id,month_log,year_log,parent_id from(
+                 select row_number() over()id,mo_id, sum(total_cost) as total_amount,product_id,fleet_id as vehicle_id,month_log,year_log,parent_id from(
                 select row_number() over()id,
                     (month_log::text||year_log::text||fleet_id::text)::Integer parent_id,
                     mo_id,
@@ -203,7 +204,7 @@ class ViewTotalCostDetailWorkshopSparepart(models.Model):
                 )c on ewas.product_id = c.product_id
                 )ewas on mo.id = ewas.owner_id)b
                 group by month_log,year_log,asset_id,mo_id,product_id,qty_product,cost,fleet_id,month_log,year_log)a
-                group by mo_id,fleet_id,month_log,year_log,parent_id""")
+                group by mo_id,fleet_id,month_log,year_log,product_id,parent_id""")
 
 class ViewCostTotalWorkshop(models.Model):
 
@@ -235,6 +236,60 @@ class ViewCostTotalWorkshop(models.Model):
                 )cs group by mo_id,year_log,month_log,vehicle_id
                 )utot)detail
             """)
+
+class InheritVsummaryCostVehicle(models.Model):
+
+    _inherit = 'v.summary.cost.vehicle'
+
+    service_internal_ids = fields.One2many('view.service.internal.detail','parent_id')
+
+class ViewServiceInternalDetail(models.Model):
+
+    _name="view.service.internal.detail"
+    _description = "Detail for cost Service Internal every month vehicle"
+    _auto = False
+    _order='aa_id'
+
+    id = fields.Integer()
+    aa_id = fields.Many2one('asset.asset')
+    maintenance_type_id = fields.Integer()
+    requester_id = fields.Many2one('hr.employee')
+    license_plate= fields.Char()
+    cause = fields.Char('Cause')
+    accident_location = fields.Many2one('stock.location')
+    total_amount = fields.Float('Amount')
+    parent_id = fields.Many2one('v.summary.cost.vehicle')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_service_internal_detail as
+                    select row_number() over()id,
+                           (month_log::text||year_log::text||fv_id::text)::Integer parent_id,
+                           aa_id,
+                           requester_id,license_plate,
+                           cause,maintenance_type_id,
+                           accident_location,total_amount from(
+                           select
+                                mo.date_execution as date_execution,
+                                date_part('day',mo.date_execution) day_log,
+                                date_part('month',mo.date_execution) month_log,
+                                date_part('year',mo.date_execution) year_log,
+                                aa_id,fv_id,
+                                requester_id,license_plate,
+                                cause,type_service_handling as maintenance_type_id,
+                                sum(vscwd.total_amount) as total_amount,
+                                mo.location_id as accident_location from (
+                                    select	aa.id as aa_id, aa.fleet_id as fv_id,*  from asset_asset aa
+                                        inner join fleet_vehicle fv on aa.fleet_id = fv.id
+                                        )fleet
+                                        left join mro_order mo on fleet.aa_id = mo.asset_id
+                                        left join v_summary_cost_workshop_detail vscwd on fleet.fv_id = vscwd.vehicle_id
+                                where fleet.type_asset = '1' and mo.state = 'done'
+                                group by date_execution,aa_id,fv_id,requester_id,license_plate,
+                                        cause,maintenance_type_id,accident_location
+                                )mro
+                        group by aa_id,month_log,year_log,fv_id,requester_id,license_plate,
+                                cause,maintenance_type_id,
+                                accident_location,total_amount""")
 
 class ViewSummaryCostVehicleDetail(models.Model):
 
@@ -288,8 +343,8 @@ class ViewSummaryCostVehicleDetail(models.Model):
                                 ) a group by vehicle_id, month_log, year_log
                             union
                             select 'Basis Premi' as type_log,c.vehicle_id,count(*) "count",c.month_log ,c.year_log,
-                            CASE WHEN hrc.wage is null THEN 0
-                                ELSE ((c.total_trip/c.total_trip_vehicle)* hrc.wage)
+                            CASE WHEN d.wage is null THEN 0
+                                ELSE ((c.total_trip/c.total_trip_vehicle)* d.wage)
                                END amount
                                 from (
                             select
@@ -310,10 +365,310 @@ class ViewSummaryCostVehicleDetail(models.Model):
                                     date_part('month', ts.date_activity_transport) month_log,
                                     date_part('year', ts.date_activity_transport) year_log
                                         from estate_timesheet_activity_transport ts
-                                    group by  month_log,year_log ,employee_id,ts.vehicle_id
+                                    group by month_log,year_log ,employee_id,ts.vehicle_id
                             )b on a.vehicle_id = b.vehicle_id and a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
-                        ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null group by c.vehicle_id, c.month_log , c.year_log , hrc.wage , c.total_trip, c.total_trip_vehicle order by month_log
-                        ) a order by type_log, month_log, year_log asc
-        )detail""")
+                        ) c left join (select * from (
+                                select hre.id as hre_id ,hrj.name as hrj_name, * from hr_employee hre
+                                    inner join hr_job hrj on hre.job_id = hrj.id)a
+                                    right join hr_contract hrc on hrc.employee_id = a.hre_id
+                                    where hrc.date_end is null and hrj_name = 'Driver' or hrj_name = 'Helper')d on d.hre_id = c.employee_id
+                                    where d.date_end is null and hrj_name = 'Driver' or hrj_name = 'Helper'
+                            group by c.vehicle_id, c.month_log , c.year_log , d.wage , c.total_trip, c.total_trip_vehicle order by month_log
+                            ) a order by type_log, month_log, year_log asc
+                )detail""")
+
+class ViewTimesheetMechanicWorkshop(models.Model):
+
+    _name = 'v.timesheet.mechanic.workshop'
+    _description = " view timesheet mechanic for vehicle"
+    _auto = False
+    _order='year_log'
+
+    id = fields.Integer()
+    asset_id = fields.Many2one('asset.asset')
+    task_id = fields.Many2one('mro.task')
+    mastertask_id = fields.Many2one('estate.workshop.mastertask')
+    employee_id = fields.Many2one('hr.employee')
+    vehicle_id = fields.Many2one('fleet.vehicle')
+    start_time = fields.Float()
+    end_time = fields.Float()
+    dc_type = fields.Integer()
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_timesheet_mechanic_workshop as
+                select
+                    emt.id as id,
+                    ts.create_date as ts_create_date,
+                    asset_id,
+                    task_id,
+                    mastertask_id,
+                    vehicle_id,
+                    employee_id,
+                    owner_id,
+                    start_time,end_time,
+                    dc_type from estate_mecanic_timesheet emt
+                    inner join estate_timesheet_activity_transport ts on emt.timesheet_id=ts.id""")
+
+class ViewCostWorkshop(models.Model):
+
+    _name = 'v.cost.workshop'
+    _description = " view cost workshop vehicle"
+    _auto = False
+    _order='year_log'
+
+    id = fields.Integer()
+    parent_id = fields.Many2one('v.workshop.working.account.vehicle')
+    mo_id = fields.Many2one('mro.order')
+    total_amount = fields.Float('Total Amount')
+    month_log = fields.Integer('Month')
+    year_log = fields.Integer('Year')
+    month_log_text = fields.Text('Month')
+    year_log_text = fields.Text('Year')
+    vehicle_id = fields.Many2one('fleet.vehicle')
+    type_log = fields.Text('Type Log')
+    count = fields.Integer('')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_cost_workshop as
+                select detail.*, (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id from(
+                     select row_number() over()id,type_log,mo_id,"count",total_amount,month_log,year_log,
+                     to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,year_log::text as year_log_text,vehicle_id from(
+                            select 'Cost Labour' as type_log,mo_id,count(*)"count",sum(total_amount) as total_amount,year_log,month_log,vehicle_id from(
+                            select * from view_timesheet_mecanic_totalamounts
+                                    )cl group by mo_id,year_log,month_log,vehicle_id
+                            union
+                            select 'Cost Part'as type_log,mo_id,count(*)"count",sum(total_amount) as total_amount,year_log,month_log,vehicle_id from(
+                                select * from view_cost_workshop_sparepart
+                                )cs group by mo_id,year_log,month_log,vehicle_id,product_id
+                          )utot
+                    )detail""")
+
+class ViewTimesheetMechanicDetail(models.Model):
+
+    _name = 'v.timesheet.mechanic.workshop.detail'
+    _description = "Timesheet Mechanic for vehicle"
+    _auto = False
+    _order='year_log'
+
+    id = fields.Integer()
+    parent_id = fields.Many2one('v.workshop.working.account.vehicle')
+    ts_create_date = fields.Date()
+    day_log = fields.Text()
+    month_log = fields.Text()
+    year_log = fields.Text()
+    start_time = fields.Float()
+    end_time = fields.Float()
+    asset_id = fields.Many2one('asset.asset')
+    vehicle_id = fields.Many2one('fleet.vehicle')
+    time_per_activity = fields.Float()
+    task_id = fields.Many2one('mro.task')
+    mastertask_id = fields.Many2one('estate.workshop.mastertask')
+    employee_id = fields.Many2one('hr.employee')
+
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_timesheet_mechanic_workshop_detail as
+                select row_number() over()id,
+                (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
+                start_time,end_time,ts_create_date,
+                (end_time - start_time) as time_per_activity,
+                day_log,month_log,year_log,
+                asset_id,vehicle_id,task_id,mastertask_id,employee_id from (
+                    select date_part('month', ts_create_date) month_log,
+                        date_part('day', ts_create_date) day_log,
+                        date_part('year', ts_create_date) year_log,* from v_timesheet_mechanic_workshop
+                    )tsm""")
+
+class ViewWorkshopSummarySparepart(models.Model):
+
+    _name = 'v.workshop.summary.sparepart'
+    _description = "Summary Sparepart for vehicle"
+    _auto = False
+    _order='year_log'
+
+    id = fields.Integer()
+    parent_id = fields.Many2one('v.workshop.working.account.vehicle')
+    product_id = fields.Many2one('product.product')
+    count = fields.Integer()
+    qty_product = fields.Float()
+    date_execution = fields.Date()
+    cost = fields.Float()
+    amount = fields.Float()
+    fleet_id = fields.Many2one('fleet.vehicle')
+    year_log = fields.Text()
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_workshop_summary_sparepart as
+            select row_number() over()id,
+                (month_log::text||year_log::text||fleet_id::text)::Integer parent_id,
+                product_id,qty_product,date_execution,cost,amount,"count",fleet_id,year_log
+                from (
+                     select
+                        fleet_id,
+                        mro.product_id as product_id,
+                        asset_id,count(*)"count",
+                        date_execution,
+                        date_part('month', date_execution) month_log,
+                        date_part('year', date_execution) year_log,
+                        qty_product,cost,
+                        (cost * qty_product) as amount
+                        from asset_asset aa
+                        right join (
+                            select
+                                product_id,
+                                asset_id,
+                                date_execution,
+                                qty_product from mro_order mo
+                            inner join
+                                estate_workshop_actual_sparepart ewas
+                                on mo.id = ewas.owner_id
+                        )mro on mro.asset_id=aa.id
+                        inner join (
+                         select pp.id as pp_id,cost
+                            from
+                                product_product pp
+                            inner join
+                                product_price_history pph on pph.product_id = pp.id
+                        )ppph on mro.product_id= ppph.pp_id group by mro.product_id,fleet_id,asset_id,
+                        date_execution,
+                        month_log,
+                        year_log,
+                        qty_product,cost
+                    )partworkshop""")
+
+class ViewBasicSalaryMechanic(models.Model):
+
+    _name = 'view.basic.salary.mechanic'
+    _description = "Basic Salary Mechanic"
+    _auto = False
+    _order='year_log_text'
+
+    id = fields.Integer()
+    date_activity_transport = fields.Date()
+    day_log_text = fields.Text()
+    month_log_text = fields.Text()
+    year_log_text = fields.Text()
+    vehicle_id = fields.Many2one('fleet.vehicle')
+    total_trip = fields.Integer()
+    total_trip_vehicle = fields.Integer()
+    count = fields.Integer()
+    employee_id = fields.Many2one('hr.employee')
+    wage = fields.Float()
+    amount = fields.Float()
+    parent_id = fields.Many2one('v.workshop.working.account.vehicle')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_basic_salary_mechanic as
+            select row_number() over()id,date_activity_transport,total_trip,vehicle_id,count(*) "count",
+            to_char(to_timestamp (day_log::text, 'MM'), 'Day') as day_log_text,
+            to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
+            (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
+            wage,total_trip_vehicle,c.employee_id,
+            year_log::text as year_log_text,
+                CASE WHEN d.wage is null THEN 0
+                    ELSE ((c.total_trip/c.total_trip_vehicle)* d.wage)
+                   END amount
+                    from (
+                select
+                    'Timesheet' as timesheet,date_activity_transport, a.employee_id,a.day_log,a.month_log, a.year_log, a.vehicle_id , a.total_trip,
+                    b.total_trip_vehicle
+                    from (
+                        select date_activity_transport,ts.vehicle_id, count(ts.id) total_trip,ts.employee_id,
+                        date_part('day',ts.date_activity_transport) day_log,
+                        date_part('month', ts.date_activity_transport) month_log,
+                        date_part('year', ts.date_activity_transport) year_log
+                            from estate_timesheet_activity_transport ts
+                            inner join fleet_vehicle fv on ts.vehicle_id = fv.id
+                        group by vehicle_id,day_log, month_log,year_log ,employee_id,date_activity_transport
+                )a inner join
+            (
+                select count(ts.id) total_trip_vehicle,
+                    ts.employee_id,
+                    ts.vehicle_id,
+                    date_part('month', ts.date_activity_transport) month_log,
+                    date_part('year', ts.date_activity_transport) year_log
+                        from estate_timesheet_activity_transport ts
+                    group by month_log,year_log ,employee_id,ts.vehicle_id
+            )b on a.vehicle_id = b.vehicle_id and a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
+        ) c left join (select * from (
+                select hre.id as hre_id ,hrj.name as hrj_name, * from hr_employee hre
+                    inner join hr_job hrj on hre.job_id = hrj.id)a
+                    right join hr_contract hrc on hrc.employee_id = a.hre_id
+                    where hrc.date_end is null and hrj_name = 'Mechanic')d
+                    on d.hre_id = c.employee_id
+                    where d.date_end is null and hrj_name = 'Mechanic'
+            group by c.vehicle_id,
+            c.month_log , c.year_log ,
+            d.wage , c.total_trip,
+            c.total_trip_vehicle,c.employee_id,date_activity_transport,day_log_text,month_log_text order by month_log""")
+
+class ViewWorkshopWorkingAccountVehicle(models.Model):
+
+    _name = 'v.workshop.working.account.vehicle'
+    _description = "workshop working account for vehicle"
+    _auto = False
+    _order='year_log'
+
+    id = fields.Integer()
+    vehicle_id = fields.Many2one('fleet.vehicle')
+    cost_ids = fields.One2many('v.cost.workshop','parent_id')
+    timesheet_mechanic_ids = fields.One2many('v.timesheet.mechanic.workshop.detail','parent_id')
+    sparepart_ids = fields.One2many('v.workshop.summary.sparepart','parent_id')
+    basicsalary_ids = fields.One2many('view.basic.salary.mechanic','parent_id')
+    month_log = fields.Text('Month')
+    year_log = fields.Text('Year')
+    month_log_text = fields.Text('Month')
+    year_log_text = fields.Text('Year')
+    ts_create_date = fields.Date('Date')
+    total_time = fields.Float('Total Time')
+    total_amount_per_month = fields.Float('Amount')
+    amount_per_hour = fields.Float('Amount Per Hour')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_workshop_working_account_vehicle as
+        select e.parent_id as id,
+                e.year_log,
+                e.month_log,
+                e.vehicle_id,
+                month_log_text,
+                ts_create_date,
+                year_log_text,
+                Total_time as total_time,
+                Total_amount_per_Month as total_amount_per_month,
+                case when Total_time is null then  Total_amount_per_Month
+                    else (total_amount_per_month / total_time) end amount_per_hour
+                from (
+                        select
+                            (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
+                            to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
+                            year_log::text as year_log_text,to_date(to_char(ts_create_date,'MM-DD-YYYY'),'MM-DD-YYYY') ts_create_date,
+                            vehicle_id,
+                            sum(time_per_activity) as Total_time from (
+                                select ts_create_date,
+                                asset_id,vehicle_id,
+                                date_part('month', ts.ts_create_date) month_log,
+                                date_part('year', ts.ts_create_date) year_log,
+                                ts.end_time,
+                                ts.start_time,
+                                (ts.end_time - ts.start_time) as time_per_activity
+                                from v_timesheet_mechanic_workshop ts)a group by vehicle_id ,month_log, year_log,ts_create_date
+                    )d right join (
+                            select
+                                parent_id,
+                                vehicle_id,
+                                year_log,
+                                month_log,
+                                sum(total_amount) as Total_amount_per_Month from (
+                                select
+                                    parent_id,
+                                    type_log,
+                                    month_log,
+                                    year_log,
+                                    vehicle_id,
+                                    total_amount
+                                from v_summary_cost_workshop_detail)b
+                                group by parent_id,vehicle_id , year_log,month_log
+                          )e on d.parent_id = e.parent_id""")
+
 
 

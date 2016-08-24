@@ -67,9 +67,6 @@ class InheritTypeAsset(models.Model):
              if request.location_id.id == False:
                 error_msg = "Accident Location Must be Filled"
                 raise exceptions.ValidationError(error_msg)
-             if request.image == None:
-                error_msg = "Accident Image Must be Filled"
-                raise exceptions.ValidationError(error_msg)
              super(InheritTypeAsset,self).action_send()
 
     @api.multi
