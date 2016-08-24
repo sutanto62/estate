@@ -1,2 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_fingerprint_attendance,Fingerprint Attendance,model_hr_fingerprint_ams_attendance,estate.group_user,True,True,True,False
+access_hr_attendance_user,hr.attendance.user,model_hr_attendance,base.group_hr_user,1,1,1,1
+access_hr_attendance_system_user,hr.attendance.system.user,model_hr_attendance,base.group_user,1,0,0,0
+access_hr_ams_attendance_user,hr.ams.attendance.user,model_hr_fingerprint_ams_attendance,base.group_hr_user,1,1,1,1
+access_hr_ams_attendance_system_user,hr.ams.attendance.system.user,model_hr_fingerprint_ams_attendance,base.group_user,1,0,0,0
+access_hr_fingerprint_ams_user,hr.fingerprint_ams.user,model_hr_fingerprint_ams_fingerprint,base.group_hr_user,1,1,1,1

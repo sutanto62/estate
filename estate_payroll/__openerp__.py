@@ -53,6 +53,6 @@ There are three salary components.
         'data/hr_payroll_structure_demo.xml',
         'data/resource_calendar_data.xml',
         'data/hr_contract_demo.xml',
-        'data/estate_hr_team_demo.xml',
+        'data/payroll_run_demo.xml',
     ],
 }

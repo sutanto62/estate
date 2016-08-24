@@ -204,6 +204,8 @@ class TestMasterActivity(TransactionCase):
         # print 'Activity Norm 0 %s' % self.master.activity_norm_ids[0]['qty_base']
 
     def test_01_compute_norm(self):
+        for norm in self.master.activity_norm_ids:
+            norm._compute_qty_ratio()
         self.assertEqual(self.master.activity_norm_ids[0]['qty_base'], 2, 'Estate: _compute_qty_ratio did not return 2')
         self.assertEqual(self.master.activity_norm_ids[0]['ratio_base'], 0.5, 'Estate: _compute_qty_ratio did not return 0.2')
 

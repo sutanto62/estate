@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, tools
+from openerp.exceptions import MissingError
 
 class LabourFingerprint(models.Model):
     """
@@ -21,8 +22,46 @@ class LabourFingerprint(models.Model):
     assistant_id = fields.Many2one('hr.employee', 'Assistant')
     worked_hours = fields.Float('Worked Hours', help='Included time rest')
     number_of_day = fields.Float('Number of Days')
+    state = fields.Selection([('draft', 'Draft'),
+                              ('confirmed', 'Confirmed'),
+                              ('approved', 'Approved'),
+                              ('correction', 'Correction'),
+                              ('payslip', 'Payslip'),
+                              ('attendance', 'No Attendance Created')],
+                             string='State',
+                             help='Fingerprint state.')
 
     def init(self, cr):
+        """ Initialize tablefunc module
+            The tablefunc module includes various functions that return tables (that is, multiple rows).
+            These functions are useful both in their own right and as examples of how to write C functions
+            that return multiple rows.
+            """
+        cr.execute("""
+                SELECT
+                    extname
+                FROM
+                    pg_extension
+                WHERE
+                    extname='tablefunc';
+            """)
+        check = cr.fetchone()
+        if check:
+            return {}
+        try:
+            cr.execute("""
+                CREATE EXTENSION tablefunc;
+            """)
+        except Exception:
+            raise MissingError(
+                "Error, can not automatically initialize tablefunc support. "
+                "Database user may have to be superuser and postgres/postgis "
+                "extentions with their devel header have to be installed. "
+                "If you do not want Odoo to connect with a super user "
+                "you can manually prepare your database. To do this"
+                "open a client to your database using a super user and run: \n"
+                "CREATE EXTENSION tablefunc;\n"
+            )
         cr.execute("""
             CREATE OR REPLACE FUNCTION total_number_of_day (employee_id int, upkeep_date date)
             RETURNS decimal AS $total$
@@ -34,7 +73,7 @@ class LabourFingerprint(models.Model):
                RETURN total;
             END;
             $total$ LANGUAGE plpgsql;
-        """)
+            """)
 
         tools.drop_view_if_exists(cr, 'hr_fingerprint_ams_fingerprint')
         cr.execute("""
@@ -53,7 +92,10 @@ class LabourFingerprint(models.Model):
                 total_number_of_day(
                     substring(ct.row_name from 1 for position('/' in ct.row_name)-1)::int,
                     substring(ct.row_name from position('/' in ct.row_name)+1 for char_length(ct.row_name))::date
-                ) as number_of_day
+                ) as number_of_day,
+                CASE WHEN fa.state isnull THEN 'attendance'
+                    ELSE fa.state
+                END
             FROM crosstab(
                 $$
                 SELECT a.row_name, /* a.name_related, a.upkeep_date, a.hk, */ b.action::text, b.name FROM (
@@ -84,6 +126,8 @@ class LabourFingerprint(models.Model):
             LEFT JOIN hr_employee ee on substring(ct.row_name from 1 for position('/' in ct.row_name)-1)::int = ee.id
             LEFT JOIN estate_hr_member tm on tm.employee_id = ee.id
             LEFT JOIN estate_hr_team t on tm.team_id = t.id
+            LEFT JOIN hr_fingerprint_ams_attendance fa on (lower(ee.name_related) = lower(fa.employee_name)) AND
+            (fa.date = substring(ct.row_name from position('/'  in ct.row_name)+1 for char_length(ct.row_name))::date)
             ;
             """
         )

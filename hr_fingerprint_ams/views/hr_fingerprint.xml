@@ -99,13 +99,18 @@
                     <field name="employee_id"/>
                     <field name="team_id"/>
                     <field name="assistant_id"/>
-                    <filter name="filter_no_sign_in" string="No Fingerprint"
-                            domain="[('sign_in', '=', False) ]"/>
+                    <filter name="filter_no_fingerprint" string="No Fingerprint"
+                            domain="[('state', '=', 'attendance') ]"/>
+                    <filter name="filter_draft" string="Draft/Confirmed"
+                            domain="[('state', 'in', ('draft','confirmed','correction')) ]"/>
+                    <filter name="filter_approved" string="Approved"
+                            domain="[('state', '=', 'approved') ]"/>
+                    <filter name="filter_payslip" string="Payslip"
+                            domain="[('state', '=', 'payslip') ]"/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
-
                     <group string="Group By">
                         <filter name="by_assistant" string="Assistant"
                                 context="{'group_by': 'assistant_id'}"/>
@@ -125,13 +130,14 @@
             <field name="model">hr_fingerprint_ams.fingerprint</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree colors="red: (sign_in == False) or (sign_out == False)">
+                <tree colors="red: (sign_in == False) or (sign_out == False) or (state in ('draft','confirmed','attendance'))">
                     <field name="date"/>
                     <field name="employee_id"/>
                     <field name="sign_in"/>
                     <field name="sign_out"/>
                     <field name="worked_hours"/>
                     <field name="number_of_day"/>
+                    <field name="state"/>
                 </tree>
             </field>
         </record>
@@ -145,7 +151,7 @@
         </record>
 
         <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
-                  parent="hr_attendance.menu_hr_attendance"
+                  parent="hr_attendance.menu_hr_attendance_root"
                   action="fingerprint_attendance_action"
                   groups="estate.group_user"/>
 
@@ -163,6 +169,6 @@
         <menuitem id="labour_fingerprint_report_menu" name="Labour Fingerprint Report"
                   parent="estate.estate_operation_control_menu"
                   action="labour_fingerprint_report_action"
-                  groups="estate.group_user"/>
+                  groups="base.group_hr_user"/>
     </data>
 </openerp>

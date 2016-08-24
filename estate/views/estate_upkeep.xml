@@ -172,15 +172,15 @@
                         <group>
                             <group name="team_work">
                                 <field name="date" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="team_id" options="{'no_create': True}"
+                                <field name="team_id" options="{'no_create_edit': True}"
                                        attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="assistant_id" options="{'no_create': True}"
+                                <field name="assistant_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                             </group>
                             <group name="division_information">
-                                <field name="division_id" options="{'no_create': True}"
+                                <field name="division_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="estate_id" options="{'no_create': True}"
+                                <field name="estate_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                             </group>
                         </group>
@@ -188,56 +188,23 @@
                             <page string="Upkeep Activity">
                                 <field name="activity_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
                                     <tree editable="true">
-                                        <field name="division_id" invisible="True"/>
                                         <field name="activity_id"
-                                               options="{'no_create': True}"/>
+                                               options="{'no_create_edit': True}"/>
                                         <field name="activity_uom_id" readonly="True"
                                                string="UoM"/>
+                                        <field name="contract" string="Ctr." attrs="{'invisible': [('activity_contract', '=', False)]}"/>
                                         <field name="location_ids"
-                                               options="{'no_create': True}"
+                                               options="{'no_create_edit': True}"
                                                widget="many2many_tags"
                                                domain="[('inherit_location_id.location_id', '=', division_id)]"/>
                                         <field name="unit_amount" string="Target Qty."/>
                                         <field name="amount"/>
                                         <!-- do not remove field below -->
+                                        <field name="division_id" invisible="True"/>
                                         <field name="account_id" options="{'no_create': True}"/>
                                         <field name="upkeep_id" invisible="True"/>
-
-                                        <!--
-                                        <field name="name"
-                                                invisible="True"/>
-                                        <field name="account_id"
-                                               domain="[('type','=','normal'),('use_estate','=',1)]"
-                                               options="{'no_open': True, 'no_create': True}"
-                                               invisible="True"/>
-                                        <field name="general_account_id"
-                                               invisible="True"/>
-                                        <field name="journal_id" string="Journal"
-                                                options="{'no_create': True}"
-                                                invisible="True"/>
-                                        <field name="date"
-                                               invisible="True"/>
-                                        <field name="amount"
-                                                invisible="True"/>
-                                        -->
+                                        <field name="activity_contract" invisible="True"/>
                                     </tree>
-                                    <!--
-                                    <form>
-                                        <group>
-                                            <field name="activity_id"/>
-                                            <field name="activity_uom_id"/>
-                                            <field name="lot_id"/>
-                                            <field name="location_ids" widget="many2many_tags"/>
-                                            <field name="unit_amount"/>
-                                            <field name="name"/>
-                                            <field name="account_id"/>
-                                            <field name="journal_id"/>
-                                            <field name="general_account_id"/>
-                                            <field name="amount"/>
-                                            <field name="date"/>
-                                        </group>
-                                    </form>
-                                    -->
                                 </field>
                             </page>
                             <page string="Labour">
@@ -255,32 +222,34 @@
                                 </div>
                                 <field name="labour_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
                                     <tree editable="True" colors="orange:prod_quantity_day&lt;100">
-                                        <field name="employee_id" string="Employee" options="{'no_create': True}"/>
+                                        <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
                                         <field name="contract_type" string="Type" readonly="True"/>
                                         <field name="activity_id" string="Activity"
-                                                options="{'no_create': True}"/>
+                                                options="{'no_create_edit': True}"/>
                                         <field name="activity_uom_id" string="UoM" readonly="True"/>
-                                        <field name="location_id" string="Location" options="{'no_create': True}"
+                                        <field name="location_id" string="Location" options="{'no_create_edit': True}"
                                                 domain="[('inherit_location_id.location_id', '=', division_id)]"/>
                                         <field name="attendance_code_id" string="Attn."
                                                 options="{'no_create': True}"/>
                                         <field name="quantity" string="Qty."/>
                                         <field name="quantity_overtime" widget="float_time" string="OT"
-                                                attrs="{'readonly':[('contract_type','=','2')]}"/>
+                                            attrs="{'readonly':[('activity_wage_method','!=','attendance')]}"/>
                                         <field name="quantity_piece_rate" string="PR"
-                                                attrs="{'readonly':[('contract_type','=','1')]}"/>
-                                        <field name="amount" groups="estate.group_assistant, estate.group_manager"/>
-                                        <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant, estate.group_manager"/>
+                                            attrs="{'readonly':[('activity_wage_method','!=','standard')]}"/>
+                                        <field name="amount" groups="estate.group_assistant"/>
+                                        <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant"/>
                                         <!-- do not remove field below -->
-                                        <field name="ratio_quantity_day" string="Q/D" invisible="True" groups="estate.group_assistant, estate.group_manager"/>
-                                        <field name="ratio_day_quantity" string="D/Q" invisible="True" groups="estate.group_assistant, estate.group_manager"/>
-                                        <field name="ratio_wage_quantity" string="W/Q" invisible="True" groups="estate.group_assistant, estate.group_manager"/>
+                                        <field name="ratio_quantity_day" string="Q/D" invisible="True" groups="estate.group_assistant"/>
+                                        <field name="ratio_day_quantity" string="D/Q" invisible="True" groups="estate.group_assistant"/>
+                                        <field name="ratio_wage_quantity" string="W/Q" invisible="True" groups="estate.group_assistant"/>
                                         <field name="upkeep_id" invisible="True"/>
                                         <field name="division_id" invisible="True"/>
                                         <field name="number_of_day" invisible="True"/>
                                         <field name="wage_number_of_day" invisible="True"/>
                                         <field name="wage_overtime" invisible="True"/>
                                         <field name="wage_piece_rate" invisible="True"/>
+                                        <field name="activity_contract" invisible="True"/>
+                                        <field name="activity_wage_method" invisible="True"/>
                                     </tree>
                                 </field>
                             </page>
@@ -461,6 +430,7 @@
                             <page name="productivity" string="Attendance &amp; Productivity">
                                 <group>
                                     <group name="attendance">
+                                        <field name="activity_contract"/>
                                         <field name="attendance_code_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                         <field name="number_of_day"/>
                                     </group>
@@ -602,7 +572,8 @@
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,approved"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,approved,payslip"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
@@ -656,11 +627,12 @@
         <!--<record id="action_list_estate_division_lha_report" model="ir.actions.act_window" >-->
             <!--<field name="name">Division LHA Report</field>-->
             <!--<field name="res_model">estate.upkeep.labour</field>-->
-            <!--&lt;!&ndash;<field name="view_type">tree</field>&ndash;&gt;-->
+            <!--<field name="view_type">tree</field>-->
             <!--<field name="view_mode">tree</field>-->
-            <!--&lt;!&ndash;<field name="view_id" ref="estate_division_lha_view_tree"/>&ndash;&gt;-->
+            <!--<field name="view_id" ref="estate_division_lha_view_tree"/>-->
             <!--<field name="context">{'search_default_filter_month': 1, 'search_default_by_division': 1, 'search_default_by_activity': 1}</field>-->
         <!--</record>-->
+
         <!--<record id="action_list_upkeep_labour" model="ir.actions.act_window" >-->
             <!--<field name="name">Upkeep Labour</field>-->
             <!--<field name="res_model">estate.upkeep.labour</field>-->

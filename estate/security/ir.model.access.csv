@@ -1,30 +1,49 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_estate_general_account,account.account estate,account.model_account_account,estate.group_user,True,False,False,False
+access_estate_account_analytic_line,account.analytic.line estate,account.model_account_analytic_line,estate.group_user,True,False,False,False
 access_estate_general_account,account.journal estate,account.model_account_journal,estate.group_user,True,False,False,False
 access_estate_account_analytic,account.analytic.account estate,estate.model_account_analytic_account,estate.group_user,True,False,False,False
-access_estate_account_analytic_line,account.analytic.line estate,account.model_account_analytic_line,estate.group_user,True,False,False,False
-access_estate_activity,estate.activity,model_estate_activity,estate.group_user,True,True,False,False
+access_hr_contract,hr.contract estate,hr_contract.model_hr_contract,estate.group_user,True,False,False,False
+access_estate_activity,estate.activity,model_estate_activity,estate.group_user,True,False,False,False
+access_estate_activity_agronomi,estate.activity agronomi,model_estate_activity,estate.group_agronomi,True,True,True,False
 access_estate_activity_norm,estate.activity.norm,model_estate_activity_norm,estate.group_user,True,False,False,False
-access_estate_block,estate.block,model_estate_block,estate.group_user,True,True,True,False
-access_estate_block_parameter,estate.block.parameter,model_estate_block_parameter,estate.group_user,True,True,True,False
-access_estate_block_template,estate.block.template,model_estate_block_template,estate.group_user,True,True,True,False
-access_estate_hr_attendance,estate.hr.attendance,model_estate_hr_attendance,estate.group_user,True,True,True,False
-access_estate_hr_member,estate.hr.member,model_estate_hr_member,estate.group_user,True,True,True,False
-access_estate_hr_team,estate.hr.team,model_estate_hr_team,estate.group_user,True,True,True,False
-access_estate_labour_type,estate.labour.type,model_estate_labour_type,estate.group_user,True,True,True,False
+access_estate_activity_norm_agronomi,estate.activity.norm agronomi,model_estate_activity_norm,estate.group_agronomi,True,True,True,True
+access_estate_block,estate.block,model_estate_block,estate.group_user,True,False,False,False
+access_estate_block agronomi,estate.block agronomi,model_estate_block,estate.group_agronomi,True,True,True,False
+access_estate_block_parameter,estate.block.parameter,model_estate_block_parameter,estate.group_user,True,False,False,False
+access_estate_block_parameter_agronomi,estate.block.parameter agronomi,model_estate_block_parameter,estate.group_agronomi,True,True,True,False
+access_estate_block_template,estate.block.template,model_estate_block_template,estate.group_user,True,False,False,False
+access_estate_block_template_agronomi,estate.block.template agronomi,model_estate_block_template,estate.group_agronomi,True,True,True,False
+access_estate_hr_attendance,estate.hr.attendance,model_estate_hr_attendance,estate.group_user,True,False,False,False
+access_estate_hr_attendance_agronomi,estate.hr.attendance agronomi,model_estate_hr_attendance,estate.group_agronomi,True,True,True,False
+access_estate_hr_member,estate.hr.member,model_estate_hr_member,estate.group_user,True,False,False,False
+access_estate_hr_member_agronomi,estate.hr.member agronomi,model_estate_hr_member,estate.group_agronomi,True,True,True,False
+access_estate_hr_team,estate.hr.team,model_estate_hr_team,estate.group_user,True,False,False,False
+access_estate_hr_team_agronomi,estate.hr.team agronomi,model_estate_hr_team,estate.group_agronomi,True,True,True,False
+access_estate_labour_type,estate.labour.type,model_estate_labour_type,estate.group_user,True,False,False,False
+access_estate_labour_type_agronomi,estate.labour.type agronomi,model_estate_labour_type,estate.group_agronomi,True,True,True,False
 access_estate_material_norm,estate.material.norm,model_estate_material_norm,estate.group_user,True,False,False,False
-access_estate_object,estate.object,model_estate_object,estate.group_user,True,True,True,False
-access_estate_object_type,estate.object.type,model_estate_object_type,estate.group_user,True,True,True,False
-access_estate_operation,estate.operation,model_estate_operation,estate.group_user,True,True,True,False
-access_estate_parameter,estate.parameter,model_estate_parameter,estate.group_user,True,True,True,False
-access_estate_parameter_value,estate.parameter.value,model_estate_parameter_value,estate.group_user,True,True,True,False
+access_estate_material_norm_agronomi,estate.material.norm agronomi,model_estate_material_norm,estate.group_agronomi,True,True,True,True
+access_estate_object,estate.object,model_estate_object,estate.group_user,True,False,False,False
+access_estate_object_agronomi,estate.object agronomi,model_estate_object,estate.group_agronomi,True,True,True,False
+access_estate_object_type,estate.object.type,model_estate_object_type,estate.group_user,True,False,False,False
+access_estate_object_type_agronomi,estate.object.type agronomi,model_estate_object_type,estate.group_agronomi,True,True,True,False
+access_estate_operation,estate.operation,model_estate_operation,estate.group_user,True,False,False,False
+access_estate_operation_agronomi,estate.operation agronomi,model_estate_operation,estate.group_agronomi,True,True,True,False
+access_estate_parameter,estate.parameter,model_estate_parameter,estate.group_user,True,False,False,False
+access_estate_parameter_agronomi,estate.parameter agronomi,model_estate_parameter,estate.group_agronomi,True,True,True,False
+access_estate_parameter_value,estate.parameter.value,model_estate_parameter_value,estate.group_user,True,False,False,False
+access_estate_parameter_value_agronomi,estate.parameter.value agronomi,model_estate_parameter_value,estate.group_agronomi,True,True,True,False
 access_estate_parameter_weight,estate.parameter.weight,model_estate_parameter_weight,estate.group_user,True,False,False,False
-access_estate_planted_year,estate.planted.year,model_estate_planted_year,estate.group_user,True,True,True,False
-access_estate_stand_hectare,estate.stand.hectare,model_estate_stand_hectare,estate.group_user,True,True,True,False
-access_estate_upkeep,estate.upkeep,model_estate_upkeep,estate.group_user,True,True,True,False
+access_estate_parameter_weight_agronomi,estate.parameter.weight,model_estate_parameter_weight,estate.group_agronomi,True,True,True,True
+access_estate_planted_year,estate.planted.year,model_estate_planted_year,estate.group_user,True,False,False,False
+access_estate_planted_year_agronomi,estate.planted.year agronomi,model_estate_planted_year,estate.group_agronomi,True,True,True,False
+access_estate_stand_hectare,estate.stand.hectare,model_estate_stand_hectare,estate.group_user,True,False,False,False
+access_estate_stand_hectare_agronomi,estate.stand.hectare agronomi,model_estate_stand_hectare,estate.group_agronomi,True,True,True,False
+access_estate_upkeep,estate.upkeep,model_estate_upkeep,estate.group_user,True,True,True,True
 access_estate_upkeep_activity,estate.upkeep.activity,model_estate_upkeep_activity,estate.group_user,True,True,True,True
 access_estate_upkeep_labour,estate.upkeep.labour,model_estate_upkeep_labour,estate.group_user,True,True,True,True
 access_estate_material,estate.upkeep.material,model_estate_upkeep_material,estate.group_user,True,True,True,True
-access_estate_wage,estate.wage,model_estate_wage,estate.group_user,True,True,True,False
+access_estate_wage,estate.wage,model_estate_wage,estate.group_user,True,False,False,False
+access_estate_wage_agronomi,estate.wage agronomi,model_estate_wage,estate.group_agronomi,True,True,True,False
 access_estate_stock_warehouse_orderpoint,stock.warehouse.orderpoint estate user,stock.model_stock_warehouse_orderpoint,estate.group_user,True,False,False,False
-access_hr_contract,hr.contract estate,hr_contract.model_hr_contract,estate.group_user,True,False,False,False

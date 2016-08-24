@@ -11,22 +11,30 @@ class Upkeep(models.Model):
     @api.multi
     def payslip_upkeep(self, ids):
         """
-        Set upkeep's state into payslip
+        Set upkeep, activity, labour, material and fingerprint state to payslip.
         :param ids: upkeep ids
         :return:
         """
-        upkeeps = self.env['estate.upkeep'].search([('id', 'in', ids)])
-        upkeeps.write({'state': 'payslip'})
+        self.env['estate.upkeep'].search([('id', 'in', ids)]).write({'state': 'payslip'})
+        self.env['estate.upkeep.activity'].search([('upkeep_id', 'in', ids)]).write({'state': 'payslip'})
+        self.env['estate.upkeep.labour'].search([('upkeep_id', 'in', ids)]).write({'state': 'payslip'})
+        self.env['estate.upkeep.material'].search([('upkeep_id', 'in', ids)]).write({'state': 'payslip'})
+
+        return True
 
     @api.multi
     def approved_upkeep(self, ids):
         """
-        Set upkeep's state into approved
+        Set upkeep, activity, labour, material and fingerprint state to approved (except fingerprint draft)
         :param ids: upkeep ids
         :return:
         """
-        upkeeps = self.env['estate.upkeep'].search([('id', 'in', ids)])
-        upkeeps.write({'state': 'approved'})
+        self.env['estate.upkeep'].search([('id', '=', ids)]).write({'state': 'approved'})
+        self.env['estate.upkeep.activity'].search([('upkeep_id', 'in', ids)]).write({'state': 'approved'})
+        self.env['estate.upkeep.labour'].search([('upkeep_id', 'in', ids)]).write({'state': 'approved'})
+        self.env['estate.upkeep.material'].search([('upkeep_id', 'in', ids)]).write({'state': 'approved'})
+
+        return True
 
     @api.multi
     def get_upkeep_by_employee(self, employees, start, end, state):

@@ -2,7 +2,8 @@
 
 import logging
 import pytz
-from openerp import models, fields, api, exceptions
+from openerp import models, fields, api, _
+from openerp.exceptions import ValidationError
 from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -11,33 +12,13 @@ from rule_attendance import *
 
 _logger = logging.getLogger(__name__)
 
-class HrAttendance(models.Model):
-    _inherit = 'hr.attendance'
-    _description = 'Put Attendance as children Finger Attendance.'
-
-    finger_attendance_id = fields.Many2one('hr_fingerprint_ams.attendance', ondelete='cascade')
-    state = fields.Selection(related='finger_attendance_id.state', store=True)
-
-    @api.model
-    def get_attendance(self, employee, att_date, action='sign_in'):
-        # Attendance saved in UTC
-        local = pytz.timezone(self._context['tz'])
-        date_from = datetime.strptime(att_date, DF)
-        date_from_utc = local.localize(date_from, is_dst=None).astimezone(pytz.utc)
-        date_to_utc = date_from_utc + timedelta(days=1)
-
-        res = self.search([('employee_id', '=', employee.id),
-                           ('action', '=', action),
-                           ('name', '>=', date_from_utc.strftime(DT)),
-                           ('name', '<=', date_to_utc.strftime(DT))])
-        return res
-
 class FingerAttendance(models.Model):
     """
     Attendance will be imported from Solution AMS. Create detailed attendance.
     """
     _name = 'hr_fingerprint_ams.attendance'
-    _description = 'Extend Attendance with Solution Attendance Management System data.'
+    _description = 'Fingerprint Attendance'
+    _rec_name = 'employee_name'
 
     db_id = fields.Integer('ID MDB')
     terminal_id = fields.Integer('Terminal ID')
@@ -87,12 +68,12 @@ class FingerAttendance(models.Model):
         3. Has sign-out.
         """
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
+
+        # Update only when state is in draft
         current = f_attendance_obj.search([('db_id', '=', vals['db_id']),
                                            ('terminal_id', '=', vals['terminal_id']),
                                            ('employee_name', '=', vals['employee_name']),
-                                           ('date', '=', vals['date']),
-                                           ('state', '=', 'draft')])
-
+                                           ('date', '=', vals['date'])])
         # Override create should return a recordset
         res = self
 
@@ -107,18 +88,25 @@ class FingerAttendance(models.Model):
 
         if att_rule.is_satisfied_by(attendance):
             if current:
-                # todo record its history
-                current.write(vals)
-                res = current
-                self._create_attendance(res, vals, 'sign_in', True)
-                self._create_attendance(res, vals, 'sign_out', True)
+                # Only update fingerprint attendance with draft status
+                if current.state == 'draft':
+                    update_vals = {
+                        'sign_in': vals['sign_in'],
+                        'sign_out': vals['sign_out']
+                    }
+                    current.write(update_vals)
+                    res = current
+                    self._create_attendance(res, vals, 'sign_in', True)
+                    self._create_attendance(res, vals, 'sign_out', True)
             else:
                 res = super(FingerAttendance, self).create(vals)
                 self._create_attendance(res, vals)
                 self._create_attendance(res, vals, 'sign_out')
         else:
-            error_msg = 'Data (db_id %s) did not satisfy attendance rule (employee, sign-in, sign-out).' % (vals['db_id'])
-            raise exceptions.ValidationError(error_msg)
+            # Ignore record which did not passed rules
+            error_msg = '%s attendance at %s did not satisfy attendance rule (employee, sign-in, sign-out).' % (vals['employee_name'], vals['date'])
+            _logger.warning(error_msg)
+            pass
 
         return res
 
@@ -155,8 +143,20 @@ class FingerAttendance(models.Model):
             res.write(att)
         else:
             res = self.env['hr.attendance'].create(att)
-
         return res
+
+    @api.multi
+    def unlink(self):
+        """
+        Attendance follow Fingerprint
+        :return:
+        """
+        for f_attendance in self:
+            if f_attendance.state != 'draft':
+                error_msg = _('You cannot delete approved Fingerprint records.')
+                raise ValidationError(error_msg)
+
+        return super(FingerAttendance, self).unlink()
 
     @api.model
     def _get_employee(self, employee_name):
@@ -225,3 +225,23 @@ class FingerAttendance(models.Model):
 
         return super(FingerAttendance, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
 
+class HrAttendance(models.Model):
+    _inherit = 'hr.attendance'
+    _description = 'Fingerprint Attendance Line'
+
+    finger_attendance_id = fields.Many2one('hr_fingerprint_ams.attendance', ondelete='cascade')
+    state = fields.Selection(related='finger_attendance_id.state', store=True)
+
+    @api.model
+    def get_attendance(self, employee, att_date, action='sign_in'):
+        # Attendance saved in UTC
+        local = pytz.timezone(self._context['tz'])
+        date_from = datetime.strptime(att_date, DF)
+        date_from_utc = local.localize(date_from, is_dst=None).astimezone(pytz.utc)
+        date_to_utc = date_from_utc + timedelta(days=1)
+
+        res = self.search([('employee_id', '=', employee.id),
+                           ('action', '=', action),
+                           ('name', '>=', date_from_utc.strftime(DT)),
+                           ('name', '<=', date_to_utc.strftime(DT))])
+        return res
