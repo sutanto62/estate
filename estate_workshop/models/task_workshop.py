@@ -27,7 +27,76 @@ class TaskMaintenanceOrder(models.Model):
     planned_manpower = fields.Float('Planned Manpower',store=True,readonly=True)
     actual_hour = fields.Float('Actual Hour',store=True,readonly=True)
     actual_manpower = fields.Float('Actual Manpower',store=True,readonly=True)
-    mastertaskline_ids = fields.One2many('estate.workshop.mastertaskline','mastertask_id','Maintenance Task')
+
+
+class ViewTaskMroOrderPlanned(models.Model):
+
+    _name = 'v.task.mro.order'
+    _description = "Planned Task Pop up for vehicle"
+    _auto = False
+    _order='ewp_id'
+
+    id = fields.Integer()
+    ewp_id = fields.Many2one('estate.workshop.plannedtask')
+    ewm_id = fields.Many2one('estate.workshop.mastertaskline')
+    task_id = fields.Many2one('mro.task')
+    mro_id = fields.Many2one('mro.id')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_task_mro_order as
+                    select row_number() over()id,
+                        ewp_id,
+                        ewm.id as ewm_id,mro_id ,
+                        task_id,mtask.mastertask_id as mastertask_id
+                        from
+                            estate_workshop_mastertaskline ewm
+                        inner join (
+                             select ewp.mro_id mro_id,ewp.id as ewp_id,mastertask_id
+                                from
+                                    estate_workshop_plannedtask ewp
+                                inner join
+                                    task_maintenance_order tmo on ewp.parenttask_id = tmo.id
+                            )mtask
+                            on
+                                ewm.mastertask_id = mtask.mastertask_id
+                            group by
+                                ewm_id,mro_id,mtask.mastertask_id,task_id,ewp_id
+                            order by mro_id,ewm_id asc""")
+
+class ViewTaskMroOrderActual(models.Model):
+
+    _name = 'v.task.mro.order.actual'
+    _description = "Actual Task Pop up for vehicle"
+    _auto = False
+    _order='ewa_id'
+
+    id = fields.Integer()
+    ewa_id = fields.Many2one('estate.workshop.actualtask')
+    ewm_id = fields.Many2one('estate.workshop.mastertaskline')
+    task_id = fields.Many2one('mro.task')
+    mro_id = fields.Many2one('mro.id')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_task_mro_order_actual as
+                select row_number() over()id,
+                    ewa_id,
+                    ewm.id as ewm_id,mro_id ,
+                    task_id,
+                    mtask.mastertask_id as mastertask_id
+                    from
+                        estate_workshop_mastertaskline ewm
+                    inner join (
+                         select ewa.mro_id mro_id,ewa.id as ewa_id,mastertask_id
+                            from
+                                estate_workshop_actualtask ewa
+                            inner join
+                                task_maintenance_order tmo on ewa.parenttask_id = tmo.id
+                        )mtask
+                        on
+                            ewm.mastertask_id = mtask.mastertask_id
+                        group by
+                            ewm_id,mro_id,mtask.mastertask_id,task_id,ewa_id
+                        order by mro_id,ewm_id asc""")
 
 class ActualTask(models.Model):
 
@@ -38,6 +107,7 @@ class ActualTask(models.Model):
     name = fields.Char('Actual Task')
     mro_id = fields.Many2one('mro.order','MRO',store=True)
     parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
+    mastertasklineactual_ids = fields.One2many('v.task.mro.order.actual','ewa_id','Maintenance Task')
 
     @api.one
     @api.onchange('planned_hour','planned_manpower','mastertask_id')
@@ -68,6 +138,7 @@ class PlannedTask(models.Model):
     name = fields.Char('Planned Task')
     mro_id = fields.Many2one('mro.order','MRO',store=True)
     parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
+    mastertaskline_ids = fields.One2many('v.task.mro.order','ewp_id','Maintenance Task')
 
     # # #onchange planned hour and manpower
     @api.one
@@ -79,7 +150,6 @@ class PlannedTask(models.Model):
             self.planned_hour = planned_hour
             self.planned_manpower = planned_manpower
         return True
-
 
     @api.multi
     @api.onchange('mastertask_id','owner_id','asset_id','mro_id')

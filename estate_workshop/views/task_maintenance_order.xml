@@ -28,7 +28,7 @@
                             </group>
                         </group>
                          <group>
-                                <field name="mastertaskline_ids"/>
+                                <field name="mastertaskline_ids" readonly="0"/>
                          </group>
                     </sheet>
                 </form>
@@ -57,18 +57,21 @@
                 <form string="Actual Task">
                     <sheet>
                         <group col="2">
-                            <group string="Actual Task">
+                            <group string="Planned">
                                 <field name="mro_id" options="{'no_create_edit': True}" invisible="1"/>
                                 <field name="owner_id" invisible="1" string="Owner"/>
                                 <field name="mastertask_id" options="{'no_create_edit': True}" string="Maintenance Task"/>
                                 <field name="planned_hour" string="Planned Hour's" readonly="False"/>
                                 <field name="planned_manpower" string="Planned Manpower" readonly="False"/>
+
+                            </group>
+                            <group string="Actual">
                                 <field name="actual_hour" string="Actual Hour's" readonly="False"/>
                                 <field name="actual_manpower" string="Actual Manpower" readonly="False"/>
                             </group>
                         </group>
                         <group>
-                            <field name="mastertaskline_ids"/>
+                            <field name="mastertasklineactual_ids" readonly="0"/>
                         </group>
                     </sheet>
                 </form>
@@ -110,6 +113,26 @@
                         </group>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='maintenance_task_popup_tree'>
+            <field name="name">Planned task line pop up tree</field>
+            <field name="model">v.task.mro.order</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance Task">
+                    <field name="task_id" string="Maintenance Task"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='maintenance_task_actual_tree'>
+            <field name="name">Planned task line tree</field>
+            <field name="model">v.task.mro.order.actual</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance Task" >
+                    <field name="task_id" string="Maintenance Task"/>
+                </tree>
             </field>
         </record>
     </data>

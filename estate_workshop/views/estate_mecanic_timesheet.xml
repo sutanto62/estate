@@ -1,7 +1,16 @@
 <openerp>
     <data>
 
-
+        <record model="ir.ui.view" id="view_workshop_employee_actual_line_tree">
+            <field name="name">View Workshop Employee Actual Line Tree</field>
+            <field name="model">estate.workshop.employeeline.actual</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="employee_id" options="{'no_create_edit': True}" string="Employee"/>
+                </tree>
+            </field>
+         </record>
 
         <record model="ir.ui.view" id="view_workshop_employee_line_tree">
             <field name="name">View Workshop Employee Line Tree</field>

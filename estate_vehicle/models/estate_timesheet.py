@@ -80,14 +80,14 @@ class TimesheetActivityTransport(models.Model):
     @api.depends('distance_location','end_location','start_location')
     def _onchange_distance_location(self):
         #to change distance location same master path location
-        if self:
-            if self.start_location and self.end_location:
+        for item in self:
+            if item.start_location and item.end_location:
                 arrDistance = 0
-                distancelocation = self.env['path.location'].search([
-                    ('start_location.id','=',self.start_location.id),('end_location.id','=',self.end_location.id)])
+                distancelocation = item.env['path.location'].search([
+                    ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
                 for c in distancelocation:
                     arrDistance += c.distance_location
-                self.distance_location = arrDistance
+                item.distance_location = arrDistance
         return True
 
     @api.multi
@@ -158,11 +158,10 @@ class TimesheetActivityTransport(models.Model):
     @api.multi
     @api.depends('start_km','end_km','total_distance')
     def _compute_total_distance(self):
-        self.ensure_one()
         #to Compute total Distance
-        if self:
-            if self.end_km and self.start_km:
-                self.total_distance = self.end_km - self.start_km
+        for item in self:
+            if item.end_km and item.start_km:
+                item.total_distance = item.end_km - item.start_km
             return True
 
     #Constraint ALL
@@ -171,8 +170,8 @@ class TimesheetActivityTransport(models.Model):
     @api.constrains('start_km','end_km')
     def _constraint_startkm_endkm(self):
 
-        if self:
-            if self.end_km < self.start_km:
+        for item in self:
+            if item.end_km < item.start_km:
                 error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
                 raise exceptions.ValidationError(error_msg)
             return True

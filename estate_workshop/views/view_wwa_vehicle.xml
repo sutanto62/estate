@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <tree>
                     <field name="type_log" string="Type"/>
-                    <field name="vehicle_id" string="Vehicle"/>
-                    <field name="month_log_text" string="Month"/>
-                    <field name="year_log_text" string="Year"/>
+                    <field name="mo_id" string="Maintenance Order"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
                     <field name="count" string="Qty"/>
                     <field name="total_amount" string="Total Amount"/>
                     <field name="parent_id" string="Parent Id" invisible="1"/>
@@ -182,7 +182,7 @@
                 <tree>
                     <field name="date_execution" string="Date"/>
                     <field name="year_log" string="Year" invisible="1"/>
-                    <field name="fleet_id" string="Vehicle"/>
+                    <field name="mro_id" string="Maintenance Order"/>
                     <field name="product_id" string="Part"/>
                     <field name="qty_product" string="Qty Product"/>
                     <field name="cost" string="Cost"/>

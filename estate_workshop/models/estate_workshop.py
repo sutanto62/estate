@@ -231,7 +231,7 @@ class MecanicTimesheets(models.Model):
     def _onchange_employee_id(self):
         arrEmployee=[]
         if self:
-            employee = self.env['estate.workshop.employeeline'].search([('mro_id','=',self.owner_id)])
+            employee = self.env['estate.workshop.employeeline.actual'].search([('mro_id','=',self.owner_id)])
             for a in employee:
                 arrEmployee.append(a.employee_id.id)
             return {
@@ -252,7 +252,7 @@ class MecanicTimesheets(models.Model):
     def _onchange_mastertask_id(self):
         arrOrder = []
         if self:
-            mroorder = self.env['estate.workshop.plannedtask'].search([('mro_id','=',self.owner_id)])
+            mroorder = self.env['estate.workshop.actualtask'].search([('mro_id','=',self.owner_id)])
             for order in mroorder:
                 arrOrder.append(order.mastertask_id.id)
             return {
@@ -310,6 +310,15 @@ class WorkshopCode(models.Model):
 class EmployeeLine(models.Model):
 
     _name = 'estate.workshop.employeeline'
+
+    employee_id = fields.Many2one('hr.employee',
+                                  domain=[('contract_type','!=','Null'),
+                                          ('contract_period','!=','Null'),('job_id.name','=','Mechanic')])
+    mro_id = fields.Integer('MRO')
+
+class EmployeeLineActual(models.Model):
+
+    _name = 'estate.workshop.employeeline.actual'
 
     employee_id = fields.Many2one('hr.employee',
                                   domain=[('contract_type','!=','Null'),
@@ -512,42 +521,24 @@ class PlannedSparepart(models.Model):
     _description = 'Planning Sparepart'
 
     name = fields.Char('Planned Sparepart')
-    qty_available = fields.Float('Quantity Available',readonly=True,store=True,compute='_onchange_get_qty_available')
+    qty_available = fields.Float('Quantity Available',readonly=False,store=True)
     product_id = fields.Many2one('product.product','Product')
     qty_product = fields.Float('Quantity Product')
     uom_id = fields.Many2one('product.uom','UOM')
     owner_id = fields.Integer('Owner')
 
     @api.multi
-    @api.depends('qty_available','product_id')
+    @api.onchange('qty_available','product_id')
     def _onchange_get_qty_available(self):
         arrQty=[]
-        if self:
-            if self.product_id:
-                qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
-                for a in qty:
-                    arrQty.append(a.qty)
-                for a in arrQty:
-                    qty = float(a)
-                    self.qty_available = qty
-                return True
+        if self.product_id:
+            qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
+            for a in qty:
+                arrQty.append(a.qty)
+            for a in arrQty:
+                qty = float(a)
+                self.qty_available = qty
 
-    # @api.multi
-    # @api.onchange('product_id')
-    # def _onchange_product_id(self):
-    #     arrProduct =[]
-    #     if self:
-    #         listmastertask = self.env['estate.workshop.plannedtask'].search([('owner_id','=',self.owner_id)]).mastertask_id
-    #         for listmastertask in listmastertask:
-    #             mastertask = self.env['estate.workshop.mastertask'].search([('id','=',listmastertask[0].id)])
-    #             taskline = self.env['estate.workshop.mastertaskline'].search([('mastertask_id','=',mastertask[0].id)]).task_id
-    #             taskpartline = self.env['mro.task.parts.line'].search([('task_id.id','=',taskline[0].id)]).parts_id
-    #             arrProduct.append(taskpartline.id)
-    #         return {
-    #             'domain':{
-    #                 'product_id' : [('id','in',arrProduct)]
-    #             }
-    #         }
 
     @api.multi
     @api.onchange('uom_id','product_id')
@@ -579,22 +570,21 @@ class ActualSparepart(models.Model):
     product_id = fields.Many2one('product.product','Product')
     qty_product = fields.Float('Quantity Product')
     uom_id = fields.Many2one('product.uom','UOM')
-    qty_available = fields.Float('Quantity Available',readonly=True,store=True,compute='_onchange_get_qty_available')
+    qty_available = fields.Float('Quantity Available',readonly=False,store=True)
     owner_id = fields.Integer('Owner')
 
     @api.multi
-    @api.depends('qty_available','product_id')
+    @api.onchange('qty_available','product_id')
     def _onchange_get_qty_available(self):
         arrQty=[]
-        if self:
-            if self.product_id:
-                qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
-                for a in qty:
-                    arrQty.append(a.qty)
-                for a in arrQty:
-                    qty = float(a)
-                    self.qty_available = qty
-            return True
+        if self.product_id:
+            qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
+            for a in qty:
+                arrQty.append(a.qty)
+            for a in arrQty:
+                qty = float(a)
+                self.qty_available = qty
+
 
     @api.multi
     @api.onchange('uom_id','product_id')
