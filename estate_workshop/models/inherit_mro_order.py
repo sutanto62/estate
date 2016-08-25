@@ -20,6 +20,7 @@ class InheritMroOrder(models.Model):
 
     mecanictimesheet_ids = fields.One2many('estate.mecanic.timesheet','owner_id')
     employeeline_ids = fields.One2many('estate.workshop.employeeline','mro_id')
+    employeelineactual_ids = fields.One2many('estate.workshop.employeeline.actual','mro_id')
     serviceexternal_ids = fields.One2many('estate.workshop.external.service','owner_id')
     code_id = fields.Many2one('estate.workshop.causepriority.code','Priority',domain=[('type', '=', '2')])
     reconcil_id = fields.Many2one('estate.workshop.causepriority.code',domain=[('type', '=', '3')],
@@ -136,6 +137,45 @@ class InheritMroOrder(models.Model):
                 temp[employee.id] = employee_value_name
             return temp
 
+    @api.multi
+    @api.constrains('employeelineactual_ids')
+    def _constrains_employee_id(self):
+        self.ensure_one()
+        if self.employeelineactual_ids:
+            temp={}
+            for employee in self.employeelineactual_ids:
+                employee_value_name = employee.employee_id.name
+                if employee_value_name in temp.values():
+                    error_msg = "Employee \"%s\" is set more than once " % employee_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[employee.id] = employee_value_name
+            return temp
+
+    @api.multi
+    @api.constrains('employeeline_ids')
+    def _constraint_employee_value(self):
+        if self.employeeline_ids:
+            for manpower in self.plannedtask_ids:
+                plannedmanpower = manpower.planned_manpower
+            if len(self.employeeline_ids) > plannedmanpower:
+                error_msg = "Employee is set not more than Planned Manpower"
+                raise exceptions.ValidationError(error_msg)
+            elif len(self.employeeline_ids) < plannedmanpower:
+                error_msg = "Employee is set not more less than Planned Manpower"
+                raise exceptions.ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('employeelineactual_ids')
+    def _constraint_employee_actual_value(self):
+        if self.employeelineactual_ids:
+            for manpower in self.actualtask_ids:
+                actualmanpower = manpower.actual_manpower
+            if len(self.employeelineactual_ids) > actualmanpower:
+                error_msg = "Employee is set not more than Actual Manpower"
+                raise exceptions.ValidationError(error_msg)
+            elif len(self.employeelineactual_ids) < actualmanpower:
+                error_msg = "Employee is set not more less than Actual Manpower"
+                raise exceptions.ValidationError(error_msg)
 
     #---------------------------------------------------------------------------------------------
 
@@ -231,6 +271,7 @@ class InheritMroOrder(models.Model):
         self.do_create_actualtask()
         self.do_create_actualsparepart()
         self.do_create_actualequipment()
+        self.do_create_actualeemployee()
         self.write({'state': 'ready'})
 
     @api.multi
@@ -244,7 +285,8 @@ class InheritMroOrder(models.Model):
                 'planned_manpower': task.planned_manpower,
                 'mro_id' : task.mro_id.id
             }
-        return self.env['estate.workshop.actualtask'].create(task_data)
+            self.env['estate.workshop.actualtask'].create(task_data)
+        return True
 
     @api.multi
     def do_create_actualsparepart(self):
@@ -258,7 +300,8 @@ class InheritMroOrder(models.Model):
                 'qty_available' : part.qty_available,
                 'owner_id' : part.owner_id
             }
-        return self.env['estate.workshop.actual.sparepart'].create(part_data)
+            self.env['estate.workshop.actual.sparepart'].create(part_data)
+        return True
 
     @api.multi
     def do_create_actualequipment(self):
@@ -273,7 +316,19 @@ class InheritMroOrder(models.Model):
                 'description' : tool.description,
                 'mro_id' : tool.mro_id
             }
-        return self.env['estate.workshop.actualequipment'].create(tool_data)
+            self.env['estate.workshop.actualequipment'].create(tool_data)
+        return True
+
+    @api.multi
+    def do_create_actualeemployee(self):
+        employee_data = False
+        for employee in self.env['estate.workshop.employeeline'].search([('mro_id','=',self.id)]):
+            employee_data = {
+                'employee_id' : employee.employee_id.id,
+                'mro_id' : employee.mro_id
+            }
+            self.env['estate.workshop.employeeline.actual'].create(employee_data)
+        return True
 
     @api.multi
     @api.onchange('plannedtask_ids','actualtask_ids')

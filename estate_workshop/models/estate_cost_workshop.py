@@ -439,8 +439,8 @@ class ViewCostWorkshop(models.Model):
                             union
                             select 'Cost Part'as type_log,mo_id,count(*)"count",sum(total_amount) as total_amount,year_log,month_log,vehicle_id from(
                                 select * from view_cost_workshop_sparepart
-                                )cs group by mo_id,year_log,month_log,vehicle_id,product_id
-                          )utot
+                                )cs group by mo_id,year_log,month_log,vehicle_id
+                          )utot order by mo_id asc
                     )detail""")
 
 class ViewTimesheetMechanicDetail(models.Model):
@@ -487,6 +487,7 @@ class ViewWorkshopSummarySparepart(models.Model):
     _order='year_log'
 
     id = fields.Integer()
+    mro_id = fields.Many2one('mro.order')
     parent_id = fields.Many2one('v.workshop.working.account.vehicle')
     product_id = fields.Many2one('product.product')
     count = fields.Integer()
@@ -500,10 +501,11 @@ class ViewWorkshopSummarySparepart(models.Model):
     def init(self, cr):
         cr.execute("""create or replace view v_workshop_summary_sparepart as
             select row_number() over()id,
-                (month_log::text||year_log::text||fleet_id::text)::Integer parent_id,
+                (month_log::text||year_log::text||fleet_id::text)::Integer parent_id,mro_id,
                 product_id,qty_product,date_execution,cost,amount,"count",fleet_id,year_log
                 from (
                      select
+                     	mro_id,
                         fleet_id,
                         mro.product_id as product_id,
                         asset_id,count(*)"count",
@@ -515,6 +517,7 @@ class ViewWorkshopSummarySparepart(models.Model):
                         from asset_asset aa
                         right join (
                             select
+                            	mo.id as mro_id,
                                 product_id,
                                 asset_id,
                                 date_execution,
@@ -529,12 +532,12 @@ class ViewWorkshopSummarySparepart(models.Model):
                                 product_product pp
                             inner join
                                 product_price_history pph on pph.product_id = pp.id
-                        )ppph on mro.product_id= ppph.pp_id group by mro.product_id,fleet_id,asset_id,
+                        )ppph on mro.product_id= ppph.pp_id group by mro.product_id,fleet_id,asset_id,mro_id,
                         date_execution,
                         month_log,
                         year_log,
                         qty_product,cost
-                    )partworkshop""")
+                    )partworkshop order by mro_id asc""")
 
 class ViewBasicSalaryMechanic(models.Model):
 
