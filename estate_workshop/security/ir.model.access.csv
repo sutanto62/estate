@@ -196,7 +196,3 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 "equipment_maintenance_order_user","equipment_maintenance_order","estate_workshop.model_equipment_maintenance_order","estate.group_user","True","False","True","False"
 "equipment_maintenance_order_manager","equipment_maintenance_order","estate_workshop.model_equipment_maintenance_order","estate.group_manager","True","True","True","False"
 "equipment_maintenance_order_assistant","equipment_maintenance_order","estate_workshop.model_equipment_maintenance_order","estate.group_assistant","True","False","True","False"
-
-"equipment_maintenance_order_user","equipment_maintenance_order","estate_workshop.model_equipment_maintenance_order","estate.group_user","True","False","True","False"
-"equipment_maintenance_order_manager","equipment_maintenance_order","estate_workshop.model_equipment_maintenance_order","estate.group_manager","True","True","True","False"
-"equipment_maintenance_order_assistant","equipment_maintenance_order","estate_workshop.model_equipment_maintenance_order","estate.group_assistant","True","False","True","False"
