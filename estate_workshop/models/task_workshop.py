@@ -28,6 +28,71 @@ class TaskMaintenanceOrder(models.Model):
     actual_hour = fields.Float('Actual Hour',store=True,readonly=True)
     actual_manpower = fields.Float('Actual Manpower',store=True,readonly=True)
 
+class ActualTask(models.Model):
+
+    _name = 'estate.workshop.actualtask'
+    _inherits = {'task.maintenance.order':'parenttask_id'}
+    _description = 'Actual Task'
+
+    name = fields.Char('Actual Task')
+    mro_id = fields.Many2one('mro.order','MRO',store=True)
+    parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
+    mastertasklineactual_ids = fields.One2many('v.task.mro.order.actual','ewa_id','Maintenance Task')
+
+    @api.one
+    @api.onchange('planned_hour','planned_manpower','mastertask_id')
+    def _onchange_actualhour_actualmainpower(self):
+        if self.mastertask_id:
+            self.planned_hour = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_hour
+            self.planned_manpower = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_manpower
+        return True
+
+    @api.multi
+    @api.onchange('mastertask_id','owner_id','asset_id','mro_id')
+    def _onchange_mastertask_id(self):
+        arrOrder = []
+       #todo onchange mastertask id tanpa di menunggu mro order tersimpan
+        self.owner_id = self.mro_id.owner_id
+        if self:
+            return {
+                'domain':{
+                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
+                }
+            }
+
+class PlannedTask(models.Model):
+
+    _name = 'estate.workshop.plannedtask'
+    _inherits = {'task.maintenance.order':'parenttask_id'}
+
+    name = fields.Char('Planned Task')
+    mro_id = fields.Many2one('mro.order','MRO',store=True)
+    parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
+    mastertaskline_ids = fields.One2many('v.task.mro.order','ewp_id','Maintenance Task')
+
+    # # #onchange planned hour and manpower
+    @api.one
+    @api.onchange('planned_hour','planned_manpower','mastertask_id')
+    def _onchange_plannedhour_plannedmainpower(self):
+        if self.mastertask_id:
+            planned_hour = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_hour
+            planned_manpower = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_manpower
+            self.planned_hour = planned_hour
+            self.planned_manpower = planned_manpower
+        return True
+
+    @api.multi
+    @api.onchange('mastertask_id','owner_id','asset_id','mro_id')
+    def _onchange_planmastertask_id(self):
+        arrOrder = []
+       #todo onchange mastertask id tanpa di menunggu mro order tersimpan
+        self.owner_id = self.mro_id.owner_id
+        if self:
+            return {
+                'domain':{
+                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
+                }
+            }
 
 class ViewTaskMroOrderPlanned(models.Model):
 
@@ -97,86 +162,4 @@ class ViewTaskMroOrderActual(models.Model):
                         group by
                             ewm_id,mro_id,mtask.mastertask_id,task_id,ewa_id
                         order by mro_id,ewm_id asc""")
-
-class ActualTask(models.Model):
-
-    _name = 'estate.workshop.actualtask'
-    _inherits = {'task.maintenance.order':'parenttask_id'}
-    _description = 'Actual Task'
-
-    name = fields.Char('Actual Task')
-    mro_id = fields.Many2one('mro.order','MRO',store=True)
-    parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
-    mastertasklineactual_ids = fields.One2many('v.task.mro.order.actual','ewa_id','Maintenance Task')
-
-    @api.one
-    @api.onchange('planned_hour','planned_manpower','mastertask_id')
-    def _onchange_actualhour_actualmainpower(self):
-        if self.mastertask_id:
-            self.planned_hour = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_hour
-            self.planned_manpower = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_manpower
-        return True
-
-    @api.multi
-    @api.onchange('mastertask_id','owner_id','asset_id','mro_id')
-    def _onchange_mastertask_id(self):
-        arrOrder = []
-       #todo onchange mastertask id tanpa di menunggu mro order tersimpan
-        self.owner_id = self.mro_id.owner_id
-        if self:
-            return {
-                'domain':{
-                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
-                }
-            }
-
-class PlannedTask(models.Model):
-
-    _name = 'estate.workshop.plannedtask'
-    _inherits = {'task.maintenance.order':'parenttask_id'}
-
-    name = fields.Char('Planned Task')
-    mro_id = fields.Many2one('mro.order','MRO',store=True)
-    parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
-    mastertaskline_ids = fields.One2many('v.task.mro.order','ewp_id','Maintenance Task')
-
-    # # #onchange planned hour and manpower
-    @api.one
-    @api.onchange('planned_hour','planned_manpower','mastertask_id')
-    def _onchange_plannedhour_plannedmainpower(self):
-        if self.mastertask_id:
-            planned_hour = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_hour
-            planned_manpower = self.env['estate.workshop.mastertask'].search([('id','=',self.mastertask_id.id)]).planned_manpower
-            self.planned_hour = planned_hour
-            self.planned_manpower = planned_manpower
-        return True
-
-    @api.multi
-    @api.onchange('mastertask_id','owner_id','asset_id','mro_id')
-    def _onchange_planmastertask_id(self):
-        arrOrder = []
-       #todo onchange mastertask id tanpa di menunggu mro order tersimpan
-        self.owner_id = self.mro_id.owner_id
-        if self:
-            return {
-                'domain':{
-                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
-                }
-            }
-
-    # @api.multi
-    # @api.onchange('mastertaskline_ids','mastertask_id')
-    # def _onchange_mastertaskline_ids(self):
-    #     if self.mastertask_id:
-    #         arrTask = []
-    #         taskline = self.env['estate.workshop.mastertaskline'].search([('mastertask_id.id','=',self.mastertask_id[0].id)])
-    #         for task in self.mastertaskline_ids:
-    #             task.task_id = taskline[0].task_id.id
-    #             print "Coba coba"
-    #             print task.task_id
-    #         print "coba pop up line"
-    #         print taskline[0].task_id.id
-    #         # self.mastertaskline_ids.task_id = taskline[0].task_id.id
-    #         print "coba pop up line"
-    #         print self.mastertaskline_ids
 
