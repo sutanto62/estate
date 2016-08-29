@@ -245,7 +245,7 @@ class TransportirDetail(models.Model):
         # on change vehicle id where status available
         arrVehicle=[]
         if self:
-            vehicle=self.env['fleet.vehicle'].search([('status_vehicle','=','1')])
+            vehicle=self.env['fleet.vehicle'].search([('maintenance_state_id','=','21')])
             for v in vehicle:
                     arrVehicle.append(v.id)
         return {

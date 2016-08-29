@@ -36,7 +36,7 @@
             <field name="model">equipment.maintenance.order</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree editable="bottom">
+                <tree editable="true">
                     <field name="asset_id" options="{'no_create_edit': True}" string="Equipment"/>
                     <field name="unit_plan" string="Unit"/>
                     <field name="unit_actual" string="Actual"/>
