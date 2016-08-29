@@ -553,10 +553,10 @@ class Batch(models.Model):
                 self.qty_planted += item.qty_planted
             if self.selection_ids:
                 for qty_selection in self.selection_ids:
-                    self.qty_planted -= qty_selection.qty_recoveryabn
-                    print "coba seleksi"
-                    print self.qty_planted
-                    print qty_selection.qty_recoveryabn
+                    try:
+                        self.qty_planted -= qty_selection.qty_recoveryabn
+                    except:
+                        self.qty_planted
             if self.cleaving_ids :
                 for totalcleaving in self.cleaving_ids:
                     self.qty_planted -= totalcleaving.qty_doublebatch

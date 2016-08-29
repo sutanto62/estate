@@ -164,18 +164,26 @@ class InheritMroOrder(models.Model):
                 error_msg = "Employee is set not more less than Planned Manpower"
                 raise exceptions.ValidationError(error_msg)
 
-    @api.multi
-    @api.constrains('employeelineactual_ids')
-    def _constraint_employee_actual_value(self):
-        if self.employeelineactual_ids:
-            for manpower in self.actualtask_ids:
-                actualmanpower = manpower.actual_manpower
-            if len(self.employeelineactual_ids) > actualmanpower:
-                error_msg = "Employee is set not more than Actual Manpower"
-                raise exceptions.ValidationError(error_msg)
-            elif len(self.employeelineactual_ids) < actualmanpower:
-                error_msg = "Employee is set not more less than Actual Manpower"
-                raise exceptions.ValidationError(error_msg)
+    # @api.multi
+    # @api.constrains('employeelineactual_ids')
+    # def _constraint_employee_actual_value(self):
+    #     if self.employeelineactual_ids:
+    #         for manpower in self.actualtask_ids:
+    #             actualmanpower = manpower.actual_manpower
+    #         if len(self.employeelineactual_ids) > actualmanpower:
+    #             error_msg = "Employee is set not more than Actual Manpower"
+    #             raise exceptions.ValidationError(error_msg)
+    #         elif len(self.employeelineactual_ids) < actualmanpower:
+    #             error_msg = "Employee is set not more less than Actual Manpower"
+    #             raise exceptions.ValidationError(error_msg)
+
+    @api.model
+    def create(self, vals):
+        result = super(InheritMroOrder, self).create(vals)
+        if not result.plannedpart_ids:
+            error_msg = "Planned Part Must Be filled"
+            raise exceptions.ValidationError(error_msg)
+        return result
 
     #---------------------------------------------------------------------------------------------
 
@@ -202,16 +210,16 @@ class InheritMroOrder(models.Model):
                     countLinePlannedtask += len(itemline.plannedtask_ids)
                     countLinePlannedtools += len(itemline.plannedtools_ids)
                 if countLinePlannedtask == 0:
-                    error_msg = "Tab Planned Operations Must be Filled"
+                    error_msg = "Tab Planned Operations in Tab Planning Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineEmployee == 0:
-                    error_msg = "Tab Planned Labor's Must be Filled"
+                    error_msg = "Tab Planned Labor's in Tab Planning Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLinePlannedpart == 0:
-                    error_msg = "Tab Planned Sparepart Must be Filled"
+                    error_msg = "Tab Planned Sparepart in Tab Planning Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLinePlannedtools == 0:
-                    error_msg = "Tab Planned Tools Must be Filled"
+                    error_msg = "Tab Planned Tools in Tab Planning Must be Filled"
                     raise exceptions.ValidationError(error_msg)
             if order.type_service_handling == "2":
                 countLineExternal = 0
@@ -252,19 +260,45 @@ class InheritMroOrder(models.Model):
                     countLineActualtask += len(itemLine.actualpart_ids)
                     countLineEmployee += len(itemLine.mecanictimesheet_ids)
                 if countLineActualtask == 0:
-                    error_msg = "Tab Actual Operations Must be Filled"
+                    error_msg = "Tab Actual Operations in Tab Actual Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineActualpart == 0:
-                    error_msg = "Tab Actual Sparepart Must be Filled"
+                    error_msg = "Tab Actual Sparepart in Tab Actual Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineEmployee == 0:
-                    error_msg = "Tab Labor's Must be Filled"
+                    error_msg = "Tab Mechanic Timesheet's in Tab Actual Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineActualtools == 0:
                     error_msg = "Tab Actual Tools Must be Filled"
                     raise exceptions.ValidationError(error_msg)
             super(InheritMroOrder,self).action_done()
 
+    @api.multi
+    @api.onchange('employeelineactual_ids','actualtask_ids')
+    def _onchange_actual_manpower(self):
+
+        for item in self:
+            countemployee = len(item.employeelineactual_ids)
+            for actual in self.actualtask_ids:
+                actual.write({'actual_manpower' : countemployee})
+
+    @api.multi
+    @api.onchange('actualtask_ids','mecanictimesheet_ids')
+    def _onchange_actual_hours(self):
+        for item in self:
+            if len(item.mecanictimesheet_ids) >= 1:
+                sumtotaltime = 0
+                for actual in item.actualtask_ids:
+                    for delta_time in item.mecanictimesheet_ids:
+                        if delta_time.mastertask_id == actual.mastertask_id:
+                            calculate_endtime = round(delta_time.end_time%1*0.6,2)+(delta_time.end_time-delta_time.end_time%1)
+                            calculate_starttime = round(delta_time.start_time%1*0.6,2)+(delta_time.start_time-delta_time.start_time%1)
+                            totaltime = calculate_endtime-calculate_starttime
+                            sumtotaltime += totaltime
+                    actual.write({'actual_hour':sumtotaltime})
+            if len(item.mecanictimesheet_ids) < 1:
+                for actual in item.actualtask_ids:
+                    actual.write({'actual_hour':0})
 
     @api.multi
     def action_ready(self):

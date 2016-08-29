@@ -166,8 +166,10 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='labor_description']" position="before">
+                     <separator string="Actual Mechanic"/>
                      <field name="employeelineactual_ids" attrs="{'readonly': [('state', '=', 'done')]}"
                                     context="{'tree_view_ref' : 'estate_workshop.view_workshop_employee_actual_line_tree'}"/>
+                     <separator string="Mechanic Timesheet's"/>
                      <field name="mecanictimesheet_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
                              context="{'tree_view_ref' : 'estate_workshop.view_mecanic_timesheet_tree'}"/>
                  </xpath>
