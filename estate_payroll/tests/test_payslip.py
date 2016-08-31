@@ -24,10 +24,11 @@ class TestPayslip(TransactionCase):
     def test_01_get_worked_day_lines(self):
         """ Check Worked Days """
         for payslip in self.payslip_run.slip_ids:
-            self.assertEqual(payslip.worked_days_line_ids['number_of_days'], 1,
-                             'Estate Payroll: _get_worked_day_lines did not return number of day')
-            self.assertEqual(payslip.worked_days_line_ids['code'], 'WORK300',
-                             'Estate Payroll: _get_worked_day_lines return wrong code')
+            if payslip.worked_days_line_ids['number_of_days']:
+                self.assertEqual(payslip.worked_days_line_ids['number_of_days'], 1,
+                                 'Estate Payroll: _get_worked_day_lines did not return number of day')
+                self.assertEqual(payslip.worked_days_line_ids['code'], 'WORK300',
+                                 'Estate Payroll: _get_worked_day_lines return wrong code')
 
     def test_01_get_inputs(self):
         """ Check Other Inputs """
@@ -35,8 +36,10 @@ class TestPayslip(TransactionCase):
             # Check return code
             self.assertGreaterEqual(payslip.input_line_ids['amount'], 0,
                                     'Estate Payroll: _get_inputs did not return amount')
-            self.assertIn(payslip.input_line_ids['code'], ['OT','PR'],
-                          'Estate Payroll: _get_inputs return wrong code')
+            # Support only OT, PR and ADJA/B
+            if payslip.input_line_ids['code']:
+                self.assertIn(payslip.input_line_ids['code'], ['OT', 'PR', 'ADJA', 'ADJB'],
+                              'Estate Payroll: _get_inputs return wrong code')
 
     def test_01_action_open_labour(self):
         """ Check context contains res_model estate.upkeep.labour) """

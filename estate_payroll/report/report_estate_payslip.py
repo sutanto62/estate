@@ -37,6 +37,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
             'get_line_total': self.get_line_total,
             'get_payslip_total': self.get_payslip_total,
             'number_round': self.number_round,
+            # 'get_qrcode': self.get_qrcode,
             #'get_payslip_lines': self.get_payslip_lines,
         })
 
@@ -129,6 +130,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
 
     def number_round(self, val, round):
         return float(math.ceil(val / round)) * round
+
 
 class wrapped_report_payslip(osv.AbstractModel):
     _name = 'report.estate_payroll.report_estate_payslip'

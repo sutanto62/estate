@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="0">
         <!-- Estate Upkeep -->
         <record id="estate_upkeep_1" model="estate.upkeep">
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="assistant_id" ref="hr.employee_al"/>
-            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
         <record id="estate_upkeep_2" model="estate.upkeep">
             <field name="team_id" ref="estate.team_gilles"/>
             <field name="assistant_id" ref="hr.employee_al"/>
-            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="date" eval="(datetime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -21,7 +21,7 @@
         <record id="estate_upkeep_3" model="estate.upkeep">
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="assistant_id" ref="hr.employee_al"/>
-            <field name="date" eval="time.strftime('%Y-%m-%d')"/>
+            <field name="date" eval="(datetime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -33,6 +33,7 @@
             <field name="activity_id" ref="estate.activity_134"/>
             <field name="location_ids" eval="[(6, 0, [ref('estate.block_1')])]"/>
             <field name="unit_amount">6.5</field>
+            <field name="account_id" ref="account.analytic_estate_yearplanted_2015"/>
         </record>
 
         <record id="estate_upk_act_2" model="estate.upkeep.activity">

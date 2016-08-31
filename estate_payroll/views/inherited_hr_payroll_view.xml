@@ -17,6 +17,11 @@
                 </xpath>
                 <xpath expr="//button[@name='close_payslip_run']" position="attributes">
                     <attribute name="confirm">Are you sure to close this payslip run?</attribute>
+                    <attribute name="groups">base.group_hr_manager</attribute>
+                </xpath>
+                <xpath expr="//button[@name='draft_payslip_run']" position="attributes">
+                    <attribute name="confirm">Are you sure to reopen this payslip run?</attribute>
+                    <attribute name="groups">base.group_hr_manager</attribute>
                 </xpath>
             </field>
         </record>

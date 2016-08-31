@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <!-- Estate Assistant validate Payslip Batches -->
+        <record id="hr_payroll.menu_department_tree" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('estate.group_assistant'),ref('base.group_hr_user')])]"/>
+        </record>
+
+    </data>
+</openerp>

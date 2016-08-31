@@ -1,2 +1,11 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_estate_payroll_estate_payroll,estate_payroll.estate_payroll,model_estate_payroll_estate_payroll,,1,0,0,0
+access_estate_payroll_structure,hr.payroll.structure.estate,hr_payroll.model_hr_payroll_structure,estate.group_assistant,1,0,0,0
+access_estate_contribution_register,hr.contribution.register.estate,hr_payroll.model_hr_contribution_register,estate.group_assistant,1,0,0,0
+access_estate_salary_rule_category,hr.salary.rule.category.estate,hr_payroll.model_hr_salary_rule_category,estate.group_assistant,1,0,0,0
+access_estate_salary_rule_user,hr.salary.rule.user.estate,hr_payroll.model_hr_salary_rule,estate.group_assistant,1,0,0,0
+access_estate_payslip_estate,hr.payslip.estate,hr_payroll.model_hr_payslip,estate.group_assistant,1,1,1,1
+access_estate_payslip_line_estate,hr.payslip.line.estate,hr_payroll.model_hr_payslip_line,estate.group_assistant,1,1,1,1
+access_estate_payslip_input_user_estate,hr.payslip.input.user.estate,hr_payroll.model_hr_payslip_input,estate.group_assistant,1,1,1,1
+access_estate_payslip_worked_days_estate,hr.payslip.worked_days.estate,hr_payroll.model_hr_payslip_worked_days,estate.group_assistant,1,1,1,1
+access_estate_payslip_run_estate,hr.payslip.run.estate,hr_payroll.model_hr_payslip_run,estate.group_assistant,1,1,1,1
+access_estate_rule_input_estate,hr.rule.input.estate,hr_payroll.model_hr_rule_input,estate.group_assistant,1,1,1,1

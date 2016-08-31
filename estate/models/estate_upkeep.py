@@ -43,6 +43,7 @@ class Upkeep(models.Model):
     name = fields.Char("Name", compute="_compute_upkeep_name", store=True)
     assistant_id = fields.Many2one('hr.employee', "Assistant", required=True)  # constrains: if team_id.assistant_id = true
     team_id = fields.Many2one('estate.hr.team', "Team", required=True)
+    team_member_ids = fields.One2many(related='team_id.member_ids', string='Member', store=False)
     date = fields.Date("Date", default=fields.Date.context_today, required=True)
     description = fields.Text("Description")
     estate_id = fields.Many2one('stock.location', "Estate",
@@ -297,17 +298,17 @@ class Upkeep(models.Model):
         qty_ratio = 0.00
 
         # Get unique labour's activity
-        labour_activity = self.get_labour_activity()
+        labour_activity = self.labour_line_ids.mapped('activity_id')
 
         # Calculate quantity per labour
         for activity_id in labour_activity:
             # qty_ratio = activity_qty/((att_ratio_1.lbr1)+(att_ratio_2.lbr2)+(att_ratio_x.lbrx))
 
-            activity_qty = self.activity_line_ids.search([('activity_id', '=', activity_id),
+            activity_qty = self.activity_line_ids.search([('activity_id', '=', activity_id.id),
                                                           ('upkeep_id', 'in', self.ids)], limit=1).unit_amount
 
             # get unique attendance code
-            labour_attendance = self.get_labour_attendance(activity_id)
+            labour_attendance = self.get_labour_attendance(activity_id.id)
 
             if labour_attendance:
                 attendance_amount_ratio = []
@@ -315,7 +316,7 @@ class Upkeep(models.Model):
                     # get attendance code ratio
                     att_ratio = self.env['estate.hr.attendance'].search([('id', '=', attendance_id)], limit=1).qty_ratio
                     # count labour
-                    filter_labour = [('activity_id', '=', activity_id),
+                    filter_labour = [('activity_id', '=', activity_id.id),
                                      ('attendance_code_id', '=', attendance_id),
                                      ('upkeep_id', 'in', self.ids)]
                     labour_amount = len(self.labour_line_ids.search(filter_labour))
@@ -323,9 +324,9 @@ class Upkeep(models.Model):
                     attendance_amount_ratio.append(att_ratio * labour_amount)
 
                 # calculate quantity ratio
-                qty_ratio = activity_qty/sum(attendance_amount_ratio)
+                qty_ratio = activity_qty / sum(attendance_amount_ratio)
                 # Update labour quantity
-                self.set_labour_qty(qty_ratio, activity_id)
+                self.set_labour_qty(qty_ratio, activity_id.id)
 
         return True
 
@@ -424,7 +425,7 @@ class UpkeepActivity(models.Model):
     location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id', string='Location',
                                     track_visibility='onchange')
     division_id = fields.Many2one('stock.location', compute='_compute_division')
-    unit_amount = fields.Float('Target Unit Amount', digits=dp.get_precision('Estate'), track_visibility='onchange',
+    unit_amount = fields.Float('Quantity', digits=dp.get_precision('Estate'), track_visibility='onchange',
                                help="Required to distribute work result of labour "\
                                     "based on activity and attendance ratio.") # constrains sum of labour activity quantity
     amount = fields.Float('Cost', compute='_compute_amount', store=True,
@@ -441,7 +442,9 @@ class UpkeepActivity(models.Model):
                                  help="Sum of labour's wage.")
     material_amount = fields.Float('Material Cost', compute='_compute_amount',
                                    help="Sum of material's cost.")
-    account_id = fields.Many2one('account.analytic.line', 'Analytic Account Line')
+    account_id = fields.Many2one('account.analytic.account', 'Analytic Account',
+                                 domain="[('use_estate', '=', True), ('account_type', '=', 'normal')]",
+                                 help='Select analytic account for costing by seed batch or planted year')
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     ratio_quantity_day = fields.Float('Ratio Quantity/Day', compute='_compute_ratio', store=True, group_operator="avg",
@@ -579,6 +582,17 @@ class UpkeepLabour(models.Model):
     _inherit = 'mail.thread'
     _order = 'employee_id asc'
 
+    # @api.multi
+    # def default_activity_location_ids(self):
+    #     """ Fill in surrogate field for upkeep labour location domain """
+        # for record in self:
+        #     upkeep_activity_id = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)])
+        #     print 'upkeep activity %s' % upkeep_activity_id
+        #     if not upkeep_activity_id:
+        #         return
+        #     else:
+        #         record.activity_location_ids = upkeep_activity_id.mapped('location_ids').ids
+
     name = fields.Char('Name', compute='_compute_name')
     upkeep_id = fields.Many2one('estate.upkeep', string='Upkeep', ondelete='cascade')
     upkeep_date = fields.Date(related='upkeep_id.date', string='Date', store=True)
@@ -588,12 +602,16 @@ class UpkeepLabour(models.Model):
                                   domain=[('contract_type', 'in', ['1', '2'])])
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
+    nik_number = fields.Char(related='employee_id.nik_number', store=False)
     activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal')],
                                   help='Any update will reset Block.', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
     activity_wage_method = fields.Selection('Wage Method', related='activity_id.wage_method', readonly=True)
     activity_standard_base = fields.Float(related='activity_id.qty_base')
-    location_id = fields.Many2one('estate.block.template', 'Location')
+    location_id = fields.Many2one('estate.block.template', 'Location',
+                                  domain="[('inherit_location_id.location_id', '=', division_id)]")
+    activity_location_ids = fields.Many2one('estate.block.template', 'Activity Location', store=False,
+                                            compute="_compute_activity_location_ids")
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
     division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
     attendance_code_id = fields.Many2one('estate.hr.attendance', 'Attendance', track_visibility='onchange',
@@ -631,6 +649,9 @@ class UpkeepLabour(models.Model):
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     activity_contract = fields.Boolean('Upkeep Activity Contract', compute='_compute_activity_contract',
                                        help='Contract based upkeep required no attendance')
+    cross_team_id = fields.Many2one('estate.hr.team', 'Cross Team', help='Set to define cross team upkeep labour.')
+    number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team)', compute='_compute_number_of_day_team_id',
+                                            store=True)
 
     @api.multi
     @api.depends('employee_id')
@@ -829,6 +850,25 @@ class UpkeepLabour(models.Model):
             record.activity_contract = res.contract
 
     @api.multi
+    @api.depends('activity_id')
+    def _compute_number_of_day_team_id(self):
+        """ Upkeep report by team and cross_team"""
+        for record in self:
+            if record.cross_team_id:
+                record.number_of_day_team_id = record.cross_team_id.id
+            else:
+                record.number_of_day_team_id = record.upkeep_team_id.id
+
+    @api.multi
+    @api.depends('activity_id')
+    def _compute_activity_location_ids(self):
+        """ Define location based on activity while editing record - not finished """
+
+        # for record in self:
+        #     location_ids = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)])
+        #     record.activity_location_ids = location_ids.mapped('location_ids').ids
+
+    @api.multi
     @api.onchange('upkeep_id')
     def _onchange_upkeep(self):
         """Labour should be created within Daily Upkeep and has upkeep activity set
@@ -847,27 +887,47 @@ class UpkeepLabour(models.Model):
             }
             return {'warning': warning}
 
+        # Filter employee - create only
+        # todo filter employee while edit
+        for record in self:
+            employee_ids = record.upkeep_id.team_id.member_ids.mapped('employee_id')
+            return {
+                'domain': {
+                    'employee_id': [('contract_type', 'in', ['1', '2']),
+                                    ('id', 'in', employee_ids.ids)]
+                }
+            }
+
     @api.multi
     @api.onchange('activity_id')
     def _onchange_activity_id(self):
         """
         Certain activity has wage method based on attendance code. Required to refresh attendance code when
         activity change
+        Upkeep activity has locations. Required to refresh locations domain when activity change.
         :return:
         """
         for record in self:
+            # if not record.activity_id:
+            #     return
+
+            # Reset attendance code
             record.attendance_code_id = False
 
             # Domain activity and location
             activity_ids = record.upkeep_id.activity_line_ids.mapped('activity_id')
-            location_ids = record.upkeep_id.activity_line_ids.mapped('location_ids')
+            # todo filter location while edit
+            location_ids = []
+            for activity in record.upkeep_id.activity_line_ids:
+                if record.activity_id.id == activity.activity_id.id:
+                    location_ids = activity.location_ids.ids
 
             if activity_ids or location_ids:
                 if activity_ids:
                     return {
                         'domain': {
                             'activity_id': [('id', 'in', activity_ids.ids)],
-                            'location_id': [('id', 'in', location_ids.ids)]
+                            'location_id': [('id', 'in', location_ids)]
                         }
                     }
                 else:
@@ -935,6 +995,7 @@ class UpkeepLabour(models.Model):
             fields.remove('quantity_piece_rate')
 
         return super(UpkeepLabour, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
+
 
 class UpkeepMaterial(models.Model):
     """

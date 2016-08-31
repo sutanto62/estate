@@ -4,18 +4,192 @@
         <template id="report_estate_payslip">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="batch">
-                    <t t-call="report.external_layout">
+                    <t t-call="report.internal_layout">
                         <div class="page">
+
+                            <!-- Sum Field -->
+                            <t t-set="total_day" t-value="0"/>
+                            <t t-set="total_edw" t-value="0"/>
+                            <t t-set="total_ot" t-value="0"/>
+                            <t t-set="total_pr" t-value="0"/>
+                            <t t-set="total_adj" t-value="0"/>
+                            <t t-set="total_allowance" t-value="0"/>
+                            <t t-set="total_deduction" t-value="0"/>
+                            <t t-set="total_st_wage" t-value="0"/>
+                            <t t-set="total_bpjs_tk" t-value="0"/>
+                            <t t-set="total_bpjs_k" t-value="0"/>
+                            <t t-set="total_tax" t-value="0"/>
+                            <t t-set="total_st_other" t-value="0"/>
+
                             <h2 class="text-center">Payroll <span t-esc="batch.name"/><br/>
-                                <t t-if="batch.estate_id">
-                                    <small>Estate <t t-esc="batch.estate_id.name"/></small>
-                                </t>
-                                <t t-if="batch.division_id">
-                                    <small>Division <t t-esc="batch.division_id.name"/></small>
-                                </t>
+                                <small>
+                                    <t t-if="batch.estate_id">
+                                        Estate <t t-esc="batch.estate_id.name"/>
+                                    </t>
+                                    <t t-if="batch.division_id">
+                                        Division <t t-esc="batch.division_id.name"/>
+                                    </t>
+                                    (<t t-esc="datetime.datetime.strptime(batch.date_start, '%Y-%m-%d').strftime('%d-%b-%Y')"/>
+                                    - <t t-esc="datetime.datetime.strptime(batch.date_end, '%Y-%m-%d').strftime('%d-%b-%Y')"/>)
+                                </small>
                             </h2>
+                            <table class="table table-striped table-condensed table-bordered" style="font-size:65%">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2">no.</th>
+                                        <th rowspan="2">Name</th>
+                                        <th rowspan="2">ID</th>
+                                        <th rowspan="2">Type</th>
+                                        <th colspan="5" class="text-center">Wage</th>
+                                        <th rowspan="2">Allowance</th>
+                                        <th rowspan="2">Deduction</th>
+                                        <th rowspan="2">Sub Total</th>
+                                        <th colspan="3" class="text-center">Other</th>
+                                        <th rowspan="2">Sub Total</th>
+                                        <!--<th rowspan="2" colspan="2">Signature</th>-->
+                                    </tr>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>EDW</th>
+                                        <th>OT</th>
+                                        <th>PR</th>
+                                        <th>ADJ</th>
+                                        <th>BPJS TK</th>
+                                        <th>BPJS K</th>
+                                        <th>Tax</th>
+                                    </tr>
+
+                                </thead>
+                                <t t-foreach="get_team(batch.slip_ids)" t-as="team">
+                                    <tr>
+                                        <td colspan="16">
+                                            <strong>
+                                                <t t-if="not team.name">
+                                                    Non Kemandoran
+                                                </t>
+                                                <span t-esc="team.name"/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                    <tbody>
+                                        <t t-set="amount_total_team" t-value="0"/>
+                                        <t t-set="amount_total_other" t-value="0"/>
+                                        <t t-set="no" t-value="0"/>
+                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id))"/>
+                                        <t t-set="round" t-value="1000"/>
+
+                                        <t t-foreach="get_payslip_team(team.id)" t-as="payslip">
+                                            <!-- only print payslip with done state -->
+                                            <t t-if="payslip.state== 'done'">
+                                                <tr>
+                                                    <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
+                                                    <t t-set="amount_ot" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'OT')"/>
+                                                    <t t-set="amount_pr" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'PR')"/>
+                                                    <t t-set="amount_adja" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJA')"/>
+                                                    <t t-set="amount_adjb" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJB')"/>
+                                                    <t t-set="amount_adj" t-value="amount_adja-amount_adjb"/>
+                                                    <t t-set="jhte" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JHTE')"/>
+                                                    <t t-set="jhtc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JHTC')"/>
+                                                    <t t-set="jkkc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JKKC')"/>
+                                                    <t t-set="jkmc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JKMC')"/>
+                                                    <t t-set="bpjspkwte" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'BPJSPKWTE')"/>
+                                                    <t t-set="bpjspkwtc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'BPJSPKWTC')"/>
+                                                    <t t-set="amount_bpjs_labour" t-value="jhte+jhtc+jkkc+jkmc"/>
+                                                    <t t-set="amount_bpjs_health" t-value="bpjspkwte+bpjspkwtc"/>
+                                                    <t t-set="amount_allowance" t-value="0"/> <!-- no allowance define yet -->
+                                                    <t t-set="amount_deduction" t-value="jhte+bpjspkwte"/>
+                                                    <t t-set="amount_total" t-value="(amount_edw+amount_ot+amount_pr+amount_adj)-amount_deduction"/>
+                                                    <t t-set="amount_sub_total_other" t-value="amount_bpjs_labour+amount_bpjs_health"/>
+                                                    <t t-set="amount_total_team" t-value="amount_total_team+amount_total"/>
+                                                    <t t-set="amount_total_other" t-value="amount_total_other+amount_sub_total_other"/>
+                                                    <t t-set="no" t-value="no+1"/>
+
+
+                                                    <td><t t-esc="no"/></td>
+                                                    <td><span t-field="payslip.employee_id.name"/></td>
+                                                    <td><span t-field="payslip.employee_id.nik_number"/></td>
+                                                    <td><span t-field="payslip.employee_id.contract_type"/>/<span t-field="payslip.employee_id.contract_period"/></td>
+                                                    <td class="text-right"><span t-field="payslip.worked_days_line_ids[0].number_of_days"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_edw)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_ot)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_pr)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_adj)"/></td>
+                                                    <td class="text-right"></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_deduction)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_bpjs_labour)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_bpjs_health   )"/></td>
+                                                    <td class="text-right">0</td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_sub_total_other)"/></td>
+
+                                                    <!-- Sum -->
+                                                    <t t-set="total_day" t-value="total_day + payslip.worked_days_line_ids[0].number_of_days"/>
+                                                    <t t-set="total_edw" t-value="total_edw + amount_edw"/>
+                                                    <t t-set="total_ot" t-value="total_ot + amount_ot"/>
+                                                    <t t-set="total_pr" t-value="total_pr + amount_pr"/>
+                                                    <t t-set="total_adj" t-value="total_adj + amount_adj"/>
+                                                    <t t-set="total_allowance" t-value="total_allowance + amount_allowance"/>
+                                                    <t t-set="total_deduction" t-value="total_deduction + amount_deduction"/>
+                                                    <t t-set="total_st_wage" t-value="total_st_wage + amount_total"/>
+                                                    <t t-set="total_bpjs_tk" t-value="total_bpjs_tk + amount_bpjs_labour"/>
+                                                    <t t-set="total_bpjs_k" t-value="total_bpjs_k + amount_bpjs_health"/>
+                                                    <t t-set="total_tax" t-value="0"/>
+                                                    <t t-set="total_st_other" t-value="total_st_other + amount_sub_total_other"/>
+
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </tbody>
+                                </t>
+                                <tr>
+                                    <td colspan="4" class="text-right"><strong>Total</strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_day)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_edw)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_ot)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_pr)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_adj)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_allowance)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_deduction)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_st_wage)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_bpjs_tk)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_bpjs_k)"/></strong></td>
+                                    <td class="text-right"></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_st_other)"/></strong></td>
+                                </tr>
+                            </table>
+
+                            <table class="table table-bordered" style="font-size:65%; width: auto">
+                                <tr>
+                                    <td style="width: 120px">Dibuat Oleh</td>
+                                    <td style="width: 120px">Diperiksa Oleh</td>
+                                    <td style="width: 120px">Disetujui Oleh</td>
+                                </tr>
+                                <tr style="height: 80px">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', batch.get_qrcode(), 70, 70)"/>
+                            <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+
+                            <!-- Payslip per Team -->
+                            <p style="page-break-after:always;">  </p>
                             <t t-foreach="get_team(batch.slip_ids)" t-as="team">
-                                <t t-if="team.name==''">
+                                <h2 class="text-center">Payroll <span t-esc="batch.name"/><br/>
+                                    <t t-if="batch.estate_id">
+                                        <small>Estate <t t-esc="batch.estate_id.name"/></small>
+                                    </t>
+                                    <t t-if="batch.division_id">
+                                        <small>Division <t t-esc="batch.division_id.name"/></small>
+                                    </t>
+                                </h2>
+                                <t t-if="not team.name">
                                     <h3>Non Kemandoran</h3>
                                 </t>
                                 <h3 t-esc="team.name"/>
@@ -26,7 +200,7 @@
                                             <th rowspan="2">Name</th>
                                             <th rowspan="2">ID</th>
                                             <th rowspan="2">Type</th>
-                                            <th colspan="4" class="text-center">Wage</th>
+                                            <th colspan="5" class="text-center">Wage</th>
                                             <th rowspan="2">Allowance</th>
                                             <th rowspan="2">Deduction</th>
                                             <th rowspan="2">Sub Total</th>
@@ -39,6 +213,7 @@
                                             <th>EDW</th>
                                             <th>OT</th>
                                             <th>PR</th>
+                                            <th>ADJ</th>
                                             <th>BPJS TK</th>
                                             <th>BPJS K</th>
                                             <th>Tax</th>
@@ -59,6 +234,9 @@
                                                     <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
                                                     <t t-set="amount_ot" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'OT')"/>
                                                     <t t-set="amount_pr" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'PR')"/>
+                                                    <t t-set="amount_adja" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJA')"/>
+                                                    <t t-set="amount_adjb" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJB')"/>
+                                                    <t t-set="amount_adj" t-value="amount_adja-amount_adjb"/>
                                                     <t t-set="jhte" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JHTE')"/>
                                                     <t t-set="jhtc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JHTC')"/>
                                                     <t t-set="jkkc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JKKC')"/>
@@ -68,7 +246,7 @@
                                                     <t t-set="amount_bpjs_labour" t-value="jhte+jhtc+jkkc+jkmc"/>
                                                     <t t-set="amount_bpjs_health" t-value="bpjspkwte+bpjspkwtc"/>
                                                     <t t-set="amount_deduction" t-value="jhte+bpjspkwte"/>
-                                                    <t t-set="amount_total" t-value="(amount_edw+amount_ot+amount_pr)-amount_deduction"/>
+                                                    <t t-set="amount_total" t-value="(amount_edw+amount_ot+amount_pr+amount_adj)-amount_deduction"/>
                                                     <t t-set="amount_sub_total_other" t-value="amount_bpjs_labour+amount_bpjs_health"/>
                                                     <t t-set="amount_total_team" t-value="amount_total_team+amount_total"/>
                                                     <t t-set="amount_total_other" t-value="amount_total_other+amount_sub_total_other"/>
@@ -82,6 +260,7 @@
                                                     <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_edw)"/></td>
                                                     <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_ot)"/></td>
                                                     <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_pr)"/></td>
+                                                    <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_adj)"/></td>
                                                     <td class="text-right"></td>
                                                     <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_deduction)"/></td>
                                                     <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
@@ -104,7 +283,7 @@
                                             </t>
                                         </t>
                                         <tr>
-                                            <td colspan="10" class="text-right"><strong>Total Payslip</strong></td>
+                                            <td colspan="11" class="text-right"><strong>Total Payslip</strong></td>
                                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total_team)"/></td>
                                             <td colspan="3" class="text-right"><strong>Total Other</strong></td>
                                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total_other)"/></td>
@@ -117,6 +296,10 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', batch.get_qrcode(), 70, 70)"/>
+                                <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+                                <!-- Create break -->
+                                <p style="page-break-after:always;">  </p>
                             </t>
                         </div>
                     </t>

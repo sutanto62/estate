@@ -9,7 +9,7 @@
                 <xpath expr="//sheet" position="before">
                     <header>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,approved,payslip"/>
+                               statusbar_visible="draft,payslip"/>
                     </header>
                 </xpath>
             </field>

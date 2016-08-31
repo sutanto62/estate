@@ -11,7 +11,7 @@
 
         <record id="hr_attendance_k2" model="estate.hr.attendance">
             <field name="name">Kerja 0.5 hari</field>
-            <field name="code">K2</field>
+            <field name="code">L</field>
             <field name="unit_amount">3.5</field>
             <field name="qty_ratio">0.5</field>
         </record>
