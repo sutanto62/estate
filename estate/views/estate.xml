@@ -83,7 +83,9 @@
                             <field name="area_gis"/>
                             <field name="area_planted"/>
                             <field name="area_unplanted"/>
+                            <field name="area_infrastructure"/>
                             <field name="area_emplacement"/>
+                            <field name="area_non_company"/>
                         </group>
 
                         <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">

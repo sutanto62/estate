@@ -86,13 +86,18 @@ class EstateBlockTemplate(geo_model.GeoModel):
     assistant_id = fields.Many2one('hr.employee', "Assistant", ondelete="restrict")
     # batch_id = fields.Many2one('estate.nursery.batch', "Seed Source", required=False, ondelete="restrict",
     #                            help='Use batch for nursery block only.')
-    area_gis = fields.Float("GIS Area (ha)", digits=(18, 6), help="Closing block area.")
+    area_gis = fields.Float("GIS Area (ha)", digits=(18, 6), help="Area registered at Izin Lokasi - based on GIS.")
     area_planted = fields.Float("Planted Area (ha)", digits=(18, 6),
-                                help="Calculated based on stand per hectare.")
+                                help="Area which has been planted excluded infrastructure and emplacement.")
+    area_infrastructure = fields.Float("Infrastructure Area (ha)", digits=(18, 6),
+                                    help="Area for road.")
     area_emplacement = fields.Float("Emplacement Area (ha)", digits=(18, 6),
                                     help="Area for office and housing.")
     area_unplanted = fields.Float("Unplanted Area (ha)", digits=(18, 6),
-                                  help="GIS Area minus Planted area.")
+                                  help="Area which could be planted or not yet planted excluded infrastructure and"
+                                       "emplacement")
+    area_non_company = fields.Float("Non GRTT (ha)",  digits=(18, 6),
+                                    help="Area which not belong to company but included in Izin Lokasi.")
     qty_sph_standard = fields.Integer(compute="_get_stand_hectare", string="Standard stand per hectare",
                                       store=True, help="Average stand per hectare by topography.")
     qty_sph_do = fields.Integer(compute="_get_stand_hectare", string="Stand per hectare",
