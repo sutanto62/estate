@@ -83,7 +83,6 @@
                                 <page string="BPB List">
                                         <field name="request_ids" string="Information For BPB"
                                                attrs="{
-                                        'required' : [('state', '=', 'confirmed')],
                                         'readonly':[('state','=','done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_request_planting',
                                                 'default_seeddo_id': id}"/>
@@ -99,7 +98,6 @@
 
                                  <page string="Tranportir Activity">
                                         <field name="activityline_ids" attrs="{
-                                        'required' : [('state', '=', 'validate1')],
                                         'readonly' : [('state', '=','done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_activityline'}"/>
                                     <group class="oe_subtotal_footer oe_right">
@@ -118,7 +116,6 @@
                                 <page name='detail_transportir' string="Detail Transportir">
                                         <field name="dotransportir_ids"
                                                attrs="{
-                                        'required' : [('state', '=', 'confirmed')],
                                         'readonly' : [('state', '=', 'done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_dotransportir'}"/>
                                 </page>

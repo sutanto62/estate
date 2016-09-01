@@ -74,6 +74,22 @@ class Planting(models.Model):
     @api.one
     def action_confirmed(self):
         """Set Planting state to Confirmed."""
+        countLineActivity = 0
+        countLineVehicle = 0
+        countLineRequest = 0
+        for itemline in self:
+            countLineRequest += len(itemline.request_ids)
+            countLineActivity += len(itemline.activityline_ids)
+            countLineVehicle += len(itemline.dotransportir_ids)
+            if countLineActivity == 0:
+                error_msg = "Tab BPB List Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if countLineActivity == 0:
+                error_msg = "Tab Activity Transportir Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if countLineVehicle == 0:
+                error_msg = "Tab Detail Transportir Must be Filled"
+                raise exceptions.ValidationError(error_msg)
         serial = self.env['estate.nursery.request'].search_count([]) + 1
         self.write({'name':"SPB %d" %serial})
         self.state = 'confirmed'

@@ -40,11 +40,37 @@ class InheritSPB(models.Model):
             for vehicletimesheet in self.timesheet_ids:
                 date = vehicletimesheet.date_activity_transport
             if date > self.date_request:
-                error_msg = "Date Request not more than \"%s\" in Date move" % self.date_request
+                error_msg = "Date Vehicle Timesheet not more than \"%s\" in Date Request" % self.date_request
                 raise exceptions.ValidationError(error_msg)
             elif date < self.date_request:
-                error_msg = "Date Request must be same \"%s\" in Date move" % self.date_request
+                error_msg = "Date Vehicle Timesheet must be same \"%s\" in Date Request" % self.date_request
                 raise exceptions.ValidationError(error_msg)
+
+    @api.one
+    def action_approved1(self):
+        """Approved planting is validate 1."""
+        countLineActivity = 0
+        countLineVehicle = 0
+        countLineTimesheet = 0
+        countLineRequest = 0
+        for itemline in self:
+            countLineRequest += len(itemline.request_ids)
+            countLineActivity += len(itemline.activityline_ids)
+            countLineTimesheet += len(itemline.timesheet_ids)
+            countLineVehicle += len(itemline.dotransportir_ids)
+            if countLineActivity == 0:
+                error_msg = "Tab BPB List Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if countLineActivity == 0:
+                error_msg = "Tab Activity Transportir Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if countLineVehicle == 0:
+                error_msg = "Tab Detail Transportir Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+            if countLineTimesheet == 0:
+                error_msg = "Tab Vehicle Timesheet Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+        super(InheritSPB,self).action_approved1()
 
     @api.multi
     @api.constrains('timesheet_ids')
