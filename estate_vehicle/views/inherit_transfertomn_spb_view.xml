@@ -27,8 +27,8 @@
                  <xpath expr="//page[@name='detail_transportir']" position="after">
                      <page string="Vehicle Timesheet">
                          <tree>
-                             <field name="timesheet_ids" track_visibility="onchange" attrs="{'required':['|',('state','=','validate1'),('state','=','validate2')],
-                                    'readonly': [('state','!=','validate2')]}"
+                             <field name="timesheet_ids" track_visibility="onchange" attrs="{'required':['|',('state','=','validate1')],
+                                    'readonly': [('state','!=','validate1')]}"
                                     context="{'tree_view_ref' : 'estate_vehicle.view_spb_timesheet_tree',
                                            'default_dc_type' : 1}"/>
                          </tree>
