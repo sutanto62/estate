@@ -178,12 +178,13 @@ class Planting(models.Model):
             if countRequest == 0 :
                 error_msg = "Tab Request Must be filled"
                 raise exceptions.ValidationError(error_msg)
-            if countDotranport == 0 :
-                error_msg = "Tab Detail Transportir Must be filled"
-                raise exceptions.ValidationError(error_msg)
             if countActivity == 0 :
                 error_msg = "Tab Transportir Activity Must be filled"
                 raise exceptions.ValidationError(error_msg)
+            if countDotranport == 0 :
+                error_msg = "Tab Detail Transportir Must be filled"
+                raise exceptions.ValidationError(error_msg)
+
 
 class TransportirDetail(models.Model):
 

@@ -99,8 +99,8 @@
 
                                  <page string="Tranportir Activity">
                                         <field name="activityline_ids" attrs="{
-                                        'required' : [('state', '=', 'confirmed')],
-                                        'readonly' : [('state', '!=','validate1')]}"
+                                        'required' : [('state', '=', 'validate1')],
+                                        'readonly' : [('state', '=','done')]}"
                                                 context="{'tree_view_ref' : 'estate_nursery.view_tree_activityline'}"/>
                                     <group class="oe_subtotal_footer oe_right">
                                         <field name="expense" widget="monetary" readonly="1"
