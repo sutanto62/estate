@@ -208,6 +208,7 @@ class MecanicTimesheets(models.Model):
     timesheet_id = fields.Many2one('estate.timesheet.activity.transport',ondelete='cascade',required=True)
     asset_id = fields.Many2one('asset.asset')
     task_id = fields.Many2one('mro.task')
+    contract_key = fields.Boolean('Contract Active')
     key = fields.Integer()
 
     #onchange
@@ -225,11 +226,26 @@ class MecanicTimesheets(models.Model):
                     }
                 }
 
-    #onchange
+    @api.multi
+    @api.onchange('contract_key','employee_id')
+    def _onchange_contract_key(self):
+        if self:
+            for item in self:
+                if item.employee_id:
+                    employee = item.env['hr.employee'].search([('id','=',item.employee_id.id)])
+                    contract = item.env['hr.contract'].search([('employee_id.id','=',employee[0].id)])
+                    for employeecontract in contract:
+                        if  employeecontract.date_end != False and employeecontract.date_end <= item.date_activity_transport:
+                            self.contract_key = False
+                        else :
+                            self.contract_key = True
+
+
     @api.multi
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         arrEmployee=[]
+        #onchange Employee ID same ase employee line
         if self:
             employee = self.env['estate.workshop.employeeline.actual'].search([('mro_id','=',self.owner_id)])
             for a in employee:
@@ -296,7 +312,7 @@ class MecanicTimesheets(models.Model):
 
     @api.multi
     @api.onchange('vehicle_id','asset_id')
-    def _onchange_vehciel_id(self):
+    def _onchange_vehicle_id(self):
         if self:
             self.vehicle_id = self.asset_id.fleet_id
 

@@ -177,13 +177,13 @@ class InheritMroOrder(models.Model):
     #             error_msg = "Employee is set not more less than Actual Manpower"
     #             raise exceptions.ValidationError(error_msg)
 
-    @api.model
-    def create(self, vals):
-        result = super(InheritMroOrder, self).create(vals)
-        if not result.plannedpart_ids:
-            error_msg = "Planned Part Must Be filled"
-            raise exceptions.ValidationError(error_msg)
-        return result
+    # @api.model
+    # def create(self, vals):
+    #     result = super(InheritMroOrder, self).create(vals)
+    #     if not result.plannedpart_ids:
+    #         error_msg = "Planned Part Must Be filled"
+    #         raise exceptions.ValidationError(error_msg)
+    #     return result
 
     #---------------------------------------------------------------------------------------------
 
@@ -260,13 +260,13 @@ class InheritMroOrder(models.Model):
                     countLineActualtask += len(itemLine.actualpart_ids)
                     countLineEmployee += len(itemLine.mecanictimesheet_ids)
                 if countLineActualtask == 0:
-                    error_msg = "Tab Actual Operations in Tab Actual Must be Filled"
+                    error_msg = "Tab Actual Operations in Tab Actual Task Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineActualpart == 0:
-                    error_msg = "Tab Actual Sparepart in Tab Actual Must be Filled"
+                    error_msg = "Tab Actual Sparepart in Tab Actual Task Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineEmployee == 0:
-                    error_msg = "Tab Mechanic Timesheet's in Tab Actual Must be Filled"
+                    error_msg = "Tab Mechanic Timesheet's in Tab Actual Task Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 if countLineActualtools == 0:
                     error_msg = "Tab Actual Tools Must be Filled"

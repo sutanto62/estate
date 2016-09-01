@@ -19,7 +19,8 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','fleet','hr','estate'],
+    'depends': ['base','fleet','estate_nursery'],
+    # ,'hr','estate',
 
     # always loaded
     'data': [
@@ -38,6 +39,7 @@
         'views/estate_vehicle_master_categoryunit.xml',
         'views/view_timesheet_premi.xml',
         'views/view_summary_cost_vehicle.xml',
+        'views/inherit_transfertomn_spb_view.xml'
 
 
         # 'views/inherit_activity_typebreakdown.xml',
