@@ -182,7 +182,7 @@ class Upkeep(models.Model):
     @api.multi
     @api.constrains('labour_line_ids')
     def _check_labour_line(self):
-        """Check total unit amount of labour equal or less than upkeep unit amount
+        """Check total unit amount of labour equal or less than upkeep unit amount and Total attendance ratio should not exceed 1
         """
         for record in self:
             # End if empty
@@ -202,6 +202,14 @@ class Upkeep(models.Model):
                 # Check sum of labour quantity
                 if sum_quantity > res.unit_amount:
                     error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, res.unit_amount))
+                    raise ValidationError(error_msg)
+
+            # Labour should not worked more than 1 worked day
+            for labour in record.labour_line_ids.mapped('employee_id'):
+                domains = ([('upkeep_id', 'in', self.ids), ('employee_id', '=', labour.id)])
+                sum_attendance_code_ratio = sum(line.attendance_code_ratio for line in record.labour_line_ids.search(domains))
+                if sum_attendance_code_ratio > 1:
+                    error_msg = _("Total worked day of %s should not more than 1 worked day" % labour.name)
                     raise ValidationError(error_msg)
 
     @api.multi
@@ -580,7 +588,7 @@ class UpkeepLabour(models.Model):
     _name = 'estate.upkeep.labour'
     _description = 'Upkeep Labour'
     _inherit = 'mail.thread'
-    _order = 'employee_id asc'
+    _order = 'activity_id asc, employee_id asc'
 
     # @api.multi
     # def default_activity_location_ids(self):

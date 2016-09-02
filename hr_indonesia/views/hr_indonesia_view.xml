@@ -11,15 +11,26 @@
                     <page string="HR Indonesia" groups="base.group_hr_user">
                         <group>
                             <group string="Employee Type" name="employee_type">
+                                <field name="company_id"/>
                                 <field name="contract_type"/>
                                 <field name="contract_period"/>
+                                <field name="joindate"/>
                                 <field name="internship"/>
                                 <field name="outsource"/>
                             </group>
                             <group string="Identification" name="employee_id">
                                 <field name="nik_number"/>
-                                <field name="bpjs_number"/>
+                                <field name="bpjs_number" string="BPJS TK"/>
+                                <field name="health_insurance_number" string="BPJS K"/>
                                 <field name="npwp_number"/>
+                            </group>
+                            <group string="Other Information" name="other_information">
+                                <field name="religion_id"/>
+                                <field name="ethnic_id"/>
+                            </group>
+                            <group string="Tax" name="tax">
+                                <field name="tax_marital_id"/>
+                                <field name="tax_dependent"/>
                             </group>
                         </group>
                     </page>
