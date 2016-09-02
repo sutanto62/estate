@@ -182,7 +182,7 @@ class Upkeep(models.Model):
     @api.multi
     @api.constrains('labour_line_ids')
     def _check_labour_line(self):
-        """Check total unit amount of labour equal or less than upkeep unit amount
+        """Check total unit amount of labour equal or less than upkeep unit amount and Total attendance ratio should not exceed 1
         """
         for record in self:
             # End if empty
@@ -202,6 +202,14 @@ class Upkeep(models.Model):
                 # Check sum of labour quantity
                 if sum_quantity > res.unit_amount:
                     error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, res.unit_amount))
+                    raise ValidationError(error_msg)
+
+            # Labour should not worked more than 1 worked day
+            for labour in record.labour_line_ids.mapped('employee_id'):
+                domains = ([('upkeep_id', 'in', self.ids), ('employee_id', '=', labour.id)])
+                sum_attendance_code_ratio = sum(line.attendance_code_ratio for line in record.labour_line_ids.search(domains))
+                if sum_attendance_code_ratio > 1:
+                    error_msg = _("Total worked day of %s should not more than 1 worked day" % labour.name)
                     raise ValidationError(error_msg)
 
     @api.multi
@@ -580,7 +588,7 @@ class UpkeepLabour(models.Model):
     _name = 'estate.upkeep.labour'
     _description = 'Upkeep Labour'
     _inherit = 'mail.thread'
-    _order = 'employee_id asc'
+    _order = 'activity_id asc, employee_id asc'
 
     # @api.multi
     # def default_activity_location_ids(self):
@@ -650,7 +658,7 @@ class UpkeepLabour(models.Model):
     activity_contract = fields.Boolean('Upkeep Activity Contract', compute='_compute_activity_contract',
                                        help='Contract based upkeep required no attendance')
     cross_team_id = fields.Many2one('estate.hr.team', 'Cross Team', help='Set to define cross team upkeep labour.')
-    number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team)', compute='_compute_number_of_day_team_id',
+    number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team', compute='_compute_number_of_day_team_id',
                                             store=True)
 
     @api.multi
@@ -672,7 +680,7 @@ class UpkeepLabour(models.Model):
         """Define number of days based on attendance code and work result
 
         Standard based condition
-        1. A day work and work result > activity standard = 1 day.
+        1. A day/half day work and work result > activity standard = 1 day.
         2. A day work and work result more than half of standard = 0.5 day.
         3. A half day work and work result more than half of standard = 0.5 day.
         4. Else = 1 * attendance ratio day.
@@ -715,7 +723,11 @@ class UpkeepLabour(models.Model):
                                               limit=1)
 
         if not wage:
-            error_msg = _("No Regional Wage defined.")
+            if not self.upkeep_id.activity_line_ids:
+                # For empty activity line
+                error_msg = _('Upkeep Activity should be defined first')
+            else:
+                error_msg = _("No Regional Wage defined.")
             raise ValidationError(error_msg)
 
         # Use latest contract before upkeep date if any

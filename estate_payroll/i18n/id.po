@@ -1,0 +1,335 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * estate_payroll
+# Odoo <cayadi.sutanto@palmagroup.co.id>, 2016.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c-20160712\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-30 08:53+0000\n"
+"PO-Revision-Date: 2016-09-02 09:04+0700\n"
+"Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
+"Language-Team: palma group\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 1.8.8\n"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>Total Other</strong>"
+msgstr "<strong>Total Lain</strong>"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>Total Payslip</strong>"
+msgstr "<strong>Total Payslip</strong>"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>Total</strong>"
+msgstr "<strong>Total</strong>"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "ADJ"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Allowance"
+msgstr "Tunjangan"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_run_form
+msgid "Are you sure to close this payslip run?"
+msgstr "Apakah Anda yakin untuk menutup payroll ini?"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_run_form
+msgid "Are you sure to reopen this payslip run?"
+msgstr "Apakah Anda yakin untuk membuka kembali payroll ini?"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "BPJS K"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "BPJS TK"
+msgstr ""
+
+#. module: estate_payroll
+#: selection:hr.payslip.run,type:0
+msgid "By Division"
+msgstr "Per Divisi"
+
+#. module: estate_payroll
+#: selection:hr.payslip.run,type:0
+msgid "By Employee"
+msgstr "Per Karyawan"
+
+#. module: estate_payroll
+#: selection:hr.payslip.run,type:0
+msgid "By Estate"
+msgstr "Per Kebun"
+
+#. module: estate_payroll
+#: model:ir.model.fields,help:estate_payroll.field_hr_payslip_run_type
+msgid "By Estate/Division create Payslip Batches for Estate."
+msgstr "Payroll berdasar Per Kebun/Divisi."
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_contract_type_id
+msgid "Contract Type"
+msgstr "Tipe Kontrak"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Day"
+msgstr "Hari"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Deduction"
+msgstr "Potongan"
+
+#. module: estate_payroll
+#: model:ir.model.fields,help:estate_payroll.field_estate_hr_team_payroll_location_id
+#: model:ir.model.fields,help:estate_payroll.field_hr_payslip_payroll_location_id
+msgid "Define location of payroll disbursement"
+msgstr "Lokasi pembagian payroll"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Dibuat Oleh"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Diperiksa Oleh"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Disetujui Oleh"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_report_estate_payroll_report_estate_payslip_display_name
+msgid "Display Name"
+msgstr "Nama Yang Ditampilkan"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_division_id
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Division"
+msgstr "Divisi"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "EDW"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.model.fields,help:estate_payroll.field_hr_payslip_team_id
+msgid "Employee's original Team"
+msgstr "Kemandoran Karyawan"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_estate_id
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Estate"
+msgstr "Kebun"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:57
+#, python-format
+msgid "Estate Upkeep Working Days paid at 100%"
+msgstr "Hari kerja dibayar"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:55
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:89
+#, python-format
+msgid "Estate Worker"
+msgstr "Tenaga Kerja"
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_hr_payslip_employees
+msgid "Generate payslips for all selected employees"
+msgstr "Buat payslip untuk seluruh karyawan yang dipilih"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_report_estate_payroll_report_estate_payslip_id
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "ID"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_report_estate_payroll_report_estate_payslip___last_update
+msgid "Last Modified on"
+msgstr "Dimodifikasi pada"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Name"
+msgstr "Nama"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Non Kemandoran"
+msgstr ""
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:99
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+#, python-format
+msgid "OT"
+msgstr "L"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Other"
+msgstr "Lainnya"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:98
+#, python-format
+msgid "Overtime"
+msgstr "Lembur"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:110
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+#, python-format
+msgid "PR"
+msgstr "Target"
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_hr_payslip
+msgid "Pay Slip"
+msgstr "Payslip"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Payroll"
+msgstr "Payroll"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_estate_hr_team_payroll_location_id
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_payroll_location_id
+msgid "Payroll Location"
+msgstr "Lokasi Payroll"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_type
+msgid "Payroll Type"
+msgstr "Tipe Payroll"
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_hr_payslip_run
+msgid "Payslip Batches"
+msgstr "Payroll"
+
+#. module: estate_payroll
+#: model:ir.actions.report.xml,name:estate_payroll.action_report_payslip
+msgid "Payslip List"
+msgstr "Daftar Payslip"
+
+#. module: estate_payroll
+#: model:ir.actions.act_window,name:estate_payroll.action_list_upkeep_labour
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_upkeep_labour_count
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_form
+msgid "Payslip Upkeep Labour Details"
+msgstr "Detil Penggunaan HK Payslip"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:109
+#, python-format
+msgid "Piece Rate"
+msgstr "Target"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Signature"
+msgstr "Tanda Tangan"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Sub Total"
+msgstr ""
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip_run.py:139
+#, python-format
+msgid "System print-out Payroll report: %s;%s;%s;%s"
+msgstr "Cetak laporan payroll: %s;%s;%s;%s"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Tax"
+msgstr "Pajak"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_team_id
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_view_hr_payslip_filter
+msgid "Team"
+msgstr "Kemandoran"
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_team_ids
+msgid "Team ids"
+msgstr "Kemandoran"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Type"
+msgstr "Tipe"
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_estate_upkeep
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payroll_payslip_employees
+msgid "Upkeep"
+msgstr "Kegiatan"
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_estate_upkeep_labour
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_form
+msgid "Upkeep Labour"
+msgstr "Penggunaan HK"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:134
+#, python-format
+msgid "Upkeep Labour Records %s"
+msgstr "Data Penggunaan HK %s"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Wage"
+msgstr "Upah"
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip_run.py:126
+#, python-format
+msgid "You cannot delete closed Payslip."
+msgstr "Anda tidak boleh menghapus payslip final."
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_estate_hr_team
+msgid "estate.hr.team"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "no."
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.model,name:estate_payroll.model_report_estate_payroll_report_estate_payslip
+msgid "report.estate_payroll.report_estate_payslip"
+msgstr ""

@@ -2,6 +2,53 @@
 <openerp>
     <data>
         <!-- View Search -->
+        <record id="block_template_view_search" model="ir.ui.view">
+            <field name="name">Block Template Search</field>
+            <field name="model">estate.block.template</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="inherit_location_id" string="Name"/>
+                    <field name="location_id" string="Parent Block"/>
+                    <filter name="filter_planted" string="Planted Block"
+                            domain="[('estate_location_type', '=', 'planted')]"/>
+                    <filter name="filter_nursery" string="Nursery Block"
+                            domain="[('estate_location_type', '=', 'nursery')]"/>
+                    <group string="Group By">
+                        <filter name="by_analytic" string="Analytic Account"
+                                context="{'group_by': 'account_id'}"/>
+                        <filter name="by_company" string="Company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter name="by_smallholder" string="Coorporative"
+                                context="{'group_by': 'is_smallholder'}"/>
+                        <filter name="by_closing" string="Closing Block"
+                                context="{'group_by': 'closing'}"/>
+                    </group>
+                    <!--
+                    <filter name="filter_block" string="Correction"
+                            domain="[('state', '=', 'correction')]"/>
+                    <filter name="filter_division" string="Payslip"
+                            domain="[('state', '=', 'payslip')]"/>
+                    <filter name="filter_estate" icon="terp-go-month" string="This Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                            -->
+                    <!--
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+
+                    <group string="Group By">
+                        <filter name="by_activity" string="Activity"
+                                context="{'group_by': 'activity_id'}"/>
+                        <filter name="by_product" string="Material"
+                                context="{'group_by': 'product_id'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'upkeep_date'}"/>
+                    </group>
+                    -->
+                </search>
+            </field>
+        </record>
+
         <record id="search_view_estate_parameter" model="ir.ui.view">
             <field name="name">Estate Parameter</field>
             <field name="model">estate.parameter.value</field>
@@ -40,10 +87,12 @@
                       default_order="complete_name"
                       colors="blue:estate_location_level in ['1','2']">
                     <field name="complete_name"/>
-                    <field name="estate_location_type"/>
-                    <field name="estate_location_level"/>
-                    <field name="usage"/>
+                    <field name="area_gis"/>
+                    <field name="area_planted"/>
+                    <field name="estate_location_type" string="Type"/>
+                    <field name="estate_location_level" string="Level"/>
                     <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="usage" invisible="True"/>
                 </tree>
             </field>
         </record>
@@ -159,18 +208,18 @@
         <menuitem id="estate_config_menu" name="Configuration"
                   sequence="100"
                   parent="main_estate_menu"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
         <menuitem id="estate_blocking_menu"
                   sequence="20"
                   name="Estate"
                   parent="estate_config_menu"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi"/>
 
         <menuitem id="estate_estate_block_menu" name="Block Structure"
                   parent="estate_blocking_menu"
                   action="action_list_block_estate"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi"/>
 
         <!-- restructure to Estate menu
         <menuitem id="estate_master_menu" name="Configuration"
@@ -181,17 +230,17 @@
         <menuitem id="estate_account_menu" name="Account"
                   sequence="30"
                   parent="estate_config_menu"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi"/>
 
         <menuitem id="estate_account_analytic_menu" name="Analytic Journal Entries"
                   parent="estate_account_menu"
                   action="action_list_analytic"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi"/>
 
         <menuitem id="estate_parameter_menu" name="Block Parameter"
                   parent="estate_blocking_menu"
                   action="action_list_parameter_config"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi"/>
 
         <!-- Estate Reporting -->
         <menuitem id="menu_estate_reporting" name="Reports" parent="main_estate_menu" sequence="90"/>
