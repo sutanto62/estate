@@ -54,6 +54,10 @@
         'demo/estate.activity.csv',
         'demo/estate_job_employee.xml',
         'demo/estate_workshop_code.xml',
+        'demo/product.category.csv',
+        'demo/product.template.csv',
+        'demo/asset.asset.csv'
+
 
     ],
 }

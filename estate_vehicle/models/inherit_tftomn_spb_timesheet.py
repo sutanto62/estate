@@ -27,7 +27,7 @@ class InheritSPB(models.Model):
             for bpb in self.request_ids:
                 qty_seed += bpb.total_qty_pokok
             if qty_unit > qty_seed:
-                error_msg = "Qty Unit not more than \"%s\" in qty total BPB" % qty_seed
+                error_msg = "Qty Unit not more than \"%s\" in Field Total Quantity Tab BPB List" % qty_seed
                 raise exceptions.ValidationError(error_msg)
         return True
 
@@ -165,6 +165,8 @@ class SpbTimesheetVehicle(models.Model):
                             'end_location':[('id','in',arrEndLocation)]
                         }
                 }
+
+
 
 
 class InheritTransfertoMN(models.Model):
