@@ -56,6 +56,34 @@
             </field>
         </record>
 
+        <record id="hr_indonesia_location_view_tree" model="ir.ui.view">
+            <field name="name">hr_indonesia.location.tree</field>
+            <field name="model">hr_indonesia.location</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="complete_name"/>
+                    <field name="code"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_indonesia_location_view_form" model="ir.ui.view">
+            <field name="name">hr_indonesia.location.form</field>
+            <field name="model">hr_indonesia.location</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                        <field name="type"/>
+                        <field name="comment"/>
+                        <field name="parent_id"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
         <!-- todo error while installed -->
         <!--
         <record id="action_work_schedule" model="ir.actions.act_window" >
@@ -66,5 +94,43 @@
 
         <menuitem id="work_schedule" parent="hr.menu_open_view_attendance_reason_new_config" name="Work Schedule" action="action_work_schedule" groups="base.group_hr_attendance"/>
         -->
+        <record id="action_list_hr_religion" model="ir.actions.act_window" >
+            <field name="name">Religion</field>
+            <field name="res_model">hr_indonesia.religion</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_list_hr_ethnic" model="ir.actions.act_window" >
+            <field name="name">Ethnic</field>
+            <field name="res_model">hr_indonesia.ethnic</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_list_hr_tax_marital" model="ir.actions.act_window" >
+            <field name="name">Tax Marital</field>
+            <field name="res_model">hr_indonesia.tax_marital</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="action_list_hr_location" model="ir.actions.act_window" >
+            <field name="name">Placement Location</field>
+            <field name="res_model">hr_indonesia.location</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_hr_indonesia_configuration_indonesia" name="Configuration ID" parent="hr.menu_hr_root"
+                  sequence="110" groups="base.group_configuration,base.group_hr_manager"/>
+        <menuitem id="menu_hr_indonesia_configuration_religion" name="Religion" parent="menu_hr_indonesia_configuration_indonesia"
+                  action="action_list_hr_religion"
+                  sequence="10" groups="base.group_configuration,base.group_hr_manager"/>
+        <menuitem id="menu_hr_indonesia_configuration_ethnic" name="Ethnic" parent="menu_hr_indonesia_configuration_indonesia"
+                  action="action_list_hr_ethnic"
+                  sequence="20" groups="base.group_configuration,base.group_hr_manager"/>
+        <menuitem id="menu_hr_indonesia_configuration_tax_marital" name="Tax Marital" parent="menu_hr_indonesia_configuration_indonesia"
+                  action="action_list_hr_tax_marital"
+                  sequence="30" groups="base.group_configuration,base.group_hr_manager"/>
+        <menuitem id="menu_hr_indonesia_configuration_location" name="Placement Location" parent="menu_hr_indonesia_configuration_indonesia"
+                  action="action_list_hr_location"
+                  sequence="30" groups="base.group_configuration,base.group_hr_manager"/>
     </data>
 </openerp>

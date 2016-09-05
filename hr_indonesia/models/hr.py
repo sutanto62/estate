@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields
+from openerp import models, fields, api, osv, _
+
 
 class Employee(models.Model):
     """Extend HR Employee to accommodate Indonesian Workforce.
@@ -31,6 +32,7 @@ class Employee(models.Model):
     ethnic_id = fields.Many2one('hr_indonesia.ethnic', "Ethnic")
     tax_marital_id = fields.Many2one('hr_indonesia.tax_marital', 'Tax Marital')
     tax_dependent = fields.Integer('Dependent')
+    location_id = fields.Many2one('hr_indonesia.location', 'Placement Location')
 
     def _compute_age(self):
         for record in self:
@@ -61,3 +63,40 @@ class TaxMarital(models.Model):
     name = fields.Char('Tax Marital')
     code = fields.Char('Code', help='Displayed at report.')
     sequence = fields.Integer('Sequence')
+
+
+class Location(models.Model):
+    """ Do not used stock location.
+    """
+    _name = 'hr_indonesia.location'
+    _parent_store = True
+    _parent_name = 'parent_id'
+    _order = 'complete_name'
+    _rec_name = 'name'  # complete_name too long for upkeep entry
+
+    _description = 'Placement Location'
+
+    name = fields.Char('Location Name', required=True)
+    complete_name = fields.Char("Complete Name", compute="_complete_name", store=True)
+    code = fields.Char('Code', help='Write location abbreviation')
+    type = fields.Selection([('view', "View"),
+                             ('normal', "Normal")], "Type",
+                            required=True,
+                            help="Select View to create group of location.")
+    comment = fields.Text("Additional Information")
+    sequence = fields.Integer("Sequence", help="Keep location in order.") # todo set as parent_left at create
+    parent_id = fields.Many2one('hr_indonesia.location', "Parent Category", ondelete='restrict')
+    parent_left = fields.Integer("Parent Left",	index=True)
+    parent_right = fields.Integer("Parent Right", index=True)
+    child_ids = fields.One2many('hr_indonesia.location', 'parent_id', "Child Locations")
+
+    @api.multi
+    @api.depends('name', 'parent_id')
+    def _complete_name(self):
+        """ Forms complete name of location from parent category to child category.
+        """
+        for record in self:
+            if record.parent_id:
+                record.complete_name = record.parent_id.complete_name + ' / ' + record.name
+            else:
+                record.complete_name = record.name

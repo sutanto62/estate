@@ -3,3 +3,4 @@ access_hr_indonesia_calendar_condition,hr_indonesia.calendar_condition,model_hr_
 access_hr_indonesia_religion,hr_indonesia.religion,model_hr_indonesia_religion,base.group_hr_user,1,1,1,0
 access_hr_indonesia_ethnic,hr_indonesia.ethnic,model_hr_indonesia_ethnic,base.group_hr_user,1,1,1,0
 access_hr_indonesia_tax_marital,hr_indonesia.tax_marital,model_hr_indonesia_tax_marital,base.group_hr_user,1,1,1,0
+access_hr_indonesia_location,hr_indonesia.location,model_hr_indonesia_location,base.group_hr_user,1,1,1,
