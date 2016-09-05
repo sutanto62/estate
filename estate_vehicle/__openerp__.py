@@ -39,8 +39,7 @@
         'views/estate_vehicle_master_categoryunit.xml',
         'views/view_timesheet_premi.xml',
         'views/view_summary_cost_vehicle.xml',
-        'views/inherit_transfertomn_spb_view.xml'
-
+        'views/inherit_transfertomn_spb_view.xml',
 
         # 'views/inherit_activity_typebreakdown.xml',
 
@@ -56,5 +55,7 @@
         'demo/master_category_unit.xml',
         'demo/hr_job.xml',
         'demo/master_formula_activity_vehicle.xml',
+        'demo/fleet.vehicle.model.brand.csv',
+        'demo/fleet.vehicle.model.csv',
     ],
 }

@@ -1,0 +1,5 @@
+id,create_uid,create_date,name,sequence,qty,product_tmpl_id,write_date,write_uid,code,weight,ean,ul_qty,ul,rows,ul_container
+product.packaging_1,1,2016-09-01 06:32:39,product.product_product_pg_01_a1_0001,1,200,71,2016-09-01 06:32:39,1,[NULL],15,[NULL],10,product.ul_2,2,product.ul_1
+product.packaging_2,1,2016-09-01 06:32:39,product.product_product_pg_01_a1_0002,1,250,72,2016-09-01 06:32:39,1,[NULL],15,[NULL],10,product.ul_3,2,product.ul_1
+product.packaging_3,1,2016-09-01 06:32:39,product.product_product_pg_01_a1_0003,1,200,71,2016-09-01 06:32:39,1,[NULL],15,[NULL],10,product.ul_2,2,product.ul_1
+product.packaging_4,1,2016-09-01 06:32:39,product.product_product_pg_01_a1_0004,1,250,72,2016-09-01 06:32:39,1,[NULL],15,[NULL],10,product.ul_3,2,product.ul_1

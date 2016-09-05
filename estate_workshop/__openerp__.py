@@ -54,6 +54,14 @@
         'demo/estate.activity.csv',
         'demo/estate_job_employee.xml',
         'demo/estate_workshop_code.xml',
+        'demo/fleet.vehicle.csv',
+        'demo/product.uom.csv',
+        # 'demo/product.ul.csv',
+        'demo/product.category.csv',
+        'demo/product.template.csv',
+        # 'demo/product.packaging.csv',
+        'demo/asset.asset.csv'
+
 
     ],
 }
