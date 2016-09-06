@@ -137,7 +137,7 @@
         <menuitem id="estate_activity" name="Activities"
                   parent="estate_blocking_menu"
                   action="action_list_activity_config"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi"/>
 
         </data>
 </openerp>

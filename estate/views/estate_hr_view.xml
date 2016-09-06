@@ -128,22 +128,22 @@
                   sequence="40"
                   name="Labour"
                   parent="estate_config_menu"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
         <menuitem id="estate_estate_team_menu" name="Estate Team"
                   parent="estate_labour_menu"
                   action="action_list_estate_team"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
         <menuitem id="estate_estate_attendance_menu" name="Estate Attendance"
                   parent="estate_labour_menu"
                   action="action_list_attendance_code"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
         <menuitem id="estate_estate_wage" name="Regional Wage"
                   parent="estate_labour_menu"
                   action="estate_wage_action"
-                  groups="base.group_no_one"/>
+                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
 
 

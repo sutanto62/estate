@@ -6,68 +6,133 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-02 09:06+0700\n"
-"PO-Revision-Date: 2016-09-02 09:11+0700\n"
+"POT-Creation-Date: 2016-09-08 10:02+0700\n"
+"PO-Revision-Date: 2016-09-08 10:08+0700\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.8\n"
-"Last-Translator: \n"
-"Language: id\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #. module: hr_indonesia
-#: help:hr.employee,contract_period:0
-msgid "*Monthly, Karyawan Bulanan, *Daily, Karyawan Harian."
-msgstr "*Bulanan, Karyawan Bulanan, *Harian, Karyawan Harian."
+#: model:ir.model.fields,help:hr_indonesia.field_hr_employee_contract_period
+msgid "* Monthly, Karyawan Bulanan, * Daily, Karyawan Harian."
+msgstr "* Bulanan, Karyawan Bulanan, * Harian, Karyawan Harian."
 
 #. module: hr_indonesia
-#: help:hr.employee,contract_type:0
+#: model:ir.model.fields,help:hr_indonesia.field_hr_employee_contract_type
 msgid ""
-"*PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, *PKWT, Perjanjian Kerja Waktu "
-"Tertentu."
+"* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja "
+"Waktu Tertentu."
 msgstr ""
 
 #. module: hr_indonesia
-#: help:hr.employee,outsource:0
+#: model:ir.model.fields,help:hr_indonesia.field_hr_indonesia_calendar_condition_time
+msgid "* negative value, early-in* positive value, late-out."
+msgstr ""
+"* nilai negatif, masuk lebih awal * nilai positif, pulang lebih lambat."
+
+#. module: hr_indonesia
+#: model:ir.model.fields,help:hr_indonesia.field_hr_employee_outsource
 msgid "Activate to represent employee as Outsource."
 msgstr "Aktikfan untuk menandakan karyawan adalah borongan."
 
 #. module: hr_indonesia
-#: help:hr.employee,internship:0
+#: model:ir.model.fields,help:hr_indonesia.field_hr_employee_internship
 msgid "Activate to represent internship employee."
 msgstr "Aktifkan untuk menandakan karyawan magang."
 
 #. module: hr_indonesia
-#: field:hr.employee,active:0
-msgid "Active"
-msgstr "Aktif"
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_comment
+msgid "Additional Information"
+msgstr "Keterangan"
 
 #. module: hr_indonesia
-#: field:hr.employee,bpjs_number:0
+#: model:hr.job,name:hr_indonesia.job_estate_agronomy
+msgid "Agronomy"
+msgstr "Agronomi"
+
+#. module: hr_indonesia
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
+msgid "BPJS K"
+msgstr ""
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_bpjs_number
 msgid "BPJS Number"
 msgstr "Nomor BPJS"
 
 #. module: hr_indonesia
-#: field:hr.employee,code:0
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
+msgid "BPJS TK"
+msgstr ""
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_resource_calendar_condition_ids
+msgid "Calendar Condition"
+msgstr "Kondisi Kalender"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_child_ids
+msgid "Child Locations"
+msgstr ""
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_code
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_code
 msgid "Code"
 msgstr "Kode"
 
 #. module: hr_indonesia
-#: field:hr.employee,contract_period:0
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_complete_name
+msgid "Complete Name"
+msgstr "Nama Lengkap"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_name
+msgid "Condition"
+msgstr "Kondisi"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_type
+msgid "Condition Type"
+msgstr "Tipe Kondisi"
+
+#. module: hr_indonesia
+#: model:ir.ui.menu,name:hr_indonesia.menu_hr_indonesia_configuration_indonesia
+msgid "Configuration ID"
+msgstr "ID Konfigurasi"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_contract_period
 msgid "Contract Period"
 msgstr "Periode Kontrak"
 
 #. module: hr_indonesia
-#: field:hr.employee,contract_type:0
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_contract_type
 msgid "Contract Type"
 msgstr "Tipe Kontrak"
 
 #. module: hr_indonesia
-#: field:hr.employee,company_id:0
-msgid "Cost Center"
-msgstr "Pembebanan"
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_create_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_create_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_create_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_create_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_create_uid
+msgid "Created by"
+msgstr "Dibuat oleh"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_create_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_create_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_create_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_create_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_create_date
+msgid "Created on"
+msgstr "Dibuat pada"
 
 #. module: hr_indonesia
 #: selection:hr.employee,contract_period:0
@@ -75,19 +140,28 @@ msgid "Daily"
 msgstr "Harian"
 
 #. module: hr_indonesia
-#: help:hr.employee,calendar_id:0
-msgid "Define the schedule of resource"
-msgstr "Tentukan jadwal sumber daya"
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_joindate
+msgid "Date of Join"
+msgstr "Tanggal Bergabung"
 
 #. module: hr_indonesia
-#: field:hr.employee,display_name:0
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_tax_dependent
+msgid "Dependent"
+msgstr "Tanggungan"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_display_name
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_display_name
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_display_name
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_display_name
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_display_name
 msgid "Display Name"
 msgstr "Nama yang ditampilkan"
 
 #. module: hr_indonesia
-#: field:hr.employee,time_efficiency:0
-msgid "Efficiency Factor"
-msgstr "Faktor Efisiensi"
+#: model:ir.model.fields,help:hr_indonesia.field_hr_indonesia_tax_marital_code
+msgid "Displayed at report."
+msgstr "Tampilan pada laporan."
 
 #. module: hr_indonesia
 #: model:ir.model,name:hr_indonesia.model_hr_employee
@@ -95,47 +169,134 @@ msgid "Employee"
 msgstr "Karyawan"
 
 #. module: hr_indonesia
-#: field:hr.employee,nik_number:0
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_age
+msgid "Employee Age"
+msgstr "Umur Karyawan"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_nik_number
 msgid "Employee Identity Number"
 msgstr "Nomor Induk Karyawan"
 
 #. module: hr_indonesia
-#: view:hr.employee:hr_indonesia.hr_indonesia_employee
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
 msgid "Employee Type"
 msgstr "Tipe Karyawan"
 
 #. module: hr_indonesia
-#: view:hr.employee:hr_indonesia.hr_indonesia_employee
+#: model:hr.job,name:hr_indonesia.job_estate_user
+msgid "Estate Administration"
+msgstr "Administrasi Kebun"
+
+#. module: hr_indonesia
+#: model:hr.job,name:hr_indonesia.job_estate_assistant
+msgid "Estate Assistant"
+msgstr "Asisten Kebun"
+
+#. module: hr_indonesia
+#: model:hr.job,name:hr_indonesia.job_estate_manager
+msgid "Estate Manager"
+msgstr "Kepala Kebun"
+
+#. module: hr_indonesia
+#: model:ir.actions.act_window,name:hr_indonesia.action_list_hr_ethnic
+#: model:ir.model,name:hr_indonesia.model_hr_indonesia_ethnic
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_ethnic_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_name
+#: model:ir.ui.menu,name:hr_indonesia.menu_hr_indonesia_configuration_ethnic
+msgid "Ethnic"
+msgstr "Suku"
+
+#. module: hr_indonesia
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
 msgid "HR Indonesia"
 msgstr "HR Indonesia"
 
 #. module: hr_indonesia
-#: view:hr.employee:hr_indonesia.hr_indonesia_employee
-msgid "HR Settings"
-msgstr "Pengaturan HR"
+#: model:ir.model,name:hr_indonesia.model_hr_indonesia_calendar_condition
+msgid "HR Indonesia Calendar Condition"
+msgstr "Kondisi Kalender Indonesia"
 
 #. module: hr_indonesia
-#: view:hr.employee:hr_indonesia.hr_indonesia_employee
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_health_insurance_number
+msgid "Health Insurance Number"
+msgstr "Nomor Asuransi Kesehatan"
+
+#. module: hr_indonesia
+#: model:hr.job,name:hr_indonesia.job_hr_manager
+msgid "Human Resource Manager"
+msgstr "Manager HR"
+
+#. module: hr_indonesia
+#: model:hr.job,name:hr_indonesia.job_hr_staff
+msgid "Human Resource Staff"
+msgstr "Staf HR"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_id
+msgid "ID"
+msgstr "ID"
+
+#. module: hr_indonesia
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
 msgid "Identification"
 msgstr "Identifikasi"
 
 #. module: hr_indonesia
-#: help:hr.employee,active:0
-msgid ""
-"If the active field is set to False, it will allow you to hide the resource "
-"record without removing it."
-msgstr ""
-"Bila kolom aktif di non-aktifkan, menyembunyikan karyawan tanpa menghapusnya."
-
-#. module: hr_indonesia
-#: field:hr.employee,internship:0
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_internship
 msgid "Internship"
 msgstr "Magang"
 
 #. module: hr_indonesia
-#: field:hr.employee,__last_update:0
+#: model:ir.model.fields,help:hr_indonesia.field_hr_indonesia_location_sequence
+msgid "Keep location in order."
+msgstr "Urutan lokasi"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition___last_update
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic___last_update
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location___last_update
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion___last_update
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital___last_update
 msgid "Last Modified on"
 msgstr "Dimodifikasi pada"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_write_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_write_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_write_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_write_uid
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_write_uid
+msgid "Last Updated by"
+msgstr "Terakhir update oleh"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_write_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_write_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_write_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_write_date
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_write_date
+msgid "Last Updated on"
+msgstr "Terakhir update pada"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_name
+msgid "Location Name"
+msgstr "Nama Lokasi"
+
+#. module: hr_indonesia
+#: selection:hr_indonesia.calendar_condition,type:0
+msgid "Mandatory Early In"
+msgstr "Harus Masuk Lebih Awal"
+
+#. module: hr_indonesia
+#: selection:hr_indonesia.calendar_condition,type:0
+msgid "Mandatory Early Out"
+msgstr "Harus Pulang Lebih Akhir"
 
 #. module: hr_indonesia
 #: selection:hr.employee,contract_period:0
@@ -143,17 +304,27 @@ msgid "Monthly"
 msgstr "Bulanan"
 
 #. module: hr_indonesia
-#: field:hr.employee,npwp_number:0
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_npwp_number
 msgid "NPWP Number"
 msgstr "Nomor NPWP"
 
 #. module: hr_indonesia
-#: field:hr.employee,name:0
-msgid "Name"
-msgstr "Nama"
+#: selection:hr_indonesia.location,type:0
+msgid "Normal"
+msgstr ""
 
 #. module: hr_indonesia
-#: field:hr.employee,outsource:0
+#: selection:hr_indonesia.calendar_condition,type:0
+msgid "Optional In/Out"
+msgstr ""
+
+#. module: hr_indonesia
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
+msgid "Other Information"
+msgstr "Keterangan"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_outsource
 msgid "Outsource employee"
 msgstr "Karyawan borongan"
 
@@ -168,30 +339,123 @@ msgid "PKWTT"
 msgstr ""
 
 #. module: hr_indonesia
-#: help:hr.employee,user_id:0
-msgid "Related user name for the resource to manage its access."
-msgstr "Username terkait untuk mengelola akses."
-
-#. module: hr_indonesia
-#: field:hr.employee,resource_type:0
-msgid "Resource Type"
-msgstr "Tipe Sumber Daya"
-
-#. module: hr_indonesia
-#: help:hr.employee,time_efficiency:0
-msgid ""
-"This field depict the efficiency of the resource to complete tasks. e.g  "
-"resource put alone on a phase of 5 days with 5 tasks assigned to him, will "
-"show a load of 100% for this phase by default, but if we put a efficiency of "
-"200%, then his load will only be 50%."
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_parent_id
+msgid "Parent Category"
 msgstr ""
 
 #. module: hr_indonesia
-#: field:hr.employee,user_id:0
-msgid "User"
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_parent_left
+msgid "Parent Left"
 msgstr ""
 
 #. module: hr_indonesia
-#: field:hr.employee,calendar_id:0
-msgid "Working Time"
-msgstr "Waktu Kerja"
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_parent_right
+msgid "Parent Right"
+msgstr ""
+
+#. module: hr_indonesia
+#: model:ir.actions.act_window,name:hr_indonesia.action_list_hr_location
+#: model:ir.model,name:hr_indonesia.model_hr_indonesia_location
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_location_id
+#: model:ir.ui.menu,name:hr_indonesia.menu_hr_indonesia_configuration_location
+msgid "Placement Location"
+msgstr "Penempatan"
+
+#. module: hr_indonesia
+#: model:ir.actions.act_window,name:hr_indonesia.action_list_hr_religion
+#: model:ir.model,name:hr_indonesia.model_hr_indonesia_religion
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_religion_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_name
+#: model:ir.ui.menu,name:hr_indonesia.menu_hr_indonesia_configuration_religion
+msgid "Religion"
+msgstr "Agama"
+
+#. module: hr_indonesia
+#: model:ir.model,name:hr_indonesia.model_resource_calendar
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_resource_calendar_id
+msgid "Resource Calendar"
+msgstr "Kalender"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,help:hr_indonesia.field_hr_indonesia_location_type
+msgid "Select View to create group of location."
+msgstr "Pilih view untuk membuat kelompok lokasi"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_ethnic_sequence
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_sequence
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_religion_sequence
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_sequence
+msgid "Sequence"
+msgstr "Urutan"
+
+#. module: hr_indonesia
+#: model:ir.ui.view,arch_db:hr_indonesia.hr_indonesia_employee
+msgid "Tax"
+msgstr "Pajak"
+
+#. module: hr_indonesia
+#: model:ir.actions.act_window,name:hr_indonesia.action_list_hr_tax_marital
+#: model:ir.model,name:hr_indonesia.model_hr_indonesia_tax_marital
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_employee_tax_marital_id
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_tax_marital_name
+#: model:ir.ui.menu,name:hr_indonesia.menu_hr_indonesia_configuration_tax_marital
+msgid "Tax Marital"
+msgstr "Status Nikah Pajak"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_calendar_condition_time
+msgid "Time"
+msgstr "Waktu"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,field_description:hr_indonesia.field_hr_indonesia_location_type
+msgid "Type"
+msgstr "Tipe"
+
+#. module: hr_indonesia
+#: selection:hr_indonesia.location,type:0
+msgid "View"
+msgstr "View"
+
+#. module: hr_indonesia
+#: model:ir.model.fields,help:hr_indonesia.field_hr_indonesia_location_code
+msgid "Write location abbreviation"
+msgstr "Tulis singkatan lokasi"
+
+#~ msgid "*Monthly, Karyawan Bulanan, *Daily, Karyawan Harian."
+#~ msgstr "*Bulanan, Karyawan Bulanan, *Harian, Karyawan Harian."
+
+#~ msgid "Active"
+#~ msgstr "Aktif"
+
+#~ msgid "Cost Center"
+#~ msgstr "Pembebanan"
+
+#~ msgid "Define the schedule of resource"
+#~ msgstr "Tentukan jadwal sumber daya"
+
+#~ msgid "Efficiency Factor"
+#~ msgstr "Faktor Efisiensi"
+
+#~ msgid "HR Settings"
+#~ msgstr "Pengaturan HR"
+
+#~ msgid ""
+#~ "If the active field is set to False, it will allow you to hide the "
+#~ "resource record without removing it."
+#~ msgstr ""
+#~ "Bila kolom aktif di non-aktifkan, menyembunyikan karyawan tanpa "
+#~ "menghapusnya."
+
+#~ msgid "Name"
+#~ msgstr "Nama"
+
+#~ msgid "Related user name for the resource to manage its access."
+#~ msgstr "Username terkait untuk mengelola akses."
+
+#~ msgid "Resource Type"
+#~ msgstr "Tipe Sumber Daya"
+
+#~ msgid "Working Time"
+#~ msgstr "Waktu Kerja"
