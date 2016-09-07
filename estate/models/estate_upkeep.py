@@ -680,7 +680,7 @@ class UpkeepLabour(models.Model):
         """Define number of days based on attendance code and work result
 
         Standard based condition
-        1. A day work and work result > activity standard = 1 day.
+        1. A day/half day work and work result > activity standard = 1 day.
         2. A day work and work result more than half of standard = 0.5 day.
         3. A half day work and work result more than half of standard = 0.5 day.
         4. Else = 1 * attendance ratio day.
