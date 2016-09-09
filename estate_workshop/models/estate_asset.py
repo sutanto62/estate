@@ -75,9 +75,10 @@ class InheritAssetVehicle(models.Model):
     @api.constrains('account_id','criticality','start_date','asset_number','model','type_asset','fleet_id','product_id','user_id')
     def _constraint_asset(self):
         for asset in self:
-            if asset.account_id.id == False:
-                error_msg = "General Account Must be Filled"
-                raise exceptions.ValidationError(error_msg)
+            # Todo di commend karena belum membutuhkan general account
+            # if asset.account_id.id == False:
+            #     error_msg = "General Account Must be Filled"
+            #     raise exceptions.ValidationError(error_msg)
             if asset.type_asset == False:
                 error_msg = "Type Asset Must be Filled"
                 raise exceptions.ValidationError(error_msg)
