@@ -658,7 +658,7 @@ class UpkeepLabour(models.Model):
     activity_contract = fields.Boolean('Upkeep Activity Contract', compute='_compute_activity_contract',
                                        help='Contract based upkeep required no attendance')
     cross_team_id = fields.Many2one('estate.hr.team', 'Cross Team', help='Set to define cross team upkeep labour.')
-    number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team)', compute='_compute_number_of_day_team_id',
+    number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team', compute='_compute_number_of_day_team_id',
                                             store=True)
 
     @api.multi
@@ -723,7 +723,11 @@ class UpkeepLabour(models.Model):
                                               limit=1)
 
         if not wage:
-            error_msg = _("No Regional Wage defined.")
+            if not self.upkeep_id.activity_line_ids:
+                # For empty activity line
+                error_msg = _('Upkeep Activity should be defined first')
+            else:
+                error_msg = _("No Regional Wage defined.")
             raise ValidationError(error_msg)
 
         # Use latest contract before upkeep date if any
