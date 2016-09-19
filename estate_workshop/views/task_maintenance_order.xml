@@ -30,6 +30,9 @@
                          <group>
                                 <field name="mastertaskline_ids" readonly="0"/>
                          </group>
+                         <group>
+                                <field name="parttaskline_ids" readonly="0"/>
+                         </group>
                     </sheet>
                 </form>
             </field>
@@ -72,6 +75,9 @@
                         </group>
                         <group>
                             <field name="mastertasklineactual_ids" readonly="0"/>
+                        </group>
+                        <group>
+                            <field name="parttasklineactual_ids" readonly="0"/>
                         </group>
                     </sheet>
                 </form>
@@ -135,5 +141,32 @@
                 </tree>
             </field>
         </record>
+
+        <record model='ir.ui.view' id='maintenance_planned_task_popup_tree'>
+            <field name="name">Planned Part task line pop up tree</field>
+            <field name="model">v.planned.parts.task</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance Part Task">
+                    <field name="parts_id" string="Parts"/>
+                    <field name="task_id" string="Maintenance Task"/>
+                    <field name="parts_uom" string="Parts UOM"/>
+                    <field name="parts_qty" string="Parts QTY"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='maintenance_actual_task_popup_tree'>
+            <field name="name">Actual Part task line pop up tree</field>
+            <field name="model">v.actual.parts.task</field>
+            <field name="arch" type="xml">
+                <tree string="Maintenance Part Task">
+                    <field name="parts_id" string="Parts"/>
+                    <field name="task_id" string="Maintenance Task"/>
+                    <field name="parts_uom" string="Parts UOM"/>
+                    <field name="parts_qty" string="Parts QTY"/>
+                </tree>
+            </field>
+        </record>
+
     </data>
 </openerp>

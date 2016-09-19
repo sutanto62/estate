@@ -38,6 +38,7 @@ class ActualTask(models.Model):
     mro_id = fields.Many2one('mro.order','MRO',store=True)
     parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
     mastertasklineactual_ids = fields.One2many('v.task.mro.order.actual','ewa_id','Maintenance Task')
+    parttasklineactual_ids = fields.One2many('v.actual.parts.task','ewa_id','Part Task')
 
     @api.one
     @api.onchange('planned_hour','planned_manpower','mastertask_id')
@@ -69,6 +70,7 @@ class PlannedTask(models.Model):
     mro_id = fields.Many2one('mro.order','MRO',store=True)
     parenttask_id = fields.Many2one('task.maintenance.order',required=True,ondelete='cascade')
     mastertaskline_ids = fields.One2many('v.task.mro.order','ewp_id','Maintenance Task')
+    parttaskline_ids = fields.One2many('v.planned.parts.task','ewp_id','Parts Task')
 
     # # #onchange planned hour and manpower
     @api.one
@@ -162,4 +164,52 @@ class ViewTaskMroOrderActual(models.Model):
                         group by
                             ewm_id,mro_id,mtask.mastertask_id,task_id,ewa_id
                         order by mro_id,ewm_id asc""")
+
+class ViewPlannedPartsTask(models.Model):
+
+    _name = 'v.planned.parts.task'
+    _description = "Planned Part Task Pop up for vehicle"
+    _auto = False
+    _order='ewp_id'
+
+    id = fields.Integer()
+    ewp_id = fields.Many2one('estate.workshop.plannedtask')
+    ewm_id = fields.Many2one('estate.workshop.mastertaskline')
+    task_id = fields.Many2one('mro.task')
+    mro_id = fields.Many2one('mro.id')
+    parts_id = fields.Many2one('product.product')
+    parts_uom = fields.Many2one('product.uom')
+    parts_qty = fields.Float('Parts QTY')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_planned_parts_task as
+                        select row_number() over()id,
+                            ewp_id,parts_id,parts_uom,parts_qty,
+                            ewm_id,mro_id ,
+                            vtmo.task_id,mastertask_id from mro_task_parts_line mtpl
+                        right join v_task_mro_order vtmo on vtmo.task_id = mtpl.task_id""")
+
+class ViewActualPartsTask(models.Model):
+
+    _name = 'v.actual.parts.task'
+    _description = "Actual Part Task Pop up for vehicle"
+    _auto = False
+    _order='ewa_id'
+
+    id = fields.Integer()
+    ewa_id = fields.Many2one('estate.workshop.actualtask')
+    ewm_id = fields.Many2one('estate.workshop.mastertaskline')
+    task_id = fields.Many2one('mro.task')
+    mro_id = fields.Many2one('mro.id')
+    parts_id = fields.Many2one('product.product')
+    parts_uom = fields.Many2one('product.uom')
+    parts_qty = fields.Float('Parts QTY')
+
+    def init(self, cr):
+        cr.execute("""create or replace view v_actual_parts_task as
+                        select row_number() over()id,
+                            ewa_id,parts_id,parts_uom,parts_qty,
+                            ewm_id,mro_id ,
+                            vtmoa.task_id,mastertask_id from mro_task_parts_line mtpl
+                        right join v_task_mro_order_actual vtmoa on vtmoa.task_id = mtpl.task_id""")
 
