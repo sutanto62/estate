@@ -30,7 +30,7 @@ class InheritHrContract(models.Model):
     def _onchange_wage(self):
         if self.wage and self.hour and self.day:
             self.weekly_wage = self.wage/int(4)
-            self.daily_wage = self.weekly_wage/float(self.day)
+            self.daily_wage = self.wage/float(self.day)
             self.hourly_wage = self.daily_wage/float(self.hour)
 
     @api.multi
