@@ -715,28 +715,30 @@ class UpkeepLabour(models.Model):
         """Daily/quantity wage calculated from number of days exclude. Use regional minimum wage if employee
         has no contract.
         """
-        # Get latest regional wage before upkeep date
-        wage = self.env['estate.wage'].search([('active', '=', True),
-                                               ('date_start', '<=', self.upkeep_date),
-                                               ('estate_id', '=', self.estate_id.id)],
-                                              order='date_start desc',
-                                              limit=1)
 
-        if not wage:
-            if not self.upkeep_id.activity_line_ids:
-                # For empty activity line
-                error_msg = _('Upkeep Activity should be defined first')
-            else:
-                error_msg = _("No Regional Wage defined.")
+        # Prevent computing when no activity line defined.
+        if not self.upkeep_id.activity_line_ids:
+            error_msg = _('Upkeep Activity should be defined first')
             raise ValidationError(error_msg)
 
-        # Use latest contract before upkeep date if any
+        # Latest estate's regional wage (upkeep date and not expired)
+        wage = self.env['estate.wage'].search([('active', '=', True),
+                                               ('date_start', '<=', self.upkeep_date),
+                                               ('estate_id', '=', self.estate_id.id),
+                                               ('active', '=', True)],
+                                              order='date_start desc',
+                                              limit=1)
+        if not wage:
+            error_msg = _("No Regional Wage defined.")
+            raise ValidationError(error_msg)
+
+        # Latest contract before upkeep date if any
         newest_contract = self.env['hr.contract'].search([('employee_id', '=', self.employee_id.id),
                                                           ('date_start', '<=', self.upkeep_date)],
                                                          order='date_start desc',
                                                          limit=1)
 
-        # Contract override regional wage setting
+        # Contract override regional wage
         if newest_contract:
             try:
                 daily_wage = newest_contract.wage / wage.number_of_days
@@ -745,7 +747,7 @@ class UpkeepLabour(models.Model):
         else:
             daily_wage = wage.daily_wage
 
-        # Use wage_number_of_day to save cost from number of day or target activity.
+        # Use wage_number_of_day to save cost from number of day based or target based activity.
         if self.attendance_code_id:
             self.wage_number_of_day = self.number_of_day * daily_wage
         elif self.activity_contract and self.employee_id.contract_type == '2' and self.employee_id.contract_period == '2':
