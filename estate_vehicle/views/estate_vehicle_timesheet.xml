@@ -99,7 +99,7 @@
                   parent="fleet.menu_root"
                   sequence="10"/>
 
-         <menuitem id="estate_vehicle_timesheet_activity" name="Vehicle Timesheet"
+         <menuitem id="estate_vehicle_timesheet_activity" name="Vehicle Timesheet(ALL)"
                   parent="estate_vehicle.estate_vehicle_timesheet_menu"
                   action="action_estate_timesheet_activity_transport"
                  groups="fleet.group_fleet_manager" sequence="12"/>

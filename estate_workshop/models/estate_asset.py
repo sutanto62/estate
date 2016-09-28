@@ -21,6 +21,7 @@ class InheritAssetVehicle(models.Model):
     product_id = fields.Many2one('product.template')
     account_id = fields.Many2one('account.account','General Account')
     asset_value = fields.Float()
+    company_id = fields.Many2one('res.company','Company')
 
     #onchange
     @api.multi
@@ -38,6 +39,20 @@ class InheritAssetVehicle(models.Model):
             self.asset_value = self.product_id.standard_price
         if self.fleet_id:
             self.asset_value = self.fleet_id.car_value
+
+    @api.multi
+    @api.onchange('fleet_id','company_id')
+    def _onchange_company(self):
+        arrVehicle = []
+        if self.fleet_id:
+            vehicle = self.env['fleet.vehicle'].search([('id','=',self.fleet_id.id)])
+            for vehicle in vehicle:
+                arrVehicle.append(vehicle.company_id.id)
+            return {
+                'domain' : {
+                    'company_id' : [('id','in',arrVehicle)]
+                }
+            }
 
     @api.multi
     @api.onchange('product_id','type_asset')

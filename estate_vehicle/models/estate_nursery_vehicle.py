@@ -261,6 +261,88 @@ class MasterCategoryUnit(models.Model):
     name=fields.Char()
     type=fields.Selection([('1','Vehicle'), ('2','Unit ALL')])
 
+class FleetVehicleTimesheet(models.Model):
+
+    _name = 'fleet.vehicle.timesheet'
+
+    name = fields.Char()
+    vehicle_timesheet_code = fields.Char("VTS",store=True)
+    date_timesheet = fields.Date('Date',store=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done')], string="State",store=True)
+    timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id','Timesheet Vehicle')
+
+    #sequence
+    def create(self, cr, uid, vals, context=None):
+        vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
+        res=super(FleetVehicleTimesheet, self).create(cr, uid, vals)
+        return res
+
+    @api.one
+    def action_draft(self):
+        """Set Timesheet State to Draft."""
+        self.state = 'draft'
+
+    @api.one
+    def action_confirmed(self):
+        """Set Timesheet state to Confirmed."""
+        self.state = 'confirmed'
+
+    @api.one
+    def action_approved(self):
+        """Approved  Timesheet is planted Seed."""
+        name = self.name
+        self.write({'name':"Vehicle Timesheet %s " %(name)})
+        self.do_create_vehicle_odometer_log()
+        self.state = 'done'
+
+    @api.multi
+    def do_create_vehicle_odometer_log(self):
+        odometer = False
+        for odometer in self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]):
+            odometer_data = {
+                'name':'Odometer',
+                'date': odometer.date_activity_transport,
+                'vehicle_id': odometer.vehicle_id.id,
+                'value': odometer.end_km,
+            }
+            self.env['fleet.vehicle.odometer'].create(odometer_data)
+        return True
+
+    @api.multi
+    @api.constrains('timesheet_ids','date_timesheet')
+    def _constraint_date_timesheet_vehicle(self):
+        #constraint date in timesheet vehicle must be same in time sheet ids
+        for item in self:
+            if item.date_timesheet:
+                if item.timesheet_ids:
+                    for vehicletimesheet in item.timesheet_ids:
+                        date = vehicletimesheet.date_activity_transport
+                        if date > item.date_timesheet:
+                            error_msg = "Date Timesheet Line not more than \"%s\" in Date Form" % self.date_timesheet
+                            raise exceptions.ValidationError(error_msg)
+                        elif date < item.date_timesheet:
+                            error_msg = "Date Timesheet Line must be same \"%s\" in Date Form" % self.date_timesheet
+                            raise exceptions.ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('date_timesheet')
+    def _constraint_date_timesheet(self):
+        tempdate = []
+        for item in self:
+            date = item.env['fleet.vehicle.timesheet'].search([('state','=','done')])
+            for date in date:
+                tempdate.append(date.date_timesheet)
+            if item.date_timesheet in tempdate:
+                error_msg = "Date Timesheet %s Not Use More Than One" %item.date_timesheet
+                raise exceptions.ValidationError(error_msg)
+
+
+
+
+
 
 
 

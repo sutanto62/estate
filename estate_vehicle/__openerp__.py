@@ -31,6 +31,7 @@
         'views/estate_vehicle_sparepart_log.xml',
         'views/inherit_vehicle_log_oil.xml',
         # 'views/inherit_transfertomn_spb_view',
+        'views/timesheet_sequence.xml',
         'views/estate_vehicle_timesheet.xml',
         'views/estate_nursery_vehicle.xml',
         'views/estate_vehicle_path.xml',
@@ -40,11 +41,13 @@
         'views/view_timesheet_premi.xml',
         'views/view_summary_cost_vehicle.xml',
         'views/inherit_transfertomn_spb_view.xml',
+        'views/fleet_vehicle_timesheet.xml',
+        'workflow/workflow_fleet_vehicle_timesheet.xml'
 
         # 'views/inherit_activity_typebreakdown.xml',
 
-        # 'views/timesheet_sequence.xml',
-        #'workflow/workflow_estate_timesheet_activity_transport.xml'
+
+
     ],
     # only loaded in demonstration mode
     'demo': [

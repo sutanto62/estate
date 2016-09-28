@@ -7,8 +7,10 @@
             <field name="arch" type="xml">
                 <xpath expr="//group[1]" position="before">
                      <group string="Vehicle Status Operation">
-                        <field name="maintenance_state_id" string="Status" options="{'no_create_edit': True}"/>
-                        <field name="maintenance_state_color" readonly="1" string="Color"/>
+                            <field name="company_id" string="Company"/>
+                            <field name="type_location_vehicle" string="Type Location Vehicle"/>
+                            <field name="maintenance_state_id" string="Status" options="{'no_create_edit': True}"/>
+                            <field name="maintenance_state_color" readonly="1" string="Color"/>
                     </group>
                  </xpath>
             </field>

@@ -167,13 +167,31 @@ class SpbTimesheetVehicle(models.Model):
                 }
 
 
-
-
 class InheritTransfertoMN(models.Model):
 
     _inherit ='estate.nursery.transfermn'
 
     vehicle_timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id')
+
+    @api.multi
+    def action_approved(self):
+        for item in self:
+            self.do_create_vehicle_odometer_log()
+            super(InheritTransfertoMN,self).action_approved()
+
+    @api.multi
+    def do_create_vehicle_odometer_log(self):
+        odometer = False
+        for odometer in self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]):
+            odometer_data = {
+                'name':'Odometer',
+                'date': odometer.date_activity_transport,
+                'vehicle_id': odometer.vehicle_id.id,
+                'value': odometer.end_km,
+            }
+            self.env['fleet.vehicle.odometer'].create(odometer_data)
+        return True
+
 
     @api.multi
     @api.constrains('vehicle_timesheet_ids')

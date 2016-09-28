@@ -2,15 +2,28 @@
 <openerp>
     <data>
         <!-- Sequences for Timesheet Activity Transport code -->
-        <record id="tmactivity_transport_code_sequence" model="ir.sequence.type">
-            <field name="name">Timesheet Activity Transport code</field>
-            <field name="code">estate.timesheet.activity.transport</field>
-        </record>
+        <!--<record id="tmactivity_transport_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Timesheet Activity Transport code</field>-->
+            <!--<field name="code">estate.timesheet.activity.transport</field>-->
+        <!--</record>-->
 
-        <record id="seq_tmactivity_transport" model="ir.sequence">
+        <!--<record id="seq_tmactivity_transport" model="ir.sequence">-->
+            <!--<field name="name">Timesheet Activity Transport sequence</field>-->
+            <!--<field name="code">estate.timesheet.activity.transport</field>-->
+            <!--<field name="prefix">TACT</field>-->
+            <!--<field name="padding">4</field>-->
+            <!--<field name="company_id" eval="False"/>-->
+        <!--</record>-->
+
+        <!--<record id="vehicle_tmactivity_transport_code_sequence" model="ir.sequence.type">-->
+            <!--<field name="name">Timesheet Activity Transport code</field>-->
+            <!--<field name="code">fleet.vehicle.timesheet</field>-->
+        <!--</record>-->
+
+        <record id="seq_vehicle_tmactivity_transport" model="ir.sequence">
             <field name="name">Timesheet Activity Transport sequence</field>
-            <field name="code">estate.timesheet.activity.transport</field>
-            <field name="prefix">TACT</field>
+            <field name="code">fleet.vehicle.timesheet</field>
+            <field name="prefix">VTS</field>
             <field name="padding">4</field>
             <field name="company_id" eval="False"/>
         </record>

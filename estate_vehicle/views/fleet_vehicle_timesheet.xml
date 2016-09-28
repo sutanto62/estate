@@ -1,0 +1,102 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_fleet_vehicle_timesheet_config_tree">
+            <field name="name">Fleet Vehicle Timesheet</field>
+            <field name="model">fleet.vehicle.timesheet</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="date_timesheet" string="Date"/>
+                    <field name="state" string="State"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_fleet_vehicle_timesheet_config_form" model="ir.ui.view">
+            <field name="name">Fleet Vehicle Timesheet</field>
+            <field name="model">fleet.vehicle.timesheet</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                     <header coolspan="10">
+                         <button name="signal_draft" type="workflow"
+                                    string="Reject"
+                                    class="oe_highlight"
+                                    states="confirmed"
+                                   />
+                         <button name="signal_confirm" type="workflow"
+                                    string="Confirmed"
+                                    class="oe_highlight"
+                                    states="draft"
+                                    />
+                        <button name="signal_done" type="workflow"
+                                string="Approved"
+                                class="oe_highlight"
+                                states="confirmed"
+                                groups="fleet.group_fleet_manager"/>
+
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,confirmed,done"
+                               statusbar_color='{"draft":"blue"}'/>
+                     </header>
+                    <sheet>
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                 <label string="Vehicle Timesheet "
+                                       attrs="{'invisible': [('state','not in',('draft','sent','bid'))]}"/>
+                                 <label string="Vehicle Timesheet "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <field name="vehicle_timesheet_code" class="oe_inline" readonly="1" />
+                                 <label string="For "
+                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <field name="date_timesheet" class="oe_inline" readonly="1" />
+                             </h1>
+                         </div>
+
+                            <group>
+                                <field name="date_timesheet" string="Date" attrs="{'readonly' : [('state', '=', 'done')]}" required="True"/>
+                            </group>
+
+                            <group>
+                                <tree>
+                                    <field name="timesheet_ids" track_visibility="onchange" attrs="{
+                                        'readonly': [('state','=','done')]}"
+                                        context="{'tree_view_ref' : 'estate_vehicle.view_tree_timesheet_activity_transport',
+                                               'default_dc_type' : 5}"/>
+                                </tree>
+                            </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='fleet_vehicle_timesheet_search'>
+            <field name="name">fleet vehicle timesheet search</field>
+            <field name="model">fleet.vehicle.timesheet</field>
+            <field name="arch" type="xml">
+                <search string="fleet vehicle timesheet search" >
+                    <field name="name" />
+                    <field name="state"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_date_timesheet" context="{'group_by' : 'date_timesheet'}" string="Date"/>
+                        <filter name="groupby_state" context="{'group_by' : 'state'}" string="State"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_fleet_vehicle_timesheet_activity_transport">
+            <field name="name">Vehicle Timesheet</field>
+            <field name="res_model">fleet.vehicle.timesheet</field>
+            <field name="view_mode">tree,form</field>
+             <field name="context">{"search_default_groupby_date_timesheet" : True}</field>
+         </record>
+
+         <menuitem id="fleet_vehicle_timesheet_activity" name="Fleet Vehicle Timesheet"
+                  parent="estate_vehicle.estate_vehicle_timesheet_menu"
+                  action="action_fleet_vehicle_timesheet_activity_transport"
+                 groups="fleet.group_fleet_user" sequence="12"/>
+    </data>
+</openerp>

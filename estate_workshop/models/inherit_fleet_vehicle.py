@@ -16,4 +16,9 @@ class InheritMaintenanceVehicle(models.Model):
 
     maintenance_state_id = fields.Many2one('asset.state','Asset State',domain=[('team','=','3')])
     maintenance_state_color = fields.Selection('State Color',related='maintenance_state_id.state_color')
+    type_location_vehicle = fields.Selection([
+        ('ro', 'RO'),
+        ('estate', 'Estate'),
+        ('ho', 'HO')], string="Type Location Vehicle",store=True)
+    company_id = fields.Many2one('res.company','Company',store=True)
 
