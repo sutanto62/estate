@@ -1,0 +1,59 @@
+<openerp>
+  <data>
+    <!-- explicit list view definition -->
+    <!--
+    <record model="ir.ui.view" id="web_pg.list">
+      <field name="name">web_pg list</field>
+      <field name="model">web_pg.web_pg</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+    -->
+
+    <!-- actions opening views on models -->
+    <!--
+    <record model="ir.actions.act_window" id="web_pg.action_window">
+      <field name="name">web_pg window</field>
+      <field name="res_model">web_pg.web_pg</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    -->
+
+    <!-- server action to the one above -->
+    <!--
+    <record model="ir.actions.server" id="web_pg.action_server">
+      <field name="name">web_pg server</field>
+      <field name="model_id" ref="model_web_pg_web_pg"/>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": self._name,
+        }
+      </field>
+    </record>
+    -->
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem name="web_pg" id="web_pg.menu_root"/>
+    -->
+    <!-- menu categories -->
+    <!--
+    <menuitem name="Menu 1" id="web_pg.menu_1" parent="web_pg.menu_root"/>
+    <menuitem name="Menu 2" id="web_pg.menu_2" parent="web_pg.menu_root"/>
+    -->
+    <!-- actions -->
+    <!--
+    <menuitem name="List" id="web_pg.menu_1_list" parent="web_pg.menu_1"
+              action="web_pg.action_window"/>
+    <menuitem name="Server to list" id="web_pg" parent="web_pg.menu_2"
+              action="web_pg.action_server"/>
+    -->
+  </data>
+</openerp>

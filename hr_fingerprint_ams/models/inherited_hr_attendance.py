@@ -73,12 +73,13 @@ class FingerAttendance(models.Model):
         current = f_attendance_obj.search([('db_id', '=', vals['db_id']),
                                            ('terminal_id', '=', vals['terminal_id']),
                                            ('employee_name', '=', vals['employee_name']),
+                                           ('nik', '=', vals['nik']),
                                            ('date', '=', vals['date'])])
         # Override create should return a recordset
         res = self
 
         # Attendance constraints required complete sign-in and sign-out
-        attendance = Attendance(self._get_employee(vals['employee_name']),
+        attendance = Attendance(self._get_employee(vals['employee_name'], vals['nik']),
                                 vals['sign_in'],
                                 vals['sign_out'])
         att_rule = AttendanceSpecification().\
@@ -120,7 +121,7 @@ class FingerAttendance(models.Model):
         :param update: set True for update action
         :return: instance of attendance
         """
-        employee_id = self._get_employee(vals['employee_name'])
+        employee_id = self._get_employee(vals['employee_name'],vals['nik'])
 
         # define action and time
         if action == 'sign_in':
@@ -159,13 +160,16 @@ class FingerAttendance(models.Model):
         return super(FingerAttendance, self).unlink()
 
     @api.model
-    def _get_employee(self, employee_name):
+    def _get_employee(self, employee_name, nik):
         """
-        Need to check if imported data is an active employee or not
-        :param employee_name: complete name
-        :return: instance of employees or false
+        Need to check if imported data is an active registered employee or not.
+        Args:
+            employee_name: name
+            employee_id: 10 digits employee registration number
+        Returns: instance of an employee or false
         """
         ids = self.env['hr.employee'].search([('name', '=', employee_name),
+                                              ('nik_number', '=', nik),
                                               ('active', '=', 1)])
         return ids and ids[0] or False
 

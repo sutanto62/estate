@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Replace Title and Favicon -->
+        <template id="site_layout_home" inherit_id="web.layout" name="Site Home layout" priority="17">
+            <xpath expr="//head//title" position="replace">
+                <title>Palma Group</title>
+            </xpath>
+
+            <xpath expr="//head//link" position="replace">
+                <link rel="shortcut icon" href="/web_pg/static/src/img/favicon.ico" type="image/x-icon"/>
+            </xpath>
+        </template>
+        <template id="pg_logo" inherit_id="web.menu_secondary" name="Palma Group Logo" priority="17">
+            <xpath expr="//a//img" position="replace">
+                <img src="/web_pg/static/src/img/company_logo.png"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>
