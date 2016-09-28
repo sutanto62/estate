@@ -5,7 +5,7 @@
             <field name="model">fleet.vehicle.timesheet</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree editable="bottom">
+                <tree>
                     <field name="date_timesheet" string="Date"/>
                     <field name="state" string="State"/>
                 </tree>
