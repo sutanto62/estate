@@ -272,12 +272,12 @@ class FleetVehicleTimesheet(models.Model):
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
         ('done', 'Done')], string="State",store=True)
-    timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id','Timesheet Vehicle')
+    timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle')
 
     #sequence
-    def create(self, cr, uid, vals, context=None):
+    def create(self, cr, uid,vals, context=None):
         vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
-        res=super(FleetVehicleTimesheet, self).create(cr, uid, vals)
+        res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
         return res
 
     @api.one
@@ -292,16 +292,28 @@ class FleetVehicleTimesheet(models.Model):
 
     @api.one
     def action_approved(self):
-        """Approved  Timesheet is planted Seed."""
+        """Approved  Timesheet"""
         name = self.name
         self.write({'name':"Vehicle Timesheet %s " %(name)})
+        self.do_create_vehicle_date()
         self.do_create_vehicle_odometer_log()
         self.state = 'done'
 
     @api.multi
+    def do_create_vehicle_date(self):
+        date = False
+        fleet = self.env['fleet.vehicle.timesheet'].search([('id','=',self.id)])
+        for date in fleet:
+            date_data = {
+                'date_activity_transport': date.date_timesheet,
+            }
+            self.env['inherits.fleet.vehicle.timesheet'].search([('owner_id','=',fleet.id)]).write(date_data)
+        return True
+
+    @api.multi
     def do_create_vehicle_odometer_log(self):
         odometer = False
-        for odometer in self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]):
+        for odometer in self.env['inherits.fleet.vehicle.timesheet'].search([('owner_id','=',self.id)]):
             odometer_data = {
                 'name':'Odometer',
                 'date': odometer.date_activity_transport,
@@ -311,21 +323,22 @@ class FleetVehicleTimesheet(models.Model):
             self.env['fleet.vehicle.odometer'].create(odometer_data)
         return True
 
-    @api.multi
-    @api.constrains('timesheet_ids','date_timesheet')
-    def _constraint_date_timesheet_vehicle(self):
-        #constraint date in timesheet vehicle must be same in time sheet ids
-        for item in self:
-            if item.date_timesheet:
-                if item.timesheet_ids:
-                    for vehicletimesheet in item.timesheet_ids:
-                        date = vehicletimesheet.date_activity_transport
-                        if date > item.date_timesheet:
-                            error_msg = "Date Timesheet Line not more than \"%s\" in Date Form" % self.date_timesheet
-                            raise exceptions.ValidationError(error_msg)
-                        elif date < item.date_timesheet:
-                            error_msg = "Date Timesheet Line must be same \"%s\" in Date Form" % self.date_timesheet
-                            raise exceptions.ValidationError(error_msg)
+    #todo constraint timesheet
+    # @api.multi
+    # @api.constrains('timesheet_ids','date_timesheet')
+    # def _constraint_date_timesheet_vehicle(self):
+    #     #constraint date in timesheet vehicle must be same in time sheet ids
+    #     for item in self:
+    #         if item.date_timesheet:
+    #             if item.timesheet_ids:
+    #                 for vehicletimesheet in item.timesheet_ids:
+    #                     date = vehicletimesheet.date_activity_transport
+    #                     if date > item.date_timesheet:
+    #                         error_msg = "Date Timesheet Line not more than \"%s\" in Date Form" % self.date_timesheet
+    #                         raise exceptions.ValidationError(error_msg)
+    #                     elif date < item.date_timesheet:
+    #                         error_msg = "Date Timesheet Line must be same \"%s\" in Date Form" % self.date_timesheet
+    #                         raise exceptions.ValidationError(error_msg)
 
     @api.multi
     @api.constrains('date_timesheet')
@@ -338,6 +351,61 @@ class FleetVehicleTimesheet(models.Model):
             if item.date_timesheet in tempdate:
                 error_msg = "Date Timesheet %s Not Use More Than One" %item.date_timesheet
                 raise exceptions.ValidationError(error_msg)
+
+
+class FleetVehicleTimesheetInherits(models.Model):
+
+    _name = 'inherits.fleet.vehicle.timesheet'
+    _inherits = {'estate.timesheet.activity.transport':'timesheet_id'}
+
+    timesheet_id = fields.Many2one('estate.timesheet.activity.transport',ondelete='cascade',required=True)
+
+    @api.multi
+    @api.onchange('dc_type')
+    def _onchange_dc_type(self):
+        if self:
+            self.dc_type = 5
+
+    @api.multi
+    @api.onchange('employee_id')
+    def _onchange_driver(self):
+        arrDriver = []
+        if self:
+            hrjob = self.env['hr.job'].search([('name','=','Driver')],limit = 1).id
+            driver = self.env['hr.employee'].search([('job_id.id','=',hrjob)])
+            for d in driver:
+                arrDriver.append(d.id)
+        return {
+                'domain':{
+                    'employee_id':[('id','in',arrDriver)]
+                }
+        }
+
+    @api.multi
+    @api.onchange('vehicle_id')
+    def onchange_vehicle(self):
+        arrVehicletransport =[]
+        if self:
+            if self.dc_type == '1':# dc type 1 refer to seed do
+                dotransportir = self.env['estate.nursery.dotransportir'].search([('seeddo_id.id','=',self.owner_id)])
+                for vehicle in dotransportir:
+                    arrVehicletransport.append(vehicle.estate_vehicle_id.id)
+                return {
+                    'domain':{
+                        'vehicle_id':[('id','in',arrVehicletransport)]
+                        }
+                    }
+            else :
+                vehicle=self.env['fleet.vehicle'].search([('maintenance_state_id.id','=',21)])
+                for v in vehicle:
+                    arrVehicletransport.append(v.id)
+                return {
+                    'domain':{
+                        'vehicle_id':[('id','in',arrVehicletransport)]
+                        }
+                    }
+
+
 
 
 
