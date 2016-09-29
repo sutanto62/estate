@@ -26,9 +26,7 @@
                      <field name="type_tools" />
                      <field name="type_machine" />
                      <field name="type_computing"/>
-                    <!--<field name="type_tools" attrs="{'readonly': ['|',('type_machine','=',True),('type_computing','=',True)]}"/>-->
-                    <!--<field name="type_machine" attrs="{'readonly': ['|',('type_tools','=',True),('type_computing','=',True)]}"/>-->
-                     <!--<field name="type_computing" attrs="{'readonly': ['|',('type_machine','=',True),('type_tools','=',True)]}"/>-->
+                     <field name="type_other"/>
                  </xpath>
             </field>
         </record>

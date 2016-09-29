@@ -376,6 +376,10 @@ class FleetVehicleTimesheetInherits(models.Model):
     _inherits = {'estate.timesheet.activity.transport':'timesheet_id'}
 
     timesheet_id = fields.Many2one('estate.timesheet.activity.transport',ondelete='cascade',required=True)
+    total_distance = fields.Float(digits=(2,2),compute='_compute_total_distance',store=True)
+    distance_location = fields.Float('Distance Location',store=True,compute='_onchange_distance_location')
+    total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
+    comment = fields.Text()
 
     @api.multi
     @api.onchange('dc_type')
@@ -401,7 +405,7 @@ class FleetVehicleTimesheetInherits(models.Model):
 
     @api.multi
     @api.onchange('start_location','end_location')
-    def _onchange_end_location(self):
+    def _onchange_path_location(self):
         #use to onchange domain end_location same as master location path
         if self:
             if self.start_location:
