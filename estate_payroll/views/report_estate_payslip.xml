@@ -158,25 +158,33 @@
                                 </tr>
                             </table>
 
-                            <table class="table table-bordered" style="font-size:65%; width: auto">
+                            <table class="borderless" width="100%">
                                 <tr>
-                                    <td style="width: 120px">Dibuat Oleh</td>
-                                    <td style="width: 120px">Diperiksa Oleh</td>
-                                    <td style="width: 120px">Disetujui Oleh</td>
-                                </tr>
-                                <tr style="height: 80px">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td style="vertical-align: bottom">
+                                        <table class="table table-bordered" style="font-size:65%; width: auto">
+                                            <tr>
+                                                <td style="width: 120px">Created By</td>
+                                                <td style="width: 120px">Checked By</td>
+                                                <td style="width: 120px">Approved By</td>
+                                            </tr>
+                                            <tr style="height: 80px">
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td class="text-right" style="vertical-align: bottom">
+                                        <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', batch.get_qrcode(), 70, 70)"/><br/>
+                                        <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+                                    </td>
                                 </tr>
                             </table>
-                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', batch.get_qrcode(), 70, 70)"/>
-                            <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
 
                             <!-- Payslip per Team -->
                             <p style="page-break-after:always;">  </p>
@@ -296,8 +304,34 @@
                                         </tr>
                                     </tbody>
                                 </table>
-                                <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', batch.get_qrcode(), 70, 70)"/>
-                                <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+
+                                <table class="borderless" width="100%">
+                                    <tr>
+                                        <td style="vertical-align: bottom">
+                                            <table class="table table-bordered" style="font-size:65%; width: auto">
+                                                <tr>
+                                                    <td style="width: 120px">Created By</td>
+                                                    <td style="width: 120px">Checked By</td>
+                                                    <td style="width: 120px">Approved By</td>
+                                                </tr>
+                                                <tr style="height: 80px">
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td class="text-right" style="vertical-align: bottom">
+                                            <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', batch.get_qrcode(), 70, 70)"/><br/>
+                                            <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+                                        </td>
+                                    </tr>
+                                </table>
                                 <!-- Create break -->
                                 <p style="page-break-after:always;">  </p>
                             </t>

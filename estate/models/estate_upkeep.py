@@ -74,48 +74,44 @@ class Upkeep(models.Model):
     @api.one
     @api.onchange('team_id')
     def _onchange_team_id(self):
-        """No need to entry Assistant
+        """Automate Assistant and Division selection
         """
         if self.team_id:
+
             if self.team_id.assistant_id:
                 self.assistant_id = self.team_id.assistant_id
+
+            if self.team_id.division_id:
+                self.division_id = self.team_id.division_id.id
+
         return True
 
-    @api.one
-    @api.onchange('assistant_id')
-    def _onchange_assistant_id(self):
-        """No need to entry block (division level)
-        :return: first block and set to division_id
-        """
-        # todo consider to deprecated - only return first block's division?
-        if not self.assistant_id:
-            return
-
-        # Limit 1
-        block = self.env['estate.block.template'].search([('assistant_id', '=', self.assistant_id.id)],
-                                                         limit=1,
-                                                         order='id')
-        block_level = block.estate_location_level
-
-        if int(block_level) > 2:
-            # Block is level 3 or 4
-            # print '_onchange_assistant_id #2: Block level 3/4 ... cari divisi nya'
-            res = self.env['stock.location'].get_division(block.inherit_location_id.id)
-            self.division_id = res.id
-        elif int(block_level) == 2:
-            # Block is level 2
-            self.division_id = block.inherit_location_id.id
-        else:
-            # Blok is level 1
-            return
-
-        # if block:
-        #     stock_id = self.env['stock.location'].search([('id', '=', block.inherit_location_id.id)])
-        #     print '_onchange_assistant_id #2: ... find %s' % stock_id.name
-        #     res = stock_id.get_division(stock_id.id)
-        #     if res:
-        #         self.division_id = res.id
-        #     return res
+    # @api.one
+    # @api.onchange('assistant_id')
+    # def _onchange_assistant_id(self):
+    #     """No need to entry block (division level)
+    #     :return: first block and set to division_id
+    #     """
+    #     if not self.assistant_id:
+    #         return
+    #
+    #     # Limit 1
+    #     block = self.env['estate.block.template'].search([('assistant_id', '=', self.assistant_id.id)],
+    #                                                      limit=1,
+    #                                                      order='id')
+    #     block_level = block.estate_location_level
+    #
+    #     if int(block_level) > 2:
+    #         # Block is level 3 or 4
+    #         # print '_onchange_assistant_id #2: Block level 3/4 ... cari divisi nya'
+    #         res = self.env['stock.location'].get_division(block.inherit_location_id.id)
+    #         self.division_id = res.id
+    #     elif int(block_level) == 2:
+    #         # Block is level 2
+    #         self.division_id = block.inherit_location_id.id
+    #     else:
+    #         # Blok is level 1
+    #         return
 
     @api.one
     @api.onchange('division_id')
@@ -618,6 +614,7 @@ class UpkeepLabour(models.Model):
     activity_standard_base = fields.Float(related='activity_id.qty_base')
     location_id = fields.Many2one('estate.block.template', 'Location',
                                   domain="[('inherit_location_id.location_id', '=', division_id)]")
+    planted_year_id = fields.Many2one(related='location_id.planted_year_id')
     activity_location_ids = fields.Many2one('estate.block.template', 'Activity Location', store=False,
                                             compute="_compute_activity_location_ids")
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
