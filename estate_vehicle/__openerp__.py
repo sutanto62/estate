@@ -26,6 +26,7 @@
     'data': [
         'security/ir.model.access.csv',
         'templates.xml',
+        'wizard/reject.xml',
         'views/estate_vehicle_fuel_log.xml',
         'views/estate_vehicle_otherservice_log.xml',
         'views/estate_vehicle_sparepart_log.xml',
@@ -43,6 +44,7 @@
         'views/inherit_transfertomn_spb_view.xml',
         'views/fleet_vehicle_timesheet.xml',
         'workflow/workflow_fleet_vehicle_timesheet.xml'
+
 
         # 'views/inherit_activity_typebreakdown.xml',
 

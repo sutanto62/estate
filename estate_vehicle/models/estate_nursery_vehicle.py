@@ -268,11 +268,19 @@ class FleetVehicleTimesheet(models.Model):
     name = fields.Char()
     vehicle_timesheet_code = fields.Char("VTS",store=True)
     date_timesheet = fields.Date('Date',store=True)
+    reject_reason =  fields.Text('Reject Reason', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirmed', 'Confirmed'),
-        ('done', 'Done')], string="State",store=True)
+        ('confirm', 'Send Timesheet'),
+        ('approve', 'Confirm'),
+        ('done', 'Done'),
+        ('reject', 'Rejected'),
+        ('cancel', 'Canceled')], string="State",store=True)
     timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle')
+
+    _defaults = {
+        'state' : 'draft'
+    }
 
     #sequence
     def create(self, cr, uid,vals, context=None):
@@ -280,24 +288,33 @@ class FleetVehicleTimesheet(models.Model):
         res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
         return res
 
-    @api.one
-    def action_draft(self):
-        """Set Timesheet State to Draft."""
-        self.state = 'draft'
+    def action_send(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'confirm'})
+        return True
 
-    @api.one
-    def action_confirmed(self):
-        """Set Timesheet state to Confirmed."""
-        self.state = 'confirmed'
-
-    @api.one
-    def action_approved(self):
-        """Approved  Timesheet"""
+    @api.multi
+    def action_confirm(self,):
+        """ Confirms maintenance request.
+        @return: Newly generated Maintenance Order Id.
+        """
         name = self.name
         self.write({'name':"Vehicle Timesheet %s " %(name)})
         self.do_create_vehicle_date()
         self.do_create_vehicle_odometer_log()
-        self.state = 'done'
+        self.write({'state': 'done'})
+        return True
+
+    def action_done(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'done', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
+
+    def action_reject(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'reject', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
+
+    def action_cancel(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'cancel', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
 
     @api.multi
     def do_create_vehicle_date(self):
@@ -366,6 +383,52 @@ class FleetVehicleTimesheetInherits(models.Model):
         if self:
             self.dc_type = 5
 
+    #onchange ALL
+    @api.multi
+    @api.onchange('end_location')
+    def _onchange_path_location(self):
+        #use to onchange domain start location  same as master location path
+        if self:
+            arrStartlocation=[]
+            startlocation=self.env['path.location'].search([])
+            for a in startlocation:
+                    arrStartlocation.append(a.start_location.id)
+            return {
+                'domain':{
+                    'start_location':[('id','=',arrStartlocation)]
+                }
+        }
+
+    @api.multi
+    @api.onchange('start_location','end_location')
+    def _onchange_end_location(self):
+        #use to onchange domain end_location same as master location path
+        if self:
+            if self.start_location:
+                arrEndlocation=[]
+                endlocation=self.env['path.location'].search([('start_location.id','=',self.start_location.id)])
+                for b in endlocation:
+                    arrEndlocation.append(b.end_location.id)
+                return {
+                'domain':{
+                    'end_location':[('id','in',arrEndlocation)]
+                }
+        }
+
+    @api.multi
+    @api.depends('distance_location','end_location','start_location')
+    def _onchange_distance_location(self):
+        #to change distance location same master path location
+        for item in self:
+            if item.start_location and item.end_location:
+                arrDistance = 0
+                distancelocation = item.env['path.location'].search([
+                    ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
+                for c in distancelocation:
+                    arrDistance += c.distance_location
+                item.distance_location = arrDistance
+        return True
+
     @api.multi
     @api.onchange('employee_id')
     def _onchange_driver(self):
@@ -404,6 +467,68 @@ class FleetVehicleTimesheetInherits(models.Model):
                         'vehicle_id':[('id','in',arrVehicletransport)]
                         }
                     }
+
+    #Computed ALL
+    @api.multi
+    @api.depends('start_time','end_time','total_time')
+    def _compute_total_time(self):
+        self.ensure_one()
+        #to compute total_time
+        if self:
+            if self.start_time and self.end_time:
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                self.total_time =calculate_endtime-calculate_starttime
+                if self.total_time < 0 :
+                    self.total_time = 0
+        return True
+
+    @api.multi
+    @api.depends('start_km','end_km','total_distance')
+    def _compute_total_distance(self):
+        #to Compute total Distance
+        for item in self:
+            if item.end_km and item.start_km:
+                item.total_distance = item.end_km - item.start_km
+            return True
+
+    #Constraint ALL
+
+    @api.multi
+    @api.constrains('start_km','end_km')
+    def _constraint_startkm_endkm(self):
+
+        for item in self:
+            if item.end_km < item.start_km:
+                error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
+                raise exceptions.ValidationError(error_msg)
+            return True
+
+    @api.multi
+    @api.constrains('start_time','end_time')
+    def _constraint_starttime_endtime(self):
+        Max = float(24.0)
+        Min = float(0.0)
+        if self:
+            if self.start_time < Min:
+                error_msg = "Start Time Not More Less Than 00:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time < Min:
+                error_msg = "End Time Not More Less Than 00:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.start_time >  Max:
+                error_msg = "Start Time Not More Than 24:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time > Max :
+                error_msg = "End Time Not More Than 24:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time < self.start_time:
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                error_msg="End Time  %s is set more less than Start Time %s " %(calculate_endtime,calculate_starttime)
+                raise exceptions.ValidationError(error_msg)
+            return True
+
 
 
 

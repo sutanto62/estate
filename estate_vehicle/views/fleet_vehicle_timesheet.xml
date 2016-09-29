@@ -20,25 +20,11 @@
             <field name="arch" type="xml">
                 <form>
                      <header coolspan="10">
-                         <button name="signal_draft" type="workflow"
-                                    string="Reject"
-                                    class="oe_highlight"
-                                    states="confirmed"
-                                   />
-                         <button name="signal_confirm" type="workflow"
-                                    string="Confirmed"
-                                    class="oe_highlight"
-                                    states="draft"
-                                    />
-                        <button name="signal_done" type="workflow"
-                                string="Approved"
-                                class="oe_highlight"
-                                states="confirmed"
-                                groups="fleet.group_fleet_manager"/>
-
-                        <field name="state" widget="statusbar"
-                               statusbar_visible="draft,confirmed,done"
-                               statusbar_color='{"draft":"blue"}'/>
+                            <button name="button_send_request" states="draft" string="Send Timesheet" class="oe_highlight" />
+                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" />
+                            <button name="%(action_timesheet_reject)d" states="confirm" string="Reject Timesheet" type="action" groups="fleet.group_fleet_manager"/>
+                            <button name="button_cancel" states="draft" string="Cancel"/>
+                            <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
                     <sheet>
                         <div class="oe_title" colors="blue">
@@ -48,20 +34,19 @@
                                  <label string="Vehicle Timesheet "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
                                  <field name="vehicle_timesheet_code" class="oe_inline" readonly="1" />
-                                 <label string="For "
-                                       attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
+                                 <label string="For "/>
                                  <field name="date_timesheet" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
 
                             <group>
-                                <field name="date_timesheet" string="Date" attrs="{'readonly' : [('state', '=', 'done')]}" required="True"/>
+                                <field name="date_timesheet" string="Date" attrs="{'readonly' : [('state', '=', 'approve')]}" required="True"/>
                             </group>
 
                             <group>
                                 <tree>
                                     <field name="timesheet_ids" track_visibility="onchange" attrs="{
-                                        'readonly': [('state','=','done')]}"
+                                        'readonly': [('state','=','approve')]}"
                                         context="{'tree_view_ref' : 'estate_vehicle.view_tree_fleet_timesheet_activity_transport',
                                                }"/>
                                 </tree>
@@ -112,6 +97,15 @@
                     </group>
                 </search>
             </field>
+        </record>
+
+        <record id="action_timesheet_reject" model="ir.actions.act_window">
+            <field name="name">Reject Timesheet</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">estate_vehicle.timesheet.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
         </record>
 
         <record model="ir.actions.act_window" id="action_fleet_vehicle_timesheet_activity_transport">
