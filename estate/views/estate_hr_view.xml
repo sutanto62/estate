@@ -24,6 +24,7 @@
                             <field name="active"/>
                             <field name="date_effective"/>
                             <field name="employee_id"/>
+                            <field name="division_id"/>
                             <field name="assistant_id"/>
                         </group>
                         <field name="member_ids"/>

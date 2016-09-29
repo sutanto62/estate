@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-30 08:53+0000\n"
-"PO-Revision-Date: 2016-08-30 08:53+0000\n"
+"POT-Creation-Date: 2016-09-29 05:53+0000\n"
+"PO-Revision-Date: 2016-09-29 05:53+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -98,7 +98,7 @@ msgstr ""
 #. module: estate_payroll
 #: model:ir.model.fields,help:estate_payroll.field_estate_hr_team_payroll_location_id
 #: model:ir.model.fields,help:estate_payroll.field_hr_payslip_payroll_location_id
-msgid "Define location of payroll disbursement"
+msgid "Define alternate location of payroll disbursement other than division"
 msgstr ""
 
 #. module: estate_payroll

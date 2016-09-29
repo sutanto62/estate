@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-30 08:53+0000\n"
-"PO-Revision-Date: 2016-09-02 09:04+0700\n"
+"POT-Creation-Date: 2016-09-29 05:53+0000\n"
+"PO-Revision-Date: 2016-09-29 14:20+0700\n"
 "Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: palma group\n"
 "Language: id\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Virtaal 0.7.1\n"
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
@@ -100,8 +100,8 @@ msgstr "Potongan"
 #. module: estate_payroll
 #: model:ir.model.fields,help:estate_payroll.field_estate_hr_team_payroll_location_id
 #: model:ir.model.fields,help:estate_payroll.field_hr_payslip_payroll_location_id
-msgid "Define location of payroll disbursement"
-msgstr "Lokasi pembagian payroll"
+msgid "Define alternate location of payroll disbursement other than division"
+msgstr "Tentukan lokasi alternatif penggajian bila berbeda dengan divisi."
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
@@ -333,3 +333,6 @@ msgstr ""
 #: model:ir.model,name:estate_payroll.model_report_estate_payroll_report_estate_payslip
 msgid "report.estate_payroll.report_estate_payslip"
 msgstr ""
+
+#~ msgid "Define location of payroll disbursement"
+#~ msgstr "Lokasi pembagian payroll"

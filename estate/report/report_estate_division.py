@@ -21,15 +21,18 @@
 #
 ##############################################################################
 
+from openerp import _
 from openerp.osv import osv
 from openerp.report import report_sxw
 from datetime import date
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from decimal import *
+import logging
 
 import time
 
+_logger = logging.getLogger(__name__)
 STATE = ('approved', 'correction', 'payslip')
 
 class estate_division_report(report_sxw.rml_parse):
@@ -52,10 +55,12 @@ class estate_division_report(report_sxw.rml_parse):
             'get_upkeep_activity': self._get_upkeep_activity,
             'get_location_name': self._get_location_name,
             'get_block_name': self._get_block_name,
+            'get_block_planted_year': self._get_block_planted_year,
             'get_number_of_days': self._get_number_of_days,
             'get_upkeep_labour_by_location': self._get_upkeep_labour_by_location,
             'get_upkeep_activity_material': self._get_upkeep_activity_material,
             'get_location_length': self._get_location_length,
+            'get_qrcode': self._get_qrcode,
         })
 
     def set_context(self, objects, data, ids, report_type=None):
@@ -268,6 +273,12 @@ class estate_division_report(report_sxw.rml_parse):
         res = location_obj.browse(self.cr, self.uid, ids)
         return res.name
 
+    def _get_block_planted_year(self, id):
+        location_obj = self.pool.get('estate.block.template')
+        ids = location_obj.search(self.cr, self.uid, [('id', '=', id)])
+        res = location_obj.browse(self.cr, self.uid, ids)
+        return res.planted_year_id.name
+
     def _get_number_of_days(self, data, id, ytd=False):
         """
         DEPRECATED - swtich to _get_upkeep_labour_by_location
@@ -299,6 +310,18 @@ class estate_division_report(report_sxw.rml_parse):
         else:
             res = sum([labour.number_of_day for labour in labour_ids])
         return res
+
+    def _get_qrcode(self, user):
+        """ Printed report required to traceback to systetm """
+        print_datetime = datetime.today()
+        report_name = 'Division Report'
+
+        # Log to validate qr
+        _logger.info(_('System print-out division report: %s;%s;%s;%s' % (print_datetime, user.name, report_name,self.name)))
+
+        # Return value to report
+        return '%s;%s;%s;%s' % (print_datetime, user.name, report_name, self.name)
+
 
 class wrapped_report_estate_division(osv.AbstractModel):
     _name = 'report.estate.report_estate_division'

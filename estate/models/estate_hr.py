@@ -24,6 +24,9 @@ class Team(models.Model):
                                   help="An employee is only allowed to lead one active team.")
     assistant_id = fields.Many2one('hr.employee', "Assistant", ondelete='restrict',
                                    help="Set this as default Assistant, will be used to record at Upkeep.")
+    division_id = fields.Many2one('stock.location', "Division",
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')],
+                                  help="Define default division when create upkeep record.")
     member_ids = fields.One2many('estate.hr.member', 'team_id')
     member_total = fields.Integer(compute='_count_member', store='False')
     state = fields.Selection([('draft', 'Draft'),

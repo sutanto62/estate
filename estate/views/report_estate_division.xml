@@ -3,7 +3,7 @@
     <data>
         <template id="report_estate_division">
             <t t-call="report.html_container">
-                <t t-call="report.external_layout">
+                <t t-call="report.internal_layout">
                     <div class="page">
                         <h2>
                             Estate Division Report
@@ -24,6 +24,7 @@
                                     <th class="text-center" rowspan="2">Activity</th>
                                     <th class="text-center" rowspan="2">UoM</th>
                                     <th class="text-center" rowspan="2">Batch/Location</th>
+                                    <th class="text-center" rowspan="2">Planted Year</th>
                                     <th class="text-center" colspan="2">Work Day(s)</th>
                                     <th class="text-center" colspan="2">Overtime</th>
                                     <th class="text-center" colspan="2">Piece Rate</th>
@@ -52,33 +53,10 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!--<tr>-->
-                                    <!--<td>Account</td>-->
-                                    <!--<td>Activity A</td>-->
-                                    <!--<td>ha</td>-->
-                                    <!--<td>Blok 1, Blok 2, Blok 3</td>-->
-                                    <!--&lt;!&ndash; DW &ndash;&gt;-->
-                                    <!--<td class="text-right">15.00</td>-->
-                                    <!--<td class="text-right">123.00</td>-->
-                                    <!--&lt;!&ndash; OT &ndash;&gt;-->
-                                    <!--<td class="text-right">0.03</td>-->
-                                    <!--<td class="text-right">12.00</td>-->
-                                    <!--&lt;!&ndash; PR &ndash;&gt;-->
-                                    <!--<td class="text-right">11.00</td>-->
-                                    <!--<td class="text-right">300.00</td>-->
-                                    <!--&lt;!&ndash; Qty &ndash;&gt;-->
-                                    <!--<td class="text-right">105.75</td>-->
-                                    <!--<td class="text-right">305.75</td>-->
-                                    <!--&lt;!&ndash; Material&ndash;&gt;-->
-                                    <!--<td>Material 12kg</td>-->
-                                    <!--&lt;!&ndash; Cost &ndash;&gt;-->
-                                    <!--<td class="text-right">100.00</td>-->
-                                    <!--<td class="text-right">100.00</td>-->
-                                    <!--<td class="text-right">300.00</td>-->
-                                    <!--&lt;!&ndash; Cost/Uom &ndash;&gt;-->
-                                    <!--<td class="text-right">0.5</td>-->
-                                <!--</tr>-->
-
+                                <!-- Variable for total -->
+                                <t t-set="total_cost_labour" t-value="0"/>
+                                <t t-set="total_cost_material" t-value="0"/>
+                                <t t-set="total_cost" t-value="0"/>
 
                                 <!-- Coding -->
                                 <t t-foreach="get_upkeep_activity(data)" t-as="activity">
@@ -86,7 +64,7 @@
                                         <!-- TODO add message when no upkeep found -->
                                         <t t-if="activity.type == 'view'">
                                             <td><strong><span t-field="activity.general_account_id.code"/></strong></td>
-                                            <td colspan="16"><strong><span t-field="activity.name"/></strong></td>
+                                            <td colspan="17"><strong><span t-field="activity.name"/></strong></td>
                                         </t>
 
                                         <t t-if="activity.type == 'normal'">
@@ -104,6 +82,7 @@
                                                 <t t-if="location['id']==1">
                                                     <!-- query upkeep labour per location -->
                                                     <td><span t-esc="get_block_name(location['location_id'])"/></td>
+                                                    <td><span t-esc="get_block_planted_year(location['location_id'])"/></td>
                                                     <!-- DW -->
                                                     <td class="text-right"><span t-esc="location['number_of_day']"/></td>
                                                     <td class="text-right"><span t-esc="location['ytd_number_of_day']"/></td>
@@ -139,6 +118,7 @@
                                                     <tr>
                                                         <!-- query upkeep labour per location -->
                                                         <td><span t-esc="get_block_name(location['location_id'])"/></td>
+                                                        <td><span t-esc="get_block_planted_year(location['location_id'])"/></td>
                                                         <!-- DW -->
                                                         <td class="text-right"><span t-esc="location['number_of_day']"/></td>
                                                         <td class="text-right"><span t-esc="location['ytd_number_of_day']"/></td>
@@ -169,12 +149,57 @@
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
                                                     </tr>
                                                 </t>
+
+                                                <!-- Sum for single and multi location -->
+                                                <t t-set="total_cost_labour" t-value="total_cost_labour + amount_wage"/>
+                                                <t t-set="total_cost_material" t-value="total_cost_material + amount_material"/>
+                                                <t t-set="total_cost" t-value="total_cost + amount_wage + amount_material"/>
                                             </t>
+
                                         </t>
                                     </tr>
                                 </t>
+                                <tr>
+                                    <td colspan="14" class="text-right"><strong>Total Cost</strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost_labour)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost_material)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost)"/></strong></td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
+
+                        <!-- QR Code right align -->
+                        <table class="borderless" width="100%">
+                            <tr>
+                                <td style="vertical-align: bottom">
+                                    <table class="table table-bordered" style="font-size:65%; width: auto">
+                                        <tr>
+                                            <td style="width: 120px">Created By</td>
+                                            <td style="width: 120px">Checked By</td>
+                                            <td style="width: 120px">Approved By</td>
+                                        </tr>
+                                        <tr style="height: 80px">
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="text-right" style="vertical-align: bottom">
+                                    <img t-att-src="'/report/barcode/?type=%s&amp;value=%s&amp;width=%s&amp;height=%s'%('QR', get_qrcode(user), 70, 70)"/><br/>
+                                    <small><t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+                                </td>
+                            </tr>
+                        </table>
+
+
+
                     </div>
                 </t>
             </t>
