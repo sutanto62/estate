@@ -15,5 +15,18 @@
             </field>
         </record>
 
+        <record id="inherited_edit_attendance_reason" model="ir.ui.view">
+            <field name="name">hr.action.reason.form.inherited</field>
+            <field name="model">hr.action.reason</field>
+            <field name="inherit_id" ref="hr_attendance.edit_attendance_reason"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <field name="contract_type"/>
+                    <field name="contract_period"/>
+                    <field name="active"/>
+                </xpath>
+            </field>
+        </record>
+
     </data>
 </openerp>

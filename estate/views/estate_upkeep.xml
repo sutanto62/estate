@@ -62,6 +62,7 @@
                             domain="[('state', 'in', ('draft','confirmed'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
+                    <separator/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
