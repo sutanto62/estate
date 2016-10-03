@@ -8,8 +8,10 @@
                 <field name="property_stock_asset" position="after">
                     <field name="type_asset" string="Type Asset"/>
                     <field name="fleet_id" string="Vehicle" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','1')]}"/>
-                    <field name="product_id" string="Product" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','5'),
+                    <field name="product_id" string="Product" options="{'no_create_edit': True}"
+                           attrs="{'invisible': [('type_asset','!=','5'),
                     ('type_asset','!=','4'),('type_asset','!=','6'),('type_asset','!=','3')]}"/>
+                    <field name="company_id" string="Company" options="{'no_create_edit': True}"/>
                     <field name="asset_value" string="Asset Value"/>
                 </field>
             </field>
@@ -21,9 +23,10 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                  <xpath expr="//field[@name='property_account_income_id']" position="after">
-                    <field name="type_tools" attrs="{'readonly': ['|',('type_machine','=',True),('type_computing','=',True)]}"/>
-                    <field name="type_machine" attrs="{'readonly': ['|',('type_tools','=',True),('type_computing','=',True)]}"/>
-                     <field name="type_computing" attrs="{'readonly': ['|',('type_machine','=',True),('type_tools','=',True)]}"/>
+                     <field name="type_tools" />
+                     <field name="type_machine" />
+                     <field name="type_computing"/>
+                     <field name="type_other"/>
                  </xpath>
             </field>
         </record>

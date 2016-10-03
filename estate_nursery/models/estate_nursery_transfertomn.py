@@ -26,7 +26,6 @@ class TransferStocktoMn(models.Model):
                                           ('stage_id','=',2),
                                           ('scrap_location', '=', False)],
                                   help="Fill in location seed planted.", store=True)
-    vehicle_timesheet_ids = fields.One2many('estate.timesheet.activity.transport','owner_id')
     transfermnline_ids=fields.One2many('estate.nursery.transfermnline','transfermn_id')
 
     date_transfer = fields.Date('Date Transfer Mn',store=True)
@@ -126,47 +125,7 @@ class TransferStocktoMn(models.Model):
                     raise exceptions.ValidationError(error_msg)
         return True
 
-    @api.multi
-    @api.constrains('vehicle_timesheet_ids')
-    def _constraints_line_timesheet_mustbe_filled(self):
-        #Constraint Line activity_Transfer must be filled
-            countActivity = 0
-            for item in self:
-                countActivity += len(item.vehicle_timesheet_ids)
-            if countActivity == 0 :
-                error_msg = "Line Activity Must be filled"
-                raise exceptions.ValidationError(error_msg)
-
-    @api.one
-    @api.constrains('vehicle_timesheet_ids')
-    def _constraints_timesheet_unit(self):
-        #constraint timesheet for quantity unit not more than qty move
-        qty_unit = 0
-        if self.vehicle_timesheet_ids:
-            for timesheet in self.vehicle_timesheet_ids:
-                qty_unit += timesheet.unit
-            if qty_unit > self.qty_move:
-                error_msg = "Unit not more than \"%s\" in qty move" % self.qty_move
-                raise exceptions.ValidationError(error_msg)
-        return True
-
-    @api.one
-    @api.constrains('vehicle_timesheet_ids')
-    def _constraint_date_timesheet(self):
-        #constraint date in move to mn must be same in time sheet ids
-        if self.vehicle_timesheet_ids:
-            for vehicletimesheet in self.vehicle_timesheet_ids:
-                date = vehicletimesheet.date_activity_transport
-            if date > self.date_transfer:
-                error_msg = "Date not more than \"%s\" in Date move" % self.date_transfer
-                raise exceptions.ValidationError(error_msg)
-            elif date < self.date_transfer:
-                error_msg = "Date must be same \"%s\" in Date move" % self.date_transfer
-                raise exceptions.ValidationError(error_msg)
-
-
-
-class transferpntomnline(models.Model):
+class TransferPntoMnline(models.Model):
 
     _name="estate.nursery.transfermnline"
 

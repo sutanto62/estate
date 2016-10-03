@@ -15,13 +15,14 @@
              </field>
          </record>
 
-        <record model="ir.ui.view" id="inherit_maintenance_type_in_morder_tree">
-             <field name="name">Inherit maintenance type In Maintenance Order Tree</field>
+        <record model="ir.ui.view" id="inherit_maintenance_type_in_morder_form">
+             <field name="name">Inherit maintenance type In Maintenance Order</field>
              <field name="model">mro.order</field>
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='cause']" position="after">
                      <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type" readonly="1"/>
+                     <field name="image" string="Accident Image" attrs="{'invisible': [('state', '!=', 'ready'),('state','!=','done')]}"/>
                  </xpath>
              </field>
          </record>
@@ -78,7 +79,7 @@
                              </page>
                              <page string="Planned Sparepart's" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                      <button class="oe_inline" name="%(workshop_procurement_action5)d"
-                                          string="Part Request" target="new" type="action" icon="fa-shopping-cart" attrs="{'invisible': [('state', '=', 'done')]}">
+                                          string="Part Request" target="new" type="action" icon="fa-shopping-cart" attrs="{'invisible': [('state', '!=', 'draft')]}">
                                      </button>
                                      <field name="plannedpart_ids"  attrs="{'readonly': [('state', '!=', 'draft')]}"
                                         context="{'tree_view_ref' : 'estate_workshop.planned_sparepart_tree'}"/>
@@ -148,6 +149,9 @@
              <field name="arch" type="xml">
                  <xpath expr="//notebook/page[2]" position="before">
                       <page string="Sparepart" attrs="{'invisible': [('state', '!=', 'ready'),('state', '!=', 'done')]}">
+                          <button class="oe_inline" name="%(workshop_procurement_action5)d"
+                              string="Part Request" target="new" type="action" icon="fa-shopping-cart" attrs="{'invisible': [('state', '=', 'done')]}">
+                          </button>
                           <field name="actualpart_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
                              context="{'tree_view_ref' : 'estate_workshop.actual_sparepart_tree'}"/>
                       </page>
@@ -162,6 +166,10 @@
              <field name="inherit_id" ref="mro.mro_order_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='labor_description']" position="before">
+                     <separator string="Actual Mechanic"/>
+                     <field name="employeelineactual_ids" attrs="{'readonly': [('state', '=', 'done')]}"
+                                    context="{'tree_view_ref' : 'estate_workshop.view_workshop_employee_actual_line_tree'}"/>
+                     <separator string="Mechanic Timesheet's"/>
                      <field name="mecanictimesheet_ids" attrs="{'readonly': [('state', '!=', 'ready')]}"
                              context="{'tree_view_ref' : 'estate_workshop.view_mecanic_timesheet_tree'}"/>
                  </xpath>

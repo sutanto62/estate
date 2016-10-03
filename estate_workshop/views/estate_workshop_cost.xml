@@ -5,7 +5,7 @@
             <field name="model">v.summary.cost.workshop.detail</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree>
+                <tree create="false">
                     <field name="type_log" string="Type"/>
                     <field name="total_amount" string="&#931; Amount"/>
                 </tree>

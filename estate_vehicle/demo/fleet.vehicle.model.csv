@@ -1,0 +1,11 @@
+id,create_uid/id,create_date,write_uid/id,write_date,brand_id/id,name,vendors/id
+fleet_model_toyota1,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_toyota,HILUX,
+fleet_model_toyota2,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_toyota,HILINE,
+fleet_model_toyota3,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_toyota,Avanza,
+fleet_model_ford1,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_ford,Ranger,
+fleet_model_mitsubishi1,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_mitsubishi,Pajero,
+fleet_model_mitsubishi2,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_mitsubishi,Triton,
+fleet_model_daihatsu1,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet_brand_daihatsu,Xenia,
+fleet_model_toyota4,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_toyota,Fortuner,
+fleet_model_toyota5,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_toyota,Innova,
+fleet_model_nissan1,base.user_root,2016-09-01 06:28:53,base.user_root,2016-09-01 06:28:53,fleet.brand_nissan,X-Trail,

@@ -202,7 +202,7 @@
                 <field name="name">Vehicle Summary Available</field>
                 <field name="res_model">view.summary.vehicle.available</field>
                 <field name="view_mode">tree</field>
-                <field name="context">{"search_default_groupby_month":True,"search_default_groupby_year" : True}</field>
+                <field name="context">{"search_default_groupby_vehicle":True,"search_default_groupby_month":True,"search_default_groupby_year" : True}</field>
         </record>
 
         <menuitem id="estate_summary_vehicle_available" name="Vehicle Summary Available"

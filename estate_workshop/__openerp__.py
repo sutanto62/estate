@@ -44,6 +44,9 @@
         'views/estate_workshop_procurement.xml',
         'views/view_master_effectivedate_calendar.xml',
         'views/view_summary_vehicle_status.xml',
+        'views/inherit_fleet_vehicle.xml',
+        'views/Inherit_view_summary_cost_vehicle.xml',
+        'views/view_wwa_vehicle.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
@@ -51,6 +54,14 @@
         'demo/estate.activity.csv',
         'demo/estate_job_employee.xml',
         'demo/estate_workshop_code.xml',
+        'demo/fleet.vehicle.csv',
+        'demo/product.uom.csv',
+        # 'demo/product.ul.csv',
+        'demo/product.category.csv',
+        'demo/product.template.csv',
+        # 'demo/product.packaging.csv',
+        'demo/asset.asset.csv'
+
 
     ],
 }

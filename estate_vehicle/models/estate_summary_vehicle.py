@@ -99,6 +99,7 @@ class ViewSummaryCostVehicle(models.Model):
     timesheetsummary_ids = fields.One2many('view.summary.timesheet.vehicle','parent_id')
     month_log_text = fields.Text('Month')
     year_log_text = fields.Text('Year')
+    create_date = fields.Date('Date')
     total_time = fields.Float('Total Time')
     total_amount_per_month = fields.Float('Amount')
     amount_per_hour = fields.Float('Amount Per Hour')
@@ -110,6 +111,7 @@ class ViewSummaryCostVehicle(models.Model):
             e.year_log_text,
             e.month_log_text,
             e.vehicle_id,
+            create_date,
             Total_time as total_time,
             Total_amount_per_Month as total_amount_per_month,
             case when Total_time is null then  Total_amount_per_Month
@@ -118,7 +120,7 @@ class ViewSummaryCostVehicle(models.Model):
                     select
                         (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
                         to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
-                        year_log::text as year_log_text,
+                        year_log::text as year_log_text,to_date(to_char(create_date,'MM-DD-YYYY'),'MM-DD-YYYY') create_date,
                         vehicle_id,
                         sum(time_per_activity) as Total_time from (
                             select create_date,
@@ -128,7 +130,7 @@ class ViewSummaryCostVehicle(models.Model):
                             ts.end_time,
                             ts.start_time,
                             (ts.end_time - ts.start_time) as time_per_activity
-                            from estate_timesheet_activity_transport ts)a group by vehicle_id ,month_log, year_log
+                            from estate_timesheet_activity_transport ts)a group by vehicle_id ,month_log, year_log,create_date
                 )d right join (
                         select
                             parent_id,
@@ -389,14 +391,14 @@ class ViewBasisPremiSummaryVehicle(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view view_basispremi_vehicle_detail as
-            select row_number() over()id,c.date_activity_transport,c.total_trip,c.vehicle_id,count(*) "count",
+            select row_number() over()id,date_activity_transport,total_trip,vehicle_id,count(*) "count",
             to_char(to_timestamp (day_log::text, 'MM'), 'Day') as day_log_text,
             to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
             (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
             wage,total_trip_vehicle,c.employee_id,
             year_log::text as year_log_text,
-                CASE WHEN hrc.wage is null THEN 0
-                    ELSE ((c.total_trip/c.total_trip_vehicle)* hrc.wage)
+                CASE WHEN d.wage is null THEN 0
+                    ELSE ((c.total_trip/c.total_trip_vehicle)* d.wage)
                    END amount
                     from (
                 select
@@ -414,20 +416,18 @@ class ViewBasisPremiSummaryVehicle(models.Model):
             (
                 select count(ts.id) total_trip_vehicle,
                     ts.employee_id,
-                    date_part('day',ts.date_activity_transport) day_log,
+                    ts.vehicle_id,
                     date_part('month', ts.date_activity_transport) month_log,
                     date_part('year', ts.date_activity_transport) year_log
                         from estate_timesheet_activity_transport ts
-                    group by  day_log,month_log,year_log ,employee_id
-            )b on a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
-        ) c left join hr_contract hrc on c.employee_id = hrc.employee_id where hrc.date_end is null
-        group by c.vehicle_id,c.day_log,c.employee_id,
-        c.month_log ,
-        c.year_log ,
-        hrc.wage ,
-        c.total_trip,
-        c.total_trip_vehicle ,c.date_activity_transport
-        order by month_log;""")
+                    group by month_log,year_log ,employee_id,ts.vehicle_id
+            )b on a.vehicle_id = b.vehicle_id and a.employee_id = b.employee_id and a.month_log = b.month_log and a.year_log = b.year_log
+        ) c left join (select * from (
+                select hre.id as hre_id ,hrj.name as hrj_name, * from hr_employee hre
+                    inner join hr_job hrj on hre.job_id = hrj.id)a
+                    right join hr_contract hrc on hrc.employee_id = a.hre_id
+                    where hrc.date_end is null and hrj_name = 'Driver' or hrj_name = 'Helper')d on d.hre_id = c.employee_id where d.date_end is null and hrj_name = 'Driver' or hrj_name = 'Helper'
+            group by c.vehicle_id, c.month_log , c.year_log , d.wage , c.total_trip, c.total_trip_vehicle,c.employee_id,date_activity_transport,day_log_text,month_log_text order by month_log;""")
 
 class ViewTimesheetSummaryVehicle(models.Model):
 

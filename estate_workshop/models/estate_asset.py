@@ -21,6 +21,7 @@ class InheritAssetVehicle(models.Model):
     product_id = fields.Many2one('product.template')
     account_id = fields.Many2one('account.account','General Account')
     asset_value = fields.Float()
+    company_id = fields.Many2one('res.company','Company')
 
     #onchange
     @api.multi
@@ -38,6 +39,20 @@ class InheritAssetVehicle(models.Model):
             self.asset_value = self.product_id.standard_price
         if self.fleet_id:
             self.asset_value = self.fleet_id.car_value
+
+    @api.multi
+    @api.onchange('fleet_id','company_id')
+    def _onchange_company(self):
+        arrVehicle = []
+        if self.fleet_id:
+            vehicle = self.env['fleet.vehicle'].search([('id','=',self.fleet_id.id)])
+            for vehicle in vehicle:
+                arrVehicle.append(vehicle.company_id.id)
+            return {
+                'domain' : {
+                    'company_id' : [('id','in',arrVehicle)]
+                }
+            }
 
     @api.multi
     @api.onchange('product_id','type_asset')
@@ -75,9 +90,10 @@ class InheritAssetVehicle(models.Model):
     @api.constrains('account_id','criticality','start_date','asset_number','model','type_asset','fleet_id','product_id','user_id')
     def _constraint_asset(self):
         for asset in self:
-            if asset.account_id.id == False:
-                error_msg = "General Account Must be Filled"
-                raise exceptions.ValidationError(error_msg)
+            # Todo di commend karena belum membutuhkan general account
+            # if asset.account_id.id == False:
+            #     error_msg = "General Account Must be Filled"
+            #     raise exceptions.ValidationError(error_msg)
             if asset.type_asset == False:
                 error_msg = "Type Asset Must be Filled"
                 raise exceptions.ValidationError(error_msg)
@@ -113,5 +129,33 @@ class InheritTypetoolsProductTemplate(models.Model):
     type_tools = fields.Boolean('Type Tools',default=False)
     type_machine = fields.Boolean('Type Machine',default=False)
     type_computing = fields.Boolean('Type Computing',default=False)
+    type_other = fields.Boolean('Type Other',default=False)
+
+    @api.multi
+    @api.constrains('type_tools','type_machine','type_computing','type_other')
+    def _constraint_type(self):
+        if self.type_tools and self.type_computing and self.type_machine and self.type_other:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_tools and self.type_computing:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_tools and self.type_machine:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_computing and self.type_machine:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_other and self.type_machine:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_other and self.type_tools:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+        elif self.type_other and self.type_computing:
+            error_msg = "Product Type Not More Than one"
+            raise exceptions.ValidationError(error_msg)
+
+
 
 

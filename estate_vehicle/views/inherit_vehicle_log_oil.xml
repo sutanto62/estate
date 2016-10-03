@@ -7,27 +7,12 @@
              <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//div[@class='oe_button_box']" position="inside">
-                     <!--<button name="%(fleet_vehicle_log_oil_act)d"-->
-                         <!--type="action"-->
-                         <!--class="oe_stat_button"-->
-                         <!--icon="fa-flask"-->
-                         <!--help="show the oil logs for this vehicle">-->
-                         <!--<field name="oil_log_count" widget="statinfo" string="Oil"/>-->
-                     <!--</button>-->
-
-                     <button name="%(fleet_vehicle_log_otherservice_act)d"
-                         type="action"
+                     <button name="return_action_to_open_oil"
+                         type="object"
                          class="oe_stat_button"
-                         icon="fa-book"
-                         help="show the Other Service logs for this vehicle">
-                         <field name="other_service_log_count" widget="statinfo" string="Other Service"/>
-                     </button>
-                     <button name="%(fleet_vehicle_log_oil_act)d"
-                         type="action"
-                         class="oe_stat_button"
-                         icon="fa-book"
+                         icon="fa-book" context="{'xml_id':'fleet_vehicle_log_oil_act'}"
                          help="Show the Oil logs for this vehicle">
-                         <field name="other_service_log_count" widget="statinfo" string="Oil"/>
+                         <field name="oil_log_count" widget="statinfo" string="Oil"/>
                      </button>
                  </xpath>
              </field>
@@ -40,6 +25,17 @@
              <field name="arch" type="xml">
                  <xpath expr="//button[@icon='fa-wrench']" position="attributes">
                       <attribute name="attrs">{'invisible': True}</attribute>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_replace_button_cost_vehicle">
+             <field name="name">Inherit Replace attribute</field>
+             <field name="model">fleet.vehicle</field>
+             <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//button[@name='act_show_log_cost']" position="attributes">
+                     <attribute name="invisible">True</attribute>
                  </xpath>
              </field>
          </record>

@@ -8,64 +8,6 @@ import datetime
 from openerp import tools
 
 
-# def str_to_datetime(strdate):
-#     return datetime.datetime.strptime(strdate, tools.DEFAULT_SERVER_DATE_FORMAT)
-
-
-class NurseryVehicle(models.Model):
-
-
-    _inherit="fleet.vehicle"
-    _description = "inherit information detail to fleet management"
-
-    @api.model
-    @api.onchange('other_service_log_count','oil_log_count','sparepart_log_count')
-    def _count_all_service(self):
-        if self:
-            return {
-                vehicle_id:
-                    {
-                     'oil_log_count': self.env['estate.vehicle.log.oil'].search_count([('vehicle_id', '=', vehicle_id)]),
-                     'other_service_log_count': self.env['estate.vehicle.log.otherservice'].search_count([('vehicle_id', '=', vehicle_id)]),
-                     'sparepart_log_count': self.env['estate.vehicle.log.sparepart'].search_count([('vehicle_id', '=', vehicle_id)])
-                    }
-                for vehicle_id in self.ids
-            }
-
-    oil_log_count = fields.Integer('Oil Log Count')
-    other_service_log_count = fields.Integer('Other Service Log Count')
-    sparepart_log_count = fields.Integer('Sparepart Log Count')
-    category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
-    no_vehicle=fields.Char('No Vehicle')
-    # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
-    # employee_driver_id=fields.Many2one('hr.employee')
-    capacity_vehicle = fields.Integer('Capacity')
-    status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
-
-
-
-class InheritActivity(models.Model):
-
-    _inherit = 'estate.activity'
-    _description = 'inherit status'
-
-    status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
-
-class InheritFuel(models.Model):
-
-    _inherit ='fleet.vehicle.log.fuel'
-    _description = 'inherit product_id in fuel'
-
-    product_id = fields.Many2one('product.product',domain="[('type','=','consu'),('uom_id','=',11)]")
-
-    # #onchange
-    # @api.multi
-    # @api.onchange('price_pre_liter','product_id')
-    # def _onchange_priceperliter(self):
-    #     if self.product_id:
-    #         price_per_liter = self.product_id.standard_price
-    #     return True
-
 class VehicleOilLog(models.Model):
 
     _name="estate.vehicle.log.oil"
@@ -78,9 +20,12 @@ class VehicleOilLog(models.Model):
         vehicle = self.pool.get('fleet.vehicle').browse(cr, uid, vehicle_id, context=context)
         odometer_unit = vehicle.odometer_unit
         driver = vehicle.driver_id.id
+        cr.execute('select max(value) as value_odometer from fleet_vehicle_odometer where vehicle_id = %d' %(vehicle.id))
+        odometer = cr.fetchone()[0]
         return {
             'value': {
                 'odometer_unit': odometer_unit,
+                'odometer': odometer,
                 'purchaser_id': driver,
             }
         }
@@ -132,7 +77,6 @@ class VehicleOilLog(models.Model):
             model_id = False
         return model_id
 
-    name=fields.Char()
     cost_id = fields.Many2one('fleet.vehicle.cost',ondelete='cascade',required=True)
     cost_type_id = fields.Many2one('fleet.service.type')
     purchaser_id = fields.Many2one('res.partner',domain="['|',('customer','=',True),('employee','=',True)]")
@@ -149,7 +93,56 @@ class VehicleOilLog(models.Model):
         'cost_type': 'fuel',
     }
 
+class NurseryVehicle(models.Model):
 
+    _inherit="fleet.vehicle"
+    _description = "inherit information detail to fleet management"
+
+    def return_action_to_open_oil(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current vehicle """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'fleet', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_vehicle_id': ids[0]})
+            res['domain'] = [('vehicle_id','=', ids[0])]
+            return res
+        return False
+
+    @api.multi
+    @api.depends('oil_log_count')
+    def _count_all_service(self):
+             if self:
+                 count = self.env['estate.vehicle.log.oil'].search([('vehicle_id.id','=',self.id)])
+                 self.oil_log_count = len(count)
+
+    oil_log_count = fields.Integer('Oil Log Count',compute='_count_all_service')
+    other_service_log_count = fields.Integer('Other Service Log Count')
+    sparepart_log_count = fields.Integer('Sparepart Log Count')
+    category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
+    no_vehicle=fields.Char('No Vehicle')
+    # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
+    # employee_driver_id=fields.Many2one('hr.employee')
+    capacity_vehicle = fields.Integer('Capacity')
+    # status_vehicle = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+
+
+
+
+class InheritActivity(models.Model):
+
+    _inherit = 'estate.activity'
+    _description = 'inherit status'
+
+    status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+
+class InheritFuel(models.Model):
+
+    _inherit ='fleet.vehicle.log.fuel'
+    _description = 'inherit product_id in fuel'
+
+    product_id = fields.Many2one('product.product',domain="[('type','=','consu'),('uom_id','=',11)]")
 
 
 class VehicleSparepartLog(models.Model):
@@ -268,12 +261,285 @@ class MasterCategoryUnit(models.Model):
     name=fields.Char()
     type=fields.Selection([('1','Vehicle'), ('2','Unit ALL')])
 
-# class InheritActivityBreakDown(models.Model):
-#
-#     _inherit ='estate.activity'
-#     _description = "inherit to estate activity for type Break down"
-#
-#     type_breakdown = fields.Boolean('Type Breakdown')
+class FleetVehicleTimesheet(models.Model):
+
+    _name = 'fleet.vehicle.timesheet'
+
+    name = fields.Char()
+    vehicle_timesheet_code = fields.Char("VTS",store=True)
+    date_timesheet = fields.Date('Date',store=True)
+    reject_reason =  fields.Text('Reject Reason', readonly=True)
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirm', 'Send Timesheet'),
+        ('approve', 'Confirm'),
+        ('done', 'Done'),
+        ('reject', 'Rejected'),
+        ('cancel', 'Canceled')], string="State",store=True)
+    timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle')
+
+    _defaults = {
+        'state' : 'draft'
+    }
+
+    #sequence
+    def create(self, cr, uid,vals, context=None):
+        vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
+        res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
+        return res
+
+    def action_send(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'confirm'})
+        return True
+
+    @api.multi
+    def action_confirm(self,):
+        """ Confirms maintenance request.
+        @return: Newly generated Maintenance Order Id.
+        """
+        name = self.name
+        self.write({'name':"Vehicle Timesheet %s " %(name)})
+        self.do_create_vehicle_date()
+        self.do_create_vehicle_odometer_log()
+        self.write({'state': 'done'})
+        return True
+
+    def action_done(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'done', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
+
+    def action_reject(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'reject', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
+
+    def action_cancel(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'cancel', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
+
+    @api.multi
+    def do_create_vehicle_date(self):
+        date = False
+        fleet = self.env['fleet.vehicle.timesheet'].search([('id','=',self.id)])
+        for date in fleet:
+            date_data = {
+                'date_activity_transport': date.date_timesheet,
+            }
+            self.env['inherits.fleet.vehicle.timesheet'].search([('owner_id','=',fleet.id)]).write(date_data)
+        return True
+
+    @api.multi
+    def do_create_vehicle_odometer_log(self):
+        odometer = False
+        for odometer in self.env['inherits.fleet.vehicle.timesheet'].search([('owner_id','=',self.id)]):
+            odometer_data = {
+                'name':'Odometer',
+                'date': odometer.date_activity_transport,
+                'vehicle_id': odometer.vehicle_id.id,
+                'value': odometer.end_km,
+            }
+            self.env['fleet.vehicle.odometer'].create(odometer_data)
+        return True
+
+    #todo constraint timesheet
+    # @api.multi
+    # @api.constrains('timesheet_ids','date_timesheet')
+    # def _constraint_date_timesheet_vehicle(self):
+    #     #constraint date in timesheet vehicle must be same in time sheet ids
+    #     for item in self:
+    #         if item.date_timesheet:
+    #             if item.timesheet_ids:
+    #                 for vehicletimesheet in item.timesheet_ids:
+    #                     date = vehicletimesheet.date_activity_transport
+    #                     if date > item.date_timesheet:
+    #                         error_msg = "Date Timesheet Line not more than \"%s\" in Date Form" % self.date_timesheet
+    #                         raise exceptions.ValidationError(error_msg)
+    #                     elif date < item.date_timesheet:
+    #                         error_msg = "Date Timesheet Line must be same \"%s\" in Date Form" % self.date_timesheet
+    #                         raise exceptions.ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('date_timesheet')
+    def _constraint_date_timesheet(self):
+        tempdate = []
+        for item in self:
+            date = item.env['fleet.vehicle.timesheet'].search([('state','=','done')])
+            for date in date:
+                tempdate.append(date.date_timesheet)
+            if item.date_timesheet in tempdate:
+                error_msg = "Date Timesheet %s Not Use More Than One" %item.date_timesheet
+                raise exceptions.ValidationError(error_msg)
+
+
+class FleetVehicleTimesheetInherits(models.Model):
+
+    _name = 'inherits.fleet.vehicle.timesheet'
+    _inherits = {'estate.timesheet.activity.transport':'timesheet_id'}
+
+    timesheet_id = fields.Many2one('estate.timesheet.activity.transport',ondelete='cascade',required=True)
+    total_distance = fields.Float(digits=(2,2),compute='_compute_total_distance',store=True)
+    distance_location = fields.Float('Distance Location',store=True,compute='_onchange_distance_location')
+    total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
+    comment = fields.Text()
+
+    @api.multi
+    @api.onchange('dc_type')
+    def _onchange_dc_type(self):
+        if self:
+            self.dc_type = 5
+
+    #onchange ALL
+    @api.multi
+    @api.onchange('end_location')
+    def _onchange_path_location(self):
+        #use to onchange domain start location  same as master location path
+        if self:
+            arrStartlocation=[]
+            startlocation=self.env['path.location'].search([])
+            for a in startlocation:
+                    arrStartlocation.append(a.start_location.id)
+            return {
+                'domain':{
+                    'start_location':[('id','=',arrStartlocation)]
+                }
+        }
+
+    @api.multi
+    @api.onchange('start_location','end_location')
+    def _onchange_path_location(self):
+        #use to onchange domain end_location same as master location path
+        if self:
+            if self.start_location:
+                arrEndlocation=[]
+                endlocation=self.env['path.location'].search([('start_location.id','=',self.start_location.id)])
+                for b in endlocation:
+                    arrEndlocation.append(b.end_location.id)
+                return {
+                'domain':{
+                    'end_location':[('id','in',arrEndlocation)]
+                }
+        }
+
+    @api.multi
+    @api.depends('distance_location','end_location','start_location')
+    def _onchange_distance_location(self):
+        #to change distance location same master path location
+        for item in self:
+            if item.start_location and item.end_location:
+                arrDistance = 0
+                distancelocation = item.env['path.location'].search([
+                    ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
+                for c in distancelocation:
+                    arrDistance += c.distance_location
+                item.distance_location = arrDistance
+        return True
+
+    @api.multi
+    @api.onchange('employee_id')
+    def _onchange_driver(self):
+        arrDriver = []
+        if self:
+            hrjob = self.env['hr.job'].search([('name','=','Driver')],limit = 1).id
+            driver = self.env['hr.employee'].search([('job_id.id','=',hrjob)])
+            for d in driver:
+                arrDriver.append(d.id)
+        return {
+                'domain':{
+                    'employee_id':[('id','in',arrDriver)]
+                }
+        }
+
+    @api.multi
+    @api.onchange('vehicle_id')
+    def onchange_vehicle(self):
+        arrVehicletransport =[]
+        if self:
+            if self.dc_type == '1':# dc type 1 refer to seed do
+                dotransportir = self.env['estate.nursery.dotransportir'].search([('seeddo_id.id','=',self.owner_id)])
+                for vehicle in dotransportir:
+                    arrVehicletransport.append(vehicle.estate_vehicle_id.id)
+                return {
+                    'domain':{
+                        'vehicle_id':[('id','in',arrVehicletransport)]
+                        }
+                    }
+            else :
+                vehicle=self.env['fleet.vehicle'].search([('maintenance_state_id.id','=',21)])
+                for v in vehicle:
+                    arrVehicletransport.append(v.id)
+                return {
+                    'domain':{
+                        'vehicle_id':[('id','in',arrVehicletransport)]
+                        }
+                    }
+
+    #Computed ALL
+    @api.multi
+    @api.depends('start_time','end_time','total_time')
+    def _compute_total_time(self):
+        self.ensure_one()
+        #to compute total_time
+        if self:
+            if self.start_time and self.end_time:
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                self.total_time =calculate_endtime-calculate_starttime
+                if self.total_time < 0 :
+                    self.total_time = 0
+        return True
+
+    @api.multi
+    @api.depends('start_km','end_km','total_distance')
+    def _compute_total_distance(self):
+        #to Compute total Distance
+        for item in self:
+            if item.end_km and item.start_km:
+                item.total_distance = item.end_km - item.start_km
+            return True
+
+    #Constraint ALL
+
+    @api.multi
+    @api.constrains('start_km','end_km')
+    def _constraint_startkm_endkm(self):
+
+        for item in self:
+            if item.end_km < item.start_km:
+                error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
+                raise exceptions.ValidationError(error_msg)
+            return True
+
+    @api.multi
+    @api.constrains('start_time','end_time')
+    def _constraint_starttime_endtime(self):
+        Max = float(24.0)
+        Min = float(0.0)
+        if self:
+            if self.start_time < Min:
+                error_msg = "Start Time Not More Less Than 00:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time < Min:
+                error_msg = "End Time Not More Less Than 00:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.start_time >  Max:
+                error_msg = "Start Time Not More Than 24:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time > Max :
+                error_msg = "End Time Not More Than 24:00"
+                raise exceptions.ValidationError(error_msg)
+            if self.end_time < self.start_time:
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                error_msg="End Time  %s is set more less than Start Time %s " %(calculate_endtime,calculate_starttime)
+                raise exceptions.ValidationError(error_msg)
+            return True
+
+
+
+
+
+
+
+
 
 
 

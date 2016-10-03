@@ -6,37 +6,84 @@
              <field name="model">estate.nursery.transfermn</field>
              <field name="inherit_id" ref="estate_nursery.view_form_transferto_mn"/>
              <field name="arch" type="xml">
-                 <notebook position="inside">
-                    <xpath expr="//page[@string='Transfer  Information']" position="after">
+                    <xpath expr="//page[@name='vehicle_information']" position="inside">
                          <page string="Vehicle Information">
                              <tree>
                                  <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
                                         'readonly': [('state','=','done')]}"
-                                        context="{'tree_view_ref' : 'estate_nursery.view_tree_timesheet_activity_transport',
+                                        context="{'tree_view_ref' : 'estate_vehicle.view_tree_timesheet_activity_transport',
                                                'default_dc_type' : 2}"/>
                              </tree>
                          </page>
                      </xpath>
-                 </notebook>
              </field>
          </record>
 
-         <record model="ir.ui.view" id="inherit_view_field_view_timesheet_transfermn_activity">
+         <record model="ir.ui.view" id="inherit_view_field_view_timesheet_seeddo_activity">
              <field name="name">Inherit timesheet SPB</field>
              <field name="model">estate.nursery.seeddo</field>
              <field name="inherit_id" ref="estate_nursery.view_form_seeddo"/>
              <field name="arch" type="xml">
-                 <xpath expr="//page[@string='Detail Transportir']" position="after">
-                     <page string="Vehicle Information">
+                 <xpath expr="//page[@name='detail_transportir']" position="after">
+                     <page string="Vehicle Timesheet">
                          <tree>
-                             <field name="vehicle_timesheet_ids" track_visibility="onchange" attrs="{'required': [('state','=','draft')],
-                                    'readonly': [('state','=','done')]}"
-                                    context="{'tree_view_ref' : 'estate_nursery.view_tree_timesheet_activity_transport',
-                                           'default_dc_type' : 2}"/>
+                             <field name="timesheet_ids" track_visibility="onchange" attrs="{
+                                    'readonly': [('state','!=','confirmed')]}"
+                                    context="{'tree_view_ref' : 'estate_vehicle.view_spb_timesheet_tree',
+                                           'default_dc_type' : 1}"/>
                          </tree>
                      </page>
                  </xpath>
              </field>
          </record>
+
+         <record model="ir.ui.view" id="view_form_vehicleadd_employeeinternal_inherited">
+            <field name="name">Vehicle - Extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[1]" position="before">
+                    <group string="Vehicle Information">
+                        <!--<field name="no_vehicle"/>-->
+                        <field name="vehicle_type"/>
+                    </group>
+                    <group string="Internal Driver" attrs="{'invisible': [('vehicle_type','=','2')]}" >
+                        <field name="employee_driver_id" string="Driver Internal" options="{'no_create_edit': True}"/>
+                    </group>
+                </xpath>
+                <!--<group string="Additional Properties" position="before">-->
+                <!--</group>-->
+            </field>
+        </record>
+
+        <record id="view_spb_timesheet_tree" model="ir.ui.view" >
+            <field name="name">SPB Timesheet Tree</field>
+            <field name="model">estate.spb.vehicle.timesheet</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="id" invisible="1"/>
+                    <field name="date_activity_transport" string="Date Activity"/>
+                    <field name="owner_id"  invisible="1" readonly="1"/>
+                    <field name="dc_type" invisible="1"/>
+                    <field name="fleet_id" string="Vehicle" options="{'no_create_edit': True}"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
+                    <field name="employee_id" string="Driver/Helper" options="{'no_create_edit': True}"/>
+                    <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
+                    <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
+                    <field name="unit" string="Unit"/>
+                    <field name="start_location" string="Start Location" options="{'no_create_edit': True}"/>
+                    <field name="end_location" string="End Location" options="{'no_create_edit': True}"/>
+                    <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
+                    <field name="start_km" string="Start KM"/>
+                    <field name="end_km" string="End KM"/>
+                    <field name="total_distance" string="&#916; KM"/>
+                    <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
+                    <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
+                    <field name="total_time" string="&#916; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                </tree>
+            </field>
+        </record>
+
     </data>
 </openerp>

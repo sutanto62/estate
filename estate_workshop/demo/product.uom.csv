@@ -1,0 +1,5 @@
+id,active,factor_inv,create_uid/id,create_date,write_uid/id,write_date,factor,rounding,uom_type,name,category_id/id
+product_product_uom_pcs,True,1,base.user_root,2016-09-01 06:31:45,base.user_root,2016-09-01 06:31:45,1,0.01,Reference Unit of Measure for this category,pcs,product.product_uom_categ_unit
+product_product_uom_butir,True,1,base.user_root,2016-09-01 06:31:45,base.user_root,2016-09-01 06:31:45,1,0.01,Reference Unit of Measure for this category,Butir,product.product_uom_categ_unit
+product_product_uom_sheet,True,1,base.user_root,2016-09-01 06:31:45,base.user_root,2016-09-01 06:31:45,1,0.01,Reference Unit of Measure for this category,sheets,product.product_uom_categ_unit
+product_product_uom_ekor,True,1,base.user_root,2016-09-01 06:31:45,base.user_root,2016-09-01 06:31:45,1,0.01,Reference Unit of Measure for this category,Ekor,product.product_uom_categ_unit

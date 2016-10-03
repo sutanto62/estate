@@ -41,8 +41,6 @@ class MasterTask(models.Model):
     type_subtask = fields.Many2one('estate.master.type.task','Sub Task')
     type_list_task = fields.Many2one('estate.master.type.task','List task')
 
-
-
     #onchange
     @api.multi
     @api.onchange('type_task1','type_subtask')
@@ -210,6 +208,7 @@ class MecanicTimesheets(models.Model):
     timesheet_id = fields.Many2one('estate.timesheet.activity.transport',ondelete='cascade',required=True)
     asset_id = fields.Many2one('asset.asset')
     task_id = fields.Many2one('mro.task')
+    contract_key = fields.Boolean('Contract Active')
     key = fields.Integer()
 
     #onchange
@@ -227,13 +226,28 @@ class MecanicTimesheets(models.Model):
                     }
                 }
 
-    #onchange
+    @api.multi
+    @api.onchange('contract_key','employee_id')
+    def _onchange_contract_key(self):
+        if self:
+            for item in self:
+                if item.employee_id:
+                    employee = item.env['hr.employee'].search([('id','=',item.employee_id.id)])
+                    contract = item.env['hr.contract'].search([('employee_id.id','=',employee[0].id)])
+                    for employeecontract in contract:
+                        if  employeecontract.date_end != False and employeecontract.date_end <= item.date_activity_transport:
+                            self.contract_key = False
+                        else :
+                            self.contract_key = True
+
+
     @api.multi
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         arrEmployee=[]
+        #onchange Employee ID same ase employee line
         if self:
-            employee = self.env['estate.workshop.employeeline'].search([('mro_id','=',self.owner_id)])
+            employee = self.env['estate.workshop.employeeline.actual'].search([('mro_id','=',self.owner_id)])
             for a in employee:
                 arrEmployee.append(a.employee_id.id)
             return {
@@ -254,7 +268,7 @@ class MecanicTimesheets(models.Model):
     def _onchange_mastertask_id(self):
         arrOrder = []
         if self:
-            mroorder = self.env['estate.workshop.plannedtask'].search([('mro_id','=',self.owner_id)])
+            mroorder = self.env['estate.workshop.actualtask'].search([('mro_id','=',self.owner_id)])
             for order in mroorder:
                 arrOrder.append(order.mastertask_id.id)
             return {
@@ -298,7 +312,7 @@ class MecanicTimesheets(models.Model):
 
     @api.multi
     @api.onchange('vehicle_id','asset_id')
-    def _onchange_vehciel_id(self):
+    def _onchange_vehicle_id(self):
         if self:
             self.vehicle_id = self.asset_id.fleet_id
 
@@ -312,6 +326,15 @@ class WorkshopCode(models.Model):
 class EmployeeLine(models.Model):
 
     _name = 'estate.workshop.employeeline'
+
+    employee_id = fields.Many2one('hr.employee',
+                                  domain=[('contract_type','!=','Null'),
+                                          ('contract_period','!=','Null'),('job_id.name','=','Mechanic')])
+    mro_id = fields.Integer('MRO')
+
+class EmployeeLineActual(models.Model):
+
+    _name = 'estate.workshop.employeeline.actual'
 
     employee_id = fields.Many2one('hr.employee',
                                   domain=[('contract_type','!=','Null'),
@@ -352,31 +375,37 @@ class MasterWorkshopShedulePlan(models.Model):
 
         return True
 
-    @api.multi
-    @api.onchange('asset_id','category_id')
-    def _onchange_category_id(self):
-        arrUnit=[]
-        if self.asset_id:
-            if self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
-                asset = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id
-                fleet = self.env['fleet.vehicle'].search([('id','=',asset[0].id)]).category_unit_id
-                categunit = self.env['master.category.unit'].search([('id','=',fleet[0].id)])
-                for unit in categunit:
-                    arrUnit.append(unit.id)
-                    return {
-                        'domain':{
-                         'category_id' : [('id','in',arrUnit)]
-                        }
-                    }
-            elif self.asset_id != self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
-                categunit = self.env['master.category.unit'].search([('type','=','2')])
-                for unit in categunit:
-                    arrUnit.append(unit.id)
-                    return {
-                        'domain':{
-                         'category_id' : [('id','in',arrUnit)]
-                        }
-                    }
+    # @api.multi
+    # @api.onchange('asset_id','category_id')
+    # def _onchange_category_id(self):
+    #     arrUnit=[]
+    #     if self.asset_id:
+    #         if self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
+    #             asset = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id
+    #             fleet = self.env['fleet.vehicle'].search([('id','=',asset[0].id)]).category_unit_id
+    #             categunit = self.env['master.category.unit'].search([('id','=',fleet[0].id)])
+    #             for unit in categunit:
+    #                 arrUnit.append(unit.id)
+    #                 return {
+    #                     'domain':{
+    #                      'category_id' : [('id','in',arrUnit)]
+    #                     }
+    #                 }
+    #         elif self.asset_id != self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id:
+    #             categunit = self.env['master.category.unit'].search([('type','=','2')])
+    #             for unit in categunit:
+    #                 arrUnit.append(unit.id)
+    #                 return {
+    #                     'domain':{
+    #                      'category_id' : [('id','in',arrUnit)]
+    #                     }
+    #                 }
+    #         else:
+    #             return {
+    #                 'domain':{
+    #                      'category_id' : [('id','=',False)]
+    #                     }
+    #             }
 
 class MasterWorkshopShedulePlanLine(models.Model):
 
@@ -501,32 +530,6 @@ class ExternalOrder(models.Model):
                 temp[costtype.id] = costtype_value_name
             return temp
 
-    @api.multi
-    @api.constrains('vendor_id','amount','date')
-    def _constraint_vendor_id(self):
-        fmt = '%Y-%m-%d'
-        for external in self.read(['vendor_id','amount','date']):
-            if external['amount'] == 0 :
-                    error_msg = "Field Amount Must be Filled"
-                    raise exceptions.ValidationError(error_msg)
-            if external['date'] != self.env['mro.order'].search([('id','=',self.owner_id)]).date_planned:
-                    error_msg = "Field Date Must be Match With Date in Maintenance Order"
-                    raise exceptions.ValidationError(error_msg)
-            if external['vendor_id'] != True:
-                    error_msg = "Field Vendor Must be Filled"
-                    raise exceptions.ValidationError(error_msg)
-            return False
-        return True
-            # if self.amount == 0 :
-            #         error_msg = "Field Amount Must be Filled"
-            #         raise exceptions.ValidationError(error_msg)
-            # if self.date != self.env['mro.order'].search([('id','=',self.owner_id)]).date_planned:
-            #         error_msg = "Field Date Must be Match With Date in Maintenance Order"
-            #         raise exceptions.ValidationError(error_msg)
-            # if self.vendor_id != True:
-            #         error_msg = "Field Vendor Must be Filled"
-            #         raise exceptions.ValidationError(error_msg)
-
 
 class PlannedSparepart(models.Model):
 
@@ -534,42 +537,24 @@ class PlannedSparepart(models.Model):
     _description = 'Planning Sparepart'
 
     name = fields.Char('Planned Sparepart')
-    qty_available = fields.Float('Quantity Available',readonly=True,store=True,compute='_onchange_get_qty_available')
+    qty_available = fields.Float('Quantity Available',readonly=False,store=True)
     product_id = fields.Many2one('product.product','Product')
     qty_product = fields.Float('Quantity Product')
     uom_id = fields.Many2one('product.uom','UOM')
     owner_id = fields.Integer('Owner')
 
     @api.multi
-    @api.depends('qty_available','product_id')
+    @api.onchange('qty_available','product_id')
     def _onchange_get_qty_available(self):
         arrQty=[]
-        if self:
-            if self.product_id:
-                qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
-                for a in qty:
-                    arrQty.append(a.qty)
-                for a in arrQty:
-                    qty = float(a)
-                    self.qty_available = qty
-                return True
+        if self.product_id:
+            qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
+            for a in qty:
+                arrQty.append(a.qty)
+            for a in arrQty:
+                qty = float(a)
+                self.qty_available = qty
 
-    # @api.multi
-    # @api.onchange('product_id')
-    # def _onchange_product_id(self):
-    #     arrProduct =[]
-    #     if self:
-    #         listmastertask = self.env['estate.workshop.plannedtask'].search([('owner_id','=',self.owner_id)]).mastertask_id
-    #         for listmastertask in listmastertask:
-    #             mastertask = self.env['estate.workshop.mastertask'].search([('id','=',listmastertask[0].id)])
-    #             taskline = self.env['estate.workshop.mastertaskline'].search([('mastertask_id','=',mastertask[0].id)]).task_id
-    #             taskpartline = self.env['mro.task.parts.line'].search([('task_id.id','=',taskline[0].id)]).parts_id
-    #             arrProduct.append(taskpartline.id)
-    #         return {
-    #             'domain':{
-    #                 'product_id' : [('id','in',arrProduct)]
-    #             }
-    #         }
 
     @api.multi
     @api.onchange('uom_id','product_id')
@@ -601,22 +586,21 @@ class ActualSparepart(models.Model):
     product_id = fields.Many2one('product.product','Product')
     qty_product = fields.Float('Quantity Product')
     uom_id = fields.Many2one('product.uom','UOM')
-    qty_available = fields.Float('Quantity Available',readonly=True,store=True,compute='_onchange_get_qty_available')
+    qty_available = fields.Float('Quantity Available',readonly=False,store=True)
     owner_id = fields.Integer('Owner')
 
     @api.multi
-    @api.depends('qty_available','product_id')
+    @api.onchange('qty_available','product_id')
     def _onchange_get_qty_available(self):
         arrQty=[]
-        if self:
-            if self.product_id:
-                qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
-                for a in qty:
-                    arrQty.append(a.qty)
-                for a in arrQty:
-                    qty = float(a)
-                    self.qty_available = qty
-            return True
+        if self.product_id:
+            qty = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
+            for a in qty:
+                arrQty.append(a.qty)
+            for a in arrQty:
+                qty = float(a)
+                self.qty_available = qty
+
 
     @api.multi
     @api.onchange('uom_id','product_id')

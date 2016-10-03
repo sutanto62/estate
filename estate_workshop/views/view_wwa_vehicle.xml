@@ -1,0 +1,212 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_cost_workshop_tree">
+            <field name="name">View Cost Workshop Tree</field>
+            <field name="model">v.cost.workshop</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="type_log" string="Type"/>
+                    <field name="mo_id" string="Maintenance Order"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="count" string="Qty"/>
+                    <field name="total_amount" string="Total Amount"/>
+                    <field name="parent_id" string="Parent Id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='view_summary_cost_vehicle_detail_search'>
+            <field name="name">View Cost Workshop Search</field>
+            <field name="model">v.cost.workshop</field>
+            <field name="arch" type="xml">
+                <search string="Cost Workshop Search" >
+                    <field name="type_log" string="Type"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="year_log_text" string="Year"/>
+                    <field name="count" string="Qty"/>
+                    <field name="total_amount" string="Total Amount"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
+                        <filter name="groupby_type" context="{'group_by' : 'type_log'}" string="Type"/>
+                        <filter name="groupby_month" context="{'group_by' : 'month_log_text'}" string="Month"/>
+                        <filter name="groupby_year" context="{'group_by' : 'year_logtext_'}" string="Year"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_workshop_working_account_vehicle_tree">
+            <field name="name">View Workshop Working Account Vehicle</field>
+            <field name="model">v.workshop.working.account.vehicle</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree create="false" edit="false">
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="total_amount_per_month" string="Total Amount"/>
+                    <field name="total_time" string="Total Time"/>
+                    <field name="amount_per_hour" string="Total Amount Per Hour"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='view_workshop_working_account_vehicle_form'>
+            <field name="name">View Workshop Working Account Form</field>
+            <field name="model">v.workshop.working.account.vehicle</field>
+            <field name="arch" type="xml">
+                <form string="View Summary Cost Vehicle" create="false" edit="false">
+                    <sheet>
+                        <div class="oe_title">
+                             <h3>
+                                 <label string="Workshop Working Account Vehicle "/>
+                                 <field name="vehicle_id" class="oe_inline" readonly="1"/>
+                                 <field name="month_log_text" string="Month" class="oe_inline" readonly="1" />
+                                 <field name="year_log_text" class="oe_inline" readonly="1" />
+                             </h3>
+                        </div>
+                        <field name="cost_ids"/>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="total_amount_per_month" string="&#931; Amount per Month "/>
+                            <field name="total_time" widget="monetary" readonly="1"
+                                               options="{'currency_field': 'currency_id'}"/>
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                                <label for="amount_per_hour"/>
+                            </div>
+                            <field name="amount_per_hour" nolabel="1" class="oe_subtotal_footer_separator"
+                                   widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
+                        </group>
+                        <group col="2">
+                            <notebook>
+                                <page string="Timesheet Mechanic Details">
+                                    <field name="timesheet_mechanic_ids"/>
+                                </page>
+                                <page string="Detail Cost Vehicle">
+                                    <notebook>
+                                        <page name="detail_basis" string="Detail Basis &amp; Premi">
+                                            <field name="basicsalary_ids"/>
+                                        </page>
+                                        <page name="detail_service" string="Detail Sparepart">
+                                            <field name="sparepart_ids"/>
+                                        </page>
+                                        <!--<page name="detail_sparepart" string="Detail Service Internal">-->
+                                                <!--&lt;!&ndash;<field name="sparepartsummary_ids"/>&ndash;&gt;-->
+                                        <!--</page>-->
+                                        <!--&lt;!&ndash;<page string="Detail Other Service">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<field name="otherservicesummary_ids"/>&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</page>&ndash;&gt;-->
+                                        <!--<page name="detail_fuel" string="Detail Fuel">-->
+                                                <!--&lt;!&ndash;<field name="fuelsummary_ids"/>&ndash;&gt;-->
+                                        <!--</page>-->
+                                        <!--<page name="detail_oil" string="Detail Oil">-->
+                                                <!--&lt;!&ndash;<field name="oilsummary_ids"/>&ndash;&gt;-->
+                                        <!--</page>-->
+                                    </notebook>
+                                </page>
+                            </notebook>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='view_workshop_working_account_search'>
+            <field name="name">View Workshop Working AccountSearch</field>
+            <field name="model">v.workshop.working.account.vehicle</field>
+            <field name="arch" type="xml">
+                <search string="workshop Working Account" >
+                    <field name="year_log_text" string="Year"/>
+                    <field name="month_log_text" string="Month"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="ts_create_date" string="Date"/>
+                    <field name="total_amount_per_month" string="Total Amount"/>
+                    <field name="total_time" string="Total Amount"/>
+                    <field name="amount_per_hour" string="Total Amount"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_vehicle" context="{'group_by' : 'vehicle_id'}" string="Vehicle"/>
+                        <filter name="groupby_month" context="{'group_by' : 'month_log_text'}" string="Month"/>
+                        <filter name="groupby_year" context="{'group_by' : 'year_log_text'}" string="Year"/>
+                        <filter name="groupby_date" context="{'group_by' : 'ts_create_date'}" string="Date"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+         <record model="ir.ui.view" id="view_timesheet_mechanic_vehicle_tree">
+            <field name="name">View Time Sheet Mechanic Summary Vehicle</field>
+            <field name="model">v.timesheet.mechanic.workshop.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="ts_create_date" string="Date"/>
+                    <field name="day_log" string="Day" invisible="1"/>
+                    <field name="year_log" string="Year" invisible="1"/>
+                    <field name="month_log" string="Month" invisible="1"/>
+                    <field name="employee_id" string="Mechanic"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="mastertask_id" string="Master Task"/>
+                    <field name="task_id" string="Task"/>
+                    <field name="start_time" string="Start Time" />
+                    <field name="end_time" string="End Time"/>
+                    <field name="time_per_activity" string="&#931; Time"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_basic_salary_mechanic_tree">
+            <field name="name">View Basic Salary Mechanic</field>
+            <field name="model">view.basic.salary.mechanic</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="date_activity_transport" string="Date"/>
+                    <field name="day_log_text" string="Day" invisible="1"/>
+                    <field name="year_log_text" string="Year" invisible="1"/>
+                    <field name="month_log_text" string="Month" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" invisible="1"/>
+                    <field name="employee_id" string="Employee"/>
+                    <field name="total_trip" string="&#931; Work"/>
+                    <field name="amount" string="&#931; Amount"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_summary_workshop_sparepart_tree">
+            <field name="name">View Summary Sparepart for vehicle</field>
+            <field name="model">v.workshop.summary.sparepart</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date_execution" string="Date"/>
+                    <field name="year_log" string="Year" invisible="1"/>
+                    <field name="mro_id" string="Maintenance Order"/>
+                    <field name="product_id" string="Part"/>
+                    <field name="qty_product" string="Qty Product"/>
+                    <field name="cost" string="Cost"/>
+                    <field name="amount" string="Total Amount" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_view_wwa_vehicle">
+                <field name="name">Workshop Working Account</field>
+                <field name="res_model">v.workshop.working.account.vehicle</field>
+                <field name="view_mode">tree,form</field>
+                <field name="context">{"search_default_groupby_date": True}</field>
+        </record>
+
+        <menuitem name="Maintenance Report"
+           id="menu_mro_maintenance_report"
+            parent="base.menu_mro_root"
+            sequence="81"/>
+
+        <menuitem id="cost_wwa_vehicle" name="Workshop Working Account(WWA)"
+                  parent="menu_mro_maintenance_report"
+                  action="action_list_view_wwa_vehicle"
+                 groups="fleet.group_fleet_manager" sequence="14"/>
+
+    </data>
+</openerp>

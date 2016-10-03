@@ -1,7 +1,16 @@
 <openerp>
     <data>
 
-
+        <record model="ir.ui.view" id="view_workshop_employee_actual_line_tree">
+            <field name="name">View Workshop Employee Actual Line Tree</field>
+            <field name="model">estate.workshop.employeeline.actual</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="employee_id" options="{'no_create_edit': True}" string="Employee"/>
+                </tree>
+            </field>
+         </record>
 
         <record model="ir.ui.view" id="view_workshop_employee_line_tree">
             <field name="name">View Workshop Employee Line Tree</field>
@@ -57,13 +66,14 @@
             <field name="model">estate.mecanic.timesheet</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree editable="bottom">
+                <tree editable="bottom" colors="orange:contract_key!=True">
                     <field name="id" invisible="1"/>
                     <field name="date_activity_transport" string="Date Activity"/>
                     <field name="owner_id"  invisible="1" readonly="1"/>
                     <field name="dc_type" invisible="1" readonly="0"/>
                     <field name="asset_id" string="Asset" options="{'no_create_edit': True}"/>
                     <field name="vehicle_id" invisible="1" readonly="0"/>
+                    <field name="contract_key" invisible="1"/>
                     <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
                     <field name="mastertask_id" options="{'no_create_edit': True}" string="Master Task"/>
                     <field name="task_id" string="Task" options="{'no_create_edit': True}"/>

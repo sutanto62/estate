@@ -726,7 +726,11 @@ class UpkeepLabour(models.Model):
                                               order='date_start desc',
                                               limit=1)
         if not wage:
-            error_msg = _("No Regional Wage defined.")
+            if not self.upkeep_id.activity_line_ids:
+                # For empty activity line
+                error_msg = _('Upkeep Activity should be defined first')
+            else:
+                error_msg = _("No Regional Wage defined.")
             raise ValidationError(error_msg)
 
         # Latest contract before upkeep date if any

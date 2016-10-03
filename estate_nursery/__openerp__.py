@@ -31,9 +31,10 @@
 
     # any module necessary for this one to work correctly
     'depends': ['estate','base',
-                'fleet','purchase',
+                'purchase',
                 'report','board',
-                'web_readonly_bypass','mail','estate_vehicle'],
+                'web_readonly_bypass','mail'],
+    # estate_vehicle'
     # always loaded
     'data': [
         'demo/partner_data.xml',
