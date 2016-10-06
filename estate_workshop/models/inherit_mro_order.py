@@ -37,6 +37,7 @@ class InheritMroOrder(models.Model):
                                      ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')],
                                     )
     image = fields.Binary('image',help="Select image here")
+    category_unit_id = fields.Many2one('master.category.unit','Category')
 
     # Group code constraint
     @api.multi
@@ -155,35 +156,18 @@ class InheritMroOrder(models.Model):
     @api.constrains('employeeline_ids')
     def _constraint_employee_value(self):
         if self.employeeline_ids:
+            temp = 0
             for manpower in self.plannedtask_ids:
                 plannedmanpower = manpower.planned_manpower
-            if len(self.employeeline_ids) > plannedmanpower:
+                temp += plannedmanpower
+            if len(self.employeeline_ids) > temp:
                 error_msg = "Employee is set not more than Planned Manpower"
                 raise exceptions.ValidationError(error_msg)
-            elif len(self.employeeline_ids) < plannedmanpower:
+            elif len(self.employeeline_ids) < temp:
                 error_msg = "Employee is set not more less than Planned Manpower"
                 raise exceptions.ValidationError(error_msg)
 
-    # @api.multi
-    # @api.constrains('employeelineactual_ids')
-    # def _constraint_employee_actual_value(self):
-    #     if self.employeelineactual_ids:
-    #         for manpower in self.actualtask_ids:
-    #             actualmanpower = manpower.actual_manpower
-    #         if len(self.employeelineactual_ids) > actualmanpower:
-    #             error_msg = "Employee is set not more than Actual Manpower"
-    #             raise exceptions.ValidationError(error_msg)
-    #         elif len(self.employeelineactual_ids) < actualmanpower:
-    #             error_msg = "Employee is set not more less than Actual Manpower"
-    #             raise exceptions.ValidationError(error_msg)
 
-    # @api.model
-    # def create(self, vals):
-    #     result = super(InheritMroOrder, self).create(vals)
-    #     if not result.plannedpart_ids:
-    #         error_msg = "Planned Part Must Be filled"
-    #         raise exceptions.ValidationError(error_msg)
-    #     return result
 
     #---------------------------------------------------------------------------------------------
 
@@ -299,6 +283,13 @@ class InheritMroOrder(models.Model):
             if len(item.mecanictimesheet_ids) < 1:
                 for actual in item.actualtask_ids:
                     actual.write({'actual_hour':0})
+
+    @api.multi
+    @api.onchange('category_unit_id','asset_id')
+    def _onchange_category_unit_id(self):
+        for record in self:
+            if record.asset_id:
+                record.category_unit_id = record.asset_id.category_unit_id
 
     @api.multi
     def action_ready(self):

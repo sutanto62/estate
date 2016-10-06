@@ -6,7 +6,8 @@
              <field name="inherit_id" ref="mro.mro_request_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
-                    <field name="type_asset" string="Service Type"/>
+                     <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
+                     <field name="type_asset" string="Service Type"/>
                  </xpath>
              </field>
         </record>
@@ -28,7 +29,8 @@
              <field name="inherit_id" ref="mro.mro_task_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
-                    <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
+                      <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
+                      <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
                  </xpath>
              </field>
         </record>
@@ -79,6 +81,7 @@
                             <group string="Master Task">
                                 <field name="name" string="Name"/>
                                 <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
+                                <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
                                 <field name="planned_hour" string="Planned Hour's"/>
                                 <field name="planned_manpower" string="Planned Manpower"/>
                             </group>
