@@ -38,6 +38,7 @@ class MasterTask(models.Model):
     owner_id = fields.Integer()
     mastertaskline_ids= fields.One2many('estate.workshop.mastertaskline','mastertask_id','Line Master Task')
     type_task1 = fields.Many2one('estate.master.type.task','Task',domain=[('type','=','view'),('parent_id','=',False)])
+    category_unit_id = fields.Many2one('master.category.unit','Category')
     type_subtask = fields.Many2one('estate.master.type.task','Sub Task')
     type_list_task = fields.Many2one('estate.master.type.task','List task')
 
@@ -55,6 +56,14 @@ class MasterTask(models.Model):
                         'type_subtask':[('id','in',arrType)]
                     }
                 }
+
+    @api.multi
+    @api.onchange('category_unit_id','asset_id')
+    def _onchange_category_unit_id(self):
+        for record in self:
+            if record.asset_id:
+                record.category_unit_id = record.asset_id.category_unit_id
+
     @api.multi
     @api.onchange('type_subtask','type_list_task')
     def _onchange_list_task(self):
@@ -86,10 +95,10 @@ class MasterTaskLine(models.Model):
     def _onchange_task_id(self):
         arrMastertask = []
         if self:
-            self.key = self.mastertask_id.asset_id
+            self.key = self.mastertask_id.category_unit_id
             return {
                     'domain' :{
-                        'task_id' :[('asset_id.id','=',self.key)]
+                        'task_id' :[('category_unit_id.id','=',self.key)]
                     }
             }
 

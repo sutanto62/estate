@@ -53,11 +53,11 @@ class ActualTask(models.Model):
     def _onchange_mastertask_id(self):
         arrOrder = []
        #todo onchange mastertask id tanpa di menunggu mro order tersimpan
-        self.owner_id = self.mro_id.owner_id
+        self.owner_id = self.mro_id.category_unit_id
         if self:
             return {
                 'domain':{
-                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
+                    'mastertask_id' : [('category_unit_id.id','=',self.owner_id)]
                 }
             }
 
@@ -88,11 +88,11 @@ class PlannedTask(models.Model):
     def _onchange_planmastertask_id(self):
         arrOrder = []
        #todo onchange mastertask id tanpa di menunggu mro order tersimpan
-        self.owner_id = self.mro_id.owner_id
+        self.owner_id = self.mro_id.category_unit_id
         if self:
             return {
                 'domain':{
-                    'mastertask_id' : [('asset_id.id','=',self.owner_id)]
+                    'mastertask_id' : [('category_unit_id.id','=',self.owner_id)]
                 }
             }
 
