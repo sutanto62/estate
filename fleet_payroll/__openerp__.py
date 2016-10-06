@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "fleet_payroll",
+    'name': "Fleet Payroll",
 
     'summary': """
         Short (1 phrase/line) summary of the module's purpose, used as
@@ -10,7 +10,7 @@
         Long description of module's purpose
     """,
 
-    'author': "Your Company",
+    'author': "Mahroza And Probo",
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing
@@ -20,12 +20,13 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','estate_workshop','hr_payroll'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'templates.xml',
+        'views/inherit_payroll_payslip.xml',
+        # 'templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
