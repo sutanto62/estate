@@ -60,9 +60,19 @@ class MasterTask(models.Model):
     @api.multi
     @api.onchange('category_unit_id','asset_id')
     def _onchange_category_unit_id(self):
+        arrAsset = []
         for record in self:
             if record.asset_id:
                 record.category_unit_id = record.asset_id.category_unit_id
+            elif record.category_unit_id:
+                temp = record.env['asset.asset'].search([('category_unit_id','=',record.category_unit_id.id)])
+                for asset in temp:
+                    arrAsset.append(asset.id)
+                return {
+                'domain':{
+                    'asset_id' : [('id','in',arrAsset)]
+                }
+            }
 
     @api.multi
     @api.onchange('type_subtask','type_list_task')

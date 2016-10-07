@@ -6,7 +6,8 @@
              <field name="inherit_id" ref="mro.mro_request_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
-                     <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
+                     <field name="category_unit_id" invisible="1" options="{'no_create_edit': True}" string="Category id"/>
+                     <field name="category_name" readonly="1" string="Category"/>
                      <field name="type_asset" string="Service Type"/>
                  </xpath>
              </field>
@@ -29,8 +30,18 @@
              <field name="inherit_id" ref="mro.mro_task_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
-                      <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
                       <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type"/>
+                 </xpath>
+             </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_field_inherit_form_category_task">
+             <field name="name">Inherit category Template</field>
+             <field name="model">mro.task</field>
+             <field name="inherit_id" ref="mro.mro_task_form_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='asset_id']" position="before">
+                      <field name="category_unit_id" required="1" options="{'no_create_edit': True}" string="Category"/>
                  </xpath>
              </field>
         </record>
@@ -77,9 +88,12 @@
             <field name="arch" type="xml">
                 <form string="Master Task">
                     <sheet>
+                        <div class="oe_title">
+                            <h1>Master Task Name <field name="name" required='1' class="oe_inline"/></h1>
+                        </div>
                         <group col="2">
                             <group string="Master Task">
-                                <field name="name" string="Name"/>
+                                <field name="category_unit_id" required="1" options="{'no_create_edit': True}" string="Category"/>
                                 <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
                                 <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
                                 <field name="planned_hour" string="Planned Hour's"/>
@@ -166,12 +180,14 @@
                 <search string="Master Task" >
                     <field name="name" />
                     <field name="type_task1"/>
-                    <field name="type_subtask"/>
+                    <field name="asset_id"/>
                     <field name="type_list_task"/>
+                    <field name="category_unit_id"/>
                     <group expand="0" string="Group By">
                         <filter name="groupby_typetask" context="{'group_by' : 'type_task1'}" string="Type Task"/>
-                        <filter name="groupby_subtask" context="{'group_by' : 'type_subtask'}" string="Sub Task Preventive"/>
+                        <filter name="groupby_subtask" context="{'group_by' : 'asset_id'}" string="Asset"/>
                         <filter name="groupby_listtask" context="{'group_by' : 'type_list_task'}" string="list Task"/>
+                        <filter name="groupby_category_unit" context="{'group_by':'category_unit_id'}" string="Category" />
                     </group>
                 </search>
             </field>
@@ -182,7 +198,7 @@
             <field name="res_model">estate.workshop.mastertask</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{"search_default_groupby_typetask" : True}</field>
+            <field name="context">{"search_default_groupby_category_unit" : True}</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to create a new master task.

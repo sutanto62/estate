@@ -37,7 +37,8 @@ class InheritMroOrder(models.Model):
                                      ('2','Building'),('3','Machine'),('4','Computing'),('5','Tools'),('6','ALL')],
                                     )
     image = fields.Binary('image',help="Select image here")
-    category_unit_id = fields.Many2one('master.category.unit','Category')
+    category_unit_id = fields.Integer('Category')
+    category_name = fields.Char('Category',compute='_onchange_category_unit_name')
 
     # Group code constraint
     @api.multi
@@ -290,6 +291,13 @@ class InheritMroOrder(models.Model):
         for record in self:
             if record.asset_id:
                 record.category_unit_id = record.asset_id.category_unit_id
+
+    @api.multi
+    @api.depends('category_name','asset_id')
+    def _onchange_category_unit_name(self):
+        for record in self:
+            if record.asset_id:
+                record.category_name = record.asset_id.category_name
 
     @api.multi
     def action_ready(self):

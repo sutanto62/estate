@@ -41,3 +41,18 @@ class InheritMaintenanceTask(models.Model):
         for record in self:
             if record.asset_id:
                 record.category_unit_id = record.asset_id.category_unit_id
+
+    @api.multi
+    @api.onchange('asset_id','category_unit_id')
+    def _onchange_asset_id(self):
+        arrAsset = []
+        for record in self:
+            if record.category_unit_id:
+                temp = record.env['asset.asset'].search([('category_unit_id','=',record.category_unit_id.id)])
+                for asset in temp:
+                    arrAsset.append(asset.id)
+                return {
+                'domain':{
+                    'asset_id' : [('id','in',arrAsset)]
+                }
+            }

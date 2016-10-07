@@ -16,6 +16,7 @@ class PayslipEmployee(models.Model):
         payslip_labour = []
         employee_list = []
 
+
         # Labour from Timesheet
         for record in self.env['estate.timesheet.activity.transport'].search(domain):
             labour.append(record.employee_id.id)
@@ -32,6 +33,7 @@ class PayslipEmployee(models.Model):
         for rec in labour:
             employee_list.append(rec)
         self.employee_ids = employee_list
+
 
         # Generate payslip and change upkeep state
         if not len(employee_list):
