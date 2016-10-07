@@ -95,7 +95,6 @@
                             <group string="Master Task">
                                 <field name="category_unit_id" required="1" options="{'no_create_edit': True}" string="Category"/>
                                 <field name="asset_id" options="{'no_create_edit': True}" string="Asset"/>
-                                <field name="category_unit_id" options="{'no_create_edit': True}" string="Category Unit"/>
                                 <field name="planned_hour" string="Planned Hour's"/>
                                 <field name="planned_manpower" string="Planned Manpower"/>
                             </group>

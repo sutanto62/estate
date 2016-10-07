@@ -249,3 +249,18 @@ class HrAttendance(models.Model):
                            ('name', '>=', date_from_utc.strftime(DT)),
                            ('name', '<=', date_to_utc.strftime(DT))])
         return res
+
+
+class ActionReason(models.Model):
+    """Some fingerprint has action reason that replace sign-in/out. Such as Sakit/Cuti/Dinas Luar"""
+    _inherit = 'hr.action.reason'
+
+    # Overide inherit action_type selection
+    # action_type = fields.Selection([('action', 'Action'),('sign_in', 'Sign in'), ('sign_out', 'Sign out')], "Action Type"),
+    contract_type = fields.Selection([('1', 'PKWTT'), ('2', 'PKWT')], "Contract Type",
+                                     help="* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, " \
+                                          "* PKWT, Perjanjian Kerja Waktu Tertentu.")
+    contract_period = fields.Selection([('1', 'Monthly'), ('2', 'Daily')], "Contract Period",
+                                       help="* Monthly, Karyawan Bulanan, " \
+                                            "* Daily, Karyawan Harian.")
+    active = fields.Boolean('Active', default=True)

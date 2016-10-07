@@ -9,6 +9,5 @@ class Team(models.Model):
     _inherit = 'estate.hr.team'
 
     payroll_location_id = fields.Many2one('stock.location', "Payroll Location",
-                                           domain=[('estate_location', '=', True),
-                                                   ('estate_location_level', '=', '2')],
-                                          help="Define location of payroll disbursement")
+                                           domain=[('estate_location', '=', True)],
+                                          help="Define alternate location of payroll disbursement other than division")

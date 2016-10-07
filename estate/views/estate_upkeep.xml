@@ -62,6 +62,7 @@
                             domain="[('state', 'in', ('draft','confirmed'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
+                    <separator/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
@@ -229,7 +230,8 @@
                                         <field name="activity_id" string="Activity"
                                                 options="{'no_create_edit': True}"/>
                                         <field name="location_id" string="Location" options="{'no_create_edit': True}"/>
-                                        <field name="activity_location_ids"/>
+                                        <field name="planted_year_id" string="PY"/>
+                                        <field name="activity_location_ids" invisible="True"/>
                                         <field name="attendance_code_id" string="Attn."
                                                 options="{'no_create': True}"/>
                                         <field name="quantity" string="Qty."/>
@@ -471,6 +473,7 @@
                     <field name="activity_uom_id" string="UoM"/>
                     <field name="quantity" digits="(8,2)" string="Qty."/>
                     <field name="location_id" string="Location"/>
+                    <field name="planted_year_id" string="PY"/>
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
                     <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
                     <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
@@ -499,6 +502,7 @@
                     <field name="upkeep_date" string="Date"/>
                     <field name="employee_id"/>
                     <field name="location_id" string="Block"/>
+                    <field name="planted_year_id" string="PY"/>
                     <field name="quantity" string="Qty."/>
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
                     <field name="quantity_overtime" string="OT" sum="OT"/>

@@ -52,7 +52,7 @@ class Payslip(models.Model):
                                                         ('date_start', '<=', date_from)],
                                                        limit=1,
                                                        order='date_start desc'):
-            if contract.type_id.name == _("Estate Worker"):
+            if contract.type_id.name == _("Estate Worker"):  #todo change to external id
                 attendances = {
                      'name': _("Estate Upkeep Working Days paid at 100%"),
                      'sequence': 1,
@@ -79,6 +79,7 @@ class Payslip(models.Model):
         @return: returns a list of dict containing the input that should be applied for the given contract between date_from and date_to
         """
         upkeep_labour_obj = self.env['estate.upkeep.labour']
+        att_obj = self.env['hr.attendance']
         res = []
 
         # Check contract if any (before payslip date start)
@@ -86,11 +87,12 @@ class Payslip(models.Model):
                                                         ('date_start', '<=', date_from)],
                                                        limit=1,
                                                        order='date_start desc'):
-            if contract.type_id.name == _("Estate Worker"):
+            if contract.type_id.name == _("Estate Worker"):  #todo change to external id
                 upkeep_labour_ids = upkeep_labour_obj.search([('employee_id', '=', contract.employee_id.id),
                                                               ('upkeep_date', '>=', date_from),
                                                               ('upkeep_date', '<=', date_to),
                                                               ('state', '=', 'approved')]).ids
+
                 # Get Overtime
                 overtime_amount = upkeep_labour_obj.get_wage_overtime(upkeep_labour_ids)
                 if overtime_amount:
@@ -116,6 +118,19 @@ class Payslip(models.Model):
                 return res
             else:
                 return super(Payslip, self).get_inputs(contract_ids, date_from, date_to)
+
+    # @api.multi
+    # def get_wage_overtime(self, ids):
+    #     """
+    #     Amount of piece rate required by salary rules
+    #     :param ids: upkeep labour
+    #     :return: wage overtime
+    #     """
+    #     amount = 0.00
+    #
+    #     for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
+    #         amount += record['wage_overtime']
+    #     return amount
 
     @api.multi
     def action_open_labour(self):
