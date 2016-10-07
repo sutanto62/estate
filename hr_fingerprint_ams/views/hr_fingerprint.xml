@@ -21,6 +21,7 @@
                         <group>
                             <group string="Fingerprint Data">
                                 <field name="db_id"/>
+                                <field name="terminal_id"/>
                                 <field name="employee_name"/>
                                 <field name="date"/>
                                 <field name="sign_in" widget="float_time"/>

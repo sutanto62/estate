@@ -9,3 +9,5 @@ access_estate_payslip_input_user_estate,hr.payslip.input.user.estate,hr_payroll.
 access_estate_payslip_worked_days_estate,hr.payslip.worked_days.estate,hr_payroll.model_hr_payslip_worked_days,estate.group_assistant,1,1,1,1
 access_estate_payslip_run_estate,hr.payslip.run.estate,hr_payroll.model_hr_payslip_run,estate.group_assistant,1,1,1,1
 access_estate_rule_input_estate,hr.rule.input.estate,hr_payroll.model_hr_rule_input,estate.group_assistant,1,1,1,1
+access_hr_contract_type,hr.contract.type,hr_contract.model_hr_contract_type,estate.group_assistant,1,0,0,0
+access_estate_payslip_employee_estate,hr.payslip.employees,hr_payroll.model_hr_payslip_employees,estate.group_assistant,1,1,1,1

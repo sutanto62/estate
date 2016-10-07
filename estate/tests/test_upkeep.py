@@ -220,20 +220,21 @@ class TestUpkeep(TransactionCase):
         self.assertTrue(upkeep)
         # self.assertTrue(upkeep.labour_line_ids[0].activity_contract, 'Estate: _compute_activity_contract failed')
 
-    def test_00_onchange_assistant_division(self):
-        self.env.ref('estate.block_1').write({'assistant_id': self.env.ref('hr.employee_al').id})
-        val = {
-            'date': datetime.today().strftime(DF),
-            'team_id': self.env.ref('estate.team_syukur').id,
-            'assistant_id': self.env.ref('hr.employee_al').id,
-            'division_id':self.env.ref('stock.stock_nursery').id,
-        }
-        upkeep = self.Upkeep.create(val)
-
-        # Imitate onchange assistant event
-        upkeep._onchange_assistant_id()
-        self.assertEqual(upkeep['division_id']['name'], 'Division 1', 'Estate: _onchange_assistant_id is failed')
-
-        # Imitate onchange division event
-        upkeep._onchange_division_id()
-        self.assertEqual(upkeep['estate_id']['name'], 'LYD', 'Estate: _onchange_division_id is failed')
+    # Define division by team instead of assistant.
+    # def test_00_onchange_assistant_division(self):
+    #     self.env.ref('estate.block_1').write({'assistant_id': self.env.ref('hr.employee_al').id})
+    #     val = {
+    #         'date': datetime.today().strftime(DF),
+    #         'team_id': self.env.ref('estate.team_syukur').id,
+    #         'assistant_id': self.env.ref('hr.employee_al').id,
+    #         'division_id': self.env.ref('stock.stock_nursery').id,
+    #     }
+    #     upkeep = self.Upkeep.create(val)
+    #
+    #     # Imitate onchange assistant event
+    #     # upkeep._onchange_assistant_id()
+    #     # self.assertEqual(upkeep['division_id']['name'], 'Division 1', 'Estate: _onchange_assistant_id is failed')
+    #
+    #     # Imitate onchange division event
+    #     upkeep._onchange_division_id()
+    #     self.assertEqual(upkeep['estate_id']['name'], 'LYD', 'Estate: _onchange_division_id is failed')

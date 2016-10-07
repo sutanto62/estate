@@ -72,16 +72,24 @@ class estate_payslip_run_report(report_sxw.rml_parse):
             res = team_obj.browse(self.cr, self.uid, team_ids)
         return res
 
-    def get_payslip_team(self, id):
+    def get_payslip_team(self, id, date_start, date_end):
         """
-        Get estate worker payslip at any state. Use xml report to filter state.
-        :param id: Team
-        :return: list of payslip instances
+        Get estate worker payslip at any state (xml report to filter state) at given period.
+        Args:
+            id: team
+            date_start: payroll batch start date
+            date_end: payroll batch end date
+
+        Returns: payslip instances
+
         """
         payslip_obj = self.pool.get('hr.payslip')
         # note: search return ids, browse return instances
         ids = payslip_obj.search(self.cr, self.uid, [('contract_type_id', '=', 'Estate Worker'),
-                                                     ('team_id', '=', id)], order='employee_id')
+                                                     ('team_id', '=', id),
+                                                     ('date_from', '=', date_start),
+                                                     ('date_to', '=', date_end),
+                                                     ('state', '=', 'done')], order='employee_id')
         res = payslip_obj.browse(self.cr, self.uid, ids)
         return res
 
@@ -97,8 +105,9 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         upkeep_labour_ids = upkeep_labour_obj.search(self.cr, self.uid, [('employee_id', '=', id),
                                                                          ('upkeep_date', '>=', start),
                                                                          ('upkeep_date', '<=', end),
-                                                                         ('state', '=', 'approved')])
+                                                                         ('state', '=', 'payslip')])
         return sum(upkeep.quantity_overtime for upkeep in upkeep_labour_obj.browse(self.cr, self.uid, upkeep_labour_ids))
+
 
     def get_line_total(self, id, employee_id, code):
         """
