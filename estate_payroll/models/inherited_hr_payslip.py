@@ -35,7 +35,7 @@ class Payslip(models.Model):
         res = upkeep_labour_obj.search([('upkeep_date', '>=', self.date_from),
                                         ('upkeep_date', '<=', self.date_to),
                                         ('employee_id', '=', self.employee_id.id),
-                                        ('state', '=', 'approved')])
+                                        ('state', 'in', ['approved', 'payslip'])])
         self.upkeep_labour_count = len(res)
 
     @api.model
@@ -134,7 +134,7 @@ class Payslip(models.Model):
 
     @api.multi
     def action_open_labour(self):
-        """HR cross check related upkeep labour
+        """HR cross check related upkeep labour before and after payslip
         """
         context = self._context.copy()
         view_id = self.env.ref('estate.upkeep_labour_view_tree').id
@@ -143,7 +143,7 @@ class Payslip(models.Model):
         upkeep_labour_filter = [('employee_id', '=', self.employee_id.id),
                                 ('upkeep_date', '>=', self.date_from),
                                 ('upkeep_date', '<=', self.date_to),
-                                ('state', '=', 'approved')]
+                                ('state', 'in', ['approved', 'payslip'])]
 
         res = {
             'name': _('Upkeep Labour Records %s' % self.employee_id.name),
