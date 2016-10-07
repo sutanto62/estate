@@ -8,7 +8,8 @@
                 <field name="property_stock_asset" position="after">
                     <field name="type_asset" string="Type Asset"/>
                     <field name="fleet_id" string="Vehicle" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','1')]}"/>
-                    <field name="category_unit_id" string="Category Vehicle" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','1')]}"/>
+                    <field name="category_unit_id" string="Category id" invisible="1" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','1')]}"/>
+                    <field name="category_name" string="Category" readonly="1" options="{'no_create_edit': True}" attrs="{'invisible': [('type_asset','!=','1')]}"/>
                     <field name="product_id" string="Product" options="{'no_create_edit': True}"
                            attrs="{'invisible': [('type_asset','!=','5'),
                     ('type_asset','!=','4'),('type_asset','!=','6'),('type_asset','!=','3')]}"/>

@@ -29,7 +29,8 @@ class InheritTypeAsset(models.Model):
                                      ('2','Building'),('3','Machine'),
                                    ('4','Computing'),('5','Tools'),('6','ALL')],compute='_onchange_type_asset',readonly=True)
     image = fields.Binary('Image',help="Select image here")
-    category_unit_id = fields.Many2one('master.category.unit','Category',)
+    category_unit_id = fields.Integer('Category')
+    category_name = fields.Char('Category',compute='_onchange_category_unit_name')
 
 
 
@@ -47,6 +48,13 @@ class InheritTypeAsset(models.Model):
             if record.asset_id:
                 record.category_unit_id = record.asset_id.category_unit_id
 
+    @api.multi
+    @api.depends('category_name','asset_id')
+    def _onchange_category_unit_name(self):
+        for record in self:
+            if record.asset_id:
+                record.category_name = record.asset_id.category_name
+
     #onchange Cause
     @api.multi
     @api.onchange('code_id','cause')
@@ -63,8 +71,11 @@ class InheritTypeAsset(models.Model):
     @api.multi
     def action_send(self):
         for request in self:
-             if request.category_unit_id.id == False:
+             if request.category_unit_id == False:
                 error_msg = "Category Unit Field Must be Filled"
+                raise exceptions.ValidationError(error_msg)
+             if request.category_name == False:
+                error_msg = "Category Field Must be Filled"
                 raise exceptions.ValidationError(error_msg)
              if request.requester_id.id == False:
                 error_msg = "Requester Field Must be Filled"

@@ -35,6 +35,7 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='asset_id']" position="after">
                      <field name="category_unit_id" invisible="1" string="Category Unit" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                     <field name="category_name" readonly="1" string="Category" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                      <field name="type_service" invisible="1" string="Service Type" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
                  </xpath>
              </field>

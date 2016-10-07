@@ -22,7 +22,8 @@ class InheritAssetVehicle(models.Model):
     account_id = fields.Many2one('account.account','General Account')
     asset_value = fields.Float()
     company_id = fields.Many2one('res.company','Company')
-    category_unit_id = fields.Many2one('master.category.unit','Category')
+    category_unit_id = fields.Integer('Category ID',)
+    category_name = fields.Char('Category Name',compute='_onchange_category_unit_name')
 
     #onchange
     @api.multi
@@ -33,20 +34,34 @@ class InheritAssetVehicle(models.Model):
         if self.product_id:
             self.name = self.product_id.name
 
+    # @api.multi
+    # @api.onchange('fleet_id','category_unit_id')
+    # def _onchange_category_unit(self):
+    #     arrCategory=[]
+    #     for item in self:
+    #         if item.fleet_id:
+    #             category = item.env['fleet.vehicle'].search([('id','=',item.fleet_id.id)])
+    #             for category in category:
+    #                 arrCategory.append(category.category_unit_id.id)
+    #             return {
+    #             'domain' : {
+    #                 'category_unit_id' : [('id','in',arrCategory)]
+    #             }
+    #         }
+
     @api.multi
-    @api.onchange('fleet_id','category_unit_id')
-    def _onchange_category_unit(self):
-        arrCategory=[]
-        for item in self:
-            if item.fleet_id:
-                category = item.env['fleet.vehicle'].search([('id','=',item.fleet_id.id)])
-                for category in category:
-                    arrCategory.append(category.category_unit_id.id)
-                return {
-                'domain' : {
-                    'category_unit_id' : [('id','in',arrCategory)]
-                }
-            }
+    @api.onchange('category_unit_id','fleet_id')
+    def _onchange_category_unit_id(self):
+        for record in self:
+            if record.fleet_id:
+                record.category_unit_id = record.fleet_id.category_unit_id
+
+    @api.multi
+    @api.depends('category_name','fleet_id')
+    def _onchange_category_unit_name(self):
+        for record in self:
+            if record.fleet_id:
+                record.category_name = record.fleet_id.category_unit_id.name
 
     @api.multi
     @api.onchange('asset_value','fleet_id','product_id')
@@ -56,19 +71,20 @@ class InheritAssetVehicle(models.Model):
         if self.fleet_id:
             self.asset_value = self.fleet_id.car_value
 
-    @api.multi
-    @api.onchange('fleet_id','company_id')
-    def _onchange_company(self):
-        arrVehicle = []
-        if self.fleet_id:
-            vehicle = self.env['fleet.vehicle'].search([('id','=',self.fleet_id.id)])
-            for vehicle in vehicle:
-                arrVehicle.append(vehicle.company_id.id)
-            return {
-                'domain' : {
-                    'company_id' : [('id','in',arrVehicle)]
-                }
-            }
+    #todo company structure
+    # @api.multi
+    # @api.onchange('fleet_id','company_id')
+    # def _onchange_company(self):
+    #     arrVehicle = []
+    #     if self.fleet_id:
+    #         vehicle = self.env['fleet.vehicle'].search([('id','=',self.fleet_id.id)])
+    #         for vehicle in vehicle:
+    #             arrVehicle.append(vehicle.company_id.id)
+    #         return {
+    #             'domain' : {
+    #                 'company_id' : [('id','in',arrVehicle)]
+    #             }
+    #         }
 
     @api.multi
     @api.onchange('product_id','type_asset')
