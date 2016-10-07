@@ -15,8 +15,7 @@ class PayslipEmployee(models.Model):
         labour = []
         payslip_labour = []
         employee_list = []
-        upkeeps = []
-        upkeep_list = []
+
 
         # Labour from Timesheet
         for record in self.env['estate.timesheet.activity.transport'].search(domain):
@@ -30,14 +29,11 @@ class PayslipEmployee(models.Model):
         # Validation for double payslip
         labour = list(set(labour) - set(payslip_labour))
 
-        upkeeps = set(upkeeps)
 
         for rec in labour:
             employee_list.append(rec)
         self.employee_ids = employee_list
 
-        for rec_upkeep in upkeeps:
-            upkeep_list.append(rec_upkeep)
 
         # Generate payslip and change upkeep state
         if not len(employee_list):
