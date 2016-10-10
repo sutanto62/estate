@@ -8,6 +8,8 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree colors="blue:type=='view'">
+                    <!--<field name="complete_name"/>-->
+                    <field name="code"/>
                     <field name="complete_name"/>
                     <field name="wage_method"/>
                     <field name="type"/>

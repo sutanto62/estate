@@ -9,11 +9,12 @@ class Activity(models.Model):
     _parent_store = True
     _parent_name = 'parent_id'
     _order = 'complete_name'
-    _rec_name = 'name'  # complete_name too long for upkeep entry
+    _rec_name = 'code_name'  # complete_name too long for upkeep entry
 
     name = fields.Char("Name", required=True, help="Create unique activity name.")
+    code = fields.Char("Activity Code", help='Choose your transaction code')
     complete_name = fields.Char("Complete Name", compute="_complete_name", store=True)
-    code = fields.Char("Activity Code")
+    code_name = fields.Char("Activity Name", compute="_complete_name", store=True, help='Use at entry')
     type = fields.Selection([('view', "View"),
                              ('normal', "Normal")], "Type",
                             required=True,
@@ -71,11 +72,17 @@ class Activity(models.Model):
     @api.depends('name', 'parent_id')
     def _complete_name(self):
         """ Forms complete name of location from parent category to child category.
+        Help user entry using code.
         """
         if self.parent_id:
             self.complete_name = self.parent_id.complete_name + ' / ' + self.name
         else:
             self.complete_name = self.name
+
+        if self.code:
+            self.code_name = self.code + ' - ' + self.name
+        else:
+            self.code_name = self.name
 
         return True
 

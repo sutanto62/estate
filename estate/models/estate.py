@@ -13,8 +13,8 @@ class EstateLocation(models.Model):
                                              string="Estate Location Level")
     estate_location_type = fields.Selection([('nursery','Nursery'), ('planted', 'Planted'), ('emplacement', 'Emplacement')],
                                             string="Estate Location Type",
-                                            help="Nursery: location for nursery. "\
-                                            "Planted: location for planting. "\
+                                            help="Nursery: location for nursery. \n"\
+                                            "Planted: location for planting. \n"\
                                             "Emplacement: location for non-planting/nursery.")
 
     def get_estate(self, id):

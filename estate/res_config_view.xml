@@ -57,6 +57,15 @@
                             </div>
                         </div>
                     </group>
+                    <group name="labour_grp">
+                        <label for="id" string="Labour"/>
+                        <div name="labour">
+                            <div name="cross_team">
+                                <field name="default_cross_team" class="oe_inline"/>
+                                <label for="default_cross_team"/>
+                            </div>
+                        </div>
+                    </group>
                 </form>
             </field>
         </record>

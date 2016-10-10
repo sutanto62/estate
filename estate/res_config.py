@@ -20,6 +20,7 @@ class EstateConfigSettings(models.TransientModel):
                                             help='Used at upkeep analytic entries.')
     default_account_id = fields.Many2one('account.account', 'Default General Account',
                                             help='Used at upkeep analytic entries (expenses).')
+    default_cross_team =fields.Boolean('Allow cross team labour record.')
 
     @api.model
     def get_default_journal(self, fields):
@@ -27,7 +28,8 @@ class EstateConfigSettings(models.TransientModel):
         return {
             'default_journal_line_id': config.default_journal_line_id.id,
             'default_analytic_account_id': config.default_analytic_account_id.id,
-            'default_account_id': config.default_account_id.id
+            'default_account_id': config.default_account_id.id,
+            'default_cross_team': config.default_cross_team
         }
 
     @api.one
@@ -36,3 +38,4 @@ class EstateConfigSettings(models.TransientModel):
         config.default_journal_line_id = self.default_journal_line_id.id
         config.default_analytic_account_id = self.default_analytic_account_id.id
         config.default_account_id = self.default_account_id.id
+        config.default_cross_team = self.default_cross_team
