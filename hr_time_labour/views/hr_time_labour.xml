@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Schedule View -->
+        <record id="schedule_view_form" model="ir.ui.view">
+            <field name="name">Schedule</field>
+            <field name="model">hr_time_labour.schedule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="effective_date"/>
+                            <field name="description"/>
+                            <field name="type"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="rotating_schedule"/>
+                            <field name="days_in_schedule"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="schedule_action" model="ir.actions.act_window" >
+            <field name="name">Work Schedule</field>
+            <field name="res_model">hr_time_labour.schedule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="schedule_menu" name="Work Schedule"
+                  parent="hr_indonesia.menu_hr_indonesia_configuration_indonesia"
+                  action="schedule_action"
+                  groups="base.group_configuration,base.group_hr_user"/>
+    </data>
+</openerp>
