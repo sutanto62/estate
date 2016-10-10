@@ -34,7 +34,6 @@
                                  <label string="Vehicle Timesheet "
                                        attrs="{'invisible': [('state','in',('draft','sent','bid'))]}"/>
                                  <field name="vehicle_timesheet_code" class="oe_inline" readonly="1" />
-                                 <label string="For "/>
                                  <field name="date_timesheet" class="oe_inline" readonly="1" />
                              </h1>
                          </div>
@@ -79,7 +78,7 @@
                     <field name="total_distance" string="&#916; KM"/>
                     <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
                     <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
-                    <field name="total_time" string="&#916; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="total_time" string="&#916; Time " readonly="1">{‘readonly_by_pass’: True}</field>
                 </tree>
             </field>
         </record>
@@ -112,12 +111,12 @@
             <field name="name">Vehicle Timesheet</field>
             <field name="res_model">fleet.vehicle.timesheet</field>
             <field name="view_mode">tree,form</field>
-             <field name="context">{"search_default_groupby_date_timesheet" : True}</field>
+             <field name="context">{"search_default_groupby_date_timesheet" : True,"search_default_groupby_state":True}</field>
          </record>
 
          <menuitem id="fleet_vehicle_timesheet_activity" name="Fleet Vehicle Timesheet"
                   parent="estate_vehicle.estate_vehicle_timesheet_menu"
                   action="action_fleet_vehicle_timesheet_activity_transport"
-                 groups="fleet.group_fleet_user" sequence="12"/>
+                 groups="fleet.group_fleet_manager" sequence="12"/>
     </data>
 </openerp>

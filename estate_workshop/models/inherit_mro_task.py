@@ -19,6 +19,7 @@ class InheritMaintenanceTask(models.Model):
     _description = 'Add Field Type Task'
 
     typetask_id = fields.Many2one('estate.master.type.task')
+    category_unit_id = fields.Many2one('master.category.unit','Category')
 
     #onchange typetask_id :
     @api.multi
@@ -31,5 +32,27 @@ class InheritMaintenanceTask(models.Model):
         return {
                 'domain':{
                     'typetask_id' : [('id','in',arrTypetask)]
+                }
+            }
+
+    @api.multi
+    @api.onchange('category_unit_id','asset_id')
+    def _onchange_category_unit_id(self):
+        for record in self:
+            if record.asset_id:
+                record.category_unit_id = record.asset_id.category_unit_id
+
+    @api.multi
+    @api.onchange('asset_id','category_unit_id')
+    def _onchange_asset_id(self):
+        arrAsset = []
+        for record in self:
+            if record.category_unit_id:
+                temp = record.env['asset.asset'].search([('category_unit_id','=',record.category_unit_id.id)])
+                for asset in temp:
+                    arrAsset.append(asset.id)
+                return {
+                'domain':{
+                    'asset_id' : [('id','in',arrAsset)]
                 }
             }

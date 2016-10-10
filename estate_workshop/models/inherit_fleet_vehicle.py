@@ -20,5 +20,4 @@ class InheritMaintenanceVehicle(models.Model):
         ('ro', 'RO'),
         ('estate', 'Estate'),
         ('ho', 'HO')], string="Type Location Vehicle",store=True)
-    company_id = fields.Many2one('res.company','Company',store=True)
 

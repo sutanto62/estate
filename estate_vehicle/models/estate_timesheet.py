@@ -42,7 +42,7 @@ class TimesheetActivityTransport(models.Model):
     comment = fields.Text()
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
-        ('done', 'Done')],string="Activity Timesheet State")
+        ('done', 'Done'),('cancel','Cancel'),('reject','Reject')],string="Activity Timesheet State")
 
     #onchange ALL
     @api.multi
@@ -75,6 +75,12 @@ class TimesheetActivityTransport(models.Model):
                     'end_location':[('id','in',arrEndlocation)]
                 }
         }
+
+    @api.multi
+    @api.onchange('activity_id','uom_id')
+    def _onchange_uom(self):
+        if self.activity_id:
+            self.uom_id = self.activity_id.uom_id
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')

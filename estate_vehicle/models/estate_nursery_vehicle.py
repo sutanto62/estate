@@ -288,8 +288,10 @@ class FleetVehicleTimesheet(models.Model):
         res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
         return res
 
-    def action_send(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'confirm'})
+    @api.multi
+    def action_send(self,):
+        self.write({'state': 'confirm'})
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'confirmed'})
         return True
 
     @api.multi
@@ -302,18 +304,24 @@ class FleetVehicleTimesheet(models.Model):
         self.do_create_vehicle_date()
         self.do_create_vehicle_odometer_log()
         self.write({'state': 'done'})
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'done'})
         return True
 
     def action_done(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'done', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
         return True
 
-    def action_reject(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'reject', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+    @api.multi
+    def action_reject(self,):
+        self.write({'state': 'reject', 'date_timesheet': self.date_timesheet})
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'reject'})
+        self.do_create_vehicle_date()
         return True
 
-    def action_cancel(self, cr, uid, ids, context=None):
-        self.write(cr, uid, ids, {'state': 'cancel', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
+    @api.multi
+    def action_cancel(self):
+        self.write({'state': 'cancel', 'date_timesheet': self.date_timesheet})
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'cancel'})
         return True
 
     @api.multi
@@ -447,6 +455,13 @@ class FleetVehicleTimesheetInherits(models.Model):
                     'employee_id':[('id','in',arrDriver)]
                 }
         }
+
+    @api.multi
+    @api.onchange('activity_id','uom_id')
+    def _onchange_uom(self):
+        arrUom = []
+        if self.activity_id:
+            self.uom_id = self.activity_id.uom_id
 
     @api.multi
     @api.onchange('vehicle_id')
