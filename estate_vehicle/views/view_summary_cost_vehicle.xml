@@ -302,7 +302,7 @@
                 <field name="context">{"search_default_groupby_date" : True}</field>
         </record>
 
-        <menuitem id="estate_summary_cost_vehicle" name="Vehicle Cost"
+        <menuitem id="estate_summary_cost_vehicle" name="Vehicle Running Account(VRA)"
                   parent="fleet.menu_fleet_reporting"
                   action="action_list_view_summary_vehicle"
                  groups="fleet.group_fleet_manager" sequence="14"/>
