@@ -72,8 +72,10 @@
                                 context="{'group_by': 'division_id'}"/>
                         <filter name="by_team" string="Team"
                                 context="{'group_by': 'upkeep_team_id'}"/>
+                        <!-- Hold cross team implementation
                         <filter name="by_cross_team" string="Team (Cross Team)"
                                 context="{'group_by': 'number_of_day_team_id'}"/>
+                        -->
                         <filter name="by_employee" string="Employee"
                                 context="{'group_by': 'employee_id'}"/>
                         <filter name="by_date" string="Month"
@@ -242,7 +244,6 @@
                                             attrs="{'readonly':[('activity_wage_method','!=','standard')]}"/>
                                         <field name="amount" groups="estate.group_assistant"/>
                                         <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant"/>
-                                        <field name="cross_team_id"/>
                                         <!-- do not remove field below -->
                                         <field name="ratio_quantity_day" string="Q/D" invisible="True" groups="estate.group_assistant"/>
                                         <field name="ratio_day_quantity" string="D/Q" invisible="True" groups="estate.group_assistant"/>
@@ -255,6 +256,7 @@
                                         <field name="wage_piece_rate" invisible="True"/>
                                         <field name="activity_contract" invisible="True"/>
                                         <field name="activity_wage_method" invisible="True"/>
+                                        <field name="cross_team_id" invisible="True"/>
                                     </tree>
                                 </field>
                             </page>
