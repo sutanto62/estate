@@ -5,7 +5,7 @@
             <field name="name">Estate timesheet activity Tree</field>
             <field name="model">estate.timesheet.activity.transport</field>
             <field name="arch" type="xml">
-                <tree string="Estate timesheet activity Tree" editable='bottom' delete="true">
+                <tree string="Estate timesheet activity Tree" editable='False' delete="true">
                     <field name="id" invisible="1"/>
                     <field name="date_activity_transport" string="Date Activity"/>
                     <field name="owner_id"  invisible="1" readonly="1"/>
@@ -23,7 +23,8 @@
                     <field name="total_distance" string="&#916; KM"/>
                     <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
                     <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
-                    <field name="total_time" string="&#916; time " readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="total_time" string="&#916; Time " readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="state" string="State" readonly="1"/>
                 </tree>
             </field>
         </record>
@@ -97,6 +98,7 @@
          <menuitem id="estate_vehicle_timesheet_menu"
                   name="Vehicle Activity"
                   parent="fleet.menu_root"
+                   groups="fleet.group_fleet_user"
                   sequence="10"/>
 
          <menuitem id="estate_vehicle_timesheet_activity" name="Vehicle Timesheet(ALL)"
