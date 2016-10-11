@@ -101,7 +101,7 @@ class TimesheetActivityTransport(models.Model):
     def _onchange_driver(self):
         arrDriver = []
         if self:
-            hrjob = self.env['hr.job'].search([('name','=','Driver')],limit = 1).id
+            hrjob = self.env['hr.job'].search([('name','=','sopir')],limit = 1).id
             driver = self.env['hr.employee'].search([('job_id.id','=',hrjob)])
             for d in driver:
                 arrDriver.append(d.id)
