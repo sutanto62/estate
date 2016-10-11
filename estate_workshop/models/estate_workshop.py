@@ -60,17 +60,23 @@ class MasterTask(models.Model):
     @api.multi
     @api.onchange('category_unit_id','asset_id')
     def _onchange_category_unit_id(self):
-        arrAsset = []
+
         for record in self:
             if record.asset_id:
-                record.category_unit_id = record.asset_id.category_unit_id
-            elif record.category_unit_id:
-                temp = record.env['asset.asset'].search([('category_unit_id','=',record.category_unit_id.id)])
+                record.category_unit_id = record.asset_id.fleet_id.category_unit_id.id
+
+    @api.multi
+    @api.onchange('category_unit_id','asset_id')
+    def _onchange_asset_id(self):
+        arrAsset = []
+        for record in self:
+            if record.category_unit_id:
+                temp = record.env['fleet.vehicle'].search([('category_unit_id','=',record.category_unit_id.id)])
                 for asset in temp:
                     arrAsset.append(asset.id)
                 return {
                 'domain':{
-                    'asset_id' : [('id','in',arrAsset)]
+                    'asset_id' : [('fleet_id','in',arrAsset)]
                 }
             }
 
@@ -104,13 +110,15 @@ class MasterTaskLine(models.Model):
     @api.onchange('task_id')
     def _onchange_task_id(self):
         arrMastertask = []
+        self.key = self.mastertask_id.category_unit_id
+        self.key = self.mastertask_id.asset_id.fleet_id.category_unit_id.id
         if self:
-            self.key = self.mastertask_id.category_unit_id
-            return {
-                    'domain' :{
-                        'task_id' :[('category_unit_id.id','=',self.key)]
-                    }
-            }
+            if self.key:
+                return {
+                        'domain' :{
+                            'task_id' :[('category_unit_id.id','=',self.key)]
+                        }
+                }
 
 
 class MasterTypeTask(models.Model):
