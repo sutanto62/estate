@@ -1,7 +1,7 @@
 <openerp>
     <data>
         <record id="vehicle_hr_department_11" model="hr.department">
-            <field name="name">Fleet Management</field>
+            <field name="name">IE</field>
         </record>
         <record id="vehicle_hr_department_12" model="hr.department">
             <field name="name">Fleet</field>
@@ -9,7 +9,7 @@
         </record>
 
         <record id="vehicle_hr_job_10" model="hr.job">
-            <field name="name">Driver</field>
+            <field name="name">Sopir</field>
             <field name="department_id" ref="estate_vehicle.vehicle_hr_department_12"/>
         </record>
         <record id="vehicle_hr_job_11" model="hr.job">

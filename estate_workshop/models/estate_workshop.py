@@ -348,7 +348,7 @@ class EmployeeLine(models.Model):
 
     employee_id = fields.Many2one('hr.employee',
                                   domain=[('contract_type','!=','Null'),
-                                          ('contract_period','!=','Null'),('job_id.name','=','Mechanic')])
+                                          ('contract_period','!=','Null'),('job_id.name','=','Mekanik')])
     mro_id = fields.Integer('MRO')
 
 class EmployeeLineActual(models.Model):
@@ -357,7 +357,7 @@ class EmployeeLineActual(models.Model):
 
     employee_id = fields.Many2one('hr.employee',
                                   domain=[('contract_type','!=','Null'),
-                                          ('contract_period','!=','Null'),('job_id.name','=','Mechanic')])
+                                          ('contract_period','!=','Null'),('job_id.name','=','Mekanik')])
     mro_id = fields.Integer('MRO')
 
 class MasterWorkshopShedulePlan(models.Model):

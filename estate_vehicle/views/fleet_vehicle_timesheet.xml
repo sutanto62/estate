@@ -39,13 +39,12 @@
                          </div>
 
                             <group>
-                                <field name="date_timesheet" string="Date" attrs="{'readonly' : [('state', '=', 'approve')]}" required="True"/>
+                                <field name="date_timesheet" string="Date" attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}" required="True"/>
                             </group>
 
                             <group>
                                 <tree>
-                                    <field name="timesheet_ids" track_visibility="onchange" attrs="{
-                                        'readonly': [('state','=','approve')]}"
+                                    <field name="timesheet_ids" track_visibility="onchange" attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                         context="{'tree_view_ref' : 'estate_vehicle.view_tree_fleet_timesheet_activity_transport',
                                                }"/>
                                 </tree>
