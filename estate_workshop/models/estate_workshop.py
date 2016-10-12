@@ -356,7 +356,7 @@ class EmployeeLine(models.Model):
 
     employee_id = fields.Many2one('hr.employee',
                                   domain=[('contract_type','!=','Null'),
-                                          ('contract_period','!=','Null'),('job_id.name','=','Mekanik')])
+                                          ('contract_period','!=','Null'),('job_id.name','in',['Helper Mekanik','Mekanik','Sopir'])])
     mro_id = fields.Integer('MRO')
 
 class EmployeeLineActual(models.Model):
