@@ -71,12 +71,6 @@ class InheritTypeAsset(models.Model):
     @api.multi
     def action_send(self):
         for request in self:
-             if request.category_unit_id == False:
-                error_msg = "Category Unit Field Must be Filled"
-                raise exceptions.ValidationError(error_msg)
-             if request.category_name == False:
-                error_msg = "Category Field Must be Filled"
-                raise exceptions.ValidationError(error_msg)
              if request.requester_id.id == False:
                 error_msg = "Requester Field Must be Filled"
                 raise exceptions.ValidationError(error_msg)

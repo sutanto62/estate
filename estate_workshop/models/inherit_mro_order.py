@@ -128,7 +128,6 @@ class InheritMroOrder(models.Model):
     @api.multi
     @api.constrains('employeeline_ids')
     def _constrains_employee_id(self):
-        self.ensure_one()
         if self.employeeline_ids:
             temp={}
             for employee in self.employeeline_ids:
@@ -141,7 +140,7 @@ class InheritMroOrder(models.Model):
 
     @api.multi
     @api.constrains('employeelineactual_ids')
-    def _constrains_employee_id(self):
+    def _constrains_actualemployee_id(self):
         self.ensure_one()
         if self.employeelineactual_ids:
             temp={}

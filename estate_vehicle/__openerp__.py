@@ -62,5 +62,6 @@
         'demo/master_formula_activity_vehicle.xml',
         'demo/fleet.vehicle.model.brand.csv',
         'demo/fleet.vehicle.model.csv',
+
     ],
 }

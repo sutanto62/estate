@@ -1,7 +1,7 @@
 <openerp>
     <data>
          <record id="workshop_hr_job_8" model="hr.job">
-            <field name="name">Mechanic</field>
+            <field name="name">Mekanik</field>
          </record>
 
 
