@@ -122,6 +122,7 @@ class NurseryVehicle(models.Model):
     sparepart_log_count = fields.Integer('Sparepart Log Count')
     category_unit_id = fields.Many2one('master.category.unit',domain=[('type','=','1')])
     no_vehicle=fields.Char('No Vehicle')
+    odometer_unit = fields.Selection(selection_add=[('hour', 'Hour Meters')])
     # vehicle_type=fields.Selection([('1','Vehicle Internal'), ('2','Vehicle External')])
     # employee_driver_id=fields.Many2one('hr.employee')
     capacity_vehicle = fields.Integer('Capacity')
@@ -276,7 +277,7 @@ class FleetVehicleTimesheet(models.Model):
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True)
-    timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle')
+    timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle',ondelete='cascade')
 
     _defaults = {
         'state' : 'draft'
@@ -287,6 +288,11 @@ class FleetVehicleTimesheet(models.Model):
         vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
         res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
         return res
+
+    @api.multi
+    def unlink(self):
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).unlink()
+        return super(FleetVehicleTimesheet, self).unlink()
 
     @api.multi
     def action_send(self,):
@@ -394,6 +400,11 @@ class FleetVehicleTimesheetInherits(models.Model):
     def _onchange_dc_type(self):
         if self:
             self.dc_type = 5
+
+    @api.multi
+    def unlink(self):
+        self.timesheet_id.unlink()
+        return super(FleetVehicleTimesheetInherits, self).unlink()
 
     #onchange ALL
     @api.multi

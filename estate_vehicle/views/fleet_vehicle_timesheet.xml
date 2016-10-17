@@ -21,7 +21,7 @@
                 <form>
                      <header coolspan="10">
                             <button name="button_send_request" states="draft" string="Send Timesheet" class="oe_highlight" />
-                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" />
+                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" groups="fleet.group_fleet_manager"/>
                             <button name="%(action_timesheet_reject)d" states="confirm" string="Reject Timesheet" type="action" groups="fleet.group_fleet_manager"/>
                             <button name="button_cancel" states="draft" string="Cancel"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
@@ -116,6 +116,6 @@
          <menuitem id="fleet_vehicle_timesheet_activity" name="Fleet Vehicle Timesheet"
                   parent="estate_vehicle.estate_vehicle_timesheet_menu"
                   action="action_fleet_vehicle_timesheet_activity_transport"
-                 groups="fleet.group_fleet_manager" sequence="12"/>
+                 groups="base.group_no_one" sequence="12"/>
     </data>
 </openerp>
