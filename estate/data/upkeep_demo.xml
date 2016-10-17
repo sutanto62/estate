@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Estate Upkeep -->
         <record id="estate_upkeep_1" model="estate.upkeep">
             <field name="team_id" ref="estate.team_syukur"/>
