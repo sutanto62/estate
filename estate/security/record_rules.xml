@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0"> <!-- Access Control List should be update while upgrade -->
+    <data noupdate="1">
         <record id="estate_activity_no_delete" model="ir.rule">
             <field name="name">Estate Activity (No Delete Unless Draft)</field>
             <field name="model_id" ref="model_estate_upkeep_activity"/>
