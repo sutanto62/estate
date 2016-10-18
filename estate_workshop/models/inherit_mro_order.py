@@ -299,6 +299,11 @@ class InheritMroOrder(models.Model):
                 record.category_name = record.asset_id.category_name
 
     @api.multi
+    def unlink(self):
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).unlink()
+        return super(InheritMroOrder, self).unlink()
+
+    @api.multi
     def action_ready(self):
         self.do_create_actualtask()
         self.do_create_actualsparepart()

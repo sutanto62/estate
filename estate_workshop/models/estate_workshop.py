@@ -103,20 +103,27 @@ class MasterTaskLine(models.Model):
     name=fields.Char('Master Task Line')
     task_id=fields.Many2one('mro.task','Task')
     mastertask_id = fields.Many2one('estate.workshop.mastertask')
-    key = fields.Integer('Key')
+    key1 = fields.Integer('Key')
+    key2 = fields.Integer('Key')
 
     #onchange
     @api.multi
     @api.onchange('task_id')
     def _onchange_task_id(self):
         arrMastertask = []
-        self.key = self.mastertask_id.category_unit_id
-        self.key = self.mastertask_id.asset_id.fleet_id.category_unit_id.id
+        self.key1 = self.mastertask_id.category_unit_id
+        self.key2 = self.mastertask_id.asset_id.fleet_id.category_unit_id.id
         if self:
-            if self.key:
+            if self.mastertask_id.category_unit_id:
                 return {
                         'domain' :{
-                            'task_id' :[('category_unit_id.id','=',self.key)]
+                            'task_id' :[('category_unit_id.id','=',self.key1)]
+                        }
+                }
+            if self.mastertask_id.asset_id.fleet_id.category_unit_id.id:
+                return {
+                        'domain' :{
+                            'task_id' :[('category_unit_id.id','=',self.key2)]
                         }
                 }
 
@@ -236,6 +243,7 @@ class MecanicTimesheets(models.Model):
     asset_id = fields.Many2one('asset.asset')
     task_id = fields.Many2one('mro.task')
     contract_key = fields.Boolean('Contract Active')
+    total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
     key = fields.Integer()
 
     #onchange
@@ -252,6 +260,11 @@ class MecanicTimesheets(models.Model):
                         'task_id':[('id','in',arrTask)]
                     }
                 }
+
+    @api.multi
+    def unlink(self):
+        self.timesheet_id.unlink()
+        return super(MecanicTimesheets, self).unlink()
 
     @api.multi
     @api.onchange('contract_key','employee_id')
@@ -323,10 +336,6 @@ class MecanicTimesheets(models.Model):
     def _onchange_activity_id(self):
         arrActivity=[]
         if self:
-            # todo Change activity
-            # mroorder = self.env['mro.order'].search([('id','=',self.owner_id)]).type_service
-            # print mroorder
-            # if mroorder == 1 :
             activity = self.env['estate.activity'].search([('activity_type','=','general'),('parent_id','!=',False)])
             for a in activity:
                 arrActivity.append(a.id)
@@ -342,6 +351,20 @@ class MecanicTimesheets(models.Model):
     def _onchange_vehicle_id(self):
         if self:
             self.vehicle_id = self.asset_id.fleet_id
+
+    @api.multi
+    @api.depends('start_time','end_time','total_time')
+    def _compute_total_time(self):
+        self.ensure_one()
+        #to compute total_time
+        if self:
+            if self.start_time and self.end_time:
+                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
+                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
+                self.total_time =calculate_endtime-calculate_starttime
+                if self.total_time < 0 :
+                    self.total_time = 0
+        return True
 
 class WorkshopCode(models.Model):
 

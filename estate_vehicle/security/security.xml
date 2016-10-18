@@ -1,0 +1,78 @@
+<openerp>
+    <data noupdate="0">
+        <record id="group_timesheet_admin" model="res.groups">
+            <field name="name">Timesheet Admin</field>
+            <field name="category_id" ref="fleet.module_fleet_category"/>
+            <field name="implied_ids" eval="[(4, ref('fleet.group_fleet_user'))]"/>
+        </record>
+    </data>
+
+    <data noupdate="1">
+        <record id="fleet_timesheet_admin_vehicle_visibility" model="ir.rule">
+            <field name="name">Admin can only see his/her vehicle</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('cost_id.vehicle_id.driver_id','=',user.partner_id.id)]</field>
+            <field name="active" eval="False"/>
+        </record>
+         <record id="fleet_timesheet_admin_contract_visibility" model="ir.rule">
+            <field name="name">Admin can only see his/her contracts</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_log_contract"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('cost_id.vehicle_id.driver_id','=',user.partner_id.id)]</field>
+        </record>
+        <record id="fleet_timesheet_admin_cost_visibility" model="ir.rule">
+            <field name="name">Admin can only see his/her costs</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_cost"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('vehicle_id.driver_id','=',user.partner_id.id)]</field>
+        </record>
+        <record id="fleet_timesheet_admin_service_visibility" model="ir.rule">
+            <field name="name">Admin can only see his/her vehicle's services</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_log_services"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="domain_force">[('cost_id.vehicle_id.driver_id','=',user.partner_id.id)]</field>
+        </record>
+        <record id="fleet_timesheet_admin_odometer_visibility" model="ir.rule">
+            <field name="name">Admin can only see his/her vehicle's odometer</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_odometer"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="domain_force">[('vehicle_id.driver_id','=',user.partner_id.id)]</field>
+        </record>
+        <record id="fleet_timesheet_admin_fuel_log_visibility" model="ir.rule">
+            <field name="name">Admin can only see his/her vehicle's fuel log</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle_log_fuel"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="domain_force">[('cost_id.vehicle_id.driver_id','=',user.partner_id.id)]</field>
+        </record>
+         <record id="fleet_timesheet_admin_vehicle" model="ir.rule">
+            <field name="name">Admin has all rights on vehicle</field>
+            <field name="model_id" ref="fleet.model_fleet_vehicle"/>
+            <field name="groups" eval="[(4, ref('group_timesheet_admin'))]"/>
+        </record>
+    </data>
+</openerp>

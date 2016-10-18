@@ -250,8 +250,8 @@
         </record>
 
         <menuitem action="estate_workshop.master_task_act" parent="mro.menu_maintenance_tasks" id="master_task_menu"
-                  groups="fleet.group_fleet_manager" sequence="99"/>
+                  groups="asset.group_mro_planner" sequence="99"/>
         <menuitem action="estate_workshop.master_task_type_act" parent="asset.menu_maintenance_config"
-                  id="master_task_type_menu" groups="fleet.group_fleet_manager" sequence="99"/>
+                  id="master_task_type_menu" groups="asset.group_mro_planner" sequence="99"/>
     </data>
 </openerp>
