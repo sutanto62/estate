@@ -25,6 +25,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/hr_time_labour.xml',
+        'views/inherited_hr_attendance.xml',
         # 'security/ir.model.access.csv',
         'templates.xml',
     ],

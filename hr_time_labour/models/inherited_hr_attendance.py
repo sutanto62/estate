@@ -9,22 +9,16 @@ class ActionReason(models.Model):
     _inherit = 'hr.action.reason'
 
     action_type = fields.Selection(selection_add=[('action', 'Action')])
-    action_duration = fields.Float('Worked Hours', help="Define worked hours for non sign-in/out action type")
+    action_duration = fields.Float('Worked Hours', help="Define worked hours for non sign-in/out action type. Exclude break.")
 
 
 class Attendance(models.Model):
     _inherit = 'hr.attendance'
 
-    @api.multi
-    def _worked_hours_compute(self):
-        """
-        Non Sign In/Out has no worked hours
-        Returns:
-        """
-        for record in self:
-            if record.action == 'action':
-                print 'Set worked hours'
-            else:
-                return super(Attendance, self)._worked_hours_compute()
-
-
+    @api.model
+    def create(self, vals):
+        # cannot override _worked_hours_compute
+        action_desc_id = self.env['hr.action.reason'].search([('id', '=', vals['action_desc'])])
+        if action_desc_id.action_duration:
+            vals['worked_hours'] = action_desc_id.action_duration
+        return super(Attendance, self).create(vals)

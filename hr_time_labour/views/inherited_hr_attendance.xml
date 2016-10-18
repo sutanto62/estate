@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Inherited Action Reason -->
+        <record id="inherited_hr_action_reason_view_form" model="ir.ui.view">
+            <field name="name">Inherited Action Reason Form</field>
+            <field name="model">hr.action.reason</field>
+            <field name="inherit_id" ref="hr_attendance.edit_attendance_reason"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="inside">
+                    <field name="action_duration" widget="float_time"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- -->
+        <record id="inherited_hr_attendance_view_tree" model="ir.ui.view">
+            <field name="name">Inherited Attendance View</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_who"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field" position="after">
+                    <field name="worked_hours" widget="float_time"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
