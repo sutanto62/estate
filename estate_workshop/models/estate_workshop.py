@@ -103,23 +103,29 @@ class MasterTaskLine(models.Model):
     name=fields.Char('Master Task Line')
     task_id=fields.Many2one('mro.task','Task')
     mastertask_id = fields.Many2one('estate.workshop.mastertask')
-    key = fields.Integer('Key')
+    key1 = fields.Integer('Key')
+    key2 = fields.Integer('Key')
 
     #onchange
     @api.multi
     @api.onchange('task_id')
     def _onchange_task_id(self):
         arrMastertask = []
-        self.key = self.mastertask_id.category_unit_id
-        self.key = self.mastertask_id.asset_id.fleet_id.category_unit_id.id
+        self.key1 = self.mastertask_id.category_unit_id
+        self.key2 = self.mastertask_id.asset_id.fleet_id.category_unit_id.id
         if self:
-            if self.key:
+            if self.mastertask_id.category_unit_id:
                 return {
                         'domain' :{
-                            'task_id' :[('category_unit_id.id','=',self.key)]
+                            'task_id' :[('category_unit_id.id','=',self.key1)]
                         }
                 }
-
+            if self.mastertask_id.asset_id.fleet_id.category_unit_id.id:
+                return {
+                        'domain' :{
+                            'task_id' :[('category_unit_id.id','=',self.key2)]
+                        }
+                }
 
 
 class MasterTypeTask(models.Model):
