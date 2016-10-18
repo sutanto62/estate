@@ -116,6 +116,6 @@
          <menuitem id="fleet_vehicle_timesheet_activity" name="Fleet Vehicle Timesheet"
                   parent="estate_vehicle.estate_vehicle_timesheet_menu"
                   action="action_fleet_vehicle_timesheet_activity_transport"
-                 groups="base.group_no_one" sequence="12"/>
+                 sequence="12"/>
     </data>
 </openerp>
