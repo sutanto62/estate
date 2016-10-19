@@ -422,8 +422,8 @@ class UpkeepActivity(models.Model):
     upkeep_id = fields.Many2one('estate.upkeep', string='Upkeep', ondelete='cascade')
     upkeep_date = fields.Date(related='upkeep_id.date', store=True)
     # line_id = fields.Many2one('account.analytic.line', 'Analytic Line', ondelete='cascade', required=True),
-    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal')], track_visibility='onchange',
-                                  help='Any update will reset Block.', required=True)
+    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'),('activity_type', '=', 'estate')],
+                                  track_visibility='onchange', help='Any update will reset Block.', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
 
     location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id', string='Location',
@@ -607,7 +607,7 @@ class UpkeepLabour(models.Model):
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
     nik_number = fields.Char(related='employee_id.nik_number', store=False)
-    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal')],
+    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'),('activity_type', '=', 'estate')],
                                   help='Any update will reset Block.', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
     activity_wage_method = fields.Selection('Wage Method', related='activity_id.wage_method', readonly=True)
@@ -1023,8 +1023,8 @@ class UpkeepMaterial(models.Model):
     name = fields.Char('Name', compute='_compute_name')
     upkeep_id = fields.Many2one('estate.upkeep', 'Upkeep', ondelete='cascade')
     upkeep_date = fields.Date(related='upkeep_id.date', string='Date', store=True)
-    activity_id = fields.Many2one('estate.activity', 'Activity', help='Any update will reset Block.',
-                                  track_visibility='onchange', required=True)
+    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'),('activity_type', '=', 'estate')],
+                                  help='Any update will reset Block.', track_visibility = 'onchange', required=True)
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measure', related='activity_id.uom_id',
                                       readonly=True)
     activity_unit_amount = fields.Float('Quantity', compute='_compute_activity_unit_amount',
