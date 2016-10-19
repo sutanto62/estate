@@ -248,6 +248,7 @@ class HrAttendance(models.Model):
                            ('action', '=', action),
                            ('name', '>=', date_from_utc.strftime(DT)),
                            ('name', '<=', date_to_utc.strftime(DT))])
+        print '  get_attendance %s action %s - %s' % (date_from_utc.strftime(DT), action,res)
         return res
 
 
