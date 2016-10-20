@@ -130,20 +130,24 @@ class Upkeep(models.Model):
         1. Zero value of max entry day = today transaction should be entry today.
         2. Positive value of max entry day = allowed back/future dated transaction.
         """
-        config = self.env['estate.config.settings'].search([], order='id desc', limit=1)
-        if self.date:
-            fmt = '%Y-%m-%d'
-            d1 = datetime.strptime(self.date, fmt)
-            d2 = datetime.strptime(fields.Date.today(), fmt)
-            delta = (d2 - d1).days
-            if config.default_max_entry_day == 0 and abs(delta) > config.default_max_entry_day:
-                error_msg = _("Transaction date should be today")
-                raise ValidationError(error_msg)
-            elif config.default_max_entry_day != 0 and abs(delta) > config.default_max_entry_day:
-                error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % config.default_max_entry_day)
-                raise ValidationError(error_msg)
-            else:
-                return True
+        # Error - config only worked per user.
+        # config = self.env['estate.config.settings'].search([], order='id desc', limit=1)
+        # if self.date:
+        #     fmt = '%Y-%m-%d'
+        #     d1 = datetime.strptime(self.date, fmt)
+        #     d2 = datetime.strptime(fields.Date.today(), fmt)
+        #     delta = (d2 - d1).days
+        #     if config.default_max_entry_day == 0 and abs(delta) > config.default_max_entry_day:
+        #         error_msg = _("Transaction date should be today")
+        #         raise ValidationError(error_msg)
+        #     elif config.default_max_entry_day != 0 and abs(delta) > config.default_max_entry_day:
+        #         error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % config.default_max_entry_day)
+        #         raise ValidationError(error_msg)
+        #     else:
+        #         return True
+        #     return True
+
+        return True
 
     @api.multi
     @api.constrains('activity_line_ids')
