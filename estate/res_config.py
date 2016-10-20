@@ -7,12 +7,10 @@ class EstateConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     module_estate_nursery = fields.Boolean("Seed Management",
-                                           help="Record receiving from purchase order, planting and selection.",
-                                           default_model='estate.config.settings')
-    default_max_entry_day = fields.Integer("Maximum day(s) backdate transaction entry",
+                                           help="Record receiving from purchase order, planting and selection.")
+    default_max_day = fields.Integer("Maximum day(s) backdate transaction entry",
                                            help="0 is today.",
-                                           default_model='estate.config.settings',
-                                           default=7)
+                                           default_model='estate.upkeep')
     # Upkeep inherits account analytic entries - mandatory field
     default_journal_line_id = fields.Many2one('account.journal', 'Default Estate Journal',
                                              help='Used at upkeep analytic entries if no other journal defined.')
@@ -29,7 +27,8 @@ class EstateConfigSettings(models.TransientModel):
             'default_journal_line_id': config.default_journal_line_id.id,
             'default_analytic_account_id': config.default_analytic_account_id.id,
             'default_account_id': config.default_account_id.id,
-            'default_cross_team': config.default_cross_team
+            'default_cross_team': config.default_cross_team,
+            'default_max_day': config.default_max_day
         }
 
     @api.one
@@ -39,3 +38,4 @@ class EstateConfigSettings(models.TransientModel):
         config.default_analytic_account_id = self.default_analytic_account_id.id
         config.default_account_id = self.default_account_id.id
         config.default_cross_team = self.default_cross_team
+        config.default_max_day = self.default_max_day

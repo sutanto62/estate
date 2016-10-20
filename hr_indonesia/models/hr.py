@@ -71,14 +71,24 @@ class Employee(models.Model):
     @api.one
     @api.constrains('nik_number', 'identification_id')
     def _check_employee(self):
+        """
+        Required to check duplicate NIK or ID
+        Returns: True if no duplicate found
+        """
         for record in self:
             # put self.ids to exclude it self
-            employee_ids = self.search([('id', 'not in', self.ids), '|',
-                                        ('nik_number', '=', record.nik_number),
-                                        ('identification_id', '=', record.identification_id)])
+            employee_ids = []
+            if self.nik_number or self.identification_id:
+                employee_ids = self.search([('id', 'not in', self.ids),
+                                            '|',
+                                            ('nik_number', '=', record.nik_number),
+                                            ('identification_id', '=', record.identification_id)])
+
             if employee_ids:
                 error_msg = "There is duplicate of Employee Identity Number or Identification No."
                 raise ValidationError(error_msg)
+
+            return True
 
 
 class Religion(models.Model):
