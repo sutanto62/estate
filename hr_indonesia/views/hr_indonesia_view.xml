@@ -38,6 +38,31 @@
             </field>
         </record>
 
+        <!-- Search View, requirement: search by NIK/ID -->
+        <record id="inherited_hr_view_employee_filter" model="ir.ui.view">
+            <field name="name">Employee Filter</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="nik_number"/>
+                    <field name="identification_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Require to view NIK -->
+        <record id="inherited_hr_view_employee_view_tree" model="ir.ui.view">
+            <field name="name">Employee Tree</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="nik_number"/>
+                </xpath>
+            </field>
+        </record>
+
         <!-- Work Schedule -->
         <record id="inherited_resource_calendar_view_tree" model="ir.ui.view">
             <field name="name">resource.calendar.tree.inherit</field>
