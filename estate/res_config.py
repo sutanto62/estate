@@ -9,8 +9,9 @@ class EstateConfigSettings(models.TransientModel):
     module_estate_nursery = fields.Boolean("Seed Management",
                                            help="Record receiving from purchase order, planting and selection.")
     default_max_day = fields.Integer("Maximum day(s) backdate transaction entry",
-                                           help="0 is today.",
-                                           default_model='estate.upkeep')
+                                     help="0 is today.",
+                                     default_model='estate.upkeep',
+                                     default=7)
     # Upkeep inherits account analytic entries - mandatory field
     default_journal_line_id = fields.Many2one('account.journal', 'Default Estate Journal',
                                              help='Used at upkeep analytic entries if no other journal defined.')
