@@ -137,6 +137,7 @@ class InheritActivity(models.Model):
     _description = 'inherit status'
 
     status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
+    activity_vehicle_parent_id = fields.Many2one('estate.activity','Parent Activities Estate',domain="[('activity_type','=','vehicle'),('type','=','normal')]")
 
 class InheritFuel(models.Model):
 
@@ -302,8 +303,8 @@ class FleetVehicleTimesheet(models.Model):
 
     @api.multi
     def action_confirm(self,):
-        """ Confirms maintenance request.
-        @return: Newly generated Maintenance Order Id.
+        """ Confirms Timesheet request.
+        @return: timesheet all.
         """
         name = self.name
         self.write({'name':"Vehicle Timesheet %s " %(name)})

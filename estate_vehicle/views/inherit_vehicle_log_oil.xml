@@ -71,6 +71,7 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='activity_type']" position="after">
                      <field name="status" string="Status Vehicle" attrs="{'invisible':[('activity_type','!=', 'vehicle')]}"/>
+                     <field name="activity_vehicle_parent_id" string="Parent Activities Estate" options="{'no_create_edit': True}" attrs="{'invisible':[('activity_type','!=', 'estate')]}"/>
                  </xpath>
              </field>
          </record>

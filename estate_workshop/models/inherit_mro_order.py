@@ -205,6 +205,48 @@ class InheritMroOrder(models.Model):
                 if countLinePlannedtools == 0:
                     error_msg = "Tab Planned Tools in Tab Planning Must be Filled"
                     raise exceptions.ValidationError(error_msg)
+                if self.code_id.name == 'High' or self.code_id.name == 'high' or self.code_id.name == 'Tinggi' or self.code_id.name == 'tinggi':
+                    #change state in fleet_vehicle to breakdown
+                    vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                    state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                    fleet_id = self.asset_id.fleet_id.id
+
+                    #change state to breakdown in fleet.vehicle
+                    self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                            .write({'maintenance_state_id': 18})
+
+                    #change state to breakdown in asset.asset
+                    self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 18})
+
+                if self.code_id.name == 'Normal' or self.code_id.name == 'normal' or self.code_id.name == 'sedang' or self.code_id.name == 'Sedang':
+                    #change state in fleet_vehicle to maintenance
+                    vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                    state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                    fleet_id = self.asset_id.fleet_id.id
+
+                    #change state to maintenance in fleet.vehicle
+                    self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                            .write({'maintenance_state_id': 20})
+
+                    #change state to maintenance in asset.asset
+                    self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 20})
+
+                if self.code_id.name == 'Low' or self.code_id.name == 'low' or self.code_id.name == 'Rendah' or self.code_id.name == 'rendah':
+                    #change state in fleet_vehicle to Repair
+                    vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                    state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                    fleet_id = self.asset_id.fleet_id.id
+
+                    #change state to Repair in fleet.vehicle
+                    self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                            .write({'maintenance_state_id': 19})
+
+                    #change state to Repair in asset.asset
+                    self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 19})
+
             if order.type_service_handling == "2":
                 countLineExternal = 0
                 for itemexternalline in self:
@@ -213,6 +255,7 @@ class InheritMroOrder(models.Model):
                     error_msg = "Tab External Must be Filled"
                     raise exceptions.ValidationError(error_msg)
                 for external in self.serviceexternal_ids :
+                    #validation row in service external Tab
                     if external.amount == 0 :
                             error_msg = "Field Total Price Must be Filled"
                             raise exceptions.ValidationError(error_msg)
@@ -222,6 +265,42 @@ class InheritMroOrder(models.Model):
                     if external.vendor_id.id == False:
                             error_msg = "Field Vendor Must be Filled"
                             raise exceptions.ValidationError(error_msg)
+
+                if self.code_id.name == 'High' or self.code_id.name == 'high' or self.code_id.name == 'Tinggi' or self.code_id.name == 'tinggi':
+                    #change state in fleet_vehicle to breakdown
+                    vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                    state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                    fleet_id = self.asset_id.fleet_id.id
+                    self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                            .write({'maintenance_state_id': 18})
+
+                    #change state to Breakdown in asset.asset
+                    self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 18})
+
+                if self.code_id.name == 'Normal' or self.code_id.name == 'normal' or self.code_id.name == 'sedang' or self.code_id.name == 'Sedang':
+                    #change state in fleet_vehicle to Maintenance
+                    vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                    state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                    fleet_id = self.asset_id.fleet_id.id
+                    self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                            .write({'maintenance_state_id': 20})
+
+                    #change state to Maintenance in asset.asset
+                    self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 20})
+
+                if self.code_id.name == 'Low' or self.code_id.name == 'low' or self.code_id.name == 'Rendah' or self.code_id.name == 'rendah':
+                    #change state in fleet_vehicle to Repair
+                    vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                    state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                    fleet_id = self.asset_id.fleet_id.id
+                    self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                            .write({'maintenance_state_id': 19})
+
+                    #change state to Repair in asset.asset
+                    self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 19})
             super(InheritMroOrder,self).test_if_parts()
 
     @api.multi
@@ -255,6 +334,55 @@ class InheritMroOrder(models.Model):
                 if countLineActualtools == 0:
                     error_msg = "Tab Actual Tools Must be Filled"
                     raise exceptions.ValidationError(error_msg)
+            if self.reconcil_id.name == 'Fixed Completely' or self.reconcil_id.name == 'fixed Completely' \
+                    or self.reconcil_id.name == 'Fixed completely' or self.reconcil_id.name == 'fixed completely' \
+                    or self.reconcil_id.name == 'Selesai' or self.reconcil_id.name == 'selesai' \
+                    or self.reconcil_id.name == 'Finished' or self.reconcil_id.name == 'finished' \
+                    or self.reconcil_id.name == 'Done' or self.reconcil_id.name == 'done':
+
+                #change state in fleet_vehicle to Operable
+
+                vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                fleet_id = self.asset_id.fleet_id.id
+                self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                        .write({'maintenance_state_id': 21})
+
+                #change state to Operable in asset.asset
+                self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 21})
+
+            if self.reconcil_id.name == 'Fixed Partially' or self.reconcil_id.name == 'Fixed partially' \
+                    or self.reconcil_id.name == 'fixed Partially' or self.reconcil_id.name == 'fixed partially' \
+                    or self.reconcil_id.name == 'Selesai sebagian' or self.reconcil_id.name == 'selesai sebagian' \
+                    or self.reconcil_id.name == 'Selesai Sebagian':
+                #change state in fleet_vehicle to Operable
+
+                vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                fleet_id = self.asset_id.fleet_id.id
+                self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                        .write({'maintenance_state_id': 21})
+
+                #change state to Operable in asset.asset
+                self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 21})
+
+            if self.reconcil_id.name == 'Not Posible To Fix' or self.reconcil_id.name == 'Not posible to fix' \
+                    or self.reconcil_id.name == 'tidak Selesai' or self.reconcil_id.name == 'Tidak Selesai' \
+                    or self.reconcil_id.name == 'tidak selesai':
+
+                #change state in fleet_vehicle to breakdown
+
+                vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
+                state_id = self.env['fleet.vehicle'].search([('id','=',vehicle_id)]).maintenance_state_id.id
+                fleet_id = self.asset_id.fleet_id.id
+                self.env['fleet.vehicle'].search([('id','=',vehicle_id)])\
+                        .write({'maintenance_state_id': 18})
+
+                #change state to Breakdown in asset.asset
+                self.env['asset.asset'].search([('type_asset','=','1'),('fleet_id.id','=',fleet_id)])\
+                        .write({'maintenance_state_id': 18})
             super(InheritMroOrder,self).action_done()
 
     @api.multi
