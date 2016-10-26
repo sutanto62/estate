@@ -68,17 +68,52 @@ class Employee(models.Model):
     #     self._check_employee(vals)
     #     return super(Employee, self).create(vals)
 
-    @api.one
+    @api.multi
     @api.constrains('nik_number', 'identification_id')
     def _check_employee(self):
+        """
+        Required to check duplicate NIK or ID
+        Returns: True if no duplicate found
+        """
+
         for record in self:
-            # put self.ids to exclude it self
-            employee_ids = self.search([('id', 'not in', self.ids), '|',
-                                        ('nik_number', '=', record.nik_number),
-                                        ('identification_id', '=', record.identification_id)])
-            if employee_ids:
-                error_msg = "There is duplicate of Employee Identity Number or Identification No."
-                raise ValidationError(error_msg)
+
+            if record.nik_number:
+                employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
+                if employee_ids:
+                    error_msg = "There is duplicate of Employee Identity Number."
+                    raise ValidationError(error_msg)
+
+            if record.identification_id:
+                employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
+                if employee_ids:
+                    error_msg = "There is duplicate of Identification Number."
+                    raise ValidationError(error_msg)
+
+            return True
+
+
+        # for record in self:
+        #     # put self.ids to exclude it self
+        #     employee_ids = []
+        #
+        #     if not self.nik_number:
+        #         return True
+        #     else:
+        #         employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
+        #         if employee_ids:
+        #             error_msg = "There is duplicate of Employee Identity Number."
+        #             raise ValidationError(error_msg)
+        #
+        #     if not self.identification_id:
+        #         return True
+        #     else:
+        #         employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
+        #         if employee_ids:
+        #             error_msg = "There is duplicate of Identification No."
+        #             raise ValidationError(error_msg)
+        #
+        #     return True
 
 
 class Religion(models.Model):
