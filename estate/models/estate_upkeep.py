@@ -45,6 +45,7 @@ class Upkeep(models.Model):
     team_id = fields.Many2one('estate.hr.team', "Team", required=True)
     team_member_ids = fields.One2many(related='team_id.member_ids', string='Member', store=False)
     date = fields.Date("Date", default=fields.Date.context_today, required=True)
+    max_day = fields.Integer("Date Constraint", help='Change to override maximum upkeep date day(s) configuration')
     description = fields.Text("Description")
     estate_id = fields.Many2one('stock.location', "Estate",
                                 domain=[('estate_location', '=', True), ('estate_location_level', '=', '1'),
@@ -64,12 +65,6 @@ class Upkeep(models.Model):
     material_line_ids = fields.One2many('estate.upkeep.material', string='Upkeep Material Line', inverse_name='upkeep_id')
     comment = fields.Text('Additional Information')
 
-    @api.one
-    @api.depends('date', 'team_id')
-    def _compute_upkeep_name(self):
-        if self.date and self.team_id:
-            self.name = 'BKM/' + self.date + '/' + self.team_id.name # todo add code with sequence number
-        return True
 
     @api.one
     @api.onchange('team_id')
@@ -130,17 +125,16 @@ class Upkeep(models.Model):
         1. Zero value of max entry day = today transaction should be entry today.
         2. Positive value of max entry day = allowed back/future dated transaction.
         """
-        config = self.env['estate.config.settings'].search([], order='id desc', limit=1)
         if self.date:
             fmt = '%Y-%m-%d'
             d1 = datetime.strptime(self.date, fmt)
             d2 = datetime.strptime(fields.Date.today(), fmt)
             delta = (d2 - d1).days
-            if config.default_max_entry_day == 0 and abs(delta) > config.default_max_entry_day:
+            if self.max_day == 0 and abs(delta) > self.max_day:
                 error_msg = _("Transaction date should be today")
                 raise ValidationError(error_msg)
-            elif config.default_max_entry_day != 0 and abs(delta) > config.default_max_entry_day:
-                error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % config.default_max_entry_day)
+            elif self.max_day != 0 and abs(delta) > self.max_day:
+                error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % self.max_day)
                 raise ValidationError(error_msg)
             else:
                 return True

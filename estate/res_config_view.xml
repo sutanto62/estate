@@ -40,8 +40,8 @@
                         <label for="id" string="Upkeep"/>
                         <div name="upkeep">
                             <div name="upkeep_constrains">
-                                <field name="default_max_entry_day" class="oe_inline"/>
-                                <label for="default_max_entry_day"/>
+                                <field name="default_max_day" class="oe_inline"/>
+                                <label for="default_max_day"/>
                             </div>
                             <div name="journal">
                                 <field name="default_journal_line_id" class="oe_inline"/>

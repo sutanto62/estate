@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
+        <record id="estate_config_max_day" model="estate.config.settings">
+            <field name="default_max_day">100</field>
+        </record>
+
         <!-- Estate Upkeep -->
         <record id="estate_upkeep_1" model="estate.upkeep">
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
+            <field name="max_day" eval="100"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -13,6 +18,7 @@
             <field name="team_id" ref="estate.team_gilles"/>
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="date" eval="(datetime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="max_day" eval="100"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -22,6 +28,7 @@
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="date" eval="(datetime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="max_day" eval="100"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>

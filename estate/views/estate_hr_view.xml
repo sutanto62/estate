@@ -33,7 +33,23 @@
             </field>
         </record>
 
-         <record id="view_member_tree" model="ir.ui.view" >
+        <record id="estate_hr_member_view_search" model="ir.ui.view">
+            <field name="name">Team Member Search</field>
+            <field name="model">estate.hr.member</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_id"/>
+                    <field name="team_id"/>
+                    <group string="Group By">
+                        <filter name="by_team_id" string="Estate Team"
+                                context="{'group_by': 'team_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_member_tree" model="ir.ui.view" >
             <field name="name">Member Tree</field>
             <field name="model">estate.hr.member</field>
             <field name="priority" eval="1"/>
@@ -124,6 +140,13 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_list_estate_team_member" model="ir.actions.act_window" >
+            <field name="name">Estate Team Member</field>
+            <field name="res_model">estate.hr.member</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_by_team_id': 1}</field>
+        </record>
+
         <!-- Menu -->
         <menuitem id="estate_labour_menu"
                   sequence="40"
@@ -146,7 +169,11 @@
                   action="estate_wage_action"
                   groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
-
+        <menuitem id="hr_member_menu" name="Team Member"
+                  parent="estate_operation_menu"
+                  groups="estate.group_user"
+                  action="action_list_estate_team_member"
+                  sequence="80"/>
 
     </data>
 </openerp>

@@ -43,11 +43,23 @@
                             </group>
 
                             <group>
-                                <tree>
-                                    <field name="timesheet_ids" track_visibility="onchange" attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
-                                        context="{'tree_view_ref' : 'estate_vehicle.view_tree_fleet_timesheet_activity_transport',
-                                               }"/>
-                                </tree>
+                                <notebook>
+                                    <page string="Timesheet Vehicle">
+                                        <tree>
+                                            <field name="timesheet_ids" track_visibility="onchange" attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
+                                                context="{'tree_view_ref' : 'estate_vehicle.view_tree_fleet_timesheet_activity_transport',
+                                                       }"/>
+                                        </tree>
+                                    </page>
+                                    <page string="Fuel Vehicle">
+                                        <tree>
+                                            <field name="fuel_ids" track_visibility="onchange" attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
+                                                context="{'tree_view_ref' : 'estate_vehicle.view_tree_inherits_fleet_vehicle_fuel',
+                                                       }"/>
+                                        </tree>
+                                    </page>
+
+                                </notebook>
                             </group>
 
                     </sheet>
@@ -78,6 +90,27 @@
                     <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
                     <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
                     <field name="total_time" string="&#916; Time " readonly="1">{‘readonly_by_pass’: True}</field>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_inherits_fleet_vehicle_fuel">
+            <field name="name">Fleet timesheeet Log Fuel Tree</field>
+            <field name="model">timesheet.fleet.vehicle.log.fuel</field>
+            <field name="arch" type="xml">
+                <tree string="Fleet Timesheet Log Fuel Tree" editable='bottom' delete="true">
+                    <field name="owner_id"  invisible="1" readonly="1"/>
+                    <field name="fuel_id" invisible="1"/>
+                    <field name="date" string="Date" invisible="1"/>
+                    <field name="vehicle_id" string="Vehicle" on_change="on_change_vehicle(vehicle_id)"/>
+                    <field name="odometer" string="Odometer" invisible="0"/>
+                    <field name="odometer_unit" invisible="1"/>
+                    <field name="purchaser_id" string="Purchaser"/>
+                    <field name="vendor_id" string="Vendor" invisible="0"/>
+                    <field name="product_id" string="Product"/>
+                    <field name="liter" on_change="on_change_liter(liter,price_per_liter,amount)"/>
+                    <field name="price_per_liter" on_change="on_change_price_per_liter(liter,price_per_liter,amount)" />
+                    <field name="amount" readonly="0" on_change="on_change_amount(liter,price_per_liter,amount)"/>
                 </tree>
             </field>
         </record>

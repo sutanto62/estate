@@ -77,7 +77,7 @@ class TimesheetActivityTransport(models.Model):
         }
 
     @api.multi
-    @api.onchange('activity_id','uom_id')
+    @api.onchange('activity_id',)
     def _onchange_uom(self):
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id

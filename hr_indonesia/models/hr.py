@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, osv, _
+from openerp.exceptions import ValidationError
 
 
 class Employee(models.Model):
@@ -37,6 +38,82 @@ class Employee(models.Model):
     def _compute_age(self):
         for record in self:
             record.age = 1
+
+    # def _check_employee(self, vals):
+    #     """Check employee by NIK or ID number"""
+    #     print 'vals are %s' % vals
+    #     domain = []
+    #     employee_ids = []
+    #
+    #     if vals['nik_number']:
+    #         domain = [('nik_number', '=', vals['nik_number'])]
+    #     if vals['identification_id']:
+    #         domain = [('identification_id', '=', vals['identification_id'])]
+    #     if vals['nik_number'] and vals['identification_id']:
+    #         domain = ['|', ('nik_number', '=', vals['nik_number']), ('identification_id', '=', vals['identification_id'])]
+    #
+    #     print domain
+    #     if domain:
+    #         employee_ids = self.search(domain)
+    #         print employee_ids
+    #
+    #     if employee_ids:
+    #         error_msg = "There have been employee with entered NIK and ID number."
+    #         raise ValidationError(error_msg)
+    #
+    #     return True
+    #
+    # @api.model
+    # def create(self, vals):
+    #     self._check_employee(vals)
+    #     return super(Employee, self).create(vals)
+
+    @api.multi
+    @api.constrains('nik_number', 'identification_id')
+    def _check_employee(self):
+        """
+        Required to check duplicate NIK or ID
+        Returns: True if no duplicate found
+        """
+
+        for record in self:
+
+            if record.nik_number:
+                employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
+                if employee_ids:
+                    error_msg = "There is duplicate of Employee Identity Number."
+                    raise ValidationError(error_msg)
+
+            if record.identification_id:
+                employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
+                if employee_ids:
+                    error_msg = "There is duplicate of Identification Number."
+                    raise ValidationError(error_msg)
+
+            return True
+
+
+        # for record in self:
+        #     # put self.ids to exclude it self
+        #     employee_ids = []
+        #
+        #     if not self.nik_number:
+        #         return True
+        #     else:
+        #         employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
+        #         if employee_ids:
+        #             error_msg = "There is duplicate of Employee Identity Number."
+        #             raise ValidationError(error_msg)
+        #
+        #     if not self.identification_id:
+        #         return True
+        #     else:
+        #         employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
+        #         if employee_ids:
+        #             error_msg = "There is duplicate of Identification No."
+        #             raise ValidationError(error_msg)
+        #
+        #     return True
 
 
 class Religion(models.Model):

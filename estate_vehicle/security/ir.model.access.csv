@@ -115,3 +115,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 "path_location_user","path_location","estate_vehicle.model_path_location","fleet.group_fleet_user","True","False","False","False"
 "path_location_manager","path_location","estate_vehicle.model_path_location","fleet.group_fleet_manager","True","True","True","False"
 "path_location_assistant","path_location","estate_vehicle.model_path_location","estate_vehicle.group_timesheet_admin","True","True","False","False"
+
+"timesheet_log_fuel_user","timesheet_log_fuel","estate_vehicle.model_timesheet_fleet_vehicle_log_fuel","fleet.group_fleet_user","True","False","False","False"
+"timesheet_log_fuel_manager","timesheet_log_fuel","estate_vehicle.model_timesheet_fleet_vehicle_log_fuel","fleet.group_fleet_manager","True","True","True","False"
+"timesheet_log_fuel_assistant","timesheet_log_fuel","estate_vehicle.model_timesheet_fleet_vehicle_log_fuel","estate_vehicle.group_timesheet_admin","True","True","True","True"

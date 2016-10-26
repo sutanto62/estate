@@ -267,6 +267,7 @@ class FleetVehicleTimesheet(models.Model):
 
     _name = 'fleet.vehicle.timesheet'
 
+
     name = fields.Char()
     vehicle_timesheet_code = fields.Char("VTS",store=True)
     date_timesheet = fields.Date('Date',store=True)
@@ -279,7 +280,7 @@ class FleetVehicleTimesheet(models.Model):
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True)
     timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle',ondelete='cascade')
-
+    fuel_ids = fields.One2many('timesheet.fleet.vehicle.log.fuel','owner_id','Log Fuel Vehicle',ondelete='cascade')
     _defaults = {
         'state' : 'draft'
     }
@@ -287,12 +288,23 @@ class FleetVehicleTimesheet(models.Model):
     #sequence
     def create(self, cr, uid,vals, context=None):
         vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
+        for item in vals['timesheet_ids']:
+            item[2]['date_activity_transport'] = vals['date_timesheet']
+        for item2 in vals['fuel_ids']:
+            item2[2]['date']=vals['date_timesheet']
         res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
         return res
 
     @api.multi
+    def write(self,context):
+        super(FleetVehicleTimesheet, self).write(context)
+        self.do_write_vehicle_date()
+        return True
+
+    @api.multi
     def unlink(self):
         self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).unlink()
+        self.env['timesheet.fleet.vehicle.log.fuel'].search([('owner_id','=',self.id)]).unlink()
         return super(FleetVehicleTimesheet, self).unlink()
 
     @api.multi
@@ -308,9 +320,9 @@ class FleetVehicleTimesheet(models.Model):
         """
         name = self.name
         self.write({'name':"Vehicle Timesheet %s " %(name)})
-        self.do_create_vehicle_date()
-        self.do_create_vehicle_odometer_log()
         self.write({'state': 'done'})
+        self.do_create_vehicle_odometer_log()
+        self.do_create_vehicle_log_fuel()
         self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'done'})
         return True
 
@@ -322,7 +334,7 @@ class FleetVehicleTimesheet(models.Model):
     def action_reject(self,):
         self.write({'state': 'reject', 'date_timesheet': self.date_timesheet})
         self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'reject'})
-        self.do_create_vehicle_date()
+        self.do_write_vehicle_date()
         return True
 
     @api.multi
@@ -332,9 +344,10 @@ class FleetVehicleTimesheet(models.Model):
         return True
 
     @api.multi
-    def do_create_vehicle_date(self):
+    def do_write_vehicle_date(self):
+        #Update date in inherit timesheet.
         date = False
-        fleet = self.env['fleet.vehicle.timesheet'].search([('id','=',self.id)])
+        fleet = self.env['fleet.vehicle.timesheet'].search([('id','=',self.id)],order='id desc',limit=1)
         for date in fleet:
             date_data = {
                 'date_activity_transport': date.date_timesheet,
@@ -342,35 +355,41 @@ class FleetVehicleTimesheet(models.Model):
             self.env['inherits.fleet.vehicle.timesheet'].search([('owner_id','=',fleet.id)]).write(date_data)
         return True
 
+
     @api.multi
     def do_create_vehicle_odometer_log(self):
+        #create odometer LOG from inherits.fleet.vehicle.timesheet
         odometer = False
         for odometer in self.env['inherits.fleet.vehicle.timesheet'].search([('owner_id','=',self.id)]):
             odometer_data = {
                 'name':'Odometer',
-                'date': odometer.date_activity_transport,
+                'date': self.date_timesheet,
                 'vehicle_id': odometer.vehicle_id.id,
                 'value': odometer.end_km,
             }
             self.env['fleet.vehicle.odometer'].create(odometer_data)
         return True
 
-    #todo constraint timesheet
-    # @api.multi
-    # @api.constrains('timesheet_ids','date_timesheet')
-    # def _constraint_date_timesheet_vehicle(self):
-    #     #constraint date in timesheet vehicle must be same in time sheet ids
-    #     for item in self:
-    #         if item.date_timesheet:
-    #             if item.timesheet_ids:
-    #                 for vehicletimesheet in item.timesheet_ids:
-    #                     date = vehicletimesheet.date_activity_transport
-    #                     if date > item.date_timesheet:
-    #                         error_msg = "Date Timesheet Line not more than \"%s\" in Date Form" % self.date_timesheet
-    #                         raise exceptions.ValidationError(error_msg)
-    #                     elif date < item.date_timesheet:
-    #                         error_msg = "Date Timesheet Line must be same \"%s\" in Date Form" % self.date_timesheet
-    #                         raise exceptions.ValidationError(error_msg)
+    @api.multi
+    def do_create_vehicle_log_fuel(self):
+        #create vehicle Log Fuel from timesheet.fleet.vehicle.log.fuel
+        fuel = False
+        for fuel in self.env['timesheet.fleet.vehicle.log.fuel'].search([('owner_id','=',self.id)]):
+            fuel_data = {
+                'date': self.date_timesheet,
+                'vehicle_id': fuel.vehicle_id.id,
+                'liter' : fuel.liter,
+                'price_per_liter' : fuel.price_per_liter,
+                'purchaser_id' : fuel.purchaser_id.id,
+                'vendor_id' : fuel.vendor_id.id,
+                'notes' : fuel.notes,
+                'amount' : fuel.amount,
+                'odometer': fuel.odometer,
+                'odometer_unit':fuel.odometer_unit,
+                'product_id':fuel.product_id.id
+            }
+            self.env['fleet.vehicle.log.fuel'].create(fuel_data)
+        return True
 
     @api.multi
     @api.constrains('date_timesheet')
@@ -469,11 +488,14 @@ class FleetVehicleTimesheetInherits(models.Model):
         }
 
     @api.multi
-    @api.onchange('activity_id','uom_id')
+    @api.onchange('activity_id')
     def _onchange_uom(self):
-        arrUom = []
+        #onchange UOM in timesheet Vehicle
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id
+        if self.activity_id.uom_id.id == False:
+            uom = self.env['product.uom'].search([('name','in',['trip','Trip'])]).id
+            self.uom_id = uom
 
     @api.multi
     @api.onchange('vehicle_id')
@@ -523,6 +545,7 @@ class FleetVehicleTimesheetInherits(models.Model):
                 item.total_distance = item.end_km - item.start_km
             return True
 
+
     #Constraint ALL
 
     @api.multi
@@ -560,6 +583,103 @@ class FleetVehicleTimesheetInherits(models.Model):
                 raise exceptions.ValidationError(error_msg)
             return True
 
+class InheritFleetVehicleFuel(models.Model):
+
+    _name = 'timesheet.fleet.vehicle.log.fuel'
+    _description = "Fuel Log"
+
+    def on_change_vehicle(self, cr, uid, ids, vehicle_id, context=None):
+        #get last odometer from log odometer
+        if not vehicle_id:
+            return {}
+        vehicle = self.pool.get('fleet.vehicle').browse(cr, uid, vehicle_id, context=context)
+        last_odometer = self.pool.get('fleet.vehicle.odometer').search(cr, uid,([('vehicle_id.id','=',vehicle.id)]),context=context,order='id desc',limit=1)
+        odometer = self.pool.get('fleet.vehicle.odometer').browse(cr, uid, last_odometer, context=context)
+        odometer_value = odometer.value
+        odometer_unit = vehicle.odometer_unit
+        driver = vehicle.driver_id.id
+        return {
+            'value': {
+                'odometer_unit': odometer_unit,
+                'purchaser_id': driver,
+                'odometer': odometer_value,
+            }
+        }
+
+    def on_change_liter(self, cr, uid, ids, liter, price_per_liter, amount, context=None):
+        #need to cast in float because the value receveid from web client maybe an integer (Javascript and JSON do not
+        #make any difference between 3.0 and 3). This cause a problem if you encode, for example, 2 liters at 1.5 per
+        #liter => total is computed as 3.0, then trigger an onchange that recomputes price_per_liter as 3/2=1 (instead
+        #of 3.0/2=1.5)
+        #If there is no change in the result, we return an empty dict to prevent an infinite loop due to the 3 intertwine
+        #onchange. And in order to verify that there is no change in the result, we have to limit the precision of the
+        #computation to 2 decimal
+        liter = float(liter)
+        price_per_liter = float(price_per_liter)
+        amount = float(amount)
+        if liter > 0 and price_per_liter > 0 and round(liter*price_per_liter,2) != amount:
+            return {'value' : {'amount' : round(liter * price_per_liter,2),}}
+        elif amount > 0 and liter > 0 and round(amount/liter,2) != price_per_liter:
+            return {'value' : {'price_per_liter' : round(amount / liter,2),}}
+        elif amount > 0 and price_per_liter > 0 and round(amount/price_per_liter,2) != liter:
+            return {'value' : {'liter' : round(amount / price_per_liter,2),}}
+        else :
+            return {}
+
+    def on_change_price_per_liter(self, cr, uid, ids, liter, price_per_liter, amount, context=None):
+        #need to cast in float because the value receveid from web client maybe an integer (Javascript and JSON do not
+        #make any difference between 3.0 and 3). This cause a problem if you encode, for example, 2 liters at 1.5 per
+        #liter => total is computed as 3.0, then trigger an onchange that recomputes price_per_liter as 3/2=1 (instead
+        #of 3.0/2=1.5)
+        #If there is no change in the result, we return an empty dict to prevent an infinite loop due to the 3 intertwine
+        #onchange. And in order to verify that there is no change in the result, we have to limit the precision of the
+        #computation to 2 decimal
+        liter = float(liter)
+        price_per_liter = float(price_per_liter)
+        amount = float(amount)
+        if liter > 0 and price_per_liter > 0 and round(liter*price_per_liter,2) != amount:
+            return {'value' : {'amount' : round(liter * price_per_liter,2),}}
+        elif amount > 0 and price_per_liter > 0 and round(amount/price_per_liter,2) != liter:
+            return {'value' : {'liter' : round(amount / price_per_liter,2),}}
+        elif amount > 0 and liter > 0 and round(amount/liter,2) != price_per_liter:
+            return {'value' : {'price_per_liter' : round(amount / liter,2),}}
+        else :
+            return {}
+
+    def on_change_amount(self, cr, uid, ids, liter, price_per_liter, amount, context=None):
+        #need to cast in float because the value receveid from web client maybe an integer (Javascript and JSON do not
+        #make any difference between 3.0 and 3). This cause a problem if you encode, for example, 2 liters at 1.5 per
+        #liter => total is computed as 3.0, then trigger an onchange that recomputes price_per_liter as 3/2=1 (instead
+        #of 3.0/2=1.5)
+        #If there is no change in the result, we return an empty dict to prevent an infinite loop due to the 3 intertwine
+        #onchange. And in order to verify that there is no change in the result, we have to limit the precision of the
+        #computation to 2 decimal
+        liter = float(liter)
+        price_per_liter = float(price_per_liter)
+        amount = float(amount)
+        if amount > 0 and liter > 0 and round(amount/liter,2) != price_per_liter:
+            return {'value': {'price_per_liter': round(amount / liter,2),}}
+        elif amount > 0 and price_per_liter > 0 and round(amount/price_per_liter,2) != liter:
+            return {'value': {'liter': round(amount / price_per_liter,2),}}
+        elif liter > 0 and price_per_liter > 0 and round(liter*price_per_liter,2) != amount:
+            return {'value': {'amount': round(liter * price_per_liter,2),}}
+        else :
+            return {}
+
+
+    fuel_id = fields.Many2one('fleet.vehicle.log.fuel','Fuel ID')
+    owner_id = fields.Integer('Owner ID')
+    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle')
+    liter =  fields.Float('Liter')
+    price_per_liter = fields.Float('Price Per Liter')
+    purchaser_id =  fields.Many2one('res.partner', 'Purchaser', domain="['|',('customer','=',True),('employee','=',True)]")
+    vendor_id = fields.Many2one('res.partner', 'Vendor', domain="[('supplier','=',True)]")
+    notes = fields.Text('Notes')
+    amount = fields.Float('Amount')
+    odometer = fields.Float('Odometer')
+    odometer_unit = fields.Selection('Odometer Unit' , related='vehicle_id.odometer_unit')
+    date = fields.Date('Date')
+    product_id = fields.Many2one('product.product','Product',domain="[('type','=','consu'),('uom_id','=',11)]")
 
 
 

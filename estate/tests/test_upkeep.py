@@ -48,12 +48,12 @@ class TestUpkeep(TransactionCase):
 
     def test_00_check_date_00_today(self):
         config_val = {
-            'default_max_entry_day': 100
+            'default_max_day': 100
         }
 
         # Imitate config
         config = self.Config.create(config_val)
-        self.assertEqual(config['default_max_entry_day'], 100, 'Estate: failed to get config value')
+        self.assertEqual(config['default_max_day'], 100, 'Estate: failed to get config value')
 
         # Imitate creating upkeep today
         upkeep = self.Upkeep.create(self.upkeep_val)
@@ -63,12 +63,12 @@ class TestUpkeep(TransactionCase):
     def test_00_check_date_01_week_late(self):
         """ Check upkeep date should not less than 3 days """
         config_val = {
-            'default_max_entry_day': 3
+            'default_max_day': 3
         }
 
         # Imitate config
         config = self.Config.create(config_val)
-        self.assertEqual(config['default_max_entry_day'], 3, 'Estate: failed to get config value')
+        self.assertEqual(config['default_max_day'], 3, 'Estate: failed to get config value')
 
         # Imitate creating last week upkeep
         with self.assertRaises(ValidationError):
@@ -78,12 +78,12 @@ class TestUpkeep(TransactionCase):
     def test_00_check_date_01_week_earlier(self):
         """ Check upkeep date should not greater than 3 days """
         config_val = {
-            'default_max_entry_day': 3
+            'default_max_day': 3
         }
 
         # Imitate config
         config = self.Config.create(config_val)
-        self.assertEqual(config['default_max_entry_day'], 3, 'Estate: failed to get config value')
+        self.assertEqual(config['default_max_day'], 3, 'Estate: failed to get config value')
 
         # Imitate creating last week upkeep
         with self.assertRaises(ValidationError):
