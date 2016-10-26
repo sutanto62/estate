@@ -64,7 +64,7 @@ class InheritHrContract(models.Model):
     @api.constrains('working_hours')
     def _constraint_workinghours(self):
         for workingHours in self:
-            if workingHours.working_hours.id != True :
+            if not workingHours.working_hours.id :
                 error_msg = "Working Schedule Field Must be Filled"
                 raise exceptions.ValidationError(error_msg)
                 return False
