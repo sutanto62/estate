@@ -697,7 +697,7 @@ class InheritFleetVehicleFuel(models.Model):
 
     fuel_id = fields.Many2one('fleet.vehicle.log.fuel','Fuel ID')
     owner_id = fields.Integer('Owner ID')
-    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle',)
+    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle')
     liter =  fields.Float('Liter')
     price_per_liter = fields.Float('Price Per Liter')
     purchaser_id =  fields.Many2one('res.partner', 'Purchaser', domain="['|',('customer','=',True),('employee','=',True)]")
