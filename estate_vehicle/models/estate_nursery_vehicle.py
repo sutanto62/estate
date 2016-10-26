@@ -290,6 +290,7 @@ class FleetVehicleTimesheet(models.Model):
         vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
         for item in vals['timesheet_ids']:
             item[2]['date_activity_transport'] = vals['date_timesheet']
+            item[2]['state'] = 'draft'
         for item2 in vals['fuel_ids']:
             item2[2]['date']=vals['date_timesheet']
         res=super(FleetVehicleTimesheet, self).create(cr, uid,vals)
