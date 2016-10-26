@@ -299,6 +299,7 @@ class FleetVehicleTimesheet(models.Model):
     @api.multi
     def write(self,context):
         super(FleetVehicleTimesheet, self).write(context)
+        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'draft'})
         self.do_write_vehicle_date()
         return True
 
