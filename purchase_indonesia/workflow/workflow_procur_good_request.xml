@@ -1,0 +1,86 @@
+<openerp>
+    <data>
+        <!-- vehicle timesheet-->
+        <record id="purchase_indonesia.procur_good_request_approval" model="workflow">
+            <field name="name">Good Request workflow</field>
+            <field name="osv">procur.good.request</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <!-- -->
+        <record id="act_draft_good_request" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_indonesia.procur_good_request_approval"/>
+            <field name="flow_start">True</field>
+			<field name="name">draft</field>
+		</record>
+		<record id="act_claim_good_request" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_indonesia.procur_good_request_approval"/>
+			<field name="name">confirm</field>
+            <field name="kind">function</field>
+            <field name="action">action_send()</field>
+		</record>
+		<record id="act_run_good_request" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_indonesia.procur_good_request_approval"/>
+            <field name="name">approve</field>
+			<field name="kind">function</field>
+			<field name="action">action_confirm()</field>
+		</record>
+		<record id="act_reject_good_request" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_indonesia.procur_good_request_approval"/>
+            <field name="flow_stop">True</field>
+            <field name="name">reject</field>
+            <field name="kind">function</field>
+            <field name="action">action_reject()</field>
+		</record>
+        <record id="act_done_good_request" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_indonesia.procur_good_request_approval"/>
+            <field name="flow_stop">True</field>
+			<field name="name">done</field>
+            <field name="kind">function</field>
+            <field name="action">action_done()</field>
+		</record>
+		<record id="act_cancel_good_request" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_indonesia.procur_good_request_approval"/>
+            <field name="flow_stop">True</field>
+            <field name="name">cancel</field>
+            <field name="kind">function</field>
+            <field name="action">action_cancel()</field>
+		</record>
+
+		<record id="trans_draft_claim_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_draft_good_request"/>
+            <field name="act_to" ref="act_claim_good_request"/>
+			<field name="signal">button_send_request</field>
+		</record>
+        <record id="trans_claim_reject_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_claim_good_request"/>
+            <field name="act_to" ref="act_reject_good_request"/>
+            <field name="signal">button_reject</field>
+        </record>
+        <record id="trans_claim_run_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_claim_good_request"/>
+            <field name="act_to" ref="act_run_good_request"/>
+			<field name="signal">button_confirm_request</field>
+		</record>
+        <record id="trans_run_done_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_run_good_request"/>
+            <field name="act_to" ref="act_done_good_request"/>
+            <field name="signal">subflow.done</field>
+		</record>
+ 		<record id="trans_run_cancel_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_run_good_request"/>
+            <field name="act_to" ref="act_cancel_good_request"/>
+			<field name="signal">subflow.cancel</field>
+		</record>
+        <record id="trans_claim_cancel_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_claim_good_request"/>
+            <field name="act_to" ref="act_cancel_good_request"/>
+            <field name="signal">button_cancel</field>
+        </record>
+        <record id="trans_draft_cancel_good_request" model="workflow.transition">
+            <field name="act_from" ref="act_draft_good_request"/>
+            <field name="act_to" ref="act_cancel_good_request"/>
+            <field name="signal">button_cancel</field>
+        </record>
+    </data>
+</openerp>
