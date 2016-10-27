@@ -47,6 +47,12 @@
                 <xpath expr="//search" position="inside">
                     <field name="nik_number"/>
                     <field name="identification_id"/>
+                    <filter name="filter_daily_labour" string="Daily Labour"
+                            domain="[('contract_type', '=', '2'),('contract_period','=', '2')]"/>
+                    <filter name="filter_outsource" string="Outsource"
+                            domain="[('outsource', '=', True)]"/>
+                    <filter name="filter_internship" string="Internship"
+                            domain="[('internship', '=', True)]"/>
                 </xpath>
             </field>
         </record>
