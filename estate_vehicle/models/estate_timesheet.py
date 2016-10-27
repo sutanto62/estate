@@ -26,7 +26,7 @@ class TimesheetActivityTransport(models.Model):
     dc_type = fields.Char()
     uom_id = fields.Many2one('product.uom',store=True)
     unit = fields.Float('unit per activity',digits=(2,2),store=True)
-    vehicle_id = fields.Many2one('fleet.vehicle',store=True)
+    vehicle_id = fields.Many2one('fleet.vehicle',store=True,required=True)
     activity_id = fields.Many2one('estate.activity',store=True,domain=[('activity_type','=','vehicle'),('type','=','normal')])
     partner_id=fields.Many2one('res.partner')
     timesheet_activity_code = fields.Char()
