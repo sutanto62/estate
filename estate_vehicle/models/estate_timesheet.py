@@ -77,7 +77,7 @@ class TimesheetActivityTransport(models.Model):
         }
 
     @api.multi
-    @api.onchange('activity_id','uom_id')
+    @api.onchange('activity_id',)
     def _onchange_uom(self):
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id
@@ -140,12 +140,6 @@ class TimesheetActivityTransport(models.Model):
         if self:
             self.dc_type = 3
 
-    #Sequence Recovery code
-    # def create(self, cr, uid, vals, context=None):
-    #     vals['timesheet_activity_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.timesheet.activity.transport')
-    #     res=super(TimesheetActivityTransport, self).create(cr, uid, vals)
-    #     return res
-
     #Computed ALL
     @api.multi
     @api.depends('start_time','end_time','total_time')
@@ -181,6 +175,7 @@ class TimesheetActivityTransport(models.Model):
                 error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
                 raise exceptions.ValidationError(error_msg)
             return True
+
 
     @api.multi
     @api.constrains('start_time','end_time')

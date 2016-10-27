@@ -12,8 +12,8 @@
                           <field name="hourly_wage" string="Hourly Wage"/>
                      </group>
                      <group>
-                         <field name="day" string="Day"/>
-                         <field name="hour" string="Hour"/>
+                         <field name="day" string="Day of Month"/>
+                         <field name="hour" string="Hour Per Day"/>
                      </group>
                  </xpath>
              </field>
