@@ -65,6 +65,13 @@ class Upkeep(models.Model):
     material_line_ids = fields.One2many('estate.upkeep.material', string='Upkeep Material Line', inverse_name='upkeep_id')
     comment = fields.Text('Additional Information')
 
+    @api.multi
+    @api.depends('date', 'team_id')
+    def _compute_upkeep_name(self):
+        for record in self:
+            if record.date and record.team_id:
+                record.name = 'BKM/' + record.date + '/' + record.team_id.name  # todo add code with sequence number
+            return True
 
     @api.one
     @api.onchange('team_id')
@@ -543,6 +550,7 @@ class UpkeepActivity(models.Model):
     def _onchange_upkeep(self):
         """Set domain for location while create new record
         """
+        print '_onchange_upkeep activity'
         if not self.upkeep_id:
             warning = {
                     'title': _('Warning!'),
@@ -1015,10 +1023,12 @@ class UpkeepMaterial(models.Model):
     _inherit = 'mail.thread'
 
     name = fields.Char('Name', compute='_compute_name')
-    upkeep_id = fields.Many2one('estate.upkeep', 'Upkeep', ondelete='cascade')
+    upkeep_id = fields.Many2one('estate.upkeep', string='Upkeep', ondelete='cascade')
     upkeep_date = fields.Date(related='upkeep_id.date', string='Date', store=True)
-    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'),('activity_type', '=', 'estate')],
+    activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'), ('activity_type', '=', 'estate')],
                                   help='Any update will reset Block.', track_visibility = 'onchange', required=True)
+    location_id = fields.Many2one('estate.block.template', 'Location',
+                                  domain="[('inherit_location_id.location_id', '=', division_id)]")
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measure', related='activity_id.uom_id',
                                       readonly=True)
     activity_unit_amount = fields.Float('Quantity', compute='_compute_activity_unit_amount',
@@ -1119,6 +1129,11 @@ class UpkeepMaterial(models.Model):
                     'message': _('Material Usage should be created within Daily Upkeep'),
                 }
             return {'warning': warning}
+
+        if self.upkeep_id.division_id:
+            return {
+                'domain': {'location_id': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id)]}
+            }
 
     @api.multi
     @api.onchange('activity_id')
