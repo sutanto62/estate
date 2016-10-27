@@ -1,0 +1,14 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="inherit_purchase_request">
+             <field name="name">Inherit purchase request</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='assigned_to']" position="after">
+                          <field name="type_purchase" string="Purchase Type"/>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>
