@@ -11,7 +11,7 @@ class UpkeepLabour(models.Model):
 
     attendance_in = fields.Many2one('hr.attendance', 'Sign In', compute='_compute_attendance')
     attendance_out = fields.Many2one('hr.attendance', 'Sign Out', compute='_compute_attendance')
-    is_fingerprint = fields.Char(string="Fingerprint", compute='_compute_fingerprint')
+    is_fingerprint = fields.Char(string="Fingerprint", compute='_compute_fingerprint', search="_search_is_fingerprint")
 
     @api.one
     @api.depends('employee_id', 'upkeep_date')
@@ -38,6 +38,11 @@ class UpkeepLabour(models.Model):
             else:
                 record.is_fingerprint = _('No')
 
+    def _search_is_fingerprint(self, operator, value):
+        if operator == 'like':
+            operator = 'ilike'
+        return [('name', operator, value)]
+
     @api.multi
     def get_worked_days(self, ids):
         """
@@ -50,18 +55,16 @@ class UpkeepLabour(models.Model):
         att_obj = self.env['hr.attendance']
 
         for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
-            print 'Upkeep Labour %s' % record.upkeep_id.date
             res = UpkeepFingerprint(att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_in'),
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_out'),
                                     record.attendance_code_id,
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'))
-
             # TODO need to centralize this rule.
             att_rule = UpkeepFingerprintSpecification().\
-                and_specification(ActionSpecification()). \
-                or_specification(SignInSpecification()).\
+                and_specification(SignInSpecification()).\
                 and_specification(SignOutSpecification()).\
-                and_specification(AttendanceCodeSpecification())
+                and_specification(AttendanceCodeSpecification()). \
+                or_specification(ActionSpecification())
 
             if att_rule.is_satisfied_by(res):
                 number_of_days += record['number_of_day']
@@ -85,10 +88,10 @@ class UpkeepLabour(models.Model):
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'))
 
             att_rule = UpkeepFingerprintSpecification(). \
-                and_specification(ActionSpecification()). \
-                or_specification(SignInSpecification()). \
+                and_specification(SignInSpecification()). \
                 and_specification(SignOutSpecification()). \
-                and_specification(AttendanceCodeSpecification())
+                and_specification(AttendanceCodeSpecification()).\
+                or_specification(ActionSpecification())
 
             if att_rule.is_satisfied_by(res):
                 att_code_id = record['attendance_code_id']['id']
@@ -110,12 +113,14 @@ class UpkeepLabour(models.Model):
         for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
             res = UpkeepFingerprint(att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_in'),
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_out'),
-                                    record.attendance_code_id)
+                                    record.attendance_code_id,
+                                    att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'),)
 
             att_rule = UpkeepFingerprintSpecification(). \
                 and_specification(SignInSpecification()). \
                 and_specification(SignOutSpecification()). \
-                and_specification(AttendanceCodeSpecification())
+                and_specification(AttendanceCodeSpecification()). \
+                or_specification(ActionSpecification())
 
             if att_rule.is_satisfied_by(res):
                 amount += record['wage_overtime']
@@ -134,12 +139,14 @@ class UpkeepLabour(models.Model):
         for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
             res = UpkeepFingerprint(att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_in'),
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_out'),
-                                    record.attendance_code_id,)
+                                    record.attendance_code_id,
+                                    att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'))
 
             att_rule = UpkeepFingerprintSpecification(). \
                 and_specification(SignInSpecification()). \
                 and_specification(SignOutSpecification()). \
-                and_specification(AttendanceCodeSpecification())
+                and_specification(AttendanceCodeSpecification()).\
+                or_specification(ActionSpecification())
 
             if att_rule.is_satisfied_by(res):
                 amount += record['wage_piece_rate']

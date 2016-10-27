@@ -20,7 +20,7 @@
 
     # any module necessary for this one to work correctly
     # please include estate_payroll to override get_worked_days
-    'depends': ['base', 'hr_attendance', 'hr_indonesia', 'estate_payroll'],
+    'depends': ['base', 'hr_attendance', 'hr_indonesia', 'estate_payroll', 'hr_time_labour'],
 
     # always loaded
     'data': [

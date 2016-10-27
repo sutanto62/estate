@@ -87,10 +87,16 @@ if __name__ == '__main__':
         and_specification(SignOutSpecification()). \
         and_specification(AttendanceCodeSpecification())
 
+    action_specification = UpkeepFingerprintSpecification().\
+        and_specification(SignInSpecification()).\
+        and_specification(SignOutSpecification()).\
+        and_specification(AttendanceCodeSpecification()).\
+        or_specification(ActionSpecification())
+
     abas_fingerprint = UpkeepFingerprint(1,1,1)
     akil_fingerprint = UpkeepFingerprint(1,0,0)
     dipo_fingerprint = UpkeepFingerprint(0,0,0,1)
 
     print ('In,Out: %s' % fingerprint_specification.is_satisfied_by(abas_fingerprint))
     print ('In Only: %s' % fingerprint_specification.is_satisfied_by(akil_fingerprint))
-    print ('Action no In/Out: %s' % fingerprint_specification.is_satisfied_by(dipo_fingerprint))
+    print ('Action no In/Out: %s' % action_specification.is_satisfied_by(dipo_fingerprint))

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
 
         <!-- demo data attendance for 4 person only -->
         <record id="finger_att_1" model="hr_fingerprint_ams.attendance"
@@ -25,6 +25,7 @@
             <field name="department">Liyodu (Kurni Y. Latada)</field>
             <field name="hour_attendance">9.58</field>
             <field name="hour_ot_normal">0</field>
+            <field name="action_reason"></field>
         </record>
 
         <record id="finger_att_2" model="hr_fingerprint_ams.attendance"
@@ -49,6 +50,7 @@
             <field name="department">Liyodu (Kurni Y. Latada)</field>
             <field name="hour_attendance">9.53</field>
             <field name="hour_ot_normal">0</field>
+            <field name="action_reason"></field>
         </record>
 
         <record id="finger_att_3" model="hr_fingerprint_ams.attendance"
@@ -73,6 +75,7 @@
             <field name="department">Liyodu (Kurni Y. Latada)</field>
             <field name="hour_attendance">9.32</field>
             <field name="hour_ot_normal">0</field>
+            <field name="action_reason"></field>
         </record>
 
         <record id="finger_att_4" model="hr_fingerprint_ams.attendance"
@@ -97,6 +100,7 @@
             <field name="department">Liyodu (Kurni Y. Latada)</field>
             <field name="hour_attendance">12.08</field>
             <field name="hour_ot_normal">0</field>
+            <field name="action_reason"></field>
         </record>
     </data>
 </openerp>

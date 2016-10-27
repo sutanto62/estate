@@ -3,7 +3,7 @@
     'name': "Time Labour",
 
     'summary': """
-        Work Schedule, Shift""",
+        Work Schedule, Shift, Action Reason""",
 
     'description': """
         Long description of module's purpose
