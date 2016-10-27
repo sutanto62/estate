@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Estate Procurment",
+    'name': "Estate Procurement",
 
     'summary': """
        """,
