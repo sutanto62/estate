@@ -83,6 +83,7 @@ class TeamMember(models.Model):
     team_id = fields.Many2one('estate.hr.team', "Team", ondelete='restrict')
     employee_id = fields.Many2one('hr.employee', "Labour", ondelete='restrict',
                                   help="Member should not be a Team Leader.")
+    nik_number = fields.Char(related='employee_id.nik_number', store=True, readonly=True)
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
 
