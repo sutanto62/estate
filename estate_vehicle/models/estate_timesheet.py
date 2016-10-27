@@ -26,7 +26,7 @@ class TimesheetActivityTransport(models.Model):
     dc_type = fields.Char()
     uom_id = fields.Many2one('product.uom',store=True)
     unit = fields.Float('unit per activity',digits=(2,2),store=True)
-    vehicle_id = fields.Many2one('fleet.vehicle',store=True,required=True)
+    vehicle_id = fields.Many2one('fleet.vehicle',store=True)
     activity_id = fields.Many2one('estate.activity',store=True,domain=[('activity_type','=','vehicle'),('type','=','normal')])
     partner_id=fields.Many2one('res.partner')
     timesheet_activity_code = fields.Char()
@@ -140,12 +140,6 @@ class TimesheetActivityTransport(models.Model):
         if self:
             self.dc_type = 3
 
-    #Sequence Recovery code
-    # def create(self, cr, uid, vals, context=None):
-    #     vals['timesheet_activity_code']=self.pool.get('ir.sequence').get(cr, uid,'estate.timesheet.activity.transport')
-    #     res=super(TimesheetActivityTransport, self).create(cr, uid, vals)
-    #     return res
-
     #Computed ALL
     @api.multi
     @api.depends('start_time','end_time','total_time')
@@ -181,6 +175,7 @@ class TimesheetActivityTransport(models.Model):
                 error_msg="End KM  %s is set more less than Start KM %s " %(self.end_km,self.start_km)
                 raise exceptions.ValidationError(error_msg)
             return True
+
 
     @api.multi
     @api.constrains('start_time','end_time')

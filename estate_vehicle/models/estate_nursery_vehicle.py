@@ -405,6 +405,29 @@ class FleetVehicleTimesheet(models.Model):
                 error_msg = "Date Timesheet %s Not Use More Than One" %item.date_timesheet
                 raise exceptions.ValidationError(error_msg)
 
+    @api.multi
+    @api.constrains('timesheet_ids','fuel_ids')
+    def _constraint_vehicle_id_notnull(self):
+
+        if self.timesheet_ids:
+            for vehicle in self.timesheet_ids:
+                if not vehicle.vehicle_id.id:
+                    error_msg = "Vehicle Field in Timesheet Tab Must be Filled"
+                    raise exceptions.ValidationError(error_msg)
+                    return False
+            return True
+
+    @api.multi
+    @api.constrains('fuel_ids')
+    def _constrat_fuel_ids(self):
+        if self.fuel_ids:
+            for vehicle in self.fuel_ids:
+                if not vehicle.vehicle_id.id:
+                    error_msg = "Vehicle Field in Fuel Tab Must be Filled"
+                    raise exceptions.ValidationError(error_msg)
+                    return False
+            return True
+
 
 class FleetVehicleTimesheetInherits(models.Model):
 
@@ -550,6 +573,9 @@ class FleetVehicleTimesheetInherits(models.Model):
 
     #Constraint ALL
 
+
+
+
     @api.multi
     @api.constrains('start_km','end_km')
     def _constraint_startkm_endkm(self):
@@ -671,7 +697,7 @@ class InheritFleetVehicleFuel(models.Model):
 
     fuel_id = fields.Many2one('fleet.vehicle.log.fuel','Fuel ID')
     owner_id = fields.Integer('Owner ID')
-    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle',required=True)
+    vehicle_id = fields.Many2one('fleet.vehicle','Vehicle',)
     liter =  fields.Float('Liter')
     price_per_liter = fields.Float('Price Per Liter')
     purchaser_id =  fields.Many2one('res.partner', 'Purchaser', domain="['|',('customer','=',True),('employee','=',True)]")
@@ -682,7 +708,6 @@ class InheritFleetVehicleFuel(models.Model):
     odometer_unit = fields.Selection('Odometer Unit' , related='vehicle_id.odometer_unit')
     date = fields.Date('Date')
     product_id = fields.Many2one('product.product','Product',domain="[('type','=','consu'),('uom_id','=',11)]")
-
 
 
 
