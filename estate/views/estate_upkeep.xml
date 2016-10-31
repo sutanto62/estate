@@ -177,11 +177,12 @@
                         <group>
                             <group name="team_work">
                                 <field name="date" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="max_day" groups="base.group_no_one"/>
                                 <field name="team_id" options="{'no_create_edit': True}"
                                        attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="assistant_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                <!-- do not remove -->
+                                <field name="max_day" invisible="True"/>
                             </group>
                             <group name="division_information">
                                 <field name="division_id" options="{'no_create_edit': True}"
