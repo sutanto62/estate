@@ -65,6 +65,13 @@ class Upkeep(models.Model):
     material_line_ids = fields.One2many('estate.upkeep.material', string='Upkeep Material Line', inverse_name='upkeep_id')
     comment = fields.Text('Additional Information')
 
+    @api.multi
+    @api.depends('date', 'team_id')
+    def _compute_upkeep_name(self):
+        for record in self:
+            if record.date and record.team_id:
+                record.name = 'BKM/' + record.date + '/' + record.team_id.name  # todo add code with sequence number
+            return True
 
     @api.one
     @api.onchange('team_id')
