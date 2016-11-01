@@ -8,6 +8,7 @@
             <field name="date" eval="(datetime.today() - relativedelta(months=1)).strftime('%Y-%m-%d')"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
+            <field name="max_day" eval="100"/>
             <field name="state">approved</field>
         </record>
         <record id="estate_upk_act_4" model="estate.upkeep.activity">

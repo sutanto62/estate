@@ -177,11 +177,12 @@
                         <group>
                             <group name="team_work">
                                 <field name="date" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="max_day" groups="base.group_no_one"/>
                                 <field name="team_id" options="{'no_create_edit': True}"
                                        attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="assistant_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                <!-- do not remove -->
+                                <field name="max_day" invisible="True"/>
                             </group>
                             <group name="division_information">
                                 <field name="division_id" options="{'no_create_edit': True}"
@@ -270,11 +271,14 @@
                                         <field name="product_uom_id" string="UoM"/>
                                         <field name="amount"/>
                                         <field name="activity_id" string="Activity" options="{'no_create': True}"/>
+                                        <field name="location_id"/>
                                         <field name="activity_uom_id" string="UoM"/>
                                         <!-- Do not remove field below -->
                                         <field name="activity_unit_amount" string="Act. Qty." invisible="True"/>
                                         <field name="ratio_product_activity" string="Ratio"/>
                                         <field name="prod_product_activity" string="Norm" invisible="True" groups="estate.estate_manager"/>
+                                        <field name="division_id" invisible="True"/>
+                                        <field name="upkeep_id" invisible="True"/>
                                         <!--<field name="activity_unit_amount" string="Qty. Act"/>-->
                                         <!--<field name="ratio_product_activity" string="Ratio"/>-->
                                         <!-- -->

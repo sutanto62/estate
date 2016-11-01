@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Schedule View -->
+        <record id="schedule_view_form" model="ir.ui.view">
+            <field name="name">Schedule</field>
+            <field name="model">hr_time_labour.schedule</field>
+            <field name="arch" type="xml">
+                <form>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group name="information" string="Additional Information">
+                            <field name="code"/>
+                            <field name="effective_date"/>
+                            <field name="active"/>
+                            <field name="description"/>
+                        </group>
+                        <group name="detail" string="Optional Detail">
+                            <field name="type"/>
+                            <field name="rotating_schedule"/>
+                            <field name="days_in_schedule"/>
+                            <field name="calendar_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="punch_based" string="Schedule Shift">
+                            <field name="schedule_shift_ids">
+                                <tree editable="True">
+                                    <field name="day"/>
+                                    <field name="shift_id"/>
+                                    <field name="type"/>
+                                    <field name="time_start" widget="float_time"/>
+                                    <field name="time_end" widget="float_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="flex" string="Flex Shift Information">
+                            <label string="Flex Shift Information"/>
+                        </page>
+                        <page name="rotating" string="Rotating Schedules">
+                            <label string="Rotating Schedules"/>
+                        </page>
+                    </notebook>
+                </form>
+            </field>
+        </record>
+
+        <!-- Shift -->
+        <record id="shift_view_tree" model="ir.ui.view">
+            <field name="name">Shift Definition Tree</field>
+            <field name="model">hr_time_labour.shift</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="type"/>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="shift_view_form" model="ir.ui.view">
+            <field name="name">Shift Definition</field>
+            <field name="model">hr_time_labour.shift</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group name="information" string="Additional Information">
+                            <field name="code"/>
+                            <field name="effective_date"/>
+                            <field name="active"/>
+                            <field name="description"/>
+                        </group>
+                        <group name="summary" string="Shift Summary">
+                            <field name="type"/>
+                            <field name="off_shift"/>
+                            <field name="time_start" widget="float_time"/>
+                            <field name="time_end" widget="float_time"/>
+                            <field name="time_restriction_id"/>
+                        </group>
+                    </group>
+                    <field name="shift_time_ids">
+                        <tree editable="true">
+                            <field name="type"/>
+                            <field name="time" widget="float_time"/>
+                            <field name="duration" readonly="True"/>
+                            <field name="overnight"/>
+                        </tree>
+                    </field>
+                </form>
+            </field>
+        </record>
+
+        <!-- Time Restriction -->
+        <record id="time_restriction_view_form" model="ir.ui.view">
+            <field name="name">Time Restriction</field>
+            <field name="model">hr_time_labour.time_restriction</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group name="information" string="Additional Information">
+                            <field name="code"/>
+                            <field name="effective_date"/>
+                            <field name="active"/>
+                            <field name="description"/>
+                        </group>
+                        <group name="rule" string="Rule Duration in Minutes">
+                            <field name="early_in" widget="float_time"/>
+                            <field name="late_in" widget="float_time"/>
+                            <field name="early_meal" widget="float_time"/>
+                            <field name="late_meal" widget="float_time"/>
+                            <field name="early_out" widget="float_time"/>
+                            <field name="late_out" widget="float_time"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <!--
+        <record id="time_restriction_view_form" model="ir.actions.act_window">
+            <field name="name">Time Restriction Rule</field>
+            <field name="res_model">hr_time_labour.time_restriction</field>
+            <field name="arch" type="xml">
+                <form>
+                    <label for="name" class="oe_edit_only"/>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group name="information" string="Additional Information">
+                            <field name="code"/>
+                            <field name="effective_date"/>
+                            <field name="active"/>
+                            <field name="description"/>
+                        </group>
+                        <group name="rule" string="Rule">
+                            <field name="early_in" widget="float_time"/>
+                            <field name="late_in" widget="float_time"/>
+                            <field name="early_meal" widget="float_time"/>
+                            <field name="late_meal" widget="float_time"/>
+                            <field name="early_out" widget="float_time"/>
+                            <field name="late_out" widget="float_time"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        -->
+
+        <!-- Action -->
+        <record id="schedule_action" model="ir.actions.act_window" >
+            <field name="name">Work Schedule</field>
+            <field name="res_model">hr_time_labour.schedule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="shift_action" model="ir.actions.act_window" >
+            <field name="name">Shift</field>
+            <field name="res_model">hr_time_labour.shift</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <record id="time_restriction_action" model="ir.actions.act_window" >
+            <field name="name">Time Restriction</field>
+            <field name="res_model">hr_time_labour.time_restriction</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Menu -->
+        <!--todo tests parent menu available -->
+        <menuitem id="schedule_menu" name="Work Schedule"
+                  parent="hr.menu_human_resources_configuration"
+                  action="schedule_action"
+                  groups="base.group_configuration,base.group_hr_user"/>
+        <menuitem id="shift_menu" name="Shift"
+                  parent="hr.menu_human_resources_configuration"
+                  action="shift_action"
+                  groups="base.group_configuration,base.group_hr_user"/>
+        <menuitem id="time_restriction_menu" name="Time Restriction"
+                  parent="hr.menu_human_resources_configuration"
+                  action="time_restriction_action"
+                  groups="base.group_configuration,base.group_hr_user"/>
+    </data>
+</openerp>

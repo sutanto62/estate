@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Employee (Indonesia)",
+    'name': "Time Labour",
 
     'summary': """
-        Employee Status, Tax, Insurance.""",
+        Work Schedule, Shift, Action Reason""",
 
     'description': """
         Long description of module's purpose
@@ -19,19 +19,18 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr_attendance', 'hr_contract'],
+    'depends': ['base', 'hr'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'views/hr_time_labour.xml',
+        'views/inherited_hr_attendance.xml',
+        # 'security/ir.model.access.csv',
         'templates.xml',
-        'views/hr_indonesia_view.xml',
-        'data/hr_data.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
-        'data/hr.employee.csv',
-        'data/hr_estate_demo.xml',
     ],
 }
