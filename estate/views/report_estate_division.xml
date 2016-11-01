@@ -11,6 +11,9 @@
                         <p>
                             Start Date: <span t-esc="formatLang(data['form']['date_start'], date=True)"/><br/>
                             End Date: <span t-esc="formatLang(data['form']['date_end'], date=True)"/><br/>
+                            <t t-if="data['form']['company_id']">
+                                Company: <span t-esc="get_company_name(data['form']['company_id'])"/><br/>
+                            </t>
                             Estate: <span t-esc="get_location_name(data['form']['estate_id'])"/><br/>
                             <t t-if="data['form']['division_id']">
                                 Division: <span t-esc="get_location_name(data['form']['division_id'])"/>

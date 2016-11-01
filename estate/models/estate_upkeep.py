@@ -51,8 +51,9 @@ class Upkeep(models.Model):
                                 domain=[('estate_location', '=', True), ('estate_location_level', '=', '1'),
                                 ('estate_location_type', '=', 'planted')])
     # constrains: limit to estate_id childs
+    company_id = fields.Many2one('res.company', 'Company', help='Define location company.')
     division_id = fields.Many2one('stock.location', "Division", required=True,
-                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')])
+                                  domain=[('estate_location', '=', True), ('estate_location_level', 'in', ['1','2'])])
 
     state = fields.Selection([('draft', 'Draft'),
                               ('confirmed', 'Confirmed'),
@@ -121,7 +122,7 @@ class Upkeep(models.Model):
         """Select estate automatically, update location domain in upkeep line
         :return: first estate and set to estate_id
         """
-        if self.division_id:
+        if self.division_id and self.division_id.estate_location_level != '1':
             self.estate_id = self.env['stock.location'].get_estate(self.division_id.id)
 
     @api.one
@@ -560,7 +561,8 @@ class UpkeepActivity(models.Model):
 
         if self.upkeep_id.division_id:
             return {
-                'domain': {'location_ids': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id)]}
+                'domain': {'location_ids': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id),
+                                            ('company_id', '=', self.upkeep_id.company_id.id)]}
             }
 
     @api.onchange('location_ids')
@@ -619,6 +621,7 @@ class UpkeepLabour(models.Model):
     planted_year_id = fields.Many2one(related='location_id.planted_year_id')
     activity_location_ids = fields.Many2one('estate.block.template', 'Activity Location', store=False,
                                             compute="_compute_activity_location_ids")
+    company_id = fields.Many2one(related='location_id.company_id', store=True, help='Company of location')
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
     division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
     attendance_code_id = fields.Many2one('estate.hr.attendance', 'Attendance', track_visibility='onchange',
@@ -1049,6 +1052,7 @@ class UpkeepMaterial(models.Model):
                                          compute='_compute_prod_product_activity', group_operator="avg", store=True)
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
+    company_id = fields.Many2one(related='location_id.company_id', store=True, help='Company of location')
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
     division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
 
