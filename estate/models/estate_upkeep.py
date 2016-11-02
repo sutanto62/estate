@@ -124,6 +124,8 @@ class Upkeep(models.Model):
         """
         if self.division_id and self.division_id.estate_location_level != '1':
             self.estate_id = self.env['stock.location'].get_estate(self.division_id.id)
+        elif self.division_id.estate_location_level == '1':  # Costing non block
+            self.estate_id = self.division_id.id
 
     @api.one
     @api.constrains('date')
