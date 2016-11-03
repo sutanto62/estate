@@ -91,7 +91,7 @@
                     <field name="area_planted"/>
                     <field name="estate_location_type" string="Type"/>
                     <field name="estate_location_level" string="Level"/>
-                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="company_id" groups="estate.group_user"/>
                     <field name="usage" invisible="True"/>
                 </tree>
             </field>
@@ -123,7 +123,8 @@
                         <group string="Areal Statement" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
                             <field name="closing"/>
                             <field name="planted_year_id"
-                                   attrs="{'invisible': [('estate_location_level','in', ('1','2'))]}"/>
+                                   attrs="{'invisible': [('estate_location_level','in', ('1','2'))]}"
+                                   options="{'no_create_edit': True}"/>
                             <field name="qty_tree"/>
                             <field name="qty_tree_immature"/>
                             <field name="qty_tree_mature_normal"/>
@@ -139,8 +140,10 @@
 
                         <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
                             <field name="is_smallholder"/>
-                            <field name="partner_id" attrs="{'invisible': [('is_smallholder','=', False)]}"/>
-                            <field name="company_id" attrs="{'invisible': [('is_smallholder','=', True  )]}"/>
+                            <field name="partner_id" attrs="{'invisible': [('is_smallholder','=', False)]}"
+                                options="{'no_create_edit': True}"/>
+                            <field name="company_id" attrs="{'invisible': [('is_smallholder','=', True  )]}"
+                                options="{'no_create_edit': True}"/>
                         </group>
 
                         <field name="block_parameter_ids"

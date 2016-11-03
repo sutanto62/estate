@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="1">
+    <data noupdate="0">
         <record id="estate_config_max_day" model="estate.config.settings">
             <field name="default_max_day">100</field>
         </record>
@@ -11,6 +11,7 @@
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
             <field name="max_day" eval="100"/>
+            <field name="company_id" ref="base.main_company"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -19,6 +20,7 @@
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="date" eval="(datetime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
             <field name="max_day" eval="100"/>
+            <field name="company_id" ref="base.main_company"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>
@@ -29,6 +31,7 @@
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="date" eval="(datetime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
             <field name="max_day" eval="100"/>
+            <field name="company_id" ref="base.main_company"/>
             <field name="division_id" ref="stock.stock_division_1"/>
             <field name="estate_id" ref="stock.stock_main_estate"/>
         </record>

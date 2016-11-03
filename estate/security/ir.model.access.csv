@@ -49,3 +49,4 @@
 "access_estate_wage_agronomi","estate.wage agronomi","model_estate_wage","estate.group_agronomi","TRUE","TRUE","TRUE","FALSE"
 "access_estate_wage_hr_manager","estate.wage hr manager","model_estate_wage","base.group_hr_manager","TRUE","TRUE","TRUE","FALSE"
 "access_estate_stock_warehouse_orderpoint","stock.warehouse.orderpoint estate user","stock.model_stock_warehouse_orderpoint","estate.group_user","TRUE","FALSE","FALSE","FALSE"
+"access_estate_res_company","res.company estate user","base.model_res_company","estate.group_user","TRUE","FALSE","FALSE","FALSE"
