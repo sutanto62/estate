@@ -29,14 +29,26 @@ class Payslip(models.Model):
                     return False
 
     @api.multi
+    def _get_upkeep_labour(self):
+        """
+        Get upkeep approved/payslip labour with fingerprint
+        Returns: list of ids
+        """
+        labour_ids = []
+        upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
+                                                                     ('upkeep_date', '>=', self.date_from),
+                                                                     ('upkeep_date', '<=', self.date_to),
+                                                                     ('state', 'in', ['approved', 'payslip'])])
+        for item in upkeep_labour_ids:
+            if item['is_fingerprint'] == 'Yes':
+                labour_ids.append(item['id'])
+
+        return labour_ids
+
+    @api.multi
     def _compute_upkeep_labour(self):
         """ Display number of upkeep did by the labour in payslip """
-        upkeep_labour_obj = self.env['estate.upkeep.labour']
-        res = upkeep_labour_obj.search([('upkeep_date', '>=', self.date_from),
-                                        ('upkeep_date', '<=', self.date_to),
-                                        ('employee_id', '=', self.employee_id.id),
-                                        ('state', '=', 'approved')])
-        self.upkeep_labour_count = len(res)
+        self.upkeep_labour_count = len(self._get_upkeep_labour())
 
     @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):
@@ -134,16 +146,14 @@ class Payslip(models.Model):
 
     @api.multi
     def action_open_labour(self):
-        """HR cross check related upkeep labour
+        """HR cross check related upkeep labour before and after payslip
         """
         context = self._context.copy()
         view_id = self.env.ref('estate.upkeep_labour_view_tree').id
 
         # Payslip only processed approved upkeep labour of selected employee within payslip period
-        upkeep_labour_filter = [('employee_id', '=', self.employee_id.id),
-                                ('upkeep_date', '>=', self.date_from),
-                                ('upkeep_date', '<=', self.date_to),
-                                ('state', '=', 'approved')]
+
+        upkeep_labour_filter = [('id', 'in', self._get_upkeep_labour())]
 
         res = {
             'name': _('Upkeep Labour Records %s' % self.employee_id.name),
@@ -154,7 +164,10 @@ class Payslip(models.Model):
             'view_id': view_id,
             'type': 'ir.actions.act_window',
             'context': context,
-            'domain': upkeep_labour_filter
+            'domain': upkeep_labour_filter,
         }
 
         return res
+
+
+

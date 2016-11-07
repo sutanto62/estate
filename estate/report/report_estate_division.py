@@ -37,7 +37,7 @@ STATE = ('approved', 'correction', 'payslip')
 
 class estate_division_report(report_sxw.rml_parse):
     """
-    Estate Division Report shows all approved/correction/payslip activities. It shows
+    Estate Division Report shows all approved/correction/payslip activities by company. It shows
     1. Activity.
     2. Location.
     3. Labour work days, overtime and piece rate.
@@ -61,6 +61,7 @@ class estate_division_report(report_sxw.rml_parse):
             'get_upkeep_activity_material': self._get_upkeep_activity_material,
             'get_location_length': self._get_location_length,
             'get_qrcode': self._get_qrcode,
+            'get_company_name': self._get_company_name,
         })
 
     def set_context(self, objects, data, ids, report_type=None):
@@ -68,6 +69,7 @@ class estate_division_report(report_sxw.rml_parse):
         ctx = data['form'].get('used_context', {})
         self.date_start = data['form'].get('date_start', time.strftime('%Y-%m-%d'))
         self.date_end = data['form'].get('date_end', time.strftime('%Y-%m-%d'))
+        self.company_id = data['form'].get('company_id')
         self.estate_id = data['form'].get('estate_id')
         self.division_id = data['form'].get('division_id')
 
@@ -75,21 +77,32 @@ class estate_division_report(report_sxw.rml_parse):
 
     def _get_upkeep(self, data):
         """
-        Get approved/correction/payslip upkeep based on date, estate and/or division.
+        Get approved/correction/payslip upkeep based on date, company and/or estate and/or division.
         :param data:
         :return: list of estate upkeep instance
         """
         upkeep_obj = self.pool.get('estate.upkeep')
+
+        domain = [('state', 'in', STATE), ('date', '>=', self.date_start), ('date', '<=', self.date_end)]
+
+        if self.company_id:
+            domain.append(('company_id', '=', self.company_id[0]))
+
         if self.estate_id and self.division_id:
-            ids = upkeep_obj.search(self.cr, self.uid, [('state', 'in', STATE),
-                                                        ('date', '>=', self.date_start),
-                                                        ('date', '<=', self.date_end),
-                                                        ('division_id', '=', self.division_id[0])])
+            domain.append(('division_id', '=', self.division_id[0]))
+            # ids = upkeep_obj.search(self.cr, self.uid, [('state', 'in', STATE),
+            #                                             ('date', '>=', self.date_start),
+            #                                             ('date', '<=', self.date_end),
+            #                                             ('division_id', '=', self.division_id[0])])
         elif self.estate_id:
-            ids = upkeep_obj.search(self.cr, self.uid, [('state', 'in', STATE),
-                                                        ('date', '>=', self.date_start),
-                                                        ('date', '<=', self.date_end),
-                                                        ('estate_id', '=', self.estate_id[0])])
+            domain.append(('division_id', '=', self.estate_id[0]))
+            # ids = upkeep_obj.search(self.cr, self.uid, [('state', 'in', STATE),
+            #                                             ('date', '>=', self.date_start),
+            #                                             ('date', '<=', self.date_end),
+            #                                             ('estate_id', '=', self.estate_id[0])])
+        print 'domain %s' % domain
+        ids = upkeep_obj.search(self.cr, self.uid, domain)
+        print 'ids %s' % ids
         res = upkeep_obj.browse(self.cr, self.uid, ids)
         return res
 
@@ -264,6 +277,16 @@ class estate_division_report(report_sxw.rml_parse):
         # search return ids, browse return instances
         ids = location_obj.search(self.cr, self.uid, [('id', '=', list[0])])
         res = location_obj.browse(self.cr, self.uid, ids)
+        return res.name
+
+    def _get_company_name(self, list):
+
+        if not list:
+            return
+
+        company_obj = self.pool.get('res.company')
+        ids = company_obj.search(self.cr, self.uid, [('id', '=', list[0])])
+        res = company_obj.browse(self.cr, self.uid, ids)
         return res.name
 
     def _get_block_name(self, id):

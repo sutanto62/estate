@@ -2,9 +2,9 @@ id,company_id/id,closing,is_smallholder,inherit_location_id/id
 estate.estate,,True,False,stock.stock_main_estate
 estate.division_nursery,,True,False,stock.stock_nursery
 estate.division_pre_nursery,,True,False,stock.stock_pre_nursery
-estate.block_pn_1,,True,False,stock.stock_pn_1
-estate.block_pn_2,,True,False,stock.stock_pn_2
-estate.block_pn_3,,True,False,stock.stock_pn_3
+estate.block_pn_1,base.main_company,True,False,stock.stock_pn_1
+estate.block_pn_2,base.main_company,True,False,stock.stock_pn_2
+estate.block_pn_3,base.main_company,True,False,stock.stock_pn_3
 estate.division_main_nursery,,True,False,stock.stock_main_nursery
 estate.block_mn_1,,True,False,stock.stock_mn_1
 estate.block_culling_1,,True,False,stock.stock_culling_1

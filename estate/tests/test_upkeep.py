@@ -47,53 +47,44 @@ class TestUpkeep(TransactionCase):
         }
 
     def test_00_check_date_00_today(self):
-        config_val = {
-            'default_max_day': 100
-        }
+        config = self.env['estate.config.settings'].search([], limit=1)
 
-        # Imitate config
-        config = self.Config.create(config_val)
-        self.assertEqual(config['default_max_day'], 100, 'Estate: failed to get config value')
+        # I changed default max day to 3
+        config['default_max_day'] = 0
+        self.assertEqual(config['default_max_day'], 0, 'Estate: failed to get config value')
+        self.upkeep_val['max_day'] = config['default_max_day']
 
-        # Imitate creating upkeep today
-        upkeep = self.Upkeep.create(self.upkeep_val)
-        self.assertTrue(upkeep, 'Estate: failed to create upkeep record for today.')
-        upkeep.unlink()
+        # I created upkeep record for today
+        upkeep_today = self.Upkeep.create(self.upkeep_val)
+        self.assertTrue(upkeep_today, 'Estate: failed to create upkeep record for today.')
 
     def test_00_check_date_01_week_late(self):
         """ Check upkeep date should not less than 3 days """
-        config_val = {
-            'default_max_day': 3
-        }
+        config = self.env['estate.config.settings'].search([], limit=1)
 
-        # Imitate config
-        config = self.Config.create(config_val)
+        # I changed default max day to 3
+        config['default_max_day'] = 3
         self.assertEqual(config['default_max_day'], 3, 'Estate: failed to get config value')
 
-        # Imitate creating last week upkeep
+        # I created upkeep record for last week
         with self.assertRaises(ValidationError):
+            self.upkeep_val['max_day'] = config['default_max_day']
             self.upkeep_val['date'] = (datetime.today() + relativedelta.relativedelta(weeks=-1)).strftime(DF)
             self.Upkeep.create(self.upkeep_val)
 
     def test_00_check_date_01_week_earlier(self):
         """ Check upkeep date should not greater than 3 days """
-        config_val = {
-            'default_max_day': 3
-        }
+        config = self.env['estate.config.settings'].search([], limit=1)
 
-        # Imitate config
-        config = self.Config.create(config_val)
+        # I changed default max day to 3
+        config['default_max_day'] = 3
         self.assertEqual(config['default_max_day'], 3, 'Estate: failed to get config value')
 
-        # Imitate creating last week upkeep
+        # I created upkeep record for next week
         with self.assertRaises(ValidationError):
+            self.upkeep_val['max_day'] = config['default_max_day']
             self.upkeep_val['date'] = (datetime.today() + relativedelta.relativedelta(weeks=1)).strftime(DF)
             self.Upkeep.create(self.upkeep_val)
-
-    # def test_get_labour_activity(self):
-    #     upkeep = self.demo
-    #     for activity in upkeep.get_labour_activity():
-    #         self.assertTrue(activity, 'Estate: failed to get labour activity')
 
     def test_01_check_activity_line(self):
         val = {

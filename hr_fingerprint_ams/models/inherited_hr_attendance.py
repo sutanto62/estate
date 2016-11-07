@@ -104,10 +104,26 @@ class FingerAttendance(models.Model):
                 self._create_attendance(res, vals)
                 self._create_attendance(res, vals, 'sign_out')
         else:
-            # Ignore record which did not passed rules
-            error_msg = '%s attendance at %s did not satisfy attendance rule (employee, sign-in, sign-out).' % (vals['employee_name'], vals['date'])
-            _logger.warning(error_msg)
-            pass
+            # Create non-fingerprint attendance (with action reason)
+            action_reason_ids = self.env['hr.action.reason'].search([('active', '=', True),
+                                                                     ('action_type', '=', 'action')])
+
+            item = []
+            for action_reason in action_reason_ids:
+                item.append(action_reason['name'])
+
+            if vals['action_reason'] in item:
+                res = super(FingerAttendance, self).create(vals)
+                self._create_attendance(res, vals, 'action')
+
+            # if not vals['action_reason'] in set(item):
+            #     # Ignore record which did not passed rules
+            #     logger_msg = '%s attendance at %s did not satisfy attendance rule or registered action reason.' % (vals['employee_name'], vals['date'])
+            #     _logger.warning(logger_msg)
+            #     res = False
+            # else:
+            # print 'create attendance with action reason... sign_in %s and sign_out %s' % (
+            # vals['time_start'], vals['time_end'])
 
         return res
 
@@ -121,19 +137,28 @@ class FingerAttendance(models.Model):
         :param update: set True for update action
         :return: instance of attendance
         """
-        employee_id = self._get_employee(vals['employee_name'],vals['nik'])
+        employee_id = self._get_employee(vals['employee_name'], vals['nik'])
+
+        att_time = 0
+        action_reason_id = None
 
         # define action and time
         if action == 'sign_in':
             att_time = vals['sign_in']
         elif action == 'sign_out':
             att_time = vals['sign_out']
+        elif action == 'action':
+            if vals['action_reason']:
+                action_reason_id = self.env['hr.action.reason'].search([('active', '=', True),
+                                                                        ('name', '=', vals['action_reason'])],
+                                                                       limit=1).id
 
         att = {
             'finger_attendance_id': f_attendance.id,
             'employee_id': employee_id.id,
             'name': self._get_name(vals['date'], att_time),
-            'action': action
+            'action': action,
+            'action_desc': action_reason_id,
         }
 
         if update:
@@ -144,6 +169,7 @@ class FingerAttendance(models.Model):
             res.write(att)
         else:
             res = self.env['hr.attendance'].create(att)
+
         return res
 
     @api.multi
@@ -248,7 +274,18 @@ class HrAttendance(models.Model):
                            ('action', '=', action),
                            ('name', '>=', date_from_utc.strftime(DT)),
                            ('name', '<=', date_to_utc.strftime(DT))])
+
         return res
+
+    @api.multi
+    @api.constrains('action')
+    def _altern_si_so(self):
+        """Support attendance with action type. Note: first attendance must be sign-in."""
+        for record in self:
+            if record.action == 'action':
+                pass
+            else:
+                return super(HrAttendance, record)._altern_si_so()
 
 
 class ActionReason(models.Model):

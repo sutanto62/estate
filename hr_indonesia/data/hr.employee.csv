@@ -1,12 +1,12 @@
-id,name,resource_type,time_efficiency,contract_type,contract_period
-hr_employee.khl_1,Abas Akumali,user,1,PKWT,Daily
-hr_employee.khl_2,Abas Depo,user,1,PKWT,Daily
-hr_employee.khl_3,Gani Nanggili,user,1,PKWT,Daily
-hr_employee.khl_4,Kanono Desta,user,1,PKWT,Daily
-hr_employee.khl_5,Latif Abdulah,user,1,PKWT,Daily
-hr_employee.khl_6,Adam Akumali,user,1,PKWT,Daily
-hr_employee.khl_7,Lasena,user,1,PKWT,Daily
-hr_employee.khl_8,Suryo Maduto,user,1,PKWT,Daily
-hr_employee.khl_9,Amrain Ahmad,user,1,PKWT,Daily
-hr_employee.khl_10,Ahmad Bahrun,user,1,PKWT,Daily
-hr_employee.kht_mandor,Syukur Mandor,user,1,PKWTT,Daily
+id,name,resource_type,time_efficiency,contract_type,contract_period,nik_number
+hr_employee.khl_1,Abas Akumali,user,1,PKWT,Daily,3011000224
+hr_employee.khl_2,Abas Depo,user,1,PKWT,Daily,3011000009
+hr_employee.khl_3,Gani Nanggili,user,1,PKWT,Daily,
+hr_employee.khl_4,Kanono Desta,user,1,PKWT,Daily,
+hr_employee.khl_5,Latif Abdulah,user,1,PKWT,Daily,
+hr_employee.khl_6,Adam Akumali,user,1,PKWT,Daily,
+hr_employee.khl_7,Lasena,user,1,PKWT,Daily,
+hr_employee.khl_8,Suryo Maduto,user,1,PKWT,Daily,
+hr_employee.khl_9,Amrain Ahmad,user,1,PKWT,Daily,
+hr_employee.khl_10,Ahmad Bahrun,user,1,PKWT,Daily,
+hr_employee.kht_mandor,Syukur Mandor,user,1,PKWTT,Daily,
