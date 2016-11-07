@@ -29,7 +29,9 @@
         'views/procur_request_sequence.xml',
         'views/procur_request_view.xml',
         'views/management_good_request.xml',
+        'views/inherit_purchaseorder_report.xml',
         'workflow/workflow_procur_good_request.xml'
+
         # 'templates.xml',
     ],
     # only loaded in demonstration mode

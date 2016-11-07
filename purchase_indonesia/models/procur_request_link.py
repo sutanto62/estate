@@ -37,7 +37,7 @@ class InheritPurchaseRequest(models.Model):
     employee_id = fields.Many2one('hr.employee','Employee')
     type_location = fields.Selection([('estate','Estate'),
                                      ('ho','HO'),('ro','RO')],'Location Type')
-    type_product = fields.Selection([('consu','Consumable'),
+    type_product = fields.Selection([('capital','Capital'),
                                      ('service','Service'),('product','Stockable Product')],'Location Type')
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
 

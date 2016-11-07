@@ -37,17 +37,6 @@
              </field>
          </record>
 
-        <record model="ir.ui.view" id="inherit_purchase_request_line">
-             <field name="name">Inherit purchase request</field>
-             <field name="model">purchase.request</field>
-             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//field[@name='line_ids']//tree//field[@name='product_qty']" position="after">
-                          <field name="price_per_product" string="Est Price Product"/>
-                          <field name="total_price" string="Est Total Price"/>
-                 </xpath>
-             </field>
-         </record>
 
         <record model="ir.ui.view" id="inherit_purchase_request_line_group2">
              <field name="name">Inherit purchase request</field>
@@ -66,34 +55,19 @@
              <field name="model">purchase.request</field>
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
-                 <xpath expr="//field[@name='line_ids']//tree//field[@name='product_qty']" position="after">
-                          <field name="price_per_product" string="Est Price Product"/>
-                          <field name="total_price" string="Est Total Price"/>
+                 <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="before">
+                          <field name="price_per_product" invisible="0" string="Est Price Product"/>
+                          <field name="total_price" invisible="0" string="Est Total Price"/>
                  </xpath>
-             </field>
-         </record>
-
-        <record model="ir.ui.view" id="inherit_purchase_request_line_origin1">
-             <field name="name">Inherit purchase request</field>
-             <field name="model">purchase.request</field>
-             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
-             <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="after">
                           <field name="budget_available" string="Budget Available"/>
                  </xpath>
-             </field>
-         </record>
-
-        <record model="ir.ui.view" id="inherit_purchase_request_line_origin">
-             <field name="name">Inherit purchase request</field>
-             <field name="model">purchase.request</field>
-             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
-             <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='product_id']" position="after">
                           <field name="origin" string="Ref No"/>
                  </xpath>
              </field>
          </record>
+
 
         <record model="ir.ui.view" id="inherit_purchase_request_line1">
              <field name="name">Inherit purchase request</field>
