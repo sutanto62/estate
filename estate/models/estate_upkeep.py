@@ -5,11 +5,15 @@ from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 import openerp.addons.decimal_precision as dp
+from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from lxml import etree
 
 estate_working_days = 25 # todo create working calendar
 overtime_amount = 10000
+
+RESET_PERIOD = [('year', 'Every Year'), ('month', 'Every Month')]
+RESET_PERIOD_TIMEDELTA = [('year', 12), ('month', 1)]
 
 class AccountAnalyticAccount(models.Model):
     """
@@ -40,7 +44,7 @@ class Upkeep(models.Model):
     _order = 'date, team_id'
     _inherit = 'mail.thread'
 
-    name = fields.Char("Name", compute="_compute_upkeep_name", store=True)
+    name = fields.Char("Name", required=True, store=True, default='New')
     assistant_id = fields.Many2one('hr.employee', "Assistant", required=True)  # constrains: if team_id.assistant_id = true
     team_id = fields.Many2one('estate.hr.team', "Team", required=True)
     team_member_ids = fields.One2many(related='team_id.member_ids', string='Member', store=False)
@@ -66,13 +70,24 @@ class Upkeep(models.Model):
     material_line_ids = fields.One2many('estate.upkeep.material', string='Upkeep Material Line', inverse_name='upkeep_id')
     comment = fields.Text('Additional Information')
 
-    @api.multi
-    @api.depends('date', 'team_id')
-    def _compute_upkeep_name(self):
-        for record in self:
-            if record.date and record.team_id:
-                record.name = 'BKM/' + record.date + '/' + record.team_id.name  # todo add code with sequence number
-            return True
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            seq_obj = self.env['ir.sequence']
+            seq_upkeep = seq_obj.search([('code', '=', 'estate.upkeep')], limit=1)
+            delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == seq_upkeep.reset_period]
+            reset_time_datetime = datetime.strptime(seq_upkeep.reset_time, '%Y-%m-%d %H:%M:%S')
+
+            previous_reset_time = reset_time_datetime - relativedelta(months=delta[0][1])
+            tx_date = datetime.strptime(vals['date'], '%Y-%m-%d')
+
+            if tx_date < previous_reset_time:
+                # avoid multi sequence for backdated recordset
+                vals['name'] = 'BKM/' + tx_date.strftime('%Y') + '/' + tx_date.strftime('%m') + '/NN'
+            else:
+                vals['name'] = seq_obj.with_context(ir_sequence_date=vals['date']).next_by_code('estate.upkeep') or '/'
+
+        return super(Upkeep, self).create(vals)
 
     @api.one
     @api.onchange('team_id')

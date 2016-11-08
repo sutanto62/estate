@@ -156,6 +156,7 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree colors="red:state in ('draft','confirmed')">
+                    <field name="name"/>
                     <field name="date"/>
                     <field name="company_id"/>
                     <field name="estate_id"/>

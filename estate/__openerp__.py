@@ -38,6 +38,7 @@
         'data/hr_data.xml',
         'views/report_estate_division.xml',
         'estate_report.xml',
+        'data/ir_sequence_data.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [

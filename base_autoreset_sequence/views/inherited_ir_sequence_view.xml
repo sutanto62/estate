@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="inherited_ir_sequence_form" model="ir.ui.view">
+            <field name="name">ir.sequence.form.inherit</field>
+            <field name="model">ir.sequence</field>
+            <field name="inherit_id" ref="base.sequence_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page name="autoreset" string="Auto Reset">
+                        <group name="autoreset">
+                            <field name="auto_reset"/>
+                            <field name="reset_period"/>
+                            <field name="reset_time"/>
+                            <field name="reset_init_number"/>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
