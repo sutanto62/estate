@@ -30,6 +30,9 @@
         'views/procur_request_view.xml',
         'views/management_good_request.xml',
         'views/inherit_purchaseorder_report.xml',
+        'views/inherit_purchase_order.xml',
+        'views/purchase_setting.xml',
+        'views/quotation_comparison.xml',
         'workflow/workflow_procur_good_request.xml'
 
         # 'templates.xml',

@@ -1,0 +1,44 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_purchase_setting_type_config_tree">
+            <field name="name">Purchase Indonesia Type Setting</field>
+            <field name="model">purchase.indonesia.type</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" string="Purchase Type"/>
+                    <field name="min_days" string="Min Days"/>
+                    <field name="max_days" string="Max Days"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_purchase_setting_type_config_form" model="ir.ui.view">
+            <field name="name">Purchase Indonesia Type Form</field>
+            <field name="model">purchase.indonesia.type</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" string="Purchase Type"/>
+                        <field name="min_days" string="Min Days"/>
+                        <field name="max_days" string="Max Days"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_purchase_setting_type_config">
+            <field name="name">Action Purchase Indonesia Type</field>
+            <field name="res_model">purchase.indonesia.type</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="purchase_config_main" name="Purchase" parent="base.menu_sale_config" sequence="2"/>
+        <menuitem id="purchase_setting_type" name="Master Purchase Type"
+                  parent="purchase_config_main"
+                  action="action_list_purchase_setting_type_config"
+                  />
+    </data>
+</openerp>
