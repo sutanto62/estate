@@ -1,0 +1,39 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_form_inherit_button_comparison_tracability">
+             <field name="name">Button comparison Traceability</field>
+             <field name="model">purchase.requisition</field>
+             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//div[@class='oe_button_box']" position="inside">
+                      <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                string="QCF"
+                                icon="fa-list-alt"
+                                context="{'xml_id':'quotation_comparison_action'}"
+                                attrs="{'invisible': [('state', '=', 'draft')]}"
+                                >
+                     </button>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_form_inherit_comparison_tracability">
+             <field name="name">Button comparison Traceability</field>
+             <field name="model">purchase.requisition</field>
+             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//h1/field[@name='name']" position="replace">
+                           <field name="complete_name" class="oe_inline" invisible="0"
+                               attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='user_id']" position="after">
+                     <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                     <field name="type_location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                 </xpath>
+             </field>
+         </record>
+
+    </data>
+</openerp>
