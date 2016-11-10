@@ -58,7 +58,7 @@
                                         <tree>
                                             <field name="procur_request_line_ids" track_visibility="onchange"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
-                                                context="{'tree_view_ref' : 'estate_procurement.view_tree_procur_good_request_line',
+                                                context="{'tree_view_ref' : 'purchase_indonesia.view_tree_procur_good_request_line',
                                                        }"/>
                                         </tree>
                                     </page>

@@ -27,16 +27,16 @@ class InheritResCompany(models.Model):
 class InheritPurchaseRequest(models.Model):
 
     _inherit = 'purchase.request'
+    _rec_name = 'complete_name'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
-    type_purchase = fields.Selection([('normal','Normal'),
-                                     ('urgent','Urgent')],'Purchase Type')
+    type_purchase = fields.Many2one('purchase.indonesia.type','Purchase Type')
     type_functional = fields.Selection([('agronomy','Agronomy'),
                                      ('technic','Technic'),('general','General')],'Unit Functional')
     department_id = fields.Many2one('hr.department','Department')
     employee_id = fields.Many2one('hr.employee','Employee')
-    type_location = fields.Selection([('estate','Estate'),
-                                     ('ho','HO'),('ro','RO')],'Location Type')
+    type_location = fields.Selection([('KOKB','Estate'),
+                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
     type_product = fields.Selection([('capital','Capital'),
                                      ('service','Service'),('product','Stockable Product')],'Location Type')
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
@@ -106,6 +106,14 @@ class InheritPurchaseRequest(models.Model):
             self.complete_name = self.name
 
         return True
+
+    @api.multi
+    @api.onchange('type_location')
+    def _onchange_functional(self):
+        if self.type_location == 'KPST':
+            self.type_functional = 'general'
+        else:
+            self.type_functional
 
     @api.multi
     @api.onchange('type_functional')
@@ -194,7 +202,6 @@ class InheritPurchaseRequestLine(models.Model):
     _inherit = 'purchase.request.line'
     _description = 'Inherit Purchase Request Line'
 
-    origin = fields.Char('Ref No')
     price_per_product = fields.Float('Prod Price')
     total_price = fields.Float('Total Price',compute='_compute_total_price')
     budget_available = fields.Float('Budget Available')
