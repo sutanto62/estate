@@ -33,6 +33,7 @@
         'views/inherit_purchase_order.xml',
         'views/purchase_setting.xml',
         'views/quotation_comparison.xml',
+        'views/inherit_purchase_tender.xml',
         'workflow/workflow_procur_good_request.xml'
 
         # 'templates.xml',

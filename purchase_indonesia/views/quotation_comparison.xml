@@ -52,6 +52,13 @@
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line',
                                                        }"/>
+                            <separator string="Recomendation/Remarks"/>
+                            <field name="remarks"/>
+                            <field name="quotation_comparison_line_ids" track_visibility="onchange"
+                                                   attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
+                                                context="{'tree_view_ref' : 'purchase_indonesia.view_quotation_comparison_line',
+                                                       }"/>
+
                     </sheet>
                 </form>
             </field>
@@ -62,20 +69,21 @@
             <field name="name">Quotation Comparison Line</field>
             <field name="model">quotation.comparison.form.line</field>
             <field name="arch" type="xml">
-                <tree string="Quotation Comparison Line Tree" editable='bottom' delete="true">
+                <tree string="Quotation Comparison Line Tree" colors="green:price_subtotal==cheapest;" create="false" editable='bottom' delete="true">
                     <field name="id"  invisible="1" readonly="1"/>
                     <field name="req_id" invisible="1" string="Requisition_id" options="{'no_create_edit': True}"/>
                     <field name="company_id" string="Company" invisible="1"/>
-                    <field name="product_id" string="Product"  options="{'no_create_edit': True}"/>
+                    <field name="product_id" string="Product"   options="{'no_create_edit': True}"/>
                     <field name="rownum" string="Row" invisible="1"/>
-                    <field name="cheapest" string="Row" invisible="1"/>
-                    <field name="product_uom" string="UOM" options="{'no_create_edit': True}"/>
+                    <field name="cheapest" string="Cheapest" invisible="1"/>
+                    <field name="price_subtotal" invisible="1"/>
+                    <field name="product_uom" string="UOM" invisible="1" options="{'no_create_edit': True}"/>
                     <field name="partner_id" string="Vendor" options="{'no_create_edit': True}"/>
-                    <field name="price_unit" string="Price"/>
-                    <field name="price_tax" string="Tax Price"/>
-                    <field name="payment_term_id" string="Payment Term" options="{'no_create_edit': True}" />
-                    <field name="date_planned" string="Delivery" />
-                    <field name="incoterm_id" string="FRANCO" options="{'no_create_edit': True}"/>
+                    <field name="price_unit" string="Price" invisible="1"/>
+                    <field name="price_tax" string="Tax Price" invisible="1"/>
+                    <field name="payment_term_id" string="Payment Term" invisible="1" options="{'no_create_edit': True}" />
+                    <field name="date_planned" string="Delivery" invisible="1" />
+                    <field name="incoterm_id" string="FRANCO" invisible="1" options="{'no_create_edit': True}"/>
                 </tree>
             </field>
         </record>
@@ -89,13 +97,21 @@
                     <field name="req_id" invisible="1" string="Requisition_id" options="{'no_create_edit': True}"/>
                     <field name="isheader" invisible="1"/>
                     <field name="product_id" string="Product"  options="{'no_create_edit': True}"/>
-                    <field name="grand_total_label" string="Qty" />
+                    <field name="grand_total_label" string="Label" />
+                    <field name="hide" invisible="1"/>
+                    <field name="product_qty" string="Qty" />
                     <field name="product_uom" string="UOM" options="{'no_create_edit': True}"/>
-                    <field name="vendor1" string="Vendor 1"/>
-                    <field name="vendor2" string="Vendor 2"/>
-                    <field name="vendor3" string="Vendor 3"/>
-                    <field name="vendor4" string="Vendor 4"/>
-                    <field name="vendor5" string="Vendor 5"/>
+                    <field name="vendor1" string="Vendor 1" />
+                    <field name="vendor2" string="Vendor 2" />
+                    <field name="vendor3" string="Vendor 3" />
+                    <field name="vendor4" string="Vendor 4" />
+                    <field name="vendor5" string="Vendor 5" />
+                    <field name="vendor6" string="Vendor 6" />
+                    <field name="vendor7" string="Vendor 7" />
+                    <field name="vendor8" string="Vendor 8" />
+                    <field name="vendor9" string="Vendor 9" />
+                    <field name="vendor10" string="Vendor 10"/>
+                    <field name="po_des_all_name" string="Spesification" />
                 </tree>
             </field>
         </record>
@@ -107,6 +123,24 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{"search_default_requested_by":uid}</field>
+            <!--<field name="search_view_id" ref="view_purchase_request_search"/>-->
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new Quotation Comparison.
+              </p><p>
+                A Quotation Comparison is an instruction to Comparing Price Per Vendor, so that they are
+                available at a certain point in time.
+              </p>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="quotation_comparison_line_action">
+            <field name="name">Quotation Comparison Line</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.quotation.comparison.form.line</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{"search_default_requested_by":uid,"hide":True}</field>
             <!--<field name="search_view_id" ref="view_purchase_request_search"/>-->
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
