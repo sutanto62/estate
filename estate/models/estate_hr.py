@@ -15,6 +15,7 @@ class Team(models.Model):
     3. An employee is allowed to register as member of one active team."""
 
     _name = 'estate.hr.team'
+    _inherit = 'mail.thread'
 
     name = fields.Char("Team Name")
     complete_name = fields.Char("")
@@ -23,17 +24,17 @@ class Team(models.Model):
     employee_id = fields.Many2one('hr.employee', "Team Leader", required='True', ondelete='restrict',
                                   help="An employee is only allowed to lead one active team.")
     assistant_id = fields.Many2one('hr.employee', "Assistant", ondelete='restrict',
-                                   help="Set this as default Assistant, will be used to record at Upkeep.")
+                                   help="Set this as default Assistant, will be used to record at Upkeep.", track_visibility="onchange")
     division_id = fields.Many2one('stock.location', "Division",
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')],
-                                  help="Define default division when create upkeep record.")
+                                  help="Define default division when create upkeep record.", track_visibility="onchange")
     member_ids = fields.One2many('estate.hr.member', 'team_id')
     member_total = fields.Integer(compute='_count_member', store='False')
     state = fields.Selection([('draft', 'Draft'),
                               ('active', 'Active'),
                               ('suspend', 'Suspend')], "State",
                              default="draft",
-                             help='Active team allowed to be used as upkeep team.')
+                             help='Active team allowed to be used as upkeep team.', track_visibility="onchange")
 
     @api.depends('member_ids')
     def _count_member(self):
@@ -101,6 +102,7 @@ class Wage(models.Model):
     """
     _name = 'estate.wage'
     _order = 'estate_id asc, date_start desc'
+    _inherit = 'mail.thread'
 
     @api.multi
     @api.depends('wage', 'number_of_days')
@@ -110,16 +112,16 @@ class Wage(models.Model):
 
     name = fields.Char('Name')
     active = fields.Boolean('Active', default=True)
-    date_start = fields.Date('Start Date')
-    estate_id = fields.Many2one('stock.location', "Estate",
+    date_start = fields.Date('Start Date', track_visibility="onchange")
+    estate_id = fields.Many2one('stock.location', "Estate", track_visibility="onchange",
                                 help='Set wage for all child locations if employee has no contract.',
                                 domain=[('estate_location', '=', True), ('estate_location_level', '=', '1')])
-    wage = fields.Float('Minimum Regional Wage')
+    wage = fields.Float('Minimum Regional Wage', track_visibility="onchange")
     daily_wage = fields.Float('Daily Wage', help='Minimum Regional Wage divide by Number of working days',
                               compute='_compute_daily_wage')
-    number_of_days = fields.Float('Number of working days', default='25')
+    number_of_days = fields.Float('Number of working days', default='25', track_visibility="onchange")
     comment = fields.Text('Additional Information')
-    overtime_amount = fields.Float('Flat Overtime', digits=dp.get_precision('Account'))
+    overtime_amount = fields.Float('Flat Overtime', digits=dp.get_precision('Account'), track_visibility="onchange")
 
     @api.multi
     def get_current_overtime(self, estate):

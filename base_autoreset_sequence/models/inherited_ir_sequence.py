@@ -37,3 +37,20 @@ class Sequence(models.Model):
                 return super(Sequence, self)._next_do()
 
         return super(Sequence, self)._next_do()
+
+    def get_prefix_char(self, prefix, upkeep_date):
+        """ Returns the prefix char. Follow ir_sequence.py interpolate method"""
+        now = range_date = effective_date = upkeep_date
+        sequences = {
+            'year': '%Y', 'month': '%m', 'day': '%d', 'y': '%y', 'doy': '%j', 'woy': '%W',
+            'weekday': '%w', 'h24': '%H', 'h12': '%I', 'min': '%M', 'sec': '%S'
+        }
+        res = {}
+        for key, sequence in sequences.iteritems():
+            res[key] = effective_date.strftime(sequence)
+            res['range_' + key] = range_date.strftime(sequence)
+            res['current_' + key] = now.strftime(sequence)
+
+        if prefix:
+            return prefix % res
+        return ''

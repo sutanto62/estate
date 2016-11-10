@@ -6,6 +6,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 import openerp.addons.decimal_precision as dp
 from dateutil.relativedelta import relativedelta
+import pytz
 from openerp.exceptions import ValidationError
 from lxml import etree
 
@@ -72,6 +73,7 @@ class Upkeep(models.Model):
 
     @api.model
     def create(self, vals):
+        """ Get sequence for upkeep """
         if vals.get('name', 'New') == 'New':
             seq_obj = self.env['ir.sequence']
             seq_upkeep = seq_obj.search([('code', '=', 'estate.upkeep')], limit=1)
@@ -82,8 +84,27 @@ class Upkeep(models.Model):
             tx_date = datetime.strptime(vals['date'], '%Y-%m-%d')
 
             if tx_date < previous_reset_time:
-                # avoid multi sequence for backdated recordset
-                vals['name'] = 'BKM/' + tx_date.strftime('%Y') + '/' + tx_date.strftime('%m') + '/NN'
+                # Backdate upkeep sequence code cannot use postgres
+                period_start = tx_date - relativedelta(day=1)
+                period_end = tx_date + relativedelta(months=+1, day=1, days=-1)
+                upkeep_ids = self.env['estate.upkeep'].search([('date', '>=', period_start.strftime('%Y-%m-%d')),
+                                                               ('date', '<=', period_end.strftime('%Y-%m-%d'))])
+
+                # Return next number or 1
+                prefix_length = len(seq_upkeep.get_prefix_char(seq_upkeep.prefix, tx_date))
+                if upkeep_ids:
+                    seq_codes = []
+                    for item in upkeep_ids:
+                        seq_codes.append(int(item.name[prefix_length:]))
+
+                    number_next = max(seq_codes) + 1
+                else:
+                    # No upkeep found
+                    number_next = 1
+
+                vals['name'] = seq_upkeep.get_prefix_char(seq_upkeep.prefix, tx_date) \
+                               + '%%0%sd' % seq_upkeep.padding % number_next \
+                               + seq_upkeep.get_prefix_char(seq_upkeep.suffix, tx_date)
             else:
                 vals['name'] = seq_obj.with_context(ir_sequence_date=vals['date']).next_by_code('estate.upkeep') or '/'
 
