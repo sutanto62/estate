@@ -52,8 +52,11 @@ class InheritPurchaseRequest(models.Model):
         for purchase in self:
             purchase_data = {
                 'responsible':purchase.requested_by.id,
-                'origin': purchase.name,
-                'ordering_date': purchase.date_start,
+                'companys_id' :purchase.company_id.id,
+                'type_location' : purchase.type_location,
+                'origin': purchase.complete_name,
+                'ordering_date' : purchase.date_start,
+                'schedule_date': purchase.date_start,
                 'owner_id' : purchase.id
             }
             res = self.env['purchase.requisition'].create(purchase_data)
@@ -209,12 +212,13 @@ class InheritPurchaseRequestLine(models.Model):
     @api.multi
     @api.depends('price_per_product','product_qty')
     def _compute_total_price(self):
-        if self.product_qty and self.price_per_product:
-            self.total_price = self.product_qty * self.price_per_product
+        for price in self:
+            if price.product_qty and price.price_per_product:
+                price.total_price = price.product_qty * price.price_per_product
 
     @api.multi
     @api.onchange('product_id')
-    def _onchange_price_pre_product(self):
+    def _onchange_price_per_product(self):
         arrLisproduct = []
         arrPrice =[]
         if self.product_id:

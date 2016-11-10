@@ -6,3 +6,4 @@ import procur_good_manage
 import Inherit_purchase_order
 import purchase_setting
 import quotation_comparison_form
+import Inherit_purchase_tenders
