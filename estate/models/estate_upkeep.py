@@ -95,7 +95,11 @@ class Upkeep(models.Model):
                 if upkeep_ids:
                     seq_codes = []
                     for item in upkeep_ids:
-                        seq_codes.append(int(item.name[prefix_length:]))
+                        try:
+                            seq_codes.append(int(item.name[prefix_length:]))
+                        except ValueError:
+                            # old upkeep name included string
+                            seq_codes.append(0)
 
                     number_next = max(seq_codes) + 1
                 else:
