@@ -13,7 +13,33 @@ from openerp import tools
 import re
 from lxml import etree
 
+
+class InheritPurchaseOrder(models.Model):
+
+    _inherit = 'purchase.order'
+
+    comparison_id = fields.Many2one('quotation.comparison.form','QCF')
+
+class InheritPurchaseOrderLine(models.Model):
+
+    _inherit = 'purchase.order.line'
+
+    comparison_id = fields.Many2one('quotation.comparison.form','QCF')
+
+
 class QuotationComparisonForm(models.Model):
+
+    def return_action_to_open(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current Purchase Tender """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'purchase', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_comparison_id': ids[0]})
+            res['domain'] = [('comparison_id','=',ids[0])]
+            return res
+        return False
 
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
@@ -40,6 +66,7 @@ class QuotationComparisonForm(models.Model):
     _defaults = {
         'state' : 'draft'
     }
+
     def create(self, cr, uid,vals, context=None):
         vals['name']=self.pool.get('ir.sequence').get(cr, uid,'quotation.comparison.form')
         res=super(QuotationComparisonForm, self).create(cr, uid,vals)
@@ -174,7 +201,7 @@ class ViewQuotationComparison(models.Model):
     vendor9 = fields.Char('Vendor')
     vendor10 = fields.Char('Vendor')
     po_des_all_name = fields.Text('Description')
-    hide = fields.Boolean(compute='_is_hide')
+    hide = fields.Boolean()
 
     def init(self, cr):
         cr.execute("""create or replace view v_quotation_comparison_form_line as
