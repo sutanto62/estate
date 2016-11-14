@@ -13,7 +13,33 @@ from openerp import tools
 import re
 from lxml import etree
 
+
+class InheritPurchaseOrder(models.Model):
+
+    _inherit = 'purchase.order'
+
+    comparison_id = fields.Many2one('quotation.comparison.form','QCF')
+
+class InheritPurchaseOrderLine(models.Model):
+
+    _inherit = 'purchase.order.line'
+
+    comparison_id = fields.Many2one('quotation.comparison.form','QCF')
+
+
 class QuotationComparisonForm(models.Model):
+
+    def return_action_to_open(self, cr, uid, ids, context=None):
+        """ This opens the xml view specified in xml_id for the current Purchase Tender """
+        if context is None:
+            context = {}
+        if context.get('xml_id'):
+            res = self.pool.get('ir.actions.act_window').for_xml_id(cr, uid ,'purchase', context['xml_id'], context=context)
+            res['context'] = context
+            res['context'].update({'default_comparison_id': ids[0]})
+            res['domain'] = [('comparison_id','=',ids[0])]
+            return res
+        return False
 
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
@@ -40,6 +66,7 @@ class QuotationComparisonForm(models.Model):
     _defaults = {
         'state' : 'draft'
     }
+
     def create(self, cr, uid,vals, context=None):
         vals['name']=self.pool.get('ir.sequence').get(cr, uid,'quotation.comparison.form')
         res=super(QuotationComparisonForm, self).create(cr, uid,vals)
@@ -152,7 +179,7 @@ class ViewQuotationComparison(models.Model):
     _name = 'v.quotation.comparison.form.line'
     _description = 'Quotation Comparison Line'
     _auto = False
-    _order = 'isheader'
+    _order = 'isheader asc'
 
 
     id = fields.Integer()
@@ -174,13 +201,13 @@ class ViewQuotationComparison(models.Model):
     vendor9 = fields.Char('Vendor')
     vendor10 = fields.Char('Vendor')
     po_des_all_name = fields.Text('Description')
-    hide = fields.Boolean(compute='_is_hide')
+    hide = fields.Boolean()
 
     def init(self, cr):
         cr.execute("""create or replace view v_quotation_comparison_form_line as
                         select row_number() over() id,vqcf.*,qcf.id qcf_id from (
                                         select * from (
-                                        select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,max(vendor6) vendor6,max(vendor7) vendor7,max(vendor8) vendor8,max(vendor9) vendor9,max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,1 isheader from (
+                                        select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,max(vendor6) vendor6,max(vendor7) vendor7,max(vendor8) vendor8,max(vendor9) vendor9,max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,2 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.name ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.name ELSE NULL END) AS "vendor2",
@@ -215,7 +242,7 @@ class ViewQuotationComparison(models.Model):
                                                  MAX(CASE WHEN r.rownum = 7 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor7",
                                                  MAX(CASE WHEN r.rownum = 8 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor8",
                                                  MAX(CASE WHEN r.rownum = 9 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor9",
-                                                 MAX(CASE WHEN r.rownum = 10 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,2 isheader
+                                                 MAX(CASE WHEN r.rownum = 10 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,3 isheader
                                             FROM  (select rownum,name,req_id,product_id,product_qty,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,date_planned,po_des_all_name from (
                                               select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                 qcfl_rn.req_id,qcfl_rn.partner_id,
@@ -228,7 +255,7 @@ class ViewQuotationComparison(models.Model):
                                         GROUP BY r.product_id,r.req_id,product_qty,product_uom,po_des_all_name  order by req_id asc )content
                                         union all
                                         select * from (
-                                        select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,cast(sum(vendor10) as varchar) vendor10,cast(0 as varchar) po_des_all_name,3 isheader from (
+                                        select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,cast(sum(vendor10) as varchar) vendor10,cast(0 as varchar) po_des_all_name,4 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_unit ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_unit ELSE NULL END) AS "vendor2",
@@ -256,7 +283,7 @@ class ViewQuotationComparison(models.Model):
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,
                                         cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,
                                         cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,
-                                        cast(sum(vendor10) as varchar) vendor10,cast(0 as varchar) po_des_all_name,4 isheader from (
+                                        cast(sum(vendor10) as varchar) vendor10,cast(0 as varchar) po_des_all_name,5 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_tax ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_tax ELSE NULL END) AS "vendor2",
@@ -285,7 +312,7 @@ class ViewQuotationComparison(models.Model):
                                         cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,
                                         cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,
                                         cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,
-                                        cast(sum(vendor10) as varchar) vendor10,cast(0 as varchar) po_des_all_name,5 isheader from (
+                                        cast(sum(vendor10) as varchar) vendor10,cast(0 as varchar) po_des_all_name,6 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
@@ -314,7 +341,7 @@ class ViewQuotationComparison(models.Model):
                                         max(vendor4) vendor4,max(vendor5) vendor5,
                                         max(vendor6) vendor6,max(vendor7) vendor7,
                                         max(vendor8) vendor8,max(vendor9) vendor9,
-                                        max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,6 isheader from (
+                                        max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,7 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.name_term ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.name_term ELSE NULL END) AS "vendor2",
@@ -347,7 +374,7 @@ class ViewQuotationComparison(models.Model):
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,
                                         max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,  max(vendor6) vendor6,max(vendor7) vendor7,
                                         max(vendor8) vendor8,max(vendor9) vendor9,
-                                        max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,7 isheader from (
+                                        max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,8 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN TO_CHAR(r.date_planned, 'DD Mon YYYY') ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN TO_CHAR(r.date_planned, 'DD Mon YYYY') ELSE NULL END) AS "vendor2",
@@ -380,7 +407,7 @@ class ViewQuotationComparison(models.Model):
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast(0 as varchar) grand_total_label,cast(0 as varchar) product_qty,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,
                                         max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5, max(vendor6) vendor6,max(vendor7) vendor7,
                                         max(vendor8) vendor8,max(vendor9) vendor9,
-                                        max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,8 isheader from (
+                                        max(vendor10) vendor10,cast(0 as varchar) po_des_all_name,9 isheader from (
                                             SELECT r.req_id,r.product_id,product_qty,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.name_inco ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.name_inco ELSE NULL END) AS "vendor2",
@@ -435,38 +462,34 @@ class ViewQuotationComparison(models.Model):
     @api.depends('product_qty')
     def _is_grand_total_label(self):
         for rec in self :
-            if rec.isheader == 3:
-                rec.grand_total_label = 'Sub Total'
+            if rec.isheader == 1:
                 rec.po_des_all_name = ''
-                rec.product_qty = ''
-            elif rec.isheader == 4:
-                rec.grand_total_label = 'Tax %'
-                rec.po_des_all_name = ''
-                rec.product_qty = ''
-            elif rec.isheader == 5:
-                rec.grand_total_label = 'Grand Total'
-                rec.po_des_all_name = ''
-                rec.product_qty = ''
-            elif rec.isheader == 6:
-                rec.grand_total_label = 'TOP'
-                rec.po_des_all_name = ''
-                rec.product_qty = ''
-            elif rec.isheader == 7:
-                rec.grand_total_label = 'Delivery'
-                rec.po_des_all_name = ''
-                rec.product_qty = ''
-            elif rec.isheader == 8:
-                rec.grand_total_label = 'Incoterm/FRANCO'
-                rec.po_des_all_name = ''
-                rec.product_qty = ''
-            elif rec.isheader == 1:
-                rec.grand_total_label = ''
-                rec.po_des_all_name = ''+''
-                rec.product_qty = ''
             elif rec.isheader == 2:
+                rec.product_qty = 'xxx'
+                rec.po_des_all_name = ''
+            elif rec.isheader == 3:
                 rec.po_des_all_name = ''+rec.po_des_all_name
                 rec.grand_total_label = ''
                 rec.product_qty = str(rec.product_qty)
+            elif rec.isheader == 4:
+                rec.product_qty = 'Sub Total'
+                rec.po_des_all_name = ''
+            elif rec.isheader == 5:
+                rec.product_qty = 'Tax %'
+                rec.po_des_all_name = ''
+            elif rec.isheader == 6:
+                rec.product_qty = 'Grand Total'
+                rec.po_des_all_name = ''
+            elif rec.isheader == 7:
+                rec.product_qty = 'TOP'
+                rec.po_des_all_name = ''
+            elif rec.isheader == 8:
+                rec.product_qty = 'Delivery'
+                rec.po_des_all_name = ''
+            elif rec.isheader == 9:
+                rec.product_qty = 'Incoterm/FRANCO'
+                rec.po_des_all_name = ''
+
 
 
 

@@ -33,6 +33,7 @@ class InheritPurchaseTenders(models.Model):
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Selection([('KOKB','Estate'),
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
+
     companys_id = fields.Many2one('res.company','Company')
 
     @api.one
@@ -71,23 +72,8 @@ class InheritPurchaseTenders(models.Model):
 
         return True
 
-    @api.multi
-    def tender_in_progress(self):
-       #overwrite button tender in progress on purchase requisition
-       self.create_comparison()
-       super(InheritPurchaseTenders, self).tender_in_progress()
-       return True
 
-    @api.multi
-    def create_comparison(self):
-        # create quotation comparison
-        for purchase_tender in self:
-            purchase_data = {
-                'company_id': purchase_tender.companys_id.id,
-                'date_pp': purchase_tender.schedule_date,
-                'requisition_id': purchase_tender.id,
-                'origin' : purchase_tender.origin,
-                'type_location' : purchase_tender.type_location
-            }
-            self.env['quotation.comparison.form'].create(purchase_data)
-        return True
+
+
+
+
