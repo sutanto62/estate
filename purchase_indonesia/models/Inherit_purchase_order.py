@@ -15,8 +15,9 @@ import re
 class InheritPurchaseOrder(models.Model):
 
     _inherit = 'purchase.order'
+    _rec_name = 'complete_name'
 
-    company_id = fields.Many2one('res.company','Company')
+    companys_id = fields.Many2one('res.company','Company')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Selection([('KOKB','Estate'),
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
@@ -24,13 +25,13 @@ class InheritPurchaseOrder(models.Model):
 
 
     @api.one
-    @api.depends('name','date_order','company_id','type_location')
+    @api.depends('name','date_order','companys_id','type_location')
     def _complete_name(self):
         """ Forms complete name of location from parent category to child category.
         """
         fmt = '%Y-%m-%d %H:%M:%S'
 
-        if self.name and self.date_order and self.company_id.code and self.type_location:
+        if self.name and self.date_order and self.companys_id.code and self.type_location:
             date = self.date_order
             conv_date = datetime.strptime(str(date), fmt)
             month = conv_date.month
@@ -52,9 +53,34 @@ class InheritPurchaseOrder(models.Model):
 
             self.complete_name = self.name + ' / ' \
                                  +str(month) +' / '+str(year)\
-                                 +' / '+self.company_id.code+' / '\
+                                 +' / '+self.companys_id.code+' / '\
                                  +str(self.type_location)
         else:
             self.complete_name = self.name
 
         return True
+
+    @api.multi
+    def button_confirm(self):
+        super(InheritPurchaseOrder,self).button_confirm()
+        self._update_shipping()
+        return True
+
+    @api.multi
+    def _update_shipping(self):
+        for purchase_order in self:
+            purchase_data = {
+                'companys_id': purchase_order.companys_id.id,
+                'purchase_id': purchase_order.id,
+                'type_location': purchase_order.type_location,
+                'PR_source' : purchase_order.source_purchase_request,
+            }
+            self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
+        return True
+
+class InheritPurchaseOrderLine(models.Model):
+
+    _inherit = 'purchase.order.line'
+
+    qty_request = fields.Float('Quantity Actual')
+

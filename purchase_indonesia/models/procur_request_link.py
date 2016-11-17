@@ -28,6 +28,7 @@ class InheritPurchaseRequest(models.Model):
 
     _inherit = 'purchase.request'
     _rec_name = 'complete_name'
+    _order = 'complete_name desc'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_purchase = fields.Many2one('purchase.indonesia.type','Purchase Type')
@@ -44,6 +45,7 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def button_approved(self):
         self.create_purchase_requisition()
+        self.create_quotation_comparison_form()
         super(InheritPurchaseRequest, self).button_approved()
         return True
 
@@ -61,7 +63,6 @@ class InheritPurchaseRequest(models.Model):
             }
             res = self.env['purchase.requisition'].create(purchase_data)
 
-
         for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
             purchaseline_data = {
                 'product_id': purchaseline.product_id.id,
@@ -73,6 +74,18 @@ class InheritPurchaseRequest(models.Model):
             self.env['purchase.requisition.line'].create(purchaseline_data)
 
         return True
+
+    @api.multi
+    def create_quotation_comparison_form(self):
+        purchase_requisition = self.env['purchase.requisition'].search([('origin','like',self.complete_name)])
+        purchase_data = {
+                'company_id': purchase_requisition.companys_id.id,
+                'date_pp': purchase_requisition.schedule_date,
+                'requisition_id': purchase_requisition.id,
+                'origin' : purchase_requisition.origin,
+                'type_location' : purchase_requisition.type_location
+            }
+        res = self.env['quotation.comparison.form'].create(purchase_data)
 
     @api.one
     @api.depends('name','date_start','company_id','department_id')
@@ -244,9 +257,6 @@ class InheritPurchaseRequestLine(models.Model):
                 amount = float(amount)
                 self.budget_available = amount
 
-
-
-
     #todo onchange product by type_product in purchase_request
     # @api.multi
     # @api.onchange('product_id')
@@ -264,3 +274,56 @@ class InheritPurchaseRequestLine(models.Model):
         #     purchase_line = self.env['purchase.request.line'].search(['orner_id','=',self.id])
         #     for product in purchase_line:
         #         arrProduct.append(product.product_id)
+
+
+class StateProcurementProcess(models.Model):
+
+    _name = 'state.procurement.process'
+    _description = 'Tracking State From Purchase Request'
+    _auto = False
+    _order = 'pr_complete_name desc'
+
+
+    id = fields.Char('id')
+    pr_id = fields.Integer('purchase request')
+    date_pr = fields.Date('Purchase Request Date')
+    state = fields.Char('Purchase Request state')
+    pr_complete_name = fields.Char('Purchase Request Complete Name')
+    tender_complete_name = fields.Char('Tender Complete Name')
+    tender_state = fields.Char('Tender State')
+    qcf_complete_name = fields.Char('Qcf Complete Name')
+    qcf_state = fields.Char('Qcf State')
+    po_complete_name = fields.Char('Purchase Order Complete Name')
+    po_state = fields.Char('Purchase Order State')
+    complete_name_picking = fields.Char('GRN Complete Name')
+    grn_state = fields.Char('GRN State')
+
+    def init(self, cr):
+        cr.execute(""" create or replace view state_procurement_process as
+            select
+                row_number() over() id,
+                pr.id pr_id,pr.date_start date_pr,
+                pr.state state,
+                pr.complete_name pr_complete_name,
+                tender.complete_name tender_complete_name,
+                tender.state tender_state,qcf.complete_name qcf_complete_name,
+                qcf.state qcf_state,
+                po.complete_name po_complete_name,
+                po.state po_state,grn.complete_name_picking,grn.state grn_state from purchase_request pr
+            left join (
+                select id tender_id,complete_name,origin,state from purchase_requisition
+                )tender on pr.complete_name = tender.origin
+            left join(
+                select id,complete_name,state,origin from quotation_comparison_form
+            )qcf on pr.complete_name = qcf.origin
+            left join(
+                select id,complete_name,state,source_purchase_request from purchase_order
+            )po on pr.complete_name = po.source_purchase_request
+            left join(
+                select id,complete_name_picking,state,pr_source from stock_picking
+                    )grn on pr.complete_name = grn.pr_source
+                        """)
+
+
+
+

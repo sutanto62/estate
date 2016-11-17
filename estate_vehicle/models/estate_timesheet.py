@@ -40,47 +40,58 @@ class TimesheetActivityTransport(models.Model):
     end_time = fields.Float(digits=(2,2))
     total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
     comment = fields.Text()
+    type_transport = fields.Selection([
+        ('ntrip', 'Non Trip'),
+        ('trip', 'Trip'),
+        ], string="Type",store=True)
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
         ('done', 'Done'),('cancel','Cancel'),('reject','Reject')],string="Activity Timesheet State")
 
     #onchange ALL
-    @api.multi
-    @api.onchange('end_location')
-    def _onchange_path_location(self):
-        #use to onchange domain start location  same as master location path
-        if self:
-            arrStartlocation=[]
-            startlocation=self.env['path.location'].search([])
-            for a in startlocation:
-                    arrStartlocation.append(a.start_location.id)
-            return {
-                'domain':{
-                    'start_location':[('id','=',arrStartlocation)]
-                }
-        }
 
     @api.multi
-    @api.onchange('start_location','end_location')
+    @api.onchange('start_location')
     def _onchange_end_location(self):
         #use to onchange domain end_location same as master location path
         if self:
             if self.start_location:
                 arrEndlocation=[]
+                arrStartlocation = []
+                temp=[]
                 endlocation=self.env['path.location'].search([('start_location.id','=',self.start_location.id)])
-                for b in endlocation:
-                    arrEndlocation.append(b.end_location.id)
-                return {
-                'domain':{
-                    'end_location':[('id','in',arrEndlocation)]
+                allLocation=self.env['estate.block.template'].search([])
+                for record in allLocation:
+                    temp.append(record.id)
+                for record in endlocation:
+                        arrStartlocation.append(record.start_location.id)
+                if self.start_location.id in arrStartlocation:
+                    for record in endlocation:
+                        arrEndlocation.append(record.end_location.id)
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',arrEndlocation)]
+                    }
                 }
-        }
+                elif self.start_location.id not in arrStartlocation:
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',temp)]
+                         }
+                    }
+                else:
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',temp)]
+                         }
+                    }
 
     @api.multi
     @api.onchange('activity_id',)
     def _onchange_uom(self):
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id
+            self.type_transport = self.activity_id.type_transport
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')
@@ -156,13 +167,13 @@ class TimesheetActivityTransport(models.Model):
         return True
 
     @api.multi
-    @api.depends('start_km','end_km','total_distance')
+    @api.depends('start_km','end_km')
     def _compute_total_distance(self):
         #to Compute total Distance
         for item in self:
             if item.end_km and item.start_km:
                 item.total_distance = item.end_km - item.start_km
-            return True
+
 
     #Constraint ALL
 

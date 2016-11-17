@@ -29,6 +29,39 @@
             </field>
         </record>
 
+        <record model="ir.ui.view" id="view_purchase_params_setting_type_config_tree">
+            <field name="name">Purchase params Type Setting</field>
+            <field name="model">purchase.params.setting</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" string="Params Name"/>
+                    <field name="value_params" string="Value"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_purchase_params_setting_type_config_form" model="ir.ui.view">
+            <field name="name">Purchase Params Type Form</field>
+            <field name="model">purchase.params.setting</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name" string="Params Name"/>
+                        <field name="value_params" string="Value"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_list_purchase_params_setting_type_config">
+            <field name="name">Action Purchase params Indonesia Type</field>
+            <field name="res_model">purchase.params.setting</field>
+            <field name="view_mode">tree</field>
+        </record>
+
          <record model="ir.actions.act_window" id="action_list_purchase_setting_type_config">
             <field name="name">Action Purchase Indonesia Type</field>
             <field name="res_model">purchase.indonesia.type</field>
@@ -39,6 +72,10 @@
         <menuitem id="purchase_setting_type" name="Master Purchase Type"
                   parent="purchase_config_main"
                   action="action_list_purchase_setting_type_config"
+                  />
+        <menuitem id="purchase_params_setting_type" name="Master Purchase Params"
+                  parent="purchase_config_main"
+                  action="action_list_purchase_params_setting_type_config"
                   />
     </data>
 </openerp>

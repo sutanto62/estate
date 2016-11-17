@@ -137,7 +137,12 @@ class InheritActivity(models.Model):
     _description = 'inherit status'
 
     status = fields.Selection([('1','Available'), ('2','Breakdown'),('3','Stand By')])
-    activity_vehicle_parent_id = fields.Many2one('estate.activity','Parent Activities Estate',domain="[('activity_type','=','vehicle'),('type','=','normal')]")
+    activity_vehicle_parent_id = fields.Many2one('estate.activity','Parent Activities Estate',
+                                                 domain="[('activity_type','=','vehicle'),('type','=','normal')]")
+    type_transport = fields.Selection([
+        ('ntrip', 'Non Trip'),
+        ('trip', 'Trip'),
+        ], string="Type",store=True)
 
 class InheritFuel(models.Model):
 
@@ -265,6 +270,8 @@ class MasterCategoryUnit(models.Model):
 
 class FleetVehicleTimesheet(models.Model):
 
+
+
     _name = 'fleet.vehicle.timesheet'
 
 
@@ -282,12 +289,12 @@ class FleetVehicleTimesheet(models.Model):
     timesheet_ids = fields.One2many('inherits.fleet.vehicle.timesheet','owner_id','Timesheet Vehicle',ondelete='cascade')
     fuel_ids = fields.One2many('timesheet.fleet.vehicle.log.fuel','owner_id','Log Fuel Vehicle',ondelete='cascade')
     _defaults = {
-        'state' : 'draft'
+        'state' : 'draft',
+        'vehicle_timesheet_code':lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'fleet.vehicle.timesheet'),
     }
 
     #sequence
     def create(self, cr, uid,vals, context=None):
-        vals['vehicle_timesheet_code']=self.pool.get('ir.sequence').get(cr, uid,'fleet.vehicle.timesheet')
         for item in vals['timesheet_ids']:
             item[2]['date_activity_transport'] = vals['date_timesheet']
             item[2]['state'] = 'draft'
@@ -393,6 +400,7 @@ class FleetVehicleTimesheet(models.Model):
             self.env['fleet.vehicle.log.fuel'].create(fuel_data)
         return True
 
+
     @api.multi
     @api.constrains('date_timesheet')
     def _constraint_date_timesheet(self):
@@ -440,6 +448,7 @@ class FleetVehicleTimesheetInherits(models.Model):
     total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
     comment = fields.Text()
 
+
     @api.multi
     @api.onchange('dc_type')
     def _onchange_dc_type(self):
@@ -453,35 +462,42 @@ class FleetVehicleTimesheetInherits(models.Model):
 
     #onchange ALL
     @api.multi
-    @api.onchange('end_location')
-    def _onchange_path_location(self):
-        #use to onchange domain start location  same as master location path
-        if self:
-            arrStartlocation=[]
-            startlocation=self.env['path.location'].search([])
-            for a in startlocation:
-                    arrStartlocation.append(a.start_location.id)
-            return {
-                'domain':{
-                    'start_location':[('id','=',arrStartlocation)]
-                }
-        }
-
-    @api.multi
-    @api.onchange('start_location','end_location')
-    def _onchange_path_location(self):
+    @api.onchange('start_location')
+    def _onchange_path_end_location(self):
         #use to onchange domain end_location same as master location path
         if self:
             if self.start_location:
                 arrEndlocation=[]
+                arrStartlocation = []
+                temp=[]
                 endlocation=self.env['path.location'].search([('start_location.id','=',self.start_location.id)])
-                for b in endlocation:
-                    arrEndlocation.append(b.end_location.id)
-                return {
-                'domain':{
-                    'end_location':[('id','in',arrEndlocation)]
+                allLocation=self.env['estate.block.template'].search([])
+                for record in allLocation:
+                    temp.append(record.id)
+                for record in endlocation:
+                        arrStartlocation.append(record.start_location.id)
+                if self.start_location.id in arrStartlocation:
+                    for record in endlocation:
+                        arrEndlocation.append(record.end_location.id)
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',arrEndlocation)]
+                    }
                 }
-        }
+                elif self.start_location.id not in arrStartlocation:
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',temp)]
+                         }
+                    }
+                else:
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',temp)]
+                         }
+                    }
+
+
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')
@@ -489,12 +505,15 @@ class FleetVehicleTimesheetInherits(models.Model):
         #to change distance location same master path location
         for item in self:
             if item.start_location and item.end_location:
-                arrDistance = 0
-                distancelocation = item.env['path.location'].search([
-                    ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
-                for c in distancelocation:
-                    arrDistance += c.distance_location
-                item.distance_location = arrDistance
+                try:
+                    arrDistance = 0
+                    distancelocation = item.env['path.location'].search([
+                        ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
+                    for c in distancelocation:
+                        arrDistance += c.distance_location
+                    item.distance_location = arrDistance
+                except:
+                    item.distance_location = 0
         return True
 
     @api.multi
@@ -518,9 +537,21 @@ class FleetVehicleTimesheetInherits(models.Model):
         #onchange UOM in timesheet Vehicle
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id
-        if self.activity_id.uom_id.id == False:
-            uom = self.env['product.uom'].search([('name','in',['trip','Trip'])]).id
-            self.uom_id = uom
+            self.type_transport = self.activity_id.type_transport
+        if self.activity_id.type_transport == False:
+            self.type_transport = 'trip'
+
+    #todo get odometer
+    # @api.multi
+    # @api.onchange('vehicle_id')
+    # def _onchange_end_km(self):
+    #     #onchange start km on fleet vehicle timesheet
+    #         if self.vehicle_id:
+    #             end_km= self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.owner_id),
+    #                                                                              ('vehicle_id','=',self.vehicle_id.id)
+    #                                                                              ],order='id desc', limit=1).end_km
+    #             self.start_km = end_km
+
 
     @api.multi
     @api.onchange('vehicle_id')
@@ -546,6 +577,7 @@ class FleetVehicleTimesheetInherits(models.Model):
                         }
                     }
 
+
     #Computed ALL
     @api.multi
     @api.depends('start_time','end_time','total_time')
@@ -562,13 +594,13 @@ class FleetVehicleTimesheetInherits(models.Model):
         return True
 
     @api.multi
-    @api.depends('start_km','end_km','total_distance')
+    @api.depends('start_km','end_km')
     def _compute_total_distance(self):
         #to Compute total Distance
         for item in self:
             if item.end_km and item.start_km:
                 item.total_distance = item.end_km - item.start_km
-            return True
+
 
 
     #Constraint ALL

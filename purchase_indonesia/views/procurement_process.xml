@@ -1,0 +1,53 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_procur_process_state_tree">
+            <field name="name">Trigger Procurement Process</field>
+            <field name="model">state.procurement.process</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="id" string="id" invisible="1"/>
+                    <field name="pr_id" string="purchase request" invisible="1"/>
+                    <field name="pr_complete_name" string="Purchase Request"/>
+                    <field name="date_pr" string="Date"/>
+                    <field name="state" string="PR State"/>
+                    <field name="tender_complete_name" string="RFQ"/>
+                    <field name="tender_state" string="RFQ State"/>
+                    <field name="qcf_complete_name" string="QCF"/>
+                    <field name="qcf_state" string="QCF state"/>
+                    <field name="po_complete_name" string="PO"/>
+                    <field name="po_state" string="PO state"/>
+                    <field name="complete_name_picking" string="GRN"/>
+                    <field name="grn_state" string="GRN state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model='ir.ui.view' id='view_summary_procurement_process_search'>
+            <field name="name">Report Procurement Status</field>
+            <field name="model">state.procurement.process</field>
+            <field name="arch" type="xml">
+                <search string="Vehicles Summary Cost" >
+                    <field name="pr_complete_name" string="Purchase Request"/>
+                    <field name="date_pr" string="Date"/>
+                    <group expand="0" string="Group By">
+                        <filter name="groupby_pr_id" context="{'group_by' : 'pr_complete_name'}" string="Purchase Request"/>
+                        <filter name="groupby_date_pr" context="{'group_by' : 'date_pr'}" string="Date"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_list_view_Procurement_Process">
+                <field name="name">Trigger Procurement Process</field>
+                <field name="res_model">state.procurement.process</field>
+                <field name="view_mode">tree</field>
+                <field name="context">{"search_default_groupby_pr_id" : True}</field>
+        </record>
+
+        <menuitem id="procurement_process_menu" name="Trigger Procurement Process"
+                  parent="base.purchase_report"
+                  action="action_list_view_Procurement_Process"
+                  sequence="14"/>
+    </data>
+</openerp>

@@ -112,8 +112,8 @@ class Employee(models.Model):
         #         if employee_ids:
         #             error_msg = "There is duplicate of Identification No."
         #             raise ValidationError(error_msg)
-        #
-        #     return True
+
+            return True
 
 
 class Religion(models.Model):

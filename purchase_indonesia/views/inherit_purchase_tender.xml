@@ -32,6 +32,24 @@
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
+                 <xpath expr="//tree/field[@name='product_qty']" position="after">
+                           <field name="qty_received" class="oe_inline" invisible="0"
+                               readonly="1"/>
+                           <field name="qty_outstanding" class="oe_inline" invisible="0"
+                               readonly="1"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="view_form_inherit_purchase_requisition_tree">
+             <field name="name">Inherit Purchase Requisition Tree</field>
+             <field name="model">purchase.requisition</field>
+             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='name']" position="replace">
+                           <field name="complete_name" invisible="0"/>
+                 </xpath>
+
              </field>
          </record>
 
