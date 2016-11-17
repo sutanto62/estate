@@ -26,7 +26,8 @@ class InheritRequisitionPartner(models.TransientModel):
             }
             self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))]).write(comparison_data)
             po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))])
-            self.env['purchase.order.line'].search([('order_id','=',po.id)]).write(comparison_data)
+            for item in po :
+                self.env['purchase.order.line'].search([('order_id','=',item.id)]).write(comparison_data)
         return True
 
 

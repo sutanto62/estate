@@ -50,6 +50,18 @@
              </field>
          </record>
 
+        <record model="ir.ui.view" id="inherit_purchase_tree_request_line_group2">
+             <field name="name">Inherit purchase request tree</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='name']" position="replace">
+                           <field name="complete_name" class="oe_inline" invisible="0"
+                               readonly="1" string="Request Reference"/>
+                 </xpath>
+             </field>
+         </record>
+
         <record model="ir.ui.view" id="inherit_purchase_request_line">
              <field name="name">Inherit purchase request</field>
              <field name="model">purchase.request</field>
