@@ -1067,7 +1067,17 @@ class UpkeepLabour(models.Model):
                 "%s has %s number of day. Please change attendance code." % (self.employee_id.name, self.number_of_day))
             raise ValidationError(error_msg)
 
-    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
+        # a labour should not have more than 1 work day in a single day
+        upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
+                                                              ('upkeep_date', '=', self.upkeep_date)])
+        number_of_day = sum(item.number_of_day for item in upkeep_ids)
+        if number_of_day > 1:
+            error_msg = _(
+                "%s has been work for more than 1 worked day." % self.employee_id.name)
+            raise ValidationError(error_msg)
+
+
+def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
         """
 
