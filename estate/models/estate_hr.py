@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from datetime import datetime
 import openerp.addons.decimal_precision as dp
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
@@ -94,8 +94,26 @@ class AttendanceCode(models.Model):
 
     name = fields.Char('Attendance')
     code = fields.Char('Code')
+    contract = fields.Boolean('Contract Based', help='Activate to remark contract based attendance.')
     unit_amount = fields.Float('Hour')
     qty_ratio = fields.Float('Quantity Ratio', help='Use to calculate work result quantity.')
+
+    @api.onchange('contract')
+    def _onchange_contract(self):
+        """
+        Contract based should not calculated hours and qty_ratio
+        """
+        if self.contract:
+            self.unit_amount = 0
+            self.qty_ratio = 0
+
+            warning = {
+                'title': _('Warning!'),
+                'message': _('Hour and Quantity Ratio has been reset.'),
+            }
+
+            return {'warning': warning}
+
 
 class Wage(models.Model):
     """Set default wage for estate level.

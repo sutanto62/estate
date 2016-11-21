@@ -505,7 +505,7 @@ class UpkeepActivity(models.Model):
                                        digits=dp.get_precision('Account'),
                                        help='Amount of wage paid to finish a work')
     activity_contract = fields.Boolean('Activity Contract', related='activity_id.contract', readonly=True)  # Different ACL
-    contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
+    # contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
 
     @api.multi
     @api.depends('activity_id')
@@ -602,9 +602,12 @@ class UpkeepActivity(models.Model):
             return {'warning': warning}
 
         if self.upkeep_id.division_id:
+            # non block domain
             return {
-                'domain': {'location_ids': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id),
-                                            ('company_id', '=', self.upkeep_id.company_id.id)]}
+                'domain': {'location_ids': [('inherit_location_id.location_id', 'in', (self.upkeep_id.estate_id.id,
+                                                                                       self.upkeep_id.division_id.id)),
+                                            ('company_id', '=', self.upkeep_id.company_id.id),
+                                            ('estate_location_level', '=', '3')]}
             }
 
     @api.onchange('location_ids')
@@ -700,7 +703,7 @@ class UpkeepLabour(models.Model):
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     activity_contract = fields.Boolean('Upkeep Activity Contract', compute='_compute_activity_contract',
-                                       help='Contract based upkeep required no attendance')
+                                       store=True, readonly=True)
     cross_team_id = fields.Many2one('estate.hr.team', 'Cross Team', help='Set to define cross team upkeep labour.')
     number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team', compute='_compute_number_of_day_team_id',
                                             store=True)
@@ -717,6 +720,15 @@ class UpkeepLabour(models.Model):
         """Define location domain while editing record
         """
         self.division_id = self.upkeep_id.division_id
+
+    @api.multi
+    @api.depends('attendance_code_id')
+    def _compute_activity_contract(self):
+        """Required to domain quantity and piece rate"""
+        for record in self:
+            if record.attendance_code_id.contract:
+                record.activity_contract = True
+                return
 
     @api.one
     @api.depends('attendance_code_ratio', 'activity_standard_base', 'quantity')
@@ -798,8 +810,12 @@ class UpkeepLabour(models.Model):
         # Use wage_number_of_day to save cost from number of day based or target based activity.
         if self.attendance_code_id:
             self.wage_number_of_day = self.number_of_day * daily_wage
+            # attendance code with contract based
+            if self.attendance_code_id.contract and self.employee_id.contract_type == '2' and self.employee_id.contract_period == '2':
+                self.wage_number_of_day = self.quantity * self.activity_id.standard_price
         elif self.activity_contract and self.employee_id.contract_type == '2' and self.employee_id.contract_period == '2':
             self.wage_number_of_day = self.quantity * self.activity_id.standard_price
+
 
     @api.one
     @api.depends('quantity_overtime')
@@ -901,15 +917,15 @@ class UpkeepLabour(models.Model):
             if record.activity_id:
                 record.var_qty_base = record.quantity - record.activity_id.qty_base
 
-    @api.multi
-    @api.depends('activity_id')
-    def _compute_activity_contract(self):
-        """ Differentiate Target vs Daily Target """
-        for record in self:
-            if not record.upkeep_id:
-                return
-            res = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)], limit=1)
-            record.activity_contract = res.contract
+    # @api.multi
+    # @api.depends('activity_id')
+    # def _compute_activity_contract(self):
+    #     """ Differentiate Target vs Daily Target """
+    #     for record in self:
+    #         if not record.upkeep_id:
+    #             return
+    #         res = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)], limit=1)
+    #         record.activity_contract = res.contract
 
     @api.multi
     @api.depends('activity_id')
@@ -986,10 +1002,16 @@ class UpkeepLabour(models.Model):
 
             if activity_ids or location_ids:
                 if activity_ids:
+                    attendance_code_domain = []
+                    if record.activity_id.contract:
+                        attendance_code_domain = [('contract', 'in', (True, False))]
+                    else:
+                        attendance_code_domain = [('contract', '=', False)]
                     return {
                         'domain': {
                             'activity_id': [('id', 'in', activity_ids.ids)],
-                            'location_id': [('id', 'in', location_ids)]
+                            'location_id': [('id', 'in', location_ids)],
+                            'attendance_code_id': attendance_code_domain,
                         }
                     }
                 else:
