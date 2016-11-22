@@ -18,7 +18,7 @@ class Employee(models.Model):
     bpjs_number = fields.Char("BPJS Number")
     health_insurance_number = fields.Char("Health Insurance Number")
     npwp_number = fields.Char("NPWP Number")
-    company_id = fields.Many2one('res.company', "Cost Center")
+    company_id = fields.Many2one('res.company', "Company")
     contract_type = fields.Selection([('1', 'PKWTT'), ('2', 'PKWT')], "Contract Type",
                                        help="* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, "\
                                             "* PKWT, Perjanjian Kerja Waktu Tertentu.")
@@ -38,35 +38,6 @@ class Employee(models.Model):
     def _compute_age(self):
         for record in self:
             record.age = 1
-
-    # def _check_employee(self, vals):
-    #     """Check employee by NIK or ID number"""
-    #     print 'vals are %s' % vals
-    #     domain = []
-    #     employee_ids = []
-    #
-    #     if vals['nik_number']:
-    #         domain = [('nik_number', '=', vals['nik_number'])]
-    #     if vals['identification_id']:
-    #         domain = [('identification_id', '=', vals['identification_id'])]
-    #     if vals['nik_number'] and vals['identification_id']:
-    #         domain = ['|', ('nik_number', '=', vals['nik_number']), ('identification_id', '=', vals['identification_id'])]
-    #
-    #     print domain
-    #     if domain:
-    #         employee_ids = self.search(domain)
-    #         print employee_ids
-    #
-    #     if employee_ids:
-    #         error_msg = "There have been employee with entered NIK and ID number."
-    #         raise ValidationError(error_msg)
-    #
-    #     return True
-    #
-    # @api.model
-    # def create(self, vals):
-    #     self._check_employee(vals)
-    #     return super(Employee, self).create(vals)
 
     @api.multi
     @api.constrains('nik_number', 'identification_id')
@@ -92,28 +63,73 @@ class Employee(models.Model):
 
             return True
 
+    @api.multi
+    def _generate_nik(self, vals):
+        """Create NIK as corporate policy
+        ir_sequence_code_1 = PKWTT/PKWT Monthly/PKWT Daily
+        ir_sequence_code_2 = Estate
+        """
+        if not vals.get('nik_number'):
+            seq_obj = self.env['ir.sequence']
+            res = ''
 
-        # for record in self:
-        #     # put self.ids to exclude it self
-        #     employee_ids = []
-        #
-        #     if not self.nik_number:
-        #         return True
-        #     else:
-        #         employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
-        #         if employee_ids:
-        #             error_msg = "There is duplicate of Employee Identity Number."
-        #             raise ValidationError(error_msg)
-        #
-        #     if not self.identification_id:
-        #         return True
-        #     else:
-        #         employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
-        #         if employee_ids:
-        #             error_msg = "There is duplicate of Identification No."
-        #             raise ValidationError(error_msg)
-        #
-        #     return True
+            if not vals.get('company_id') or not vals.get('contract_type') or not vals.get('contract_period'):
+                return
+
+            if vals.get('contract_type') == '1':
+                res = seq_obj.with_context(ir_sequence_code_1='1').next_by_code('hr_indonesia.nik')
+            elif vals.get('contract_type') == '2' and vals.get('contract_period') == '2' and vals.get('estate_id'):
+                estate = {'LYD': '1'}  # Key is block template name, Value is number as memo internal.
+                estate_id = self.env['estate.block.template'].search([('id', '=', vals.get('estate_id'))], limit=1)
+                company_id = self.env['res.company'].search([('id', '=', vals.get('company_id'))])
+                prefix = '%(' + estate_id.name + ')s'
+                d = prefix % estate
+                sequence_code = 'hr_indonesia.' + '3' + company_id.name + d
+                res = seq_obj.next_by_code(sequence_code)
+            elif vals.get('contract_type') == '2' and vals.get('internship') == True:
+                # PKWT Contract
+                res = seq_obj.with_context(ir_sequence_code_1='9').next_by_code('hr_indonesia.nik')
+            else:
+                # PKWT Monthly
+                res = seq_obj.with_context(ir_sequence_code_1='2').next_by_code('hr_indonesia.nik')
+
+            # vals['nik_number'] = res
+
+        return res
+
+    @api.multi
+    def button_generate_nik(self):
+        """Accomodate manual generate NIK"""
+
+        res = ''
+        for record in self:
+            vals = {
+                'company_id': record.company_id.id,
+                'estate_id': record.estate_id.id,
+                'contract_type': record.contract_type,
+                'contract_period': record.contract_period,
+                'nik_number': record.nik_number,
+                'internship': record.internship,
+                'outsource': record.outsource
+            }
+
+            # Do not create NIK if already have
+            if not record.nik_number:
+                res = record._generate_nik(vals)
+                record.nik_number = res
+            else:
+                res = False
+
+        return res
+
+    @api.model
+    def create(self, vals):
+        """Generate NIK on create"""
+
+        if not vals.get('nik_number'):
+            vals['nik_number'] = self._generate_nik(vals)
+
+        return super(Employee, self).create(vals)
 
 
 class Religion(models.Model):

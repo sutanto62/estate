@@ -10,9 +10,9 @@
                     <page name="autoreset" string="Auto Reset">
                         <group name="autoreset">
                             <field name="auto_reset"/>
-                            <field name="reset_period"/>
+                            <field name="reset_period" attrs="{'required': [('auto_reset','=', True)]}"/>
                             <field name="reset_time"/>
-                            <field name="reset_init_number"/>
+                            <field name="reset_init_number" attrs="{'required': [('auto_reset','=', True)]}"/>
                         </group>
                     </page>
                 </xpath>

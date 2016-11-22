@@ -4,5 +4,49 @@
         <record id="hr_contract_type_estate" model="hr.contract.type">
             <field name="name">Estate Worker</field>
         </record>
+
+        <record id="ir_sequence_nik" model="ir.sequence">
+            <field name="active" eval="True"/>
+            <field name="name">Nomor Induk Karyawan</field>
+            <field name="code">hr_indonesia.nik</field>
+            <field name="implementation">standard</field>
+            <field name="prefix">%(code_1)s%(y)s</field>
+            <field name="padding">7</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+
+        <record id="ir_sequence_nik_hja" model="ir.sequence">
+            <field name="active" eval="True"/>
+            <field name="name">KHL HJA 1</field>
+            <field name="code">hr_indonesia.3HJA1</field>
+            <field name="implementation">standard</field>
+            <field name="prefix">3011</field>
+            <field name="padding">6</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+
+        <record id="ir_sequence_nik_apk" model="ir.sequence">
+            <field name="active" eval="True"/>
+            <field name="name">KHL APK 1</field>
+            <field name="code">hr_indonesia.3APK1</field>
+            <field name="implementation">standard</field>
+            <field name="prefix">3021</field>
+            <field name="padding">6</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+
+        <record id="ir_sequence_nik_tpn" model="ir.sequence">
+            <field name="active" eval="True"/>
+            <field name="name">KHL TPN 1</field>
+            <field name="code">hr_indonesia.3TPN1</field>
+            <field name="implementation">standard</field>
+            <field name="prefix">3031</field>
+            <field name="padding">6</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
     </data>
 </openerp>

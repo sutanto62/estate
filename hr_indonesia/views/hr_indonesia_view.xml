@@ -7,6 +7,12 @@
             <field name="model">hr.employee</field>
             <field name="inherit_id" ref="hr.view_employee_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//sheet" position="before">
+                    <header>
+                        <button class="oe_highlight" name="button_generate_nik" string="Generate NIK"
+                                type="object" groups="base.group_hr_user"/>
+                    </header>
+                </xpath>
                 <xpath expr="//notebook" position="inside">
                     <page string="HR Indonesia" groups="base.group_hr_user">
                         <group>
