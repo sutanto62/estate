@@ -138,7 +138,7 @@
                             <field name="area_non_company"/>
                         </group>
 
-                        <group string="Assets" attrs="{'invisible': [('estate_location_type','=', 'nursery')]}">
+                        <group string="Assets">
                             <field name="is_smallholder"/>
                             <field name="partner_id" attrs="{'invisible': [('is_smallholder','=', False)]}"
                                 options="{'no_create_edit': True}"/>
@@ -149,6 +149,10 @@
                         <field name="block_parameter_ids"
                                attrs="{'invisible': [('estate_location_level','in', ('1','2'))]}"/>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>

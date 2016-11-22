@@ -99,6 +99,10 @@
                     </notebook>
                     <separator string="Additional Information"/>
                     <field name="comment"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="estate.group_user"/>
+                        <field name="message_ids" widget="mail_thread" groups="estate.group_user"/>
+                    </div>
                 </form>
             </field>
         </record>

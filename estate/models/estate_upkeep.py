@@ -5,11 +5,16 @@ from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DATETIME_FORMAT
 import openerp.addons.decimal_precision as dp
+from dateutil.relativedelta import relativedelta
+import pytz
 from openerp.exceptions import ValidationError
 from lxml import etree
 
 estate_working_days = 25 # todo create working calendar
 overtime_amount = 10000
+
+RESET_PERIOD = [('year', 'Every Year'), ('month', 'Every Month')]
+RESET_PERIOD_TIMEDELTA = [('year', 12), ('month', 1)]
 
 class AccountAnalyticAccount(models.Model):
     """
@@ -40,7 +45,7 @@ class Upkeep(models.Model):
     _order = 'date, team_id'
     _inherit = 'mail.thread'
 
-    name = fields.Char("Name", compute="_compute_upkeep_name", store=True)
+    name = fields.Char("Name", required=True, store=True, default='New')
     assistant_id = fields.Many2one('hr.employee', "Assistant", required=True)  # constrains: if team_id.assistant_id = true
     team_id = fields.Many2one('estate.hr.team', "Team", required=True)
     team_member_ids = fields.One2many(related='team_id.member_ids', string='Member', store=False)
@@ -66,13 +71,48 @@ class Upkeep(models.Model):
     material_line_ids = fields.One2many('estate.upkeep.material', string='Upkeep Material Line', inverse_name='upkeep_id')
     comment = fields.Text('Additional Information')
 
-    @api.multi
-    @api.depends('date', 'team_id')
-    def _compute_upkeep_name(self):
-        for record in self:
-            if record.date and record.team_id:
-                record.name = 'BKM/' + record.date + '/' + record.team_id.name  # todo add code with sequence number
-            return True
+    @api.model
+    def create(self, vals):
+        """ Get sequence for upkeep """
+        if vals.get('name', 'New') == 'New':
+            seq_obj = self.env['ir.sequence']
+            seq_upkeep = seq_obj.search([('code', '=', 'estate.upkeep')], limit=1)
+            delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == seq_upkeep.reset_period]
+            reset_time_datetime = datetime.strptime(seq_upkeep.reset_time, '%Y-%m-%d %H:%M:%S')
+
+            previous_reset_time = reset_time_datetime - relativedelta(months=delta[0][1])
+            tx_date = datetime.strptime(vals['date'], '%Y-%m-%d')
+
+            if tx_date < previous_reset_time:
+                # Backdate upkeep sequence code cannot use postgres
+                period_start = tx_date - relativedelta(day=1)
+                period_end = tx_date + relativedelta(months=+1, day=1, days=-1)
+                upkeep_ids = self.env['estate.upkeep'].search([('date', '>=', period_start.strftime('%Y-%m-%d')),
+                                                               ('date', '<=', period_end.strftime('%Y-%m-%d'))])
+
+                # Return next number or 1
+                prefix_length = len(seq_upkeep.get_prefix_char(seq_upkeep.prefix, tx_date))
+                if upkeep_ids:
+                    seq_codes = []
+                    for item in upkeep_ids:
+                        try:
+                            seq_codes.append(int(item.name[prefix_length:]))
+                        except ValueError:
+                            # old upkeep name included string
+                            seq_codes.append(0)
+
+                    number_next = max(seq_codes) + 1
+                else:
+                    # No upkeep found
+                    number_next = 1
+
+                vals['name'] = seq_upkeep.get_prefix_char(seq_upkeep.prefix, tx_date) \
+                               + '%%0%sd' % seq_upkeep.padding % number_next \
+                               + seq_upkeep.get_prefix_char(seq_upkeep.suffix, tx_date)
+            else:
+                vals['name'] = seq_obj.with_context(ir_sequence_date=vals['date']).next_by_code('estate.upkeep') or '/'
+
+        return super(Upkeep, self).create(vals)
 
     @api.one
     @api.onchange('team_id')
@@ -465,7 +505,7 @@ class UpkeepActivity(models.Model):
                                        digits=dp.get_precision('Account'),
                                        help='Amount of wage paid to finish a work')
     activity_contract = fields.Boolean('Activity Contract', related='activity_id.contract', readonly=True)  # Different ACL
-    contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
+    # contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
 
     @api.multi
     @api.depends('activity_id')
@@ -562,9 +602,12 @@ class UpkeepActivity(models.Model):
             return {'warning': warning}
 
         if self.upkeep_id.division_id:
+            # non block domain
             return {
-                'domain': {'location_ids': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id),
-                                            ('company_id', '=', self.upkeep_id.company_id.id)]}
+                'domain': {'location_ids': [('inherit_location_id.location_id', 'in', (self.upkeep_id.estate_id.id,
+                                                                                       self.upkeep_id.division_id.id)),
+                                            ('company_id', '=', self.upkeep_id.company_id.id),
+                                            ('estate_location_level', '=', '3')]}
             }
 
     @api.onchange('location_ids')
@@ -660,7 +703,7 @@ class UpkeepLabour(models.Model):
     comment = fields.Text('Remark')
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     activity_contract = fields.Boolean('Upkeep Activity Contract', compute='_compute_activity_contract',
-                                       help='Contract based upkeep required no attendance')
+                                       store=True, readonly=True)
     cross_team_id = fields.Many2one('estate.hr.team', 'Cross Team', help='Set to define cross team upkeep labour.')
     number_of_day_team_id = fields.Many2one('estate.hr.team', 'Upkeep Cross Team', compute='_compute_number_of_day_team_id',
                                             store=True)
@@ -677,6 +720,15 @@ class UpkeepLabour(models.Model):
         """Define location domain while editing record
         """
         self.division_id = self.upkeep_id.division_id
+
+    @api.multi
+    @api.depends('attendance_code_id')
+    def _compute_activity_contract(self):
+        """Required to domain quantity and piece rate"""
+        for record in self:
+            if record.attendance_code_id.contract:
+                record.activity_contract = True
+                return
 
     @api.one
     @api.depends('attendance_code_ratio', 'activity_standard_base', 'quantity')
@@ -758,8 +810,12 @@ class UpkeepLabour(models.Model):
         # Use wage_number_of_day to save cost from number of day based or target based activity.
         if self.attendance_code_id:
             self.wage_number_of_day = self.number_of_day * daily_wage
+            # attendance code with contract based
+            if self.attendance_code_id.contract and self.employee_id.contract_type == '2' and self.employee_id.contract_period == '2':
+                self.wage_number_of_day = self.quantity * self.activity_id.standard_price
         elif self.activity_contract and self.employee_id.contract_type == '2' and self.employee_id.contract_period == '2':
             self.wage_number_of_day = self.quantity * self.activity_id.standard_price
+
 
     @api.one
     @api.depends('quantity_overtime')
@@ -861,15 +917,15 @@ class UpkeepLabour(models.Model):
             if record.activity_id:
                 record.var_qty_base = record.quantity - record.activity_id.qty_base
 
-    @api.multi
-    @api.depends('activity_id')
-    def _compute_activity_contract(self):
-        """ Differentiate Target vs Daily Target """
-        for record in self:
-            if not record.upkeep_id:
-                return
-            res = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)], limit=1)
-            record.activity_contract = res.contract
+    # @api.multi
+    # @api.depends('activity_id')
+    # def _compute_activity_contract(self):
+    #     """ Differentiate Target vs Daily Target """
+    #     for record in self:
+    #         if not record.upkeep_id:
+    #             return
+    #         res = record.upkeep_id.activity_line_ids.search([('activity_id', '=', record.activity_id.id)], limit=1)
+    #         record.activity_contract = res.contract
 
     @api.multi
     @api.depends('activity_id')
@@ -946,10 +1002,16 @@ class UpkeepLabour(models.Model):
 
             if activity_ids or location_ids:
                 if activity_ids:
+                    attendance_code_domain = []
+                    if record.activity_id.contract:
+                        attendance_code_domain = [('contract', 'in', (True, False))]
+                    else:
+                        attendance_code_domain = [('contract', '=', False)]
                     return {
                         'domain': {
                             'activity_id': [('id', 'in', activity_ids.ids)],
-                            'location_id': [('id', 'in', location_ids)]
+                            'location_id': [('id', 'in', location_ids)],
+                            'attendance_code_id': attendance_code_domain,
                         }
                     }
                 else:
@@ -1005,7 +1067,17 @@ class UpkeepLabour(models.Model):
                 "%s has %s number of day. Please change attendance code." % (self.employee_id.name, self.number_of_day))
             raise ValidationError(error_msg)
 
-    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
+        # a labour should not have more than 1 work day in a single day
+        upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
+                                                              ('upkeep_date', '=', self.upkeep_date)])
+        number_of_day = sum(item.number_of_day for item in upkeep_ids)
+        if number_of_day > 1:
+            error_msg = _(
+                "%s has been work for more than 1 worked day." % self.employee_id.name)
+            raise ValidationError(error_msg)
+
+
+def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
         """
 
