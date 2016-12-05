@@ -15,6 +15,7 @@
                     <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
                     <field name="unit" string="Qty"/>
+                    <field name="type_transport" string="Type"/>
                     <field name="start_location" string="Start Location" options="{'no_create_edit': True}"/>
                     <field name="end_location" string="End Location" options="{'no_create_edit': True}"/>
                     <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>

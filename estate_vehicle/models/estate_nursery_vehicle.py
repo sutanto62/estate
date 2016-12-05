@@ -510,6 +510,13 @@ class FleetVehicleTimesheetInherits(models.Model):
             self.unit = 0
 
     @api.multi
+    @api.depends('activity_id')
+    def change_type_transport(self):
+        for item in self:
+            if item.activity_id:
+                item.type_transport = item.activity_id.type_transport
+
+    @api.multi
     @api.depends('distance_location','end_location','start_location')
     def _onchange_distance_location(self):
         #to change distance location same master path location
