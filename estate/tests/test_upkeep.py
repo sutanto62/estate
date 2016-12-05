@@ -173,9 +173,6 @@ class TestUpkeep(TransactionCase):
         with self.assertRaises(ValidationError):
             upkeep.write(val_labour)
 
-    def test_00_compute_upkeep_name(self):
-        self.assertTrue(self.demo['name'], 'Estate: compute_upkeep_name return false')
-
     def test_02_compute_activity_contract(self):
         # Imitate master data activity contract is True
         self.env.ref('estate.activity_135').write({'contract': True})

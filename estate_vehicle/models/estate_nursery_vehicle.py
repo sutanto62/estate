@@ -446,6 +446,10 @@ class FleetVehicleTimesheetInherits(models.Model):
     total_distance = fields.Float(digits=(2,2),compute='_compute_total_distance',store=True)
     distance_location = fields.Float('Distance Location',store=True,compute='_onchange_distance_location')
     total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
+    type_transport = fields.Selection([
+        ('ntrip', 'Non Trip'),
+        ('trip', 'Trip'),
+        ], string="Type",store=True,compute='change_type_transport')
     comment = fields.Text()
 
 
@@ -497,7 +501,13 @@ class FleetVehicleTimesheetInherits(models.Model):
                          }
                     }
 
-
+    @api.multi
+    @api.onchange('type_transport')
+    def _onchange_unit(self):
+        if self.type_transport =='trip':
+            self.unit = 1
+        elif self.type_transport == 'ntrip':
+            self.unit = 0
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')

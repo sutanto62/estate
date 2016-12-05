@@ -81,13 +81,14 @@ class EstateBlockTemplate(geo_model.GeoModel):
 
     _name = 'estate.block.template'
     _inherits = {'stock.location': 'inherit_location_id'}
+    _inherit = 'mail.thread'
 
     inherit_location_id = fields.Many2one('stock.location', required=True, ondelete="restrict")
     assistant_id = fields.Many2one('hr.employee', "Assistant", ondelete="restrict")
     # batch_id = fields.Many2one('estate.nursery.batch', "Seed Source", required=False, ondelete="restrict",
     #                            help='Use batch for nursery block only.')
     area_gis = fields.Float("GIS Area (ha)", digits=(18, 6), help="Area registered at Izin Lokasi - based on GIS.")
-    area_planted = fields.Float("Planted Area (ha)", digits=(18, 6),
+    area_planted = fields.Float("Planted Area (ha)", digits=(18, 6), track_visibility='onchange',
                                 help="Area which has been planted excluded infrastructure and emplacement.")
     area_infrastructure = fields.Float("Infrastructure Area (ha)", digits=(18, 6),
                                     help="Area for road.")
@@ -104,22 +105,22 @@ class EstateBlockTemplate(geo_model.GeoModel):
                                 store=True, help="Average stand per hectare planted.")
     is_smallholder = fields.Boolean("Smallholder Area",
                              help="Check this box to mark Block as Smallholder area.")
-    company_id = fields.Many2one('res.company', "Company",
+    company_id = fields.Many2one('res.company', "Company", track_visibility='onchange',
                                  help="Based on Consession License.")
     leaf_analysis = fields.Boolean("Leaf Analysis", help="Set true if leaf analysis has been done.")
     soil_analysis = fields.Boolean("Soil Analysis", help="Set true if soil analysis has been done.")
     date_planted = fields.Date("Planted Date")
-    qty_tree = fields.Integer("Total Tree")
+    qty_tree = fields.Integer("Total Tree", track_visibility='onchange')
     qty_tree_immature = fields.Integer("Immature Tree")
     qty_tree_mature_normal = fields.Integer("Normal Mature Tree")
     qty_tree_mature_abnormal = fields.Integer("Abnormal Mature Tree")
     qty_tree_mature_nofruit = fields.Integer("Tree Without Fruit")
-    planted_year_id = fields.Many2one('estate.planted.year', "Planted Year") # Hide if estate_location_level in ('1', '2')
+    planted_year_id = fields.Many2one('estate.planted.year', "Planted Year", track_visibility='onchange') # Hide if estate_location_level in ('1', '2')
     block_ids = fields.One2many('estate.block', 'block_template_id', "Block Variants")
     block_parameter_ids = fields.One2many('estate.block.parameter', 'block_id', "Block Parameter",
                                           help="Define block parameter")
     closing = fields.Boolean("Closing Block", help="Standard work result applied.")
-    account_id = fields.Many2one('account.analytic.account', 'Analytic Account',
+    account_id = fields.Many2one('account.analytic.account', 'Analytic Account', track_visibility='onchange',
                                  domain=[('use_estate', '=', True), ('account_type', '=', 'normal')], help="Analytic Account by Batch/Year Planted")
 
     # Set default value embedded object (stock location)

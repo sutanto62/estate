@@ -43,7 +43,7 @@ class TimesheetActivityTransport(models.Model):
     type_transport = fields.Selection([
         ('ntrip', 'Non Trip'),
         ('trip', 'Trip'),
-        ], string="Type",store=True)
+        ], string="Type",store=True,compute='change_type_transport')
     state=fields.Selection([('draft','Draft'),
         ('confirmed', 'Confirmed'),('approved1','First Approval'),('approved2','Second Approval'),
         ('done', 'Done'),('cancel','Cancel'),('reject','Reject')],string="Activity Timesheet State")
@@ -87,10 +87,24 @@ class TimesheetActivityTransport(models.Model):
                     }
 
     @api.multi
-    @api.onchange('activity_id',)
+    @api.onchange('type_transport')
+    def _onchange_unit(self):
+        if self.type_transport =='trip':
+            self.unit = 1
+        elif self.type_transport == 'ntrip':
+            self.unit = 0
+
+    @api.multi
+    @api.onchange('activity_id')
     def _onchange_uom(self):
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id
+
+
+    @api.multi
+    @api.depends('activity_id')
+    def change_type_transport(self):
+        if self.activity_id:
             self.type_transport = self.activity_id.type_transport
 
     @api.multi
