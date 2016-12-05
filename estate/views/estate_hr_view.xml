@@ -29,6 +29,10 @@
                         </group>
                         <field name="member_ids"/>
                     </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>
@@ -72,9 +76,31 @@
                 <tree>
                     <field name="name"/>
                     <field name="code"/>
+                    <field name="contract" string="Ctr."/>
                     <field name="unit_amount"/>
                     <field name="qty_ratio"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="attendance_code_view_form" model="ir.ui.view">
+            <field name="name">Attendance Code Form</field>
+            <field name="model">estate.hr.attendance</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group id="att_code" name="Attendance">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="contract"/>
+                        </group>
+                        <group id="att_hour" name="Worked Hours">
+                            <field name="qty_ratio" attrs="{'invisible': [('contract', '=', True)]}"/>
+                            <field name="unit_amount" attrs="{'invisible': [('contract', '=', True)]}"/>
+                        </group>
+                    </group>
+                </form>
             </field>
         </record>
 
@@ -117,6 +143,10 @@
                     </group>
                     <separator string="Additional Information"/>
                     <field name="comment"/>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
                 </form>
             </field>
         </record>

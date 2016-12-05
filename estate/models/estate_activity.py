@@ -10,6 +10,7 @@ class Activity(models.Model):
     _parent_name = 'parent_id'
     _order = 'complete_name'
     _rec_name = 'code_name'  # complete_name too long for upkeep entry
+    _inherit = 'mail.thread'
 
     name = fields.Char("Name", required=True, help="Create unique activity name.")
     code = fields.Char("Activity Code", help='Choose your transaction code')
@@ -33,11 +34,11 @@ class Activity(models.Model):
     uom_id = fields.Many2one('product.uom', string="Basic Unit of Measurements")
     account_id = fields.Many2one('account.analytic.account', 'Analytic Account',
                                  domain=[('use_estate', '=', True), ('account_type', '=', 'normal')], # v9 use account_type
-                                 help='Set as default analytic account at Upkeep.')
+                                 help='Set as default analytic account at Upkeep.', track_visibility="onchange")
     general_account_id = fields.Many2one('account.account', 'General Account',
-                                         help='Set as default general account.')
+                                         help='Set as default general account.', track_visibility="onchange")
     qty_base = fields.Float(string="Standard Work Result/Day", digits=dp.get_precision('Estate'),
-                            help="Set as default work's result.")
+                            help="Set as default work's result.", track_visibility="onchange")
     qty_base_min = fields.Float(string="Minimum Work Result/Day", digits=dp.get_precision('Estate'),
                             help="It will be used when Activity Norm defined. Set as minimum work's result.")
     qty_base_max = fields.Float(string="Maximum Work Result/Day", digits=dp.get_precision('Estate'),
@@ -54,19 +55,20 @@ class Activity(models.Model):
                                         string="Activity Norm")
     material_norm_ids = fields.One2many(comodel_name='estate.material.norm', inverse_name='activity_id',
                                         string="Standard Material")
-    standard_price = fields.Float('Standard Price', digits=dp.get_precision('Standard Price'))
+    standard_price = fields.Float('Standard Price', digits=dp.get_precision('Standard Price'), track_visibility="onchange")
     piece_rate_price = fields.Float('Piece Rate Price', digits=dp.get_precision('Standard Price'),
-                                    help='Empty value use standard price instead')
+                                    help='Empty value use standard price instead', track_visibility="onchange")
     activity_type = fields.Selection([('estate', 'Estate Activity'),
                                       ('vehicle', 'Vehicle activity'),
                                       ('general', 'General Affair Activity')],
                                      'Activity Type')
     wage_method = fields.Selection([('standard', 'Standard Quantity'),
                                     ('attendance', 'Attendance Code')], 'Wage Method',
-                                   default='standard',
+                                   default='standard', track_visibility="onchange",
                                    help='* Standard Quantity, labour wage based on work result.'\
                                         '* Worked Day, labour wage based on attendance code.')
-    contract = fields.Boolean('Contract', default=False, help='Contract based activity allows upkeep record without number of day')
+    contract = fields.Boolean('Contract', default=False, track_visibility="onchange",
+                              help='Contract based activity allows upkeep record without number of day')
 
     @api.one
     @api.depends('name', 'parent_id')
