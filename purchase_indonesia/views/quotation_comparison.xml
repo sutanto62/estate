@@ -45,19 +45,11 @@
             <field name="arch" type="xml">
                 <form>
                      <header coolspan="10">
+                            <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
                     <sheet>
                          <div class="oe_right oe_button_box">
-                                <!--<button name="return_action_to_open"-->
-                                    <!--type="object"-->
-                                    <!--class="oe_stat_button"-->
-                                    <!--string="Order List"-->
-                                    <!--icon="fa-list-alt"-->
-                                    <!--context="{'xml_id':'action_purchase_line_product_tree'}"-->
-                                    <!--attrs="{'invisible': [('state', '!=', 'draft')]}"-->
-                                    <!-->-->
-                                <!--</button>-->
                                 <button name="open_product_line" type="object"
                                         string="Product Lines"
                                         class="oe_stat_button" icon="fa-list" groups="purchase.group_advance_bidding"/>
@@ -137,7 +129,7 @@
                                                            }"/>
                             <separator string="Recomendation/Remarks"/>
                             <field name="remarks"/>
-                            <field name="quotation_comparison_line_ids" track_visibility="onchange"
+                            <field name="quotation_comparison_line_ids" track_visibility="onchange" invisible="1"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_indonesia.view_quotation_comparison_line',
                                                        }"/>

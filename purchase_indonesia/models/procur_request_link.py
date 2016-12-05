@@ -41,6 +41,24 @@ class InheritPurchaseRequest(models.Model):
     type_product = fields.Selection([('capital','Capital'),
                                      ('service','Service'),('product','Stockable Product')],'Location Type')
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
+    state = fields.Selection(
+        selection_add=[('approval1', 'Approval Dept Head'),
+                       ('approval2', 'Approval Div Head'),
+                       ('budget', 'Approval Budget'),
+                       ('technic1', 'Approval Technic Dept Head'),
+                       ('technic2', 'Approval Technic Div Head'),
+                       ('technic3', 'Approval Technic ICT Dept'),
+                       ('technic4', 'Approval Technic GM Plantation Dept'),
+                       ('technic5', 'Approval Technic EA Dept'),])
+    currency_id = fields.Many2one('res.currency', 'Currency', required=True,\
+        default=lambda self: self.env.user.company_id.currency_id)
+    total_estimate_price = fields.Float('Total Estimated Price',compute='_compute_total_estimate_price')
+
+
+    @api.multi
+    def button_rejected(self):
+        self.write({'state': 'reject', 'date_request': self.date_start})
+        return True
 
     @api.multi
     def button_approved(self):
@@ -48,6 +66,86 @@ class InheritPurchaseRequest(models.Model):
         self.create_quotation_comparison_form()
         super(InheritPurchaseRequest, self).button_approved()
         return True
+
+    @api.multi
+    def action_confirm1(self,):
+        """ Confirms User request.
+        """
+        self.check_wkf_product_price()
+        return True
+
+    @api.multi
+    def action_confirm2(self,):
+        """ Confirms Good request.
+        """
+        self.write({'state': 'budget'})
+        return True
+
+    @api.multi
+    def action_budget(self,):
+        """ Confirms Budget request.
+        """
+        self.check_wkf_product()
+        return True
+
+    @api.multi
+    def action_techic(self,):
+        """ Confirms Technical request.
+        """
+        self.write({'state': 'to_approve'})
+        return True
+
+    @api.multi
+    def check_wkf_requester(self):
+        arrJobs = []
+        arrJobs2 = []
+        employee = self.env['hr.employee'].search([('user_id','=',self.requested_by.id)])
+        jobs = self.env['hr.job'].search([('id','=',employee.job_id.id)]).id
+        jobs_compare_hr = self.env['hr.job'].search([('name','in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
+        jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
+        for item in jobs_non_hr:
+            arrJobs2.append(item.id)
+        for record_job in jobs_compare_hr:
+            arrJobs.append(record_job.id)
+        if jobs in arrJobs:
+            state_data = {'state':'approval1'}
+            self.write(state_data)
+        elif jobs in arrJobs2:
+            state_data = {'state':'approval2'}
+            self.write(state_data)
+
+    @api.multi
+    def check_wkf_product_price(self):
+       #check total product price in purchase request
+       price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
+       total_price_purchase = sum(record.total_price for record in self.line_ids)
+       if total_price_purchase > price_standard:
+            state_data = {'state':'approval2'}
+            self.write(state_data)
+       else:
+            state_data = {'state':'budget'}
+            self.write(state_data)
+
+    @api.multi
+    def check_wkf_product(self):
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
+        total_price_purchase = sum(record.total_price for record in self.line_ids)
+        if self.type_functional == 'agronomy' and total_price_purchase <= price_standard:
+            state_data = {'state':'technic4','type_budget':'available'}
+            self.write(state_data)
+        elif self.type_functional == 'technic' and total_price_purchase <= price_standard:
+            state_data = {'state':'technic5','type_budget':'available'}
+            self.write(state_data)
+        elif self.type_functional == 'general' and total_price_purchase <= price_standard:
+            state_data = {'state':'technic3','type_budget':'available'}
+            self.write(state_data)
+        elif total_price_purchase > price_standard:
+            state_data = {'state':'technic1','type_budget':'available'}
+            self.write(state_data)
+        else :
+            state_data = {'state':'technic2','type_budget':'available'}
+            self.write(state_data)
+
 
     @api.multi
     def create_purchase_requisition(self):
@@ -122,6 +220,15 @@ class InheritPurchaseRequest(models.Model):
             self.complete_name = self.name
 
         return True
+
+    @api.multi
+    def print_purchase_request(self):
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request')
+
+    @api.multi
+    @api.depends('line_ids')
+    def _compute_total_estimate_price(self):
+        self.total_estimate_price = sum(record.total_price for record in self.line_ids)
 
     @api.multi
     @api.onchange('type_location')
@@ -275,54 +382,6 @@ class InheritPurchaseRequestLine(models.Model):
         #     for product in purchase_line:
         #         arrProduct.append(product.product_id)
 
-
-class StateProcurementProcess(models.Model):
-
-    _name = 'state.procurement.process'
-    _description = 'Tracking State From Purchase Request'
-    _auto = False
-    _order = 'pr_complete_name desc'
-
-
-    id = fields.Char('id')
-    pr_id = fields.Integer('purchase request')
-    date_pr = fields.Date('Purchase Request Date')
-    state = fields.Char('Purchase Request state')
-    pr_complete_name = fields.Char('Purchase Request Complete Name')
-    tender_complete_name = fields.Char('Tender Complete Name')
-    tender_state = fields.Char('Tender State')
-    qcf_complete_name = fields.Char('Qcf Complete Name')
-    qcf_state = fields.Char('Qcf State')
-    po_complete_name = fields.Char('Purchase Order Complete Name')
-    po_state = fields.Char('Purchase Order State')
-    complete_name_picking = fields.Char('GRN Complete Name')
-    grn_state = fields.Char('GRN State')
-
-    def init(self, cr):
-        cr.execute(""" create or replace view state_procurement_process as
-            select
-                row_number() over() id,
-                pr.id pr_id,pr.date_start date_pr,
-                pr.state state,
-                pr.complete_name pr_complete_name,
-                tender.complete_name tender_complete_name,
-                tender.state tender_state,qcf.complete_name qcf_complete_name,
-                qcf.state qcf_state,
-                po.complete_name po_complete_name,
-                po.state po_state,grn.complete_name_picking,grn.state grn_state from purchase_request pr
-            left join (
-                select id tender_id,complete_name,origin,state from purchase_requisition
-                )tender on pr.complete_name = tender.origin
-            left join(
-                select id,complete_name,state,origin from quotation_comparison_form
-            )qcf on pr.complete_name = qcf.origin
-            left join(
-                select id,complete_name,state,source_purchase_request from purchase_order
-            )po on pr.complete_name = po.source_purchase_request
-            left join(
-                select id,complete_name_picking,state,pr_source from stock_picking
-                    )grn on pr.complete_name = grn.pr_source
-                        """)
 
 
 

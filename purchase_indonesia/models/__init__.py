@@ -5,6 +5,7 @@ import procur_good_request
 import procur_good_manage
 import Inherit_purchase_order
 import purchase_setting
+import Inherit_stock_picking
 import quotation_comparison_form
 import Inherit_purchase_tenders
-import Inherit_stock_picking
+import procur_good_returns

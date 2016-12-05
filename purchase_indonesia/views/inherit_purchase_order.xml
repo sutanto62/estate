@@ -10,17 +10,117 @@
                  </xpath>
                  <xpath expr="//field[@name='name']" position="after">
                           <field name="complete_name" string="Name" invisible="0"/>
+                          <field name="hide" string="hide" invisible="1"/>
                  </xpath>
                  <xpath expr="//field[@name='partner_id']" position="before">
+                          <field name="po_no" string="Name" invisible="1"/>
                           <field name="companys_id" string="Company" invisible="0" required="0" options="{'no_create_edit': True}"/>
                           <field name="type_location" string="Location"/>
                  </xpath>
                  <xpath expr="//field[@name='date_order']" position="after">
                           <field name="source_purchase_request" string="Source Purchase Request" />
                  </xpath>
+                 <xpath expr="//field[@name='payment_term_id']" position="replace">
+                     <field name="payment_term_id" options="{'no_open': True, 'no_create': False}" attrs="{'readonly': [('invoice_status','=', 'invoiced')]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='incoterm_id']" position="after">
+                     <field name="delivery_term" string="Delivery Term"/>
+                 </xpath>
+                 <xpath expr="//button[@name='button_done']" position="before">
+                     <button name="print_purchase_order" string="Print PO" type="object" states="purchase" groups="base.group_user"/>
+                 </xpath>
+                 <xpath expr="//tree//field[@name='price_subtotal']" position="after">
+                          <field name="spesification" string="Spesification" invisible="1"/>
+                 </xpath>
              </field>
          </record>
 
+        <record model="ir.ui.view" id="inherit_purchase_order_tree">
+             <field name="name">Inherit purchase order tree</field>
+             <field name="model">purchase.order</field>
+             <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='name']" position="replace">
+                          <field name="name" string="Name" invisible="1"/>
+                 </xpath>
+                 <xpath expr="//field[@name='name']" position="after">
+                          <field name="complete_name" string="Reference" invisible=""/>
+                 </xpath>
+             </field>
+         </record>
+
+        <!--<record model="ir.ui.view" id="inherit_purchase_order_line_tree">-->
+             <!--<field name="name">Inherit purchase order line tree</field>-->
+             <!--<field name="model">purchase.order.line</field>-->
+             <!--<field name="inherit_id" ref="purchase.purchase_order_line_tree"/>-->
+             <!--<field name="arch" type="xml">-->
+                 <!--<xpath expr="//field[@name='price_subtotal']" position="after">-->
+                          <!--<field name="spesification" string="Spesification" invisible="1"/>-->
+                 <!--</xpath>-->
+             <!--</field>-->
+         <!--</record>-->
+
+        <record id="purchase.view_purchase_order_filter" model="ir.ui.view">
+            <field name="name">request.quotation.select</field>
+            <field name="model">purchase.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Order">
+                    <field name="name" string="Reference"/>
+                    <field name="partner_id" operator="child_of"/>
+                    <field name="product_id"/>
+                    <field name="create_uid"/>
+                    <filter string="status" name="status" icon="terp-personal" domain="[('state','=','purchase')]" />
+                    <filter string="status Purchase" name="status_draft" icon="terp-personal" domain="[('state','=','draft')]" />
+                    <filter string="status canceled" name="status_cancel" icon="terp-personal" domain="[('state','=','cancel')]" />
+                    <filter name="draft" string="Quotations" domain="[('state','in',('draft','sent','to approve'))]"/>
+                    <filter name="approved" string="Purchase Orders" domain="[('state','in',('purchase','done'))]"/>
+                    <separator/>
+                    <filter name="not_invoiced" string="Not Invoiced" domain="[('invoice_status','=', 'to invoice')]" help="Purchase orders that include lines not invoiced."/>
+                    <filter name="invoiced" string="Invoiced" domain="[('invoice_status','=', 'invoiced')]" help="Purchase orders that include lines not invoiced."/>
+                    <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Vendor" domain="[]" context="{'group_by':'partner_id'}"/>
+                        <filter string="Order Date" domain="[]" context="{'group_by':'date_order'}"/>
+                        <!-- FORWARDPORT UP TO SAAS-10 -->
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="inherit_purchase_order_tree">
+             <field name="name">Inherit purchase order action</field>
+             <field name="res_model">purchase.order</field>
+             <field name="inherit_id" ref="purchase.purchase_form_action"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='context']" position="replace">
+                     <field name="context">{'search_default_status':1,'search_default_status_draft':1,'search_default_status_cancel':1}</field>
+                 </xpath>
+                 <xpath expr="//field[@name='domain']" position="replace">
+                     <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>
+                 </xpath>
+             </field>
+         </record>
+
+        <!--<record id="purchase.purchase_form_action" model="ir.actions.act_window">-->
+            <!--<field name="name">Purchase Orders</field>-->
+            <!--<field name="type">ir.actions.act_window</field>-->
+            <!--<field name="res_model">purchase.order</field>-->
+            <!--<field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>-->
+            <!--<field name="context">{'search_default_status':1,'search_default_status_draft':1,'search_default_status_cancel':1}</field>-->
+            <!--<field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>-->
+            <!--<field name="search_view_id" ref="purchase.view_purchase_order_filter"/>-->
+            <!--<field name="help" type="html">-->
+              <!--<p class="oe_view_nocontent_create">-->
+                <!--Click to create a quotation that will be converted into a purchase order.-->
+              <!--</p><p>-->
+                <!--Use this menu to search within your purchase orders by-->
+                <!--references, vendor, products, etc. For each purchase order,-->
+                <!--you can track the related discussion with the vendor, control-->
+                <!--the products received and control the vendor bills.-->
+              <!--</p>-->
+            <!--</field>-->
+        <!--</record>-->
 
 
     </data>

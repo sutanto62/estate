@@ -10,7 +10,7 @@
                         <field name="reject_reason"/>
                     </group>
                     <footer>
-                        <button name="reject_request" string="Reject Timesheet" type="object"  class="oe_highlight"  />
+                        <button name="reject_request" string="Reject Request" type="object"  class="oe_highlight"  />
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>
@@ -27,6 +27,32 @@
             <field name="target">new</field>
         </record>
 
+         <record id="view_good_return_reject_wizard" model="ir.ui.view">
+            <field name="name">Reject Goods Return</field>
+            <field name="model">estate_procurement.good.return.reject</field>
+            <field name="arch" type="xml">
+                <form string="Timesheet" version="7.0">
+                    <group>
+                        <field name="reject_reason"/>
+                    </group>
+                    <footer>
+                        <button name="reject_request" string="Reject Request" type="object"  class="oe_highlight"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_good_return_reject" model="ir.actions.act_window">
+            <field name="name">Reject Good Return</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">estate_procurement.good.return.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
         <record id="view_management_good_request_reject_wizard" model="ir.ui.view">
             <field name="name">Reject management Good Request</field>
             <field name="model">management.good.request.reject</field>
@@ -36,7 +62,7 @@
                         <field name="reject_reason"/>
                     </group>
                     <footer>
-                        <button name="reject_request" string="Reject Timesheet" type="object"  class="oe_highlight"  />
+                        <button name="reject_request" string="Reject Request" type="object"  class="oe_highlight"  />
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>
@@ -53,6 +79,32 @@
             <field name="target">new</field>
         </record>
 
+
+        <record id="view_purchase_request_reject_wizard" model="ir.ui.view">
+            <field name="name">Reject Purchase Request</field>
+            <field name="model">purchase.request.reject</field>
+            <field name="arch" type="xml">
+                <form string="Timesheet" version="7.0">
+                    <group>
+                        <field name="reject_reason"/>
+                    </group>
+                    <footer>
+                        <button name="reject_request" string="Reject Request" type="object"  class="oe_highlight"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_purchase_request_reject" model="ir.actions.act_window">
+            <field name="name">Reject Purchase Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.request.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
 
     </data>
 </openerp>

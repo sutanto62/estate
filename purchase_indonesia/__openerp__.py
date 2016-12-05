@@ -23,9 +23,15 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'wizard/reject.xml',
         # 'wizard/Inherit_purchase_indonesia_requisition_partner.xml',
+        'config_report/config_quotation_comparison_form.xml',
+        'config_report/config_goods_receipt_notes.xml',
+        'config_report/config_purchase_order.xml',
+        'config_report/config_purchase_quotation.xml',
+        'config_report/config_purchase_request.xml',
+
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
         'views/procur_request_view.xml',
@@ -37,8 +43,16 @@
         'views/quotation_comparison.xml',
         'views/inherit_purchase_tender.xml',
         'views/procurement_process.xml',
+        'views/procur_return_view.xml',
         'workflow/workflow_procur_good_request.xml',
-        'workflow/workflow_management_good_request.xml'
+        'workflow/workflow_management_good_request.xml',
+
+        'reports/report_quotation_comparison_form.xml',
+        'reports/report_goods_receipt_notes.xml',
+        'reports/report_purchase_order.xml',
+        'reports/report_purchase_quotation.xml',
+        'reports/report_purchase_request.xml'
+
 
         # 'templates.xml',
     ],

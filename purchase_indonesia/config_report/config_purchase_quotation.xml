@@ -1,0 +1,33 @@
+<openerp>
+    <data>
+        <record id="paperformat_report_purchase_quotation" model="report.paperformat">
+            <field name="name">Config Report Purchase Quotation</field>
+            <field name="default" eval="True"/>
+            <field name="format">custom</field>
+            <field name="page_height">600</field><!--tinggi height papernya -->
+            <field name="page_width">297</field><!--tinggi widht papernya -->
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">60</field><!--margin content dengan top papernya -->
+            <field name="margin_bottom">23</field><!--margin content dengan bawah papernya -->
+            <field name="margin_left">7</field><!--margin content dengan samping kiri papernya -->
+            <field name="margin_right">7</field><!--margin content dengan samping kanan papernya -->
+            <field name="header_line" eval="False"/><!-- garis di heading -->
+            <field name="header_spacing">60</field><!-- jarak header dengan isi content -->
+            <field name="dpi">90</field>
+        </record>
+
+        <report
+            id="custom_report_div_report_purchase_quotation"
+            model="purchase.order"
+            string="Report Purchase Quotation"
+            report_type="qweb-pdf"
+            name="purchase_indonesia.report_purchase_quotation"
+            attachment_use="False"
+            file="purchase_indonesia.report_purchase_quotation"
+        />
+
+        <record id="custom_report_div_report_purchase_quotation" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="purchase_indonesia.paperformat_report_purchase_quotation"/>
+        </record>
+    </data>
+</openerp>

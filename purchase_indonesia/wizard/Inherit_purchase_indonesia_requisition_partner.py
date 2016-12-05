@@ -16,12 +16,16 @@ class InheritRequisitionPartner(models.TransientModel):
     @api.multi
     def create_order(self):
         purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',self._context.get('active_id'))])
+        idx_qty_received_zero = 0
         for record in purchase_requisition_line:
             if record.qty_received == 0 :
-                super(InheritRequisitionPartner,self).create_order()
-                self.create_comparison()
-            elif record.qty_received > 0:
-                self.create_backorder()
+                idx_qty_received_zero = idx_qty_received_zero + 1
+
+        if idx_qty_received_zero == len(purchase_requisition_line) :
+            super(InheritRequisitionPartner,self).create_order()
+            self.create_comparison()
+        else:
+            self.create_backorder()
         return True
 
     @api.multi
