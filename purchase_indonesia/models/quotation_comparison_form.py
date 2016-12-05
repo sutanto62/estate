@@ -53,6 +53,7 @@ class QuotationComparisonForm(models.Model):
     type_location = fields.Selection([('KOKB','Estate'),
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
     origin = fields.Char('Source Purchase Request')
+    partner_id = fields.Many2one('res.partner')
     company_id = fields.Many2one('res.company','Company')
     requisition_id = fields.Many2one('purchase.requisition','Purchase Requisition')
     state = fields.Selection([

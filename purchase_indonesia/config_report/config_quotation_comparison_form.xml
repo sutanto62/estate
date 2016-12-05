@@ -17,16 +17,16 @@
         </record>
 
         <report
-            id="custom_report_div_report_plantation"
+            id="custom_report_div_report_quotation_comparison_form"
             model="quotation.comparison.form"
             string="Report Quotation Comparison Form"
             report_type="qweb-pdf"
-            name="purchase_indonesia.report_quotation_comparison_report"
+            name="purchase_indonesia.report_quotation_comparison_form_document"
             attachment_use="False"
-            file="purchase_indonesia.report_quotation_comparison_report"
+            file="purchase_indonesia.report_quotation_comparison_form_document"
         />
 
-        <record id="custom_report_div_report_plantation" model="ir.actions.report.xml">
+        <record id="custom_report_div_report_quotation_comparison_form" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="purchase_indonesia.paperformat_report_quotation_comparison_form"/>
         </record>
     </data>
