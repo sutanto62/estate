@@ -26,6 +26,8 @@
         # 'security/ir.model.access.csv',
         'wizard/reject.xml',
         # 'wizard/Inherit_purchase_indonesia_requisition_partner.xml',
+        'config_report/config_quotation_comparison_form.xml',
+
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
         'views/procur_request_view.xml',
@@ -38,7 +40,10 @@
         'views/inherit_purchase_tender.xml',
         'views/procurement_process.xml',
         'workflow/workflow_procur_good_request.xml',
-        'workflow/workflow_management_good_request.xml'
+        'workflow/workflow_management_good_request.xml',
+
+        'reports/report_quotation_comparison_form.xml'
+
 
         # 'templates.xml',
     ],
