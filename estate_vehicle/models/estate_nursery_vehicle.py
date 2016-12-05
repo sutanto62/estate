@@ -515,6 +515,8 @@ class FleetVehicleTimesheetInherits(models.Model):
         for item in self:
             if item.activity_id:
                 item.type_transport = item.activity_id.type_transport
+            elif item.activity_id.type_transport == False:
+                item.type_transport = 'trip'
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')
@@ -554,9 +556,6 @@ class FleetVehicleTimesheetInherits(models.Model):
         #onchange UOM in timesheet Vehicle
         if self.activity_id:
             self.uom_id = self.activity_id.uom_id
-            self.type_transport = self.activity_id.type_transport
-        if self.activity_id.type_transport == False:
-            self.type_transport = 'trip'
 
     #todo get odometer
     # @api.multi
