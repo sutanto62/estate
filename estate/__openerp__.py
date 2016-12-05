@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'base_geoengine','mail', 'base_autoreset_sequence'],
+    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'mail', 'base_autoreset_sequence'],
 
     # always loaded
     'data': [

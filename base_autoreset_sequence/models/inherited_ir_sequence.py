@@ -95,17 +95,18 @@ class Sequence(models.Model):
             return res
 
         # Add condition to catch new prefix here.
-        if 'code' in self.prefix:
-            # Use type as common of nik prefix
-            d = _interpolation_dict()
-            try:
-                interpolated_prefix = _interpolate(self.prefix, d)
-                interpolated_suffix = _interpolate(self.suffix, d)
-            except ValueError:
-                raise UserError(_('Invalid prefix or suffix for sequence \'%s\'') % (self.get('name')))
+        if self.prefix:
+            if 'code' in self.prefix:
+                # Use type as common of nik prefix
+                d = _interpolation_dict()
+                try:
+                    interpolated_prefix = _interpolate(self.prefix, d)
+                    interpolated_suffix = _interpolate(self.suffix, d)
+                except ValueError:
+                    raise UserError(_('Invalid prefix or suffix for sequence \'%s\'') % (self.get('name')))
 
-            res = interpolated_prefix + '%%0%sd' % self.padding % number_next + interpolated_suffix
-            return res
-        else:
-            return super(Sequence, self).get_next_char(number_next)
+                res = interpolated_prefix + '%%0%sd' % self.padding % number_next + interpolated_suffix
+                return res
+            else:
+                return super(Sequence, self).get_next_char(number_next)
 

@@ -513,11 +513,9 @@
                     <field name="ratio_quantity_day" digits="(8,2)" string="Q/D"/>
                     <field name="ratio_day_quantity" digits="(8,2)" string="D/Q"/>
                     <field name="ratio_wage_quantity" digits="(12,2)" string="W/Q"/>
-                    <!-- remove to shorten tree
-                    <field name="wage_number_of_day" string="W_HK" groups="base.group_hr_manager,estate.group_assistant"/>
-                    <field name="wage_overtime" string="W_OT" groups="base.group_hr_manager,estate.group_assistant"/>
-                    <field name="wage_piece_rate" string="W_PR" groups="base.group_hr_manager,estate.group_assistant"/>
-                    -->
+                    <field name="wage_number_of_day" string="Daily Wage" groups="base.group_hr_manager,estate.group_assistant"/>
+                    <field name="wage_overtime" string="OT Wage" groups="base.group_hr_manager,estate.group_assistant"/>
+                    <field name="wage_piece_rate" string="PR Wage" groups="base.group_hr_manager,estate.group_assistant"/>
                     <field name="amount" string="Wage" sum="Wage"/>
                     <field name="prod_quantity_day" string="Prod (%)" avg="Productivity"/>
                     <field name="state" invisible="True"/>

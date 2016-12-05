@@ -88,6 +88,7 @@ class TeamMember(models.Model):
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
 
+
 class AttendanceCode(models.Model):
     _name = 'estate.hr.attendance'
     _rec_name = 'code'

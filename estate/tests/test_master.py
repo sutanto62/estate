@@ -70,6 +70,28 @@ class TestMasterActivity(TransactionCase):
 
         self.assertTrue(self.MasterActivity.create(vals), 'Estate: _check_parameter_value constrains did not work')
 
+    def test_00_check_double_parameter_value(self):
+        """ Check double parameter and parameter's value constrains """
+
+        vals = {
+            'name': 'Activity',
+            'type': 'normal',
+            'parameter_weight_ids': [
+                (0, 0, {
+                    'parameter_id': self.env.ref('estate.parameter_soil').id,
+                    'weight': 0.2
+                })
+            ],
+            'activity_norm_ids': [
+                (0, 0, {
+                    'parameter_id': self.env.ref('estate.parameter_soil').id,
+                    'parameter_value_id': self.env.ref('estate.parameter_value_mineral').id,
+                    'coefficient': 1.00,
+                    'ratio_base': 0,
+                    'qty_base': 0,
+                })
+            ]
+        }
         # Check error on double parameter value
         with self.assertRaises(ValidationError):
             vals['activity_norm_ids'] += [
@@ -81,7 +103,30 @@ class TestMasterActivity(TransactionCase):
                     'qty_base': 0,
                 })]
             self.MasterActivity.create(vals)
+            print 'create #2'
 
+    def test_00_check_not_listed_parameter_value(self):
+        """ Check parameter and parameter's value constrains """
+
+        vals = {
+            'name': 'Activity',
+            'type': 'normal',
+            'parameter_weight_ids': [
+                (0, 0, {
+                    'parameter_id': self.env.ref('estate.parameter_soil').id,
+                    'weight': 0.2
+                })
+            ],
+            'activity_norm_ids': [
+                (0, 0, {
+                    'parameter_id': self.env.ref('estate.parameter_soil').id,
+                    'parameter_value_id': self.env.ref('estate.parameter_value_mineral').id,
+                    'coefficient': 1.00,
+                    'ratio_base': 0,
+                    'qty_base': 0,
+                })
+            ]
+        }
         # Check not listed parameter
         with self.assertRaises(ValidationError):
             vals['activity_norm_ids'] += [
@@ -93,8 +138,10 @@ class TestMasterActivity(TransactionCase):
                     'qty_base': 0,
                 })]
             self.MasterActivity.create(vals)
+            print 'create #3'
 
-    def test_00_check_qty_base(self):
+    def test_00_check_min_greater_max(self):
+        """ Check error if minimum greater than maximum"""
 
         vals = {
             'name': 'Activity',
@@ -110,6 +157,15 @@ class TestMasterActivity(TransactionCase):
             vals['qty_base_max'] = 1
             self.MasterActivity.create(vals)
 
+    def test_00_check_base_less_min(self):
+        """ Check error if base less than minimum"""
+        vals = {
+            'name': 'Activity',
+            'type': 'normal',
+            'qty_base': 0,
+            'qty_base_min': 0,
+            'qty_base_max': 0
+        }
         # Base less than min
         with self.assertRaises(ValidationError):
             vals['qty_base'] = 1
@@ -117,7 +173,16 @@ class TestMasterActivity(TransactionCase):
             vals['qty_base_max'] = 10
             self.MasterActivity.create(vals)
 
-        # # Base greater than min
+    def test_00_check_base_greater_max(self):
+        """ Check error if base greater than maximum"""
+        vals = {
+            'name': 'Activity',
+            'type': 'normal',
+            'qty_base': 0,
+            'qty_base_min': 0,
+            'qty_base_max': 0
+        }
+        # # Base greater than max
         with self.assertRaises(ValidationError):
             vals['qty_base'] = 15
             vals['qty_base_min'] = 5
