@@ -105,8 +105,10 @@ class TimesheetActivityTransport(models.Model):
     @api.depends('activity_id')
     def change_type_transport(self):
         for item in self:
-            if item.activity_id:
+            if item.activity_id.type_transport:
                 item.type_transport = item.activity_id.type_transport
+            else :
+                item.type_transport = 'trip'
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')
