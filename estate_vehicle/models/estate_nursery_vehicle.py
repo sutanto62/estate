@@ -462,36 +462,42 @@ class FleetVehicleTimesheetInherits(models.Model):
 
     #onchange ALL
     @api.multi
-    @api.onchange('end_location')
-    def _onchange_path_location(self):
-        #use to onchange domain start location  same as master location path
-        if self:
-            arrStartlocation=[]
-            startlocation=self.env['path.location'].search([])
-            for a in startlocation:
-                    arrStartlocation.append(a.start_location.id)
-            return {
-                'domain':{
-                    'start_location':[('id','=',arrStartlocation)]
-                }
-        }
-
-
-    @api.multi
-    @api.onchange('start_location','end_location')
-    def _onchange_path_location(self):
+    @api.onchange('start_location')
+    def _onchange_path_end_location(self):
         #use to onchange domain end_location same as master location path
         if self:
             if self.start_location:
                 arrEndlocation=[]
+                arrStartlocation = []
+                temp=[]
                 endlocation=self.env['path.location'].search([('start_location.id','=',self.start_location.id)])
-                for b in endlocation:
-                    arrEndlocation.append(b.end_location.id)
-                return {
-                'domain':{
-                    'end_location':[('id','in',arrEndlocation)]
+                allLocation=self.env['estate.block.template'].search([])
+                for record in allLocation:
+                    temp.append(record.id)
+                for record in endlocation:
+                        arrStartlocation.append(record.start_location.id)
+                if self.start_location.id in arrStartlocation:
+                    for record in endlocation:
+                        arrEndlocation.append(record.end_location.id)
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',arrEndlocation)]
+                    }
                 }
-        }
+                elif self.start_location.id not in arrStartlocation:
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',temp)]
+                         }
+                    }
+                else:
+                    return {
+                    'domain':{
+                        'end_location':[('id','in',temp)]
+                         }
+                    }
+
+
 
     @api.multi
     @api.depends('distance_location','end_location','start_location')
@@ -499,12 +505,15 @@ class FleetVehicleTimesheetInherits(models.Model):
         #to change distance location same master path location
         for item in self:
             if item.start_location and item.end_location:
-                arrDistance = 0
-                distancelocation = item.env['path.location'].search([
-                    ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
-                for c in distancelocation:
-                    arrDistance += c.distance_location
-                item.distance_location = arrDistance
+                try:
+                    arrDistance = 0
+                    distancelocation = item.env['path.location'].search([
+                        ('start_location.id','=',item.start_location.id),('end_location.id','=',item.end_location.id)])
+                    for c in distancelocation:
+                        arrDistance += c.distance_location
+                    item.distance_location = arrDistance
+                except:
+                    item.distance_location = 0
         return True
 
     @api.multi
@@ -532,15 +541,16 @@ class FleetVehicleTimesheetInherits(models.Model):
         if self.activity_id.type_transport == False:
             self.type_transport = 'trip'
 
-    @api.multi
-    @api.onchange('vehicle_id')
-    def _onchange_end_km(self):
-        #onchange start km on fleet vehicle timesheet
-            if self.vehicle_id:
-                end_km= self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.owner_id),
-                                                                                 ('vehicle_id','=',self.vehicle_id.id)
-                                                                                 ],order='id desc', limit=1).end_km
-                self.start_km = end_km
+    #todo get odometer
+    # @api.multi
+    # @api.onchange('vehicle_id')
+    # def _onchange_end_km(self):
+    #     #onchange start km on fleet vehicle timesheet
+    #         if self.vehicle_id:
+    #             end_km= self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.owner_id),
+    #                                                                              ('vehicle_id','=',self.vehicle_id.id)
+    #                                                                              ],order='id desc', limit=1).end_km
+    #             self.start_km = end_km
 
 
     @api.multi

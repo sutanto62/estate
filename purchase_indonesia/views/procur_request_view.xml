@@ -40,14 +40,22 @@
                          </div>
                             <group col = '2'>
                                  <group>
-                                    <field name="date_request" string="Date"
-                                           attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}" required="True"/>
-                                     <field name="company_id" string="Company" options="{'no_create_edit': True}"/>
-                                     <field name="division_id" string="Division" options="{'no_create_edit': True}"/>
+                                     <field name="company_id" string="Company" options="{'no_create_edit': True}"
+                                            attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
+                                     <field name="division_id" string="Division" options="{'no_create_edit': True}"
+                                            attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
+                                     <field name="department_id" string="Department" options="{'no_create_edit': True}"
+                                           attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
+                                     <field name="requester_id" string="Requester" options="{'no_create_edit': True}"
+                                           attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
                                 </group>
                                 <group>
-                                    <field name="department_id" string="Department" options="{'no_create_edit': True}"/>
-                                    <field name="requester_id" string="Requester" options="{'no_create_edit': True}"/>
+                                     <field name="date_request" string="Date"
+                                           attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}" required="True"/>
+                                    <field name="picking_type_id" string="Picking Type" options="{'no_create_edit': True}"
+                                           attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
+                                    <field name="warehouse_id" string="Source Warehouse" options="{'no_create_edit': True}"
+                                           attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
                                 </group>
                             </group>
 
@@ -78,7 +86,11 @@
                     <field name="product_id" string="Product" options="{'no_create_edit': True}"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
                     <field name="qty" string="QTY Request"/>
-                    <field name="qty_done" string="QTY Actual"/>
+                    <field name="qty_done" string="QTY Actual" readonly="1"/>
+                    <field name="code" string="COA"/>
+                    <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
+                    <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>
+                    <field name="description" string="Description" />
                 </tree>
             </field>
         </record>

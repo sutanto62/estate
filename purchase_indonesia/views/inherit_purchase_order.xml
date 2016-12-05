@@ -12,7 +12,7 @@
                           <field name="complete_name" string="Name" invisible="0"/>
                  </xpath>
                  <xpath expr="//field[@name='partner_id']" position="before">
-                          <field name="company_id" string="Company" invisible="0" required="0" options="{'no_create_edit': True}"/>
+                          <field name="companys_id" string="Company" invisible="0" required="0" options="{'no_create_edit': True}"/>
                           <field name="type_location" string="Location"/>
                  </xpath>
                  <xpath expr="//field[@name='date_order']" position="after">
@@ -20,6 +20,8 @@
                  </xpath>
              </field>
          </record>
+
+
 
     </data>
 </openerp>

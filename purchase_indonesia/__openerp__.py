@@ -25,21 +25,28 @@
     'data': [
         # 'security/ir.model.access.csv',
         'wizard/reject.xml',
+        # 'wizard/Inherit_purchase_indonesia_requisition_partner.xml',
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
         'views/procur_request_view.xml',
         'views/management_good_request.xml',
         'views/inherit_purchaseorder_report.xml',
         'views/inherit_purchase_order.xml',
+        'views/inherit_stock_picking.xml',
         'views/purchase_setting.xml',
         'views/quotation_comparison.xml',
         'views/inherit_purchase_tender.xml',
-        'workflow/workflow_procur_good_request.xml'
+        'views/procurement_process.xml',
+        'workflow/workflow_procur_good_request.xml',
+        'workflow/workflow_management_good_request.xml'
 
         # 'templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
+    ],
+    'qweb': [
+        'static/src/xml/purchase_requisition.xml',
     ],
 }

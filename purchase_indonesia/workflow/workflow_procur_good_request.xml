@@ -1,6 +1,6 @@
 <openerp>
     <data>
-        <!-- vehicle timesheet-->
+        <!--Management good Request-->
         <record id="purchase_indonesia.procur_good_request_approval" model="workflow">
             <field name="name">Good Request workflow</field>
             <field name="osv">procur.good.request</field>

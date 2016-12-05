@@ -21,3 +21,10 @@ class PurchaseType(models.Model):
     name = fields.Char('Name')
     max_days = fields.Integer('Max Days')
     min_days = fields.Integer('Min Days')
+
+class PurchaseParams(models.Model):
+
+    _name ='purchase.params.setting'
+
+    name = fields.Char('Object Name',required=True)
+    value_params = fields.Text('Value')

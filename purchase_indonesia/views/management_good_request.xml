@@ -23,7 +23,11 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
-                     <header coolspan="10">
+                    <header coolspan="10">
+                            <button name="button_send_request" states="draft" string="Send Good Request" class="oe_highlight" />
+                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" />
+                            <button name="%(action_management_good_request_reject)d" states="confirm" string="Reject Good Request" type="action"/>
+                            <button name="button_cancel" states="draft" string="Cancel"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
                     <sheet>
@@ -69,6 +73,7 @@
                 </form>
             </field>
         </record>
+
         <record model="ir.ui.view" id="view_tree_management_good_request_line">
             <field name="name">Management Good Request Line</field>
             <field name="model">management.good.request.line</field>
@@ -80,6 +85,10 @@
                     <field name="qty" string="QTY Request"/>
                     <field name="qty_stock" string="QTY Stock"/>
                     <field name="qty_done" string="QTY Actual"/>
+                    <field name="code" string="COA"/>
+                    <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
+                    <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>
+                    <field name="description" string="Description" />
                 </tree>
             </field>
         </record>

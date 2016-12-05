@@ -7,3 +7,4 @@ import Inherit_purchase_order
 import purchase_setting
 import quotation_comparison_form
 import Inherit_purchase_tenders
+import Inherit_stock_picking

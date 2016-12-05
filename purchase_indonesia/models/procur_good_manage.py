@@ -21,10 +21,13 @@ class ManagementGoodRequest(models.Model):
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     location_id = fields.Many2one('stock.location','Source Location')
     destination_id = fields.Many2one('stock.location','Destination Location')
+    picking_type_id = fields.Many2one('stock.picking.type','Stock Picking Type',domain=[('code','in',['outgoing','internal'])])
     date_schedule = fields.Date('Date Schedule',required=True)
     requester_id = fields.Many2one('hr.employee','Requester')
     department_id = fields.Many2one('hr.department','Department')
     company_id = fields.Many2one('res.company','Company')
+    warehouse_id = fields.Many2one('stock.location','Source Warehouse',domain=[('usage','=','internal'),
+                                                                        ('estate_location','=',False),('name','in',['Stock','stock'])])
     goodrequestline_ids = fields.One2many('management.good.request.line','owner_id','Good Request Line')
     state = fields.Selection([
         ('draft', 'Draft'),
@@ -43,6 +46,77 @@ class ManagementGoodRequest(models.Model):
         vals['manage_good_request_code']=self.pool.get('ir.sequence').get(cr, uid,'management.good.request')
         res=super(ManagementGoodRequest, self).create(cr, uid,vals)
         return res
+
+    @api.multi
+    def action_send(self,):
+        self.write({'state': 'confirm'})
+        return True
+
+    @api.multi
+    def action_confirm(self,):
+        """ Confirms Good request.
+        """
+        name = self.name
+        self.write({'name':"Management Good Request %s " %(name)})
+        self.write({'state': 'done'})
+        self.action_move()
+        self.action_generate_qty_done()
+        return True
+
+    def action_done(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'done', 'date_schedule': time.strftime('%Y-%m-%d %H:%M:%S')})
+        return True
+
+    @api.multi
+    def action_reject(self,):
+        self.write({'state': 'reject', 'date_request': self.date_schedule})
+        return True
+
+    @api.multi
+    def action_cancel(self):
+        self.write({'state': 'cancel', 'date_request': self.date_schedule})
+        return True
+
+    @api.multi
+    def action_move(self):
+        #create Stock move From Warehouse To PB
+        for item in self.goodrequestline_ids:
+            management_line = self.env['management.good.request.line'].search([('product_id','=',item.product_id.id),
+                                                               ('owner_id', '=', self.id)
+                                                               ])
+            for record in management_line:
+
+                move_data = {
+                    'product_id': record.product_id.id,
+                    'product_uom_qty': record.qty_done,
+                    'picking_type_id' : self.picking_type_id.id,
+                    'origin':self.origin,
+                    'product_uom': record.uom_id.id,
+                    'name': record.product_id.name,
+                    'date_expected': self.date_schedule,
+                    'location_id': self.warehouse_id.id,
+                    'location_dest_id': record.block_id.inherit_location_id.id,
+                    'state': 'confirmed', # set to done if no approval required
+                }
+
+                move = self.env['stock.move'].create(move_data)
+                move.action_confirm()
+                move.action_done()
+
+
+    @api.multi
+    def action_generate_qty_done(self):
+        for item in self.goodrequestline_ids:
+            management_line = self.env['management.good.request.line'].search([('product_id','=',item.product_id.id),
+                                                               ('owner_id', '=', self.id)
+                                                               ])
+            for record in management_line:
+                good_request_data = {
+                        'qty_done':record.qty_done
+                    }
+                good_request = self.env['procur.good.request'].search([('complete_name','like',self.origin)]).id
+                good_request_line = self.env['procur.good.requestline'].search([('owner_id','=',good_request),
+                                                                                ('product_id','=',record.product_id.id)]).write(good_request_data)
 
     @api.one
     @api.depends('manage_good_request_code','date_schedule')
@@ -91,22 +165,32 @@ class ManagementGoodRequestLine(models.Model):
     product_id = fields.Many2one('product.product','Product')
     uom_id = fields.Many2one('product.uom','UOM')
     qty = fields.Integer('Quantity Request')
-    qty_stock = fields.Integer('Quantity Stock')
+    qty_stock = fields.Integer('Quantity Stock',compute='_change_get_qty_available')
     qty_done = fields.Integer('Quantity Done')
+    code = fields.Char('Transaction Code')
+    block_id = fields.Many2one('estate.block.template', "Block", required=True,
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
+                                  ,('estate_location_type','=','planted')])
+    planted_year_id = fields.Many2one('estate.planted.year','Planted Year')
+    description = fields.Text('Description')
     owner_id = fields.Integer()
 
     @api.multi
-    @api.onchange('product_id')
-    def _onchange_get_qty_available(self):
+    @api.depends('product_id')
+    def _change_get_qty_available(self):
         #get stock from stock quant
-        arrQty=[]
-        if self.product_id:
-            qty_stock = self.env['stock.quant'].search([('product_id.id','=',self.product_id.id)])
-            for stock in qty_stock:
-                arrQty.append(stock.qty)
-            for Quantity in arrQty:
-                qty = float(Quantity)
-                self.qty_stock = qty
+        for record in self:
+            if record.product_id:
+               arrTemp =[]
+               location_id = self.env['stock.location'].search([('usage','=','internal')])
+               for item in location_id:
+                   arrTemp.append(item.id)
+               stock_quant_plus = record.env['stock.quant'].search([('product_id','=',record.product_id.id),('negative_move_id','=',None),('location_id','in',arrTemp)])
+               stock_quant_min = record.env['stock.quant'].search([('product_id','=',record.product_id.id),('negative_move_id','!=',None),('location_id','in',arrTemp)])
+               stock_plus = sum(stock.qty for stock in stock_quant_plus)
+               stock_min = sum(stock.qty for stock in stock_quant_min)
+               total_quantity = stock_plus + stock_min
+               record.qty_stock = total_quantity
 
     @api.multi
     @api.onchange('product_id')

@@ -22,7 +22,7 @@
 from openerp.osv import fields, osv
 from openerp import netsvc
 
-class timesheet_reject(osv.osv_memory):
+class ProcurementGoodRequestReject(osv.osv_memory):
 
     _name = 'estate_procurement.good.request.reject'
     _description = 'Reject Request'
@@ -37,4 +37,21 @@ class timesheet_reject(osv.osv_memory):
             self.pool.get('procur.good.request').write(cr,uid,context['active_id'],{'reject_reason':reject_reason})
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(uid, 'procur.good.request', context['active_id'], 'button_reject', cr)
+        return {'type': 'ir.actions.act_window_close',}
+
+class ManagementGoodRequestReject(osv.osv_memory):
+
+    _name = 'management.good.request.reject'
+    _description = 'Reject Request'
+
+    _columns = {
+        'reject_reason': fields.text('Reject Reason', required=True),
+    }
+
+    def reject_request(self, cr, uid, ids, context=None):
+        if 'active_id' in context:
+            reject_reason=self.browse(cr,uid,ids)[0].reject_reason
+            self.pool.get('management.good.request').write(cr,uid,context['active_id'],{'reject_reason':reject_reason})
+            wf_service = netsvc.LocalService("workflow")
+            wf_service.trg_validate(uid, 'management.good.request', context['active_id'], 'button_reject', cr)
         return {'type': 'ir.actions.act_window_close',}

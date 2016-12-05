@@ -27,6 +27,32 @@
             <field name="target">new</field>
         </record>
 
+        <record id="view_management_good_request_reject_wizard" model="ir.ui.view">
+            <field name="name">Reject management Good Request</field>
+            <field name="model">management.good.request.reject</field>
+            <field name="arch" type="xml">
+                <form string="Timesheet" version="7.0">
+                    <group>
+                        <field name="reject_reason"/>
+                    </group>
+                    <footer>
+                        <button name="reject_request" string="Reject Timesheet" type="object"  class="oe_highlight"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_management_good_request_reject" model="ir.actions.act_window">
+            <field name="name">Reject Management Good Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">management.good.request.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
 
     </data>
 </openerp>

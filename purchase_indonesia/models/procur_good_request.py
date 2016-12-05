@@ -15,6 +15,7 @@ class ProcurGoodRequest(models.Model):
 
     _name = 'procur.good.request'
     _description = 'Request good from user to warehouse'
+    _rec_name = 'complete_name'
 
     name = fields.Char('name')
     procur_request_code = fields.Char("GR",store=True)
@@ -22,6 +23,9 @@ class ProcurGoodRequest(models.Model):
     company_id = fields.Many2one('res.company','Company')
     division_id = fields.Many2one('stock.location', "Division", required=True,
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')])
+    picking_type_id = fields.Many2one('stock.picking.type','Stock Picking Type',domain=[('code','in',['outgoing','internal'])])
+    warehouse_id = fields.Many2one('stock.location','Warehouse',domain=[('usage','=','internal'),
+                                                                        ('estate_location','=',False),('name','in',['Stock','stock'])])
     department_id = fields.Many2one('hr.department','Department')
     requester_id = fields.Many2one('hr.employee','Requester')
     date_request = fields.Date('Date Request',required=True)
@@ -77,6 +81,8 @@ class ProcurGoodRequest(models.Model):
         arrQty = []
         for request in self:
             request_data = {
+                'picking_type_id':request.picking_type_id.id,
+                'warehouse_id' : request.warehouse_id.id,
                 'destination_id' : request.division_id.id,
                 'date_schedule' : request.date_request,
                 'requester_id' : request.requester_id.id,
@@ -89,17 +95,15 @@ class ProcurGoodRequest(models.Model):
 
 
         for requestline in self.env['procur.good.requestline'].search([('owner_id','=',self.id)]):
-            qty_stock = self.env['stock.quant'].search([('product_id.id','=',requestline.product_id.id)])
-            for stock in qty_stock:
-                arrQty.append(stock.qty)
-            for Quantity in arrQty:
-                qty = float(Quantity)
             requestline_data = {
                 'product_id':requestline.product_id.id,
                 'uom_id' : requestline.uom_id.id,
                 'qty' : requestline.qty,
-                'qty_stock' : qty,
-                'owner_id' : res.id
+                'owner_id' : res.id,
+                'block_id' : requestline.block_id.id,
+                'description': requestline.description,
+                'planted_year_id' : requestline.planted_year_id.id,
+                'code' :requestline.code
             }
             self.env['management.good.request.line'].create(requestline_data)
 
@@ -153,6 +157,7 @@ class ProcurGoodRequest(models.Model):
                 }
             }
 
+
 class ProcurGoodRequestLine(models.Model):
 
     _name = 'procur.good.requestline'
@@ -162,6 +167,12 @@ class ProcurGoodRequestLine(models.Model):
     uom_id = fields.Many2one('product.uom','UOM')
     qty = fields.Integer('Quantity Request')
     qty_done = fields.Integer('Quantity Actual')
+    code = fields.Char('Transaction Code')
+    block_id = fields.Many2one('estate.block.template', "Block", required=True,
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
+                                  ,('estate_location_type','=','planted')])
+    planted_year_id = fields.Many2one('estate.planted.year','Planted Year')
+    description = fields.Text('Description')
     owner_id = fields.Integer()
 
     @api.multi
@@ -170,4 +181,12 @@ class ProcurGoodRequestLine(models.Model):
         #onchange UOM in Request Good
         if self.product_id:
             self.uom_id = self.product_id.uom_id
+
+    @api.multi
+    @api.onchange('block_id')
+    def _onchange_planted_year_id(self):
+        #onchange Planted year
+        if self.block_id:
+            self.planted_year_id = self.block_id.planted_year_id
+
 
