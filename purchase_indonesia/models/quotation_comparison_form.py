@@ -535,6 +535,52 @@ class ViewQuotationComparison(models.Model):
                 rec.po_des_all_name = ''
                 rec.write_date = ''
 
+class StateProcurementProcess(models.Model):
 
+    _name = 'state.procurement.process'
+    _description = 'Tracking State From Purchase Request'
+    _auto = False
+    _order = 'pr_complete_name desc'
+
+
+    id = fields.Char('id')
+    pr_id = fields.Integer('purchase request')
+    date_pr = fields.Date('Purchase Request Date')
+    state = fields.Char('Purchase Request state')
+    pr_complete_name = fields.Char('Purchase Request Complete Name')
+    tender_complete_name = fields.Char('Tender Complete Name')
+    tender_state = fields.Char('Tender State')
+    qcf_complete_name = fields.Char('Qcf Complete Name')
+    qcf_state = fields.Char('Qcf State')
+    po_complete_name = fields.Char('Purchase Order Complete Name')
+    po_state = fields.Char('Purchase Order State')
+    complete_name_picking = fields.Char('GRN Complete Name')
+    grn_state = fields.Char('GRN State')
+
+    def init(self, cr):
+        cr.execute(""" create or replace view state_procurement_process as
+            select
+                row_number() over() id,
+                pr.id pr_id,pr.date_start date_pr,
+                pr.state state,
+                pr.complete_name pr_complete_name,
+                tender.complete_name tender_complete_name,
+                tender.state tender_state,qcf.complete_name qcf_complete_name,
+                qcf.state qcf_state,
+                po.complete_name po_complete_name,
+                po.state po_state,grn.complete_name_picking,grn.state grn_state from purchase_request pr
+            left join (
+                select id tender_id,complete_name,origin,state from purchase_requisition
+                )tender on pr.complete_name = tender.origin
+            left join(
+                select id,complete_name,state,origin from quotation_comparison_form
+            )qcf on pr.complete_name = qcf.origin
+            left join(
+                select id,complete_name,state,source_purchase_request from purchase_order
+            )po on pr.complete_name = po.source_purchase_request
+            left join(
+                select id,complete_name_picking,state,pr_source from stock_picking
+                    )grn on pr.complete_name = grn.pr_source
+                        """)
 
 

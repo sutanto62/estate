@@ -80,42 +80,106 @@ class InheritStockPicking(models.Model):
                 else:
                     record.not_seed = True
 
+    # @api.multi
+    # def do_new_transfer(self):
+    #     #update Quantity Received in Purchase Tender after shipping
+    #     po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
+    #
+    #     #search Tender
+    #     tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
+    #     purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
+    #     action_cancel_status = False
+    #     for record in purchase_requisition_line:
+    #         stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
+    #         stock_pack_operation_length = len(stock_pack_operation)
+    #
+    #         sumitem = 0
+    #         sumitemmin = 0
+    #         for item in stock_pack_operation:
+    #             if item.qty_done > 0:
+    #                 sumitem = sumitem + item.qty_done
+    #             else:
+    #                 sumitemmin = sumitemmin + item.qty_done
+    #         tender_line_data = {
+    #              'qty_received' : sumitem + record.qty_received,
+    #         }
+    #         record.write(tender_line_data)
+    #
+    #         if stock_pack_operation_length == 1 and sumitemmin < 0 :
+    #             action_cancel_status = True
+    #         else:
+    #             action_cancel_status = False
+    #
+    #     if action_cancel_status == True :
+    #         po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
+    #         po.button_cancel()
+    #         self.action_cancel()
+    #     else:
+    #         self.do_transfer()
+    #
+    #     super(InheritStockPicking,self).do_new_transfer()
+    #     return True
+
     @api.multi
     def do_new_transfer(self):
+
         #update Quantity Received in Purchase Tender after shipping
         po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
 
         #search Tender
+
         tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
+
         purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
-        action_cancel_status = False
+
+        count_product =0
+
+        count_action_cancel_status =0
+
         for record in purchase_requisition_line:
+
             stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
             stock_pack_operation_length = len(stock_pack_operation)
 
-            sumitem = 0
-            sumitemmin = 0
+            sumitem =0
+
+            sumitemmin =0
+
             for item in stock_pack_operation:
+
                 if item.qty_done > 0:
+
                     sumitem = sumitem + item.qty_done
+
                 else:
+
                     sumitemmin = sumitemmin + item.qty_done
+
             tender_line_data = {
-                 'qty_received' : sumitem + record.qty_received,
-            }
+
+                'qty_received' : sumitem + record.qty_received,
+
+                }
+
             record.write(tender_line_data)
 
             if stock_pack_operation_length == 1 and sumitemmin < 0 :
-                action_cancel_status = True
-            else:
-                action_cancel_status = False
 
-        if action_cancel_status == True :
+                count_action_cancel_status = count_action_cancel_status +1
+
+                count_product = count_product +1
+
+        if count_action_cancel_status == count_product :
+            po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
+            po.button_cancel()
             self.action_cancel()
+
         else:
+
             self.do_transfer()
 
         super(InheritStockPicking,self).do_new_transfer()
+
         return True
 
 
@@ -125,10 +189,9 @@ class InheritStockPackOperation(models.Model):
 
     @api.multi
     def do_force_donce(self):
-        for item in self.env['stock.pack.operation'].search([('picking_id','=',self.picking_id.id)],order='id desc', limit=1):
-            compute_product = item.product_qty * -1
-            item.product_qty = compute_product
-            item.qty_done = compute_product
+        compute_product = self.product_qty * -1
+        self.product_qty = compute_product
+        self.qty_done = compute_product
 
 
 

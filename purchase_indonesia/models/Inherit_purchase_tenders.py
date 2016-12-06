@@ -73,9 +73,23 @@ class InheritPurchaseTenders(models.Model):
 
         return True
 
+    def _prepare_po_from_tender(self, cr, uid, tender, context=None):
+        """ Prepare the values to write in the purchase order
+        created from a tender.
+
+        :param tender: the source tender from which we generate a purchase order
+        """
+        return {'order_line': [],
+                'requisition_id': tender.id,
+                'source_purchase_request' : tender.origin,
+                'companys_id' :tender.companys_id.id,
+                'type_location' : tender.type_location,
+                'comparison_id' : tender.id,
+                'origin': tender.complete_name}
+
     def _prepare_purchase_backorder(self, cr, uid, requisition, supplier, context=None):
         return {
-            'origin': requisition.name,
+            'origin': requisition.complete_name,
             'date_order': requisition.date_end or fields.datetime.now(),
             'partner_id': supplier.id,
             'currency_id': requisition.company_id and requisition.company_id.currency_id.id,
