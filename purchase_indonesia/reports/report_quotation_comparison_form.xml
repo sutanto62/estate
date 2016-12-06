@@ -2,7 +2,7 @@
 <!--Custom report.-->
 <openerp>
     <data>
-     
+
         <template id="report_quotation_comparison_form_document">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
