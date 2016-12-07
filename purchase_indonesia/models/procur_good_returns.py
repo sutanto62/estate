@@ -27,6 +27,9 @@ class ProcurGoodReturns(models.Model):
     picking_type_id = fields.Many2one('stock.picking.type','Stock Picking Type',domain=[('code','in',['outgoing','internal'])])
     requester_id = fields.Many2one('hr.employee','Requester')
     date_return = fields.Date('Date Return',required=True)
+    warehouse_id = fields.Many2one('stock.location','Warehouse',domain=[('usage','=','internal'),
+                                                                        ('estate_location','=',False),('name','in',['Stock','stock'])])
+    procurement_return_line_ids = fields.One2many('procur.good.returnline','return_id','Goods Return Line')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send Request'),
@@ -104,4 +107,67 @@ class ProcurGoodReturns(models.Model):
 
         return True
 
-    
+
+class ProcurementGoodReturnsLine(models.Model):
+
+    _name = 'procur.good.returnline'
+    _description = 'Return good line from user to warehouse'
+
+    return_id = fields.Many2one('procur.good.return','Procurement Good return ID')
+    product_id = fields.Many2one('product.product','Product')
+    code_product = fields.Char('Product Code')
+    uom_id = fields.Many2one('product.uom','UOM')
+    request_id = fields.Many2one('procur.good.request','Number Request Good')
+    product_qty = fields.Float('Product Quantity')
+    code = fields.Char('Account Cost',compute='_change_code')
+    block_id = fields.Many2one('estate.block.template', "Block", required=True,
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
+                                  ,('estate_location_type','=','planted')],compute='_change_block_tt')
+    planted_year_id = fields.Many2one('estate.planted.year','Planted Year',compute='_change_block_tt')
+    description = fields.Text('Description')
+
+    @api.multi
+    @api.onchange('product_id')
+    def _onchange_product_id(self):
+        arrProduct = []
+        if self:
+            bpb_line = self.env['procur.good.requestline'].search([])
+            for record in bpb_line:
+                arrProduct.append(record.product_id.id)
+            return {
+                'domain':{
+                    'product_id':[('id','in',arrProduct)]
+                }
+            }
+
+
+    @api.multi
+    @api.onchange('product_id')
+    def _onchange_request_id(self):
+        arrProduct=[]
+        for item in self:
+            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id)])
+            for record in bpb_line:
+                arrProduct.append(record.owner_id)
+            return {
+                'domain':{
+                    'request_id':[('id','in',arrProduct)]
+                }
+            }
+
+    @api.multi
+    @api.depends('product_id','request_id')
+    def _change_code(self):
+        for item in self:
+            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id),('owner_id','=',item.request_id.id)])
+            for record in bpb_line:
+                item.code = record.code
+
+    @api.multi
+    @api.depends('product_id','request_id')
+    def _change_block_tt(self):
+        for item in self:
+            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id),('owner_id','=',item.request_id.id)])
+            for record in bpb_line:
+                item.block_id = record.block_id
+                item.planted_year_id= record.planted_year_id
