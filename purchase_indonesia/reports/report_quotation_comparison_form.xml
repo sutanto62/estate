@@ -2,520 +2,1130 @@
 <!--Custom report.-->
 <openerp>
     <data>
-
+      	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
+		      <xpath expr="//head" position="inside">
+		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_quotation_comparison_form_document.css"/>
+		      </xpath>
+		</template>
         <template id="report_quotation_comparison_form_document">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
-                     <t t-call="report.external_layout">
-                 <!--isinya di sini bro XMLnya-->
-                    <!-- First Row-->
-                 <div class="page">
-                     <div class="row col-xs-12" style="text-align:center;font-family: times; background-color:white;color:black; font-size:20pt;">
-                            <div class="col-xs-12" >
-                                <b>REPORT Quotation Comparison Form</b>
-                            </div>
-                        </div><!-- ni kepalanya atau biasa di sebut header-->
-                 </div>
-
-                <!-- SECOND ROW , ini adalah content header-->
-                        <div class="row col-xs-12">
-                            <div class="col-xs-12" style="font-family: times;font-size:14pt;">
-                                <table>
-                                    <thead>
-                                        <td><p style="font-family: times; font-size:20pt;">Report Detail</p></td>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td><b style="font-family: times; font-size:15pt;">Report Name </b></td>
-                                        <td>: <span t-field="o.complete_name" style="font-family: times; font-size:15pt;"/> <!-- o . adalah variabel bawaan odoo untuk manggil value--></td>
-                                        <td coolspan="4">
-                                            <tr>
-                                                <td><b style="font-family: times; font-size:15pt;">Company </b></td>
-                                                <td>: <span t-field="o.company_id" style="font-family: times; font-size:15pt;"/></td>
-                                            </tr>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td><b style="font-family: times; font-size:15pt;">Date PP</b></td>
-                                        <td>: <span t-field="o.date_pp" style="font-family: times; font-size:15pt;"/></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <br>
-                            </br>
-                            <br>
-                            </br>
-                        </div>
-
-                        <!--deklarasi variable global-->
-                        <!--<t t-set="totalVariety" t-value="0"/>--> <!--disamping adalah cara untuk ngedeklarasiin variable global-->
-
-
-                <!-- Third ROW --> <!--Atau biasa di sebut dengan content-->
-                        <div class="row col-xs-12" style="background-color:white;color:black;">
-                            <!--<div class="row col-xs-3">-->
-                                <!--<table width="100%">-->
-                                    <!--<tr>-->
-                                        <!--<td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Batch</td>-->
-                                        <!--<td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important;">Variety</td>-->
-                                        <!--<td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important;">Do</td>-->
-                                        <!--<td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important;">Planted Batch</td>-->
-                                    <!--</tr>-->
-                                    <!--<tr height="40" t-foreach="o.batch_ids" t-as="s" style="font-family: times; font-size:8pt; ">-->
-                                        <!--<t t-set="totalVariety" t-value="totalVariety+s.qty_received"/>-->
-                                        <!--<t t-set="totalPlantedDO" t-value="totalPlantedDO+s.qty_planted_temp"/>-->
-                                        <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="s.name"/></td>-->
-                                        <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="s.variety_id.name"/></td>-->
-                                        <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="s.qty_received"/></td>-->
-                                        <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="s.qty_planted_temp"/></td>-->
-                                        <!--<t t-foreach="s.selection_ids" t-as="a" >-->
-                                            <!--<t t-if="a.selectionstage_id.stage_id.code == 'MN'">-->
-                                                <!--<tr height="40" style="font-family: times; font-size:8pt;">-->
-                                                    <!--<td style="width:10%; font-size:9pt;color:white; border: 1px solid black !important;">&#160;</td>-->
-                                                    <!--<td style="width:10%; font-size:9pt;color:white; border: 1px solid black !important;">&#160;</td>-->
-                                                    <!--<td style="width:10%; font-size:9pt;color:white; border: 1px solid black !important;">&#160;</td>-->
-                                                    <!--<td style="width:10%; font-size:9pt;color:white; border: 1px solid black !important;">&#160;</td>-->
-                                                <!--</tr>-->
-                                            <!--</t>-->
-                                        <!--</t>-->
-                                    <!--<tr height="40px">-->
-                                        <!--<td colspan="4" style="width:10%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                            <!--Subtotal :-->
-                                        <!--</td>-->
-                                    <!--</tr>-->
-                                    <!--</tr>-->
-                                    <!--<tr>-->
-                                        <!--<td colspan="2" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Total :</td>-->
-                                        <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;">-->
-                                            <!--<b t-esc="totalVariety" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                        <!--</td>-->
-                                        <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;">-->
-                                            <!--<b t-esc="totalPlantedDO" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                        <!--</td>-->
-                                    <!--</tr>-->
-                                <!--</table>-->
-                            <!--</div>-->
-                            <!--<div class="row col-xs-3">-->
-                                <!--<table width="100%">-->
-                                        <!--<tr>-->
-                                            <!--<td valign="center" style="width:10%; font-size:9pt;border: 1px solid black !important; height:40px;">Selection Planted</td>-->
-                                            <!--<td valign="center" style="width:35%; font-size:9pt;border: 1px solid black !important; ">Selection Date</td>-->
-                                            <!--<td valign="center" style="width:35%; font-size:9pt;border: 1px solid black !important;">Selection Stage</td>-->
-                                            <!--<td valign="center" style="width:30%; font-size:9pt;border: 1px solid black !important;">Selection Information</td>-->
-                                        <!--</tr>-->
-                                    <!--<t height="40" t-foreach="o.batch_ids" t-as="s" style="font-family: times; font-size:8pt;">-->
-                                         <!--<tr>-->
-                                             <!--<td style="width:35%; font-size:9pt;border-bottom: 1px solid black !important; height:40px;"></td>-->
-                                             <!--<td style="width:35%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                             <!--<td style="width:30%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                             <!--<td style="width:30%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                        <!--</tr>-->
-                                        <!--&lt;!&ndash; Deklarasi variabel selection &ndash;&gt;-->
-                                            <!--<t t-set="totalPlanted" t-value="0"/>-->
-                                <!--<t t-foreach="s.selection_ids" t-as="a" >-->
-                                    <!--<t t-if="a.selectionstage_id.stage_id.code == 'MN'">-->
-                                        <!--<tr height="40" style="font-family: times; font-size:8pt;">-->
-                                            <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-set="totalPlanted" t-value="totalPlanted+a.qty_plant"/>-->
-                                                <!--<t t-set="totalPlantedsec" t-value="totalPlantedsec+a.qty_plant"/>-->
-                                                <!--<span t-field="a.qty_plant"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<span t-field="a.selection_date"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="a.selectionstage_id.name"/></td>-->
-                                            <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="a.nursery_information"/></td>-->
-                                        <!--</tr>-->
-                                    <!--</t>-->
-                                <!--</t>-->
-                                        <!--<tr height="40px">-->
-                                            <!--<td style="width:10%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalPlanted" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td colspan="3" style="width:10%; font-size:9pt;color:white; border: 1px solid black !important;"></td>-->
-                                        <!--</tr>-->
-                                    <!--</t>-->
-                                    <!--<tr>-->
-                                        <!--<td style="width:25%; font-size:9pt;border: 1px solid black !important; height:40px;">-->
-                                            <!--<b t-esc="totalPlantedsec" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                        <!--</td>-->
-                                        <!--<td colspan="3" style="width:90%; font-size:9pt;border: 1px solid black !important;">&#160;</td>-->
-                                    <!--</tr>-->
-                                <!--</table>-->
-                            <!--</div>-->
-                            <!--<div class="row col-xs-3">-->
-                                <!--<table width="100%">-->
-                                        <!--<tr>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important; height:40px;">1</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">2</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">3</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">4</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">5</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">6</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">7</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">8</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">9</td>-->
-                                            <!--<td valign="center" style="width:9%;text-align:center; font-size:9pt;border: 1px solid black !important;">10</td>-->
-                                            <!--<td valign="center" style="width:10%;text-align:center; font-size:9pt;border: 1px solid black !important;">11</td>-->
-                                        <!--</tr>-->
-                                        <!--<t t-foreach="o.batch_ids" t-as="s" >-->
-                                        <!--<tr>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important; height:40px;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                            <!--<td style="width:10%; font-size:9pt;border-bottom: 1px solid black !important;"></td>-->
-                                        <!--</tr>-->
-                                            <!--&lt;!&ndash; Deklarasi variabel cause &ndash;&gt;-->
-                                            <!--<t t-set="totalCause1" t-value="0"/>-->
-                                            <!--<t t-set="totalCause2" t-value="0"/>-->
-                                            <!--<t t-set="totalCause3" t-value="0"/>-->
-                                            <!--<t t-set="totalCause4" t-value="0"/>-->
-                                            <!--<t t-set="totalCause5" t-value="0"/>-->
-                                            <!--<t t-set="totalCause6" t-value="0"/>-->
-                                            <!--<t t-set="totalCause7" t-value="0"/>-->
-                                            <!--<t t-set="totalCause8" t-value="0"/>-->
-                                            <!--<t t-set="totalCause9" t-value="0"/>-->
-                                            <!--<t t-set="totalCause10" t-value="0"/>-->
-                                            <!--<t t-set="totalCause11" t-value="0"/>-->
-
-                                        <!--<t t-foreach="s.selection_ids" t-as="a" >-->
-                                        <!--<t t-if="a.selectionstage_id.stage_id.code == 'MN'">-->
-                                        <!--<tr height="40" style="font-family: times; font-size:8pt;">-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 10" >-->
-                                                        <!--<t t-set="totalCause1" t-value="totalCause1+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused1" t-value="totalCaused1+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 11" >-->
-                                                        <!--<t t-set="totalCause2" t-value="totalCause2+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused2" t-value="totalCaused2+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 12" >-->
-                                                        <!--<t t-set="totalCause3" t-value="totalCause3+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused3" t-value="totalCaused3+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 13" >-->
-                                                        <!--<t t-set="totalCause4" t-value="totalCause4+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused4" t-value="totalCaused4+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 14" >-->
-                                                        <!--<t t-set="totalCause5" t-value="totalCause5+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused5" t-value="totalCaused5+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 15" >-->
-                                                        <!--<t t-set="totalCause6" t-value="totalCause6+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused6" t-value="totalCaused6+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 16" >-->
-                                                        <!--<t t-set="totalCause7" t-value="totalCause7+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused7" t-value="totalCaused7+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 17" >-->
-                                                        <!--<t t-set="totalCause8" t-value="totalCause8+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused8" t-value="totalCaused8+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 18" >-->
-                                                        <!--<t t-set="totalCause9" t-value="totalCause9+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused9" t-value="totalCaused9+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 19" >-->
-                                                        <!--<t t-set="totalCause10" t-value="totalCause10+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused10" t-value="totalCaused10+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;">-->
-                                                <!--<t t-foreach="a.selectionline_ids" t-as="b">-->
-                                                    <!--<t t-if="b.cause_id.sequence == 20" >-->
-                                                        <!--<t t-set="totalCause11" t-value="totalCause11+b.qty"/>-->
-                                                        <!--<t t-set="totalCaused11" t-value="totalCaused11+b.qty"/>-->
-                                                         <!--<span t-field="b.qty" style="text-align:right;font-family: times; font-size:8pt;"/>-->
-                                                    <!--</t>-->
-                                                <!--</t>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-                                        <!--</t>-->
-                                        <!--</t>-->
-                                        <!--<tr height="40px">-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause1" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause2" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause3" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause4" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause5" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause6" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause7" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause8" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause9" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause10" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:10%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCause11" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-                                        <!--</t>-->
-                                    <!--<tr>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;-->
-                                            <!--border-right: 1px solid black !important; height:40px;">-->
-                                                <!--<b t-esc="totalCaused1" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused2" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused3" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused4" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused5" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused6" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused7" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused8" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused9" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:9%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused10" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                            <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;border-right: 1px solid black !important;">-->
-                                                <!--<b t-esc="totalCaused11" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                            <!--</td>-->
-                                        <!--</tr>-->
-                                <!--</table>-->
-                            <!--</div>-->
-                            <!--<div>-->
-                                <!--<table>-->
-                                    <!--<tr>-->
-                                        <!--<th valign="center" style="width:10%; text-align:center;font-size:9pt;border: 1px solid black !important; height:40px;">&#931; ABN</th>-->
-                                        <!--<th valign="center" style="width:10%; text-align:center;font-size:9pt;border: 1px solid black !important;">Comment</th>-->
-                                    <!--</tr>-->
-                                    <!--<t height="40" t-foreach="o.batch_ids" t-as="s" style="font-family: times; font-size:8pt;">-->
-                                        <!--<tr>-->
-                                        <!--<td style="width:10%; font-size:9pt;border-bottom: 1px solid black !important; height:40px;"></td>-->
-                                        <!--<td style="width:10%; font-size:9pt;border-bottom: 1px solid black !important; border-right: 1px solid black !important;"></td>-->
-                                    <!--</tr>-->
-                                        <!--&lt;!&ndash; Deklarasi variabel cause &ndash;&gt;-->
-                                        <!--<t t-set="totalAbnormal" t-value="0"/>-->
-                                    <!--<t t-foreach="s.selection_ids" t-as="a" >-->
-                                        <!--<t t-if="a.selectionstage_id.stage_id.code == 'MN'">-->
-                                            <!--<tr height="40" style="font-family: times; font-size:8pt;">-->
-                                                <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;">-->
-                                                    <!--<t t-set="totalAbnormal" t-value="totalAbnormal+a.qty_abnormal"/>-->
-                                                    <!--<t t-set="totalAbn" t-value="totalAbn+a.qty_abnormal"/>-->
-                                                    <!--<span t-field="a.qty_abnormal"/></td>-->
-                                                <!--<td style="width:10%; font-size:9pt;border: 1px solid black !important;"><span t-field="a.comment"/></td>-->
-                                            <!--</tr>-->
-                                        <!--</t>-->
-                                    <!--</t>-->
-                                    <!--<tr height="40px">-->
-                                        <!--<td style="width:10%; font-size:9pt;color:black; border: 1px solid black !important;">-->
-                                            <!--<b t-esc="totalAbnormal" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                        <!--</td>-->
-                                        <!--<td colspan="1" style="width:10%; font-size:9pt;color:black; border: 1px solid black !important; border-right: 1px solid black !important;">-->
-                                        <!--</td>-->
-                                    <!--</tr>-->
-                                    <!--</t>-->
-                                    <!--<tr>-->
-                                        <!--<td colspan="2" style="width:10%; font-size:9pt;border-right: 1px solid black !important;border-bottom: 1px solid black !important; height:40px;">-->
-                                            <!--<b t-esc="totalAbn" style="text-align:right;font-family: times; font-size:9pt;"/>-->
-                                        <!--</td>-->
-                                    <!--</tr>-->
-                                <!--</table>-->
-                            <!--</div>-->
-                        </div><!-- Akhir third Row-->
-
-                        <!-- Fifth ROW --> <!-- ini biasa di gunakan untuk tanda tangan-->
-                    <div class="row col-xs-12">
-                        <table width="100%">
-                            <tr>
-                                <td>
-                                    &#160;
-                                </td>
-                                <td>
-                                    &#160;
-
-                                </td>
-                                <td>
-                                    &#160;
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    &#160;
-                                </td>
-                                <td>
-                                    &#160;
-
-                                </td>
-                                <td>
-                                    &#160;
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    &#160;
-                                </td>
-                                <td>
-                                    &#160;
-
-                                </td>
-                                <td>
-                                    &#160;
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                  Dibuat Oleh
-                                </td>
-                                <td>
-                                    Diperiksa Oleh
-                                </td>
-                                <td>
-                                  Disetujui Oleh
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    &#160;
-                                </td>
-                                <td>
-                                    &#160;
-                                </td>
-                                <td>
-                                    &#160;
-
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    &#160;
-                                </td>
-                                <td>
-                                    &#160;
-
-                                </td>
-                                <td>
-                                    &#160;
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    ........
-                                </td>
-                                <td>
-                                    ........
-                                </td>
-                                <td>
-                                    ........
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <td>
-                                    Asisten Bibitan
-                                </td>
-                                <td>
-                                    Estate Manager
-                                </td>
-                                <td>
-                                    GM Pembibitan
-                                </td>
-                            </tr>
-
-                        </table>
-                    </div>
-
+            		<t t-call="report.external_layout">
+		              	<div class="page" style="font-family: times; background-color:white; color:black;">
+		              		<!-- Header -->
+		              		<div class="row" style="text-align:left;font-size:20pt;">
+		              			<div class="col-xs-12" >
+		                       		<b>PT.<span t-field="o.company_id.name"/> </b>
+								</div>
+							</div>	
+							<div class="row" style="text-align:center; font-size:20pt;">
+		              			<div class="col-xs-12" >
+		                       		<b>QUOTATION COMPARISON FORM</b>
+								</div>
+							</div>	
+							<div class="row" style="text-align:center; font-size:14pt;">
+								<div class="col-xs-12" >
+		                       		<b>No. <span t-field="o.complete_name"/> </b>
+								</div>
+								<div class="col-xs-12" >
+		                       		<b>Date : <span t-field="o.create_date"/> </b>
+								</div>
+		           			</div>
+		           			
+		           			<!-- Sub Header -->
+		           			<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-12" >
+		                       		<b>PP No. &amp; Date : <span t-field="o.origin"/> <span t-field="o.date_pp"/> </b>
+								</div>
+							</div>
+		           			
+		           			<!-- Variabel -->
+		           			<t t-set="idx" t-value="0"/>
+		           			
+		           			<!-- Detail Header -->
+		           			<div class="row" style="text-align:left;font-size:14pt;">
+		              			<table width="100%">
+		              			    <t t-if="o.line_remarks == 1">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td>
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+											 	<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+		              			    
+		              			    <t t-if="o.line_remarks == 2">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="2">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+											 	<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		              			    <t t-if="o.line_remarks == 3">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="3">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		              			    <t t-if="o.line_remarks == 4">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="4">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids4" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+		              			    
+		                            <t t-if="o.line_remarks == 5">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="5">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										    <td>
+										      Vendor 5
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor5"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		                            <t t-if="o.line_remarks == 6">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="6">
+										      Vendor
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										    <td>
+										      Vendor 5
+										    </td>
+										    <td>
+										      Vendor 6
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor5"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor6"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		                            <t t-if="o.line_remarks == 7">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="7">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										    <td>
+										      Vendor 5
+										    </td>
+										    <td>
+										      Vendor 6
+										    </td>
+										    <td>
+										      Vendor 7
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor5"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor6"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor7"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		                            <t t-if="o.line_remarks == 8">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="8">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										    <td>
+										      Vendor 5
+										    </td>
+										    <td>
+										      Vendor 6
+										    </td>
+										    <td>
+										      Vendor 7
+										    </td>
+										    <td>
+										      Vendor 8
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor5"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor6"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor7"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor8"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		                            <t t-if="o.line_remarks == 9">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="9">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										    <td>
+										      Vendor 5
+										    </td>
+										    <td>
+										      Vendor 6
+										    </td>
+										    <td>
+										      Vendor 7
+										    </td>
+										    <td>
+										      Vendor 8
+										    </td>
+										    <td>
+										      Vendor 9
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												      	<t t-if="l.isheader == 3"><span t-esc="idx"/></t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor5"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor6"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor7"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor8"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor9"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+									
+		                            <t t-if="o.line_remarks == 10">
+			                            <tr class="label_table_header">
+										    <td rowspan="3">
+										      No
+										    </td>
+										    <td rowspan="3">
+										      Material/Item
+										    </td>
+										    <td rowspan="3">
+										      Qty
+										    </td>
+										    <td rowspan="3">
+										      Sat
+										    </td>
+										    <td colspan="10">
+										      VENDOR
+										    </td>
+										    <td rowspan="3">
+										      Keterangan
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Vendor 1
+										    </td>
+										    <td>
+										      Vendor 2
+										    </td>
+										    <td>
+										      Vendor 3
+										    </td>
+										    <td>
+										      Vendor 4
+										    </td>
+										    <td>
+										      Vendor 5
+										    </td>
+										    <td>
+										      Vendor 6
+										    </td>
+										    <td>
+										      Vendor 7
+										    </td>
+										    <td>
+										      Vendor 8
+										    </td>
+										    <td>
+										      Vendor 9
+										    </td>
+										    <td>
+										      Vendor 10
+										    </td>
+										</tr>
+										<tr class="label_table_header">
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										    <td>
+										      Unit Price (Rp)
+										    </td>
+										</tr>
+									
+										<t t-foreach="o.v_quotation_comparison_line_ids" t-as="l">
+											<t t-if="l.isheader > 2">
+												<t t-set="idx" t-value="idx+1"/>   	
+												<tr>
+												    <td>
+												        <t t-if="l.isheader == 3">
+												      		<span t-esc="idx"/>
+												      	</t>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.qty_request"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.product_uom"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor1"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor2"/>
+												    </td>
+												   	<td>
+												      	<span t-field="l.vendor3"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor4"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor5"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor6"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor7"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor8"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor9"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.vendor10"/>
+												    </td>
+												    <td>
+												      	<span t-field="l.po_des_all_name"/>
+												    </td>
+												</tr>
+											</t>
+										</t>
+									</t>
+		                      	</table>
+							</div>
+							
+		           			<!-- Tanda Tangan -->
+		                    <div class="row">
+		                        <div class="col-xs-6">	
+			                        <table width="100%" class="noborder">
+			                            <tr>
+			                                <td colspan="6" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="6" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="6" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="2" class="noborder">
+			                                  Proposed By
+			                                </td>
+			                                <td colspan="5" class="noborder">
+			                                  Approved By
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td class="noborder">
+			                                    Pengaju
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                                <td class="noborder">
+			                                    RO Head
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                                <td class="noborder">
+			                                    Director
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                            </tr>
+			                          	<tr>
+                                        	<td colspan="2" class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    Proc &amp; Log Div Head
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                                <td class="noborder">
+			                                    President Director
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                            </tr>
+			                            <tr>
+                                        	<td colspan="2" class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    Finance Div Head
+			                                </td>
+			                                <td colspan="3" class="noborder">
+			                                    ___________________
+			                                </td>
+			                            </tr>
+			                        </table>
+		                        </div>
+		                    </div>
+		             	</div>
                     </t>
                 </t>
             </t>
         </template>
-
-
-
     </data>
 </openerp>
