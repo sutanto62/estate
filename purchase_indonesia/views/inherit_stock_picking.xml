@@ -22,6 +22,7 @@
                  <xpath expr="//field[@name='origin']" position="after">
                      <field name="purchase_id" string="Ref PO"/>
                      <field name="pr_source" string="REF PP NO" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                     <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>
                  </xpath>
                  <xpath expr="//button[@name='show_details']" position="before">
                      <button name="split_quantities" class="oe_link"  icon="fa-list" string="Split" type="object"/>

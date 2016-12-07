@@ -29,13 +29,16 @@ class InheritStockPicking(models.Model):
     code_sequence = fields.Char('Good Receipt Note Sequence')
     purchase_id = fields.Many2one('purchase.order','Purchase Order')
     not_seed = fields.Boolean(compute='_change_not_seed')
+    grn_no = fields.Char()
+    delivery_number = fields.Char()
 
     _defaults = {
-        'not_seed':True
+        'not_seed':True,
+        'grn_no' : lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'stock.grn')
     }
 
     @api.one
-    @api.depends('name','min_date','companys_id','type_location')
+    @api.depends('grn_no','min_date','companys_id','type_location')
     def _complete_name_picking(self):
         """ Forms complete name of location from parent category to child category.
         """
@@ -61,7 +64,7 @@ class InheritStockPicking(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name_picking = ' / ' \
+            self.complete_name_picking = self.grn_no +' / ' \
                                  + self.companys_id.code+' - '\
                                  +'GRN'+' / '\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
@@ -80,45 +83,6 @@ class InheritStockPicking(models.Model):
                 else:
                     record.not_seed = True
 
-    # @api.multi
-    # def do_new_transfer(self):
-    #     #update Quantity Received in Purchase Tender after shipping
-    #     po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
-    #
-    #     #search Tender
-    #     tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
-    #     purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
-    #     action_cancel_status = False
-    #     for record in purchase_requisition_line:
-    #         stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
-    #         stock_pack_operation_length = len(stock_pack_operation)
-    #
-    #         sumitem = 0
-    #         sumitemmin = 0
-    #         for item in stock_pack_operation:
-    #             if item.qty_done > 0:
-    #                 sumitem = sumitem + item.qty_done
-    #             else:
-    #                 sumitemmin = sumitemmin + item.qty_done
-    #         tender_line_data = {
-    #              'qty_received' : sumitem + record.qty_received,
-    #         }
-    #         record.write(tender_line_data)
-    #
-    #         if stock_pack_operation_length == 1 and sumitemmin < 0 :
-    #             action_cancel_status = True
-    #         else:
-    #             action_cancel_status = False
-    #
-    #     if action_cancel_status == True :
-    #         po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
-    #         po.button_cancel()
-    #         self.action_cancel()
-    #     else:
-    #         self.do_transfer()
-    #
-    #     super(InheritStockPicking,self).do_new_transfer()
-    #     return True
 
     @api.multi
     def do_new_transfer(self):
@@ -133,45 +97,47 @@ class InheritStockPicking(models.Model):
         purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
 
         count_product =0
-
         count_action_cancel_status =0
-
         for record in purchase_requisition_line:
-
             stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
             stock_pack_operation_length = len(stock_pack_operation)
 
-            sumitem =0
+            if stock_pack_operation_length > 0 :
+                sumitem =0
 
-            sumitemmin =0
+                sumitemmin =0
 
-            for item in stock_pack_operation:
+                for item in stock_pack_operation:
 
-                if item.qty_done > 0:
+                    if item.qty_done > 0:
+                        sumitem = sumitem + item.qty_done
+                    else:
+                        sumitemmin = sumitemmin + item.qty_done
 
-                    sumitem = sumitem + item.qty_done
+                tender_line_data = {
 
-                else:
+                    'qty_received' : sumitem + record.qty_received,
+                    'qty_outstanding' : record.product_qty - sumitem
+                    }
 
-                    sumitemmin = sumitemmin + item.qty_done
+                record.write(tender_line_data)
 
-            tender_line_data = {
-
-                'qty_received' : sumitem + record.qty_received,
-
-                }
-
-            record.write(tender_line_data)
-
-            if stock_pack_operation_length == 1 and sumitemmin < 0 :
-
-                count_action_cancel_status = count_action_cancel_status +1
+                if stock_pack_operation_length == 1 and sumitemmin < 0 :
+                    count_action_cancel_status = count_action_cancel_status +1
 
                 count_product = count_product +1
 
         if count_action_cancel_status == count_product :
             po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
             po.button_cancel()
+            for itemmin in self.pack_operation_product_ids:
+                purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender),('product_id','=',itemmin.product_id.id)])
+                if itemmin.qty_done < 0 :
+                    for recordoutstanding in purchase_requisition_linemin:
+                        outstanding_data = {
+                                    'qty_outstanding' : itemmin.qty_done * -1
+                                }
+                        recordoutstanding.write(outstanding_data)
             self.action_cancel()
 
         else:

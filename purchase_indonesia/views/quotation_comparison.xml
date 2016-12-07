@@ -137,7 +137,7 @@
                                                            }"/>
                             <separator string="Recomendation/Remarks"/>
                             <field name="remarks"/>
-                            <field name="quotation_comparison_line_ids" track_visibility="onchange"
+                            <field name="quotation_comparison_line_ids" track_visibility="onchange" invisible="1"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_indonesia.view_quotation_comparison_line',
                                                        }"/>

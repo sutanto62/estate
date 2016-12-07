@@ -30,11 +30,11 @@ class InheritPurchaseTenders(models.Model):
     _inherit = 'purchase.requisition'
     _description = 'inherit purchase requisition'
     _order = 'complete_name desc'
+    _rec_name = 'complete_name'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Selection([('KOKB','Estate'),
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
-
     companys_id = fields.Many2one('res.company','Company')
 
     @api.one
@@ -81,6 +81,7 @@ class InheritPurchaseTenders(models.Model):
         """
         return {'order_line': [],
                 'requisition_id': tender.id,
+                'po_no':self.pool.get('ir.sequence').next_by_code(cr, uid,'purchase.po_no'),
                 'source_purchase_request' : tender.origin,
                 'companys_id' :tender.companys_id.id,
                 'type_location' : tender.type_location,
@@ -179,25 +180,19 @@ class InheritPurchaseTenders(models.Model):
         return res
 
 
+
 class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'
 
     qty_received = fields.Float('Quantity received',readonly=True)
-    qty_outstanding = fields.Float('Quantity Outstanding',compute='_compute_qty_outstanding',readonly=True)
+    qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
 
 
-    @api.multi
-    @api.depends('qty_received','product_qty')
-    def _compute_qty_outstanding(self):
-        for item in self:
-            try:
-                if item.qty_received == 0 :
-                    item.qty_outstanding = 0
-                else:
-                    item.qty_outstanding = (item.product_qty - item.qty_received)
-            except:
-                item.qty_outstanding
+
+
+
+
 
 
 

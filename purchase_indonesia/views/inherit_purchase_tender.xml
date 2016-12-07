@@ -36,8 +36,19 @@
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
                            <field name="qty_outstanding" class="oe_inline" invisible="0"
-                               readonly="1"/>
+                               readonly="0"/>
                  </xpath>
+                 <xpath expr="//tree/field[@name='name']" position="replace">
+                        <field name="name" invisible="1" string="Reference"/>
+                 </xpath>
+                 <xpath expr="//tree/field[@name='name']" position="after">
+                         <field name="complete_name" invisible="0"
+                               string="Reference"/>
+                         <field name="po_no" invisible="1"
+                               readonly="1"/>
+                         <field name="hide" invisible="1"/>
+                 </xpath>
+
              </field>
          </record>
 
