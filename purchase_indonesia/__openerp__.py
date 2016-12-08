@@ -30,7 +30,7 @@
         'config_report/config_goods_receipt_notes.xml',
         'config_report/config_purchase_order.xml',
         'config_report/config_purchase_quotation.xml',
-        'config_report/config_purchase_request_form.xml',
+        'config_report/config_purchase_request.xml',
 
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
