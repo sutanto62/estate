@@ -4,14 +4,273 @@
     <data>
       	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
 		      <xpath expr="//head" position="inside">
-		             <!--<link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_quotation_comparison_form_document.css"/>-->
+		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_purchase_order.css"/>
 		      </xpath>
 		</template>
         <template id="report_purchase_order">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
             		<t t-call="report.external_layout">
-
+						<div class="page" style="font-family: times; background-color:white; color:black;">
+		              		<!-- Header -->
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-12" >
+		                       		<table class="noborder">
+		                       		    <tr>
+		                       		        <td class="noborder" width="10%">
+		                       		            <b>Date</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.date_order"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>PO/SPO No.</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.complete_name"/></b>	
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Page</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: </b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>To</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		          	<b>: <span t-field="o.partner_id.name"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Address</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            : <b>
+		                       		            	<span t-field="o.partner_id.street"/>
+		                       		            	<span t-field="o.partner_id.street2"/>
+		                       		            	<span t-field="o.partner_id.zip"/>
+		                       		            	<span t-field="o.partner_id.city"/>
+		                       		          	</b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" colspan="2">
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Attn</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: </b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Phone</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            : <span t-field="o.partner_id.phone"/>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Email</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		         	: <span t-field="o.partner_id.email"/>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" colspan="2" style="text-align: right;">
+		                       		            <b>Reff PP : <span t-field="o.source_purchase_request"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		</table>
+								</div>
+							</div>
+							
+							<br></br>
+							<br></br>
+							
+							<div class="row" style="text-align:center; font-size:20pt;">
+		              			<div class="col-xs-12" >
+		                       		<b>PURCHASE ORDER (PO) / SERVICE PURCHASE ORDER (SPO)</b>
+								</div>
+							</div>
+							
+							<br></br>
+							<br></br>
+							
+							<!-- Variabel -->
+							
+		              		<!-- Detail Header -->
+		           			<div class="row" style="text-align:left;font-size:14pt;">
+		              			<table width="100%">
+		                            <tr class="label_table_header">
+									    <td>
+									      CODE
+									    </td>
+									    <td>
+									      DESCRIPTION
+									    </td>
+									    <td>
+									      QTY
+									    </td>
+									    <td>
+									      PRICE/UNIT
+									    </td>
+									    <td>
+									      TAXES
+									    </td>
+									    <td>
+									      TOTAL
+									    </td>
+									</tr>
+								
+									<t t-foreach="o.order_line" t-as="l">
+										<tr>
+										    <td>
+										      	<span t-field="l.product_id.default_code"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_id.name"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_qty"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.price_unit"/>
+										    </td>
+										    <td>
+										      	<t t-foreach="l.taxes_id" t-as="t">
+										      	    <span t-field="t.name"/>
+										     	</t> 	    
+										    </td>
+										    <td>
+										      	<span t-field="l.price_subtotal"/>
+										    </td>
+										</tr>
+									</t>
+									
+									<tr>
+									    <td colspan="4">
+									        &#160;
+									    </td>
+									    <td>
+									      	Sub Total
+									    </td>
+									    <td>
+									      	<span t-field="o.amount_untaxed"/>
+									    </td>
+									</tr>
+									<tr>
+									    <td colspan="4">
+									        &#160;
+									    </td>
+									    <td>
+									      	Tax
+									    </td>
+									    <td>
+									      	<span t-field="o.amount_tax"/>
+									    </td>
+									</tr>
+									<tr>
+									    <td colspan="5" style="text-align: center;">
+									      	GRAN TOTAL
+									    </td>
+									    <td>
+									      	<span t-field="o.amount_total"/>
+									    </td>
+									</tr>
+									<tr>
+									    <td colspan="3" class="noborder" style="border-right: 1px solid black;">
+									      	Delivery 	:
+									    </td>
+									    <td colspan="3" class="noborder">
+									      	PAYMENT
+									    </td>
+									</tr>
+									<tr>
+									    <td colspan="3" class="noborder" style="border-right: 1px solid black;">
+									      	<span t-field="o.picking_type_id.warehouse_id.name"/>
+									    </td>
+									    <td colspan="3" class="noborder">
+									      	TOP			: <span t-field="o.payment_term_id"/>
+									    </td>
+									</tr>
+									<tr>
+									    <td colspan="3"  class="noborder" style="border-right: 1px solid black;">
+									      	Address 	:
+									    </td>
+									    <td colspan="3" class="noborder">
+									      	&#160; 
+									    </td>
+									</tr>
+									<tr>
+									    <td colspan="3"  class="noborder" style="border-right: 1px solid black;">
+									      	<span t-field="o.picking_type_id.warehouse_id.partner_id.street"/>
+                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>
+                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.zip"/>
+                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.city"/>
+									    </td>
+									    <td colspan="3" class="noborder">
+									      	Currency	: <span t-field="o.currency_id"/>
+									    </td>
+									</tr>
+								</table>
+								<table width="100%">
+		                            <tr>
+		                          		<td class="noborder" width="25%">
+		                          		    Distribution	:
+		                          		</td>
+		                          		<td class="noborder" style="text-align: center;">
+		                          		    Approved by,
+		                          		</td>
+		                          	</tr>      
+								    <tr>
+		                          		<td class="noborder" width="25%">
+		                          		    1. Vendor
+		                          		</td>
+		                          		<td class="noborder" style="text-align: center;">
+		                          		    &#160;
+		                          		</td>
+		                          	</tr>
+		                          	<tr>
+		                          		<td class="noborder" width="25%">
+		                          		    2. Accounting
+		                          		</td>
+		                          		<td class="noborder" style="text-align: center;">
+		                          		    &#160;
+		                          		</td>
+		                          	</tr>
+		                          	<tr>
+		                          		<td class="noborder" width="25%">
+		                          		    3. File
+		                          		</td>
+		                          		<td class="noborder" style="text-align: center;">
+		                          		    ___________________
+		                          		</td>
+		                          	</tr>
+		                          	<tr>
+		                          		<td class="noborder" width="25%">
+		                          		    &#160;
+		                          		</td>
+		                          		<td class="noborder" style="text-align: center;">
+		                          		    [todo] objek orang yang approve
+		                          		</td>
+		                          	</tr>
+								</table>
+							</div>
+						</div>	
                     </t>
                 </t>
             </t>
