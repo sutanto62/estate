@@ -107,6 +107,50 @@
              <field name="model">purchase.request</field>
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
+                 <xpath expr="//button[@name='button_rejected']" position="replace">
+                     <button name="%(action_purchase_request_reject)d"
+                             states="to_approve,approval1,approval2,technic1,technic2,technic3,technic4,technic5,budget" string="Reject Purchase Request" type="action"/>
+                 </xpath>
+                 <xpath expr="//button[@name='button_to_approve']" position="replace">
+                     <button name="button_to_approve" states="technic1,technic2,technic3,technic4,technic5"
+                            string="Approval Finance" type="object"
+                            class="oe_highlight"/>
+
+                 </xpath>
+                 <xpath expr="//button[@name='button_draft']" position="replace">
+                     <button name="button_draft"
+                            states="approval1,approval2"
+                            string="Reset"
+                            type="object"
+                            groups="purchase_request.group_purchase_request_manager"/>
+                 </xpath>
+                 <xpath expr="//button[@name='button_approved']" position="replace">
+                       <button name="button_approved"
+                            states="to_approve"
+                            string="Send To Quotation"
+                            type="object"
+                            class="oe_highlight"
+                            groups="purchase_request.group_purchase_request_manager"/>
+                 </xpath>
+                 <xpath expr="//field[@name='state']" position="replace">
+                     <field name="state" widget="statusbar"
+                           statusbar_visible="draft"
+                           statusbar_colors='{"approved":"blue"}'/>
+                 </xpath>
+                 <xpath expr="//button[@name='button_draft']" position="after">
+                     <button name="check_wkf_requester" states="draft"
+                            string="Confirm Purchase" type="object"
+                            class="oe_highlight"/>
+                     <button name="action_confirm1" states="approval1"
+                            string="Approval Dept Head" type="object"
+                            class="oe_highlight"/>
+                     <button name="action_confirm2" states="approval2"
+                            string="Approval Div Head" type="object"
+                            class="oe_highlight"/>
+                     <button name="action_budget" states="budget"
+                            string="Approval Budget" type="object"
+                            class="oe_highlight"/>
+                 </xpath>
                  <xpath expr="//field[@name='description']" position="after">
                      <group name="budget">
                           <field name="type_budget" widget="radio" string="Budget"/>
@@ -114,6 +158,15 @@
                  </xpath>
              </field>
          </record>
+
+        <record id="action_purchase_request_reject" model="ir.actions.act_window">
+            <field name="name">Reject Purchase Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.request.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
 
     </data>
 </openerp>
