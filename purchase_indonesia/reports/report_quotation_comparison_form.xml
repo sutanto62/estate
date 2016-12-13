@@ -4,7 +4,7 @@
     <data>
       	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
 		      <xpath expr="//head" position="inside">
-		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_quotation_comparison_form_document.css"/>
+		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_quotation_comparison_form.css"/>
 		      </xpath>
 		</template>
         <template id="report_quotation_comparison_form_document">
