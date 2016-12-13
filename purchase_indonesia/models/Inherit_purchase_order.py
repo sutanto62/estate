@@ -101,6 +101,11 @@ class InheritPurchaseOrder(models.Model):
         return True
 
     @api.multi
+    def print_quotation(self):
+        self.write({'state': "sent"})
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_quotation')
+
+    @api.multi
     def _update_po_no(self):
         po = self.env['purchase.order'].search([('id','=',self.id)])
         purchase_data = {

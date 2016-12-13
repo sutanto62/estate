@@ -65,7 +65,7 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def action_confirm1(self,):
-        """ Confirms Good request.
+        """ Confirms User request.
         """
         self.check_wkf_product_price()
         return True
@@ -79,16 +79,16 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def action_budget(self,):
-        """ Confirms Good request.
+        """ Confirms Budget request.
         """
         self.check_wkf_product()
         return True
 
     @api.multi
     def action_techic(self,):
-        """ Confirms Good request.
+        """ Confirms Technical request.
         """
-
+        self.write({'state': 'to_approve'})
         return True
 
     @api.multi

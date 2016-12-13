@@ -1,2 +1,13 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_estate_procurment_estate_procurment,estate_procurment.estate_procurment,model_estate_procurment_estate_procurment,,1,0,0,0
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+,,,,,,,
+,,,,,,,
+"purchase_setting_user","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_user","True","False","False","False"
+"purchase_setting_div_head","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_div_head","True","False","False","False"
+"purchase_setting_dept_head","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_dept_head","True","False","False","False"
+"purchase_setting_technical_head_1","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_technical1","True","False","False","False"
+"purchase_setting_technical_head_2","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_technical2","True","False","False","False"
+"purchase_setting_technical_head_3","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_technical3","True","False","False","False"
+"purchase_setting_technical_head_4","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_technical4","True","False","False","False"
+"purchase_setting_technical_head_5","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_technical5","True","False","False","False"
+"purchase_setting_technical_budget","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_budget","True","False","False","False"
+"purchase_setting_manager","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_manager","True","True","True","True"
