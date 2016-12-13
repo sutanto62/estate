@@ -138,7 +138,7 @@ class InheritPurchaseRequest(models.Model):
             self.write(state_data)
         elif total_price_purchase > price_standard:
             state_data = {'state':'technic1','type_budget':'available'}
-            self.write(state_data)for
+            self.write(state_data)
         else :
             state_data = {'state':'technic2','type_budget':'available'}
             self.write(state_data)
@@ -195,7 +195,7 @@ class InheritPurchaseRequest(models.Model):
             month = conv_date.month
             year = conv_date.year
 
-            #change integer to romanfor
+            #change integer to roman
             if type(month) != type(1):
                 raise TypeError, "expected integer, got %s" % type(month)
             if not 0 < month < 4000:
