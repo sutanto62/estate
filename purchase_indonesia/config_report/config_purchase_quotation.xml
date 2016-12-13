@@ -18,7 +18,7 @@
 
         <report
             id="custom_report_div_report_purchase_quotation"
-            model="purchase.requisition"
+            model="purchase.order"
             string="Report Purchase Quotation"
             report_type="qweb-pdf"
             name="purchase_indonesia.report_purchase_quotation"

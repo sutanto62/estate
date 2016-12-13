@@ -112,7 +112,7 @@
                              states="to_approve,approval1,approval2,technic1,technic2,technic3,technic4,technic5,budget" string="Reject Purchase Request" type="action"/>
                  </xpath>
                  <xpath expr="//button[@name='button_to_approve']" position="replace">
-                     <button name="button_to_approve" states="technic1,technic2,technic3,technic4,technic5"
+                     <button name="button_to_approve" states="button_to_approve"
                             string="Approval Finance" type="object"
                             class="oe_highlight"/>
 
@@ -140,16 +140,24 @@
                  <xpath expr="//button[@name='button_draft']" position="after">
                      <button name="check_wkf_requester" states="draft"
                             string="Confirm Purchase" type="object"
-                            class="oe_highlight"/>
+                            class="oe_highlight"
+                             groups="purchase_request.group_purchase_request_user"/>
                      <button name="action_confirm1" states="approval1"
                             string="Approval Dept Head" type="object"
-                            class="oe_highlight"/>
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_dept_head"/>
                      <button name="action_confirm2" states="approval2"
                             string="Approval Div Head" type="object"
-                            class="oe_highlight"/>
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                      <button name="action_budget" states="budget"
                             string="Approval Budget" type="object"
-                            class="oe_highlight"/>
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
+                     <button name="action_techic" states="technic1,technic2,technic3,technic4,technic5"
+                            string="Approval Check Techinal" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_technical1,
+                            purchase_request.group_purchase_request_technical2,
+                            purchase_request.group_purchase_request_technical3,
+                            purchase_request.group_purchase_request_technical4,
+                            purchase_request.group_purchase_request_technical5"/>
                  </xpath>
                  <xpath expr="//field[@name='description']" position="after">
                      <group name="budget">
