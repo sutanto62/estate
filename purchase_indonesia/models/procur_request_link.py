@@ -50,6 +50,7 @@ class InheritPurchaseRequest(models.Model):
                        ('technic3', 'Approval Technic ICT Dept'),
                        ('technic4', 'Approval Technic GM Plantation Dept'),
                        ('technic5', 'Approval Technic EA Dept'),])
+    total_estimate_price = fields.Float('Total Estimated Price',compute='_compute_total_estimate_price')
 
     @api.multi
     def button_rejected(self):
@@ -137,7 +138,7 @@ class InheritPurchaseRequest(models.Model):
             self.write(state_data)
         elif total_price_purchase > price_standard:
             state_data = {'state':'technic1','type_budget':'available'}
-            self.write(state_data)
+            self.write(state_data)for
         else :
             state_data = {'state':'technic2','type_budget':'available'}
             self.write(state_data)
@@ -194,7 +195,7 @@ class InheritPurchaseRequest(models.Model):
             month = conv_date.month
             year = conv_date.year
 
-            #change integer to roman
+            #change integer to romanfor
             if type(month) != type(1):
                 raise TypeError, "expected integer, got %s" % type(month)
             if not 0 < month < 4000:
@@ -216,6 +217,11 @@ class InheritPurchaseRequest(models.Model):
             self.complete_name = self.name
 
         return True
+
+    @api.multi
+    @api.depends('line_ids')
+    def _compute_total_estimate_price(self):
+        self.total_estimate_price = sum(record.total_price for record in self.line_ids)
 
     @api.multi
     @api.onchange('type_location')
