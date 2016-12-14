@@ -148,6 +148,17 @@
 										    </td>
 										</tr>
 									</t>
+									<tr>
+									    <td colspan="7">
+									      Total
+									    </td>
+									    <td>
+									      <span t-field="o.total_estimate_price"/>
+									    </td>
+									    <td>
+									      &#160;
+									    </td>
+									</tr>
 								</table>
 							</div>
 							<div class="row" style="text-align:left;font-size:14pt;">
