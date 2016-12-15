@@ -148,6 +148,9 @@ class InheritStockPicking(models.Model):
 
         return True
 
+    @api.multi
+    def print_grn(self):
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
 class InheritStockPackOperation(models.Model):
 

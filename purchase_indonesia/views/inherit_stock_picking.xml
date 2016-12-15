@@ -29,6 +29,9 @@
                      <button name="do_force_donce"
                       class="oe_link"  icon="fa-scissors" string="Force Done" type="object"/>
                  </xpath>
+                 <xpath expr="//button[@name='do_new_transfer']" position="after">
+                     <button name="print_grn" string="Print GRN/SRN" type="object" states="assigned" groups="base.group_user"/>
+                 </xpath>
              </field>
          </record>
 

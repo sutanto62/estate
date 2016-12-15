@@ -179,12 +179,16 @@
 							<br></br>
 							<br></br>
 		              		<div class="row" style="text-align:left;font-size:14pt;">
-		              			<div class="col-xs-3" >
-		              				Anggaran Tersedia  
-		              			</div>
-		              			<div class="col-xs-3" >
-		              				Anggaran Tidak Tersedia  
-		              			</div>
+		              			<t t-if="o.type_budget == 'available' ">
+									<div class="col-xs-3" >
+		              					<span t-field="o.type_budget"/>
+									</div>
+								</t>
+								<t t-if="o.type_budget == 'not' ">
+									<div class="col-xs-3" >
+		              					<span t-field="o.type_budget"/>
+									</div>
+								</t>
 		              			<div class="col-xs-6" >
 		              				&#160;
 		              			</div>

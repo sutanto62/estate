@@ -85,7 +85,6 @@ class InheritPurchaseTenders(models.Model):
                 'source_purchase_request' : tender.origin,
                 'companys_id' :tender.companys_id.id,
                 'type_location' : tender.type_location,
-                'comparison_id' : tender.id,
                 'origin': tender.complete_name}
 
     def _prepare_purchase_backorder(self, cr, uid, requisition, supplier, context=None):

@@ -50,7 +50,10 @@ class InheritPurchaseRequest(models.Model):
                        ('technic3', 'Approval Technic ICT Dept'),
                        ('technic4', 'Approval Technic GM Plantation Dept'),
                        ('technic5', 'Approval Technic EA Dept'),])
+    currency_id = fields.Many2one('res.currency', 'Currency', required=True,\
+        default=lambda self: self.env.user.company_id.currency_id)
     total_estimate_price = fields.Float('Total Estimated Price',compute='_compute_total_estimate_price')
+
 
     @api.multi
     def button_rejected(self):
@@ -217,6 +220,10 @@ class InheritPurchaseRequest(models.Model):
             self.complete_name = self.name
 
         return True
+
+    @api.multi
+    def print_purchase_request(self):
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request')
 
     @api.multi
     @api.depends('line_ids')

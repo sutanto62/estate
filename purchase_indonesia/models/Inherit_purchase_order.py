@@ -17,6 +17,7 @@ class InheritPurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     _rec_name = 'complete_name'
 
+    delivery_term = fields.Char('Term Of Delivery')
     companys_id = fields.Many2one('res.company','Company')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Selection([('KOKB','Estate'),
@@ -106,6 +107,10 @@ class InheritPurchaseOrder(models.Model):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_quotation')
 
     @api.multi
+    def print_purchase_order(self):
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_order')
+
+    @api.multi
     def _update_po_no(self):
         po = self.env['purchase.order'].search([('id','=',self.id)])
         purchase_data = {
@@ -130,4 +135,5 @@ class InheritPurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     qty_request = fields.Float('Quantity Actual')
+    spesification = fields.Text('Spesification')
 

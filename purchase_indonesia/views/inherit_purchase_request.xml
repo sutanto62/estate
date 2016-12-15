@@ -159,15 +159,17 @@
                             purchase_request.group_purchase_request_technical4,
                             purchase_request.group_purchase_request_technical5"/>
                  </xpath>
+                 <xpath expr="//button[@name='button_approved']" position="after">
+                     <button name="print_purchase_request" string="Print PR/PP" type="object" states="approved" groups="base.group_user"/>
+                 </xpath>
                  <xpath expr="//field[@name='description']" position="after">
                      <group name="budget">
                           <field name="type_budget" widget="radio" string="Budget"/>
+                          <field name="currency_id" invisible="1"/>
                      </group>
                  </xpath>
                  <xpath expr="//field[@name='description']" position="before">
                      <group class="oe_subtotal_footer oe_right">
-                        <!--<field name="expense" widget="monetary" readonly="1"-->
-                               <!--options="{'currency_field': 'currency_id'}"/>-->
                             <div class="oe_subtotal_footer_separator oe_inline">
                                 <label for="total_estimate_price"/>
                                     <button name="button_dummy" states="draft"
