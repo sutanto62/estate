@@ -237,6 +237,7 @@
 											<td colspan="2" class="noborder">
 			                                  Disetujui Oleh
 			                                </td>		                            </tr>
+
 			                            <tr>
 			                                <td class="noborder">
 			                                    &#160;
@@ -245,21 +246,37 @@
 			                                    Dept Head / EM / LCM
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'approval1'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
 			                                <td class="noborder">
 			                                    Pemeriksa Budget
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'budget'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
                                             <td class="noborder">
-			                                    Dept. Head
+			                                    Div. Head
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'approval2'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
 			                            </tr>
+
                                         <tr>
 			                                <td class="noborder">
 			                                    ___________________
@@ -274,6 +291,11 @@
 			                                    GM
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'to_approve'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
 			                            </tr>
@@ -291,6 +313,23 @@
 			                                    RO
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'technic1'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic2'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic3'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic4'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic5'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
                                             <td class="noborder">
