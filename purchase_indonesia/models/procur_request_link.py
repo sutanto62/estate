@@ -126,13 +126,13 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def check_wkf_product_price(self):
        #check total product price in purchase request
-       price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
-       total_price_purchase = sum(record.total_price for record in self.line_ids)
-       if total_price_purchase > price_standard:
+       price_standard = float(self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params)
+       total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+       if total_price_purchase >= price_standard:
             self.tracking_approval()
             state_data = {'state':'approval2'}
             self.write(state_data)
-       else:
+       elif total_price_purchase < price_standard:
             self.tracking_approval()
             state_data = {'state':'budget'}
             self.write(state_data)
