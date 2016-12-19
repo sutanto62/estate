@@ -64,9 +64,6 @@
 									    <td>
 									      Harga Satuan
 									    </td>
-									     <td>
-									      Pajak
-									    </td>
 									    <td>
 									      Jumlah
 									    </td>
@@ -94,11 +91,6 @@
 										    </td>
 										    <td>
 										      	<span t-field="l.price_unit"/>
-										    </td>
-										    <td>
-										      	<t t-foreach="l.taxes_id" t-as="t">
-										      	    <span t-field="t.name"/>
-										     	</t> 	    
 										    </td>
 										    <td>
 										      	<span t-field="l.price_subtotal"/>

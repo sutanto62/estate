@@ -41,6 +41,7 @@ class InheritPurchaseRequest(models.Model):
     type_product = fields.Selection([('capital','Capital'),
                                      ('service','Service'),('product','Stockable Product')],'Location Type')
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
+    tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     state = fields.Selection(
         selection_add=[('approval1', 'Approval Dept Head'),
                        ('approval2', 'Approval Div Head'),
@@ -62,6 +63,7 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def button_approved(self):
+        self.tracking_approval()
         self.create_purchase_requisition()
         self.create_quotation_comparison_form()
         super(InheritPurchaseRequest, self).button_approved()
@@ -78,6 +80,7 @@ class InheritPurchaseRequest(models.Model):
     def action_confirm2(self,):
         """ Confirms Good request.
         """
+        self.tracking_approval()
         self.write({'state': 'budget'})
         return True
 
@@ -85,6 +88,7 @@ class InheritPurchaseRequest(models.Model):
     def action_budget(self,):
         """ Confirms Budget request.
         """
+        self.tracking_approval()
         self.check_wkf_product()
         return True
 
@@ -92,6 +96,7 @@ class InheritPurchaseRequest(models.Model):
     def action_techic(self,):
         """ Confirms Technical request.
         """
+        self.tracking_approval()
         self.write({'state': 'to_approve'})
         return True
 
@@ -99,7 +104,8 @@ class InheritPurchaseRequest(models.Model):
     def check_wkf_requester(self):
         arrJobs = []
         arrJobs2 = []
-        employee = self.env['hr.employee'].search([('user_id','=',self.requested_by.id)])
+        user= self.env['res.users'].browse(self.env.uid)
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)])
         jobs = self.env['hr.job'].search([('id','=',employee.job_id.id)]).id
         jobs_compare_hr = self.env['hr.job'].search([('name','in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
         jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
@@ -108,11 +114,14 @@ class InheritPurchaseRequest(models.Model):
         for record_job in jobs_compare_hr:
             arrJobs.append(record_job.id)
         if jobs in arrJobs:
+            self.tracking_approval()
             state_data = {'state':'approval1'}
             self.write(state_data)
         elif jobs in arrJobs2:
+            self.tracking_approval()
             state_data = {'state':'approval2'}
             self.write(state_data)
+
 
     @api.multi
     def check_wkf_product_price(self):
@@ -120,9 +129,11 @@ class InheritPurchaseRequest(models.Model):
        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
        total_price_purchase = sum(record.total_price for record in self.line_ids)
        if total_price_purchase > price_standard:
+            self.tracking_approval()
             state_data = {'state':'approval2'}
             self.write(state_data)
        else:
+            self.tracking_approval()
             state_data = {'state':'budget'}
             self.write(state_data)
 
@@ -145,6 +156,17 @@ class InheritPurchaseRequest(models.Model):
         else :
             state_data = {'state':'technic2','type_budget':'available'}
             self.write(state_data)
+
+    @api.multi
+    def tracking_approval(self):
+        user= self.env['res.users'].browse(self.env.uid)
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
+        tracking_data = {
+            'owner_id': self.id,
+            'state' : self.state,
+            'name_user' : employee
+        }
+        self.env['tracking.approval'].create(tracking_data)
 
 
     @api.multi

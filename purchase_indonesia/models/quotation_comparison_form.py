@@ -58,7 +58,7 @@ class QuotationComparisonForm(models.Model):
     requisition_id = fields.Many2one('purchase.requisition','Purchase Requisition')
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('confirm', 'Send Request'),
+        ('confirm', 'Send QCF'),
         ('approve', 'Confirm'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
@@ -133,6 +133,34 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def print_qcf(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_quotation_comparison_form_document')
+
+    @api.multi
+    def action_send(self,):
+        self.write({'state': 'confirm'})
+        return True
+
+    @api.multi
+    def action_confirm(self,):
+        """ Confirms QCF.
+        """
+        name = self.name
+        self.write({'name':"Quotation Comparison Form %s " %(name)})
+        self.write({'state': 'done'})
+        return True
+
+    def action_done(self, cr, uid, ids, context=None):
+        self.write(cr, uid, ids, {'state': 'done'})
+        return True
+
+    @api.multi
+    def action_reject(self,):
+        self.write({'state': 'reject'})
+        return True
+
+    @api.multi
+    def action_cancel(self):
+        self.write({'state': 'cancel'})
+        return True
 
     @api.multi
     def open_product_line(self,ids,context=None):

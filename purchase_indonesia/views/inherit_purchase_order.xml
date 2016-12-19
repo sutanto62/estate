@@ -88,7 +88,7 @@
         </record>
 
 
-        <record model="ir.actions.act_window" id="inherit_purchase_order_tree">
+        <record model="ir.actions.act_window" id="inherit_purchase_order_action">
              <field name="name">Inherit purchase order action</field>
              <field name="res_model">purchase.order</field>
              <field name="inherit_id" ref="purchase.purchase_form_action"/>
