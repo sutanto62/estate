@@ -46,6 +46,7 @@
         'views/procur_return_view.xml',
         'workflow/workflow_procur_good_request.xml',
         'workflow/workflow_management_good_request.xml',
+        'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',
         'reports/report_goods_receipt_notes.xml',

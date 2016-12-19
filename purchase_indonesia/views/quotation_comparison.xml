@@ -45,6 +45,10 @@
             <field name="arch" type="xml">
                 <form>
                      <header coolspan="10">
+                            <button name="button_send_request" states="draft" string="Send QCF" class="oe_highlight" />
+                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" />
+                            <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action"/>
+                            <button name="button_cancel" states="draft" string="Cancel"/>
                             <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
@@ -464,6 +468,15 @@
                 available at a certain point in time.
               </p>
             </field>
+        </record>
+
+        <record id="action_quotation_comparison_reject" model="ir.actions.act_window">
+            <field name="name">Quotation Comparison Reject</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">quotation.comparison.form.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
         </record>
 
 
