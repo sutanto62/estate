@@ -65,6 +65,7 @@ class QuotationComparisonForm(models.Model):
         ('cancel', 'Canceled')], string="State",store=True)
     remarks = fields.Text('Remarks')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
+    tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -137,6 +138,7 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def action_send(self,):
         self.write({'state': 'confirm'})
+        self.tracking_approval()
         return True
 
     @api.multi
@@ -146,10 +148,12 @@ class QuotationComparisonForm(models.Model):
         name = self.name
         self.write({'name':"Quotation Comparison Form %s " %(name)})
         self.write({'state': 'done'})
+        self.tracking_approval()
         return True
 
     def action_done(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'done'})
+        self.tracking_approval()
         return True
 
     @api.multi
@@ -161,6 +165,17 @@ class QuotationComparisonForm(models.Model):
     def action_cancel(self):
         self.write({'state': 'cancel'})
         return True
+
+    @api.multi
+    def tracking_approval(self):
+        user= self.env['res.users'].browse(self.env.uid)
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
+        tracking_data = {
+            'owner_id': self.id,
+            'state' : self.state,
+            'name_user' : employee
+        }
+        self.env['tracking.approval'].create(tracking_data)
 
     @api.multi
     def open_product_line(self,ids,context=None):

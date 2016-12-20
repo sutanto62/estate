@@ -50,15 +50,18 @@ class InheritPurchaseRequest(models.Model):
                        ('technic2', 'Approval Technic Div Head'),
                        ('technic3', 'Approval Technic ICT Dept'),
                        ('technic4', 'Approval Technic GM Plantation Dept'),
-                       ('technic5', 'Approval Technic EA Dept'),])
+                       ('technic5', 'Approval Technic EA Dept'),
+                       ('reject','Reject')])
     currency_id = fields.Many2one('res.currency', 'Currency', required=True,\
         default=lambda self: self.env.user.company_id.currency_id)
+    reject_reason = fields.Text('Reject Reason')
     total_estimate_price = fields.Float('Total Estimated Price',compute='_compute_total_estimate_price')
 
 
     @api.multi
     def button_rejected(self):
         self.write({'state': 'reject', 'date_request': self.date_start})
+        self.write({'description':self.reject_reason})
         return True
 
     @api.multi

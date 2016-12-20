@@ -103,6 +103,8 @@ class PurchaseRequestReject(osv.osv_memory):
         if 'active_id' in context:
             reject_reason=self.browse(cr,uid,ids)[0].reject_reason
             self.pool.get('purchase.request').write(cr,uid,context['active_id'],{'reject_reason':reject_reason})
-            wf_service = netsvc.LocalService("workflow")
-            wf_service.trg_validate(uid, 'purchase.request', context['active_id'], 'button_rejected', cr)
+            # wf_service = netsvc.LocalService("workflow")
+            purchase_request = self.pool.get('purchase.request')
+            purchase_request.button_rejected(cr, uid, context['active_id'])
+            # wf_service.trg_validate(uid, 'purchase.request', context['active_id'], 'button_rejected', cr)
         return {'type': 'ir.actions.act_window_close',}

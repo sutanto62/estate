@@ -3560,6 +3560,11 @@
 			                                    Pengaju
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'confirm'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
 			                                <td class="noborder">
@@ -3583,6 +3588,11 @@
 			                                    Proc &amp; Log Div Head
 			                                </td>
 			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'done'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
 			                                    ___________________
 			                                </td>
 			                                <td class="noborder">

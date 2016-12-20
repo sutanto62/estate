@@ -20,6 +20,9 @@
                  <xpath expr="//field[@name='date_order']" position="after">
                           <field name="source_purchase_request" string="Source Purchase Request" />
                  </xpath>
+                 <xpath expr="//field[@name='origin']" position="after">
+                          <field name="confirmed_by" string="Confirmed By" attrs="{'invisible': [('state','=', 'purchase')]}"/>
+                 </xpath>
                  <xpath expr="//field[@name='payment_term_id']" position="replace">
                      <field name="payment_term_id" options="{'no_open': True, 'no_create': False}" attrs="{'readonly': [('invoice_status','=', 'invoiced')]}"/>
                  </xpath>
@@ -44,7 +47,7 @@
                           <field name="name" string="Name" invisible="1"/>
                  </xpath>
                  <xpath expr="//field[@name='name']" position="after">
-                          <field name="complete_name" string="Reference" invisible=""/>
+                          <field name="complete_name" string="Reference" invisible="0"/>
                  </xpath>
              </field>
          </record>

@@ -1,0 +1,14 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="inherit_res_partner_product">
+             <field name="name">Inherit res Partner</field>
+             <field name="model">res.partner</field>
+             <field name="inherit_id" ref="base.view_partner_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='category_id']" position="after">
+                          <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>

@@ -176,7 +176,7 @@
 		                          		    Confirmed By	:
 		                          		</td>
                                         <td class="noborder">
-                                        	Fax/Email/Phone/Other
+                                        	: <span t-field="o.confirmed_by"/>
                                         </td>
                                         <td class="noborder">
                                         	&#160;

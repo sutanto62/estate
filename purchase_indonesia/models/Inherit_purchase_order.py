@@ -26,6 +26,11 @@ class InheritPurchaseOrder(models.Model):
     source_purchase_request = fields.Char('Source Purchase Request')
     po_no = fields.Char('Purchase order number')
     hide = fields.Boolean('Hide')
+    confirmed_by = fields.Selection([
+        ('fax', 'Fax'),
+        ('email', 'E-Mail'),
+        ('phone', 'Phone'),
+        ('other','Other')])
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('sent', 'RFQ Sent'),
@@ -111,6 +116,7 @@ class InheritPurchaseOrder(models.Model):
     def print_purchase_order(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_order')
 
+    #todo change template email purchase_quotation
     # @api.multi
     # def action_rfq_send(self):
     #     '''

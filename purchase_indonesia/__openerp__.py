@@ -33,6 +33,7 @@
         'config_report/config_purchase_request.xml',
 
         'views/inherit_purchase_request.xml',
+        'views/inherit_res_partner.xml',
         'views/procur_request_sequence.xml',
         'views/procur_request_view.xml',
         'views/management_good_request.xml',
