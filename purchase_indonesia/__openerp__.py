@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','purchase_request','purchase_requisition','estate','account_budget'],
+    'depends': ['base','base_indonesia','purchase_request','purchase_requisition','estate','account_budget'],
 
     # always loaded
     'data': [
@@ -33,7 +33,6 @@
         'config_report/config_purchase_request.xml',
 
         'views/inherit_purchase_request.xml',
-        'views/inherit_res_partner.xml',
         'views/procur_request_sequence.xml',
         'views/procur_request_view.xml',
         'views/management_good_request.xml',
@@ -47,7 +46,7 @@
         'views/procur_return_view.xml',
         'workflow/workflow_procur_good_request.xml',
         'workflow/workflow_management_good_request.xml',
-        'workflow/workflow_quotation_comparison_form.xml',
+        # 'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',
         'reports/report_goods_receipt_notes.xml',

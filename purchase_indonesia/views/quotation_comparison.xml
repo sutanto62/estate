@@ -45,10 +45,14 @@
             <field name="arch" type="xml">
                 <form>
                      <header coolspan="10">
-                            <button name="button_send_request" states="draft" string="Send QCF" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
-                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_send" states="draft" string="Send QCF" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
+                            <button name="action_approve" states="confirm" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve1" states="approve" string="Approval Finance" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve2" states="approve1" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve3" states="approve2" string="Approval Director" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve4" states="approve3" string="Approval President Director" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
                             <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="button_cancel" states="draft" string="Cancel"/>
+                            <button name="button_draft" states="draft" string="Cancel"/>
                             <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>

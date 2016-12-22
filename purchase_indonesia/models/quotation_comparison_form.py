@@ -59,11 +59,16 @@ class QuotationComparisonForm(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send QCF'),
-        ('approve', 'Confirm'),
+        ('approve','Approve Finance'),
+        ('approve1', 'Approve GM'),
+        ('approve2','Approve Director'),
+        ('approve3','Approve President Director'),
+        ('approve4','Approve head of the representative office'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True)
     remarks = fields.Text('Remarks')
+    reject_reason = fields.Text('Reject Reason')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -136,19 +141,100 @@ class QuotationComparisonForm(models.Model):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_quotation_comparison_form_document')
 
     @api.multi
-    def action_send(self,):
+    def action_send(self):
         self.write({'state': 'confirm'})
         self.tracking_approval()
+        return True
+
+    @api.multi
+    def button_draft(self):
+        for rec in self:
+            rec.state = 'draft'
+            self.tracking_approval()
         return True
 
     @api.multi
     def action_confirm(self,):
         """ Confirms QCF.
         """
-        name = self.name
-        self.write({'name':"Quotation Comparison Form %s " %(name)})
+        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
+        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        if purchase_request.location == 'KPST' and purchase_request.total_estimate_price < price_standard3:
+            self.write({'state' : 'approve'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPWK' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'approve4'})
+            self.tracking_approval()
+        return True
+
+    @api.multi
+    def action_approve(self):
+        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
+        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        if purchase_request.location == 'KPST' and purchase_request.total_estimate_price < price_standard3:
+            self.write({'state' : 'done'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPST' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'approve1'})
+            self.tracking_approval()
+
+    @api.multi
+    def action_approve1(self):
+        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
+        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        if purchase_request.location == 'KPST' and purchase_request.total_estimate_price < price_standard1:
+            self.write({'state' : 'done'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPST' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'approve2'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPWK' and purchase_request.total_estimate_price < price_standard1:
+            self.write({'state' : 'done'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPWK' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'approve2'})
+            self.tracking_approval()
+        return True
+
+    @api.multi
+    def action_approve2(self):
+        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
+        price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        if purchase_request.location == 'KPST' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'done'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPST' and purchase_request.total_estimate_price >= price_standard2:
+            self.write({'state' : 'approve3'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPWK' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'done'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPWK' and purchase_request.total_estimate_price >= price_standard2:
+            self.write({'state' : 'approve3'})
+            self.tracking_approval()
+        return True
+
+    @api.multi
+    def action_approve3(self):
         self.write({'state': 'done'})
         self.tracking_approval()
+        return True
+
+    @api.multi
+    def action_approve4(self):
+        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
+        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        if purchase_request.location == 'KPWK' and purchase_request.total_estimate_price < price_standard3:
+            self.write({'state' : 'done'})
+            self.tracking_approval()
+        elif purchase_request.location == 'KPWK' and purchase_request.total_estimate_price >= price_standard1:
+            self.write({'state' : 'approve1'})
+            self.tracking_approval()
         return True
 
     def action_done(self, cr, uid, ids, context=None):

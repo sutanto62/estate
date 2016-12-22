@@ -17,13 +17,6 @@ class InheritPurchaseRequisition(models.Model):
 
     owner_id = fields.Integer('owner id')
 
-class InheritResCompany(models.Model):
-
-    _inherit = 'res.company'
-
-    code = fields.Char('Code Company')
-
-
 class InheritPurchaseRequest(models.Model):
 
     _inherit = 'purchase.request'
