@@ -29,6 +29,11 @@ class ManagementGoodRequest(models.Model):
     warehouse_id = fields.Many2one('stock.location','Source Warehouse',domain=[('usage','=','internal'),
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
     goodrequestline_ids = fields.One2many('management.good.request.line','owner_id','Good Request Line')
+    # goodreturnline_ids = fields.One2many('')
+    type = fields.Selection([
+        ('request', 'Request Goods'),
+        ('return', 'Return Goods')
+    ],string="Type Request")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send Request'),
@@ -198,6 +203,12 @@ class ManagementGoodRequestLine(models.Model):
         #onchange UOM in Request Good
         if self.product_id:
             self.uom_id = self.product_id.uom_id
+
+
+# class ManagementGoodReturnLine(models.Model):
+#
+#     _name = 'management.good.request.line'
+#     _description = 'Management Good Request Line '
 
 
 

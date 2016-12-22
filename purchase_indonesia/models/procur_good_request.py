@@ -88,6 +88,7 @@ class ProcurGoodRequest(models.Model):
                 'requester_id' : request.requester_id.id,
                 'department_id' : request.department_id.id,
                 'company_id' : request.company_id.id,
+                'type' : 'request',
                 'state' : 'draft',
                 'origin' : request.complete_name
             }

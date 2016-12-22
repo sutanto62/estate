@@ -30,6 +30,7 @@ class ProcurGoodReturns(models.Model):
     warehouse_id = fields.Many2one('stock.location','Warehouse',domain=[('usage','=','internal'),
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
     procurement_return_line_ids = fields.One2many('procur.good.returnline','return_id','Goods Return Line')
+    reject_request = fields.Text('Reject Request')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send Request'),

@@ -20,3 +20,4 @@ class InheritResPartner(models.Model):
     _description = 'Inherit Res Partner'
 
     product_category_ids = fields.Many2many('product.category','supplier_product_category_rel','partner_id','categ_id',string='Category Product')
+    partner_product = fields.Char('Partner Product')

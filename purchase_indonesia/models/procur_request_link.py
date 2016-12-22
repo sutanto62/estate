@@ -43,14 +43,14 @@ class InheritPurchaseRequest(models.Model):
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     state = fields.Selection(
-        selection_add=[('approval1', 'Approval Dept Head'),
-                       ('approval2', 'Approval Div Head'),
-                       ('budget', 'Approval Budget'),
-                       ('technic1', 'Approval Technic Dept Head'),
-                       ('technic2', 'Approval Technic Div Head'),
-                       ('technic3', 'Approval Technic ICT Dept'),
-                       ('technic4', 'Approval Technic GM Plantation Dept'),
-                       ('technic5', 'Approval Technic EA Dept'),
+        selection_add=[('approval1', 'Dept Head Approved'),
+                       ('approval2', 'Div Head Approved'),
+                       ('budget', 'Budget Approved'),
+                       ('technic1', 'Technic Dept Head Approved '),
+                       ('technic2', 'Technic Div Head Approved'),
+                       ('technic3', 'Technic ICT Dept Approved'),
+                       ('technic4', 'Technic GM Plantation Dept Approved'),
+                       ('technic5', 'Technic EA Dept Approved'),
                        ('reject','Reject')])
     currency_id = fields.Many2one('res.currency', 'Currency', required=True,\
         default=lambda self: self.env.user.company_id.currency_id)

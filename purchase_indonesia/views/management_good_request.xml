@@ -1,7 +1,7 @@
 <openerp>
     <data>
         <record model="ir.ui.view" id="view_management_good_request_tree">
-            <field name="name">management Goods Request</field>
+            <field name="name">management Goods </field>
             <field name="model">management.good.request</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
@@ -18,7 +18,7 @@
 
         <!-- View Form: Path -->
         <record id="view_management_good_request_form" model="ir.ui.view">
-            <field name="name">Management Goods Request</field>
+            <field name="name">Management Goods</field>
             <field name="model">management.good.request</field>
             <field name="priority">1</field>
             <field name="arch" type="xml">
@@ -51,19 +51,30 @@
                                 <group>
                                     <field name="department_id" string="Department" options="{'no_create_edit': True}"/>
                                     <field name="requester_id" string="Requester" options="{'no_create_edit': True}"/>
+                                    <field name="type" string="Type Request"/>
                                     <field name="origin" string="Source Document"/>
                                 </group>
                             </group>
 
 
                             <group>
-                                <notebook>
-                                     <page string="Detail Request">
+                                <notebook attrs="{'invisible' : [('type', '!=', 'request')]}">
+                                     <page string="Detail Request" >
                                         <tree>
                                             <field name="goodrequestline_ids" track_visibility="onchange"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_indonesia.view_tree_management_good_request_line',
                                                        }"/>
+                                        </tree>
+                                    </page>
+                                </notebook>
+                                <notebook attrs="{'invisible' : [('type', '!=', 'return')]}">
+                                     <page string="Detail Return" >
+                                        <tree>
+                                            <!--<field name="goodrequestline_ids" track_visibility="onchange"-->
+                                                   <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"-->
+                                                <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_management_good_request_line',-->
+                                                       <!--}"/>-->
                                         </tree>
                                     </page>
                                 </notebook>
@@ -94,7 +105,7 @@
         </record>
 
         <record model="ir.actions.act_window" id="management_good_request_action">
-            <field name="name">Procurement Goods Request Management </field>
+            <field name="name">Procurement Goods Management </field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">management.good.request</field>
             <field name="view_type">form</field>

@@ -41,3 +41,7 @@
 "v_quotation_comparison_form_line_dept_head","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_dept_head","True","False","False","False"
 "v_quotation_comparison_form_line_manager","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_manager","True","True","True","False"
 "v_quotation_comparison_form_line_procurement_staff","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_procstaff","True","True","True","False"
+,,,,,,,
+"purchase_indonesia_type_user","purchase_indonesia_type","purchase_indonesia.model_purchase_indonesia_type","purchase_request.group_purchase_request_user","True","False","False","False"
+,,,,,,,
+"res_company_procurement_staff","res_company","base.model_res_company","purchase_request.group_purchase_request_procstaff","True","True","True","False"

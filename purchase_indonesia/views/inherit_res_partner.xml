@@ -6,7 +6,8 @@
              <field name="inherit_id" ref="base.view_partner_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='category_id']" position="after">
-                          <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
+                      <field name="partner_product" string="Partner Product"/>
+                      <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
                  </xpath>
              </field>
          </record>

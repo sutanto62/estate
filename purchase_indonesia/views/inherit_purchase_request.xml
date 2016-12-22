@@ -113,7 +113,7 @@
                  </xpath>
                  <xpath expr="//button[@name='button_to_approve']" position="replace">
                      <button name="button_to_approve" states="button_to_approve"
-                            string="Approval Finance" type="object"
+                            string="Approve Finance" type="object"
                             class="oe_highlight"/>
 
                  </xpath>
@@ -127,7 +127,7 @@
                  <xpath expr="//button[@name='button_approved']" position="replace">
                        <button name="button_approved"
                             states="to_approve"
-                            string="Send To Quotation"
+                            string="Approve Finance"
                             type="object"
                             class="oe_highlight"
                             groups="purchase_request.group_purchase_request_manager"/>
@@ -143,16 +143,16 @@
                             class="oe_highlight"
                              groups="purchase_request.group_purchase_request_user"/>
                      <button name="action_confirm1" states="approval1"
-                            string="Approval Dept Head" type="object"
+                            string="Approve Dept Head" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_dept_head"/>
                      <button name="action_confirm2" states="approval2"
-                            string="Approval Div Head" type="object"
+                            string="Approve Div Head" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                      <button name="action_budget" states="budget"
-                            string="Approval Budget" type="object"
+                            string="Approve Budget" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
                      <button name="action_techic" states="technic1,technic2,technic3,technic4,technic5"
-                            string="Approval Check Techinal" type="object"
+                            string="Approve Technical Check" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_technical1,
                             purchase_request.group_purchase_request_technical2,
                             purchase_request.group_purchase_request_technical3,
