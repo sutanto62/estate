@@ -45,20 +45,21 @@
             <field name="arch" type="xml">
                 <form>
                      <header coolspan="10">
-                            <button name="action_send" states="draft" string="Send QCF" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
-                            <button name="action_approve" states="confirm" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="action_approve1" states="approve" string="Approval Finance" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="action_approve2" states="approve1" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="action_approve3" states="approve2" string="Approval Director" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="action_approve4" states="approve3" string="Approval President Director" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_send" states="draft"  type="object" string="Send QCF" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
+                            <button name="action_confirm" states="confirm" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve" states="approve" type="object" string="Approval Finance" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve1" states="approve1"  type="object" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve2" states="approve2" type="object" string="Approval Director" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve3" states="approve3"  type="object" string="Approval President Director" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_approve4" states="confirm2"  type="object" string="Approval Head Of RO" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
                             <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="button_draft" states="draft" string="Cancel"/>
+                            <button name="button_draft" states="draft" type="object" string="Cancel"/>
                             <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
                     <sheet>
                          <div class="oe_right oe_button_box">
-                                <button name="open_product_line" type="object"
+                                <button name="open_product_line" type="object" attrs="{'invisible' : [('state', '!=', 'done')]}"
                                         string="Product Lines"
                                         class="oe_stat_button" icon="fa-list" groups="purchase.group_advance_bidding"/>
                          </div>
