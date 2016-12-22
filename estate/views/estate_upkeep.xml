@@ -267,7 +267,10 @@
                                         <field name="quantity_piece_rate" string="PR"
                                             attrs="{'readonly':['|', ('activity_wage_method','!=','standard'),
                                             ('activity_contract', '=', True)]}"/>
-                                        <field name="amount" groups="estate.group_assistant"/>
+                                        <field name="wage_number_of_day" string="D Wage"/>
+                                        <field name="wage_overtime" string="OT Wage"/>
+                                        <field name="wage_piece_rate" string="PR Wage"/>
+                                        <field name="amount" string="Wage"/>
                                         <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant"/>
                                         <!-- do not remove field below -->
                                         <field name="activity_contract" invisible="True"/>
@@ -278,9 +281,6 @@
                                         <field name="upkeep_id" invisible="True"/>
                                         <field name="division_id" invisible="True"/>
                                         <field name="number_of_day" invisible="True"/>
-                                        <field name="wage_number_of_day" invisible="True"/>
-                                        <field name="wage_overtime" invisible="True"/>
-                                        <field name="wage_piece_rate" invisible="True"/>
                                         <field name="activity_wage_method" invisible="True"/>
                                         <field name="cross_team_id" invisible="True"/>
                                     </tree>
@@ -513,9 +513,9 @@
                     <field name="ratio_quantity_day" digits="(8,2)" string="Q/D"/>
                     <field name="ratio_day_quantity" digits="(8,2)" string="D/Q"/>
                     <field name="ratio_wage_quantity" digits="(12,2)" string="W/Q"/>
-                    <field name="wage_number_of_day" string="Daily Wage" groups="base.group_hr_manager,estate.group_assistant"/>
-                    <field name="wage_overtime" string="OT Wage" groups="base.group_hr_manager,estate.group_assistant"/>
-                    <field name="wage_piece_rate" string="PR Wage" groups="base.group_hr_manager,estate.group_assistant"/>
+                    <field name="wage_number_of_day" string="D Wage"/>
+                    <field name="wage_overtime" string="OT Wage"/>
+                    <field name="wage_piece_rate" string="PR Wage"/>
                     <field name="amount" string="Wage" sum="Wage"/>
                     <field name="prod_quantity_day" string="Prod (%)" avg="Productivity"/>
                     <field name="state" invisible="True"/>

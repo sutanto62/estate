@@ -21,12 +21,24 @@ class Employee(models.Model):
         if vals.get('contract_type') == '2' and vals.get('contract_period') == '2' \
                 and vals.get('company_id') and vals.get('estate_id'):
             seq_obj = self.env['ir.sequence']
-            estate = {'LYD': '1'}  # Key is block template name, Value is number as memo internal.
+            # estate = {'LYD': '1'}  # Key is block template name, Value is number as memo internal.
             estate_id = self.env['estate.block.template'].search([('id', '=', vals.get('estate_id'))], limit=1)
             company_id = self.env['res.company'].search([('id', '=', vals.get('company_id'))])
             prefix = '%(' + estate_id.name + ')s'
-            d = prefix % estate
-            sequence_code = 'hr_indonesia.' + '3' + company_id.name + d
+
+            # Use 0 if no code find
+            if hasattr(self.env['stock.location'], 'estate_code') or estate_id.estate_code:
+                map_estate = {estate_id.name: estate_id.estate_code}
+                d = prefix % map_estate
+            else:
+                d = prefix % '0'
+
+            # Use 00 if no code find
+            if hasattr(self.env['res.company'], 'code'):
+                sequence_code = 'hr_indonesia.' + '3' + company_id.code + d
+            else:
+                sequence_code = 'hr_indonesia.' + '3XXX' + d
+
             res = seq_obj.next_by_code(sequence_code)
             return res
         else:

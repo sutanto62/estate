@@ -10,6 +10,8 @@ class TestSequence(TransactionCase):
 
     def setUp(self):
         super(TestSequence, self).setUp()
+        self.Company = self.env['res.company']
+        self.Estate = self.env['stock.location']
         self.Employee = self.env['hr.employee']
         self.Sequence = self.env['ir.sequence']
 
@@ -58,21 +60,23 @@ class TestSequence(TransactionCase):
             'company_id': self.company.id,
         }
 
-
         # I created KHL employee (PKWT Daily)
         khl_id = self.Employee.create(khl)
-        self.assertEqual(len(khl_id.nik_number), 10, 'Employee ID should have 10 length of character')
-        self.assertEqual(khl_id.nik_number[0], '3', 'Segment 1 should be 3')
-        self.assertEqual(khl_id.nik_number[1:3], company_code, 'Segment 2 should be ' + company_code)
-        self.assertEqual(khl_id.nik_number[3:4], estate_code, 'Segment 3 should be ' + estate_code)
+        if khl_id.nik_number:
+            self.assertEqual(len(khl_id.nik_number), 10, 'Employee ID should have 10 length of character')
+            self.assertEqual(khl_id.nik_number[0], '3', 'Segment 1 should be 3')
+            self.assertEqual(khl_id.nik_number[1:3], company_code, 'Segment 2 should be ' + company_code)
+            self.assertEqual(khl_id.nik_number[3:4], estate_code, 'Segment 3 should be ' + estate_code)
+        else:
+            self.assertFalse(khl_id.nik_number, 'Employee ID should not been created')
 
         # I created KHL employee without company
         khl_no_company_id = self.Employee.create(khl_no_company)
-        self.assertFalse(khl_no_company_id.nik_number)
+        self.assertFalse(khl_no_company_id.nik_number, 'Employee ID should not been created')
 
         # I created KHL employee without estate
         khl_no_estate_id = self.Employee.create(khl_no_estate)
-        self.assertFalse(khl_no_estate_id.nik_number)
+        self.assertFalse(khl_no_estate_id.nik_number, 'Employee ID should not been created')
 
     def test_02_update_nik(self):
         """ Generate new employee identification number."""
@@ -87,10 +91,13 @@ class TestSequence(TransactionCase):
 
         # I created KHL employee (PKWT Daily)
         khl_id = self.Employee.create(vals)
-        self.assertEqual(len(khl_id.nik_number), 10, 'Employee ID should have 10 length of character')
-        self.assertEqual(khl_id.nik_number[0], '3', 'Segment 1 should be 3')
-        self.assertEqual(khl_id.nik_number[1:3], self.company_code, 'Segment 2 should be ' + self.company_code)
-        self.assertEqual(khl_id.nik_number[3:4], self.estate_code, 'Segment 3 should be ' + self.estate_code)
+        if khl_id.nik_number:
+            self.assertEqual(len(khl_id.nik_number), 10, 'Employee ID should have 10 length of character')
+            self.assertEqual(khl_id.nik_number[0], '3', 'Segment 1 should be 3')
+            self.assertEqual(khl_id.nik_number[1:3], self.company_code, 'Segment 2 should be ' + self.company_code)
+            self.assertEqual(khl_id.nik_number[3:4], self.estate_code, 'Segment 3 should be ' + self.estate_code)
+        else:
+            self.assertFalse(khl_id.nik_number, 'Employee ID should not been created')
 
         # I promote KHL to PKWTT Monthly
         new_vals = {
