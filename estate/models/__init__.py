@@ -3,3 +3,4 @@ import estate_activity
 import estate_hr
 import inherited_product_category
 import estate_upkeep
+import inherited_hr_employee

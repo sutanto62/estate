@@ -8,6 +8,7 @@ class EstateLocation(models.Model):
     """Extend Location. Have relation one-to-one with EstateBlockTemplate."""
     _inherit = 'stock.location'
 
+    estate_code = fields.Char('Estate Code', help='Use by Employee Identity Number')
     estate_location = fields.Boolean(string="Estate Location")
     estate_location_level = fields.Selection([('1','Estate'), ('2', 'Division'), ('3', 'Block'), ('4', 'Sub Block')],
                                              string="Estate Location Level")

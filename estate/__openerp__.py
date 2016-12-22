@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'base_geoengine','mail'],
+    'depends': ['base', 'stock', 'hr_indonesia', 'account', 'mail', 'base_autoreset_sequence'],
 
     # always loaded
     'data': [
@@ -32,6 +32,7 @@
         'views/estate_upkeep.xml',
         'views/estate_hr_view.xml',
         'views/inherited_product_category_view.xml',
+        'views/inherited_hr_indonesia_view.xml',
         'res_config_view.xml',
         'data/config_data.xml',
         'data/estate_uom_data.xml',

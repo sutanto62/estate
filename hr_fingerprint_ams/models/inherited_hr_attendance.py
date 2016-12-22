@@ -14,7 +14,9 @@ _logger = logging.getLogger(__name__)
 
 class FingerAttendance(models.Model):
     """
-    Attendance will be imported from Solution AMS. Create detailed attendance.
+    Saves AMS Solutions data. Each row creates attendance based on condition:
+    1. Sign-in/out condition.
+    2. Pengecualian condition (action reason).
     """
     _name = 'hr_fingerprint_ams.attendance'
     _description = 'Fingerprint Attendance'
