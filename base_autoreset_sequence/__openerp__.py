@@ -3,7 +3,7 @@
     'name': "Autoreset Sequence",
 
     'summary': """
-        Reset sequence""",
+        Reset sequence, 5 Custom Prefix""",
 
     'description': """
         Long description of module's purpose

@@ -69,6 +69,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//group" position="inside">
                     <group string="Estate Location Information">
+                        <field name="estate_code"/>
                         <field name="estate_location"/>
                         <field name="estate_location_level"/>
                         <field name="estate_location_type"/>
@@ -117,6 +118,7 @@
                         </group>
 
                         <group name="account" string="Account">
+                            <field name="estate_code"/>
                             <field name="account_id"/>
                         </group>
 

@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, fields, api, osv, _
-from openerp.exceptions import ValidationError
+from openerp import models, fields, api, _
+import logging
 
+from openerp.exceptions import ValidationError, RedirectWarning
+
+_logger = logging.getLogger(__name__)
 
 class Employee(models.Model):
     """Extend HR Employee to accommodate Indonesian Workforce.
@@ -14,17 +17,17 @@ class Employee(models.Model):
     _inherit = 'hr.employee'
 
     # Employee Information
-    nik_number = fields.Char("Employee Identity Number")
+    nik_number = fields.Char("Employee Identity Number", track_visibility="onchange")
     bpjs_number = fields.Char("BPJS Number")
     health_insurance_number = fields.Char("Health Insurance Number")
     npwp_number = fields.Char("NPWP Number")
-    company_id = fields.Many2one('res.company', "Cost Center")
+    company_id = fields.Many2one('res.company', "Company", track_visibility="onchange")
     contract_type = fields.Selection([('1', 'PKWTT'), ('2', 'PKWT')], "Contract Type",
                                        help="* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, "\
-                                            "* PKWT, Perjanjian Kerja Waktu Tertentu.")
+                                            "* PKWT, Perjanjian Kerja Waktu Tertentu.", track_visibility="onchange")
     contract_period = fields.Selection([('1', 'Monthly'), ('2', 'Daily')], "Contract Period",
                                        help="* Monthly, Karyawan Bulanan, "\
-                                            "* Daily, Karyawan Harian.")
+                                            "* Daily, Karyawan Harian.", track_visibility="onchange")
     outsource = fields.Boolean("Outsource employee", help="Activate to represent employee as Outsource.")
     internship = fields.Boolean("Internship", help="Activate to represent internship employee.")
     age = fields.Float("Employee Age", compute='_compute_age')
@@ -38,35 +41,6 @@ class Employee(models.Model):
     def _compute_age(self):
         for record in self:
             record.age = 1
-
-    # def _check_employee(self, vals):
-    #     """Check employee by NIK or ID number"""
-    #     print 'vals are %s' % vals
-    #     domain = []
-    #     employee_ids = []
-    #
-    #     if vals['nik_number']:
-    #         domain = [('nik_number', '=', vals['nik_number'])]
-    #     if vals['identification_id']:
-    #         domain = [('identification_id', '=', vals['identification_id'])]
-    #     if vals['nik_number'] and vals['identification_id']:
-    #         domain = ['|', ('nik_number', '=', vals['nik_number']), ('identification_id', '=', vals['identification_id'])]
-    #
-    #     print domain
-    #     if domain:
-    #         employee_ids = self.search(domain)
-    #         print employee_ids
-    #
-    #     if employee_ids:
-    #         error_msg = "There have been employee with entered NIK and ID number."
-    #         raise ValidationError(error_msg)
-    #
-    #     return True
-    #
-    # @api.model
-    # def create(self, vals):
-    #     self._check_employee(vals)
-    #     return super(Employee, self).create(vals)
 
     @api.multi
     @api.constrains('nik_number', 'identification_id')
@@ -92,28 +66,66 @@ class Employee(models.Model):
 
             return True
 
+    @api.multi
+    def generate_nik(self, vals):
+        """ Create NIK as corporate policy
+        ir_sequence_code_1 = PKWTT/PKWT Monthly/PKWT Daily
+        ir_sequence_code_2 = Estate
+        """
 
-        # for record in self:
-        #     # put self.ids to exclude it self
-        #     employee_ids = []
-        #
-        #     if not self.nik_number:
-        #         return True
-        #     else:
-        #         employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
-        #         if employee_ids:
-        #             error_msg = "There is duplicate of Employee Identity Number."
-        #             raise ValidationError(error_msg)
-        #
-        #     if not self.identification_id:
-        #         return True
-        #     else:
-        #         employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
-        #         if employee_ids:
-        #             error_msg = "There is duplicate of Identification No."
-        #             raise ValidationError(error_msg)
+        seq_obj = self.env['ir.sequence']
+        res = ''
 
-            return True
+        # Internship and outsource has no Employee Identification Number
+        if vals.get('internship') or vals.get('outsource'):
+            return
+
+        if vals.get('contract_type') == '1':
+            # PKWTT Monthly/Daily
+            res = seq_obj.with_context(ir_sequence_code_1='1').next_by_code('hr_indonesia.nik')
+        elif vals.get('contract_type') == '2' and vals.get('contract_period') == '1':
+            # Contract / PKWT Montly
+            res = seq_obj.with_context(ir_sequence_code_1='2').next_by_code('hr_indonesia.nik')
+        else:
+            return
+        return res
+
+    @api.model
+    def create(self, vals):
+        """ Avoid skipped number for standard sequence."""
+        if not vals.get('nik_number'):
+            vals['nik_number'] = self.generate_nik(vals)
+        return super(Employee, self).create(vals)
+
+    @api.multi
+    def write(self, vals):
+        """ Update Employee Identity automatically if there is changes at contract type or period."""
+
+        for record in self:
+            employee_id = record.env['hr.employee'].browse(record.id)
+
+            change_type = change_period = False
+
+            if vals.get('contract_type'):
+                change_type = True if vals['contract_type'] != employee_id.contract_type else False
+            if vals.get('contract_period'):
+                change_period = True if vals['contract_period'] != employee_id.contract_period else False
+
+            if change_type or change_period:
+                # _generate_nik parameter is vals
+                new_vals = {
+                    'company_id': record.company_id.id,
+                    # 'estate_id': record.estate_id.id, extend at estate module
+                    'contract_type': vals['contract_type'] if vals['contract_type'] else record.contract_type,
+                    'contract_period': vals['contract_period'] if vals['contract_period'] else record.contract_period,
+                    # 'nik_number': record.nik_number,
+                    'internship': record.internship,
+                    'outsource': record.outsource
+                }
+
+                vals['nik_number'] = self.generate_nik(new_vals)
+                _logger.info(_('Employee %s has new Employee Identity Number %s: ' % (employee_id.name, vals['nik_number'])))
+            return super(Employee, self).write(vals)
 
 
 class Religion(models.Model):

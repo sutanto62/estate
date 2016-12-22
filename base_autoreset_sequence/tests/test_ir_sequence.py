@@ -310,5 +310,18 @@ class SequenceAutoreset(common.TransactionCase):
         self.assertEqual(no_b, 'SEQ/2016/02/0002')
 
 
+class SequenceCustomCode(common.TransactionCase):
+
+    def setUp(self):
+        super(SequenceCustomCode, self).setUp()
+        val_nik = {
+            'name': 'Nomor Induk',
+            'type': 'normal',
+        }
+
+    def test_00_code_1(self):
+        pass
+
+
 if __name__ == "__main__":
     unittest.main()

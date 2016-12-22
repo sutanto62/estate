@@ -108,3 +108,5 @@ class TestUpkeep(TransactionCase):
             labour._compute_number_of_day()
         self.assertEqual(self.upkeep.labour_line_ids[0].number_of_day, 0, 'Estate: _compute_number_of_day for contract based activity failed')
 
+# TODO create test multi satuan waktu dan produktititas
+# TODO create test no labour has more than 1 worked day.

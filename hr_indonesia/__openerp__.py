@@ -26,7 +26,7 @@
         'security/ir.model.access.csv',
         'templates.xml',
         'views/hr_indonesia_view.xml',
-        'data/hr_data.xml',
+        'data/hr_data.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
