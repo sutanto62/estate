@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="1">
         <record id="estate_paperformat_a4" model="report.paperformat">
             <field name="name">Division Report</field>
             <field name="default" eval="True"/>

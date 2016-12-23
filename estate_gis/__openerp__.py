@@ -9,13 +9,13 @@
         Long description of module's purpose
     """,
 
-    'author': "Your Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Cayadi Sutanto <cayadi.sutanto@palmagroup.co.id>, Probo Sukmohadi <probo.sukmohadi@palmagroup.co.id>",
+    'website': "http://www.palmagroup.co.id",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
     # for the full list
-    'category': 'Uncategorized',
+    'category': 'Agriculture',
     'version': '0.1',
 
     # any module necessary for this one to work correctly
@@ -23,7 +23,6 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'templates.xml',
         'views/inherited_estate.xml'
     ],

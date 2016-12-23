@@ -113,7 +113,6 @@ class Employee(models.Model):
                 change_period = True if vals['contract_period'] != employee_id.contract_period else False
 
             if change_type or change_period:
-                print 'vals %s' % vals
                 # _generate_nik parameter is vals
                 new_vals = {
                     'company_id': record.company_id.id,

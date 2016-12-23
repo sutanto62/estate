@@ -25,7 +25,7 @@ There are three salary components.
 
     """,
 
-    'author': "Palma Group",
+    'author': "Cayadi Sutanto <cayadi.sutanto@palmagroup.co.id>, Probo Sukmohadi <probo.sukmohadi@palmagroup.co.id>",
     'website': "http://www.palmagroup.co.id",
 
     # Categories can be used to filter modules in modules listing
