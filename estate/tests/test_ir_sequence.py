@@ -111,6 +111,10 @@ class TestSequence(TransactionCase):
         self.assertEqual(khl_id.nik_number[0], '1', 'Segment 1 should be 1')
         self.assertEqual(khl_id.nik_number[1:3], self.str_year, 'Segment 2 should be ' + self.str_year)
 
+        # I changed contract period
+        khl_id.write({'contract_period': self.daily})
+        self.assertTrue(khl_id)
+
 
     # def test_01_generate_nik(self):
     #     """ Generate employee identification number."""
