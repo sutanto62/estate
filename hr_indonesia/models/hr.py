@@ -108,16 +108,18 @@ class Employee(models.Model):
 
             if vals.get('contract_type'):
                 change_type = True if vals['contract_type'] != employee_id.contract_type else False
+
             if vals.get('contract_period'):
                 change_period = True if vals['contract_period'] != employee_id.contract_period else False
 
             if change_type or change_period:
+                print 'vals %s' % vals
                 # _generate_nik parameter is vals
                 new_vals = {
                     'company_id': record.company_id.id,
                     # 'estate_id': record.estate_id.id, extend at estate module
-                    'contract_type': vals['contract_type'] if vals['contract_type'] else record.contract_type,
-                    'contract_period': vals['contract_period'] if vals['contract_period'] else record.contract_period,
+                    'contract_type': vals['contract_type'] if 'contract_type' in vals else record.contract_type,
+                    'contract_period': vals['contract_period'] if 'contract_period' in vals else record.contract_period,
                     # 'nik_number': record.nik_number,
                     'internship': record.internship,
                     'outsource': record.outsource
