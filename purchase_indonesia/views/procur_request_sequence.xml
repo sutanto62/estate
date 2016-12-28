@@ -5,7 +5,7 @@
         <record id="seq_procur_request" model="ir.sequence">
             <field name="name">Sequence Procurement Request Good</field>
             <field name="code">procur.good.request</field>
-            <!--<field name="prefix">GR</field>-->
+            <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -13,7 +13,7 @@
         <record id="seq_procur_return" model="ir.sequence">
             <field name="name">Sequence Procurement Return Good</field>
             <field name="code">procur.good.return</field>
-            <!--<field name="prefix">GR</field>-->
+            <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -21,7 +21,7 @@
         <record id="seq_management_request" model="ir.sequence">
             <field name="name">Sequence Management Good Request </field>
             <field name="code">management.good.request</field>
-            <!--<field name="prefix">GR</field>-->
+            <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -29,7 +29,7 @@
         <record id="seq_quotation_comparison" model="ir.sequence">
             <field name="name">Sequence Quotation Comparison </field>
             <field name="code">quotation.comparison.form</field>
-            <!--<field name="prefix">GR</field>-->
+            <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -37,7 +37,7 @@
         <record id="seq_quotation_po_no" model="ir.sequence">
             <field name="name">Sequence Purchase Order</field>
             <field name="code">purchase.po_no</field>
-            <!--<field name="prefix">GR</field>-->
+            <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
@@ -45,7 +45,7 @@
         <record id="seq_quotation_grn" model="ir.sequence">
             <field name="name">Sequence Goods Receipt Note</field>
             <field name="code">stock.grn</field>
-            <!--<field name="prefix">GR</field>-->
+            <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>

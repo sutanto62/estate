@@ -84,7 +84,6 @@ class InheritPurchaseTenders(models.Model):
                 'po_no':self.pool.get('ir.sequence').next_by_code(cr, uid,'purchase.po_no'),
                 'source_purchase_request' : tender.origin,
                 'companys_id' :tender.companys_id.id,
-                'type_location' : tender.type_location,
                 'origin': tender.complete_name}
 
     def _prepare_purchase_backorder(self, cr, uid, requisition, supplier, context=None):
