@@ -91,6 +91,7 @@ class InheritPurchaseTenders(models.Model):
             'origin': requisition.complete_name,
             'date_order': requisition.date_end or fields.datetime.now(),
             'partner_id': supplier.id,
+            'type_location':requisition.type_location,
             'currency_id': requisition.company_id and requisition.company_id.currency_id.id,
             'company_id': requisition.company_id.id,
             'fiscal_position_id': self.pool.get('account.fiscal.position').get_fiscal_position(cr, uid, supplier.id, context=context),
