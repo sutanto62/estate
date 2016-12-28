@@ -113,13 +113,11 @@ class InheritStockPicking(models.Model):
                         sumitem = sumitem + item.qty_done
                     else:
                         sumitemmin = sumitemmin + item.qty_done
-
                 tender_line_data = {
 
                     'qty_received' : sumitem + record.qty_received,
-                    'qty_outstanding' : record.product_qty - sumitem
+                    'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                     }
-
                 record.write(tender_line_data)
 
                 if stock_pack_operation_length == 1 and sumitemmin < 0 :
@@ -141,7 +139,6 @@ class InheritStockPicking(models.Model):
             self.action_cancel()
 
         else:
-
             self.do_transfer()
 
         super(InheritStockPicking,self).do_new_transfer()
