@@ -18,7 +18,8 @@ class InheritPurchaseOrder(models.Model):
     _inherit = 'purchase.order'
     _rec_name = 'complete_name'
 
-    delivery_term = fields.Char('Term Of Delivery')
+    delivery_term = fields.Selection([('indent','Indent'),('ready','Ready Stock')],'Term Of Delivery')
+    days = fields.Float('Days Of Indent')
     companys_id = fields.Many2one('res.company','Company')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Selection([('KOKB','Estate'),

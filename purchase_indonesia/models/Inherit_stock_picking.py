@@ -159,6 +159,14 @@ class InheritStockPackOperation(models.Model):
         self.product_qty = compute_product
         self.qty_done = compute_product
 
+    @api.multi
+    def split_quantities(self):
+        for pack in self:
+            if pack.qty_done < pack.product_qty:
+                error = 'Quantity done must be higher than 0 '
+                raise exceptions.ValidationError(error)
+        super(InheritStockPackOperation,self).split_quantities()
+
 
 
 
