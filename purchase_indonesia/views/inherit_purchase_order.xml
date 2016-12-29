@@ -27,7 +27,8 @@
                      <field name="payment_term_id" options="{'no_open': True, 'no_create': False}" attrs="{'readonly': [('invoice_status','=', 'invoiced')]}"/>
                  </xpath>
                  <xpath expr="//field[@name='incoterm_id']" position="after">
-                     <field name="delivery_term" string="Delivery Term"/>
+                         <field name="delivery_term" class="oe_inline" string="Delivery Term"/>
+                         <field name="days" string="Days Of Indent" class="oe_inline" attrs="{'invisible': [('delivery_term','!=', 'indent')]}"/>
                  </xpath>
                  <xpath expr="//button[@name='button_done']" position="before">
                      <button name="print_purchase_order" string="Print PO" type="object" states="purchase" groups="base.group_user"/>
