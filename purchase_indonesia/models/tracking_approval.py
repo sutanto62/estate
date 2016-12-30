@@ -21,4 +21,5 @@ class TrackingApproval(models.Model):
     name = fields.Char('Tracking Approval Name')
     owner_id = fields.Integer()
     state = fields.Char('State')
+    datetime = fields.Datetime('Date and Time Approval')
     name_user = fields.Char('')

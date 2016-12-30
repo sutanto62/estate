@@ -140,6 +140,7 @@ class InheritStockPicking(models.Model):
 
         else:
             self.do_transfer()
+            self.tracking_approval()
 
         super(InheritStockPicking,self).do_new_transfer()
 
@@ -148,6 +149,20 @@ class InheritStockPicking(models.Model):
     @api.multi
     def print_grn(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
+
+    @api.multi
+    def tracking_approval(self):
+        user= self.env['res.users'].browse(self.env.uid)
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
+        current_date=str(datetime.now().today())
+        # datetimeval=datetime.strptime(current_date, "%Y-%m-%d %H:%M:%S")
+        tracking_data = {
+            'owner_id': self.id,
+            'state' : self.state,
+            'name_user' : employee,
+            'datetime'  :current_date
+        }
+        self.env['tracking.approval'].create(tracking_data)
 
 class InheritStockPackOperation(models.Model):
 

@@ -178,8 +178,6 @@ class InheritPurchaseTenders(models.Model):
                 purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
-
-
 class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'
