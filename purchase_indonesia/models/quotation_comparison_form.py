@@ -90,9 +90,10 @@ class QuotationComparisonForm(models.Model):
         'state' : 'draft'
     }
 
-    def create(self, cr, uid,vals, context=None):
-        vals['name']=self.pool.get('ir.sequence').get(cr, uid,'quotation.comparison.form')
-        res=super(QuotationComparisonForm, self).create(cr, uid,vals)
+    @api.multi
+    def create(self,vals, context=None):
+        vals['name']=self.env['ir.sequence'].next_by_code('quotation.comparison.form')
+        res=super(QuotationComparisonForm, self).create(vals)
         return res
 
     @api.one
