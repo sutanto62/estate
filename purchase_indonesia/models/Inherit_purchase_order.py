@@ -176,10 +176,13 @@ class InheritPurchaseOrder(models.Model):
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
         return True
 
+
+
 class InheritPurchaseOrderLine(models.Model):
 
     _inherit = 'purchase.order.line'
 
     qty_request = fields.Float('Quantity Actual')
     spesification = fields.Text('Spesification')
-
+    term_of_goods = fields.Selection([('indent','Indent'),('ready','Ready Stock')],'Term Of Goods')
+    days = fields.Float('Days Of Indent')
