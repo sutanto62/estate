@@ -64,9 +64,9 @@ class InheritPurchaseTenders(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.name + ' / ' \
+            self.complete_name = self.name + '/' \
                                  + self.companys_id.code+' - '\
-                                 +'PQ'+' / '\
+                                 +'PQ'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name

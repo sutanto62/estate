@@ -95,9 +95,9 @@ class InheritPurchaseOrder(models.Model):
               result += nums[i] * count
               month -= ints[i] * count
             month = result
-            self.complete_name = ' Draft '+self.name  + ' / ' \
-                                 +str(month) +' / '+str(year)\
-                                 +' / '+self.companys_id.code+' / '+str(self.type_location)
+            self.complete_name = ' Draft '+self.name  + '/' \
+                                 +str(month) +'/'+str(year)\
+                                 +'/'+self.companys_id.code+'/'+str(self.type_location)
 
         return True
 
@@ -175,8 +175,6 @@ class InheritPurchaseOrder(models.Model):
             }
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
         return True
-
-
 
 class InheritPurchaseOrderLine(models.Model):
 

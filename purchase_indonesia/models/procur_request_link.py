@@ -135,6 +135,8 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def check_wkf_product(self):
+        #check Workflow Product and availability budget
+
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
         total_price_purchase = sum(record.total_price for record in self.line_ids)
         if self.type_functional == 'agronomy' and total_price_purchase <= price_standard:
@@ -158,7 +160,6 @@ class InheritPurchaseRequest(models.Model):
         user= self.env['res.users'].browse(self.env.uid)
         employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
         current_date=str(datetime.now().today())
-        # datetimeval=datetime.strptime(current_date, "%Y-%m-%d %H:%M:%S")
         tracking_data = {
             'owner_id': self.id,
             'state' : self.state,
@@ -170,6 +171,7 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def create_purchase_requisition(self):
+        # Create Purchase Requisition
         for purchase in self:
             purchase_data = {
                 'responsible':purchase.requested_by.id,
@@ -233,9 +235,9 @@ class InheritPurchaseRequest(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.name + ' / ' \
+            self.complete_name = self.name + '/' \
                                  + self.company_id.code+' - '\
-                                 +'PP'+' / '\
+                                 +'PP'+'/'\
                                  +str(self.department_id.name)+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
