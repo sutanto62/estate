@@ -1,0 +1,27 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="mapping_department_to_product_category_tree">
+            <field name="name">Mapping Department To Product</field>
+            <field name="model">mapping.department.product</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree editable="bottom">
+                    <field name="name" string="Name Link" invisible="1"/>
+                    <field name="department_id" string="Department"/>
+                    <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
+                    <field name="assigned_to" string="Assigned To"/>
+                </tree>
+            </field>
+        </record>
+
+         <record model="ir.actions.act_window" id="action_mapping_department_to_product">
+                <field name="name">Action Mapping Department To Product</field>
+                <field name="res_model">mapping.department.product</field>
+                <field name="view_mode">tree</field>
+        </record>
+
+       <menuitem
+            action="action_mapping_department_to_product" id="menu_config_mapping_department_to_product"
+            parent="purchase.menu_product_in_config_purchase" sequence="20" />
+    </data>
+</openerp>

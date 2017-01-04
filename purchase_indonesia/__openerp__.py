@@ -44,6 +44,7 @@
         'views/inherit_purchase_tender.xml',
         'views/procurement_process.xml',
         'views/procur_return_view.xml',
+        'views/mapping_department_to_product.xml',
         'workflow/workflow_procur_good_request.xml',
         'workflow/workflow_management_good_request.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
