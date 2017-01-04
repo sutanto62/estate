@@ -65,7 +65,7 @@ class InheritStockPicking(models.Model):
             month = result
 
             self.complete_name_picking = self.grn_no +'/' \
-                                 + self.companys_id.code+' - '\
+                                 + self.companys_id.code+'-'\
                                  +'GRN'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:

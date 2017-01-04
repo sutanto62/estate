@@ -71,9 +71,9 @@ class InheritPurchaseOrder(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.po_no + ' / ' \
-                                 +str(month) +' / '+str(year)\
-                                 +' / '+self.companys_id.code+' / '\
+            self.complete_name = self.po_no + '/' \
+                                 +str(month) +'/'+str(year)\
+                                 +'/'+self.companys_id.code+'/'\
                                  +str(self.type_location)
         elif not self.po_no and self.date_order and self.companys_id.code and self.type_location:
             date = self.date_order

@@ -124,7 +124,7 @@ class QuotationComparisonForm(models.Model):
             month = result
 
             self.complete_name = self.name + '/' \
-                                 + self.company_id.code+' - '\
+                                 + self.company_id.code+'-'\
                                  +'QCF'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:

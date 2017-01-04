@@ -243,7 +243,7 @@ class InheritPurchaseRequest(models.Model):
                 departement_code = self.department_id.name
 
             self.complete_name = self.name + '/' \
-                                     + self.company_id.code+' - '\
+                                     + self.company_id.code+'-'\
                                      +'PP'+'/'\
                                      +departement_code+'/'+str(month)+'/'+str(year)
         else:
