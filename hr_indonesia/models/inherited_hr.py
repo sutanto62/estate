@@ -19,6 +19,6 @@ class Department(models.Model):
     def _check_code(self):
         for record in self:
             if record.code:
-                if len(record.code) > 3:
-                    msg_error = _('Maximum 3 characters long.')
+                if len(record.code) > 4:
+                    msg_error = _('Maximum 4 characters long.')
                     raise ValueError(msg_error)
