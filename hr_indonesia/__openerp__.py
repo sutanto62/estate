@@ -9,8 +9,8 @@
         Long description of module's purpose
     """,
 
-    'author': "Palma Group",
-    'website': "http://www.yourcompany.com",
+    'author': "Cayadi Sutanto <cayadi.sutanto@palmagroup.co.id>, Probo Sukmohadi <probo.sukmohadi@palmagroup.co.id>",
+    'website': "http://www.palmagroup.co.id",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
@@ -31,7 +31,6 @@
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
-        'data/hr.employee.csv',
         'data/hr_estate_demo.xml',
     ],
 }
