@@ -1,0 +1,22 @@
+table, td, th {
+	border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.noborder {
+	border: 0px;
+}
+
+.border_right {
+	border-right: 1px solid black;
+}
+
+.label_table_header {
+	font-size:14pt; 
+	font-weight:bold;
+	text-align:center;
+}

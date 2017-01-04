@@ -74,13 +74,14 @@
                 <tree string="Fleet Timesheet Activity Tree" editable='bottom' delete="true">
                     <field name="id" invisible="1"/>
                     <field name="date_activity_transport" invisible="1" string="Date Activity"/>
-                    <field name="owner_id"  invisible="1" readonly="1"/>
+                    <field name="owner_id"  invisible="1" readonly="1" />
                     <field name="dc_type" invisible="1"/>
                     <field name="vehicle_id" string="Vehicle" options="{'no_create_edit': True}"/>
                     <field name="employee_id" string="Driver/Helper" options="{'no_create_edit': True}"/>
                     <field name="activity_id" string="Activity" options="{'no_create_edit': True}"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
-                    <field name="unit" string="Unit"/>
+                    <field name="unit" string="Qty"/>
+                    <field name="type_transport" string="Type"/>
                     <field name="start_location" string="Start Location" options="{'no_create_edit': True}"/>
                     <field name="end_location" string="End Location" options="{'no_create_edit': True}"/>
                     <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>

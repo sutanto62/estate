@@ -1,0 +1,14 @@
+<!--<openerp>-->
+    <!--<data>-->
+        <!--<record model="ir.ui.view" id="view_form_inherit_back_order">-->
+             <!--<field name="name">Button back Order</field>-->
+             <!--<field name="model">purchase.requisition.partner</field>-->
+             <!--<field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_partner"/>-->
+             <!--<field name="arch" type="xml">-->
+                 <!--<xpath expr="//button[@name='create_order']" position="after">-->
+                     <!--&lt;!&ndash;<button name="create_backorder" string="Create Request for Back Order Quotation" type="object" class="btn-primary"/>&ndash;&gt;-->
+                 <!--</xpath>-->
+             <!--</field>-->
+         <!--</record>-->
+    <!--</data>-->
+<!--</openerp>-->

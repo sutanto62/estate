@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+      	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
+		      <xpath expr="//head" position="inside">
+		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_goods_receipt_notes.css"/>
+		      </xpath>
+		</template>
+        <template id="report_goods_receipet_notes_document">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+            		<t t-call="report.external_layout">
+						<div class="page" style="font-family: times; background-color:white; color:black;">
+		              		<!-- Header -->
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-6" >
+		                       		<table class="noborder">
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>PT</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.company_id.name"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>Lokasi</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.type_location"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		</table>
+		                      	</div>
+		                      	<div class="col-xs-6" >
+		                       		<table class="noborder">
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>G/SRN No.</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.complete_name_picking"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>Tanggal</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.create_date"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		</table>
+		                      	</div>
+		                  	</div>
+		                  	
+		                  	<br></br>
+							<br></br>
+							
+							<div class="row" style="text-align:center; font-size:20pt;">
+		              			<div class="col-xs-12" >
+		                       		<b>GOODS/SERVICES RECEIVED NOTE (G/SRN)</b>
+								</div>
+							</div>
+							
+							<br></br>
+							<br></br>
+							
+							<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-6" >
+		                       		<table class="noborder">
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>Penerimaan dari </b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.partner_id.name"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		</table>
+		                      	</div>
+		                      	<div class="col-xs-6" >
+		                       		<table class="noborder">
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%" colspan="2">
+		                       		            <b>Referensi :</b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>PP No.</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.pr_source"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>PO/SPO No.</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.purchase_id"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="25%">
+		                       		            <b>DO No.</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.delivery_number"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		</table>
+		                      	</div>
+		                  	</div>
+							
+							<!-- Variabel -->
+							<t t-set="idx" t-value="0"/>
+							<t t-set="delta" t-value="0"/>
+		           			
+		              		<!-- Detail Header -->
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<table width="100%">
+		                            <tr class="label_table_header">
+									    <td>
+									      No
+									    </td>
+									    <td>
+									      Kode Barang/Jasa
+									    </td>
+									    <td>
+									      Nama Barang/Jasa
+									    </td>
+									    <td>
+									      Dikirim
+									    </td>
+									    <td>
+									      Diterima
+									    </td>
+									    <td>
+									      Satuan
+									    </td>
+									    <td>
+									      Selisih/Catatan
+									    </td>
+									</tr>
+								
+									<t t-foreach="o.pack_operation_product_ids" t-as="l">
+										<t t-set="idx" t-value="idx+1"/>
+										<t t-set="delta" t-value="l.product_qty-l.qty_done"/>
+										<tr>
+										   	<td>
+												<span t-esc="idx"/>
+											</td> 	
+										    <td>
+										      	<span t-field="l.product_id.default_code"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_id.name"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_qty"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.qty_done"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_id.uom_id"/>	    
+										    </td>
+										    <td>
+										      	<span t-esc="delta"/>
+										    </td>
+										</tr>
+									</t>
+								</table>
+							</div>
+							
+		              		<div class="row">
+		                        <div class="col-xs-12">
+		                            <table width="100%" class="noborder">
+			                        	<tr>
+										    <td colspan="5" class="noborder">
+										      	Penjelasan :
+										    	<br></br>
+										      	[todo] add penjelasan di objek G/SRN
+										    </td>
+										</tr>
+									</table>    	
+		                      	</div>
+		                  	</div>      
+		              		
+							<!-- Tanda Tangan -->
+		                    <div class="row">
+		                        <div class="col-xs-12">	
+			                        <table width="100%" class="noborder">
+			                            <tr>
+			                                <td class="noborder">
+			                                    Dikirim Oleh,
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    (PIC Unit Kerja Pengadaan)
+			                                    <br></br>
+			                                    Tgl.
+			                                </td>
+			                                <td class="noborder">
+			                                    Diterima Oleh,
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    (Pihak Pengaju PP)
+			                                    <br></br>
+			                                    Tgl.
+			                                </td>
+			                                <td class="noborder">
+			                                    Disetujui Oleh,
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    (Atasn Pihak Pengaju PP)
+			                                    <br></br>
+			                                    Tgl.
+			                                </td>
+			                                <td class="noborder">
+			                                    Diinput Oleh,
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    <br></br>
+			                                    (Administrasi Gudang)
+			                                    <br></br>
+			                                    Tgl.
+			                                </td>
+			                            </tr>
+			                     	</table>
+			                  	</div>
+			               	</div>	
+		             	</div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

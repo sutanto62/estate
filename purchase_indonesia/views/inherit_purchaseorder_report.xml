@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="inherit_report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+            <!--
+            <xpath expr="//div[@class='row mt32 mb32']" position="replace">
+                <h1 class="header">
+                    Palma Group
+                </h1>
+            </xpath>
+            -->
+            <xpath expr="//div[@class='page']//h2" position="replace">
+                <h3 t-if="o.state != 'draft'">Purchase Order (PO)/Service Purchase Order (SPO) #
+                    <span t-field="o.name"/>
+                </h3>
+            </xpath>
+
+            <xpath expr="//p[@t-field='o.notes']" position="before">
+                <table class="table table-condensed table-bordered">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" width="70%">
+                                Delivery
+                                <br/>
+                                Address
+                            </td>
+                            <td width="30%">
+                                Payment
+                                <br/>
+                                TOP
+                                <br/>
+                                Currency
+                                <br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" width="30%">
+                                Distribution
+                                <br/>
+                                <ol style="margin-left: 30px">
+                                    <li>Vendor</li>
+                                    <li>Accounting</li>
+                                    <li>File</li>
+                                </ol>
+                            </td>
+                            <td colspan="2" width="70%" class="text-center">
+                                Approved by,
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" width="70%" class="text-center">Approver</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </xpath>
+        </template>
+    </data>
+</openerp>

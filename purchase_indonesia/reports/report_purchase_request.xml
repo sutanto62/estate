@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Custom report.-->
+<openerp>
+    <data>
+      	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
+			<xpath expr="//head" position="inside">
+		      	<link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_purchase_request.css"/>
+		 	</xpath>
+		</template>
+        <template id="report_purchase_request">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="o">
+            		<t t-call="report.external_layout">
+						<div class="page" style="font-family: times; background-color:white; color:black;">
+		              		<!-- Header -->
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-12" >
+		                       		<table class="noborder">
+		                       		    <tr>
+		                       		        <td class="noborder" width="10%">
+		                       		            <b>Kepada</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: Divisi Procurement &amp; Logistic</b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Unit Fungsional</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.type_functional"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		    <tr>
+		                       		        <td class="noborder" width="20%">
+		                       		            <b>Lokasi</b>
+		                       		        </td>
+		                       		        <td class="noborder">
+		                       		            <b>: <span t-field="o.type_location"/></b>
+		                       		        </td>
+		                       		    </tr>
+		                       		</table>
+								</div>
+							</div>
+							
+							<br></br>
+							<br></br>
+							
+							<div class="row" style="text-align:center; font-size:20pt;">
+		              			<div class="col-xs-12" >
+		                       		<b>PENGAJUAN PENGADAAN BARANG &amp; JASA (PP)</b>
+								</div>
+							</div>
+							<div class="row" style="text-align:center; font-size:14pt;">
+								<div class="col-xs-12" >
+		                       		<b>No. <span t-field="o.complete_name"/> </b>
+								</div>
+							</div>
+							
+							<br></br>
+							<br></br>
+							
+							<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-12" >
+		              				KATEGORI PP :
+		              			</div>
+		              		</div>
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-12" >
+		              				<span t-field="o.type_product"/>
+		              			</div>
+		              		</div>
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-12" >
+		              				<span t-field="o.type_purchase"/>, Tanggal Kebutuhan <span t-field="o.date_start"/>  
+		              			</div>
+		              		</div>
+		              		
+		              		<br></br>
+		              		<br></br>
+		              		
+		              		<!-- Variabel -->
+		           			<t t-set="idx" t-value="0"/>
+		           			
+		              		<!-- Detail Header -->
+		           			<div class="row" style="text-align:left;font-size:14pt;">
+		              			<table width="100%">
+		                            <tr class="label_table_header">
+									    <td>
+									      No
+									    </td>
+									    <td>
+									      No. Material/Part Code
+									    </td>
+									    <td>
+									      Nama Barang/Jasa (Part Name)
+									    </td>
+									    <td>
+									      No. Referensi
+									    </td>
+									    <td>
+									      Jumlah
+									    </td>
+									    <td>
+									      Satuan
+									    </td>
+									    <td>
+									      Harga Perkiraan per Satuan
+									    </td>
+									    <td>
+									      Total Perkiraan Harga
+									    </td>
+									    <td>
+									      Budget Tersedia
+									    </td>
+									</tr>
+								
+									<t t-foreach="o.line_ids" t-as="l">
+									 	<t t-set="idx" t-value="idx+1"/>   	
+										<tr>
+										    <td>
+										      	<span t-esc="idx"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_id.default_code"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_id.name"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_id.name"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_qty"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.product_uom_id"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.price_per_product"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.total_price"/>
+										    </td>
+										    <td>
+										      	<span t-field="l.budget_available"/>
+										    </td>
+										</tr>
+									</t>
+									<tr>
+									    <td colspan="7">
+									      Total
+									    </td>
+									    <td>
+									      <span t-field="o.total_estimate_price"/>
+									    </td>
+									    <td>
+									      &#160;
+									    </td>
+									</tr>
+								</table>
+							</div>
+							<div class="row" style="text-align:left;font-size:14pt;">
+		              			<table width="100%">
+		              			    	<tr>
+			                                <td class="noborder">
+			                                    Penjelasan :
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td class="noborder">
+			                                    <span t-field="o.description"/>
+			                                </td>
+			                            </tr>
+			                   	</table>
+		              		</div>
+		              		
+							<br></br>
+							<br></br>
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<t t-if="o.type_budget == 'available' ">
+									<div class="col-xs-3" >
+		              					<span t-field="o.type_budget"/>
+									</div>
+								</t>
+								<t t-if="o.type_budget == 'not' ">
+									<div class="col-xs-3" >
+		              					<span t-field="o.type_budget"/>
+									</div>
+								</t>
+		              			<div class="col-xs-6" >
+		              				&#160;
+		              			</div>
+		              		</div>
+		              		<div class="row" style="text-align:left;font-size:14pt;">
+		              			<div class="col-xs-3" >
+		              				&#160;  
+		              			</div>
+		              			<div class="col-xs-3" >
+		              				No. PTA ___________________________ 
+		              			</div>
+		              			<div class="col-xs-6" >
+		              				&#160; 
+		              			</div>
+		              		</div>
+		              		
+		              		<!-- Tanda Tangan -->
+		                    <div class="row" style="text-align:left;font-size:14pt;">
+		                        <div class="col-xs-12">	
+			                        <table width="100%" class="noborder">
+			                            <tr>
+			                                <td colspan="7" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="7" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="7" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td class="noborder">
+			                                  Diminta Oleh
+			                                </td>
+			                                <td colspan="2" class="noborder">
+			                                  Disetujui Oleh
+			                                </td>
+                                   			<td colspan="2" class="noborder">
+			                                  Diperiksa Oleh
+			                                </td>
+											<td colspan="2" class="noborder">
+			                                  Disetujui Oleh
+			                                </td>		                            </tr>
+
+			                            <tr>
+			                                <td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    Dept Head / EM / LCM
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'approval1'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
+			                                    ___________________
+			                                </td>
+			                                <td class="noborder">
+			                                    Pemeriksa Budget
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'budget'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
+			                                    ___________________
+			                                </td>
+                                            <td class="noborder">
+			                                    Div. Head
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'approval2'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
+			                                    ___________________
+			                                </td>
+			                            </tr>
+
+                                        <tr>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                                <td colspan="2" class="noborder">
+			                                    &#160;
+			                                </td>
+                                            <td colspan="2" class="noborder">
+			                                    Pemeriksa Teknis :
+			                                </td>
+			                                <td class="noborder">
+			                                    GM
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'to_approve'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
+			                                    ___________________
+			                                </td>
+			                            </tr>
+			                          	<tr>
+                                        	<td class="noborder">
+			                                   	<span t-field="o.requested_by"/> 
+			                                </td>
+			                                <td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    RO
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.tracking_approval_ids" t-as="k">
+												<t t-if="k.state == 'technic1'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic2'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic3'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic4'">
+													<span t-field="k.name_user"/>
+												</t>
+													<t t-if="k.state == 'technic5'">
+													<span t-field="k.name_user"/>
+												</t>
+												</t>
+			                                    ___________________
+			                                </td>
+                                            <td class="noborder">
+			                                    Dir Atasan
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                            </tr>
+			                            <tr>
+                                        	<td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    GM
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                                <td class="noborder">
+			                                    HO
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+                                            <td class="noborder">
+			                                    President Director
+			                                </td>
+			                                <td class="noborder">
+			                                    ___________________
+			                                </td>
+			                            </tr>
+			                        </table>
+		                        </div>
+		                    </div>
+						</div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

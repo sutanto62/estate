@@ -1,0 +1,39 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_form_inherit_stock_picking_grn">
+             <field name="name">Inherit Stock Picking</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.view_picking_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='name']" position="replace">
+                      <field name="complete_name_picking" readonly="1"/>
+                 </xpath>
+                 <xpath expr="//field[@name='partner_id']" position="before">
+                     <field name="companys_id" string ="Company" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                     <field name="type_location" string="Location" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='origin']" position="replace">
+                     <field name="origin" invisible="1"/>
+                 </xpath>
+                 <xpath expr="//field[@name='age_seed']" position="replace">
+                     <field name="age_seed" attrs="{'invisible': [('not_seed', '=', True)]}"/>
+                     <field name="not_seed" invisible="1" />
+                 </xpath>
+                 <xpath expr="//field[@name='origin']" position="after">
+                     <field name="purchase_id" string="Ref PO"/>
+                     <field name="pr_source" string="REF PP NO" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                     <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                 </xpath>
+                 <xpath expr="//button[@name='show_details']" position="before">
+                     <button name="split_quantities" class="oe_link"  icon="fa-list" string="Split" type="object"/>
+                     <button name="do_force_donce"
+                      class="oe_link"  icon="fa-scissors" string="Force Done" type="object"/>
+                 </xpath>
+                 <xpath expr="//button[@name='do_new_transfer']" position="after">
+                     <button name="print_grn" string="Print GRN/SRN" type="object" states="assigned" groups="base.group_user"/>
+                 </xpath>
+             </field>
+         </record>
+
+    </data>
+</openerp>
