@@ -163,6 +163,7 @@
                  <xpath expr="//field[@name='description']" position="after">
                      <group name="budget">
                           <field name="type_budget" widget="radio" string="Budget"/>
+                          <field name="pta_code" string="PTA Reference" attrs="{'invisible': [('type_budget','!=', 'not')]}"/>
                           <field name="currency_id" invisible="1"/>
                      </group>
                  </xpath>
@@ -176,6 +177,18 @@
                         <field name="total_estimate_price" nolabel="1" class="oe_subtotal_footer_separator"
                             widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
                     </group>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_purchase_request_tree">
+             <field name="name">Inherit purchase request Tree</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//tree" position="attributes">
+                          <attribute name='decoration-info'></attribute>
+                          <attribute name='decoration-danger'>state in ('draft','approval1','approval2','to_approve','budget','technic1','technic2','technic3','technic4','technic5')</attribute>
                  </xpath>
              </field>
          </record>

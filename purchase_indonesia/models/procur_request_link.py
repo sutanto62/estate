@@ -36,19 +36,20 @@ class InheritPurchaseRequest(models.Model):
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     state = fields.Selection(
-        selection_add=[('approval1', 'Dept Head Approved'),
-                       ('approval2', 'Div Head Approved'),
-                       ('budget', 'Budget Approved'),
-                       ('technic1', 'Technic Dept Head Approved '),
-                       ('technic2', 'Technic Div Head Approved'),
-                       ('technic3', 'Technic ICT Dept Approved'),
-                       ('technic4', 'Technic GM Plantation Dept Approved'),
+        selection_add=[('done','Done'),('confirm','Confirm'),('approval1', 'Dept Head Approval'),
+                       ('approval2', 'Div Head Approval'),
+                       ('budget', 'Budget Approval'),
+                       ('technic1', 'Technic Dept Head Approval'),
+                       ('technic2', 'Technic Div Head Approval'),
+                       ('technic3', 'Technic ICT Dept Approval'),
+                       ('technic4', 'Technic GM Plantation Dept Approval'),
                        ('technic5', 'Technic EA Dept Approved'),
                        ('reject','Reject')])
-    currency_id = fields.Many2one('res.currency', 'Currency', required=True,\
+    currency_id = fields.Many2one('res.currency', 'Currency', required=True,
         default=lambda self: self.env.user.company_id.currency_id)
     reject_reason = fields.Text('Reject Reason')
     total_estimate_price = fields.Float('Total Estimated Price',compute='_compute_total_estimate_price')
+    pta_code =  fields.Char('Additional budget request')
 
 
     @api.multi
@@ -86,7 +87,10 @@ class InheritPurchaseRequest(models.Model):
         """
         self.tracking_approval()
         self.check_wkf_product()
-        return True
+        if self.type_budget== 'not' and self.pta_code == False:
+            raise exceptions.ValidationError('Input Your PTA Number')
+        else:
+            return True
 
     @api.multi
     def action_techic(self,):
@@ -111,11 +115,13 @@ class InheritPurchaseRequest(models.Model):
             arrJobs.append(record_job.id)
         if jobs in arrJobs:
             self.tracking_approval()
-            state_data = {'state':'approval1'}
+            self.write({'state':'confirm'})
+            state_data = {'state':'approval2'}
             self.write(state_data)
         elif jobs in arrJobs2:
             self.tracking_approval()
-            state_data = {'state':'approval2'}
+            self.write({'state':'confirm'})
+            state_data = {'state':'approval1'}
             self.write(state_data)
 
 
@@ -139,7 +145,20 @@ class InheritPurchaseRequest(models.Model):
 
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
         total_price_purchase = sum(record.total_price for record in self.line_ids)
-        if self.type_functional == 'agronomy' and total_price_purchase <= price_standard:
+        type_purchase = self.env['purchase.indonesia.type'].search([('name','in',['Urgent','urgent'])])
+        if self.type_functional == 'agronomy' and total_price_purchase <= price_standard and self.type_budget == 'not' :
+            state_data = {'state':'technic4','type_budget':'not'}
+            self.write(state_data)
+        elif self.type_functional == 'technic' and total_price_purchase <= price_standard and self.type_budget == 'not' :
+            state_data = {'state':'technic5','type_budget':'not'}
+            self.write(state_data)
+        elif self.type_functional == 'general' and total_price_purchase <= price_standard and self.type_budget == 'not' :
+            state_data = {'state':'technic3','type_budget':'not'}
+            self.write(state_data)
+        elif total_price_purchase > price_standard and self.type_budget == 'not' :
+            state_data = {'state':'technic1','type_budget':'not'}
+            self.write(state_data)
+        elif self.type_functional == 'agronomy' and total_price_purchase <= price_standard :
             state_data = {'state':'technic4','type_budget':'available'}
             self.write(state_data)
         elif self.type_functional == 'technic' and total_price_purchase <= price_standard:
@@ -242,10 +261,13 @@ class InheritPurchaseRequest(models.Model):
             except:
                 departement_code = self.department_id.name
 
-            self.complete_name = self.name + '/' \
-                                     + self.company_id.code+' - '\
-                                     +'PP'+'/'\
-                                     +departement_code+'/'+str(month)+'/'+str(year)
+            if self.department_id.code == False:
+                raise exceptions.ValidationError('Department Code is Null')
+            else:
+                self.complete_name = self.name + '/' \
+                                         + self.company_id.code+'-'\
+                                         +'PP'+'/'\
+                                         +departement_code+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
 

@@ -45,3 +45,4 @@
 "purchase_indonesia_type_user","purchase_indonesia_type","purchase_indonesia.model_purchase_indonesia_type","purchase_request.group_purchase_request_user","True","False","False","False"
 ,,,,,,,
 "res_company_procurement_staff","res_company","base.model_res_company","purchase_request.group_purchase_request_procstaff","True","True","True","False"
+"acces_purchase_indonesia_hr_job_purchase_user","purchase_indonesia_hr_job","hr.model_hr_job","purchase_request.group_purchase_request_user",TRUE,"False","False","False"
