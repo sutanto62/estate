@@ -178,6 +178,13 @@ class InheritPurchaseTenders(models.Model):
                 purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
+    @api.multi
+    def generate_po(self):
+        pp_data={'state':'done'}
+        self.env['purchase.request'].search([('complete_name','like',self.origin)]).write(pp_data)
+        res=super(InheritPurchaseTenders,self).generate_po()
+        return res
+
 class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'
