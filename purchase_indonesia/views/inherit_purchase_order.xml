@@ -34,7 +34,9 @@
                      <button name="print_purchase_order" string="Print PO" type="object" states="purchase" groups="base.group_user"/>
                  </xpath>
                  <xpath expr="//tree//field[@name='price_subtotal']" position="after">
-                          <field name="spesification" string="Spesification" invisible="1"/>
+                        <field name="term_of_goods" class="oe_inline" string="Delivery Term"/>
+                        <field name="days" string="Days Of Indent" class="oe_inline" attrs="{'readonly': [('term_of_goods','!=', 'indent')]}"/>
+                        <field name="spesification" string="Spesification" invisible="1"/>
                  </xpath>
              </field>
          </record>
@@ -53,16 +55,17 @@
              </field>
          </record>
 
-        <!--<record model="ir.ui.view" id="inherit_purchase_order_line_tree">-->
-             <!--<field name="name">Inherit purchase order line tree</field>-->
-             <!--<field name="model">purchase.order.line</field>-->
-             <!--<field name="inherit_id" ref="purchase.purchase_order_line_tree"/>-->
-             <!--<field name="arch" type="xml">-->
-                 <!--<xpath expr="//field[@name='price_subtotal']" position="after">-->
-                          <!--<field name="spesification" string="Spesification" invisible="1"/>-->
-                 <!--</xpath>-->
-             <!--</field>-->
-         <!--</record>-->
+        <record model="ir.ui.view" id="inherit_purchase_order_line_tree">
+             <field name="name">Inherit purchase order line tree</field>
+             <field name="model">purchase.order.line</field>
+             <field name="inherit_id" ref="purchase.purchase_order_line_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='price_subtotal']" position="after">
+                     <field name="term_of_goods" class="oe_inline" string="Delivery Term"/>
+                     <field name="days" string="Days Of Indent" class="oe_inline" attrs="{'invisible': [('term_of_goods','!=', 'indent')]}"/>
+                 </xpath>
+             </field>
+         </record>
 
         <record id="purchase.view_purchase_order_filter" model="ir.ui.view">
             <field name="name">request.quotation.select</field>

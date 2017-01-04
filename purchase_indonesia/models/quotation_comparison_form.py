@@ -45,6 +45,7 @@ class QuotationComparisonForm(models.Model):
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
     _order = 'complete_name desc'
+    _inherit=['mail.thread']
 
 
     name = fields.Char('name')
@@ -67,7 +68,7 @@ class QuotationComparisonForm(models.Model):
         ('approve4','Approve head of the representative office'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
-        ('cancel', 'Canceled')], string="State",store=True)
+        ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
     remarks = fields.Text('Remarks')
     reject_reason = fields.Text('Reject Reason')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
@@ -89,9 +90,10 @@ class QuotationComparisonForm(models.Model):
         'state' : 'draft'
     }
 
-    def create(self, cr, uid,vals, context=None):
-        vals['name']=self.pool.get('ir.sequence').get(cr, uid,'quotation.comparison.form')
-        res=super(QuotationComparisonForm, self).create(cr, uid,vals)
+    @api.multi
+    def create(self,vals, context=None):
+        vals['name']=self.env['ir.sequence'].next_by_code('quotation.comparison.form')
+        res=super(QuotationComparisonForm, self).create(vals)
         return res
 
     @api.one
@@ -121,9 +123,9 @@ class QuotationComparisonForm(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.name + ' / ' \
+            self.complete_name = self.name + '/' \
                                  + self.company_id.code+' - '\
-                                 +'QCF'+' / '\
+                                 +'QCF'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
@@ -270,10 +272,13 @@ class QuotationComparisonForm(models.Model):
     def tracking_approval(self):
         user= self.env['res.users'].browse(self.env.uid)
         employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
+        current_date=str(datetime.now().today())
+        # datetimeval=datetime.strptime(current_date, "%Y-%m-%d %H:%M:%S")
         tracking_data = {
             'owner_id': self.id,
             'state' : self.state,
-            'name_user' : employee
+            'name_user' : employee,
+            'datetime'  :current_date
         }
         self.env['tracking.approval'].create(tracking_data)
 

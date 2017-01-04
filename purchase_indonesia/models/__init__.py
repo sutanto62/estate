@@ -3,10 +3,10 @@ __author__ = 'odoo'
 import procur_request_link
 import procur_good_request
 import procur_good_manage
-import Inherit_purchase_order
+import inherit_purchase_order
 import purchase_setting
-import Inherit_stock_picking
+import inherit_stock_picking
 import quotation_comparison_form
-import Inherit_purchase_tenders
+import inherit_purchase_tenders
 import procur_good_returns
 import tracking_approval

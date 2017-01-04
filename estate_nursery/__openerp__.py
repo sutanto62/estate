@@ -20,7 +20,7 @@
 
     """,
 
-    'author': "Mahroza And Probo",
+    'author': "Mahroza Pradana <mahroza.pradana@palmagroup.co.id>, And Probo",
     'website': "http://www.yourcompany.com",
 
     # Categories can be used to filter modules in modules listing

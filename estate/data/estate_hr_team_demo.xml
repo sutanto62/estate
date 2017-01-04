@@ -6,7 +6,7 @@
             <field name="name">1RA</field>
             <field name="active">True</field>
             <field name="date_effective" eval="time.strftime('%Y-%m')+'-1'"/>
-            <field name="employee_id" ref="hr_employee.kht_mandor"/>
+            <field name="employee_id" ref="kht_mandor"/>
             <field name="assistant_id" ref="hr.employee_al"/>
             <field name="state">active</field>
         </record>
@@ -22,28 +22,28 @@
         <!-- Team Member -->
         <record id="team_syukur_1" model="estate.hr.member">
             <field name="team_id" ref="team_syukur"/>
-            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field name="employee_id" ref="khl_1"/>
         </record>
         <record id="team_syukur_2" model="estate.hr.member">
             <field name="team_id" ref="team_syukur"/>
-            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field name="employee_id" ref="khl_2"/>
         </record>
         <record id="team_syukur_3" model="estate.hr.member">
             <field name="team_id" ref="team_syukur"/>
-            <field name="employee_id" ref="hr_employee.khl_3"/>
+            <field name="employee_id" ref="khl_3"/>
         </record>
         
         <record id="team_gilles_1" model="estate.hr.member">
             <field name="team_id" ref="team_gilles"/>
-            <field name="employee_id" ref="hr_employee.khl_4"/>
+            <field name="employee_id" ref="khl_4"/>
         </record>
         <record id="team_gilles_2" model="estate.hr.member">
             <field name="team_id" ref="team_gilles"/>
-            <field name="employee_id" ref="hr_employee.khl_5"/>
+            <field name="employee_id" ref="khl_5"/>
         </record>
         <record id="team_gilles_3" model="estate.hr.member">
             <field name="team_id" ref="team_gilles"/>
-            <field name="employee_id" ref="hr_employee.khl_6"/>
+            <field name="employee_id" ref="khl_6"/>
         </record>
 
     </data>

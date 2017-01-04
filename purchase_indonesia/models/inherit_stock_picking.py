@@ -64,9 +64,9 @@ class InheritStockPicking(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name_picking = self.grn_no +' / ' \
+            self.complete_name_picking = self.grn_no +'/' \
                                  + self.companys_id.code+' - '\
-                                 +'GRN'+' / '\
+                                 +'GRN'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name_picking = self.name
@@ -76,6 +76,7 @@ class InheritStockPicking(models.Model):
     @api.multi
     @api.depends('pack_operation_product_ids')
     def _change_not_seed(self):
+        #onchange Record not seed
         for record in self:
             for item in record.pack_operation_product_ids:
                 if item.product_id.seed == True:
@@ -140,6 +141,7 @@ class InheritStockPicking(models.Model):
 
         else:
             self.do_transfer()
+            self.tracking_approval()
 
         super(InheritStockPicking,self).do_new_transfer()
 
@@ -149,18 +151,33 @@ class InheritStockPicking(models.Model):
     def print_grn(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
+    @api.multi
+    def tracking_approval(self):
+        user= self.env['res.users'].browse(self.env.uid)
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
+        current_date=str(datetime.now().today())
+        tracking_data = {
+            'owner_id': self.id,
+            'state' : self.state,
+            'name_user' : employee,
+            'datetime'  :current_date
+        }
+        self.env['tracking.approval'].create(tracking_data)
+
 class InheritStockPackOperation(models.Model):
 
     _inherit='stock.pack.operation'
 
     @api.multi
     def do_force_donce(self):
+        # do force down line stock picking
         compute_product = self.product_qty * -1
         self.product_qty = compute_product
         self.qty_done = compute_product
 
     @api.multi
     def split_quantities(self):
+        #constraint split quantities in stock.pack.operation
         for pack in self:
             if pack.qty_done < pack.product_qty:
                 error = 'Quantity done must be higher than 0 '

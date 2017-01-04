@@ -64,9 +64,9 @@ class InheritPurchaseTenders(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.name + ' / ' \
+            self.complete_name = self.name + '/' \
                                  + self.companys_id.code+' - '\
-                                 +'PQ'+' / '\
+                                 +'PQ'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
@@ -177,8 +177,6 @@ class InheritPurchaseTenders(models.Model):
             for line in requisition.line_ids:
                 purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
-
-
 
 class InheritPurchaseRequisitionLine(models.Model):
 

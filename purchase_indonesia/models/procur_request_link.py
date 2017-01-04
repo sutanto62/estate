@@ -135,6 +135,8 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def check_wkf_product(self):
+        #check Workflow Product and availability budget
+
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
         total_price_purchase = sum(record.total_price for record in self.line_ids)
         if self.type_functional == 'agronomy' and total_price_purchase <= price_standard:
@@ -157,16 +159,19 @@ class InheritPurchaseRequest(models.Model):
     def tracking_approval(self):
         user= self.env['res.users'].browse(self.env.uid)
         employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
+        current_date=str(datetime.now().today())
         tracking_data = {
             'owner_id': self.id,
             'state' : self.state,
-            'name_user' : employee
+            'name_user' : employee,
+            'datetime'  :current_date
         }
         self.env['tracking.approval'].create(tracking_data)
 
 
     @api.multi
     def create_purchase_requisition(self):
+        # Create Purchase Requisition
         for purchase in self:
             purchase_data = {
                 'responsible':purchase.requested_by.id,
@@ -230,10 +235,17 @@ class InheritPurchaseRequest(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.name + ' / ' \
-                                 + self.company_id.code+' - '\
-                                 +'PP'+' / '\
-                                 +str(self.department_id.name)+'/'+str(month)+'/'+str(year)
+            departement_code = ''
+
+            try :
+                departement_code = self.department_id.code
+            except:
+                departement_code = self.department_id.name
+
+            self.complete_name = self.name + '/' \
+                                     + self.company_id.code+' - '\
+                                     +'PP'+'/'\
+                                     +departement_code+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
 

@@ -95,9 +95,9 @@ class InheritPurchaseOrder(models.Model):
               result += nums[i] * count
               month -= ints[i] * count
             month = result
-            self.complete_name = ' Draft '+self.name  + ' / ' \
-                                 +str(month) +' / '+str(year)\
-                                 +' / '+self.companys_id.code+' / '+str(self.type_location)
+            self.complete_name = ' Draft '+self.name  + '/' \
+                                 +str(month) +'/'+str(year)\
+                                 +'/'+self.companys_id.code+'/'+str(self.type_location)
 
         return True
 
@@ -106,6 +106,7 @@ class InheritPurchaseOrder(models.Model):
         super(InheritPurchaseOrder,self).button_confirm()
         self._update_shipping()
         self._update_po_no()
+        self._update_delivery_term()
         return True
 
     @api.multi
@@ -166,6 +167,8 @@ class InheritPurchaseOrder(models.Model):
 
     @api.multi
     def _update_shipping(self):
+        #update data in stock.picking
+        #return : companys_id,purchase_id,type_location.pr_source
         for purchase_order in self:
             purchase_data = {
                 'companys_id': purchase_order.companys_id.id,
@@ -176,10 +179,20 @@ class InheritPurchaseOrder(models.Model):
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
         return True
 
+    @api.multi
+    def _update_delivery_term(self):
+        idx_ready = self.env['purchase.order.line'].search([('order_id','=',self.id),('term_of_goods','=','ready')])
+        idx_indent = self.env['purchase.order.line'].search([('order_id','=',self.id),('term_of_goods','=','indent')])
+        delivery_data = {
+            'delivery_term' : 'ready' if len(idx_ready) >= 1 and len(idx_indent) < 1 or len(idx_ready) >= 1 and len(idx_indent) >= 1 else 'indent'
+        }
+        self.env['purchase.order'].search([('id','=',self.id)]).write(delivery_data)
+
 class InheritPurchaseOrderLine(models.Model):
 
     _inherit = 'purchase.order.line'
 
     qty_request = fields.Float('Quantity Actual')
     spesification = fields.Text('Spesification')
-
+    term_of_goods = fields.Selection([('indent','Indent'),('ready','Ready Stock')],'Term Of Goods')
+    days = fields.Float('Days Of Indent')
