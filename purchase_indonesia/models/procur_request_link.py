@@ -235,10 +235,17 @@ class InheritPurchaseRequest(models.Model):
               month -= ints[i] * count
             month = result
 
+            departement_code = ''
+
+            try :
+                departement_code = self.department_id.code
+            except:
+                departement_code = self.department_id.name
+
             self.complete_name = self.name + '/' \
-                                 + self.company_id.code+' - '\
-                                 +'PP'+'/'\
-                                 +str(self.department_id.name)+'/'+str(month)+'/'+str(year)
+                                     + self.company_id.code+' - '\
+                                     +'PP'+'/'\
+                                     +departement_code+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
 
