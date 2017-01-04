@@ -97,7 +97,17 @@
              <field name="arch" type="xml">
                  <xpath expr="//button[@name='button_rejected']" position="replace">
                      <button name="%(action_purchase_request_reject)d"
-                             states="to_approve,approval1,approval2,technic1,technic2,technic3,technic4,technic5,budget" string="Reject Purchase Request" type="action"/>
+                             states="to_approve,approval1,approval2,technic1,technic2,technic3,technic4,technic5,budget" string="Reject Purchase Request" type="action"
+                             groups="purchase_request.group_purchase_request_dept_head,
+                             purchase_request.group_purchase_request_manager,
+                             purchase_request.group_purchase_request_budget,
+                             purchase_request.group_purchase_request_div_head,
+                             purchase_request.group_purchase_request_technical1,
+                             purchase_request.group_purchase_request_technical2,
+                             purchase_request.group_purchase_request_technical3,
+                             purchase_request.group_purchase_request_technical4,
+                             purchase_request.group_purchase_request_technical5
+                             "/>
                  </xpath>
                  <xpath expr="//button[@name='button_to_approve']" position="replace">
                      <button name="button_to_approve" states="button_to_approve"
