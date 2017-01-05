@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, osv
-from openerp.addons.base_geoengine import geo_model
-from openerp.addons.base_geoengine import fields as geo_fields
+# from openerp.addons.base_geoengine import geo_model
+# from openerp.addons.base_geoengine import fields as geo_fields
 
 class EstateLocation(models.Model):
     """Extend Location. Have relation one-to-one with EstateBlockTemplate."""
@@ -75,7 +75,7 @@ class EstateObjectType(models.Model):
 
     name = fields.Char("Name")
 
-class EstateBlockTemplate(geo_model.GeoModel):
+class EstateBlockTemplate(models.Model):
     """Block is a unit of an Estate. Hierarchical as Estate, Division, Block or Sub Block.
     Block is delegation inheritance of Stock Location.
     """

@@ -3,7 +3,7 @@
     'name': "Employee (Indonesia)",
 
     'summary': """
-        Employee Status, Tax, Insurance.""",
+        Status, Supervisor Level, Tax, Insurance.""",
 
     'description': """
         Long description of module's purpose
@@ -25,8 +25,9 @@
     'data': [
         'security/ir.model.access.csv',
         'templates.xml',
+        'data/hr_data.xml',
         'views/hr_indonesia_view.xml',
-        'data/hr_data.xml'
+        'views/supervisorlevel_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
