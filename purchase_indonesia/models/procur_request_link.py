@@ -31,7 +31,7 @@ class InheritPurchaseRequest(models.Model):
     employee_id = fields.Many2one('hr.employee','Employee')
     type_location = fields.Selection([('KOKB','Estate'),
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
-    type_product = fields.Selection([('capital','Capital'),
+    type_product = fields.Selection([('consu','Capital'),
                                      ('service','Service'),('product','Stockable Product')],'Location Type')
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
@@ -366,10 +366,8 @@ class InheritPurchaseRequest(models.Model):
         for item in self.line_ids:
             if item.budget_available <= 0:
                 self.type_budget = 'not'
-            if item.budget_available >= 0:
+            if item.budget_available > 0:
                 self.type_budget = 'available'
-       
-
 
 
 class InheritPurchaseRequestLine(models.Model):
@@ -416,23 +414,22 @@ class InheritPurchaseRequestLine(models.Model):
                 amount = float(amount)
                 self.budget_available = amount
 
-    #todo onchange product by type_product in purchase_request
-    # @api.multi
-    # @api.onchange('product_id')
-    # def _onchange_product_id(self):
-    #     arrProduct = []
-    #     arrPurchase = []
-    #     purchase_request = self.env['purchase.request'].search([('id','=',self.owner_id)])
-    #     if self:
-    #         for request in purchase_request:
-    #             arrPurchase.append(request.id)
-    #             print 'cobaindong'
-    #             print arrPurchase
+    @api.multi
+    @api.onchange('request_id','product_id')
+    def _onchange_product_purchase_request_line(self):
+        #use to onchange domain product same as product_category
+        if self.request_id.type_functional and self.request_id.department_id:
+            arrProductCateg = []
+            mappingFuntional = self.env['mapping.department.product'].search([('type_functional','=',self.request_id.type_functional),
+                                                                              ('department_id.id','=',self.request_id.department_id.id)])
+            for productcateg in mappingFuntional:
+                arrProductCateg.append(productcateg.product_category_id.id)
+            return  {
+                'domain':{
+                    'product_id':[('categ_id','in',arrProductCateg)]
+                     }
+                }
 
-        # if self.type_product == 'consu':
-        #     purchase_line = self.env['purchase.request.line'].search(['orner_id','=',self.id])
-        #     for product in purchase_line:
-        #         arrProduct.append(product.product_id)
 
 
 

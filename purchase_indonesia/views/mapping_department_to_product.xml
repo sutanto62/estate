@@ -7,9 +7,10 @@
             <field name="arch" type="xml">
                 <tree editable="bottom">
                     <field name="name" string="Name Link" invisible="1"/>
+                    <field name="type_functional" string="Unit Functional"/>
                     <field name="department_id" string="Department"/>
-                    <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
-                    <field name="assigned_to" string="Assigned To"/>
+                    <field name="product_category_id" placeholder="Product Category ..." string="Product Category"/>
+                    <field name="assigned_id" string="Assigned To"/>
                 </tree>
             </field>
         </record>

@@ -61,6 +61,8 @@
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
+        'demo/account_payment_term.xml',
+        'demo/stock_incoterms.xml'
     ],
     'qweb': [
         'static/src/xml/purchase_requisition.xml',

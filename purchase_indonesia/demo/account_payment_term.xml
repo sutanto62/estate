@@ -1,0 +1,64 @@
+<openerp>
+    <data>
+        <record id="payment_term_1" model="account.payment.term">
+            <field name="name">Cash</field>
+            <field name="note">Cash</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_2" model="account.payment.term">
+            <field name="name">CBD</field>
+            <field name="note">Cash Before Delivery</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_3" model="account.payment.term">
+            <field name="name">Credit 3 days</field>
+            <field name="note">Credit 3 days after invoice and Good received</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_4" model="account.payment.term">
+            <field name="name">Credit 7 days</field>
+            <field name="note">Credit 7 days after invoice and Good received</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_5" model="account.payment.term">
+            <field name="name">Credit 14 days</field>
+            <field name="note">Credit 14 days after invoice and Good received</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_6" model="account.payment.term">
+            <field name="name">Credit 30 days</field>
+            <field name="note">Credit 30 days after invoice and Good received</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_7" model="account.payment.term">
+            <field name="name">Credit 45 days</field>
+            <field name="note">Credit 45 days after invoice and Good received</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_8" model="account.payment.term">
+            <field name="name">DP 20%</field>
+            <field name="note">Down Payment 20 % ,remaining payment before goods Transfer</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_9" model="account.payment.term">
+            <field name="name">DP 50%</field>
+            <field name="note">Down Payment 50 % ,remaining payment before goods Transfer</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_10" model="account.payment.term">
+            <field name="name">DP 25%</field>
+            <field name="note">Down Payment 25 % ,remaining payment before goods Transfer</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_11" model="account.payment.term">
+            <field name="name">DP 20% Leasing</field>
+            <field name="note">Down Payment 20 % ,remaining payment leasing bank</field>
+            <field name="active">True</field>
+        </record>
+        <record id="payment_term_12" model="account.payment.term">
+            <field name="name">DP 25% Leasing</field>
+            <field name="note">Down Payment 25 % ,remaining payment leasing bank</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</openerp>

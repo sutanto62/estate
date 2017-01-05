@@ -457,16 +457,16 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,cast(sum(vendor10) as varchar) vendor10,cast('' as varchar) po_des_all_name,4 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
-                                                     MAX(CASE WHEN r.rownum = 1 THEN r.price_unit ELSE NULL END) AS "vendor1",
-                                                     MAX(CASE WHEN r.rownum = 2 THEN r.price_unit ELSE NULL END) AS "vendor2",
-                                                     MAX(CASE WHEN r.rownum = 3 THEN r.price_unit ELSE NULL END) AS "vendor3",
-                                                     MAX(CASE WHEN r.rownum = 4 THEN r.price_unit ELSE NULL END) AS "vendor4",
-                                                     MAX(CASE WHEN r.rownum = 5 THEN r.price_unit ELSE NULL END) AS "vendor5",
-                                                     MAX(CASE WHEN r.rownum = 6 THEN r.price_unit ELSE NULL END) AS "vendor6",
-	                                                 MAX(CASE WHEN r.rownum = 7 THEN r.price_unit ELSE NULL END) AS "vendor7",
-	                                                 MAX(CASE WHEN r.rownum = 8 THEN r.price_unit ELSE NULL END) AS "vendor8",
-	                                                 MAX(CASE WHEN r.rownum = 9 THEN r.price_unit ELSE NULL END) AS "vendor9",
-	                                                 MAX(CASE WHEN r.rownum = 10 THEN r.price_unit ELSE NULL END) AS "vendor10"
+                                                     MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
+                                                     MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
+                                                     MAX(CASE WHEN r.rownum = 3 THEN r.price_subtotal ELSE NULL END) AS "vendor3",
+                                                     MAX(CASE WHEN r.rownum = 4 THEN r.price_subtotal ELSE NULL END) AS "vendor4",
+                                                     MAX(CASE WHEN r.rownum = 5 THEN r.price_subtotal ELSE NULL END) AS "vendor5",
+                                                     MAX(CASE WHEN r.rownum = 6 THEN r.price_subtotal ELSE NULL END) AS "vendor6",
+	                                                 MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
+	                                                 MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
+	                                                 MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
+	                                                 MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,po_des_all_name,
@@ -508,26 +508,28 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         )h group by req_id)footer2
                                         union all
                                         select * from (
-                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,
-                                        cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,
-                                        cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,
-                                        cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,
-                                        cast(sum(vendor10) as varchar) vendor10,cast('' as varchar) po_des_all_name,6 isheader from (
+                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+                                        cast(max(vendor1) as varchar) vendor1,cast(max(vendor2) as varchar) vendor2,
+                                        cast(max(vendor3) as varchar) vendor3,cast(max(vendor4) as varchar) vendor4,
+                                        cast(max(vendor5) as varchar) vendor5,cast(max(vendor6) as varchar) vendor6,
+                                        cast(max(vendor7) as varchar) vendor7,cast(max(vendor8) as varchar) vendor8,
+                                        cast(max(vendor9) as varchar) vendor9,cast(max(vendor10) as varchar) vendor10,
+                                        cast('' as varchar) po_des_all_name,6 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
-                                                     MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
-                                                     MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
-                                                     MAX(CASE WHEN r.rownum = 3 THEN r.price_subtotal ELSE NULL END) AS "vendor3",
-                                                     MAX(CASE WHEN r.rownum = 4 THEN r.price_subtotal ELSE NULL END) AS "vendor4",
-                                                     MAX(CASE WHEN r.rownum = 5 THEN r.price_subtotal ELSE NULL END) AS "vendor5",
-                                                     MAX(CASE WHEN r.rownum = 6 THEN r.price_subtotal ELSE NULL END) AS "vendor6",
-                                                     MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
-                                                     MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
-                                                     MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
-                                                     MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
-                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+                                                     MAX(CASE WHEN r.rownum = 1 THEN r.amount_total ELSE NULL END) AS "vendor1",
+                                                     MAX(CASE WHEN r.rownum = 2 THEN r.amount_total ELSE NULL END) AS "vendor2",
+                                                     MAX(CASE WHEN r.rownum = 3 THEN r.amount_total ELSE NULL END) AS "vendor3",
+                                                     MAX(CASE WHEN r.rownum = 4 THEN r.amount_total ELSE NULL END) AS "vendor4",
+                                                     MAX(CASE WHEN r.rownum = 5 THEN r.amount_total ELSE NULL END) AS "vendor5",
+                                                     MAX(CASE WHEN r.rownum = 6 THEN r.amount_total ELSE NULL END) AS "vendor6",
+                                                     MAX(CASE WHEN r.rownum = 7 THEN r.amount_total ELSE NULL END) AS "vendor7",
+                                                     MAX(CASE WHEN r.rownum = 8 THEN r.amount_total ELSE NULL END) AS "vendor8",
+                                                     MAX(CASE WHEN r.rownum = 9 THEN r.amount_total ELSE NULL END) AS "vendor9",
+                                                     MAX(CASE WHEN r.rownum = 10 THEN r.amount_total ELSE NULL END) AS "vendor10"
+                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
