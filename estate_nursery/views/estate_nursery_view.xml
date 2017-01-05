@@ -551,15 +551,8 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='partner_id']" position="after">
-                        <field name="age_seed"/>
+                        <field name="age_seed" attrs="{'invisible': [('not_seed', '=', True)]}"/>
                  </xpath>
-                <!--<field name="lot_id" position="after">-->
-                    <!--&lt;!&ndash; Hide field using invisible-->
-                    <!--<field name="is_seed" invisible="True"/>-->
-                    <!--<field name="variety_id" string="Var" attrs="{'invisible': [('is_seed','=',False)]}"/>-->
-                    <!--&ndash;&gt;-->
-                    <!--<field name="variety_id" string="Variety" groups="estate.group_user"/>-->
-                <!--</field>-->
             </field>
         </record>
 
