@@ -156,6 +156,19 @@
                             purchase_request.group_purchase_request_technical3,
                             purchase_request.group_purchase_request_technical4,
                             purchase_request.group_purchase_request_technical5"/>
+                     <button name="action_financial_approval1" states="approval3"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_dept_head"/>
+                     <button name="action_financial_approval2" states="approval4"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
+                     <button name="action_financial_approval3" states="approval5"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
+                     <button name="action_financial_approval4" states="approval6"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
+
                  </xpath>
                  <xpath expr="//button[@name='button_approved']" position="after">
                      <button name="print_purchase_request" string="Print PR/PP" type="object" states="approved" groups="base.group_user"/>

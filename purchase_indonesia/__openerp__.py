@@ -24,6 +24,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'security/purchase_request.xml',
         'wizard/reject.xml',
         # 'wizard/inherit_purchase_indonesia_requisition_partner.xml',
         'config_report/config_quotation_comparison_form.xml',

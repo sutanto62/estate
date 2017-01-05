@@ -1,0 +1,18 @@
+<openerp>
+<data noupdate="0">
+
+    <record id="group_purchase_request_director" model="res.groups">
+        <field name="name">Purchase Request Director</field>
+        <field name="implied_ids" eval="[(4, ref('purchase_request.group_purchase_request_user'))]"/>
+        <field name="category_id" ref="purchase_request.module_category_purchase_request"/>
+     </record>
+
+    <record id="group_purchase_request_president_director" model="res.groups">
+        <field name="name">Purchase Request President Director</field>
+        <field name="implied_ids" eval="[(4, ref('purchase_request.group_purchase_request_user'))]"/>
+        <field name="category_id" ref="purchase_request.module_category_purchase_request"/>
+     </record>
+
+
+</data>
+</openerp>

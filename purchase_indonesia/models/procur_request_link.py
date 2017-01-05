@@ -44,6 +44,9 @@ class InheritPurchaseRequest(models.Model):
                        ('technic3', 'Technic ICT Dept Approval'),
                        ('technic4', 'Technic GM Plantation Dept Approval'),
                        ('technic5', 'Technic EA Dept Approved'),
+                       ('approval3','Department Head Finance Approval'),
+                       ('approval4','Div Head Finance  Approval'),
+                       ('approval5','Director Approval'),('approval6','President Director Approval'),
                        ('reject','Reject')])
     currency_id = fields.Many2one('res.currency', 'Currency', required=True,
         default=lambda self: self.env.user.company_id.currency_id)
@@ -57,6 +60,49 @@ class InheritPurchaseRequest(models.Model):
         self.write({'state': 'reject', 'date_request': self.date_start})
         self.write({'description':self.reject_reason})
         return True
+
+    @api.multi
+    def action_financial_approval1(self):
+        """ Confirms department HeadFinancial Approval.
+        """
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
+        total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        if total_price_purchase < float(price_standard):
+            self.button_approved()
+        elif total_price_purchase > float(price_standard):
+            state_data = {'state':'approval4'}
+            self.write(state_data)
+
+    @api.multi
+    def action_financial_approval2(self):
+        """ Confirms Division Head Financial Approval.
+        """
+        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
+        total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        if total_price_purchase < float(price_standard1):
+                self.button_approved()
+        elif total_price_purchase > float(price_standard1):
+            state_data = {'state':'approval5'}
+            self.write(state_data)
+
+    @api.multi
+    def action_financial_approval3(self):
+        """ Confirms Director  Financial Approval.
+        """
+        price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
+        total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        if total_price_purchase < (price_standard2):
+                self.button_approved()
+        elif total_price_purchase > float(price_standard2):
+            state_data = {'state':'approval6'}
+            self.write(state_data)
+            self.button_approved()
+
+    @api.multi
+    def action_financial_approval4(self):
+        """ Confirms President Director Approval.
+        """
+        self.button_approved()
 
     @api.multi
     def button_approved(self):
@@ -77,8 +123,26 @@ class InheritPurchaseRequest(models.Model):
     def action_confirm2(self,):
         """ Confirms Good request.
         """
-        self.tracking_approval()
-        self.write({'state': 'budget'})
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
+        total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        if self.type_functional == 'agronomy' and total_price_purchase < price_standard :
+            state_data = {'state':'technic4'}
+            self.write(state_data)
+        elif self.type_functional == 'technic' and total_price_purchase < price_standard:
+            state_data = {'state':'technic5'}
+            self.write(state_data)
+        elif self.type_functional == 'general' and total_price_purchase < price_standard:
+            state_data = {'state':'technic3'}
+            self.write(state_data)
+        elif self.type_functional == 'agronomy' and total_price_purchase > price_standard :
+            state_data = {'state':'technic4'}
+            self.write(state_data)
+        elif self.type_functional == 'technic' and total_price_purchase > price_standard:
+            state_data = {'state':'technic5'}
+            self.write(state_data)
+        elif self.type_functional == 'general' and total_price_purchase > price_standard:
+            state_data = {'state':'technic3'}
+            self.write(state_data)
         return True
 
     @api.multi
@@ -86,7 +150,7 @@ class InheritPurchaseRequest(models.Model):
         """ Confirms Budget request.
         """
         self.tracking_approval()
-        self.check_wkf_product()
+        self.write({'state': 'approval3'})
         if self.type_budget== 'not' and self.pta_code == False:
             raise exceptions.ValidationError('Input Your PTA Number')
         else:
@@ -97,7 +161,7 @@ class InheritPurchaseRequest(models.Model):
         """ Confirms Technical request.
         """
         self.tracking_approval()
-        self.write({'state': 'to_approve'})
+        self.write({'state': 'budget'})
         return True
 
     @api.multi
@@ -128,50 +192,42 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def check_wkf_product_price(self):
        #check total product price in purchase request
-       price_standard = float(self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params)
+       price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
        total_price_purchase = float(sum(record.total_price for record in self.line_ids))
        if total_price_purchase >= price_standard:
             self.tracking_approval()
             state_data = {'state':'approval2'}
             self.write(state_data)
-       elif total_price_purchase < price_standard:
-            self.tracking_approval()
-            state_data = {'state':'budget'}
+       if self.type_functional == 'agronomy' and total_price_purchase < price_standard :
+            state_data = {'state':'technic4'}
+            self.write(state_data)
+       elif self.type_functional == 'technic' and total_price_purchase < price_standard:
+            state_data = {'state':'technic5'}
+            self.write(state_data)
+       elif self.type_functional == 'general' and total_price_purchase < price_standard:
+            state_data = {'state':'technic3'}
             self.write(state_data)
 
     @api.multi
     def check_wkf_product(self):
         #check Workflow Product and availability budget
 
-        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)]).value_params
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         total_price_purchase = sum(record.total_price for record in self.line_ids)
-        type_purchase = self.env['purchase.indonesia.type'].search([('name','in',['Urgent','urgent'])])
-        if self.type_functional == 'agronomy' and total_price_purchase <= price_standard and self.type_budget == 'not' :
-            state_data = {'state':'technic4','type_budget':'not'}
+        if self.type_functional == 'agronomy' and total_price_purchase < price_standard :
+            state_data = {'state':'technic4'}
             self.write(state_data)
-        elif self.type_functional == 'technic' and total_price_purchase <= price_standard and self.type_budget == 'not' :
-            state_data = {'state':'technic5','type_budget':'not'}
+        elif self.type_functional == 'technic' and total_price_purchase < price_standard:
+            state_data = {'state':'technic5'}
             self.write(state_data)
-        elif self.type_functional == 'general' and total_price_purchase <= price_standard and self.type_budget == 'not' :
-            state_data = {'state':'technic3','type_budget':'not'}
-            self.write(state_data)
-        elif total_price_purchase > price_standard and self.type_budget == 'not' :
-            state_data = {'state':'technic1','type_budget':'not'}
-            self.write(state_data)
-        elif self.type_functional == 'agronomy' and total_price_purchase <= price_standard :
-            state_data = {'state':'technic4','type_budget':'available'}
-            self.write(state_data)
-        elif self.type_functional == 'technic' and total_price_purchase <= price_standard:
-            state_data = {'state':'technic5','type_budget':'available'}
-            self.write(state_data)
-        elif self.type_functional == 'general' and total_price_purchase <= price_standard:
-            state_data = {'state':'technic3','type_budget':'available'}
+        elif self.type_functional == 'general' and total_price_purchase < price_standard:
+            state_data = {'state':'technic3'}
             self.write(state_data)
         elif total_price_purchase > price_standard:
-            state_data = {'state':'technic1','type_budget':'available'}
+            state_data = {'state':'technic1'}
             self.write(state_data)
         else :
-            state_data = {'state':'technic2','type_budget':'available'}
+            state_data = {'state':'technic2'}
             self.write(state_data)
 
     @api.multi
@@ -424,11 +480,22 @@ class InheritPurchaseRequestLine(models.Model):
                                                                               ('department_id.id','=',self.request_id.department_id.id)])
             for productcateg in mappingFuntional:
                 arrProductCateg.append(productcateg.product_category_id.id)
-            return  {
-                'domain':{
-                    'product_id':[('categ_id','in',arrProductCateg)]
-                     }
-                }
+            arrProdCatId = []
+            prod_categ = self.env['product.category'].search([('parent_id','in',arrProductCateg)])
+            for productcategparent in prod_categ:
+                arrProdCatId.append(productcategparent.id)
+            if prod_categ:
+                return  {
+                    'domain':{
+                        'product_id':[('categ_id','in',arrProdCatId)]
+                         }
+                    }
+            elif prod_categ != ():
+                return  {
+                    'domain':{
+                        'product_id':[('categ_id','in',arrProductCateg)]
+                         }
+                    }
 
 
 
