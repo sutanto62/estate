@@ -36,17 +36,19 @@ class InheritPurchaseRequest(models.Model):
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     state = fields.Selection(
-        selection_add=[('done','Done'),('confirm','Confirm'),('approval1', 'Dept Head Approval'),
+        selection_add=[('done','Done'),('confirm','Confirm'),
+                       ('approval1', 'Dept Head Approval'),
                        ('approval2', 'Div Head Approval'),
                        ('budget', 'Budget Approval'),
                        ('technic1', 'Technic Dept Head Approval'),
                        ('technic2', 'Technic Div Head Approval'),
                        ('technic3', 'Technic ICT Dept Approval'),
                        ('technic4', 'Technic GM Plantation Dept Approval'),
-                       ('technic5', 'Technic EA Dept Approved'),
-                       ('approval3','Department Head Finance Approval'),
-                       ('approval4','Div Head Finance  Approval'),
-                       ('approval5','Director Approval'),('approval6','President Director Approval'),
+                       ('technic5', 'Technic EA Dept Approval'),
+                       ('approval3','Department Head Financial Approval'),
+                       ('approval4','Div Head Financial Approval'),
+                       ('approval5','Director Financial Approval'),
+                       ('approval6','President Director Financial Approval'),
                        ('reject','Reject')])
     currency_id = fields.Many2one('res.currency', 'Currency', required=True,
         default=lambda self: self.env.user.company_id.currency_id)
@@ -65,36 +67,51 @@ class InheritPurchaseRequest(models.Model):
     def action_financial_approval1(self):
         """ Confirms department HeadFinancial Approval.
         """
+        arrDivhead = []
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        assigned= self.env['res.groups'].search([('id','=',72)]).users
+        for divhead in assigned:
+            arrDivhead.append(divhead.id)
         if total_price_purchase < float(price_standard):
             self.button_approved()
         elif total_price_purchase > float(price_standard):
-            state_data = {'state':'approval4'}
+            assign = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
+            state_data = {'state':'approval4','assigned_to':assign}
             self.write(state_data)
 
     @api.multi
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
+        arrDirector = []
         price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
         total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        assigned= self.env['res.groups'].search([('id','=',91)]).users
+        for divhead in assigned:
+            arrDirector.append(divhead.id)
         if total_price_purchase < float(price_standard1):
                 self.button_approved()
         elif total_price_purchase > float(price_standard1):
-            state_data = {'state':'approval5'}
+            assign = self.env['res.users'].search([('id','=',arrDirector[0])]).id
+            state_data = {'state':'approval5','assigned_to' : assign}
             self.write(state_data)
 
     @api.multi
     def action_financial_approval3(self):
         """ Confirms Director  Financial Approval.
         """
+        arrPresidentDirector = []
         price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
         total_price_purchase = float(sum(record.total_price for record in self.line_ids))
+        assigned= self.env['res.groups'].search([('id','=',92)]).users
+        for divhead in assigned:
+            arrPresidentDirector.append(divhead.id)
         if total_price_purchase < float(price_standard2):
                 self.button_approved()
         elif total_price_purchase > float(price_standard2):
-            state_data = {'state':'approval6'}
+            assign = self.env['res.users'].search([('id','=',arrPresidentDirector[0])]).id
+            state_data = {'state':'approval6','assigned_to' : assign}
             self.write(state_data)
             self.button_approved()
 
@@ -123,25 +140,43 @@ class InheritPurchaseRequest(models.Model):
     def action_confirm2(self,):
         """ Confirms Good request.
         """
+        arrTechnic3 = []
+        arrTechnic4 = []
+        arrTechnic5 = []
+        technic3 = self.env['res.groups'].search([('id','=',76)]).users
+        technic4 = self.env['res.groups'].search([('id','=',77)]).users
+        technic5 = self.env['res.groups'].search([('id','=',78)]).users
+        for technic3 in technic3:
+               arrTechnic3.append(technic3.id)
+        for technic4 in technic4:
+               arrTechnic4.append(technic4.id)
+        for technic5 in technic5:
+               arrTechnic5.append(technic5.id)
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         total_price_purchase = float(sum(record.total_price for record in self.line_ids))
-        if self.type_functional == 'agronomy' and total_price_purchase < price_standard :
-            state_data = {'state':'technic4'}
+        if self.type_functional == 'agronomy' and total_price_purchase < float(price_standard) :
+            assign = self.env['res.users'].search([('id','=',arrTechnic4[0])]).id
+            state_data = {'state':'technic4','assigned_to':assign}
             self.write(state_data)
-        elif self.type_functional == 'technic' and total_price_purchase < price_standard:
-            state_data = {'state':'technic5'}
+        elif self.type_functional == 'technic' and total_price_purchase < float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic5[0])]).id
+            state_data = {'state':'technic5','assigned_to':assign}
             self.write(state_data)
-        elif self.type_functional == 'general' and total_price_purchase < price_standard:
-            state_data = {'state':'technic3'}
+        elif self.type_functional == 'general' and total_price_purchase < float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic3[0])]).id
+            state_data = {'state':'technic3','assigned_to':assign}
             self.write(state_data)
-        elif self.type_functional == 'agronomy' and total_price_purchase > price_standard :
-            state_data = {'state':'technic4'}
+        elif self.type_functional == 'agronomy' and total_price_purchase > float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic4[0])]).id
+            state_data = {'state':'technic4','assigned_to':assign}
             self.write(state_data)
-        elif self.type_functional == 'technic' and total_price_purchase > price_standard:
-            state_data = {'state':'technic5'}
+        elif self.type_functional == 'technic' and total_price_purchase > float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic5[0])]).id
+            state_data = {'state':'technic5','assigned_to':assign}
             self.write(state_data)
-        elif self.type_functional == 'general' and total_price_purchase > price_standard:
-            state_data = {'state':'technic3'}
+        elif self.type_functional == 'general' and total_price_purchase > float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic3[0])]).id
+            state_data = {'state':'technic3','assigned_to':assign}
             self.write(state_data)
         return True
 
@@ -149,19 +184,60 @@ class InheritPurchaseRequest(models.Model):
     def action_budget(self,):
         """ Confirms Budget request.
         """
-        self.tracking_approval()
-        self.write({'state': 'approval3'})
-        if self.type_budget== 'not' and self.pta_code == False:
+        arrBudget = []
+        arrDept=[]
+        arrJobs = []
+        arrJobs2 = []
+
+        #search Employee
+        user= self.env['res.users'].search([('id','=',self.requested_by.id)])
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)])
+
+        #search Job
+        jobs = self.env['hr.job'].search([('id','=',employee.job_id.id)]).id
+        jobs_compare_hr = self.env['hr.job'].search([('name','in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
+        jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
+
+        #searching Employee Manager
+        employeemanager = self.env['hr.employee'].search([('user_id','=',user.id)]).parent_id.id
+        assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
+
+        #search User in 2 groups
+        budget_manager = self.env['res.groups'].search([('id','=',73)]).users
+        dept_manager =  self.env['res.groups'].search([('id','=',71)]).users
+
+        for budgetgroupsrecord in budget_manager:
+            arrBudget.append(budgetgroupsrecord.id)
+        for deptgroupsrecord in dept_manager:
+            arrDept.append(deptgroupsrecord.id)
+
+        users = self.env['res.users'].search([('id','in',arrBudget),('id','in',arrDept)])
+
+        for item in jobs_non_hr:
+            arrJobs2.append(item.id)
+        for record_job in jobs_compare_hr:
+            arrJobs.append(record_job.id)
+        if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
         else:
-            return True
+            if jobs in arrJobs:
+                self.tracking_approval()
+                state_data = {'state':'approval3','assigned_to':users}
+                self.write(state_data)
+            elif jobs in arrJobs2:
+                self.tracking_approval()
+                state_data = {'state':'approval3','assigned_to':assigned_manager}
+                self.write(state_data)
 
     @api.multi
     def action_techic(self,):
         """ Confirms Technical request.
         """
+        jobs_compare_hr = self.env['hr.job'].search([('name','in',['Budgeting','budget','budgeting','Budget'])]).id
+        employeemanager = self.env['hr.employee'].search([('job_id','=',jobs_compare_hr)]).user_id.id
         self.tracking_approval()
         self.write({'state': 'budget'})
+        self.write({'assigned_to':employeemanager})
         return True
 
     @api.multi
@@ -173,6 +249,8 @@ class InheritPurchaseRequest(models.Model):
         jobs = self.env['hr.job'].search([('id','=',employee.job_id.id)]).id
         jobs_compare_hr = self.env['hr.job'].search([('name','in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
         jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant'])])
+        employeemanager = self.env['hr.employee'].search([('user_id','=',user.id)]).parent_id.id
+        assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
         for item in jobs_non_hr:
             arrJobs2.append(item.id)
         for record_job in jobs_compare_hr:
@@ -180,32 +258,51 @@ class InheritPurchaseRequest(models.Model):
         if jobs in arrJobs:
             self.tracking_approval()
             self.write({'state':'confirm'})
-            state_data = {'state':'approval2'}
+            state_data = {'state':'approval2','assigned_to':assigned_manager}
             self.write(state_data)
         elif jobs in arrJobs2:
             self.tracking_approval()
             self.write({'state':'confirm'})
-            state_data = {'state':'approval1'}
+            state_data = {'state':'approval1','assigned_to':assigned_manager}
             self.write(state_data)
-
 
     @api.multi
     def check_wkf_product_price(self):
        #check total product price in purchase request
+       arrDepartment= []
+       arrTechnic3 = []
+       arrTechnic4 = []
+       arrTechnic5 = []
        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
        total_price_purchase = float(sum(record.total_price for record in self.line_ids))
-       if total_price_purchase >= price_standard:
+       assigned= self.env['res.groups'].search([('id','=',72)]).users
+       technic3 = self.env['res.groups'].search([('id','=',76)]).users
+       technic4 = self.env['res.groups'].search([('id','=',77)]).users
+       technic5 = self.env['res.groups'].search([('id','=',78)]).users
+       for record in assigned:
+            arrDepartment.append(record.id)
+       for technic3 in technic3:
+           arrTechnic3.append(technic3.id)
+       for technic4 in technic4:
+           arrTechnic4.append(technic4.id)
+       for technic5 in technic5:
+           arrTechnic5.append(technic5.id)
+       if total_price_purchase >= float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrDepartment[0])]).id
             self.tracking_approval()
-            state_data = {'state':'approval2'}
+            state_data = {'state':'approval2','assigned_to':assign}
             self.write(state_data)
-       if self.type_functional == 'agronomy' and total_price_purchase < price_standard :
-            state_data = {'state':'technic4'}
+       elif self.type_functional == 'agronomy' and total_price_purchase < float(price_standard) :
+            assign = self.env['res.users'].search([('id','=',arrTechnic4[0])]).id
+            state_data = {'state':'technic4','assigned_to':assign}
             self.write(state_data)
-       elif self.type_functional == 'technic' and total_price_purchase < price_standard:
-            state_data = {'state':'technic5'}
+       elif self.type_functional == 'technic' and total_price_purchase < float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic5[0])]).id
+            state_data = {'state':'technic5','assigned_to':assign}
             self.write(state_data)
-       elif self.type_functional == 'general' and total_price_purchase < price_standard:
-            state_data = {'state':'technic3'}
+       elif self.type_functional == 'general' and total_price_purchase < float(price_standard):
+            assign = self.env['res.users'].search([('id','=',arrTechnic3[0])]).id
+            state_data = {'state':'technic3','assigned_to':assign}
             self.write(state_data)
 
     @api.multi
@@ -345,6 +442,28 @@ class InheritPurchaseRequest(models.Model):
             self.type_functional = 'general'
         else:
             self.type_functional
+
+    @api.multi
+    @api.onchange('requested_by')
+    def _onchange_assigned_to(self):
+        if self.requested_by and not self.assigned_to.id:
+            assigned_manager = self.env['res.users'].search([('id','=',self.requested_by.id)]).id
+            self.assigned_to = assigned_manager
+
+    #todo contraint supervisor managerial
+    # @api.multi
+    # @api.constrains('assigned_to','approved_by')
+    # def _constraint_supervisor(self):
+    #     name = 'hr_indonesia.supervisor'
+    #     user= self.env['res.users'].browse(self.env.uid)
+    #     employee = self.env['hr.employee'].search([('user_id','=',user.id)]).supervisor_level_id.sequence
+    #     employeemanager = self.env['hr.employee'].search([('user_id','=',user.id)]).parent_id.id
+    #     calculate_employee = employee - 1
+    #     manager = self.env['hr.employee'].search([('id','=',employeemanager)]).supervisor_level_id.sequence
+    #     standart_value = self.env['purchase.params.setting'].search([('name','=',name)]).value_params
+    #     if manager > standart_value:
+    #         raise exceptions.ValidationError('You Cannot Create Purchase Request')
+
 
     @api.multi
     @api.onchange('type_functional')

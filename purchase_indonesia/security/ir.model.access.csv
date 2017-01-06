@@ -47,3 +47,4 @@
 "res_company_procurement_staff","res_company","base.model_res_company","purchase_request.group_purchase_request_procstaff","True","True","True","False"
 "acces_purchase_indonesia_hr_job_purchase_user","purchase_indonesia_hr_job","hr.model_hr_job","purchase_request.group_purchase_request_user","TRUE","False","False","False"
 "mapping_purchase_indonesia_department_purchase_user","mapping_department_product_category","purchase_indonesia.model_mapping_department_product","purchase_request.group_purchase_request_user","TRUE","False","False","False"
+"access_hr_indonesia_supervisor","hr_indonesia_supervisor","hr_indonesia.model_hr_indonesia_supervisor","purchase_request.group_purchase_request_user","TRUE","False","False","False"
