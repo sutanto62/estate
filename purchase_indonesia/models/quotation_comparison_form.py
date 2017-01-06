@@ -175,10 +175,10 @@ class QuotationComparisonForm(models.Model):
         price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
         price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price <= float(price_standard3):
+        if purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) <= float(price_standard3):
             self.write({'state' : 'approve4'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard3):
+        elif purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) >= float(price_standard3):
             self.write({'state' : 'approve4'})
             self.tracking_approval()
         return True
@@ -189,10 +189,10 @@ class QuotationComparisonForm(models.Model):
         price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
         price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price < float(price_standard3):
+        if purchase_request.type_location == 'KPST' and float(purchase_request.total_estimate_price) < float(price_standard3):
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif purchase_request.type_location == 'KPST' and float(purchase_request.total_estimate_price) >= float(price_standard1):
             self.write({'state' : 'approve1'})
             self.tracking_approval()
 
@@ -201,16 +201,16 @@ class QuotationComparisonForm(models.Model):
         price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
         price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price < float(price_standard1):
+        if purchase_request.type_location == 'KPST' and float(purchase_request.total_estimate_price) < float(price_standard1):
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif purchase_request.type_location == 'KPST' and float(purchase_request.total_estimate_price) >= float(price_standard1):
             self.write({'state' : 'approve2'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price < float(price_standard1):
+        elif purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) < float(price_standard1):
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) >= float(price_standard1):
             self.write({'state' : 'approve2'})
             self.tracking_approval()
         return True
@@ -220,16 +220,16 @@ class QuotationComparisonForm(models.Model):
         price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
         price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
         purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        if purchase_request.type_location == 'KPST' and float(purchase_request.total_estimate_price) >= float(price_standard1):
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard2):
+        elif purchase_request.type_location == 'KPST' and float(purchase_request.total_estimate_price) >= float(price_standard2):
             self.write({'state' : 'approve3'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) >= float(price_standard1):
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard2):
+        elif purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) >= float(price_standard2):
             self.write({'state' : 'approve3'})
             self.tracking_approval()
         return True
@@ -245,10 +245,10 @@ class QuotationComparisonForm(models.Model):
         price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
         price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
         purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price < float(price_standard3):
+        if purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) < float(price_standard3):
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif purchase_request.type_location == 'KPWK' and float(purchase_request.total_estimate_price) >= float(price_standard1):
             self.write({'state' : 'approve1'})
             self.tracking_approval()
         return True

@@ -84,44 +84,48 @@
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//form//field[@name='analytic_account_id']" position="after">
-                          <field name="budget_available" string="Budget Available"/>
+                          <field name="budget_available" string="Budget Available"
+                                 />
                  </xpath>
              </field>
          </record>
 
+        <record id="action_purchase_request_reject" model="ir.actions.act_window">
+            <field name="name">Reject Purchase Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.request.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
 
-        <record model="ir.ui.view" id="inherit_purchase_request_line_origin7">
+
+        <record model="ir.ui.view" id="inherit_purchase_request_line_origin8">
              <field name="name">Inherit purchase request</field>
              <field name="model">purchase.request</field>
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
-                 <xpath expr="//button[@name='button_rejected']" position="replace">
+                <xpath expr="//button[@name='button_rejected']" position="replace">
                      <button name="%(action_purchase_request_reject)d"
-                             states="to_approve,approval1,approval2,technic1,technic2,technic3,technic4,technic5,budget" string="Reject Purchase Request" type="action"
-                             groups="purchase_request.group_purchase_request_dept_head,
-                             purchase_request.group_purchase_request_manager,
-                             purchase_request.group_purchase_request_budget,
-                             purchase_request.group_purchase_request_div_head,
-                             purchase_request.group_purchase_request_technical1,
-                             purchase_request.group_purchase_request_technical2,
-                             purchase_request.group_purchase_request_technical3,
-                             purchase_request.group_purchase_request_technical4,
-                             purchase_request.group_purchase_request_technical5
-                             "/>
+                             states="to_approve,approval1,approval2,approval7,technic1,technic2,technic3,technic4,technic5,budget,approval3,approval4,approval5,approval6" string="Reject Purchase Request" type="action"
+                             />
                  </xpath>
+
                  <xpath expr="//button[@name='button_to_approve']" position="replace">
                      <button name="button_to_approve" states="button_to_approve"
                             string="Approve Finance" type="object"
                             class="oe_highlight"/>
 
                  </xpath>
+
                  <xpath expr="//button[@name='button_draft']" position="replace">
                      <button name="button_draft"
-                            states="approval1,approval2"
+                            states="confirm"
                             string="Reset"
                             type="object"
                             groups="purchase_request.group_purchase_request_manager"/>
                  </xpath>
+
                  <xpath expr="//button[@name='button_approved']" position="replace">
                        <button name="button_approved"
                             states="to_approve"
@@ -130,11 +134,18 @@
                             class="oe_highlight"
                             groups="purchase_request.group_purchase_request_manager"/>
                  </xpath>
+
                  <xpath expr="//field[@name='state']" position="replace">
                      <field name="state" widget="statusbar"
                            statusbar_visible="draft"
                            statusbar_colors='{"approved":"blue"}'/>
                  </xpath>
+
+                 <xpath expr="//field[@name='assigned_to']" position="replace">
+                     <field name="assigned_to" attrs="{
+                     'invisible':[('state','=','draft')]}"/>
+                 </xpath>
+
                  <xpath expr="//button[@name='button_draft']" position="after">
                      <button name="check_wkf_requester" states="draft"
                             string="Confirm Purchase" type="object"
@@ -149,7 +160,7 @@
                      <button name="action_budget" states="budget"
                             string="Approve Budget" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
-                     <button name="action_techic" states="technic1,technic2,technic3,technic4,technic5"
+                     <button name="action_technic" states="technic1,technic2,technic3,technic4,technic5"
                             string="Approve Technical Check" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_technical1,
                             purchase_request.group_purchase_request_technical2,
@@ -168,15 +179,20 @@
                      <button name="action_financial_approval4" states="approval6"
                              string="Approve" type="object"
                             class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
+                     <button name="action_ro_head_approval" states="approval7"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of RO"/>
+                 </xpath>
 
-                 </xpath>
                  <xpath expr="//button[@name='button_approved']" position="after">
-                     <button name="print_purchase_request" string="Print PR/PP" type="object" states="approved" groups="base.group_user"/>
+                     <button name="print_purchase_request" string="Print PR/PP" type="object" states="approved" groups="purchase_request.group_purchase_request_procstaff"/>
                  </xpath>
+
                  <xpath expr="//field[@name='description']" position="after">
                      <group name="budget">
-                          <field name="type_budget" widget="radio" string="Budget"/>
-                          <field name="pta_code" string="PTA Reference" attrs="{'invisible': [('type_budget','!=', 'not')]}"/>
+                          <field name="type_budget" widget="radio" string="Budget" attrs="{'invisible': [('state','not in', ['budget','approval3','approval4','approval5','approval6'])]}"/>
+                          <field name="pta_code" string="PTA Reference"
+                                 attrs="{'invisible': [('type_budget','!=', 'not'),('state','not in', ['budget','approval3','approval4','approval5','approval6'])]}"/>
                           <field name="currency_id" invisible="1"/>
                      </group>
                  </xpath>
@@ -206,14 +222,26 @@
              </field>
          </record>
 
-        <record id="action_purchase_request_reject" model="ir.actions.act_window">
-            <field name="name">Reject Purchase Request</field>
+        <record model="ir.actions.act_window" id="purchase_request.purchase_request_form_action">
+            <field name="name">Purchase Requests</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">purchase.request.reject</field>
+            <field name="res_model">purchase.request</field>
             <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="purchase_request.view_purchase_request_search"/>
+            <field name="context">{"search_default_assigned_approve":1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new purchase request process.
+              </p><p>
+                A purchase request is an instruction to Purchasing to procure
+                a certain quantity of materials services, so that they are
+                available at a certain point in time.
+              </p>
+            </field>
         </record>
+
+
 
     </data>
 </openerp>

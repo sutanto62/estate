@@ -13,6 +13,11 @@
         <field name="category_id" ref="purchase_request.module_category_purchase_request"/>
      </record>
 
+    <record id="group_purchase_request_head_of RO" model="res.groups">
+        <field name="name">Purchase Request RO Head</field>
+        <field name="implied_ids" eval="[(4, ref('purchase_request.group_purchase_request_user'))]"/>
+        <field name="category_id" ref="purchase_request.module_category_purchase_request"/>
+     </record>
 
 </data>
 </openerp>

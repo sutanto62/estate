@@ -185,6 +185,10 @@ class InheritPurchaseTenders(models.Model):
         res=super(InheritPurchaseTenders,self).generate_po()
         return res
 
+    @api.multi
+    def print_purchase_request_tender(self):
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request')
+
 class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'
