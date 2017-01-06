@@ -189,7 +189,7 @@
             <field name="name">Estate Block</field>
             <field name="res_model">estate.block.template</field>
             <field name="domain">[('estate_location','=','True')]</field>
-            <field name="view_mode">tree,form,geoengine</field>
+            <field name="view_mode">tree,form</field>
         </record>
 
         <record model="ir.actions.act_window" id="action_list_parameter_config">

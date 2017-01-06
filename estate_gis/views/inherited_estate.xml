@@ -14,18 +14,6 @@
             </field>
         </record>
 
-        <!-- Geo View -->
-        <record id="estate_block_template_geoview" model="ir.ui.view">
-            <field name="name">estate.block.template.geo_view</field>
-            <field name="arch" type="xml">
-                <geoengine version="7.0">
-                    <field name="name"/>
-                    <field name="company_id"/>
-                </geoengine>
-            </field>
-            <field eval="16" name="priority"/>
-            <field name="model">estate.block.template</field>
-        </record>
 
     </data>
 </openerp>

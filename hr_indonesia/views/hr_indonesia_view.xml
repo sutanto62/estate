@@ -19,6 +19,7 @@
                     <page string="HR Indonesia" groups="base.group_hr_user">
                         <group>
                             <group string="Employee Type" name="employee_type">
+                                <field name="supervisor_level_id"/>
                                 <field name="company_id"/>
                                 <field name="contract_type"/>
                                 <field name="contract_period"/>

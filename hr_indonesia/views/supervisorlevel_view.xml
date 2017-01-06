@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <record id="supervisor_view_tree" model="ir.ui.view">
+            <field name="name">Supervisor Levels Tree</field>
+            <field name="model">hr_indonesia.supervisor</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="supervisor_view_form" model="ir.ui.view">
+            <field name="name">Supervisor Levels Form</field>
+            <field name="model">hr_indonesia.supervisor</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group name="left" string="Supervisor Level">
+                            <field name="name"/>
+                            <field name="parent_id"/>
+                        </group>
+                        <group name="right" string="Information">
+                            <field name="code"/>
+                            <field name="sequence" string="Supervisor Level"/>
+                        </group>
+                    </group>
+                    <field name="comment"/>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_list_hr_supervisor" model="ir.actions.act_window" >
+            <field name="name">Supervisor Levels</field>
+            <field name="res_model">hr_indonesia.supervisor</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="menu_hr_indonesia_configuration_supervisor"
+                  name="Supervisor Level"
+                  parent="menu_hr_indonesia_configuration_indonesia"
+                  action="action_list_hr_supervisor"
+                  sequence="40" groups="base.group_configuration,base.group_hr_manager"/>
+    </data>
+</openerp>

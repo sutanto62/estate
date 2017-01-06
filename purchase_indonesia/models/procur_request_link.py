@@ -91,7 +91,7 @@ class InheritPurchaseRequest(models.Model):
         """
         price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
         total_price_purchase = float(sum(record.total_price for record in self.line_ids))
-        if total_price_purchase < (price_standard2):
+        if total_price_purchase < float(price_standard2):
                 self.button_approved()
         elif total_price_purchase > float(price_standard2):
             state_data = {'state':'approval6'}

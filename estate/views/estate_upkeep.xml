@@ -797,7 +797,7 @@
                   action="action_list_upkeep_material"
                   groups="estate.group_user"/>
 
-        <record id="estate_division_report_action" model="ir.actions.act_window" >
+        <record id="estate_division_report_menu_action" model="ir.actions.act_window" >
             <field name="name">Estate Division Report</field>
             <field name="res_model">estate.division.report</field>
             <field name="type">ir.actions.act_window</field>
@@ -807,9 +807,11 @@
             <field name="target">new</field>
         </record>
 
-        <menuitem id="estate_division_report_menu" name="Estate Division Report"
-                  parent="estate.menu_estate_reporting"
-                  action="estate_division_report_action"
+        <menuitem id="estate_division_report_menu"
+                  name="Estate Division Report"
+                  parent="menu_estate_reporting"
+                  action="estate_division_report_menu_action"
+                  sequence="50"
                   groups="estate.group_user"/>
     </data>
 </openerp>

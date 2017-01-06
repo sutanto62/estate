@@ -37,6 +37,11 @@ class Employee(models.Model):
     tax_marital_id = fields.Many2one('hr_indonesia.tax_marital', 'Tax Marital')
     tax_dependent = fields.Integer('Dependent')
     location_id = fields.Many2one('hr_indonesia.location', 'Placement Location')
+    supervisor_level_id = fields.Many2one('hr_indonesia.supervisor', 'Supervisor Level')
+    #
+    # point_of_hire_id = fields.Many2one('hr_indonesia.location', 'Point of Hire')
+    # supervisorlevel_id = fields.Many2one('hr_indonesia.supervisor', 'Supervisor Level')
+
 
     def _compute_age(self):
         for record in self:
@@ -190,3 +195,34 @@ class Location(models.Model):
                 record.complete_name = record.parent_id.complete_name + ' / ' + record.name
             else:
                 record.complete_name = record.name
+
+
+class SupervisorLevel(models.Model):
+    """ Class of position such as Division Manager and Section Chief"""
+
+    _name = 'hr_indonesia.supervisor'
+    _parent_store = True
+    _parent_name = 'parent_id'
+    _order = 'sequence'
+
+    _description = 'Supervisor Level'
+
+    name = fields.Char('Name', required=True)
+    code = fields.Char('Code', help='Write supervisor level')
+    comment = fields.Text("Additional Information")
+    sequence = fields.Integer("Sequence", help="Small number higher position.")
+    parent_id = fields.Many2one('hr_indonesia.supervisor', "Parent Supervisor", ondelete='restrict')
+    parent_left = fields.Integer("Parent Left", index=True)
+    parent_right = fields.Integer("Parent Right", index=True)
+    child_ids = fields.One2many('hr_indonesia.supervisor', 'parent_id', "Child Supervisor Levels")
+
+    @api.constrains('code')
+    def _check_code(self):
+        """Code max 3"""
+        if self.code:
+            if len(self.code) > 3:
+                msg_error = _('Supervisor level code should be 3 character long or less.')
+                raise ValidationError(msg_error)
+        else:
+            return True
+
