@@ -56,7 +56,9 @@ class InheritPurchaseRequest(models.Model):
     reject_reason = fields.Text('Reject Reason')
     total_estimate_price = fields.Float('Total Estimated Price',compute='_compute_total_estimate_price')
     pta_code =  fields.Char('Additional budget request')
-
+    validation_user = fields.Boolean("Validation User",compute='_change_validation_user')
+    validation_reject = fields.Boolean("Validation Reject",compute='_change_validation_reject')
+    validation_finance = fields.Boolean("Validation Reject",compute='_change_validation_finance')
 
     @api.multi
     def button_rejected(self):
@@ -429,6 +431,7 @@ class InheritPurchaseRequest(models.Model):
                 'companys_id' :purchase.company_id.id,
                 'type_location' : purchase.type_location,
                 'origin': purchase.complete_name,
+                'request_id':purchase.id,
                 'ordering_date' : purchase.date_start,
                 'schedule_date': purchase.date_start,
                 'owner_id' : purchase.id
@@ -458,6 +461,100 @@ class InheritPurchaseRequest(models.Model):
                 'type_location' : purchase_requisition.type_location
             }
         res = self.env['quotation.comparison.form'].create(purchase_data)
+
+    @api.multi
+    @api.depends('assigned_to')
+    def _change_validation_user(self):
+        arrDepartment = []
+
+        #search User from res.user
+        user= self.env['res.users'].browse(self.env.uid).id
+        assign_department= self.env['res.groups'].search([('id','=',71)]).users
+
+        #Search ID user from user.groups
+        for department in assign_department:
+            arrDepartment.append(department.id)
+
+        if self.assigned_to.id == user and user in arrDepartment and self.state == 'approval1':
+            self.validation_user = True
+
+    @api.depends('assigned_to')
+    def _change_validation_finance(self):
+        arrDepartment = []
+
+        #search User from res.user
+        user= self.env['res.users'].browse(self.env.uid).id
+
+        if self.assigned_to.id == user and self.state == 'approval3':
+            self.validation_finance = True
+
+    @api.multi
+    @api.depends('assigned_to')
+    def _change_validation_reject(self):
+        arrDepartment = []
+        arrDivision = []
+        arrTechnic3 = []
+        arrTechnic4 = []
+        arrTechnic5 = []
+        arrBudget = []
+        arrRohead = []
+        arrDirector = []
+        arrPresidentDirector = []
+
+        #search User from res.user
+        user= self.env['res.users'].browse(self.env.uid).id
+        assign_department= self.env['res.groups'].search([('id','=',71)]).users
+        assign_division= self.env['res.groups'].search([('id','=',72)]).users
+        technic3 = self.env['res.groups'].search([('id','=',76)]).users
+        technic4 = self.env['res.groups'].search([('id','=',77)]).users
+        technic5 = self.env['res.groups'].search([('id','=',78)]).users
+        budget = self.env['res.groups'].search([('id','=',73)]).users
+        director= self.env['res.groups'].search([('id','=',91)]).users
+        president_director = self.env['res.groups'].search([('id','=',92)]).users
+        ro_head = self.env['res.groups'].search([('id','=',492)]).users
+
+        #Search ID user from user.groups
+        for department in assign_department:
+            arrDepartment.append(department.id)
+        for division in assign_division:
+            arrDivision.append(division.id)
+        for budget in budget:
+            arrBudget.append(budget.id)
+        for technic3 in technic3:
+            arrTechnic3.append(technic3.id)
+        for technic4 in technic4:
+            arrTechnic4.append(technic4.id)
+        for technic5 in technic5:
+            arrTechnic5.append(technic5.id)
+        for director in director:
+            arrDirector.append(director.id)
+        for president_director in president_director:
+            arrPresidentDirector.append(president_director.id)
+        for ro_head in ro_head:
+            arrRohead.append(ro_head.id)
+
+        if self.assigned_to.id == user and user in arrDepartment and self.state == 'approval1':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrDivision and self.state == 'approval2':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrBudget and self.state == 'budget':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrTechnic3 and self.state == 'technic3':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrTechnic4 and self.state == 'technic4':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrTechnic5 and self.state == 'technic5':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrDepartment and self.state == 'approval3':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and self.state == 'approval4':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrDirector and self.state == 'approval5':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrPresidentDirector and self.state == 'approval6':
+            self.validation_reject = True
+        elif self.assigned_to.id == user and user in arrRohead and self.state == 'approval7':
+            self.validation_reject = True
 
     @api.one
     @api.depends('name','date_start','company_id','department_id')
@@ -528,21 +625,6 @@ class InheritPurchaseRequest(models.Model):
         if self.requested_by and not self.assigned_to.id:
             assigned_manager = self.env['res.users'].search([('id','=',self.requested_by.id)]).id
             self.assigned_to = assigned_manager
-
-    #todo contraint supervisor managerial
-    # @api.multi
-    # @api.constrains('assigned_to','approved_by')
-    # def _constraint_supervisor(self):
-    #     name = 'hr_indonesia.supervisor'
-    #     user= self.env['res.users'].browse(self.env.uid)
-    #     employee = self.env['hr.employee'].search([('user_id','=',user.id)]).supervisor_level_id.sequence
-    #     employeemanager = self.env['hr.employee'].search([('user_id','=',user.id)]).parent_id.id
-    #     calculate_employee = employee - 1
-    #     manager = self.env['hr.employee'].search([('id','=',employeemanager)]).supervisor_level_id.sequence
-    #     standart_value = self.env['purchase.params.setting'].search([('name','=',name)]).value_params
-    #     if manager > standart_value:
-    #         raise exceptions.ValidationError('You Cannot Create Purchase Request')
-
 
     @api.multi
     @api.onchange('type_functional')

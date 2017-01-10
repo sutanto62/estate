@@ -36,6 +36,7 @@ class InheritPurchaseTenders(models.Model):
     type_location = fields.Selection([('KOKB','Estate'),
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
     companys_id = fields.Many2one('res.company','Company')
+    request_id = fields.Many2one('purchase.request','Purchase Request')
 
     @api.one
     @api.depends('name','schedule_date','companys_id','type_location')
@@ -186,8 +187,22 @@ class InheritPurchaseTenders(models.Model):
         return res
 
     @api.multi
-    def print_purchase_request_tender(self):
-        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request')
+    def print_purchase_request_tender(self,ids,context=None):
+
+        purchase = self.env['purchase.request'].search([('complete_name','=',self.origin)])
+        print 'nerissa'
+        print purchase
+        print self.env['purchase.request'].read(['name'])
+        data = {
+            'ids': purchase,
+            'model': 'purchase.request',
+            'name' :'Report Purchase Request',
+            'form':{'purchase':purchase},
+            # 'context' :context
+        }
+        print data
+        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request',data=data)
+
 
 class InheritPurchaseRequisitionLine(models.Model):
 

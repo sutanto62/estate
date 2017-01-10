@@ -33,6 +33,16 @@
                            <field name="complete_name" class="oe_inline" invisible="0"
                                attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
+
+                 <xpath expr="//field[@name='origin']" position="replace">
+                     <field name="origin" placeholder="e.g. PO0025"
+                            invisible="1"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='origin']" position="after">
+                     <field name="request_id" readonly="1" string="No PP"/>
+                 </xpath>
+
                  <xpath expr="//field[@name='user_id']" position="after">
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>

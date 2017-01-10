@@ -21,6 +21,9 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='assigned_to']" position="after">
                           <field name="type_product" string="Product Type"/>
+                          <field name="validation_user" invisible="1"/>
+                          <field name="validation_reject" invisible="1"/>
+                          <field name="validation_finance" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" options="{'no_create_edit': True}"/>
                  </xpath>
              </field>
@@ -107,7 +110,8 @@
              <field name="arch" type="xml">
                 <xpath expr="//button[@name='button_rejected']" position="replace">
                      <button name="%(action_purchase_request_reject)d"
-                             states="to_approve,approval1,approval2,approval7,technic1,technic2,technic3,technic4,technic5,budget,approval3,approval4,approval5,approval6" string="Reject Purchase Request" type="action"
+                             attrs="{'invisible': [('validation_reject','!=',True)]}"
+                             string="Reject Purchase Request" type="action"
                              />
                  </xpath>
 
@@ -151,9 +155,10 @@
                             string="Confirm Purchase" type="object"
                             class="oe_highlight"
                              groups="purchase_request.group_purchase_request_user"/>
-                     <button name="action_confirm1" states="approval1"
+                     <button name="action_confirm1"
                             string="Approve Dept Head" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_dept_head"/>
+                             attrs="{'invisible': [('validation_user','!=',True)]}"
+                            class="oe_highlight" />
                      <button name="action_confirm2" states="approval2"
                             string="Approve Div Head" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
@@ -167,9 +172,10 @@
                             purchase_request.group_purchase_request_technical3,
                             purchase_request.group_purchase_request_technical4,
                             purchase_request.group_purchase_request_technical5"/>
-                     <button name="action_financial_approval1" states="approval3"
+                     <button name="action_financial_approval1"
+                             attrs="{'invisible': [('validation_finance','!=',True)]}"
                              string="Approve" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_dept_head"/>
+                            class="oe_highlight" />
                      <button name="action_financial_approval2" states="approval4"
                              string="Approve" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
