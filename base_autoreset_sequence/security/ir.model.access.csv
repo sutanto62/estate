@@ -1,2 +1,1 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-base.access_ir_sequence_estate_group_user,ir_sequence_estate_user,model_ir_sequence,estate.group_user,1,1,0,0
