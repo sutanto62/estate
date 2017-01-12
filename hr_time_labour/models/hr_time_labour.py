@@ -11,7 +11,7 @@ class Schedule(models.Model):
     name = fields.Char('Schedule Name')
     code = fields.Char('Schedule Code')
     description = fields.Text('Description')
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
     effective_date = fields.Date('Effective Date')
     type = fields.Selection([('punch', 'Punch'),
                              ('elapsed', 'Elapsed'),
@@ -21,6 +21,7 @@ class Schedule(models.Model):
                             "* Punch, In, Out, Break, Meal and Transfer punch types can be entered on the Shift page \n"
                             "* Flex, only In and Out punches can be entered.")
     rotating_schedule = fields.Boolean('Rotating Schedule', help='Define Rotating Schedule')
+    overnight_schedule = fields.Boolean('Overnight Schedule', help="Allow sign-in or sign-out in different day")
     days_in_schedule = fields.Integer('Days in Schedule', help='Populate shift time')
     calendar_id = fields.Many2one('resource.calendar', string='Working Schedule',
                                   help='Link to Odoo Working Schedule at Contract')

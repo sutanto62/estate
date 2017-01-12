@@ -5,6 +5,7 @@ import pytz
 from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
 from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT as DT
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 from math import floor
@@ -69,6 +70,7 @@ class FingerAttendance(models.Model):
         2. Has sign-in.
         3. Has sign-out.
         """
+
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
 
         # Update only when state is in draft
@@ -118,15 +120,6 @@ class FingerAttendance(models.Model):
                 res = super(FingerAttendance, self).create(vals)
                 self._create_attendance(res, vals, 'action')
 
-            # if not vals['action_reason'] in set(item):
-            #     # Ignore record which did not passed rules
-            #     logger_msg = '%s attendance at %s did not satisfy attendance rule or registered action reason.' % (vals['employee_name'], vals['date'])
-            #     _logger.warning(logger_msg)
-            #     res = False
-            # else:
-            # print 'create attendance with action reason... sign_in %s and sign_out %s' % (
-            # vals['time_start'], vals['time_end'])
-
         return res
 
     @api.model
@@ -139,29 +132,49 @@ class FingerAttendance(models.Model):
         :param update: set True for update action
         :return: instance of attendance
         """
+
         employee_id = self._get_employee(vals['employee_name'], vals['nik'])
 
         att_time = 0
-        action_reason_id = None
+        action_reason_id = self.env['hr.action.reason']
 
-        # define action and time
         if action == 'sign_in':
             att_time = vals['sign_in']
         elif action == 'sign_out':
             att_time = vals['sign_out']
         elif action == 'action':
+            if vals['sign_in']:
+                att_time = vals['sign_in']
+            elif vals['sign_out']:
+                att_time = vals['sign_out']
+            else:
+                # action without sign_in/out time
+                att_time = '00:00:00'
+
             if vals['action_reason']:
                 action_reason_id = self.env['hr.action.reason'].search([('active', '=', True),
                                                                         ('name', '=', vals['action_reason'])],
-                                                                       limit=1).id
+                                                                       limit=1)
+
+        # Overnight schedule
+        schedule_id = self.env['hr_time_labour.schedule'].search([('name', '=', f_attendance.work_schedules)], limit=1)
+        if schedule_id.overnight_schedule is True and action == 'sign_out':
+            date_in = datetime.strptime(vals['date'], '%Y-%m-%d')
+            date_out = date_in + relativedelta(days=1)
+            vals['date'] = date_out.strftime('%Y-%m-%d')
 
         att = {
             'finger_attendance_id': f_attendance.id,
             'employee_id': employee_id.id,
             'name': self._get_name(vals['date'], att_time),
             'action': action,
-            'action_desc': action_reason_id,
+            'action_desc': action_reason_id.id,
         }
+
+        # Cannot overide hr.attendance._worked_hours_compute
+        if action == 'action':
+            print 'durasi %s' % action_reason_id.action_duration
+            att['worked_hours'] = action_reason_id.action_duration
 
         if update:
             attendance_obj = self.env['hr.attendance']
@@ -284,7 +297,13 @@ class HrAttendance(models.Model):
     def _altern_si_so(self):
         """Support attendance with action type. Note: first attendance must be sign-in."""
         for record in self:
+            # _altern_si_so did not support overnight
+            schedule = record.finger_attendance_id.work_schedules
+            schedule_id = self.env['hr_time_labour.schedule'].search([('name', '=', schedule)], limit=1)
+
             if record.action == 'action':
+                pass
+            elif schedule_id.overnight_schedule is True:
                 pass
             else:
                 return super(HrAttendance, record)._altern_si_so()

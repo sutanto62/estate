@@ -6,10 +6,10 @@ from openerp.exceptions import ValidationError
 from datetime import datetime
 
 
-class TestSequence(TransactionCase):
+class TestEmployeeNoSequence(TransactionCase):
 
     def setUp(self):
-        super(TestSequence, self).setUp()
+        super(TestEmployeeNoSequence, self).setUp()
         self.Company = self.env['res.company']
         self.Estate = self.env['stock.location']
         self.Employee = self.env['hr.employee']
@@ -137,3 +137,22 @@ class TestSequence(TransactionCase):
     #     # I created PKWTT Daily
     #     val = self.Employee.create(person_crawford)
     #     self.assertEqual(val.nik_number[:4], '3011')
+
+class TestEstateUpkeepSequence(TransactionCase):
+
+    def setUp(self):
+        super(TestEstateUpkeepSequence, self).setUp()
+
+        self.Upkeep = self.env['estate.upkeep']
+
+    def test_00_current_month(self):
+        """ Current month transaction."""
+        return True
+
+    def test_01_next_month(self):
+        """ Next month transaction."""
+        return True
+
+    def test_02_backdated(self):
+        """ Backdated transaction."""
+        return True
