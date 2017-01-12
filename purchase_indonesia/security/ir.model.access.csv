@@ -12,6 +12,7 @@
 "purchase_setting_technical_budget","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_budget","True","False","False","False"
 "purchase_setting_manager","purchase_params_setting","purchase_indonesia.model_purchase_params_setting","purchase_request.group_purchase_request_manager","True","True","True","True"
 ,,,,,,,
+
 "tracking_approval_user","tracking_approval","purchase_indonesia.model_tracking_approval","purchase_request.group_purchase_request_user","True","False","True","False"
 "tracking_approval_div_head","tracking_approval","purchase_indonesia.model_tracking_approval","purchase_request.group_purchase_request_div_head","True","False","True","False"
 "tracking_approval_dept_head","tracking_approval","purchase_indonesia.model_tracking_approval","purchase_request.group_purchase_request_dept_head","True","False","True","False"
@@ -24,6 +25,7 @@
 "tracking_approval_manager","tracking_approval","purchase_indonesia.model_tracking_approval","purchase_request.group_purchase_request_manager","True","False","True","False"
 "tracking_approval_procurement_staff","tracking_approval","purchase_indonesia.model_tracking_approval","purchase_request.group_purchase_request_procstaff","True","False","True","False"
 ,,,,,,,
+
 "quotation_comparison_form_user","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_user","True","False","False","False"
 "quotation_comparison_form_div_head","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_div_head","True","False","False","False"
 "quotation_comparison_form_dept_head","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_dept_head","True","False","False","False"
@@ -31,7 +33,9 @@
 "quotation_comparison_form_procurement_staff","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_procstaff","True","True","True","True"
 "quotation_comparison_form_director","quotation_comparison_form_director","purchase_indonesia.model_quotation_comparison_form","purchase_indonesia.group_purchase_request_director","TRUE","True","True","True"
 "quotation_comparison_form_president_director","quotation_comparison_form_president_director","purchase_indonesia.model_quotation_comparison_form","purchase_indonesia.group_purchase_request_president_director","TRUE","True","True","True"
+"quotation_comparison_form_president_budget","quotation_comparison_form_budget","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
 ,,,,,,,
+
 "quotation_comparison_form_line_user","quotation_comparison_form_line","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_user","True","False","False","False"
 "quotation_comparison_form_line_div_head","quotation_comparison_form_line","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_div_head","True","False","False","False"
 "quotation_comparison_form_line_dept_head","quotation_comparison_form_line","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_dept_head","True","False","False","False"
@@ -39,6 +43,7 @@
 "quotation_comparison_form_line_procurement_staff","quotation_comparison_form_line","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_procstaff","True","True","True","False"
 "quotation_comparison_form_line_director","quotation_comparison_form_line_director","purchase_indonesia.model_quotation_comparison_form_line","purchase_indonesia.group_purchase_request_director","TRUE","True","True","True"
 "quotation_comparison_form_line_president_director","quotation_comparison_form_line_president_director","purchase_indonesia.model_quotation_comparison_form_line","purchase_indonesia.group_purchase_request_president_director","TRUE","True","True","True"
+"quotation_comparison_form_line_budget","quotation_comparison_form_line_budget","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
 
 ,,,,,,,
 "v_quotation_comparison_form_line_user","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_user","True","False","False","False"
@@ -58,5 +63,12 @@
 
 "access_purchase_requisition_director","purchase_requisition_director","purchase_requisition.model_purchase_requisition","purchase_indonesia.group_purchase_request_director","TRUE","True","True","True"
 "access_purchase_requisition_line_director","purchase_requisition_line_director","purchase_requisition.model_purchase_requisition_line","purchase_indonesia.group_purchase_request_director","TRUE","True","True","True"
+
 "access_purchase_requisition_president_director","purchase_requisition_president_director","purchase_requisition.model_purchase_requisition","purchase_indonesia.group_purchase_request_president_director","TRUE","True","True","True"
 "access_purchase_requisition_line_president_director","purchase_requisition_line_president_director","purchase_requisition.model_purchase_requisition_line","purchase_indonesia.group_purchase_request_president_director","TRUE","True","True","True"
+
+"access_purchase_requisition_budget","purchase_requisition_budget","purchase_requisition.model_purchase_requisition","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
+"access_purchase_requisition_line_budget","purchase_requisition_line_budget","purchase_requisition.model_purchase_requisition_line","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
+
+"access_purchase_requisition_department_head","purchase_requisition_department_head","purchase_requisition.model_purchase_requisition","purchase_request.group_purchase_request_dept_head","TRUE","True","True","True"
+"access_purchase_requisition_line_department_head","purchase_requisition_line_department_head","purchase_requisition.model_purchase_requisition_line","purchase_request.group_purchase_request_dept_head","TRUE","True","True","True"

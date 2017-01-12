@@ -403,7 +403,7 @@
 			                                <td class="noborder">
 			                                    <t t-foreach="o.message_ids" t-as="mids">
 													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Div Head Approval'">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'RO Head Approval'">
 														    <u>
 														        <span t-field="mids.author_id"/>&#160;
 															</u>
@@ -428,8 +428,6 @@
 													        mids_tracking.old_value_char == 'Technic Dept Head Approval'
 													        or mids_tracking.old_value_char == 'Technic Div Head Approval'
 													        or mids_tracking.old_value_char == 'Technic ICT Dept Approval'
-													        or mids_tracking.old_value_char == 'Technic GM Plantation Dept Approval'
-													        or mids_tracking.old_value_char == 'Technic EA Dept Approval'
 													        )
 													        ">
 															<u>

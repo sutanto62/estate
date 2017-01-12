@@ -186,22 +186,23 @@ class InheritPurchaseTenders(models.Model):
         res=super(InheritPurchaseTenders,self).generate_po()
         return res
 
-    @api.multi
-    def print_purchase_request_tender(self,ids,context=None):
-
-        purchase = self.env['purchase.request'].search([('complete_name','=',self.origin)])
-        print 'nerissa'
-        print purchase
-        print self.env['purchase.request'].read(['name'])
-        data = {
-            'ids': purchase,
-            'model': 'purchase.request',
-            'name' :'Report Purchase Request',
-            'form':{'purchase':purchase},
-            # 'context' :context
-        }
-        print data
-        return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request',data=data)
+    #todo print purchase request in purchase tender
+    # @api.multi
+    # def print_purchase_request_tender(self,ids,context=None):
+    #
+    #     purchase = self.env['purchase.request'].search([('complete_name','=',self.origin)])
+    #     print 'nerissa'
+    #     print purchase
+    #     print self.env['purchase.request'].read(['name'])
+    #     data = {
+    #         'ids': purchase,
+    #         'model': 'purchase.request',
+    #         'name' :'Report Purchase Request',
+    #         'form':{'purchase':purchase},
+    #         # 'context' :context
+    #     }
+    #     print data
+    #     return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request',data=data)
 
 
 class InheritPurchaseRequisitionLine(models.Model):
