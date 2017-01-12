@@ -173,7 +173,6 @@ class FingerAttendance(models.Model):
 
         # Cannot overide hr.attendance._worked_hours_compute
         if action == 'action':
-            print 'durasi %s' % action_reason_id.action_duration
             att['worked_hours'] = action_reason_id.action_duration
 
         if update:
@@ -250,6 +249,42 @@ class FingerAttendance(models.Model):
         self.write({
             'state': 'approved'
         })
+
+    @api.multi
+    def confirm_all(self):
+        """ One by one confirmation takes time."""
+
+        # Server action menu cannot limited by groups_id
+        if not self.user_has_groups('base.group_hr_ho_user'):
+            err_msg = _('You are not authorized to confirm all fingerprint imported data')
+            raise ValidationError(err_msg)
+
+        self.write({
+            'state': 'confirmed'
+        })
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s confirmed imported AMS fingerprint at %s (server time)' % (current_user.name, confirm_date)))
+
+    @api.multi
+    def approve_all(self):
+        """ One by one confirmation takes time."""
+
+        # Server action menu cannot limited by groups_id
+        if not self.user_has_groups('base.group_hr_manager'):
+            err_msg = _('You are not authorized to approve all fingerprint imported data')
+            raise ValidationError(err_msg)
+
+        self.write({
+            'state': 'approved'
+        })
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s approved imported AMS fingerprint at %s (server time)' % (current_user.name, confirm_date)))
 
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum of .

@@ -79,6 +79,8 @@
                                 context="{'group_by': 'estate_id'}"/>
                         <filter name="by_division" string="Division"
                                 context="{'group_by': 'division_id'}"/>
+                        <filter name="by_upkeep" string="Upkeep"
+                                context="{'group_by': 'upkeep_id'}"/>
                         <filter name="by_employee" string="Employee"
                                 context="{'group_by': 'employee_id'}"/>
                         <filter name="by_general_account" string="General Account"
@@ -173,7 +175,7 @@
                     <field name="team_id"/>
                     <field name="assistant_id"/>
                     <!-- do not remove -->
-                    <field name="state" invisible="True"/>
+                    <field name="state" invisible="False"/>
                 </tree>
             </field>
         </record>
@@ -544,15 +546,16 @@
                     <field name="employee_id"/>
                     <field name="location_id" string="Block"/>
                     <field name="planted_year_id" string="PY"/>
-                    <field name="quantity" string="Qty."/>
-                    <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
-                    <field name="quantity_overtime" string="OT" sum="OT"/>
-                    <field name="quantity_piece_rate" string="PR"/>
-                    <field name="amount" string="Wage" sum="Wage"/>
-                    <field name="ratio_quantity_day" string="Q/D"/>
-                    <field name="ratio_day_quantity" string="D/Q"/>
-                    <field name="ratio_wage_quantity" string="W/Q"/>
-                    <field name="prod_quantity_day" string="Prod (%)" avg="Productivity"/>
+                    <field name="quantity" string="Qty." digits="[18,2]"/>
+                    <field name="number_of_day" string="Day(s)" sum="Day(s)" digits="[18,2]"/>
+                    <field name="quantity_overtime" string="OT" sum="OT" digits="[18,2]"/>
+                    <field name="quantity_piece_rate" string="PR" digits="[18,2]"/>
+                    <field name="amount" string="Wage" sum="Wage" digits="[18,2]"/>
+                    <field name="ratio_quantity_day" string="Q/D" digits="[18,2]"/>
+                    <field name="ratio_day_quantity" string="D/Q" digits="[18,6]"/>
+                    <field name="ratio_wage_quantity" string="W/Q" digits="[18,2]"/>
+                    <field name="prod_quantity_day" string="Prod (%)" avg="Productivity" digits="[18,2]"/>
+                    <!-- do not remove -->
                     <field name="state" invisible="True"/>
                 </tree>
             </field>
@@ -703,13 +706,28 @@
             <field name="res_model">estate.upkeep.labour</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="estate.upkeep_lha_view_tree"/>
-            <field name="context">{'search_default_by_division': 1, 'search_default_by_activity': 1}</field>
+            <field name="context">{'search_default_filter_new':1,'search_default_by_division': 1,
+                'search_default_by_upkeep': 1,
+                'search_default_by_activity': 1}</field>
         </record>
 
         <menuitem id="estate_division_lha_report" name="Division Upkeep"
                   parent="estate_operation_control_menu"
                   action="action_list_upkeep_lha"
                   groups="estate.group_assistant"/>
+
+        <!--<record id="action_list_upkeep" model="ir.actions.act_window" >-->
+            <!--<field name="name">Division Report</field>-->
+            <!--<field name="res_model">estate.upkeep</field>-->
+            <!--<field name="view_mode">tree,form</field>-->
+            <!--&lt;!&ndash;<field name="view_id" ref="estate.upkeep_lha_view_tree"/>&ndash;&gt;-->
+            <!--<field name="context">{'search_default_by_division': 1}</field>-->
+        <!--</record>-->
+
+        <!--<menuitem id="estate_division_upkeep_report" name="Division Upkeep"-->
+                  <!--parent="estate_operation_control_menu"-->
+                  <!--action="action_list_upkeep"-->
+                  <!--groups="estate.group_assistant"/>-->
 
         <!-- Use Division Upkeep re it shows work result -->
         <!--
@@ -821,5 +839,82 @@
                   action="estate_division_report_menu_action"
                   sequence="50"
                   groups="estate.group_user"/>
+
+
+        <!-- Confirm All action -->
+        <record model="ir.actions.server" id="upkeep_confirm_action">
+            <field name="name">Confirm All</field>
+            <field name="model_id" ref="estate.model_estate_upkeep"/>
+            <field name="code">
+                if context.get('active_model') == 'estate.upkeep' and context.get('active_ids'):
+                    action = self.confirm_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="upkeep_confirm_all_action_menu">
+            <field name="model_id" ref="estate.model_estate_upkeep" />
+            <field name="name">Confirm All Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('upkeep_confirm_action'))" />
+            <field name="key">action</field>
+            <field name="model">estate.upkeep</field>
+        </record>
+
+        <!-- Approve All action -->
+        <record model="ir.actions.server" id="upkeep_approve_action">
+            <field name="name">Approve All</field>
+            <field name="model_id" ref="estate.model_estate_upkeep"/>
+            <field name="code">
+                if context.get('active_model') == 'estate.upkeep' and context.get('active_ids'):
+                    action = self.approve_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="upkeep_approve_all_action_menu">
+            <field name="model_id" ref="estate.model_estate_upkeep" />
+            <field name="name">Approve All Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('upkeep_approve_action'))" />
+            <field name="key">action</field>
+            <field name="model">estate.upkeep</field>
+        </record>
+
+        <!-- Confirm All action through upkeep labour-->
+        <record model="ir.actions.server" id="upkeep_labour_confirm_action">
+            <field name="name">Confirm All</field>
+            <field name="model_id" ref="estate.model_estate_upkeep_labour"/>
+            <field name="code">
+                if context.get('active_model') == 'estate.upkeep.labour' and context.get('active_ids'):
+                    action = self.confirm_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="upkeep_labour_confirm_all_action_menu">
+            <field name="model_id" ref="estate.model_estate_upkeep_labour" />
+            <field name="name">Confirm All Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('upkeep_labour_confirm_action'))" />
+            <field name="key">action</field>
+            <field name="model">estate.upkeep.labour</field>
+        </record>
+
+        <!-- Approve All action through upkeep labour-->
+        <record model="ir.actions.server" id="upkeep_labour_approve_action">
+            <field name="name">Approve All</field>
+            <field name="model_id" ref="estate.model_estate_upkeep_labour"/>
+            <field name="code">
+                if context.get('active_model') == 'estate.upkeep.labour' and context.get('active_ids'):
+                    action = self.approve_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="upkeep_labour_approve_all_action_menu">
+            <field name="model_id" ref="estate.model_estate_upkeep_labour" />
+            <field name="name">Approve All Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('upkeep_labour_approve_action'))" />
+            <field name="key">action</field>
+            <field name="model">estate.upkeep.labour</field>
+        </record>
     </data>
 </openerp>

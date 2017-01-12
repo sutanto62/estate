@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-05 08:51+0000\n"
-"PO-Revision-Date: 2016-10-05 08:51+0000\n"
+"POT-Creation-Date: 2017-01-13 05:22+0000\n"
+"PO-Revision-Date: 2017-01-13 05:22+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,13 +16,46 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:287
+#, python-format
+msgid "%s approved imported AMS fingerprint at %s (server time)"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:269
+#, python-format
+msgid "%s confirmed imported AMS fingerprint at %s (server time)"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_action_reason_contract_period
+msgid "* Monthly, Karyawan Bulanan, * Daily, Karyawan Harian."
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_action_reason_contract_type
+msgid "* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja Waktu Tertentu."
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_absent
 msgid "Absent"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.model,name:hr_fingerprint_ams.model_hr_action_reason
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_action_reason
 msgid "Action Reason"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_active
+msgid "Active"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.actions.server,name:hr_fingerprint_ams.action_hr_fingerprint_approve
+msgid "Approve All"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -66,10 +99,25 @@ msgid "Compare number of day with fingerprint."
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.actions.server,name:hr_fingerprint_ams.action_hr_fingerprint_confirm
+msgid "Confirm All"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 #: selection:hr_fingerprint_ams.fingerprint,state:0
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Confirmed"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_contract_period
+msgid "Contract Period"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_contract_type
+msgid "Contract Type"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -89,6 +137,11 @@ msgid "Created on"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: selection:hr.action.reason,contract_period:0
+msgid "Daily"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_date
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_date
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
@@ -98,6 +151,7 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_department
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 msgid "Department"
 msgstr ""
 
@@ -244,12 +298,17 @@ msgid "Late In"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: selection:hr.action.reason,contract_period:0
+msgid "Monthly"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_nik
 msgid "NIK"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_estate_upkeep.py:36
+#: code:addons/hr_fingerprint_ams/models/inherited_estate_upkeep.py:39
 #, python-format
 msgid "No"
 msgstr ""
@@ -288,6 +347,16 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_hour_ot_normal
 msgid "Overtime Hour"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: selection:hr.action.reason,contract_type:0
+msgid "PKWT"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: selection:hr.action.reason,contract_type:0
+msgid "PKWTT"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -418,13 +487,25 @@ msgid "Working Time Start"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_estate_upkeep.py:34
+#: code:addons/hr_fingerprint_ams/models/inherited_estate_upkeep.py:37
 #, python-format
 msgid "Yes"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:157
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:277
+#, python-format
+msgid "You are not authorized to approve all fingerprint imported data"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:259
+#, python-format
+msgid "You are not authorized to confirm all fingerprint imported data"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:197
 #, python-format
 msgid "You cannot delete approved Fingerprint records."
 msgstr ""
