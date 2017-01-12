@@ -29,7 +29,7 @@ class Sequence(models.Model):
 
             if self.reset_time < self.env.context.get('ir_sequence_date'):
                 delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == self.reset_period]
-                reset_time_datetime = datetime.datetime.strptime(self.reset_time, '%Y-%m-%d %H:%M:%S')
+                reset_time_datetime = datetime.strptime(self.reset_time, '%Y-%m-%d %H:%M:%S')
 
                 # support year/month only.
                 next_reset_time = reset_time_datetime + relativedelta(months=delta[0][1])

@@ -33,5 +33,6 @@
     'demo': [
         'demo.xml',
         'data/hr_estate_demo.xml',
+        'data/hr_employee_demo.xml',
     ],
 }
