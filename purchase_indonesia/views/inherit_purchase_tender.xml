@@ -39,8 +39,20 @@
                             invisible="1"/>
                  </xpath>
 
+                 <xpath expr="//field[@name='user_id']" position="after">
+                     <field name="pic_id" string="PIC" readonly="1"/>
+                 </xpath>
+
                  <xpath expr="//field[@name='origin']" position="after">
                      <field name="request_id" readonly="1" string="No PP"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='schedule_date']" position="replace">
+                     <field name="schedule_date" string="Due Date" invisible="1" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='schedule_date']" position="after">
+                     <field name="due_date" string="Due Date" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
 
                  <xpath expr="//field[@name='user_id']" position="after">
@@ -52,6 +64,12 @@
                                readonly="1"/>
                            <field name="qty_outstanding" class="oe_inline" invisible="0"
                                readonly="0"/>
+                 </xpath>
+                 <xpath expr="//tree/field[@name='schedule_date']" position="replace">
+                           <field name="schedule_date" string="Due Date" invisible="1"/>
+                 </xpath>
+                 <xpath expr="//form/group/field[@name='schedule_date']" position="replace">
+                           <field name="schedule_date" string="Due Date" invisible="1"/>
                  </xpath>
                  <xpath expr="//tree/field[@name='name']" position="replace">
                         <field name="name" invisible="1" string="Reference"/>
@@ -73,7 +91,10 @@
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='name']" position="replace">
-                           <field name="complete_name" invisible="0"/>
+                     <field name="complete_name" invisible="0"/>
+                 </xpath>
+                 <xpath expr="//field[@name='ordering_date']" position="after">
+                     <field name="due_date" string="Due Date"/>
                  </xpath>
 
              </field>

@@ -60,6 +60,8 @@ class InheritPurchaseRequest(models.Model):
     validation_reject = fields.Boolean("Validation Reject",compute='_change_validation_reject')
     validation_finance = fields.Boolean("Validation Finance",compute='_change_validation_finance')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
+    isByPass =  fields.Boolean("Code By Pass" ,store=False)
+
 
     #Method Get user
     @api.multi
@@ -300,7 +302,7 @@ class InheritPurchaseRequest(models.Model):
     #Method get Pricing
     @api.multi
     def _get_price_low(self):
-        #get Minimal price from purchase params for Quotation comparison Form
+        #get Minimal price from purchase params for Purchase Request
 
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
 
@@ -318,7 +320,7 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def _get_price_mid(self):
-        #get middle price from purchase params for Quotation comparison Form
+        #get middle price from purchase params for Purchase Request
         arrMid = []
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
         for price in price_standard:
@@ -328,13 +330,82 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def _get_price_high(self):
-        #get Maximal price from purchase params for Quotation comparison Form
+        #get Maximal price from purchase params for Purchase Request
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
         price = max(price.value_params for price in price_standard)
         return float(price)
 
     #--------------------------End Of Method Search Price----------------
 
+    #validation
+    @api.multi
+    def _check_validation_user(self):
+        arrDivision = []
+        arrTechnic3 = []
+        arrTechnic4 = []
+        arrTechnic5 = []
+        arrBudget = []
+        arrRohead = []
+        arrDirector = []
+        arrPresidentDirector = []
+
+        #search User from res.user
+        assign_division= self.env['res.groups'].search([('id','=',72)]).users
+        technic3 = self.env['res.groups'].search([('id','=',76)]).users
+        technic4 = self.env['res.groups'].search([('id','=',77)]).users
+        technic5 = self.env['res.groups'].search([('id','=',78)]).users
+        budget = self.env['res.groups'].search([('id','=',73)]).users
+        director= self.env['res.groups'].search([('id','=',91)]).users
+        president_director = self.env['res.groups'].search([('id','=',92)]).users
+        ro_head = self.env['res.groups'].search([('id','=',492)]).users
+
+        #Search ID user from user.groups
+
+        for division in assign_division:
+            arrDivision.append(division.id)
+        for budget in budget:
+            arrBudget.append(budget.id)
+        for technic3 in technic3:
+            arrTechnic3.append(technic3.id)
+        for technic4 in technic4:
+            arrTechnic4.append(technic4.id)
+        for technic5 in technic5:
+            arrTechnic5.append(technic5.id)
+        for director in director:
+            arrDirector.append(director.id)
+        for president_director in president_director:
+            arrPresidentDirector.append(president_director.id)
+        for ro_head in ro_head:
+            arrRohead.append(ro_head.id)
+
+        validation_reject = False
+
+        if self.assigned_to.id == self._get_user().id and self._check_departement_head and self.state == 'approval1':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self.state in ['draft','confirm']:
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrDivision and self.state == 'approval2':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrBudget and self.state == 'budget':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrTechnic3 and self.state == 'technic3':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrTechnic4 and self.state == 'technic4':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrTechnic5 and self.state == 'technic5':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._check_departement_head and self.state == 'approval3':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self.state == 'approval4':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrDirector and self.state == 'approval5':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrPresidentDirector and self.state == 'approval6':
+            validation_reject = True
+        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrRohead and self.state == 'approval7':
+            validation_reject = True
+
+        return validation_reject
 
     #Button Workflow
     @api.multi
@@ -449,6 +520,7 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def check_wkf_requester(self):
         #checking Approval Requester
+
         if self._get_compare_hr():
             self.write({'state':'confirm'})
             state_data = {'state':'approval7','assigned_to':self._get_user_ro_manager()}
@@ -495,6 +567,23 @@ class InheritPurchaseRequest(models.Model):
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
             self.write(state_data)
 
+    #todo ovveride write to hide edit
+    # @api.multi
+    # def write(self,context):
+    #     if not self.isByPass:
+    #         print 'aku'
+    #         if self._check_validation_user() :
+    #             print 'benar'
+    #             super(InheritPurchaseRequest, self).write(context)
+    #
+    #         elif not self._check_validation_user():
+    #             print'salah'
+    #             raise exceptions.ValidationError('You cannot edit content, state is already approve')
+    #     elif self.isByPass:
+    #         print 'dia'
+    #         super(InheritPurchaseRequest, self).write(context)
+    #     return True
+
     @api.multi
     def tracking_approval(self):
         user= self.env['res.users'].browse(self.env.uid)
@@ -519,8 +608,7 @@ class InheritPurchaseRequest(models.Model):
                 'type_location' : purchase.type_location,
                 'origin': purchase.complete_name,
                 'request_id':purchase.id,
-                'ordering_date' : purchase.date_start,
-                'schedule_date': purchase.date_start,
+                'ordering_date' : datetime.today(),
                 'owner_id' : purchase.id
             }
             res = self.env['purchase.requisition'].create(purchase_data)
@@ -530,7 +618,6 @@ class InheritPurchaseRequest(models.Model):
                 'product_id': purchaseline.product_id.id,
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty,
-                'schedule_date' : purchaseline.date_start,
                 'requisition_id' : res.id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
@@ -571,66 +658,7 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     @api.depends('assigned_to')
     def _change_validation_reject(self):
-        arrDivision = []
-        arrTechnic3 = []
-        arrTechnic4 = []
-        arrTechnic5 = []
-        arrBudget = []
-        arrRohead = []
-        arrDirector = []
-        arrPresidentDirector = []
-
-        #search User from res.user
-        assign_division= self.env['res.groups'].search([('id','=',72)]).users
-        technic3 = self.env['res.groups'].search([('id','=',76)]).users
-        technic4 = self.env['res.groups'].search([('id','=',77)]).users
-        technic5 = self.env['res.groups'].search([('id','=',78)]).users
-        budget = self.env['res.groups'].search([('id','=',73)]).users
-        director= self.env['res.groups'].search([('id','=',91)]).users
-        president_director = self.env['res.groups'].search([('id','=',92)]).users
-        ro_head = self.env['res.groups'].search([('id','=',492)]).users
-
-        #Search ID user from user.groups
-
-        for division in assign_division:
-            arrDivision.append(division.id)
-        for budget in budget:
-            arrBudget.append(budget.id)
-        for technic3 in technic3:
-            arrTechnic3.append(technic3.id)
-        for technic4 in technic4:
-            arrTechnic4.append(technic4.id)
-        for technic5 in technic5:
-            arrTechnic5.append(technic5.id)
-        for director in director:
-            arrDirector.append(director.id)
-        for president_director in president_director:
-            arrPresidentDirector.append(president_director.id)
-        for ro_head in ro_head:
-            arrRohead.append(ro_head.id)
-
-        if self.assigned_to.id == self._get_user().id and self._check_departement_head and self.state == 'approval1':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrDivision and self.state == 'approval2':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrBudget and self.state == 'budget':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrTechnic3 and self.state == 'technic3':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrTechnic4 and self.state == 'technic4':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrTechnic5 and self.state == 'technic5':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._check_departement_head and self.state == 'approval3':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self.state == 'approval4':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrDirector and self.state == 'approval5':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrPresidentDirector and self.state == 'approval6':
-            self.validation_reject = True
-        elif self.assigned_to.id == self._get_user().id and self._get_user().id in arrRohead and self.state == 'approval7':
-            self.validation_reject = True
+        self.validation_reject = self._check_validation_user()
 
     @api.one
     @api.depends('name','date_start','company_id','department_id')

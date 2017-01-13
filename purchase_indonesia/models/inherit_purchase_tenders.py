@@ -29,7 +29,7 @@ class InheritPurchaseTenders(models.Model):
 
     _inherit = 'purchase.requisition'
     _description = 'inherit purchase requisition'
-    _order = 'complete_name desc'
+    _order = 'ordering_date asc'
     _rec_name = 'complete_name'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
@@ -37,16 +37,97 @@ class InheritPurchaseTenders(models.Model):
                                      ('KPST','HO'),('KPWK','RO')],'Location Type')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
+    due_date = fields.Date('Due Date',compute='_compute_due_date')
+    pic_id = fields.Many2one('res.users','Assign To')
+
+    @api.multi
+    def _get_user(self):
+        #find User
+        user= self.env['res.users'].browse(self.env.uid)
+
+        return user
+
+    @api.multi
+    def tender_in_progress(self):
+        super(InheritPurchaseTenders,self).tender_in_progress()
+        data={
+            'pic_id':self._get_user().id
+        }
+        self.write(data)
+        return True
+
+
+    @api.multi
+    def _compute_date(self):
+        arrMinDateNorm = []
+        arrMaxDateNorm = []
+
+        arrMinDateUrgent = []
+        arrMaxDateUrgent = []
+        res = []
+        fmt = '%Y-%m-%d'
+        normal = self.env['purchase.indonesia.type'].search([('name','in',['Normal','normal'])])
+        urgent = self.env['purchase.indonesia.type'].search([('name','in',['Urgent','urgent'])])
+        for item in normal:
+            arrMaxDateNorm.append(item.max_days)
+            arrMinDateNorm.append(item.min_days)
+
+        for item in urgent:
+            arrMaxDateUrgent.append(item.max_days)
+            arrMinDateUrgent.append(item.min_days)
+
+        compute = self.due_date
+        if self.request_id.type_purchase.name in ['Normal','normal']:
+            min_days = arrMinDateNorm[0]
+            max_days = arrMaxDateNorm[0]
+
+            if self.request_id.type_location == 'KPST':
+
+                 fromdt = self.request_id.date_start
+                 init_date=datetime.strptime(str(fromdt),fmt)
+                 date_after_month = datetime.date(init_date)+ relativedelta(days=min_days)
+                 compute = date_after_month.strftime(fmt)
+
+            elif self.request_id.type_location in ['KOKB','KPWK']:
+                 fromdt = self.request_id.date_start
+                 init_date=datetime.strptime(str(fromdt),fmt)
+                 date_after_month = datetime.date(init_date)+ relativedelta(days=max_days)
+                 compute = date_after_month.strftime(fmt)
+
+        elif self.request_id.type_purchase.name in ['Normal','normal']:
+            min_days = arrMinDateUrgent[0]
+            max_days = arrMaxDateUrgent[0]
+
+            if self.request_id.type_location == 'KPST':
+
+                 fromdt = self.request_id.date_start
+                 init_date=datetime.strptime(str(fromdt),fmt)
+                 date_after_month = datetime.date(init_date)+ relativedelta(days=min_days)
+                 compute = date_after_month.strftime(fmt)
+
+            elif self.request_id.type_location in ['KOKB','KPWK']:
+                 fromdt = self.request_id.date_start
+                 init_date=datetime.strptime(str(fromdt),fmt)
+                 date_after_month = datetime.date(init_date)+ relativedelta(days=max_days)
+                 compute = date_after_month.strftime(fmt)
+        res = compute
+        return res
+
+    @api.multi
+    @api.depends('request_id')
+    def _compute_due_date(self):
+        for item in self:
+            item.due_date = item._compute_date()
 
     @api.one
-    @api.depends('name','schedule_date','companys_id','type_location')
+    @api.depends('name','ordering_date','companys_id','type_location')
     def _complete_name(self):
         """ Forms complete name of location from parent category to child category.
         """
         fmt = '%Y-%m-%d'
 
-        if self.name and self.schedule_date and self.companys_id.code and self.type_location:
-            date = self.schedule_date
+        if self.name and self.ordering_date and self.companys_id.code and self.type_location:
+            date = self.ordering_date
             conv_date = datetime.strptime(str(date), fmt)
             month = conv_date.month
             year = conv_date.year
