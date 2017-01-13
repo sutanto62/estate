@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--Bikin View sendiri-->
+        <record id="accountant_upkeep_labour_view_tree" model="ir.ui.view" >
+            <field name="name">Upkeep Labour Tree</field>
+            <field name="model">estate.upkeep.labour</field>
+            <field name="priority" eval="1"/>
+            <field name="context" eval="{'search_default_employee_id': 1}"/>
+            <field name="arch" type="xml">
+                <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100">
+                    <!--
+                    Use 2 decimal digits to shorten width
+                    -->
+                    <field name="upkeep_date" string="Date"/>
+                    <field name="employee_id" string="Employee" invisible="True"/>
+                    <field name="activity_id" string="Activity"/>
+                    <field name="activity_uom_id" string="UoM"/>
+                    <field name="quantity" digits="(8,2)" string="Qty."/>
+                    <field name="location_id" string="Location"/>
+                    <field name="planted_year_id" string="PY"/>
+                    <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
+                    <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
+                    <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
+                    <field name="wage_number_of_day" string="D Wage"/>
+                    <field name="wage_overtime" string="OT Wage"/>
+                    <field name="wage_piece_rate" string="PR Wage"/>
+                    <field name="amount" string="Wage" sum="Wage"/>
+                    <field name="state" invisible="True"/>
+                    <field name="activity_contract" string="Ctr."/>
+                </tree>
+            </field>
+        </record>
+        <!--Bikin Search View sendiri, karena urutan berbeda-->
+        <record id="accountant_upkeep_labour_view_search" model="ir.ui.view">
+            <field name="name">Upkeep Labour Search</field>
+            <field name="model">estate.upkeep.labour</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_id"/>
+                    <field name="upkeep_team_id"/>
+                    <field name="upkeep_date"/>
+                    <field name="activity_id"/>
+                    <field name="location_id"/>
+                    <filter name="filter_new" string="Draft/Confirmed"
+                            domain="[('state', 'in', ('draft','confirmed'))]"/>
+                    <filter name="filter_approved" string="Approved"
+                            domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <group string="Group By">
+                        <filter name="by_employee" string="Employee"
+                                context="{'group_by': 'employee_company_id'}"/>
+                        <filter name="by_company" string="Location Company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter name="by_employee_company" string="Employee Company"
+                                context="{'group_by': 'employee_company_id'}"/>
+                        <filter name="by_general_account" string="General Account"
+                                context="{'group_by': 'general_account_id'}"/>
+                        <filter name="by_activity" string="Activity"
+                                context="{'group_by': 'activity_id'}"/>
+                        <filter name="by_date" string="Month"
+                                context="{'group_by': 'upkeep_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="labour_costing_menu_action" model="ir.actions.act_window">
+            <field name="name">Cost Allocation</field>
+            <field name="res_model">estate.upkeep.labour</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view">tree,form</field>
+            <field name="view_id" ref="accountant_upkeep_labour_view_tree"/>
+            <field name="search_view_id" ref="accountant_upkeep_labour_view_search"/>
+            <field name="context">{'search_default_by_company': 1, 'search_default_by_employee_company': 1,
+                'search_default_by_general_account': 1, 'search_default_filter_month': 1}</field>
+        </record>
+
+        <record id="labour_payroll_menu_action" model="ir.actions.act_window">
+            <field name="name">Labour Allocation</field>
+            <field name="res_model">estate.upkeep.labour</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view">tree,form</field>
+            <field name="view_id" ref="accountant_upkeep_labour_view_tree"/>
+            <field name="search_view_id" ref="accountant_upkeep_labour_view_search"/>
+            <field name="context">{'search_default_by_employee': 1,
+                'search_default_by_general_account': 1,
+                'search_default_by_company': 1,
+                'search_default_filter_month': 1}</field>
+        </record>
+
+        <menuitem id="estate_costing_payroll_report_menu"
+                  name="Allocation Report"
+                  parent="account.menu_finance"
+                  sequence="6"/>
+
+        <menuitem id="estate_costing_report_menu"
+                  name="Activity Allocation"
+                  action="labour_costing_menu_action"
+                  parent="estate_account.estate_costing_payroll_report_menu"
+                  sequence="10"/>
+
+        <menuitem id="estate_payroll_report_menu"
+                  name="Labour Allocation"
+                  action="labour_payroll_menu_action"
+                  parent="estate_account.estate_costing_payroll_report_menu"
+                  sequence="20"/>
+    </data>
+</openerp>

@@ -24,7 +24,7 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
-                    <group>
+                    <group name="name">
                         <field name="name"/>
                         <field name="parent_id"/>
                     </group>
@@ -50,14 +50,14 @@
                     <notebook>
                         <page string="Accounting">
                             <group>
-                                <group string="Standard Price">
+                                <group name="accounting_price" string="Standard Price">
                                     <field name="standard_price"/>
                                     <field name="piece_rate_price"/>
-                                </group>
-                                <group string="Account">
                                     <field name="wage_method"/>
-                                    <field name="account_id"/>
+                                </group>
+                                <group name="accounting_account" string="Account">
                                     <field name="general_account_id"/>
+                                    <field name="account_id"/>
                                 </group>
                             </group>
                         </page>

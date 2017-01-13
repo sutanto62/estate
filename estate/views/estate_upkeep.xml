@@ -68,31 +68,36 @@
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <group string="Group By">
-                        <filter name="by_company" string="Company"
+                        <!--
+                        Please retain filter order
+                        -->
+                        <filter name="by_employee_company" string="Employee Company"
+                                context="{'group_by': 'employee_company_id'}"/>
+                        <filter name="by_company" string="Location Company"
                                 context="{'group_by': 'company_id'}"/>
                         <filter name="by_estate" string="Estate"
                                 context="{'group_by': 'estate_id'}"/>
                         <filter name="by_division" string="Division"
                                 context="{'group_by': 'division_id'}"/>
-                        <separator/>
+                        <filter name="by_employee" string="Employee"
+                                context="{'group_by': 'employee_id'}"/>
+                        <filter name="by_general_account" string="General Account"
+                                context="{'group_by': 'general_account_id'}"/>
                         <filter name="by_activity" string="Activity"
                                 context="{'group_by': 'activity_id'}"/>
                         <filter name="by_attendance_code" string="Attendance"
                                 context="{'group_by': 'attendance_code_id'}"/>
                         <filter name="by_activity_contract" string="Contract"
                                 context="{'group_by': 'activity_contract'}"/>
-                        <separator/>
                         <filter name="by_date" string="Month"
                                 context="{'group_by': 'upkeep_date'}"/>
-                        <separator/>
                         <filter name="by_team" string="Team"
                                 context="{'group_by': 'upkeep_team_id'}"/>
                         <!-- Hold cross team implementation
                         <filter name="by_cross_team" string="Team (Cross Team)"
                                 context="{'group_by': 'number_of_day_team_id'}"/>
                         -->
-                        <filter name="by_employee" string="Employee"
-                                context="{'group_by': 'employee_id'}"/>
+
                     </group>
                 </search>
             </field>
@@ -198,7 +203,6 @@
                         <group>
                             <group name="team_work">
                                 <field name="date" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="max_day" groups="base.group_no_one"/>
                                 <field name="team_id" options="{'no_create_edit': True}"
                                        attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="assistant_id" options="{'no_create_edit': True}"
@@ -431,11 +435,13 @@
                         <group>
                             <group name="top">
                                 <field name="employee_id" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
-                                <field name="contract_type" readonly="True"/>
-                                <field name="contract_period" readonly="True"/>
                                 <field name="upkeep_team_employee_id" string="Team Leader" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                             </group>
-
+                            <group name="top_right">
+                                <field name="employee_company_id" readonly="True"/>
+                                <field name="contract_type" readonly="True"/>
+                                <field name="contract_period" readonly="True"/>
+                            </group>
                         </group>
                         <notebook>
                             <page name="labour_activity" string="Activity">
@@ -463,6 +469,7 @@
                                     </group>
                                     <group name="amount">
                                         <field name="amount" string="Total Amount"/>
+                                        <field name="general_account_id" string="General Account"/>
                                     </group>
                                 </group>
                             </page>

@@ -5,3 +5,5 @@ access_hr_indonesia_ethnic,hr_indonesia.ethnic,model_hr_indonesia_ethnic,base.gr
 access_hr_indonesia_tax_marital,hr_indonesia.tax_marital,model_hr_indonesia_tax_marital,base.group_hr_user,1,1,1,0
 access_hr_indonesia_location,hr_indonesia.location,model_hr_indonesia_location,base.group_hr_user,1,1,1,
 access_hr_indonesia_supervisor,hr_indonesia.supervisor,model_hr_indonesia_supervisor,base.group_hr_user,1,1,1,
+access_hr_indonesia_office_hr_user,hr_indonesia.office_hr_user,model_hr_indonesia_office,base.group_hr_user,1,1,1,0
+access_hr_indonesia_office_employee,hr_indonesia.office_employee,model_hr_indonesia_office,base.group_user,1,0,0,0

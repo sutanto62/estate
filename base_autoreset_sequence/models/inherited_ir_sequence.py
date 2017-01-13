@@ -29,10 +29,10 @@ class Sequence(models.Model):
 
             if self.reset_time < self.env.context.get('ir_sequence_date'):
                 delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == self.reset_period]
-                reset_time_datetime = datetime.datetime.strptime(self.reset_time, '%Y-%m-%d %H:%M:%S')
+                reset_time_datetime = datetime.strptime(self.reset_time, '%Y-%m-%d %H:%M:%S')
 
                 # support year/month only.
-                next_reset_time = reset_time_datetime + relativedelta(months=delta[0][1])
+                next_reset_time = reset_time_datetime + relativedelta(months=delta[0][1],day=1)
                 self.reset_time = next_reset_time
                 self.number_next = self.reset_init_number
 
@@ -109,4 +109,22 @@ class Sequence(models.Model):
                 return res
             else:
                 return super(Sequence, self).get_next_char(number_next)
+
+
+    def get_prefix_char(self, prefix, upkeep_date):
+        """ Backdated upkeep transaction. Returns the prefix char. Follow ir_sequence.py interpolate method"""
+        now = range_date = effective_date = upkeep_date
+        sequences = {
+            'year': '%Y', 'month': '%m', 'day': '%d', 'y': '%y', 'doy': '%j', 'woy': '%W',
+            'weekday': '%w', 'h24': '%H', 'h12': '%I', 'min': '%M', 'sec': '%S'
+        }
+        res = {}
+        for key, sequence in sequences.iteritems():
+            res[key] = effective_date.strftime(sequence)
+            res['range_' + key] = range_date.strftime(sequence)
+            res['current_' + key] = now.strftime(sequence)
+
+        if prefix:
+            return prefix % res
+        return ''
 

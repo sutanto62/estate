@@ -80,7 +80,8 @@ class Upkeep(models.Model):
             delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == seq_upkeep.reset_period]
             reset_time_datetime = datetime.strptime(seq_upkeep.reset_time, '%Y-%m-%d %H:%M:%S')
 
-            previous_reset_time = reset_time_datetime - relativedelta(months=delta[0][1])
+            # Upkeep sequence reset monthly
+            previous_reset_time = reset_time_datetime - relativedelta(months=delta[0][1], day=1)
             tx_date = datetime.strptime(vals['date'], '%Y-%m-%d')
 
             if tx_date < previous_reset_time:
@@ -653,6 +654,8 @@ class UpkeepLabour(models.Model):
     upkeep_team_employee_id = fields.Many2one(related='upkeep_id.team_id.employee_id', string='Team Leader', store=True)
     employee_id = fields.Many2one('hr.employee', 'Employee', required=True, track_visibility='onchange',
                                   domain=[('contract_type', 'in', ['1', '2'])])
+    employee_company_id = fields.Many2one(related='employee_id.company_id', string='Employee Company', store=True,
+                                          help="Company of employee")
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
     nik_number = fields.Char(related='employee_id.nik_number', store=False)
@@ -661,6 +664,7 @@ class UpkeepLabour(models.Model):
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
     activity_wage_method = fields.Selection('Wage Method', related='activity_id.wage_method', readonly=True)
     activity_standard_base = fields.Float(related='activity_id.qty_base')
+    general_account_id = fields.Many2one(related='activity_id.general_account_id', store="True")
     location_id = fields.Many2one('estate.block.template', 'Location',
                                   domain="[('inherit_location_id.location_id', '=', division_id)]")
     planted_year_id = fields.Many2one(related='location_id.planted_year_id')

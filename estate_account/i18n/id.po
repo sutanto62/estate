@@ -1,0 +1,196 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * estate_account
+# Odoo <cayadi.sutanto@palmagroup.co.id>, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c-20160712\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-06 07:20+0000\n"
+"PO-Revision-Date: 2017-01-06 14:28+0700\n"
+"Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
+"Language-Team: palma group\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Virtaal 0.7.1\n"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Activity"
+msgstr "Kegiatan"
+
+#. module: estate_account
+#: model:ir.ui.menu,name:estate_account.estate_costing_report_menu
+msgid "Activity Allocation"
+msgstr "Alokasi Biaya Kegiatan"
+
+#. module: estate_account
+#: model:ir.ui.menu,name:estate_account.estate_costing_payroll_report_menu
+msgid "Allocation Report"
+msgstr "Laporan Alokasi Biaya"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "Approved"
+msgstr "Setuju"
+
+#. module: estate_account
+#: model:ir.actions.act_window,name:estate_account.labour_costing_menu_action
+msgid "Cost Allocation"
+msgstr "Alokasi Biaya"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Ctr."
+msgstr "Bor."
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "D Wage"
+msgstr "Rp. HK"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Date"
+msgstr "Tanggal"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Day(s)"
+msgstr "HK"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "Draft/Confirmed"
+msgstr "Draft/Konfirm"
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_estate_activity
+msgid "Email Thread"
+msgstr "Email"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Employee"
+msgstr "Karyawan"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "Employee Company"
+msgstr "Perusahaan Karyawan"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "General Account"
+msgstr "COA"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "Group By"
+msgstr "Kelompokkan"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_labour_account_id
+msgid "Labour Account"
+msgstr "COA Tenaga Kerja"
+
+#. module: estate_account
+#: model:ir.actions.act_window,name:estate_account.labour_payroll_menu_action
+#: model:ir.ui.menu,name:estate_account.estate_payroll_report_menu
+msgid "Labour Allocation"
+msgstr "Alokasi Biaya Tenaga Kerja"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Location"
+msgstr "Lokasi"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "Location Company"
+msgstr "Perusahaan Lokasi"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_material_account_id
+msgid "Material Account"
+msgstr "COA Bahan"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "Month"
+msgstr "Bulan"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "OT"
+msgstr "L"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "OT Wage"
+msgstr "Rp. L"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_other_account_id
+msgid "Other Account"
+msgstr "COA Lainnya"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "PR"
+msgstr "Pr."
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "PR Wage"
+msgstr "Rp. Pr."
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "PY"
+msgstr "TT"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Qty."
+msgstr "Prod."
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_activity_other_account_id
+msgid "Set as contract works or VRA account."
+msgstr "COA untuk pekerjaan kontraktor atau alokasi VRA"
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_activity_labour_account_id
+msgid "Set as labour account."
+msgstr "COA untuk tenaga kerja"
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_activity_material_account_id
+msgid "Set as material account."
+msgstr "COA untuk bahan"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "This Month"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
+msgid "This Year"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "UoM"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
+msgid "Wage"
+msgstr "Total Upah"

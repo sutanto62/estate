@@ -37,6 +37,7 @@ class Employee(models.Model):
     tax_marital_id = fields.Many2one('hr_indonesia.tax_marital', 'Tax Marital')
     tax_dependent = fields.Integer('Dependent')
     location_id = fields.Many2one('hr_indonesia.location', 'Placement Location')
+    office_level_id = fields.Many2one('hr_indonesia.office', 'Office Level')
     supervisor_level_id = fields.Many2one('hr_indonesia.supervisor', 'Supervisor Level')
     #
     # point_of_hire_id = fields.Many2one('hr_indonesia.location', 'Point of Hire')
@@ -195,6 +196,24 @@ class Location(models.Model):
                 record.complete_name = record.parent_id.complete_name + ' / ' + record.name
             else:
                 record.complete_name = record.name
+
+
+class Office(models.Model):
+    """ Hierarchy of office - required by purchase"""
+    _name = 'hr_indonesia.office'
+    _parent_store = True
+    _parent_name = 'parent_id'
+    _order = 'sequence'
+    _description = 'Office Level'
+
+    name = fields.Char('Name', required=True)
+    code = fields.Char('Code', help='Write office level')
+    comment = fields.Text("Additional Information")
+    sequence = fields.Integer("Sequence", help="Small number higher position.")
+    parent_id = fields.Many2one('hr_indonesia.office', "Parent Office", ondelete='restrict')
+    parent_left = fields.Integer("Parent Left", index=True)
+    parent_right = fields.Integer("Parent Right", index=True)
+    child_ids = fields.One2many('hr_indonesia.office', 'parent_id', "Child Office Levels")
 
 
 class SupervisorLevel(models.Model):

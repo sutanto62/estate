@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="inherited_view_activity_config_form" model="ir.ui.view">
+            <field name="name">Inherited Activity Form</field>
+            <field name="model">estate.activity</field>
+            <field name="inherit_id" ref="estate.view_activity_config_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='accounting_account']" position="inside">
+                    <field name="labour_account_id"/>
+                    <field name="material_account_id"/>
+                    <field name="other_account_id"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>
