@@ -24,10 +24,25 @@
              <field name="model">purchase.requisition</field>
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
              <field name="arch" type="xml">
+
+                 <!--<xpath expr="//header/button[@name='sent_suppliers']" position="before">-->
+                     <!--<button name="print_purchase_request_tender" string="Print PR/PP" type="object"  groups="purchase_request.group_purchase_request_procstaff"/>-->
+                 <!--</xpath>-->
+
                  <xpath expr="//h1/field[@name='name']" position="replace">
                            <field name="complete_name" class="oe_inline" invisible="0"
                                attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
+
+                 <xpath expr="//field[@name='origin']" position="replace">
+                     <field name="origin" placeholder="e.g. PO0025"
+                            invisible="1"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='origin']" position="after">
+                     <field name="request_id" readonly="1" string="No PP"/>
+                 </xpath>
+
                  <xpath expr="//field[@name='user_id']" position="after">
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>

@@ -198,7 +198,9 @@
 		              				&#160;  
 		              			</div>
 		              			<div class="col-xs-3" >
-		              				No. PTA ___________________________ 
+		              			    <t t-if="o.type_budget == 'not' ">
+		              					No. PTA <u><span t-field="o.pta_code"/></u>
+		              				</t>
 		              			</div>
 		              			<div class="col-xs-6" >
 		              				&#160; 
@@ -236,8 +238,8 @@
 			                                </td>
 											<td colspan="2" class="noborder">
 			                                  Disetujui Oleh
-			                                </td>		                            </tr>
-
+			                                </td>		                            
+			                           	</tr>
 			                            <tr>
 			                                <td class="noborder">
 			                                    &#160;
@@ -246,40 +248,67 @@
 			                                    Dept Head / EM / LCM
 			                                </td>
 			                                <td class="noborder">
-												<t t-foreach="o.tracking_approval_ids" t-as="k">
-												<t t-if="k.state == 'approval1'">
-													<span t-field="k.name_user"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Dept Head Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[		    
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
 												</t>
-												</t>
-			                                    ___________________
 			                                </td>
 			                                <td class="noborder">
 			                                    Pemeriksa Budget
 			                                </td>
 			                                <td class="noborder">
-												<t t-foreach="o.tracking_approval_ids" t-as="k">
-												<t t-if="k.state == 'budget'">
-													<span t-field="k.name_user"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Budget Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[		    
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
 												</t>
-												</t>
-			                                    ___________________
 			                                </td>
                                             <td class="noborder">
-			                                    Div. Head
+			                                    Dept. Head
 			                                </td>
 			                                <td class="noborder">
-												<t t-foreach="o.tracking_approval_ids" t-as="k">
-												<t t-if="k.state == 'approval2'">
-													<span t-field="k.name_user"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Department Head Financial Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[		    
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
 												</t>
-												</t>
-			                                    ___________________
 			                                </td>
 			                            </tr>
 
                                         <tr>
 			                                <td class="noborder">
-			                                    ___________________
+			                                    &#160;
 			                                </td>
 			                                <td colspan="2" class="noborder">
 			                                    &#160;
@@ -288,20 +317,29 @@
 			                                    Pemeriksa Teknis :
 			                                </td>
 			                                <td class="noborder">
-			                                    GM
+			                                    Div. Head
 			                                </td>
 			                                <td class="noborder">
-												<t t-foreach="o.tracking_approval_ids" t-as="k">
-												<t t-if="k.state == 'to_approve'">
-													<span t-field="k.name_user"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Div Head Financial Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[		    
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
 												</t>
-												</t>
-			                                    ___________________
 			                                </td>
 			                            </tr>
 			                          	<tr>
                                         	<td class="noborder">
-			                                   	<span t-field="o.requested_by"/> 
+			                                   	<u><span t-field="o.requested_by"/></u> 
 			                                </td>
 			                                <td class="noborder">
 			                                    &#160;
@@ -313,30 +351,46 @@
 			                                    RO
 			                                </td>
 			                                <td class="noborder">
-												<t t-foreach="o.tracking_approval_ids" t-as="k">
-												<t t-if="k.state == 'technic1'">
-													<span t-field="k.name_user"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and 
+													        (
+													        mids_tracking.old_value_char == 'Technic GM Plantation Dept Approval'
+													        or mids_tracking.old_value_char == 'Technic EA Dept Approval'
+													        )
+													        ">
+															<u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[		    
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
 												</t>
-													<t t-if="k.state == 'technic2'">
-													<span t-field="k.name_user"/>
-												</t>
-													<t t-if="k.state == 'technic3'">
-													<span t-field="k.name_user"/>
-												</t>
-													<t t-if="k.state == 'technic4'">
-													<span t-field="k.name_user"/>
-												</t>
-													<t t-if="k.state == 'technic5'">
-													<span t-field="k.name_user"/>
-												</t>
-												</t>
-			                                    ___________________
 			                                </td>
                                             <td class="noborder">
-			                                    Dir Atasan
+			                                    GM
 			                                </td>
 			                                <td class="noborder">
-			                                    ___________________
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'To be approve Finance'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
 			                                </td>
 			                            </tr>
 			                            <tr>
@@ -347,21 +401,106 @@
 			                                    GM
 			                                </td>
 			                                <td class="noborder">
-			                                    ___________________
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'RO Head Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
 			                                </td>
 			                                <td class="noborder">
 			                                    HO
 			                                </td>
 			                                <td class="noborder">
-			                                    ___________________
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and
+													        (
+													        mids_tracking.old_value_char == 'Technic Dept Head Approval'
+													        or mids_tracking.old_value_char == 'Technic Div Head Approval'
+													        or mids_tracking.old_value_char == 'Technic ICT Dept Approval'
+													        )
+													        ">
+															<u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+                                             <td class="noborder">
+			                                    Dir Atasan
+			                                </td>
+			                                <td class="noborder">
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Director Financial Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                            </tr>
+										<tr>
+											<td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                   &#160;
 			                                </td>
                                             <td class="noborder">
 			                                    President Director
 			                                </td>
 			                                <td class="noborder">
-			                                    ___________________
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'President Director Financial Approval'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/><br/>
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
 			                                </td>
-			                            </tr>
+										</tr>
 			                        </table>
 		                        </div>
 		                    </div>

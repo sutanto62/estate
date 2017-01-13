@@ -96,6 +96,42 @@ class QuotationComparisonForm(models.Model):
         res=super(QuotationComparisonForm, self).create(vals)
         return res
 
+    @api.multi
+    def _get_purchase_request(self):
+        #get Purchase.request model
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        return purchase_request
+    
+    @api.multi
+    def _get_max_price(self):
+        purchase_request_a = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)]).purchase_ids
+        price = max(purchase.amount_total for purchase in purchase_request_a)
+        return price
+
+    @api.multi
+    def _get_price_low(self):
+        #get Minimal price from purchase params for Quotation comparison Form
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        price = min(price.value_params for price in price_standard)
+        return float(price)
+
+    @api.multi
+    def _get_price_mid(self):
+        #get middle price from purchase params for Quotation comparison Form
+        arrMid = []
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        for price in price_standard:
+            arrMid.append(price.value_params)
+        price = arrMid[1]
+        return float(price)
+    
+    @api.multi
+    def _get_price_high(self):
+        #get Maximal price from purchase params for Quotation comparison Form
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        price = max(price.value_params for price in price_standard)
+        return float(price)
+
     @api.one
     @api.depends('name','date_pp','company_id','type_location')
     def _complete_name(self):
@@ -145,11 +181,10 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_send(self):
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST':
+        if self._get_purchase_request().type_location == 'KPST':
             self.write({'state' : 'confirm'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK':
+        elif self._get_purchase_request().type_location == 'KPWK':
             self.write({'state' : 'confirm2'})
             self.tracking_approval()
         return True
@@ -172,64 +207,51 @@ class QuotationComparisonForm(models.Model):
     def action_confirm2(self):
         """ Confirms QCF.
         """
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price <= float(price_standard3):
+        if self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'approve4'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard3):
+        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_low():
             self.write({'state' : 'approve4'})
             self.tracking_approval()
         return True
 
     @api.multi
     def action_approve(self):
-
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price < float(price_standard3):
+        if self._get_purchase_request().type_location == 'KPST' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve1'})
             self.tracking_approval()
 
     @api.multi
     def action_approve1(self):
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price < float(price_standard1):
+        if self._get_purchase_request().type_location == 'KPST' and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve2'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price < float(price_standard1):
+        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve2'})
             self.tracking_approval()
         return True
 
     @api.multi
     def action_approve2(self):
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        if self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() > self._get_price_high():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard2):
+        elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard2):
+        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3'})
             self.tracking_approval()
         return True
@@ -242,13 +264,10 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve4(self):
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price < float(price_standard3):
+        if self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
+        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve1'})
             self.tracking_approval()
         return True
