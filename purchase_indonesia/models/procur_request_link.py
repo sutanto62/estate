@@ -433,18 +433,17 @@ class InheritPurchaseRequest(models.Model):
     def action_technic(self):
         """ Confirms Technical request.
         """
-        if self._get_compare_hr and self.type_functional != 'technic' and self._get_max_price() < self._get_price_low():
+        if self._get_compare_hr() and self.type_functional != 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'approval3','assigned_to':self._get_user_agronomy}
             self.write(state_data)
-        elif self._get_compare_hr and self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
+        elif self._get_compare_hr() and self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'approval3','assigned_to':self._get_technic_ie}
             self.write(state_data)
-        elif self._get_compare_hr and self._get_max_price() >= self._get_price_low():
-            state_data = {'state':'approval4','assigned_to':self._get_requestedby_manager}
+        elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low():
+            state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
         elif self._get_compare_non_hr():
-            self.tracking_approval()
-            state_data = {'state':'approval4','assigned_to':self._get_requestedby_manager}
+            state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
 
     @api.multi

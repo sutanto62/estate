@@ -66,7 +66,7 @@
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
                      <field name="budget_available" string="Budget Available"
-                                 attrs="{'invisible': [('validation_budget','!=',True)]}"/>
+                                 attrs="{'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
              </field>
          </record>
@@ -92,7 +92,7 @@
                  <xpath expr="//field[@name='line_ids']//form//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
                      <field name="budget_available" string="Budget Available"
-                                 attrs="{'invisible': [('validation_budget','!=',True)]}"/>
+                                 attrs="{'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
              </field>
          </record>
