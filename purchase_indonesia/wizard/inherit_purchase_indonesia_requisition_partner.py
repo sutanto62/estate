@@ -38,6 +38,7 @@ class InheritRequisitionPartner(models.TransientModel):
             'source_purchase_request' : purchase_tender.origin,
             'origin' : purchase_tender.complete_name,
             'companys_id' :purchase_tender.companys_id.id,
+            'location':purchase_tender.location,
             'type_location' : purchase_tender.type_location,
             'comparison_id' : quotation_comparison_form.id
         }

@@ -30,6 +30,8 @@
                 <tree>
                     <field name="complete_name" string="Document"/>
                     <field name="date_pp" string="Date"/>
+                    <field name="pic_id" string="Created By" readonly="1"/>
+                    <field name="assign_to" string="Approval By" readonly="1"/>
                     <field name="origin" string="Source Document"/>
                     <field name="company_id" string="Company"/>
                     <field name="state" string="State"/>
@@ -47,7 +49,7 @@
                      <header coolspan="10">
                             <button name="action_send" states="draft"  type="object" string="Send QCF" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
                             <button name="action_confirm" states="confirm" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="action_approve" states="approve" type="object" string="Approval Finance" class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
+                            <button name="action_approve" states="approve" type="object" string="Approval Finance" class="oe_highlight" groups="purchase_request.group_purchase_request_finance_procurement"/>
                             <button name="action_approve1" states="approve1"  type="object" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                             <button name="action_approve2" states="approve2" type="object" string="Approval Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
                             <button name="action_approve3" states="approve3"  type="object" string="Approval President Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
@@ -80,8 +82,11 @@
                                      <field name="requisition_id" />
                                 </group>
                                 <group>
-                                   <field name="company_id" string="Company" options="{'no_create_edit': True}"/>
-                                     <field name="type_location" string="Location" />
+                                    <field name="pic_id" string="Created By" readonly="1"/>
+                                    <field name="assign_to" string="Approval By" readonly="1"/>
+                                    <field name="company_id" string="Company" options="{'no_create_edit': True}"/>
+                                    <field name="type_location" string="Location" invisible="1"/>
+                                    <field name="location" string="Location"/>
                                     <field name="line_remarks" invisible="1"/>
                                 </group>
                             </group>

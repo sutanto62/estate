@@ -10,7 +10,8 @@
                  </xpath>
                  <xpath expr="//field[@name='partner_id']" position="before">
                      <field name="companys_id" string ="Company" attrs="{'readonly': [('state', '=', 'done')]}"/>
-                     <field name="type_location" string="Location" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                     <field name="type_location" string="Location" invisible="1"/>
+                     <field name="location" string="Location" attrs="{'readonly': [('state', '=', 'done')]}"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="replace">
                      <field name="origin" invisible="1"/>

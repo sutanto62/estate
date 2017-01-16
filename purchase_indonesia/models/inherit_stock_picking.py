@@ -22,8 +22,8 @@ class InheritStockPicking(models.Model):
     _inherit = 'stock.picking'
 
     complete_name_picking =fields.Char("Complete Name", compute="_complete_name_picking", store=True)
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location code')
+    location = fields.Char('Location')
     pr_source = fields.Char("Purchase Request Source")
     companys_id = fields.Many2one('res.company','Company')
     code_sequence = fields.Char('Good Receipt Note Sequence')

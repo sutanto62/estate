@@ -42,6 +42,120 @@ class QuotationComparisonForm(models.Model):
             return res
         return False
 
+    #Method Get user
+    @api.multi
+    def _get_user(self):
+        #find User
+        user= self.env['res.users'].browse(self.env.uid)
+
+        return user
+
+    @api.multi
+    def _get_employee(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
+    @api.multi
+    def _get_user_ro_manager(self):
+        #get List of Ro Manager from user.groups
+        arrRO = []
+
+        list_ro_manager = self.env['res.groups'].search([('id','=',492)]).users
+
+        for ro_manager_id in list_ro_manager:
+                arrRO.append(ro_manager_id.id)
+        try:
+            ro_manager = self.env['res.users'].search([('id','in',arrRO)]).id
+        except:
+            raise exceptions.ValidationError('User get Role President Director Not Found in User Access')
+
+        return ro_manager
+
+    @api.multi
+    def _get_president_director(self):
+        #get List of president director from user.groups
+        arrPresidentDirector = []
+
+        #search User President director from user list
+        list_president= self.env['res.groups'].search([('id','=',92)]).users
+
+        for president_id in list_president:
+            arrPresidentDirector.append(president_id.id)
+        try:
+            president = self.env['res.users'].search([('id','=',arrPresidentDirector[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role President Director Not Found in User Access')
+        return president
+
+    @api.multi
+    def _get_director(self):
+        #get List of director from user.groups
+        arrDirector = []
+
+        #search User Director from user list
+        list_director= self.env['res.groups'].search([('id','=',91)]).users
+        for director_id in list_director:
+            arrDirector.append(director_id.id)
+        try:
+            director = self.env['res.users'].search([('id','=',arrDirector[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Director Purchase Not Found in User Access')
+        return director
+
+    @api.multi
+    def _get_division_finance(self):
+        #get List of Finance from user.groups
+        arrDivhead = []
+
+        #search User Finance from user list
+        listdivision= self.env['res.groups'].search([('id','=',72)]).users
+
+        for divhead in listdivision:
+            arrDivhead.append(divhead.id)
+        try:
+            division = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
+
+        return division
+
+    @api.multi
+    def _get_procurement_finance(self):
+        #get List of Finance from user.groups
+        arrDivhead = []
+
+        #search User Finance from user list
+        listprocurement= self.env['res.groups'].search([('id','=',72)]).users
+
+        for financeproc in listprocurement:
+            arrDivhead.append(financeproc.id)
+        try:
+            fin_procur = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
+
+        return fin_procur
+
+    @api.multi
+    def _get_procurement_finance(self):
+        #get List of Finance from user.groups
+        arrDivhead = []
+
+        #search User Finance from user list
+        listprocurement= self.env['res.groups'].search([('id','=',72)]).users
+
+        for financeproc in listprocurement:
+            arrDivhead.append(financeproc.id)
+        try:
+            fin_procur = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
+
+        return fin_procur
+
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
     _order = 'complete_name desc'
@@ -51,8 +165,10 @@ class QuotationComparisonForm(models.Model):
     name = fields.Char('name')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     date_pp = fields.Date('Date')
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location')
+    pic_id = fields.Many2one('res.users','Created By')
+    assign_to = fields.Many2one('res.users','Approver by')
+    location = fields.Char('Location')
     origin = fields.Char('Source Purchase Request')
     partner_id = fields.Many2one('res.partner')
     company_id = fields.Many2one('res.company','Company')
@@ -200,7 +316,7 @@ class QuotationComparisonForm(models.Model):
     def action_confirm(self):
         """ Confirms QCF.
         """
-        self.write({'state' : 'approve'})
+        self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
         self.tracking_approval()
 
     @api.multi
@@ -208,10 +324,10 @@ class QuotationComparisonForm(models.Model):
         """ Confirms QCF.
         """
         if self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_low():
-            self.write({'state' : 'approve4'})
+            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
             self.tracking_approval()
         elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_low():
-            self.write({'state' : 'approve4'})
+            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
             self.tracking_approval()
         return True
 
@@ -221,7 +337,7 @@ class QuotationComparisonForm(models.Model):
             self.write({'state' : 'done'})
             self.tracking_approval()
         elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid():
-            self.write({'state' : 'approve1'})
+            self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
             self.tracking_approval()
 
     @api.multi

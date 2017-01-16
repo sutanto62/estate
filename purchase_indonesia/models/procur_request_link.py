@@ -19,6 +19,50 @@ class InheritPurchaseRequisition(models.Model):
 
 class InheritPurchaseRequest(models.Model):
 
+    #Method Get user
+    @api.multi
+    def _get_user(self):
+        #find User
+        user= self.env['res.users'].browse(self.env.uid)
+
+        return user
+
+    @api.multi
+    def _get_employee(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
+    @api.multi
+    def _get_user_manager(self):
+        #Find Employee user Manager
+        employeemanager = self.env['hr.employee'].search([('user_id','=',self._get_user().id)]).parent_id.id
+        assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
+
+        return assigned_manager
+
+    @api.multi
+    def _get_office_level_id(self):
+
+        try:
+            employee = self._get_employee().office_level_id.name
+        except:
+            raise exceptions.ValidationError('Office level Is Null')
+
+        return employee
+
+    @api.multi
+    def _get_office_level_id_code(self):
+
+        try:
+            employee = self._get_employee().office_level_id.code
+        except:
+            raise exceptions.ValidationError('Office level Is Null')
+
+        return employee
+
     _inherit = 'purchase.request'
     _rec_name = 'complete_name'
     _order = 'complete_name desc'
@@ -29,8 +73,8 @@ class InheritPurchaseRequest(models.Model):
                                      ('technic','Technic'),('general','General')],'Unit Functional')
     department_id = fields.Many2one('hr.department','Department')
     employee_id = fields.Many2one('hr.employee','Employee')
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location',default=_get_office_level_id,readonly = 1)
+    code =  fields.Char('code location',default=_get_office_level_id_code,readonly = 1)
     type_product = fields.Selection([('consu','Capital'),
                                      ('service','Service'),('product','Stockable Product')],'Location Type')
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
@@ -63,28 +107,7 @@ class InheritPurchaseRequest(models.Model):
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
 
 
-    #Method Get user
-    @api.multi
-    def _get_user(self):
-        #find User
-        user= self.env['res.users'].browse(self.env.uid)
 
-        return user
-    @api.multi
-    def _get_employee(self):
-        #find User Employee
-
-        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
-
-        return employee
-
-    @api.multi
-    def _get_user_manager(self):
-        #Find Employee user Manager
-        employeemanager = self.env['hr.employee'].search([('user_id','=',self._get_user().id)]).parent_id.id
-        assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
-
-        return assigned_manager
 
     @api.multi
     def _get_requestedby_manager(self):
@@ -567,23 +590,6 @@ class InheritPurchaseRequest(models.Model):
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
             self.write(state_data)
 
-    #todo ovveride write to hide edit
-    # @api.multi
-    # def write(self,context):
-    #     if not self.isByPass:
-    #         print 'aku'
-    #         if self._check_validation_user() :
-    #             print 'benar'
-    #             super(InheritPurchaseRequest, self).write(context)
-    #
-    #         elif not self._check_validation_user():
-    #             print'salah'
-    #             raise exceptions.ValidationError('You cannot edit content, state is already approve')
-    #     elif self.isByPass:
-    #         print 'dia'
-    #         super(InheritPurchaseRequest, self).write(context)
-    #     return True
-
     @api.multi
     def tracking_approval(self):
         user= self.env['res.users'].browse(self.env.uid)
@@ -603,9 +609,9 @@ class InheritPurchaseRequest(models.Model):
         # Create Purchase Requisition
         for purchase in self:
             purchase_data = {
-                'user_id':purchase.requested_by.id,
                 'companys_id' :purchase.company_id.id,
-                'type_location' : purchase.type_location,
+                'location':purchase.type_location,
+                'type_location' : purchase.code,
                 'origin': purchase.complete_name,
                 'request_id':purchase.id,
                 'ordering_date' : datetime.today(),
@@ -629,10 +635,11 @@ class InheritPurchaseRequest(models.Model):
         purchase_requisition = self.env['purchase.requisition'].search([('origin','like',self.complete_name)])
         purchase_data = {
                 'company_id': purchase_requisition.companys_id.id,
-                'date_pp': purchase_requisition.schedule_date,
+                'date_pp': datetime.today(),
                 'requisition_id': purchase_requisition.id,
                 'origin' : purchase_requisition.origin,
-                'type_location' : purchase_requisition.type_location
+                'type_location' : purchase_requisition.location,
+                'location':purchase_requisition.location
             }
         res = self.env['quotation.comparison.form'].create(purchase_data)
 
@@ -652,7 +659,7 @@ class InheritPurchaseRequest(models.Model):
     @api.depends('assigned_to')
     def _change_validation_budget(self):
 
-        if self.assigned_to.id == self._get_user().id and self.state == 'budget':
+        if self.assigned_to.id == self._get_user().id and self.state in ['budget','approval4','approval5','approval6']:
             self.validation_state_budget = True
 
     @api.multi
@@ -718,10 +725,18 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     @api.onchange('type_location')
     def _onchange_functional(self):
-        if self.type_location == 'KPST':
+        if self._get_office_level_id_code() == 'KPST':
             self.type_functional = 'general'
         else:
             self.type_functional
+
+    @api.multi
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+
+        if self._get_employee().company_id.id:
+            self.company_id = self._get_employee().company_id.id
+
 
     @api.multi
     @api.onchange('requested_by')
@@ -823,8 +838,9 @@ class InheritPurchaseRequestLine(models.Model):
     @api.multi
     @api.onchange('request_id')
     def _compute_validation_budget(self):
-        if self.request_id.validation_state_budget:
-            self.validation_budget = self.request_id.validation_state_budget
+        for item in self:
+            if item.request_id.validation_state_budget:
+                item.validation_budget = item.request_id.validation_state_budget
 
 
     @api.multi

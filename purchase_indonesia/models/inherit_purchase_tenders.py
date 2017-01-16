@@ -33,12 +33,22 @@ class InheritPurchaseTenders(models.Model):
     _rec_name = 'complete_name'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location')
+    location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
     due_date = fields.Date('Due Date',compute='_compute_due_date')
-    pic_id = fields.Many2one('res.users','Assign To')
+    validation_due_date = fields.Boolean('Validation Due Date',compute='_compute_validation_due_date')
+
+    @api.multi
+    def _get_value_low(self):
+        #get Minimal value from purchase params for Purchase Request
+
+        value_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+
+        price = min(value.value_params for value in value_standard)
+
+        return float(price)
 
     @api.multi
     def _get_user(self):
@@ -51,11 +61,18 @@ class InheritPurchaseTenders(models.Model):
     def tender_in_progress(self):
         super(InheritPurchaseTenders,self).tender_in_progress()
         data={
-            'pic_id':self._get_user().id
+            'user_id':self._get_user().id
         }
         self.write(data)
+        self._change_created_by_qcf()
         return True
 
+    @api.multi
+    def _change_created_by_qcf(self):
+        data = {
+            'pic_id': self.user_id.id
+        }
+        res = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id)]).write(data)
 
     @api.multi
     def _compute_date(self):
@@ -77,37 +94,33 @@ class InheritPurchaseTenders(models.Model):
             arrMinDateUrgent.append(item.min_days)
 
         compute = self.due_date
+        try:
+            fromdt = self.request_id.date_start
+            init_date=datetime.strptime(str(fromdt),fmt)
+        except:
+            fromdt = date.today()
+            init_date=datetime.strptime(str(fromdt),fmt)
+
         if self.request_id.type_purchase.name in ['Normal','normal']:
             min_days = arrMinDateNorm[0]
             max_days = arrMaxDateNorm[0]
 
-            if self.request_id.type_location == 'KPST':
-
-                 fromdt = self.request_id.date_start
-                 init_date=datetime.strptime(str(fromdt),fmt)
-                 date_after_month = datetime.date(init_date)+ relativedelta(days=min_days)
+            if self.request_id.code == 'KPST':
+                 date_after_month = datetime.date(init_date) + relativedelta(days=min_days)
                  compute = date_after_month.strftime(fmt)
 
-            elif self.request_id.type_location in ['KOKB','KPWK']:
-                 fromdt = self.request_id.date_start
-                 init_date=datetime.strptime(str(fromdt),fmt)
-                 date_after_month = datetime.date(init_date)+ relativedelta(days=max_days)
+            elif self.request_id.code in ['KOKB','KPWK']:
+                 date_after_month = datetime.date(init_date) + relativedelta(days=max_days)
                  compute = date_after_month.strftime(fmt)
 
-        elif self.request_id.type_purchase.name in ['Normal','normal']:
+        elif self.request_id.type_purchase.name in ['Urgent','urgent']:
             min_days = arrMinDateUrgent[0]
             max_days = arrMaxDateUrgent[0]
-
-            if self.request_id.type_location == 'KPST':
-
-                 fromdt = self.request_id.date_start
-                 init_date=datetime.strptime(str(fromdt),fmt)
+            if self.request_id.code == 'KPST':
                  date_after_month = datetime.date(init_date)+ relativedelta(days=min_days)
                  compute = date_after_month.strftime(fmt)
 
-            elif self.request_id.type_location in ['KOKB','KPWK']:
-                 fromdt = self.request_id.date_start
-                 init_date=datetime.strptime(str(fromdt),fmt)
+            elif self.request_id.code in ['KOKB','KPWK']:
                  date_after_month = datetime.date(init_date)+ relativedelta(days=max_days)
                  compute = date_after_month.strftime(fmt)
         res = compute
@@ -118,6 +131,27 @@ class InheritPurchaseTenders(models.Model):
     def _compute_due_date(self):
         for item in self:
             item.due_date = item._compute_date()
+
+    @api.multi
+    @api.depends('due_date')
+    def _compute_validation_due_date(self):
+        standard_due_date = self._get_value_low()
+        fmt = '%Y-%m-%d'
+        for item in self:
+            try:
+                fromdt = item.due_date
+                init_date=datetime.strptime(str(fromdt),fmt)
+                date_after_month = datetime.date(init_date)-relativedelta(days=standard_due_date)
+            except:
+                date_after_month = datetime.now()
+
+            compute = date_after_month.strftime(fmt)
+
+            delta = str(datetime.now())
+
+            if delta == compute or delta > compute and item.state in ['draft','in_progress','open']:
+                item.validation_due_date = True
+        return True
 
     @api.one
     @api.depends('name','ordering_date','companys_id','type_location')
@@ -164,6 +198,7 @@ class InheritPurchaseTenders(models.Model):
         return {'order_line': [],
                 'requisition_id': tender.id,
                 'po_no':self.pool.get('ir.sequence').next_by_code(cr, uid,'purchase.po_no'),
+                # 'location':tender.location,
                 'source_purchase_request' : tender.origin,
                 'companys_id' :tender.companys_id.id,
                 'origin': tender.complete_name}
@@ -174,6 +209,7 @@ class InheritPurchaseTenders(models.Model):
             'date_order': requisition.date_end or fields.datetime.now(),
             'partner_id': supplier.id,
             'type_location':requisition.type_location,
+            'location':requisition.location,
             'currency_id': requisition.company_id and requisition.company_id.currency_id.id,
             'company_id': requisition.company_id.id,
             'fiscal_position_id': self.pool.get('account.fiscal.position').get_fiscal_position(cr, uid, supplier.id, context=context),
@@ -266,25 +302,6 @@ class InheritPurchaseTenders(models.Model):
         self.env['purchase.request'].search([('complete_name','like',self.origin)]).write(pp_data)
         res=super(InheritPurchaseTenders,self).generate_po()
         return res
-
-    #todo print purchase request in purchase tender
-    # @api.multi
-    # def print_purchase_request_tender(self,ids,context=None):
-    #
-    #     purchase = self.env['purchase.request'].search([('complete_name','=',self.origin)])
-    #     print 'nerissa'
-    #     print purchase
-    #     print self.env['purchase.request'].read(['name'])
-    #     data = {
-    #         'ids': purchase,
-    #         'model': 'purchase.request',
-    #         'name' :'Report Purchase Request',
-    #         'form':{'purchase':purchase},
-    #         # 'context' :context
-    #     }
-    #     print data
-    #     return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_request',data=data)
-
 
 class InheritPurchaseRequisitionLine(models.Model):
 
