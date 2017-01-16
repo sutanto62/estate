@@ -737,12 +737,6 @@ msgid "Configure Estate"
 msgstr ""
 
 #. module: estate
-#: model:ir.actions.server,name:estate.upkeep_confirm_action
-#: model:ir.actions.server,name:estate.upkeep_labour_confirm_action
-msgid "Confirm All"
-msgstr ""
-
-#. module: estate
 #: selection:estate.operation,state:0
 #: selection:estate.upkeep,state:0
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form

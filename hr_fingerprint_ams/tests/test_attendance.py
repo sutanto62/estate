@@ -19,65 +19,178 @@ class TestAttendance(TransactionCase):
         self.Attendance = self.env['hr.attendance']
         self.UpkeepLabour = self.env['estate.upkeep.labour']
 
-        self.finger_att_1 = self.env.ref('hr_fingerprint_ams.finger_att_1')
-        self.finger_att_2 = self.env.ref('hr_fingerprint_ams.finger_att_2')
+        self.Schedule = self.env['hr_time_labour.schedule'].create(dict(
+            name='Kebun',
+            code='KBN',
+            overnight_schedule=False,
+        ))
 
-        self.khl_1 = self.env.ref('hr_employee.khl_1')
+        self.labour = self.env['hr.employee'].create(dict(
+            name='Labour',
+            nik_number=1234567890,
+            active=True,
+        ))
 
-    def test_00_create(self):
-        self.assertTrue(self.finger_att_1, 'HR Fingerprint AMS: create did not create fingerprint attendance')
+        self.action_reason = self.env['hr.action.reason'].create(dict(
+            name='Leave',
+            action_type='action',
+            active=True,
+            action_duration=8.0
+        ))
 
-    def test_00_create_attendance(self):
-        sign_in = self.env['hr.attendance'].search([('id', 'in', self.finger_att_1.attendance_ids.ids),
-                                                       ('action', '=', 'sign_in')])
-        sign_out = self.env['hr.attendance'].search([('id', 'in', self.finger_att_1.attendance_ids.ids),
-                                                       ('action', '=', 'sign_out')])
+        self.vals = {
+            'db_id': 1537,
+            'terminal_id': 301100224,
+            'nik': 3011000224,
+            'employee_name': 'Abas Akumali',
+            'auto_assign': True,
+            'date': '2016-01-01',
+            'work_schedules': 'Kebun',
+            'time_start': 6,
+            'time_end': 14,
+            'sign_in': 3.02,
+            'sign_out': 14.6,
+            'day_normal': 1,
+            'day_finger': 1,
+            'hour_overtime': 0,
+            'hour_work': 8,
+            'required_in': True,
+            'required_out': True,
+            'department': 'Liyodu (Kurni Y. Latada)',
+            'hour_attendance': 9.58,
+            'hour_ot_normal': 0,
+            'action_reason': '',
+        }
 
-        self.assertTrue(sign_in, 'HR Fingerprint AMS: fingerprint attendance did not create sign in attendance')
-        self.assertTrue(sign_out, 'HR Fingerprint AMS: fingerprint attendance did not create sign out attendance')
+        self.finger_in_out = dict(
+            db_id=123,
+            terminal_id=123456789,
+            employee_name='Labour',
+            nik=1234567890,
+            sign_in=6.2,
+            sign_out=14.06,
+            date='2016-01-01',
+            action_reason='',
+            work_schedules='Kebun'
+        )
 
-    def test_00_unlink(self):
-        # Unlink fingerprint attedance with draft state
-        self.assertTrue(self.finger_att_1.unlink(), 'HR Fingerprint AMS: cannot unlink draft fingerprint attendance')
+    def test_01_create_complete_fingerprint(self):
+        """ Create fingerprint attendance"""
+        vals = self.finger_in_out
 
-        # Imitate fingerprint attendance with approved state
-        self.finger_att_2.button_approved()
-        with self.assertRaises(ValidationError):
-            self.finger_att_2.unlink()
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint, 'Fingerprint did not created.')
+
+        # I checked attendance
+        for attendance in fingerprint.attendance_ids:
+            self.assertTrue(attendance)
+            self.assertTrue(attendance.action in ('sign_in', 'sign_out', 'action'), 'Action did not belong to in/out/action.')
+        self.assertEqual(len(fingerprint.attendance_ids), 2, 'Fingerprint did not create in and out attendance.')
+
+    def test_02_create_not_complete_fingerprint(self):
+        """ Create fingerprint with sign_in or sign_out only without action"""
+        vals = self.finger_in_out
+
+        # I created data without sign_in
+        vals['sign_in'] = 0
+
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertFalse(fingerprint, 'Fingerprint should not created.')
+
+        # I created data without sign_out
+        vals['sign_out'] = 0
+
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertFalse(fingerprint, 'Fingerprint should not created.')
+
+    def test_03_create_action_fingerprint(self):
+        """ Create fingerprint with an action reason"""
+        vals = self.finger_in_out
+
+        vals['sign_in'] = 0
+        vals['action_reason'] = 'Leave'
+
+        # I created action reason for first time sign-in/out
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint)
+
+        # I checked attendance
+        for attendance in fingerprint.attendance_ids:
+            self.assertTrue(attendance)
+            self.assertTrue(attendance.action in ('sign_in', 'sign_out', 'action'),
+                            'Action did not belong to in/out/action.')
+        self.assertEqual(len(fingerprint.attendance_ids), 1, 'Fingerprint did not create in and out attendance.')
+
+    def test_04_create_overnight_fingerprint(self):
+        """ Create overnight schedule"""
+        # schedule_1 = self.env['hr_time_labour.schedule'].create(dict(
+        #     name='Waker Siang',
+        #     code='WKS',
+        #     overnight_schedule=False,
+        # ))
+        #
+        # schedule_2 =self.env['hr_time_labour.schedule'].create(dict(
+        #     name='Waker Malam',
+        #     code='WKM',
+        #     overnight_schedule=True,
+        # ))
+        #
+        # vals = self.finger_in_out
+        #
+        # # I created regular attendance
+        # vals['sign_in'] = 19
+        # vals['sign_out'] = 6
+        # vals['work_schedules'] = 'Waker Siang'
+        # vals['action_reason'] =  ''
+        #
+        # print 'vals %s' % vals
+        #
+        # fingerprint_kebun = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        # self.assertFalse(fingerprint_kebun)
+
 
     def test_00_get_employee(self):
-        employee = self.khl_1
-        res = self.FingerprintAttendance._get_employee(employee.name)
-        self.assertTrue(res.active)
+        """ Test to get active employee using name and employee identification number."""
+        self.labour_ok = self.env['hr.employee'].create(dict(
+            name='Abas Akumali',
+            nik_number=3011000224,
+            active=True
+        ))
+
+        self.labour_ok = self.env['hr.employee'].create(dict(
+            name='Abas Depo',
+            nik_number=3011000225,
+            active=False
+        ))
+
+        # Returned existing
+        employee_id = self.FingerprintAttendance._get_employee('Abas Akumali', 3011000224)
+        self.assertTrue(employee_id, 'Employee not found.')
+
+        # I searched non active name
+        employee_id = self.FingerprintAttendance._get_employee('Abas Depo', 3011000225)
+        self.assertFalse(employee_id, 'It should not return unactive employee.')
+
+        # I searched non exist name
+        employee_id = self.FingerprintAttendance._get_employee('Abas', 3011000224)
+        self.assertFalse(employee_id, 'It should not return employee.')
+
+        # I searched non exist nik
+        employee_id = self.FingerprintAttendance._get_employee('Abas Akumali', 3011000230)
+        self.assertFalse(employee_id, 'It should not return employee.')
 
     def test_00_get_name(self):
-        fingerprint_attendance_date = self.finger_att_1.date
-        fingerprint_attendance_time = self.finger_att_1.sign_in
+        att_date = '2016-01-01'
+        att_time = 6.2
+        utc_datetime = datetime(2015, 12, 31, 23, 12, 0, 0, pytz.utc)
 
-        hour = int(floor(fingerprint_attendance_time))
-        minute = int(round((fingerprint_attendance_time - hour) * 60))  # widget float_time use round
-        second = '00'
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'})
 
-        fingerprint_attendance = datetime.strptime(fingerprint_attendance_date + ' ' +
-                                                   str(hour) + ':' +
-                                                   str(minute) + ':' +
-                                                   second, DT)
+        # I checked UTC date
+        self.assertEqual(fingerprint._get_name(att_date, att_time), utc_datetime)
 
-        attendance_id = self.env['hr.attendance'].search([('id', 'in', self.finger_att_1.attendance_ids.ids),
-                                                          ('action', '=', 'sign_in')])
-
-        attendance_utc = datetime.strptime(attendance_id.name, DT).replace(tzinfo=pytz.utc)
-
-        local = pytz.timezone('Asia/Jakarta')
-        attendance_local = attendance_utc.astimezone(local)
-
-        self.assertEqual(fingerprint_attendance.strftime(DT), attendance_local.strftime(DT),
-                         'HR Fingerprint: _get_name failed to convert UTC date to Local')
-
-    def test_00_button_confirmed(self):
-        self.finger_att_1.button_confirmed()
-        self.assertEqual(self.finger_att_1.state, 'confirmed', 'HR Fingerprint: button_confirmed failed.')
-
-    def test_00_button_approved(self):
-        self.finger_att_1.button_approved()
-        self.assertEqual(self.finger_att_1.state, 'approved', 'HR Fingerprint: button_approved failed.')
+        # I checked empty date
+        self.assertEqual(fingerprint._get_name('', att_time), None)

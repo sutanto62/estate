@@ -69,8 +69,8 @@ class FingerAttendance(models.Model):
         1. Employee.
         2. Has sign-in.
         3. Has sign-out.
+        4. Else has registered action reason.
         """
-
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
 
         # Update only when state is in draft
@@ -79,6 +79,7 @@ class FingerAttendance(models.Model):
                                            ('employee_name', '=', vals['employee_name']),
                                            ('nik', '=', vals['nik']),
                                            ('date', '=', vals['date'])])
+
         # Override create should return a recordset
         res = self
 
@@ -108,17 +109,28 @@ class FingerAttendance(models.Model):
                 self._create_attendance(res, vals)
                 self._create_attendance(res, vals, 'sign_out')
         else:
-            # Create non-fingerprint attendance (with action reason)
+            # Create fingerprint attendance with action reason
             action_reason_ids = self.env['hr.action.reason'].search([('active', '=', True),
                                                                      ('action_type', '=', 'action')])
 
             item = []
             for action_reason in action_reason_ids:
                 item.append(action_reason['name'])
-
             if vals['action_reason'] in item:
-                res = super(FingerAttendance, self).create(vals)
-                self._create_attendance(res, vals, 'action')
+                if current:
+                    # Only update fingerprint attendance with draft status
+                    if current.state == 'draft':
+                        update_vals = {
+                            'sign_in': vals['sign_in'],
+                            'sign_out': vals['sign_out'],
+                            'action_reason': vals['action_reason']
+                        }
+                        current.write(update_vals)
+                        res = current
+                        self._create_attendance(res, vals, 'action', True)
+                else:
+                    res = super(FingerAttendance, self).create(vals)
+                    self._create_attendance(res, vals, 'action')
 
         return res
 
@@ -132,7 +144,6 @@ class FingerAttendance(models.Model):
         :param update: set True for update action
         :return: instance of attendance
         """
-
         employee_id = self._get_employee(vals['employee_name'], vals['nik'])
 
         att_time = 0
@@ -149,13 +160,12 @@ class FingerAttendance(models.Model):
                 att_time = vals['sign_out']
             else:
                 # action without sign_in/out time
-                att_time = '00:00:00'
+                att_time = 0
 
             if vals['action_reason']:
                 action_reason_id = self.env['hr.action.reason'].search([('active', '=', True),
                                                                         ('name', '=', vals['action_reason'])],
                                                                        limit=1)
-
         # Overnight schedule
         schedule_id = self.env['hr_time_labour.schedule'].search([('name', '=', f_attendance.work_schedules)], limit=1)
         if schedule_id.overnight_schedule is True and action == 'sign_out':
@@ -221,10 +231,12 @@ class FingerAttendance(models.Model):
         :param att_time: fingerprint time
         :return: instance of datetime UTC
         """
-
-        hour = int(floor(att_time))
-        minute = int(round((att_time - hour) * 60))  # widget float_time use round
+        hour = 0 if att_time == 0 else int(floor(att_time))
+        minute = 0 if att_time == 0 else int(round((att_time - hour) * 60))  # widget float_time use round
         second = '00'
+
+        if att_date == '':
+            return
 
         import_dt = datetime.strptime(att_date + ' ' + str(hour) + ':'
                                       + str(minute) + ':' + second, DT)
@@ -233,7 +245,6 @@ class FingerAttendance(models.Model):
         local = pytz.timezone(self._context['tz'])  # user timezone should match import time
         local_dt = local.localize(import_dt, is_dst=None)
         res = local_dt.astimezone(pytz.utc)
-
         return res
 
     @api.one
@@ -312,6 +323,16 @@ class HrAttendance(models.Model):
     finger_attendance_id = fields.Many2one('hr_fingerprint_ams.attendance', ondelete='cascade')
     state = fields.Selection(related='finger_attendance_id.state', store=True)
 
+    def _altern_si_so(self, cr, uid, ids, context=None):
+        """ Implementing this logic must be in old api. Using new api will not overide inheritance method"""
+        for att in self.browse(cr, uid, ids, context=context):
+            if att.action == 'action':
+                return True
+            else:
+                return super(HrAttendance,self)._altern_si_so(cr, uid, ids, context)
+
+    _constraints = [(_altern_si_so, 'Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)', ['action'])]
+
     @api.model
     def get_attendance(self, employee, att_date, action='sign_in'):
         # Attendance saved in UTC
@@ -326,22 +347,6 @@ class HrAttendance(models.Model):
                            ('name', '<=', date_to_utc.strftime(DT))])
 
         return res
-
-    @api.multi
-    @api.constrains('action')
-    def _altern_si_so(self):
-        """Support attendance with action type. Note: first attendance must be sign-in."""
-        for record in self:
-            # _altern_si_so did not support overnight
-            schedule = record.finger_attendance_id.work_schedules
-            schedule_id = self.env['hr_time_labour.schedule'].search([('name', '=', schedule)], limit=1)
-
-            if record.action == 'action':
-                pass
-            elif schedule_id.overnight_schedule is True:
-                pass
-            else:
-                return super(HrAttendance, record)._altern_si_so()
 
 
 class ActionReason(models.Model):
