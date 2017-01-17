@@ -124,6 +124,17 @@ class TestAttendance(TransactionCase):
                             'Action did not belong to in/out/action.')
         self.assertEqual(len(fingerprint.attendance_ids), 1, 'Fingerprint did not create in and out attendance.')
 
+    def test_04_create_action_fingerprint_no_employee_found(self):
+        """ No employee no fingerprint"""
+        vals = self.finger_in_out
+        vals['action_reason'] = 'Leave'
+        vals['employee_name'] = 'No Name'
+
+        # I created action reason for first time sign-in/out
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertFalse(fingerprint)
+
+
     def test_04_create_overnight_fingerprint(self):
         """ Create overnight schedule"""
         # schedule_1 = self.env['hr_time_labour.schedule'].create(dict(
