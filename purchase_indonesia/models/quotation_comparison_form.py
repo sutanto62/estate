@@ -284,7 +284,7 @@ class QuotationComparisonForm(models.Model):
     def action_send(self):
         if self._get_purchase_request().code == 'KPST':
             self.write({'state' : 'confirm'})
-        elif self._get_purchase_request().code == 'KPWK':
+        elif self._get_purchase_request().code in ['KOKB','KPWK']:
             self.write({'state' : 'confirm2'})
         return True
 
@@ -305,9 +305,9 @@ class QuotationComparisonForm(models.Model):
     def action_confirm2(self):
         """ Confirms QCF.
         """
-        if self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_low():
+        if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
-        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_low():
+        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_low():
             self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
         return True
 
@@ -320,16 +320,16 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve1(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_mid():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve2','assign_to':self._get_director()})
 
     @api.multi
     def action_approve2(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
             self.write({'state' : 'done'})
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_high():
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3','assign_to':self._get_president_director()})
 
     @api.multi
@@ -339,9 +339,9 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve4(self):
-        if self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_low():
+        if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
-        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
         return True
 

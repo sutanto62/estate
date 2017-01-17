@@ -500,95 +500,76 @@ class InheritPurchaseRequest(models.Model):
     def action_budget(self,):
         """ Confirms Budget request.
         """
+        state_data = []
         if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
         else:
-           if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
+           if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_max_price() >= self._get_price_low():
                 state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
-                self.write(state_data)
-           elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
+           elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
                 state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-                self.write(state_data)
-           elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
+           elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() >= self._get_price_low() :
                 state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-                self.write(state_data)
 
-           elif self.type_functional == 'agronomy' and self._get_max_price() >= self._get_price_low():
-                state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
-                self.write(state_data)
-           elif self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
-                state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-                self.write(state_data)
-           elif self.type_functional == 'general' and self._get_max_price() >= self._get_price_low():
-                state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-                self.write(state_data)
+        self.write(state_data)
 
     @api.multi
     def action_technic(self):
         """ Confirms Technical request.
         """
+        state_data = []
+
         if self._get_compare_hr() and self.type_functional != 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'approval3','assigned_to':self._get_user_agronomy}
-            self.write(state_data)
         elif self._get_compare_hr() and self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'approval3','assigned_to':self._get_technic_ie}
-            self.write(state_data)
-        elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low():
+        elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low() or self._get_compare_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
-            self.write(state_data)
-        elif self._get_compare_non_hr():
-            state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
-            self.write(state_data)
+
+        self.write(state_data)
 
     @api.multi
     def check_wkf_requester(self):
         #checking Approval Requester
+        state_data = []
 
         if self._get_compare_hr():
             self.write({'state':'confirm'})
             state_data = {'state':'approval7','assigned_to':self._get_user_ro_manager()}
-            self.write(state_data)
 
         elif self._get_compare_non_hr():
             self.write({'state':'confirm'})
             state_data = {'state':'approval1','assigned_to':self._get_user_manager()}
-            self.write(state_data)
+
+        self.write(state_data)
 
     @api.multi
     def action_ro_head_approval(self):
         #Action Approval RO Head
+        state_data = []
+
         if self._get_max_price() >= self._get_price_low():
-            self.tracking_approval()
             state_data = {'state':'approval2','assigned_to':self._get_division_finance()}
-            self.write(state_data)
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
-            self.write(state_data)
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-            self.write(state_data)
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-            self.write(state_data)
+
+        self.write(state_data)
 
     @api.multi
     def check_wkf_product_price(self):
        #check total product price in purchase request
+       state_data = []
+
        if self._get_max_price() >= self._get_price_low() and self._get_employee().parent_id.id:
             state_data = {'state':'approval2','assigned_to':self._get_employee().parent_id.id}
-            self.write(state_data)
-       elif self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id:
+       elif self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id or self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
-            self.write(state_data)
-       elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
-            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
-            self.write(state_data)
-       elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
-            self.write(state_data)
-       elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
-            self.write(state_data)
+
+       self.write(state_data)
 
     @api.multi
     def tracking_approval(self):
