@@ -429,7 +429,7 @@ class Upkeep(models.Model):
             err_msg = _('You are not authorized to confirm all upkeep data')
             raise ValidationError(err_msg)
 
-        draft_upkeep_ids = self.search([('state', '=', 'draft')])
+        draft_upkeep_ids = self.search([('id', 'in', self.ids), ('state', '=', 'draft')])
         draft_upkeep_ids.write({
             'state': 'confirmed'
         })
@@ -448,7 +448,7 @@ class Upkeep(models.Model):
             err_msg = _('You are not authorized to approve all upkeep data')
             raise ValidationError(err_msg)
 
-        confirmed_upkeep_ids = self.search([('state', '=', 'confirmed')])
+        confirmed_upkeep_ids = self.search([('id', 'in', self.ids), ('state', '=', 'confirmed')])
         confirmed_upkeep_ids.write({
             'state': 'approved'
         })
