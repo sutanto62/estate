@@ -56,8 +56,10 @@
                 <search>
                     <field name="employee_name"/>
                     <field name="date"/>
-                    <filter name="filter_new" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed','attendance'))]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', 'in', ('draft','attendance'))]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', 'in', ('confirmed','attendance'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
                     <separator/>
@@ -122,8 +124,10 @@
                     <field name="assistant_id"/>
                     <filter name="filter_no_fingerprint" string="No Fingerprint"
                             domain="[('state', '=', 'attendance') ]"/>
-                    <filter name="filter_draft" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed','correction')) ]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', 'in', ('draft','correction'))]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', 'in', ('confirmed','correction'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved') ]"/>
                     <filter name="filter_payslip" string="Payslip"

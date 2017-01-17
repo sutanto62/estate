@@ -58,8 +58,10 @@
                     <field name="upkeep_date"/>
                     <field name="activity_id"/>
                     <field name="location_id"/>
-                    <filter name="filter_new" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed'))]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', '=', 'confirmed')]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
                     <separator/>
@@ -133,8 +135,10 @@
                     <field name="estate_id"/>
                     <separator/>
                     <field name="date"/>
-                    <filter name="filter_new" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed'))]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', '=', 'confirmed')]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
                     <filter name="filter_correction" string="Correction"
@@ -591,8 +595,10 @@
                 <search>
                     <field name="activity_id"/>
                     <field name="product_id"/>
-                    <filter name="filter_new" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed'))]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', '=', 'confirmed')]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
                     <filter name="filter_approved" string="Correction"
