@@ -225,6 +225,7 @@
                                     <tree editable="true">
                                         <field name="activity_id"
                                                options="{'no_create_edit': True}"/>
+                                        <field name="cross_team" string="CT"/>
                                         <!--<field name="contract" string="Ctr." attrs="{'invisible': [('activity_contract', '=', False)]}"/>-->
                                         <field name="location_ids"
                                                options="{'no_create_edit': True}"

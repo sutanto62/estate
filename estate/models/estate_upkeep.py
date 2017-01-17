@@ -507,6 +507,7 @@ class UpkeepActivity(models.Model):
                                        help='Amount of wage paid to finish a work')
     activity_contract = fields.Boolean('Activity Contract', related='activity_id.contract', readonly=True)  # Different ACL
     # contract = fields.Boolean('Activity Contract', default=False, help='Use only for contract based upkeep activity')
+    cross_team = fields.Boolean('Cross Team Activity', help='Check to open all locations.')
 
     @api.multi
     @api.depends('activity_id')
@@ -626,6 +627,22 @@ class UpkeepActivity(models.Model):
                     'message': _('You must first select a Division!'),
                 }
             return {'warning': warning}
+
+    @api.onchange('cross_team')
+    def _onchange_cross_team(self):
+        if self.cross_team:
+            return {
+                'domain': {'location_ids': [('estate_location_level', '=', '3')]}
+            }
+        else:
+            # Put back domain
+            return {
+                'domain': {'location_ids': [('inherit_location_id.location_id', 'in', (self.upkeep_id.estate_id.id,
+                                                                                       self.upkeep_id.division_id.id)),
+                                            ('company_id', '=', self.upkeep_id.company_id.id),
+                                            ('estate_location_level', '=', '3')]}
+            }
+
 
 class UpkeepLabour(models.Model):
     """
