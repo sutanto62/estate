@@ -63,7 +63,7 @@ class InheritPurchaseRequest(models.Model):
 
         return employee
 
-    _inherit = 'purchase.request'
+    _inherit = ['purchase.request']
     _rec_name = 'complete_name'
     _order = 'complete_name desc'
 
@@ -638,7 +638,7 @@ class InheritPurchaseRequest(models.Model):
                 'date_pp': datetime.today(),
                 'requisition_id': purchase_requisition.id,
                 'origin' : purchase_requisition.origin,
-                'type_location' : purchase_requisition.location,
+                'type_location' : purchase_requisition.type_location,
                 'location':purchase_requisition.location
             }
         res = self.env['quotation.comparison.form'].create(purchase_data)

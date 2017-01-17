@@ -27,8 +27,8 @@
 ,,,,,,,
 
 "quotation_comparison_form_user","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_user","True","False","False","False"
-"quotation_comparison_form_div_head","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_div_head","True","False","False","False"
-"quotation_comparison_form_dept_head","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_dept_head","True","False","False","False"
+"quotation_comparison_form_div_head","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_div_head","True","False","True","False"
+"quotation_comparison_form_dept_head","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_dept_head","True","False","True","False"
 "quotation_comparison_form_manager","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_manager","True","True","True","False"
 "quotation_comparison_form_procurement_staff","quotation_comparison_form","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_procstaff","True","True","True","True"
 "quotation_comparison_form_director","quotation_comparison_form_director","purchase_indonesia.model_quotation_comparison_form","purchase_indonesia.group_purchase_request_director","TRUE","True","True","True"

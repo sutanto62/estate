@@ -125,36 +125,21 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def _get_procurement_finance(self):
         #get List of Finance from user.groups
-        arrDivhead = []
+        arrFinancehead = []
 
         #search User Finance from user list
-        listprocurement= self.env['res.groups'].search([('id','=',72)]).users
+        listprocurement= self.env['res.groups'].search([('id','=',496)]).users
 
         for financeproc in listprocurement:
-            arrDivhead.append(financeproc.id)
+            arrFinancehead.append(financeproc.id)
         try:
-            fin_procur = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
+            fin_procur = self.env['res.users'].search([('id','=',arrFinancehead[0])]).id
         except:
-            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
+            raise exceptions.ValidationError('User get Role Finance Procurement Not Found in User Access')
 
         return fin_procur
 
-    @api.multi
-    def _get_procurement_finance(self):
-        #get List of Finance from user.groups
-        arrDivhead = []
 
-        #search User Finance from user list
-        listprocurement= self.env['res.groups'].search([('id','=',72)]).users
-
-        for financeproc in listprocurement:
-            arrDivhead.append(financeproc.id)
-        try:
-            fin_procur = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
-        except:
-            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
-
-        return fin_procur
 
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
@@ -297,10 +282,10 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_send(self):
-        if self._get_purchase_request().type_location == 'KPST':
+        if self._get_purchase_request().code == 'KPST':
             self.write({'state' : 'confirm'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK':
+        elif self._get_purchase_request().code == 'KPWK':
             self.write({'state' : 'confirm2'})
             self.tracking_approval()
         return True
@@ -317,58 +302,58 @@ class QuotationComparisonForm(models.Model):
         """ Confirms QCF.
         """
         self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
-        self.tracking_approval()
+
 
     @api.multi
     def action_confirm2(self):
         """ Confirms QCF.
         """
-        if self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_low():
+        if self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_low():
+        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_low():
             self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
             self.tracking_approval()
         return True
 
     @api.multi
     def action_approve(self):
-        if self._get_purchase_request().type_location == 'KPST' and self._get_max_price() < self._get_price_low():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
             self.tracking_approval()
 
     @api.multi
     def action_approve1(self):
-        if self._get_purchase_request().type_location == 'KPST' and self._get_max_price() < self._get_price_mid():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid():
-            self.write({'state' : 'approve2'})
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid():
+            self.write({'state' : 'approve2','assign_to':self._get_director()})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_mid():
+        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_mid():
-            self.write({'state' : 'approve2'})
+        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
+            self.write({'state' : 'approve2','assign_to':self._get_director()})
             self.tracking_approval()
         return True
 
     @api.multi
     def action_approve2(self):
-        if self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() > self._get_price_high():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() > self._get_price_high():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPST' and self._get_max_price() >= self._get_price_high():
-            self.write({'state' : 'approve3'})
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high():
+            self.write({'state' : 'approve3','assign_to':self._get_president_director()})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_high():
-            self.write({'state' : 'approve3'})
+        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_high():
+            self.write({'state' : 'approve3','assign_to':self._get_president_director()})
             self.tracking_approval()
         return True
 
@@ -380,11 +365,11 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve4(self):
-        if self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() < self._get_price_low():
+        if self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
             self.tracking_approval()
-        elif self._get_purchase_request().type_location == 'KPWK' and self._get_max_price() >= self._get_price_mid():
-            self.write({'state' : 'approve1'})
+        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
+            self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
             self.tracking_approval()
         return True
 

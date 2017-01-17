@@ -48,7 +48,7 @@
                 <form>
                      <header coolspan="10">
                             <button name="action_send" states="draft"  type="object" string="Send QCF" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
-                            <button name="action_confirm" states="confirm" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="action_confirm" states="confirm" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
                             <button name="action_approve" states="approve" type="object" string="Approval Finance" class="oe_highlight" groups="purchase_request.group_purchase_request_finance_procurement"/>
                             <button name="action_approve1" states="approve1"  type="object" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                             <button name="action_approve2" states="approve2" type="object" string="Approval Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
@@ -464,6 +464,45 @@
             </field>
         </record>
 
+        <record id="view_quotation_comparison_search" model="ir.ui.view">
+            <field name="name">Search Quotation Comparison Form</field>
+            <field name="model">quotation.comparison.form</field>
+            <field name="arch" type="xml">
+                <search string="Search Quotation Comparison Form">
+                    <field name="name" string="Purchase Request"/>
+                    <separator/>
+                    <field name="state"/>
+                    <filter name="unassigned" string="Unassigned"
+                            domain="[('assign_to','=', False)]"
+                            help="Unassigned Request"/>
+                    <filter name="state_draft" string="Draft"
+                            domain="[('state','=','draft')]"
+                            help="Request is to be approved"/>
+                    <filter string="Unread Messages"
+                            name="message_needaction"
+                            domain="[('message_needaction','=',True)]"/>
+                    <filter domain="[('assign_to','=', uid)]"
+                            help="Assigned to me"/>
+                    <filter domain="[('pic_id','=', uid)]"
+                            help="My requests"/>
+                    <filter name= 'assigned_approve' domain="['|',('pic_id','=', uid),('assign_to','=', uid)]"
+                            help="My Requests and My Approval"/>
+                    <field name="pic_id" />
+                    <field name="assign_to" />
+                    <group expand="0" string="Group By...">
+                        <filter string="Requested by" icon="terp-personal"
+                                domain="[]"
+                                context="{'group_by':'pic_id'}"/>
+                        <filter string="Assigned to" icon="terp-personal"
+                                name="group_assign_to"
+                                domain="[]"
+                                context="{'group_by':'assign_to'}"/>
+                        <filter string="Source" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'origin'}"/>
+                        <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_pp'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
 
         <record model="ir.actions.act_window" id="quotation_comparison_action">
@@ -472,8 +511,8 @@
             <field name="res_model">quotation.comparison.form</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="context">{"search_default_requested_by":uid}</field>
-            <!--<field name="search_view_id" ref="view_purchase_request_search"/>-->
+            <field name="context">{"search_default_assigned_approve":1}</field>
+            <field name="search_view_id" ref="view_quotation_comparison_search"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to start a new Quotation Comparison.
