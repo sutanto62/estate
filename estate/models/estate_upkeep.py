@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import logging
 from openerp import models, fields, api, _
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
@@ -15,6 +15,8 @@ overtime_amount = 10000
 
 RESET_PERIOD = [('year', 'Every Year'), ('month', 'Every Month')]
 RESET_PERIOD_TIMEDELTA = [('year', 12), ('month', 1)]
+
+_logger = logging.getLogger(__name__)
 
 class AccountAnalyticAccount(models.Model):
     """
@@ -394,7 +396,7 @@ class Upkeep(models.Model):
     def button_approved(self):
         # Nothing to be approved.
         if not self.labour_line_ids and self.state == 'draft':
-            error_msg = _("No Upkeep Labour need to be confirmed")
+            error_msg = _("No Upkeep Labour need to be approved")
             raise ValidationError(error_msg)
 
         # todo create analytic journal entry here
@@ -417,6 +419,44 @@ class Upkeep(models.Model):
         self.write({
             'state': state
         })
+
+    @api.multi
+    def confirm_all(self):
+        """ One by one confirmation takes time."""
+
+        # Server action menu cannot limited by groups_id
+        if not self.user_has_groups('estate.group_assistant'):
+            err_msg = _('You are not authorized to confirm all upkeep data')
+            raise ValidationError(err_msg)
+
+        draft_upkeep_ids = self.search([('state', '=', 'draft')])
+        draft_upkeep_ids.write({
+            'state': 'confirmed'
+        })
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s confirmed upkeep data at %s (server time)' % (current_user.name, confirm_date)))
+
+    @api.multi
+    def approve_all(self):
+        """ One by one confirmation takes time."""
+
+        # Server action menu cannot limited by groups_id
+        if not self.user_has_groups('estate.group_manager'):
+            err_msg = _('You are not authorized to approve all upkeep data')
+            raise ValidationError(err_msg)
+
+        confirmed_upkeep_ids = self.search([('state', '=', 'confirmed')])
+        confirmed_upkeep_ids.write({
+            'state': 'approved'
+        })
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s approved upkeep data at %s (server time)' % (current_user.name, confirm_date)))
 
     @api.multi
     def set_labour_qty(self, ratio, activity):
@@ -1098,7 +1138,7 @@ class UpkeepLabour(models.Model):
             raise ValidationError(error_msg)
 
 
-def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
+    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
         """
 
@@ -1110,6 +1150,60 @@ def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, con
             fields.remove('quantity_piece_rate')
 
         return super(UpkeepLabour, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
+
+    @api.multi
+    def confirm_all(self):
+        """ User control/checks upkeep entry by labour activity and cost figures"""
+
+        # Server action menu cannot limited by groups_id
+        if not self.user_has_groups('estate.group_assistant'):
+            err_msg = _('You are not authorized to confirm upkeep data')
+            raise ValidationError(err_msg)
+
+        # User confirm/approve on upkeep labour line
+        upkeep_list = []
+        upkeep_obj = self.env['estate.upkeep']
+        for record in self:
+            upkeep_id = upkeep_obj.search([('id', '=', record.upkeep_id.id),
+                                           ('state', '=', 'draft')])
+            if upkeep_id.id not in upkeep_list:
+                upkeep_list.append(upkeep_id.id)
+
+        # Only confirm upkeep with draft state
+        upkeep_ids = upkeep_obj.search([('id', 'in', upkeep_list)])
+        upkeep_ids.write({'state': 'confirmed'})
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s confirmed upkeep data at %s (server time)' % (current_user.name, confirm_date)))
+
+    @api.multi
+    def approve_all(self):
+        """ User control/checks upkeep entry by labour activity and cost figures"""
+
+        # Server action menu cannot limited by groups_id
+        if not self.user_has_groups('estate.group_manager'):
+            err_msg = _('You are not authorized to approve upkeep data')
+            raise ValidationError(err_msg)
+
+        # User confirm/approve on upkeep labour line
+        upkeep_list = []
+        upkeep_obj = self.env['estate.upkeep']
+        for record in self:
+            upkeep_id = upkeep_obj.search([('id', '=', record.upkeep_id.id),
+                                           ('state', '=', 'confirmed')])
+            if upkeep_id.id not in upkeep_list:
+                upkeep_list.append(upkeep_id.id)
+
+        # Only confirm upkeep with draft state
+        upkeep_ids = upkeep_obj.search([('id', 'in', upkeep_list)])
+        upkeep_ids.write({'state': 'approved'})
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s approved upkeep data at %s (server time)' % (current_user.name, confirm_date)))
 
 
 class UpkeepMaterial(models.Model):

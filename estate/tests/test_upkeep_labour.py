@@ -56,13 +56,13 @@ class TestUpkeep(TransactionCase):
             ],
             'labour_line_ids': [
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_5').id,
+                    'employee_id': self.env.ref('estate.khl_5').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'attendance_code_id': self.env.ref('estate.hr_attendance_k').id,
                     'quantity': 15
                 }),
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_4').id,
+                    'employee_id': self.env.ref('estate.khl_4').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'attendance_code_id': self.env.ref('estate.hr_attendance_k2').id,
                     'quantity': 5
