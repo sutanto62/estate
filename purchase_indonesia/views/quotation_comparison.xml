@@ -591,6 +591,12 @@
             action="quotation_comparison_action"
             />
 
+        <record id="purchase_indonesia.menu_quotation_comparison1_act" model="ir.ui.menu">
+            <!-- Use the special many2many value syntax to add a child record,
+                 and the `ref()` method to resolve the group XML ID -->
+            <field name="groups_id" eval="[(4,ref('purchase_indonesia.group_purchase_request_director')),(4,ref('purchase_indonesia.group_purchase_request_president_director'))]"/>
+        </record>
+
         <menuitem
             id="menu_quotation_comparison_act"
             sequence="19"
