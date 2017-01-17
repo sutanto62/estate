@@ -123,12 +123,12 @@ class TestUpkeep(TransactionCase):
         val_labour = {
             'labour_line_ids': [
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_5').id,
+                    'employee_id': self.env.ref('estate.khl_5').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'quantity': 20
                 }),
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_4').id,
+                    'employee_id': self.env.ref('estate.khl_4').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'quantity': 20
                 })
@@ -158,12 +158,12 @@ class TestUpkeep(TransactionCase):
         val_labour = {
             'labour_line_ids': [
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_5').id,
+                    'employee_id': self.env.ref('estate.khl_5').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'quantity': 15
                 }),
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_4').id,
+                    'employee_id': self.env.ref('estate.khl_4').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'quantity': 15
                 })
@@ -192,12 +192,12 @@ class TestUpkeep(TransactionCase):
             ],
             'labour_line_ids': [
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_5').id,
+                    'employee_id': self.env.ref('estate.khl_5').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'quantity': 15
                 }),
                 (0, 0, {
-                    'employee_id': self.env.ref('hr_employee.khl_4').id,
+                    'employee_id': self.env.ref('estate.khl_4').id,
                     'activity_id': self.env.ref('estate.activity_135').id,
                     'quantity': 5
                 })

@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-17 01:38+0000\n"
-"PO-Revision-Date: 2017-01-17 01:38+0000\n"
+"POT-Creation-Date: 2017-01-13 05:22+0000\n"
+"PO-Revision-Date: 2017-01-13 05:22+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,25 +16,39 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1088
+#: code:addons/estate/models/estate_upkeep.py:467
+#: code:addons/estate/models/estate_upkeep.py:1197
+#, python-format
+msgid "%s approved upkeep data at %s (server time)"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:444
+#: code:addons/estate/models/estate_upkeep.py:1170
+#, python-format
+msgid "%s confirmed upkeep data at %s (server time)"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1119
 #, python-format
 msgid "%s has %s number of day. Please change attendance code."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1096
+#: code:addons/estate/models/estate_upkeep.py:1127
 #, python-format
 msgid "%s has been work for more than 1 worked day."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1077
+#: code:addons/estate/models/estate_upkeep.py:1108
 #, python-format
 msgid "%s not allowed to have piece rate due to under achievement of %s"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1080
+#: code:addons/estate/models/estate_upkeep.py:1111
 #, python-format
 msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr ""
@@ -318,6 +332,12 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Apply"
+msgstr ""
+
+#. module: estate
+#: model:ir.actions.server,name:estate.upkeep_approve_action
+#: model:ir.actions.server,name:estate.upkeep_labour_approve_action
+msgid "Approve All"
 msgstr ""
 
 #. module: estate
@@ -1668,7 +1688,7 @@ msgid "Labour Usage"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:978
+#: code:addons/estate/models/estate_upkeep.py:1009
 #, python-format
 msgid "Labour Usage should be created within Daily Upkeep"
 msgstr ""
@@ -1887,8 +1907,8 @@ msgid "Material Usage"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:602
-#: code:addons/estate/models/estate_upkeep.py:1228
+#: code:addons/estate/models/estate_upkeep.py:649
+#: code:addons/estate/models/estate_upkeep.py:1313
 #, python-format
 msgid "Material Usage should be created within Daily Upkeep"
 msgstr ""
@@ -2013,14 +2033,19 @@ msgid "Name"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:813
+#: code:addons/estate/models/estate_upkeep.py:844
 #, python-format
 msgid "No Regional Wage defined."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:386
-#: code:addons/estate/models/estate_upkeep.py:397
+#: code:addons/estate/models/estate_upkeep.py:399
+#, python-format
+msgid "No Upkeep Labour need to be approved"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:388
 #, python-format
 msgid "No Upkeep Labour need to be confirmed"
 msgstr ""
@@ -2881,8 +2906,8 @@ msgid "Team Name"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:236
-#: code:addons/estate/models/estate_upkeep.py:269
+#: code:addons/estate/models/estate_upkeep.py:238
+#: code:addons/estate/models/estate_upkeep.py:271
 #, python-format
 msgid "There is no %s in Upkeep Activity list"
 msgstr ""
@@ -2914,8 +2939,8 @@ msgid "Topography"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:218
-#: code:addons/estate/models/estate_upkeep.py:245
+#: code:addons/estate/models/estate_upkeep.py:220
+#: code:addons/estate/models/estate_upkeep.py:247
 #, python-format
 msgid "Total %s labour's amount should equal or less than %s"
 msgstr ""
@@ -2938,19 +2963,19 @@ msgid "Total Tree"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:253
+#: code:addons/estate/models/estate_upkeep.py:255
 #, python-format
 msgid "Total worked day of %s should not more than 1 worked day"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:185
+#: code:addons/estate/models/estate_upkeep.py:187
 #, python-format
 msgid "Transaction date should be today"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:188
+#: code:addons/estate/models/estate_upkeep.py:190
 #, python-format
 msgid "Transaction date should not be less than/greater than or equal to %s day(s)"
 msgstr ""
@@ -3042,6 +3067,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_upkeep_id
 #: model:ir.ui.menu,name:estate.menu_estate_upkeep_reporting
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Upkeep"
@@ -3054,7 +3080,7 @@ msgid "Upkeep Activity"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:209
+#: code:addons/estate/models/estate_upkeep.py:211
 #, python-format
 msgid "Upkeep Activity %s should only set once"
 msgstr ""
@@ -3070,12 +3096,12 @@ msgid "Upkeep Activity Line"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:798
-#: code:addons/estate/models/estate_upkeep.py:811
-#: code:addons/estate/models/estate_upkeep.py:985
-#: code:addons/estate/models/estate_upkeep.py:1039
-#: code:addons/estate/models/estate_upkeep.py:1235
-#: code:addons/estate/models/estate_upkeep.py:1265
+#: code:addons/estate/models/estate_upkeep.py:829
+#: code:addons/estate/models/estate_upkeep.py:842
+#: code:addons/estate/models/estate_upkeep.py:1016
+#: code:addons/estate/models/estate_upkeep.py:1070
+#: code:addons/estate/models/estate_upkeep.py:1320
+#: code:addons/estate/models/estate_upkeep.py:1350
 #, python-format
 msgid "Upkeep Activity should be defined first"
 msgstr ""
@@ -3203,13 +3229,13 @@ msgstr ""
 
 #. module: estate
 #: code:addons/estate/models/estate_hr.py:112
-#: code:addons/estate/models/estate_upkeep.py:601
-#: code:addons/estate/models/estate_upkeep.py:626
-#: code:addons/estate/models/estate_upkeep.py:977
-#: code:addons/estate/models/estate_upkeep.py:984
-#: code:addons/estate/models/estate_upkeep.py:1053
-#: code:addons/estate/models/estate_upkeep.py:1227
-#: code:addons/estate/models/estate_upkeep.py:1234
+#: code:addons/estate/models/estate_upkeep.py:648
+#: code:addons/estate/models/estate_upkeep.py:673
+#: code:addons/estate/models/estate_upkeep.py:1008
+#: code:addons/estate/models/estate_upkeep.py:1015
+#: code:addons/estate/models/estate_upkeep.py:1084
+#: code:addons/estate/models/estate_upkeep.py:1312
+#: code:addons/estate/models/estate_upkeep.py:1319
 #, python-format
 msgid "Warning!"
 msgstr ""
@@ -3268,8 +3294,32 @@ msgid "YTD"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:627
-#: code:addons/estate/models/estate_upkeep.py:1054
+#: code:addons/estate/models/estate_upkeep.py:452
+#, python-format
+msgid "You are not authorized to approve all upkeep data"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1178
+#, python-format
+msgid "You are not authorized to approve upkeep data"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:429
+#, python-format
+msgid "You are not authorized to confirm all upkeep data"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1151
+#, python-format
+msgid "You are not authorized to confirm upkeep data"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:674
+#: code:addons/estate/models/estate_upkeep.py:1085
 #, python-format
 msgid "You must first select a Division!"
 msgstr ""

@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-17 01:38+0000\n"
-"PO-Revision-Date: 2017-01-17 08:39+0700\n"
+"POT-Creation-Date: 2017-01-13 05:22+0000\n"
+"PO-Revision-Date: 2017-01-13 12:25+0700\n"
 "Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: palma group\n"
 "Language: id\n"
@@ -29,19 +29,33 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1088
+#: code:addons/estate/models/estate_upkeep.py:467
+#: code:addons/estate/models/estate_upkeep.py:1197
+#, python-format
+msgid "%s approved upkeep data at %s (server time)"
+msgstr "%s menyetujui semua BKM pada % (waktu server)"
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:444
+#: code:addons/estate/models/estate_upkeep.py:1170
+#, python-format
+msgid "%s confirmed upkeep data at %s (server time)"
+msgstr "%s mengkonfirmasi semua BKM pada % (waktu server)"
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1119
 #, python-format
 msgid "%s has %s number of day. Please change attendance code."
 msgstr "%s HK %s. Harap ganti kode presensi agar sesuai."
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1096
+#: code:addons/estate/models/estate_upkeep.py:1127
 #, python-format
 msgid "%s has been work for more than 1 worked day."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1077
+#: code:addons/estate/models/estate_upkeep.py:1108
 #, python-format
 msgid "%s not allowed to have piece rate due to under achievement of %s"
 msgstr ""
@@ -49,7 +63,7 @@ msgstr ""
 "di bawah standar."
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1080
+#: code:addons/estate/models/estate_upkeep.py:1111
 #, python-format
 msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr "Jumlah premi %s untuk kegiatan %s tidak boleh melebihi %s"
@@ -344,6 +358,12 @@ msgid "Apply"
 msgstr "Terapkan"
 
 #. module: estate
+#: model:ir.actions.server,name:estate.upkeep_approve_action
+#: model:ir.actions.server,name:estate.upkeep_labour_approve_action
+msgid "Approve All"
+msgstr "Setujui Semua"
+
+#. module: estate
 #: selection:estate.operation,state:0
 #: selection:estate.upkeep,state:0
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
@@ -357,7 +377,7 @@ msgstr "Setuju"
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Approved By"
-msgstr ""
+msgstr "Disetujui Oleh"
 
 #. module: estate
 #: model:product.uom.categ,name:estate.product_uom_categ_area
@@ -739,6 +759,12 @@ msgstr "Konfigurasi"
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Configure Estate"
 msgstr "Konfigurasi Estate"
+
+#. module: estate
+#: model:ir.actions.server,name:estate.upkeep_confirm_action
+#: model:ir.actions.server,name:estate.upkeep_labour_confirm_action
+msgid "Confirm All"
+msgstr "Konfirmasi Semua"
 
 #. module: estate
 #: selection:estate.operation,state:0
@@ -1694,7 +1720,7 @@ msgid "Labour Usage"
 msgstr "Penggunaan HK"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:978
+#: code:addons/estate/models/estate_upkeep.py:1009
 #, python-format
 msgid "Labour Usage should be created within Daily Upkeep"
 msgstr "Penggunaan HK harus dibuat melalui Kegiatan Mandor"
@@ -1913,8 +1939,8 @@ msgid "Material Usage"
 msgstr "Penggunaan Bahan"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:602
-#: code:addons/estate/models/estate_upkeep.py:1228
+#: code:addons/estate/models/estate_upkeep.py:649
+#: code:addons/estate/models/estate_upkeep.py:1313
 #, python-format
 msgid "Material Usage should be created within Daily Upkeep"
 msgstr ""
@@ -2039,14 +2065,19 @@ msgid "Name"
 msgstr "Nama"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:813
+#: code:addons/estate/models/estate_upkeep.py:844
 #, python-format
 msgid "No Regional Wage defined."
 msgstr "UMR belum didefinisikan"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:386
-#: code:addons/estate/models/estate_upkeep.py:397
+#: code:addons/estate/models/estate_upkeep.py:399
+#, python-format
+msgid "No Upkeep Labour need to be approved"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:388
 #, python-format
 msgid "No Upkeep Labour need to be confirmed"
 msgstr ""
@@ -2913,8 +2944,8 @@ msgid "Team Name"
 msgstr "Nama Kemandoran"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:236
-#: code:addons/estate/models/estate_upkeep.py:269
+#: code:addons/estate/models/estate_upkeep.py:238
+#: code:addons/estate/models/estate_upkeep.py:271
 #, python-format
 msgid "There is no %s in Upkeep Activity list"
 msgstr "Aktifitas %s tidak terdaftar pada Daftar Aktifitas."
@@ -2946,8 +2977,8 @@ msgid "Topography"
 msgstr "Topografi"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:218
-#: code:addons/estate/models/estate_upkeep.py:245
+#: code:addons/estate/models/estate_upkeep.py:220
+#: code:addons/estate/models/estate_upkeep.py:247
 #, python-format
 msgid "Total %s labour's amount should equal or less than %s"
 msgstr "Total hasil kerja %s seharusnya sama atau kurang adri %s"
@@ -2971,19 +3002,19 @@ msgid "Total Tree"
 msgstr "Jumlah Pokok"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:253
+#: code:addons/estate/models/estate_upkeep.py:255
 #, python-format
 msgid "Total worked day of %s should not more than 1 worked day"
 msgstr "HK %s tidak boleh lebih dari 1."
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:185
+#: code:addons/estate/models/estate_upkeep.py:187
 #, python-format
 msgid "Transaction date should be today"
 msgstr "Tanggal BKM harus hari ini."
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:188
+#: code:addons/estate/models/estate_upkeep.py:190
 #, python-format
 msgid "Transaction date should not be less than/greater than or equal to %s day(s)"
 msgstr "Tanggal BKM tidak boleh kurang/lebih atau sama dengan %s"
@@ -3075,6 +3106,7 @@ msgstr "Sat"
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_upkeep_id
 #: model:ir.ui.menu,name:estate.menu_estate_upkeep_reporting
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Upkeep"
@@ -3087,7 +3119,7 @@ msgid "Upkeep Activity"
 msgstr "Kegiatan"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:209
+#: code:addons/estate/models/estate_upkeep.py:211
 #, python-format
 msgid "Upkeep Activity %s should only set once"
 msgstr "Pencatatan kegiatan %s seharusnya hanya sekali"
@@ -3103,12 +3135,12 @@ msgid "Upkeep Activity Line"
 msgstr "Detil Kegiatan"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:798
-#: code:addons/estate/models/estate_upkeep.py:811
-#: code:addons/estate/models/estate_upkeep.py:985
-#: code:addons/estate/models/estate_upkeep.py:1039
-#: code:addons/estate/models/estate_upkeep.py:1235
-#: code:addons/estate/models/estate_upkeep.py:1265
+#: code:addons/estate/models/estate_upkeep.py:829
+#: code:addons/estate/models/estate_upkeep.py:842
+#: code:addons/estate/models/estate_upkeep.py:1016
+#: code:addons/estate/models/estate_upkeep.py:1070
+#: code:addons/estate/models/estate_upkeep.py:1320
+#: code:addons/estate/models/estate_upkeep.py:1350
 #, python-format
 msgid "Upkeep Activity should be defined first"
 msgstr "Kegiatan pemeliharaan harus didefinisikan."
@@ -3236,13 +3268,13 @@ msgstr "Metode Hitung Upah"
 
 #. module: estate
 #: code:addons/estate/models/estate_hr.py:112
-#: code:addons/estate/models/estate_upkeep.py:601
-#: code:addons/estate/models/estate_upkeep.py:626
-#: code:addons/estate/models/estate_upkeep.py:977
-#: code:addons/estate/models/estate_upkeep.py:984
-#: code:addons/estate/models/estate_upkeep.py:1053
-#: code:addons/estate/models/estate_upkeep.py:1227
-#: code:addons/estate/models/estate_upkeep.py:1234
+#: code:addons/estate/models/estate_upkeep.py:648
+#: code:addons/estate/models/estate_upkeep.py:673
+#: code:addons/estate/models/estate_upkeep.py:1008
+#: code:addons/estate/models/estate_upkeep.py:1015
+#: code:addons/estate/models/estate_upkeep.py:1084
+#: code:addons/estate/models/estate_upkeep.py:1312
+#: code:addons/estate/models/estate_upkeep.py:1319
 #, python-format
 msgid "Warning!"
 msgstr "Peringatan!"
@@ -3301,8 +3333,32 @@ msgid "YTD"
 msgstr "SBI"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:627
-#: code:addons/estate/models/estate_upkeep.py:1054
+#: code:addons/estate/models/estate_upkeep.py:452
+#, python-format
+msgid "You are not authorized to approve all upkeep data"
+msgstr "Anda tidak memiliki hak Setujui Semua"
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1178
+#, python-format
+msgid "You are not authorized to approve upkeep data"
+msgstr "Anda tidak memiliki hak Setujui Semua"
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:429
+#, python-format
+msgid "You are not authorized to confirm all upkeep data"
+msgstr "Anda tidak memiliki hak Konfirmasi Semua"
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1151
+#, python-format
+msgid "You are not authorized to confirm upkeep data"
+msgstr "Anda tidak memiliki hak Konfirmasi Semua"
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:674
+#: code:addons/estate/models/estate_upkeep.py:1085
 #, python-format
 msgid "You must first select a Division!"
 msgstr "Pilih Divisi lebih dulu."

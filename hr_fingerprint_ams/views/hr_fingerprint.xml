@@ -3,7 +3,7 @@
     <data>
 
         <record id="fingerprint_attendance_view_form" model="ir.ui.view">
-            <field name="name"> Form</field>
+            <field name="name">Fingerprint Form</field>
             <field name="model">hr_fingerprint_ams.attendance</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
@@ -56,16 +56,21 @@
                 <search>
                     <field name="employee_name"/>
                     <field name="date"/>
-                    <filter name="filter_new" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed','attendance'))]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', 'in', ('draft','attendance'))]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', 'in', ('confirmed','attendance'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', 'in', ('approved', 'correction', 'payslip'))]"/>
+                    <separator/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
 
-                    <group string="Group By">
+                    <group expand="1" string="Group By">
+                        <filter name="by_department" string="Department"
+                                context="{'group_by': 'department'}"/>
                         <filter name="by_employee" string="Employee"
                                 context="{'group_by': 'employee_name'}"/>
                         <filter name="by_date" string="Date"
@@ -87,8 +92,24 @@
                     <field name="time_end" widget="float_time"/>
                     <field name="sign_in" widget="float_time"/>
                     <field name="sign_out" widget="float_time"/>
+                    <field name="action_reason"/>
                     <field name="state"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id="fingerprint_attendance_view_pivot" model="ir.ui.view">
+            <field name="name">AMS Fingerprint Consolidation</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="arch" type="xml">
+                <pivot>
+                    <field name="department"/>
+                    <field name="employee_name"/>
+                    <field name="date" type="col" interval="year"/>
+                    <field name="date" type="col" interval="month"/>
+                    <field name="date" type="col" interval="day"/>
+                    <field name="day_finger" string="" type="measure"/>
+                </pivot>
             </field>
         </record>
 
@@ -103,8 +124,10 @@
                     <field name="assistant_id"/>
                     <filter name="filter_no_fingerprint" string="No Fingerprint"
                             domain="[('state', '=', 'attendance') ]"/>
-                    <filter name="filter_draft" string="Draft/Confirmed"
-                            domain="[('state', 'in', ('draft','confirmed','correction')) ]"/>
+                    <filter name="filter_new" string="Draft"
+                            domain="[('state', 'in', ('draft','correction'))]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', 'in', ('confirmed','correction'))]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved') ]"/>
                     <filter name="filter_payslip" string="Payslip"
@@ -148,8 +171,10 @@
         <record id="fingerprint_attendance_action" model="ir.actions.act_window" >
             <field name="name">Fingerprint Attendance</field>
             <field name="res_model">hr_fingerprint_ams.attendance</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'search_default_by_employee': 1, 'search_default_filter_new': 1}</field>
+            <field name="view_mode">pivot,tree,form</field>
+            <field name="context">{'search_default_by_department': 1,
+                'search_default_by_employee': 1,
+                'search_default_filter_new': 1}</field>
         </record>
 
         <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
@@ -172,5 +197,45 @@
                   parent="estate.estate_operation_control_menu"
                   action="labour_fingerprint_report_action"
                   groups="base.group_hr_user"/>
+
+        <!-- Confirm All action -->
+        <record model="ir.actions.server" id="action_hr_fingerprint_confirm">
+            <field name="name">Confirm All</field>
+            <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance"/>
+            <field name="groups_id" ref="base.group_hr_ho_user"/>
+            <field name="code">
+                if context.get('active_model') == 'hr_fingerprint_ams.attendance' and context.get('active_ids'):
+                    action = self.confirm_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="hr_fingerprint_confirm_all">
+            <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance" />
+            <field name="name">Confirm All Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('action_hr_fingerprint_confirm'))" />
+            <field name="key">action</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+        </record>
+
+        <!-- Approve All action -->
+        <record model="ir.actions.server" id="action_hr_fingerprint_approve">
+            <field name="name">Approve All</field>
+            <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance"/>
+            <field name="groups_id" ref="base.group_hr_manager"/>
+            <field name="code">
+                if context.get('active_model') == 'hr_fingerprint_ams.attendance' and context.get('active_ids'):
+                    action = self.approve_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="hr_fingerprint_approve_all">
+            <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance" />
+            <field name="name">Approve All Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('action_hr_fingerprint_approve'))" />
+            <field name="key">action</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+        </record>
     </data>
 </openerp>
