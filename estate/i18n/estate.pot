@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-22 02:59+0000\n"
-"PO-Revision-Date: 2016-12-22 02:59+0000\n"
+"POT-Creation-Date: 2017-01-17 01:38+0000\n"
+"PO-Revision-Date: 2017-01-17 01:38+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,25 +16,25 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1067
+#: code:addons/estate/models/estate_upkeep.py:1088
 #, python-format
 msgid "%s has %s number of day. Please change attendance code."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1075
+#: code:addons/estate/models/estate_upkeep.py:1096
 #, python-format
 msgid "%s has been work for more than 1 worked day."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1056
+#: code:addons/estate/models/estate_upkeep.py:1077
 #, python-format
 msgid "%s not allowed to have piece rate due to under achievement of %s"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1059
+#: code:addons/estate/models/estate_upkeep.py:1080
 #, python-format
 msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr ""
@@ -559,6 +559,11 @@ msgstr ""
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "CT"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "Calculate Qty"
 msgstr ""
 
@@ -605,6 +610,11 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,help:estate.field_account_analytic_account_use_estate
 msgid "Check this field if this project manages estate"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_cross_team
+msgid "Check to open all locations."
 msgstr ""
 
 #. module: estate
@@ -664,10 +674,14 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_company_id
 #: model:ir.ui.view,arch_db:estate.block_template_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Company"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_employee_company_id
+msgid "Company of employee"
 msgstr ""
 
 #. module: estate
@@ -861,6 +875,11 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_cross_team_id
 msgid "Cross Team"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_cross_team
+msgid "Cross Team Activity"
 msgstr ""
 
 #. module: estate
@@ -1185,6 +1204,12 @@ msgid "Employee"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_employee_company_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+msgid "Employee Company"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_nik_number
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_nik_number
 msgid "Employee Identity Number"
@@ -1262,11 +1287,19 @@ msgid "Estate Block"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_estate_block_estate_code
+#: model:ir.model.fields,field_description:estate.field_estate_block_template_estate_code
+#: model:ir.model.fields,field_description:estate.field_stock_location_estate_code
+msgid "Estate Code"
+msgstr ""
+
+#. module: estate
 #: model:ir.model,name:estate.model_estate_common_report
 msgid "Estate Common Report"
 msgstr ""
 
 #. module: estate
+#: model:ir.actions.act_window,name:estate.estate_division_report_menu_action
 #: model:ir.ui.menu,name:estate.estate_division_report_menu
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Estate Division Report"
@@ -1415,6 +1448,9 @@ msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_general_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_general_account_id
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 msgid "General Account"
 msgstr ""
 
@@ -1632,7 +1668,7 @@ msgid "Labour Usage"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:957
+#: code:addons/estate/models/estate_upkeep.py:978
 #, python-format
 msgid "Labour Usage should be created within Daily Upkeep"
 msgstr ""
@@ -1780,6 +1816,11 @@ msgid "Location"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+msgid "Location Company"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_name
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_name
 msgid "Location Name"
@@ -1846,8 +1887,8 @@ msgid "Material Usage"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:600
-#: code:addons/estate/models/estate_upkeep.py:1207
+#: code:addons/estate/models/estate_upkeep.py:602
+#: code:addons/estate/models/estate_upkeep.py:1228
 #, python-format
 msgid "Material Usage should be created within Daily Upkeep"
 msgstr ""
@@ -1972,14 +2013,14 @@ msgid "Name"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:792
+#: code:addons/estate/models/estate_upkeep.py:813
 #, python-format
 msgid "No Regional Wage defined."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:385
-#: code:addons/estate/models/estate_upkeep.py:396
+#: code:addons/estate/models/estate_upkeep.py:386
+#: code:addons/estate/models/estate_upkeep.py:397
 #, python-format
 msgid "No Upkeep Labour need to be confirmed"
 msgstr ""
@@ -2584,6 +2625,7 @@ msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_activity_general_account_id
+#: model:ir.model.fields,help:estate.field_estate_upkeep_labour_general_account_id
 msgid "Set as default general account."
 msgstr ""
 
@@ -2839,8 +2881,8 @@ msgid "Team Name"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:235
-#: code:addons/estate/models/estate_upkeep.py:268
+#: code:addons/estate/models/estate_upkeep.py:236
+#: code:addons/estate/models/estate_upkeep.py:269
 #, python-format
 msgid "There is no %s in Upkeep Activity list"
 msgstr ""
@@ -2872,8 +2914,8 @@ msgid "Topography"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:217
-#: code:addons/estate/models/estate_upkeep.py:244
+#: code:addons/estate/models/estate_upkeep.py:218
+#: code:addons/estate/models/estate_upkeep.py:245
 #, python-format
 msgid "Total %s labour's amount should equal or less than %s"
 msgstr ""
@@ -2896,19 +2938,19 @@ msgid "Total Tree"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:252
+#: code:addons/estate/models/estate_upkeep.py:253
 #, python-format
 msgid "Total worked day of %s should not more than 1 worked day"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:184
+#: code:addons/estate/models/estate_upkeep.py:185
 #, python-format
 msgid "Transaction date should be today"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:187
+#: code:addons/estate/models/estate_upkeep.py:188
 #, python-format
 msgid "Transaction date should not be less than/greater than or equal to %s day(s)"
 msgstr ""
@@ -3012,7 +3054,7 @@ msgid "Upkeep Activity"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:208
+#: code:addons/estate/models/estate_upkeep.py:209
 #, python-format
 msgid "Upkeep Activity %s should only set once"
 msgstr ""
@@ -3028,12 +3070,12 @@ msgid "Upkeep Activity Line"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:777
-#: code:addons/estate/models/estate_upkeep.py:790
-#: code:addons/estate/models/estate_upkeep.py:964
-#: code:addons/estate/models/estate_upkeep.py:1018
-#: code:addons/estate/models/estate_upkeep.py:1214
-#: code:addons/estate/models/estate_upkeep.py:1244
+#: code:addons/estate/models/estate_upkeep.py:798
+#: code:addons/estate/models/estate_upkeep.py:811
+#: code:addons/estate/models/estate_upkeep.py:985
+#: code:addons/estate/models/estate_upkeep.py:1039
+#: code:addons/estate/models/estate_upkeep.py:1235
+#: code:addons/estate/models/estate_upkeep.py:1265
 #, python-format
 msgid "Upkeep Activity should be defined first"
 msgstr ""
@@ -3068,6 +3110,13 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_activity_code_name
 msgid "Use at entry"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,help:estate.field_estate_block_estate_code
+#: model:ir.model.fields,help:estate.field_estate_block_template_estate_code
+#: model:ir.model.fields,help:estate.field_stock_location_estate_code
+msgid "Use by Employee Identity Number"
 msgstr ""
 
 #. module: estate
@@ -3154,13 +3203,13 @@ msgstr ""
 
 #. module: estate
 #: code:addons/estate/models/estate_hr.py:112
-#: code:addons/estate/models/estate_upkeep.py:599
-#: code:addons/estate/models/estate_upkeep.py:624
-#: code:addons/estate/models/estate_upkeep.py:956
-#: code:addons/estate/models/estate_upkeep.py:963
-#: code:addons/estate/models/estate_upkeep.py:1032
-#: code:addons/estate/models/estate_upkeep.py:1206
-#: code:addons/estate/models/estate_upkeep.py:1213
+#: code:addons/estate/models/estate_upkeep.py:601
+#: code:addons/estate/models/estate_upkeep.py:626
+#: code:addons/estate/models/estate_upkeep.py:977
+#: code:addons/estate/models/estate_upkeep.py:984
+#: code:addons/estate/models/estate_upkeep.py:1053
+#: code:addons/estate/models/estate_upkeep.py:1227
+#: code:addons/estate/models/estate_upkeep.py:1234
 #, python-format
 msgid "Warning!"
 msgstr ""
@@ -3219,8 +3268,8 @@ msgid "YTD"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:625
-#: code:addons/estate/models/estate_upkeep.py:1033
+#: code:addons/estate/models/estate_upkeep.py:627
+#: code:addons/estate/models/estate_upkeep.py:1054
 #, python-format
 msgid "You must first select a Division!"
 msgstr ""
