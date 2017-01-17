@@ -161,12 +161,12 @@ class QuotationComparisonForm(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send QCF'),
-        ('confirm2','Send QCF'),
-        ('approve','Approve Finance'),
-        ('approve1', 'Approve GM'),
-        ('approve2','Approve Director'),
-        ('approve3','Approve President Director'),
-        ('approve4','Approve head of the representative office'),
+        ('confirm2','Send QCF RO'),
+        ('approve','Approval Finance'),
+        ('approve1', 'Approval GM Finance'),
+        ('approve2','Approval Director'),
+        ('approve3','Approval President Director'),
+        ('approve4','Approval head of the representative office'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
@@ -284,17 +284,14 @@ class QuotationComparisonForm(models.Model):
     def action_send(self):
         if self._get_purchase_request().code == 'KPST':
             self.write({'state' : 'confirm'})
-            self.tracking_approval()
         elif self._get_purchase_request().code == 'KPWK':
             self.write({'state' : 'confirm2'})
-            self.tracking_approval()
         return True
 
     @api.multi
     def button_draft(self):
         for rec in self:
             rec.state = 'draft'
-            self.tracking_approval()
         return True
 
     @api.multi
@@ -310,72 +307,46 @@ class QuotationComparisonForm(models.Model):
         """
         if self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
-            self.tracking_approval()
         elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_low():
             self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
-            self.tracking_approval()
         return True
 
     @api.multi
     def action_approve(self):
         if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() > self._get_price_low():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
-            self.tracking_approval()
 
     @api.multi
     def action_approve1(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve2','assign_to':self._get_director()})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_mid():
-            self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
-            self.write({'state' : 'approve2','assign_to':self._get_director()})
-            self.tracking_approval()
-        return True
 
     @api.multi
     def action_approve2(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() > self._get_price_high():
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high():
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3','assign_to':self._get_president_director()})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
-            self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_high():
-            self.write({'state' : 'approve3','assign_to':self._get_president_director()})
-            self.tracking_approval()
-        return True
 
     @api.multi
     def action_approve3(self):
         self.write({'state': 'done'})
-        self.tracking_approval()
         return True
 
     @api.multi
     def action_approve4(self):
         if self._get_purchase_request().code == 'KPWK' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
-            self.tracking_approval()
         elif self._get_purchase_request().code == 'KPWK' and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
-            self.tracking_approval()
         return True
 
     def action_done(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'done'})
-        self.tracking_approval()
         return True
 
     @api.multi
