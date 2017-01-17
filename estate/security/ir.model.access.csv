@@ -51,3 +51,4 @@
 "access_estate_stock_warehouse_orderpoint","stock.warehouse.orderpoint estate user","stock.model_stock_warehouse_orderpoint","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_res_company","res.company estate user","base.model_res_company","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_ir_sequence","ir_sequence_estate_user","base.model_ir_sequence","estate.group_user","TRUE","TRUE","FALSE","FALSE"
+"access_estate_block_template_hr_officer","estate.block.template","model_estate_block_template","base.group_hr_user","TRUE","FALSE","FALSE","FALSE"
