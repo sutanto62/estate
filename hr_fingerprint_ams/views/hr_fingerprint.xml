@@ -190,7 +190,9 @@
             <field name="priority">1</field>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="labour_fingerprint_view_tree"/>
-            <field name="context">{'search_default_by_assistant': 1, 'search_default_filter_no_sign_in': 1}</field>
+            <field name="context">{'search_default_by_assistant': 1,
+                'search_default_by_employee': 1,
+                'search_default_filter_no_fingerprint': 1}</field>
         </record>
 
         <menuitem id="labour_fingerprint_report_menu" name="Labour Fingerprint Report"
