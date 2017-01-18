@@ -109,6 +109,7 @@ class InheritPurchaseRequest(models.Model):
 
 
 
+
     @api.multi
     def _get_requestedby_manager(self):
         #search Employee
@@ -814,6 +815,7 @@ class InheritPurchaseRequestLine(models.Model):
     price_per_product = fields.Float('Prod Price')
     total_price = fields.Float('Total Price',compute='_compute_total_price')
     budget_available = fields.Float('Budget Available')
+    control_unit =  fields.Float('Budget Control Unit')
     validation_budget = fields.Boolean('Validation Budget',store=False,compute='_compute_validation_budget')
 
     @api.multi

@@ -69,6 +69,7 @@
                  </xpath>
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
+                     <field name="control_unit" string="Unit Control" attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
                      <field name="budget_available" string="Budget Available"
                                  attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
@@ -95,6 +96,7 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//form//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
+                     <field name="control_unit" string="Unit Control" attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
                      <field name="budget_available" string="Budget Available"
                                  attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>

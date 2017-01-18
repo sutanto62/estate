@@ -23,8 +23,8 @@
                 <form>
                      <header coolspan="10">
                             <button name="button_send_request" states="draft" string="Send Good Request" class="oe_highlight" />
-                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="%(action_good_request_reject)d" states="confirm" string="Reject Good Request" type="action" groups="purchase_request.group_purchase_request_manager"/>
+                            <button name="button_confirm_request" states="confirm" string="Confirm" class="oe_highlight" groups="stock.group_stock_manager"/>
+                            <button name="%(action_good_request_reject)d" states="confirm" string="Reject Good Request" type="action" groups="stock.group_stock_manager"/>
                             <button name="button_cancel" states="draft" string="Cancel"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
