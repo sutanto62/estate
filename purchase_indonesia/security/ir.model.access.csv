@@ -79,3 +79,6 @@
 "access_stock_move_purchase_user","stock_move_purchase_user","stock.model_stock_move","purchase_request.group_purchase_request_user","TRUE","False","False","False"
 
 "access_mro_order_purchase_user","mro_order_purchase_user","mro.model_mro_order","purchase_request.group_purchase_request_user","TRUE","False","False","False"
+
+"access_purchase_order_purchase_user","purchase_order_purchase_user","purchase.model_purchase_order","purchase_request.group_purchase_request_user","TRUE","True","True","True"
+"access_purchase_order_purchase_line_user","purchase_order_purchase_line_user","purchase.model_purchase_order_line","purchase_request.group_purchase_request_user","TRUE","True","True","True"

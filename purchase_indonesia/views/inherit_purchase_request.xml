@@ -228,7 +228,7 @@
              <field name="arch" type="xml">
                  <xpath expr="//tree" position="attributes">
                           <attribute name='decoration-info'></attribute>
-                          <attribute name='decoration-danger'>state in ('draft','approval1','approval2','to_approve','budget','technic1','technic2','technic3','technic4','technic5')</attribute>
+                          <attribute name='decoration-danger'>state in ('draft','approval1','approval2','to_approve','budget','technic1','technic2','technic3','technic4','technic5','approval3','approval4','approval5','approval6')</attribute>
                  </xpath>
              </field>
          </record>
