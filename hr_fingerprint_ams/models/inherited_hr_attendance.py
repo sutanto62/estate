@@ -83,10 +83,11 @@ class FingerAttendance(models.Model):
         # Override create should return a recordset
         res = self
 
-        # Attendance constraints required complete sign-in and sign-out
+        # Attendance constraints required employee and complete sign-in and sign-out
         attendance = Attendance(self._get_employee(vals['employee_name'], vals['nik']),
                                 vals['sign_in'],
                                 vals['sign_out'])
+
         att_rule = AttendanceSpecification().\
             and_specification(EmployeeSpecification()).\
             and_specification(SignInSpecification()).\
@@ -109,6 +110,15 @@ class FingerAttendance(models.Model):
                 self._create_attendance(res, vals)
                 self._create_attendance(res, vals, 'sign_out')
         else:
+            # Prevent create fingerprint attendance if employee not found
+            try:
+                self._get_employee(vals['employee_name'], vals['nik']).id
+            except AttributeError:
+                err_msg = _('Fingerprint not created. %s (%s), %s is not registered as employee.' %
+                            (vals['employee_name'], vals['nik'], vals['date']))
+                _logger.info(err_msg)
+                return self
+
             # Create fingerprint attendance with action reason
             action_reason_ids = self.env['hr.action.reason'].search([('active', '=', True),
                                                                      ('action_type', '=', 'action')])
