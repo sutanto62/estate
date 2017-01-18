@@ -29,7 +29,7 @@ class ManagementGoodRequest(models.Model):
     warehouse_id = fields.Many2one('stock.location','Source Warehouse',domain=[('usage','=','internal'),
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
     goodrequestline_ids = fields.One2many('management.good.request.line','owner_id','Good Request Line')
-    # goodreturnline_ids = fields.One2many('')
+    goodreturnline_ids = fields.One2many('management.good.return.line','owner_id','Good Return Line')
     type = fields.Selection([
         ('request', 'Request Goods'),
         ('return', 'Return Goods')
@@ -64,8 +64,11 @@ class ManagementGoodRequest(models.Model):
         name = self.name
         self.write({'name':"Management Good Request %s " %(name)})
         self.write({'state': 'done'})
-        self.action_move()
-        self.action_generate_qty_done()
+        if self.type == 'request':
+            self.action_move()
+            self.action_generate_qty_done()
+        # elif self.type == 'return':
+
         return True
 
     def action_done(self, cr, uid, ids, context=None):
@@ -120,7 +123,7 @@ class ManagementGoodRequest(models.Model):
                         'qty_done':record.qty_done
                     }
                 good_request = self.env['procur.good.request'].search([('complete_name','like',self.origin)]).id
-                good_request_line = self.env['procur.good.requestline'].search([('owner_id','=',good_request),
+                good_request_line = self.env['procur.good.requestline'].search([('request_id','=',good_request),
                                                                                 ('product_id','=',record.product_id.id)]).write(good_request_data)
 
     @api.one
@@ -205,10 +208,24 @@ class ManagementGoodRequestLine(models.Model):
             self.uom_id = self.product_id.uom_id
 
 
-# class ManagementGoodReturnLine(models.Model):
-#
-#     _name = 'management.good.request.line'
-#     _description = 'Management Good Request Line '
+class ManagementGoodReturnLine(models.Model):
+
+    _name = 'management.good.return.line'
+    _description = 'Management Good Return Line'
+
+    request_id = fields.Many2one('procur.good.request','Number Request Good')
+    product_id = fields.Many2one('product.product','Product')
+    code_product = fields.Char('Product Code')
+    uom_id = fields.Many2one('product.uom','UOM')
+    qty = fields.Integer('Quantity Return')
+    code = fields.Char('Transaction Code')
+    block_id = fields.Many2one('estate.block.template', "Block", required=True,
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
+                                  ,('estate_location_type','=','planted')])
+    planted_year_id = fields.Many2one('estate.planted.year','Planted Year')
+    description = fields.Text('Description')
+    owner_id = fields.Integer()
+
 
 
 

@@ -806,13 +806,23 @@ class InheritPurchaseRequest(models.Model):
             if item.budget_available > 0:
                 self.type_budget = 'available'
 
+    @api.multi
+    @api.constrains('line_ids')
+    def _constraint_line_ids(self):
+        #constraint to line ids
+        for item in self.line_ids:
+
+            if item.price_per_product <=0:
+                raise exceptions.ValidationError('Call Your Procurment Admin to Fill last Cost')
+
+
 
 class InheritPurchaseRequestLine(models.Model):
 
     _inherit = 'purchase.request.line'
     _description = 'Inherit Purchase Request Line'
 
-    price_per_product = fields.Float('Prod Price')
+    price_per_product = fields.Float('Prod Price',compute='_compute_price_per_product')
     total_price = fields.Float('Total Price',compute='_compute_total_price')
     budget_available = fields.Float('Budget Available')
     control_unit =  fields.Float('Budget Control Unit')
@@ -834,20 +844,13 @@ class InheritPurchaseRequestLine(models.Model):
                 price.total_price = price.product_qty * price.price_per_product
 
     @api.multi
-    @api.onchange('product_id')
-    def _onchange_price_per_product(self):
-        arrLisproduct = []
-        arrPrice =[]
-        if self.product_id:
-            product = self.env['product.product'].search([('id','=',self.product_id.id)])
-            for product in product:
-                arrLisproduct.append(product.product_tmpl_id.id)
-            product_temp = self.env['product.price.history'].search([('product_id','in',arrLisproduct)])
-            for producttemp in product_temp:
-                arrPrice.append(producttemp.cost)
-            for price in arrPrice:
-                price = float(price)
-                self.price_per_product = price
+    @api.depends('product_id')
+    def _compute_price_per_product(self):
+        for item in self:
+            if item.product_id:
+                product_temp = item.env['product.price.history'].search([('product_id','=',item.product_id.id)])
+                price = max(producttemp.cost for producttemp in product_temp)
+                item.price_per_product = price
 
     @api.multi
     @api.onchange('analytic_account_id')

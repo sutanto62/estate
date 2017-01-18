@@ -23,8 +23,8 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
         'security/purchase_request.xml',
+        'security/ir.model.access.csv',
         'wizard/reject.xml',
         # 'wizard/inherit_purchase_indonesia_requisition_partner.xml',
         'config_report/config_quotation_comparison_form.xml',
@@ -47,6 +47,7 @@
         'views/procur_return_view.xml',
         'views/mapping_department_to_product.xml',
         'workflow/workflow_procur_good_request.xml',
+        'workflow/workflow_procur_good_return.xml',
         'workflow/workflow_management_good_request.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
