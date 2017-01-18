@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="estate_upkeep_activity_dashboard_view" model="ir.ui.view">
+            <field name="name">estate.upkeep.dashboard</field>
+            <field name="model">estate.activity</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="oe_background_grey o_kanban_dashboard o_account_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="kanban_dashboard"/>
+                    <field name="kanban_dashboard_graph"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="#{kanban_color(0)}">
+                                <t t-value="JSON.parse(record.kanban_dashboard.raw_value)" t-set="dashboard"/>
+                                <t t-call="Estate Top"/>
+                                <div class="container o_kanban_card_content o_visible">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            <button class="btn btn-primary btn-sm">
+                                                <span><t t-esc="dashboard.count"/> Kegiatan</span>
+                                            </button>
+                                            <p><t t-esc="dashboard.location_ids"/></p>
+                                        </div>
+                                        <div class="col-xs-6 o_kanban_primary_right">
+                                            <div class="row" name="mtd">
+                                                <div class="col-xs-6">
+                                                    <span title="Output Kegiatan">Minggu Ini</span>
+                                                </div>
+                                                <div class="col-xs-6 text-right">
+                                                    <span><t t-esc="dashboard.weekly_output"/> <t t-esc="dashboard.output_uom"/></span>
+                                                </div>
+                                            </div>
+                                            <div class="row" name="ytd">
+                                                <div class="col-xs-6">
+                                                    <span title="Latest Statement">Bulan Ini</span>
+                                                </div>
+                                                <div class="col-xs-6 text-right">
+                                                    <span><t t-esc="dashboard.monthtodate_output"/> <t t-esc="dashboard.output_uom"/></span>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <strong>Detail</strong>
+                                            <div class="row" name="mtd">
+                                                <div class="col-xs-6">
+                                                    <span title="Output Kegiatan">Hari Kerja</span>
+                                                </div>
+                                                <div class="col-xs-6 text-right">
+                                                    <span><t t-esc="dashboard.weekly_number_of_day"/> HK</span>
+                                                </div>
+                                                <div class="col-xs-6">
+                                                    <span title="Output Kegiatan">Upah Tenaga Kerja</span>
+                                                </div>
+                                                <div class="col-xs-6 text-right">
+                                                    <span>
+                                                        <t t-esc="dashboard.weekly_amount"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-name="Estate Top">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#">More<i class="fa fa-caret-down"/></a>
+                                </div>
+                            </div>
+                        </t>
+
+                        <t t-name="More">
+                            <div class="row">
+                                <div class="col-xs-4 o_kanban_card_manage_section o_kanban_manage_view">
+                                    <div class="o_kanban_card_manage_title">
+                                        <span>View</span>
+                                    </div>
+                                    <div><a href="">Tes</a></div>
+                                </div>
+                                <div class="col-xs-4 o_kanban_card_manage_section o_kanban_manage_view">
+                                    <div class="o_kanban_card_manage_title">
+                                        <span>Report</span>
+                                    </div>
+                                    <div><a href="">Tes</a></div>
+                                </div>
+                                <div class="col-xs-4 o_kanban_card_manage_section o_kanban_manage_view">
+                                    <div class="o_kanban_card_manage_title">
+                                        <span>Settings</span>
+                                    </div>
+                                    <div><a href="">Tes</a></div>
+                                </div>
+
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="estate_upkeep_activity_dashboard_action" model="ir.actions.act_window" >
+            <field name="name">Estate Upkeep Dashboard</field>
+            <field name="res_model">estate.activity</field>
+            <field name="view_mode">kanban,form</field>
+            <!--
+            Filter:
+            1. Display estate activity which is child of estate COA.
+            -->
+            <field name="domain">[('general_account_id', 'in', (19,22))]</field>
+        </record>
+
+        <menuitem id="menu_estate_dashboard" name="Dashboard"
+                  parent="estate.main_estate_menu"
+                  action="estate_upkeep_activity_dashboard_action"
+                  sequence="1"/>
+    </data>
+</openerp>

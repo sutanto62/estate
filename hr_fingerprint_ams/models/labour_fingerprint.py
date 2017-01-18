@@ -10,7 +10,7 @@ class LabourFingerprint(models.Model):
     - Do not try to join with estate upkeep labour to get division.
     """
     _name = 'hr_fingerprint_ams.fingerprint'
-    _description = 'Compare number of day with fingerprint.'
+    _description = 'Labour Fingerprint'
     _auto = False
 
     name = fields.Char('Row Name', help='Employee ID and Upkeep Date')
