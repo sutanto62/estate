@@ -139,7 +139,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             ro_manager = self.env['res.users'].search([('id','in',arrRO)]).id
         except:
-            raise exceptions.ValidationError('User get Role President Director Not Found in User Access')
+            raise exceptions.ValidationError('User Role President Director Not Found in User Access')
 
         return ro_manager
 
@@ -156,7 +156,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             president = self.env['res.users'].search([('id','=',arrPresidentDirector[0])]).id
         except:
-            raise exceptions.ValidationError('User get Role President Director Not Found in User Access')
+            raise exceptions.ValidationError('User Role President Director Not Found in User Access')
         return president
 
     @api.multi
@@ -171,7 +171,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             director = self.env['res.users'].search([('id','=',arrDirector[0])]).id
         except:
-            raise exceptions.ValidationError('User get Role Director Purchase Not Found in User Access')
+            raise exceptions.ValidationError('User Role Director Purchase Not Found in User Access')
         return director
 
     @api.multi
@@ -187,7 +187,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             division = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
         except:
-            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
+            raise exceptions.ValidationError('User  Role Division Head Not Found in User Access')
 
         return division
 
@@ -205,7 +205,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             technical_ict = self.env['res.users'].search([('id','=',arrTechnic3[0])]).id
         except:
-            raise exceptions.ValidationError('User Role Technic ICT Not Found in User Access')
+            raise exceptions.ValidationError('User Technic ICT Not Found in User Access')
 
         return technical_ict
 
@@ -224,7 +224,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             technical_agronomy = self.env['res.users'].search([('id','=',arrTechnic4[0])]).id
         except:
-            raise exceptions.ValidationError('User get Role Technic Agronomy Not Found in User Access')
+            raise exceptions.ValidationError('User Role Technic Agronomy Not Found in User Access')
 
         return technical_agronomy
 
@@ -240,7 +240,7 @@ class InheritPurchaseRequest(models.Model):
        try:
             budget_manager = self.env['res.users'].search([('id','=',arrBudget[0])]).id
        except:
-           raise exceptions.ValidationError('User Get Role Budget Manager Not Found in User Access')
+           raise exceptions.ValidationError('User Role Budget Manager Not Found in User Access')
        return budget_manager
 
     @api.multi
@@ -258,7 +258,7 @@ class InheritPurchaseRequest(models.Model):
          try:
             technical_agronomy = self.env['res.users'].search([('id','=',arrTechnic5[0])]).id
          except:
-             raise exceptions.ValidationError('User Get Role Technic IE Not Found in User Access')
+             raise exceptions.ValidationError('User Role Technic IE Not Found in User Access')
 
          return technical_agronomy
 
@@ -279,7 +279,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             budget_agronomy = self.env['res.users'].search([('id','in',arrBudget),('id','in',arrDept)]).id
         except:
-            raise exceptions.ValidationError('User Get Role Budget Agronomy Not Found in User Access')
+            raise exceptions.ValidationError('User Role  Agronomy Not Found in User Access')
 
         return budget_agronomy
 
@@ -333,10 +333,12 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def _get_price_low(self):
         #get Minimal price from purchase params for Purchase Request
+        try:
+            price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
 
-        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
-
-        price = min(price.value_params for price in price_standard)
+            price = min(price.value_params for price in price_standard)
+        except:
+            raise exceptions.ValidationError('Call Your Procurement Admin To set up the Price')
 
         return float(price)
     
@@ -352,7 +354,10 @@ class InheritPurchaseRequest(models.Model):
     def _get_price_mid(self):
         #get middle price from purchase params for Purchase Request
         arrMid = []
-        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        try:
+            price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        except:
+            raise exceptions.ValidationError('Call Your Procurement Admin To set up the Price')
         for price in price_standard:
             arrMid.append(price.value_params)
         price = arrMid[1]
@@ -361,8 +366,11 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def _get_price_high(self):
         #get Maximal price from purchase params for Purchase Request
-        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
-        price = max(price.value_params for price in price_standard)
+        try:
+            price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+            price = max(price.value_params for price in price_standard)
+        except:
+            raise exceptions.ValidationError('Call Your Procurement Admin To set up the Price')
         return float(price)
 
     #--------------------------End Of Method Search Price----------------
