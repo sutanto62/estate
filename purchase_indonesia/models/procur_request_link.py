@@ -38,8 +38,14 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def _get_user_manager(self):
         #Find Employee user Manager
-        employeemanager = self.env['hr.employee'].search([('user_id','=',self._get_user().id)]).parent_id.id
-        assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
+        try:
+            employeemanager = self.env['hr.employee'].search([('user_id','=',self._get_user().id)]).parent_id.id
+            assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
+        except:
+            raise exceptions.ValidationError('Please Contact your HR Admin to fill your manager')
+
+        if not assigned_manager:
+            raise exceptions.ValidationError('Please Contact your HR Admin to fill your manager')
 
         return assigned_manager
 
@@ -49,7 +55,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             employee = self._get_employee().office_level_id.name
         except:
-            raise exceptions.ValidationError('Office level Is Null')
+            raise exceptions.ValidationError('Office level Name Is Null')
 
         return employee
 
@@ -59,7 +65,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             employee = self._get_employee().office_level_id.code
         except:
-            raise exceptions.ValidationError('Office level Is Null')
+            raise exceptions.ValidationError('Office level Code Is Null')
 
         return employee
 
@@ -526,6 +532,8 @@ class InheritPurchaseRequest(models.Model):
             state_data = {'state':'approval3','assigned_to':self._get_technic_ie}
         elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low() or self._get_compare_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
+        else:
+            raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
 
         self.write(state_data)
 
@@ -542,6 +550,9 @@ class InheritPurchaseRequest(models.Model):
             self.write({'state':'confirm'})
             state_data = {'state':'approval1','assigned_to':self._get_user_manager()}
 
+        else:
+            raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
+
         self.write(state_data)
 
     @api.multi
@@ -557,6 +568,8 @@ class InheritPurchaseRequest(models.Model):
             state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+        else:
+            raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
         self.write(state_data)
 
@@ -569,6 +582,8 @@ class InheritPurchaseRequest(models.Model):
             state_data = {'state':'approval2','assigned_to':self._get_employee().parent_id.id}
        elif self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id or self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+       else:
+            raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
        self.write(state_data)
 
@@ -815,6 +830,19 @@ class InheritPurchaseRequest(models.Model):
             if item.price_per_product <=0:
                 raise exceptions.ValidationError('Call Your Procurment Admin to Fill last Cost')
 
+    @api.multi
+    @api.constrains('line_ids')
+    def _constrains_product__purchase_request_id(self):
+        self.ensure_one()
+        if self.line_ids:
+            temp={}
+            for part in self.line_ids:
+                part_value_name = part.product_id.name
+                if part_value_name in temp.values():
+                    error_msg = "Product \"%s\" is set more than once " % part_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[part.id] = part_value_name
+            return temp
 
 
 class InheritPurchaseRequestLine(models.Model):

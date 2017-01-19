@@ -54,7 +54,8 @@ class ProcurGoodReturns(models.Model):
     warehouse_id = fields.Many2one('stock.location','Warehouse',domain=[('usage','=','internal'),
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
     procurement_return_line_ids = fields.One2many('procur.good.returnline','return_id','Goods Return Line')
-    reject_request = fields.Text('Reject Request')
+    request_id = fields.Many2one('procur.good.request','Number Request Good',required=True)
+    reject_reason = fields.Text('Reject Return')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send Request'),
@@ -72,6 +73,28 @@ class ProcurGoodReturns(models.Model):
 
         if self._get_employee().company_id.id:
             self.company_id = self._get_employee().company_id.id
+
+    @api.multi
+    @api.onchange('request_id')
+    def _onchange_request_id(self):
+
+        if self.request_id.id:
+            self.division_id = self.request_id.division_id.id
+            self.requester_id = self.request_id.requester_id.id
+            self.picking_type_id = self.request_id.picking_type_id.id
+            self.warehouse_id = self.request_id.warehouse_id.id
+
+    @api.multi
+    @api.onchange('request_id')
+    def _onchange_last_request_id(self):
+        requestlist = self.env['procur.good.return'].search([])
+        arrRequestlist = []
+        for item in self:
+            for request in requestlist:
+                arrRequestlist.append(request.request_id.id)
+            return {
+                'domain': {'request_id': [('id','not in',arrRequestlist)]}
+            }
 
     #sequence
     def create(self, cr, uid,vals, context=None):
@@ -144,11 +167,12 @@ class ProcurGoodReturns(models.Model):
         for return_data in self:
             data_return = {
                 'picking_type_id':return_data.picking_type_id.id,
+                'request_id':return_data.request_id.id,
                 'warehouse_id' : return_data.warehouse_id.id,
                 'destination_id' : return_data.division_id.id,
                 'date_schedule' : return_data.date_return,
                 'requester_id' : return_data.requester_id.id,
-                'department_id' : return_data.department_id.id,
+                'department_id' : return_data.request_id.department_id.id,
                 'company_id' : return_data.company_id.id,
                 'type' : 'return',
                 'state' : 'draft',
@@ -160,7 +184,6 @@ class ProcurGoodReturns(models.Model):
         for returnline in self.env['procur.good.returnline'].search([('return_id','=',self.id)]):
             returnline_data = {
                 'product_id':returnline.product_id.id,
-                'request_id':returnline.request_id.id,
                 'code_product':returnline.code_product,
                 'uom_id' : returnline.uom_id.id,
                 'qty' : returnline.product_qty,
@@ -174,6 +197,20 @@ class ProcurGoodReturns(models.Model):
 
         return True
 
+    @api.multi
+    @api.constrains('procurement_return_line_ids')
+    def _constrains_product_return_id(self):
+        self.ensure_one()
+        if self.procurement_return_line_ids:
+            temp={}
+            for part in self.procurement_return_line_ids:
+                part_value_name = part.product_id.name
+                if part_value_name in temp.values():
+                    error_msg = "Product \"%s\" is set more than once " % part_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[part.id] = part_value_name
+            return temp
+
 
 class ProcurementGoodReturnsLine(models.Model):
 
@@ -184,7 +221,7 @@ class ProcurementGoodReturnsLine(models.Model):
     product_id = fields.Many2one('product.product','Product')
     code_product = fields.Char('Product Code')
     uom_id = fields.Many2one('product.uom','UOM')
-    request_id = fields.Many2one('procur.good.request','Number Request Good')
+
     product_qty = fields.Float('Product Quantity')
     code = fields.Char('Account Cost',compute='_change_code')
     block_id = fields.Many2one('estate.block.template', "Block", required=True,
@@ -202,10 +239,16 @@ class ProcurementGoodReturnsLine(models.Model):
 
     @api.multi
     @api.onchange('product_id')
+    def _onchange_product_code(self):
+        if self.product_id:
+            self.code_product = self.product_id.default_code
+
+    @api.multi
+    @api.onchange('product_id')
     def _onchange_product_id(self):
         arrProduct = []
         if self:
-            bpb_line = self.env['procur.good.requestline'].search([])
+            bpb_line = self.env['procur.good.requestline'].search([('request_id','=',self.return_id.request_id.id)])
             for record in bpb_line:
                 arrProduct.append(record.product_id.id)
             return {
@@ -214,34 +257,19 @@ class ProcurementGoodReturnsLine(models.Model):
                 }
             }
 
-
     @api.multi
-    @api.onchange('product_id')
-    def _onchange_request_id(self):
-        arrProduct=[]
-        for item in self:
-            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id)])
-            for record in bpb_line:
-                arrProduct.append(record.request_id.id)
-            return {
-                'domain':{
-                    'request_id':[('id','in',arrProduct)]
-                }
-            }
-
-    @api.multi
-    @api.depends('product_id','request_id')
+    @api.depends('product_id')
     def _change_code(self):
         for item in self:
-            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id),('request_id','=',item.request_id.id)])
+            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id),('request_id','=',self.return_id.request_id.id)])
             for record in bpb_line:
                 item.code = record.code
 
     @api.multi
-    @api.depends('product_id','request_id')
+    @api.depends('product_id')
     def _change_block_tt(self):
         for item in self:
-            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id),('request_id','=',item.request_id.id)])
+            bpb_line = item.env['procur.good.requestline'].search([('product_id','=',item.product_id.id),('request_id','=',self.return_id.request_id.id)])
             for record in bpb_line:
                 item.block_id = record.block_id
                 item.planted_year_id= record.planted_year_id

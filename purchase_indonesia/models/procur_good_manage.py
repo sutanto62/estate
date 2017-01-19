@@ -25,6 +25,7 @@ class ManagementGoodRequest(models.Model):
     date_schedule = fields.Date('Date Schedule',required=True)
     requester_id = fields.Many2one('hr.employee','Requester')
     department_id = fields.Many2one('hr.department','Department')
+    request_id = fields.Many2one('procur.good.request','Number Request Good')
     company_id = fields.Many2one('res.company','Company')
     warehouse_id = fields.Many2one('stock.location','Source Warehouse',domain=[('usage','=','internal'),
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
@@ -103,7 +104,7 @@ class ManagementGoodRequest(models.Model):
                     'name': record.product_id.name,
                     'date_expected': self.date_schedule,
                     'location_id': self.warehouse_id.id,
-                    'location_dest_id': record.block_id.inherit_location_id.id,
+                    'location_dest_id': self.destination_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -213,7 +214,6 @@ class ManagementGoodReturnLine(models.Model):
     _name = 'management.good.return.line'
     _description = 'Management Good Return Line'
 
-    request_id = fields.Many2one('procur.good.request','Number Request Good')
     product_id = fields.Many2one('product.product','Product')
     code_product = fields.Char('Product Code')
     uom_id = fields.Many2one('product.uom','UOM')

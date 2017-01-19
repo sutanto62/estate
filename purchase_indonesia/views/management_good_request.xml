@@ -71,10 +71,10 @@
                                 <notebook attrs="{'invisible' : [('type', '!=', 'return')]}">
                                      <page string="Detail Return" >
                                         <tree>
-                                            <!--<field name="goodrequestline_ids" track_visibility="onchange"-->
-                                                   <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"-->
-                                                <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_management_good_request_line',-->
-                                                       <!--}"/>-->
+                                            <field name="goodreturnline_ids" track_visibility="onchange"
+                                                   attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
+                                                context="{'tree_view_ref' : 'purchase_indonesia.view_tree_management_good_return_line',
+                                                       }"/>
                                         </tree>
                                     </page>
                                 </notebook>
@@ -96,6 +96,24 @@
                     <field name="qty" string="QTY Request"/>
                     <field name="qty_stock" string="QTY Stock"/>
                     <field name="qty_done" string="QTY Actual"/>
+                    <field name="code" string="COA"/>
+                    <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
+                    <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>
+                    <field name="description" string="Description" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_tree_management_good_return_line">
+            <field name="name">Management Good Return Line</field>
+            <field name="model">management.good.return.line</field>
+            <field name="arch" type="xml">
+                <tree string="Management Good Return Tree" editable='bottom' delete="true">
+                    <field name="owner_id"  invisible="1" readonly="1"/>
+                    <field name="product_id" string="Product" options="{'no_create_edit': True}"/>
+                    <field name="code_product" string="Product Code"/>
+                    <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
+                    <field name="qty" string="QTY Request"/>
                     <field name="code" string="COA"/>
                     <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
                     <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>

@@ -190,6 +190,19 @@ class ProcurGoodRequest(models.Model):
                 }
             }
 
+    @api.multi
+    @api.constrains('procur_request_line_ids')
+    def _constrains_product_request_id(self):
+        self.ensure_one()
+        if self.procur_request_line_ids:
+            temp={}
+            for part in self.procur_request_line_ids:
+                part_value_name = part.product_id.name
+                if part_value_name in temp.values():
+                    error_msg = "Product \"%s\" is set more than once " % part_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[part.id] = part_value_name
+            return temp
 
 class ProcurGoodRequestLine(models.Model):
 
