@@ -809,6 +809,7 @@
             <field name="name">Upkeep Labour</field>
             <field name="res_model">estate.upkeep.labour</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="upkeep_labour_view_tree"/>
             <field name="context">{'search_default_filter_month': 1, 'search_default_by_employee': 1}</field>
         </record>
 
