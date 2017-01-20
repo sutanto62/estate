@@ -16,7 +16,7 @@
 "access_estate_stock_location","stock location","model_stock_location","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_block_template_agronomi","estate.block.template agronomi","model_estate_block_template","estate.group_agronomi","TRUE","TRUE","TRUE","FALSE"
 "access_estate_hr_attendance","estate.hr.attendance","model_estate_hr_attendance","estate.group_user","TRUE","FALSE","FALSE","FALSE"
-"access_estate_hr_attendance_agronomi","estate.hr.attendance agronomi","model_estate_hr_attendance","estate.group_agronomi","TRUE","TRUE","TRUE","FALSE"
+"access_estate_hr_attendance_agronomi","estate.hr.attendance agronomi","model_estate_hr_attendance","estate.group_agronomi","TRUE","FALSE","FALSE","FALSE"
 "access_estate_hr_member","estate.hr.member","model_estate_hr_member","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_hr_member_agronomi","estate.hr.member agronomi","model_estate_hr_member","estate.group_agronomi","TRUE","TRUE","TRUE","FALSE"
 "access_estate_hr_team","estate.hr.team","model_estate_hr_team","estate.group_user","TRUE","FALSE","FALSE","FALSE"

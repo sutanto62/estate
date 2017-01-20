@@ -1,7 +1,5 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_attendance_user,hr.attendance.user,model_hr_attendance,base.group_hr_user,1,1,1,1
-access_hr_attendance_system_user,hr.attendance.system.user,model_hr_attendance,base.group_user,1,0,0,0
-access_hr_ams_attendance_user,hr.ams.attendance.user,model_hr_fingerprint_ams_attendance,base.group_hr_user,1,1,1,1
-access_hr_ams_attendance_system_user,hr.ams.attendance.system.user,model_hr_fingerprint_ams_attendance,base.group_user,1,0,0,0
-access_hr_fingerprint_ams_user,hr.fingerprint_ams.user,model_hr_fingerprint_ams_fingerprint,base.group_hr_user,1,1,1,1
-access_hr_fingerprint_ams_estate,hr.fingerprint_ams.estate,model_hr_fingerprint_ams_fingerprint,estate.group_user,1,0,0,0
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"hr_attendance.access_hr_attendance_user","hr.attendance.user","hr_attendance.model_hr_attendance","base.group_hr_user",1,0,0,0
+"hr_attendance.access_hr_attendance_system_user","hr.attendance.system.user","hr_attendance.model_hr_attendance","base.group_user",1,0,0,0
+"access_hr_fingerprint_ams_user","hr.fingerprint_ams.user","model_hr_fingerprint_ams_fingerprint","base.group_hr_user",1,1,1,1
+"access_hr_fingerprint_ams_estate","hr.fingerprint_ams.estate","model_hr_fingerprint_ams_fingerprint","estate.group_user",1,0,0,0
