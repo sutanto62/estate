@@ -441,14 +441,14 @@ class InheritPurchaseRequest(models.Model):
         arrPresidentDirector = []
 
         #search User from res.user
-        assign_division= self.env['res.groups'].search([('id','=',72)]).users
-        technic3 = self.env['res.groups'].search([('id','=',76)]).users
-        technic4 = self.env['res.groups'].search([('id','=',77)]).users
-        technic5 = self.env['res.groups'].search([('id','=',78)]).users
-        budget = self.env['res.groups'].search([('id','=',73)]).users
-        director= self.env['res.groups'].search([('id','=',91)]).users
-        president_director = self.env['res.groups'].search([('id','=',92)]).users
-        ro_head = self.env['res.groups'].search([('id','=',492)]).users
+        assign_division= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
+        technic3 = self.env['res.groups'].search([('name','like',self.purchase_request_technical3())]).users
+        technic4 = self.env['res.groups'].search([('name','like',self.purchase_request_technical4())]).users
+        technic5 = self.env['res.groups'].search([('name','like',self.purchase_request_technical5())]).users
+        budget = self.env['res.groups'].search([('name','like',self.purchase_request_budget())]).users
+        director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
+        president_director = self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
+        ro_head = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
 
         #Search ID user from user.groups
 
