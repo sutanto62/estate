@@ -56,23 +56,23 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def purchase_request_technical1(self):
-        return 'Purchase Request Technical 1'
+        return 'Purchase Request Technical Dept Head'
 
     @api.multi
     def purchase_request_technical2(self):
-        return 'Purchase Request Technical 2'
+        return 'Purchase Request Technical Div Head'
 
     @api.multi
     def purchase_request_technical3(self):
-        return 'Purchase Request Technical 3'
+        return 'Purchase Request Technical ICT'
 
     @api.multi
     def purchase_request_technical4(self):
-        return 'Purchase Request Technical 4'
+        return 'Purchase Request Technical Agronomy'
 
     @api.multi
     def purchase_request_technical5(self):
-        return 'Purchase Request Technical 5'
+        return 'Purchase Request Technical IE'
 
     @api.multi
     def purchase_request_director(self):

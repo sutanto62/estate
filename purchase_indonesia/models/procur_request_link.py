@@ -33,23 +33,23 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def purchase_request_technical1(self):
-        return 'Purchase Request Technical 1'
+        return 'Purchase Request Technical Dept Head'
 
     @api.multi
     def purchase_request_technical2(self):
-        return 'Purchase Request Technical 2'
+        return 'Purchase Request Technical Div Head'
 
     @api.multi
     def purchase_request_technical3(self):
-        return 'Purchase Request Technical 3'
+        return 'Purchase Request Technical ICT'
 
     @api.multi
     def purchase_request_technical4(self):
-        return 'Purchase Request Technical 4'
+        return 'Purchase Request Technical Agronomy'
 
     @api.multi
     def purchase_request_technical5(self):
-        return 'Purchase Request Technical 5'
+        return 'Purchase Request Technical IE'
 
     @api.multi
     def purchase_request_director(self):
@@ -588,7 +588,7 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
 
         if self._get_compare_hr() and self.type_functional != 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_user_agronomy}
+            state_data = {'state':'approval3','assigned_to':self._get_user_agronomy()}
         elif self._get_compare_hr() and self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'approval3','assigned_to':self._get_technic_ie}
         elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low() or self._get_compare_non_hr():
@@ -597,6 +597,12 @@ class InheritPurchaseRequest(models.Model):
             raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
 
         self.write(state_data)
+
+    @api.model
+    def create(self, vals):
+        vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq')
+        request = super(InheritPurchaseRequest, self).create(vals)
+        return request
 
     @api.multi
     def check_wkf_requester(self):
