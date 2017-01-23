@@ -571,15 +571,21 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
         if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
+        elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR']and self._get_max_price() < self._get_price_low():
+            self.button_approved()
         else:
-           if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_max_price() >= self._get_price_low():
-                state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
-           elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
-                state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-           elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() >= self._get_price_low() :
-                state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-
-        self.write(state_data)
+            try:
+               if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_max_price() >= self._get_price_low():
+                    state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
+               elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
+                    state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
+               elif self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR']and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR'] and self._get_max_price() >= self._get_price_low() :
+                    state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+               elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR'] and self._get_max_price() >= self._get_price_low() :
+                    state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
+            except:
+                raise exceptions.ValidationError('Call Your Hr Admin to Fill Department Code')
+            self.write(state_data)
 
     @api.multi
     def action_technic(self):
