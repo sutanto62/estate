@@ -42,6 +42,62 @@ class QuotationComparisonForm(models.Model):
             return res
         return False
 
+    @api.multi
+    def purchase_request_dpt_head(self):
+        return 'Purchase Request Department Head'
+
+    @api.multi
+    def purchase_request_division_head(self):
+        return 'Purchase Request Division Head'
+
+    @api.multi
+    def purchase_request_budget(self):
+        return 'Purchase Request Budget'
+
+    @api.multi
+    def purchase_request_technical1(self):
+        return 'Purchase Request Technical 1'
+
+    @api.multi
+    def purchase_request_technical2(self):
+        return 'Purchase Request Technical 2'
+
+    @api.multi
+    def purchase_request_technical3(self):
+        return 'Purchase Request Technical 3'
+
+    @api.multi
+    def purchase_request_technical4(self):
+        return 'Purchase Request Technical 4'
+
+    @api.multi
+    def purchase_request_technical5(self):
+        return 'Purchase Request Technical 5'
+
+    @api.multi
+    def purchase_request_director(self):
+        return 'Purchase Request Director'
+
+    @api.multi
+    def purchase_request_president_director(self):
+        return 'Purchase Request President Director'
+
+    @api.multi
+    def purchase_ro_head(self):
+        return 'Purchase Request RO Head'
+
+    @api.multi
+    def purchase_procurement_staff(self):
+        return 'Purchase Request Procurment Staff'
+
+    @api.multi
+    def purchase_request_manager(self):
+        return 'Purchase Request Manager'
+
+    @api.multi
+    def purchase_request_finance(self):
+        return 'Purchase Request Finance Procurement'
+
     #Method Get user
     @api.multi
     def _get_user(self):
@@ -63,7 +119,7 @@ class QuotationComparisonForm(models.Model):
         #get List of Ro Manager from user.groups
         arrRO = []
 
-        list_ro_manager = self.env['res.groups'].search([('id','=',492)]).users
+        list_ro_manager = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
 
         for ro_manager_id in list_ro_manager:
                 arrRO.append(ro_manager_id.id)
@@ -80,7 +136,7 @@ class QuotationComparisonForm(models.Model):
         arrPresidentDirector = []
 
         #search User President director from user list
-        list_president= self.env['res.groups'].search([('id','=',92)]).users
+        list_president= self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
 
         for president_id in list_president:
             arrPresidentDirector.append(president_id.id)
@@ -96,7 +152,7 @@ class QuotationComparisonForm(models.Model):
         arrDirector = []
 
         #search User Director from user list
-        list_director= self.env['res.groups'].search([('id','=',91)]).users
+        list_director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
         for director_id in list_director:
             arrDirector.append(director_id.id)
         try:
@@ -111,7 +167,7 @@ class QuotationComparisonForm(models.Model):
         arrDivhead = []
 
         #search User Finance from user list
-        listdivision= self.env['res.groups'].search([('id','=',72)]).users
+        listdivision= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
 
         for divhead in listdivision:
             arrDivhead.append(divhead.id)
@@ -128,7 +184,7 @@ class QuotationComparisonForm(models.Model):
         arrFinancehead = []
 
         #search User Finance from user list
-        listprocurement= self.env['res.groups'].search([('id','=',496)]).users
+        listprocurement= self.env['res.groups'].search([('name','like',self.purchase_request_finance())]).users
 
         for financeproc in listprocurement:
             arrFinancehead.append(financeproc.id)

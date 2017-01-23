@@ -19,6 +19,62 @@ class InheritPurchaseRequisition(models.Model):
 
 class InheritPurchaseRequest(models.Model):
 
+    @api.multi
+    def purchase_request_dpt_head(self):
+        return 'Purchase Request Department Head'
+
+    @api.multi
+    def purchase_request_division_head(self):
+        return 'Purchase Request Division Head'
+
+    @api.multi
+    def purchase_request_budget(self):
+        return 'Purchase Request Budget'
+
+    @api.multi
+    def purchase_request_technical1(self):
+        return 'Purchase Request Technical 1'
+
+    @api.multi
+    def purchase_request_technical2(self):
+        return 'Purchase Request Technical 2'
+
+    @api.multi
+    def purchase_request_technical3(self):
+        return 'Purchase Request Technical 3'
+
+    @api.multi
+    def purchase_request_technical4(self):
+        return 'Purchase Request Technical 4'
+
+    @api.multi
+    def purchase_request_technical5(self):
+        return 'Purchase Request Technical 5'
+
+    @api.multi
+    def purchase_request_director(self):
+        return 'Purchase Request Director'
+
+    @api.multi
+    def purchase_request_president_director(self):
+        return 'Purchase Request President Director'
+
+    @api.multi
+    def purchase_ro_head(self):
+        return 'Purchase Request RO Head'
+
+    @api.multi
+    def purchase_procurement_staff(self):
+        return 'Purchase Request Procurment Staff'
+
+    @api.multi
+    def purchase_request_manager(self):
+        return 'Purchase Request Manager'
+
+    @api.multi
+    def purchase_request_finance(self):
+        return 'Purchase Request Finance Procurement'
+
     #Method Get user
     @api.multi
     def _get_user(self):
@@ -113,9 +169,6 @@ class InheritPurchaseRequest(models.Model):
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
 
 
-
-
-
     @api.multi
     def _get_requestedby_manager(self):
         #search Employee
@@ -132,7 +185,7 @@ class InheritPurchaseRequest(models.Model):
         #get List of Ro Manager from user.groups
         arrRO = []
 
-        list_ro_manager = self.env['res.groups'].search([('id','=',492)]).users
+        list_ro_manager = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
 
         for ro_manager_id in list_ro_manager:
                 arrRO.append(ro_manager_id.id)
@@ -149,7 +202,7 @@ class InheritPurchaseRequest(models.Model):
         arrPresidentDirector = []
 
         #search User President director from user list
-        list_president= self.env['res.groups'].search([('id','=',92)]).users
+        list_president= self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
 
         for president_id in list_president:
             arrPresidentDirector.append(president_id.id)
@@ -165,7 +218,7 @@ class InheritPurchaseRequest(models.Model):
         arrDirector = []
 
         #search User Director from user list
-        list_director= self.env['res.groups'].search([('id','=',91)]).users
+        list_director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
         for director_id in list_director:
             arrDirector.append(director_id.id)
         try:
@@ -180,7 +233,7 @@ class InheritPurchaseRequest(models.Model):
         arrDivhead = []
 
         #search User Finance from user list
-        listdivision= self.env['res.groups'].search([('id','=',72)]).users
+        listdivision= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
 
         for divhead in listdivision:
             arrDivhead.append(divhead.id)
@@ -198,7 +251,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrTechnic3 = []
 
-        list_technicalict = self.env['res.groups'].search([('id','=',76)]).users
+        list_technicalict = self.env['res.groups'].search([('name','like',self.purchase_request_technical3())]).users
 
         for technic3 in list_technicalict:
                arrTechnic3.append(technic3.id)
@@ -216,7 +269,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrTechnic4 = []
 
-        technic4 = self.env['res.groups'].search([('id','=',77)]).users
+        technic4 = self.env['res.groups'].search([('name','like',self.purchase_request_technical4())]).users
 
         for technic4 in technic4:
                arrTechnic4.append(technic4.id)
@@ -233,7 +286,7 @@ class InheritPurchaseRequest(models.Model):
         #get List of Budget from user.groups
        arrBudget = []
 
-       list_budget_manager = self.env['res.groups'].search([('id','=',73)]).users
+       list_budget_manager = self.env['res.groups'].search([('name','like',self.purchase_request_budget())]).users
 
        for budgetgroupsrecord in list_budget_manager:
             arrBudget.append(budgetgroupsrecord.id)
@@ -250,7 +303,7 @@ class InheritPurchaseRequest(models.Model):
 
          arrTechnic5 = []
 
-         list_technic_ie = self.env['res.groups'].search([('id','=',78)]).users
+         list_technic_ie = self.env['res.groups'].search([('name','like',self.purchase_request_technical5())]).users
 
          for technic5 in list_technic_ie:
                arrTechnic5.append(technic5.id)
@@ -269,8 +322,8 @@ class InheritPurchaseRequest(models.Model):
         arrDept=[]
 
         #search User in 2 groups
-        budget_manager = self.env['res.groups'].search([('id','=',73)]).users
-        dept_manager =  self.env['res.groups'].search([('id','=',71)]).users
+        budget_manager = self.env['res.groups'].search([('name','like',self.purchase_request_budget())]).users
+        dept_manager =  self.env['res.groups'].search([('name','like',self.purchase_request_dpt_head())]).users
 
         for budgetgroupsrecord in budget_manager:
             arrBudget.append(budgetgroupsrecord.id)
@@ -288,7 +341,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrDepartment = []
 
-        assign_department= self.env['res.groups'].search([('id','=',71)]).users
+        assign_department= self.env['res.groups'].search([('name','like',self.purchase_request_dpt_head())]).users
 
 
         #Search ID user from user.groups
