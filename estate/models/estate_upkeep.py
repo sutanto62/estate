@@ -904,6 +904,10 @@ class UpkeepLabour(models.Model):
         if self.quantity_piece_rate and self.quantity > self.activity_id.qty_base:
             self.wage_piece_rate = self.quantity_piece_rate * unit_price
 
+        # Piece rate as contract activity
+        if self.quantity_piece_rate and self.activity_contract:
+            self.wage_piece_rate = self.quantity_piece_rate * unit_price
+
     @api.one
     @api.depends('wage_number_of_day', 'wage_overtime', 'wage_piece_rate')
     def _compute_amount(self):
@@ -1117,6 +1121,8 @@ class UpkeepLabour(models.Model):
                 error_msg = _("%s not allowed to have piece rate due to under achievement of %s" % (employee, activity))
                 raise ValidationError(error_msg)
             elif self.quantity_piece_rate > result:
+                if self.activity_contract:
+                    return
                 error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, result))
                 raise ValidationError(error_msg)
 

@@ -16,6 +16,7 @@ class UpkeepLabour(models.Model):
     @api.one
     @api.depends('employee_id', 'upkeep_date')
     def _compute_attendance(self):
+        print 'hr_fingerprint_ams _compute_attendance start ...'
         att_obj = self.env['hr.attendance']
         if self.employee_id and self.upkeep_date:
             attendance_in_id = att_obj.get_attendance(self.employee_id, self.upkeep_date, 'sign_in')
@@ -148,6 +149,6 @@ class UpkeepLabour(models.Model):
                 and_specification(AttendanceCodeSpecification()).\
                 or_specification(ActionSpecification())
 
-            if att_rule.is_satisfied_by(res):
+            if att_rule.is_satisfied_by(res) or record.activity_contract:
                 amount += record['wage_piece_rate']
         return amount

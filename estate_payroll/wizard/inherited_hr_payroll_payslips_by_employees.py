@@ -19,7 +19,9 @@ class PayslipEmployee(models.Model):
         payslip_run = self.env['hr.payslip.run'].search([('id', '=', self._context['active_id'])])
 
         # Get upkeep labour
-        domain = [('state', '=', 'approved'), ('upkeep_date', '>=', payslip_run.date_start), ('upkeep_date', '<=', payslip_run.date_end)]
+        domain = [('state', '=', 'approved'),
+                  ('upkeep_date', '>=', payslip_run.date_start),
+                  ('upkeep_date', '<=', payslip_run.date_end)]
         if payslip_run.estate_id:
             domain.append(('estate_id', '=', payslip_run.estate_id.id))
         elif payslip_run.estate_id and payslip_run.division_id:
@@ -39,6 +41,7 @@ class PayslipEmployee(models.Model):
             upkeeps.append(record.upkeep_id.id)
         labour = set(labour)
 
+
         # Labour already at payslip
         for payslip in payslip_run.slip_ids:
             payslip_labour.append(payslip.employee_id.id)
@@ -50,6 +53,7 @@ class PayslipEmployee(models.Model):
 
         for rec in labour:
             employee_list.append(rec)
+
         self.employee_ids = employee_list
 
         for rec_upkeep in upkeeps:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data noupdate="0">
+    <data noupdate="1">
         <!-- Employee Contract -->
         <record id="hr_contract_abasakumali_1" model="hr.contract">
             <field name="name">Abas Akumali</field>
