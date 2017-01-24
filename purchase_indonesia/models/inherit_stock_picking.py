@@ -141,7 +141,6 @@ class InheritStockPicking(models.Model):
 
         else:
             self.do_transfer()
-            self.tracking_approval()
 
         super(InheritStockPicking,self).do_new_transfer()
 
@@ -151,18 +150,7 @@ class InheritStockPicking(models.Model):
     def print_grn(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
-    @api.multi
-    def tracking_approval(self):
-        user= self.env['res.users'].browse(self.env.uid)
-        employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
-        current_date=str(datetime.now().today())
-        tracking_data = {
-            'owner_id': self.id,
-            'state' : self.state,
-            'name_user' : employee,
-            'datetime'  :current_date
-        }
-        self.env['tracking.approval'].create(tracking_data)
+
 
 class InheritStockPackOperation(models.Model):
 
@@ -179,7 +167,7 @@ class InheritStockPackOperation(models.Model):
     def split_quantities(self):
         #constraint split quantities in stock.pack.operation
         for pack in self:
-            if pack.qty_done < pack.product_qty:
+            if pack.qty_done < 0:
                 error = 'Quantity done must be higher than 0 '
                 raise exceptions.ValidationError(error)
         super(InheritStockPackOperation,self).split_quantities()
