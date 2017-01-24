@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+    <data noupdate="0">
         <!-- Inherit view -->
         <record id="inherited_account_analytic_account_timesheet_form" model="ir.ui.view">
             <field name="name">account.analytic.account.invoice.form.inherit</field>
@@ -688,8 +688,9 @@
                   action="action_list_upkeep"
                   groups="estate.group_user"/>
 
-        <menuitem id="estate_operation_control_menu" name="Operation Control" parent="main_estate_menu" sequence="20"
-                groups="estate.group_assistant"/>
+        <menuitem id="estate_operation_control_menu" name="Operation Control"
+                  groups="estate.group_user"
+                  parent="main_estate_menu" sequence="20"/>
 
         <!--<record id="action_list_estate_division_lha_report" model="ir.actions.act_window" >-->
             <!--<field name="name">Division LHA Report</field>-->
@@ -809,6 +810,7 @@
             <field name="name">Upkeep Labour</field>
             <field name="res_model">estate.upkeep.labour</field>
             <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="upkeep_labour_view_tree"/>
             <field name="context">{'search_default_filter_month': 1, 'search_default_by_employee': 1}</field>
         </record>
 

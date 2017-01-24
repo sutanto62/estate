@@ -31,7 +31,7 @@ class Payslip(models.Model):
     @api.multi
     def _get_upkeep_labour(self):
         """
-        Get upkeep approved/payslip labour with fingerprint
+        Get upkeep approved/payslip labour with fingerprint or contract labour
         Returns: list of ids
         """
         labour_ids = []
@@ -42,6 +42,8 @@ class Payslip(models.Model):
         for item in upkeep_labour_ids:
             if item['is_fingerprint'] == 'Yes':
                 labour_ids.append(item['id'])
+            else:
+                print 'get upkeep labour'
 
         return labour_ids
 

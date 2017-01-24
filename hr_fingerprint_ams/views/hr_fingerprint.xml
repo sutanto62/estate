@@ -172,6 +172,7 @@
             <field name="name">Fingerprint Attendance</field>
             <field name="res_model">hr_fingerprint_ams.attendance</field>
             <field name="view_mode">pivot,tree,form</field>
+            <field name="groups_id" eval="[(4, ref('base.group_hr_user')),(4, ref('estate.group_user'))]"/>
             <field name="context">{'search_default_by_department': 1,
                 'search_default_by_employee': 1,
                 'search_default_filter_new': 1}</field>
@@ -180,7 +181,7 @@
         <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
                   parent="hr_attendance.menu_hr_attendance_root"
                   action="fingerprint_attendance_action"
-                  groups="estate.group_user"/>
+                  groups="estate.group_user,base.group_hr_user"/>
 
 
         <!-- Operation Control -->
@@ -189,6 +190,7 @@
             <field name="res_model">hr_fingerprint_ams.fingerprint</field>
             <field name="priority">1</field>
             <field name="view_mode">tree</field>
+            <field name="groups_id" eval="[(4, ref('base.group_hr_user')),(4, ref('estate.group_user'))]"/>
             <field name="view_id" ref="labour_fingerprint_view_tree"/>
             <field name="context">{'search_default_by_assistant': 1,
                 'search_default_by_employee': 1,
@@ -197,8 +199,7 @@
 
         <menuitem id="labour_fingerprint_report_menu" name="Labour Fingerprint Report"
                   parent="estate.estate_operation_control_menu"
-                  action="labour_fingerprint_report_action"
-                  groups="base.group_hr_user"/>
+                  action="labour_fingerprint_report_action"/>
 
         <!-- Confirm All action -->
         <record model="ir.actions.server" id="action_hr_fingerprint_confirm">

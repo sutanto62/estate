@@ -1065,7 +1065,7 @@ class UpkeepLabour(models.Model):
                 if activity_ids:
                     attendance_code_domain = []
                     if record.activity_id.contract:
-                        attendance_code_domain = [('contract', 'in', (True, False))]
+                        attendance_code_domain = []
                     else:
                         attendance_code_domain = [('contract', '=', False)]
                     return {

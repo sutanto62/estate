@@ -6,7 +6,7 @@
         <record id="accountant_upkeep_labour_view_tree" model="ir.ui.view" >
             <field name="name">Upkeep Labour Tree</field>
             <field name="model">estate.upkeep.labour</field>
-            <field name="priority" eval="1"/>
+            <field name="priority" eval="2"/>
             <field name="context" eval="{'search_default_employee_id': 1}"/>
             <field name="arch" type="xml">
                 <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100">
@@ -29,6 +29,7 @@
                     <field name="amount" string="Wage" sum="Wage"/>
                     <field name="state" invisible="True"/>
                     <field name="activity_contract" string="Ctr."/>
+                    <!--<field name="prod_quantity_day" string="Prod (%)" avg="Productivity"/>-->
                 </tree>
             </field>
         </record>
