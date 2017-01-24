@@ -7,6 +7,9 @@ class TestPayslip(TransactionCase):
 
     def setUp(self):
         super(TestPayslip, self).setUp()
+
+        self.Employee = self.env['hr.employee']
+
         self.payslip_run = self.env.ref('estate_payroll.estate_payroll_1')
 
     def test_01_compute_upkeep_labour(self):
@@ -47,3 +50,14 @@ class TestPayslip(TransactionCase):
         self.assertEqual(res['res_model'], 'estate.upkeep.labour', 'Estate Payroll: action_open_labour wrong res.models')
 
 
+    def test_02_get_upkeep_labour(self):
+        """ Check contract labour (not contract activity)"""
+        vals_labour = {
+            'name': 'Contract Labour',
+            'contract_type': '2',
+            'contract_period': '2',
+            'outsource': True,
+        }
+
+        contract_labour = self.Employee.create(vals_labour)
+        self.assertTrue(contract_labour)

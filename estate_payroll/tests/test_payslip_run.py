@@ -30,7 +30,7 @@ class TestPayslipRun(TransactionCase):
         self.team_id = self.env.ref('estate.team_syukur')
         self.estate_id = self.env.ref('stock.stock_main_estate')
         self.division_id = self.env.ref('stock.stock_division_1')
-        self.khl_1 = self.env.ref('hr_employee.khl_1')
+        self.khl_1 = self.env.ref('estate.khl_1')
 
 
         # Upkeep Data

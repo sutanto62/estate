@@ -66,10 +66,8 @@ class FingerAttendance(models.Model):
     def create(self, vals):
         """Create and update using same CSV format of fingerprint.
         Must meet attendance rule:
-        1. Employee.
-        2. Has sign-in.
-        3. Has sign-out.
-        4. Else has registered action reason.
+        1. It must be registered employee (name and employee identification number).
+        2. It has sign-in/out or has registered action reason.
         """
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
 
