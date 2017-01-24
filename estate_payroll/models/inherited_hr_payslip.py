@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, exceptions
 from openerp.tools.translate import _
+from openerp.exceptions import ValidationError
 
 class Payslip(models.Model):
     """
@@ -40,10 +41,9 @@ class Payslip(models.Model):
                                                                      ('upkeep_date', '<=', self.date_to),
                                                                      ('state', 'in', ['approved', 'payslip'])])
         for item in upkeep_labour_ids:
-            if item['is_fingerprint'] == 'Yes':
-                labour_ids.append(item['id'])
-            else:
-                print 'get upkeep labour'
+            # Fingerprint checked at get_inputs and get_worked_day_lines?
+            # if item['is_fingerprint'] == 'Yes':
+            labour_ids.append(item['id'])
 
         return labour_ids
 
@@ -97,10 +97,16 @@ class Payslip(models.Model):
         res = []
 
         # Check contract if any (before payslip date start)
-        for contract in self.env['hr.contract'].search([('id', 'in', contract_ids),
-                                                        ('date_start', '<=', date_from)],
-                                                       limit=1,
-                                                       order='date_start desc'):
+        labour_contract_ids = self.env['hr.contract'].search([('id', 'in', contract_ids),
+                                                              ('date_start', '<=', date_from)],
+                                                             limit=1,
+                                                             order='date_start desc')
+        
+        if not len(labour_contract_ids):
+            err_msg = _('Please check all employee contract date should be in period of payroll batch.')
+            raise ValidationError(err_msg)
+
+        for contract in labour_contract_ids:
             if contract.type_id.name == _("Estate Worker"):  #todo change to external id
                 upkeep_labour_ids = upkeep_labour_obj.search([('employee_id', '=', contract.employee_id.id),
                                                               ('upkeep_date', '>=', date_from),
@@ -128,7 +134,6 @@ class Payslip(models.Model):
                         'amount': piece_rate_amount
                     }
                     res += [piece_rate]
-
                 return res
             else:
                 return super(Payslip, self).get_inputs(contract_ids, date_from, date_to)

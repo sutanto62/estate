@@ -272,13 +272,13 @@
                                         <field name="planted_year_id" string="PY"/>
                                         <field name="attendance_code_id" string="Attn."
                                                 options="{'no_create': True}"/>
-                                        <field name="quantity" string="Qty."/>
+                                        <field name="quantity" string="Qty."
+                                               attrs="{'readonly':[('activity_contract', '=', True)]}"/>
                                         <field name="activity_uom_id" string="UoM" readonly="True"/>
                                         <field name="quantity_overtime" widget="float_time" string="OT"
                                             attrs="{'readonly':[('activity_wage_method','!=','attendance')]}"/>
                                         <field name="quantity_piece_rate" string="PR"
-                                            attrs="{'readonly':['|', ('activity_wage_method','!=','standard'),
-                                            ('activity_contract', '=', True)]}"/>
+                                                attrs="{'readonly':[('activity_wage_method','!=','standard')]}"/>
                                         <field name="wage_number_of_day" string="D Wage"/>
                                         <field name="wage_overtime" string="OT Wage"/>
                                         <field name="wage_piece_rate" string="PR Wage"/>
