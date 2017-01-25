@@ -1,5 +1,70 @@
 <openerp>
     <data>
+
+        <record model="ir.ui.view" id="inherit_qcf_purchase_order_line">
+             <field name="name">Inherit purchase order line</field>
+             <field name="model">purchase.order.line</field>
+             <field name="inherit_id" ref="purchase_requisition.purchase_order_line_tree_tender"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='name']" position="before">
+                          <field name="trigger_state" string="Trigger State" invisible="1"/>
+                          <field name="trigger_filter_cancel" string="Filter Cancel" invisible="1"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='name']" position="replace">
+                          <field name="name" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='partner_id']" position="replace">
+                           <field name="partner_id" string="Vendor" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='product_id']" position="replace">
+                          <field name="product_id" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='price_unit']" position="replace">
+                          <field name="price_unit" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='product_qty']" position="replace">
+                          <field name="product_qty" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='quantity_tendered']" position="replace">
+                          <field name="quantity_tendered" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='product_uom']" position="replace">
+                          <field name="product_uom" groups="product.group_uom" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='price_subtotal']" position="replace">
+                          <field name="price_subtotal" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='order_id']" position="replace">
+                          <field name="order_id" invisible="1" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_cancel']" position="replace">
+                          <button name="button_cancel" type="object" string="Cancel Choice" icon="fa-times"
+                        attrs="{'invisible': ['|',('quantity_tendered', '=', 0),('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='%(purchase_requisition.action_bid_line_qty)d']" position="replace">
+                          <button name="%(purchase_requisition.action_bid_line_qty)d" type="action" string="Change Quantity"
+                                  icon="fa-plus-square-o" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_confirm']" position="replace">
+                                              <button name="button_confirm" type="object" string="Confirm Order" icon="fa-check"
+                        attrs="{'invisible': ['|',('quantity_tendered', '>', 0),('trigger_filter_cancel', '=',True)]}"/>
+                 </xpath>
+
+             </field>
+         </record>
+
         <record model="ir.ui.view" id="view_form_inherit_view_purchase_order_line">
              <field name="name">Inherit View purchase order line</field>
              <field name="model">purchase.order.line</field>

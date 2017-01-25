@@ -26,6 +26,27 @@ class InheritPurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     comparison_id = fields.Many2one('quotation.comparison.form','QCF')
+    trigger_state = fields.Boolean('Trigger State')
+    trigger_filter_cancel = fields.Boolean('Trigger Cancel',default=False,compute='_filter_cancel')
+
+    @api.multi
+    def button_confirm(self):
+        self.write({'trigger_state':True})
+        res = super(InheritPurchaseOrderLine,self).button_confirm()
+        return res
+
+    @api.multi
+    def button_cancel(self):
+        self.write({'trigger_state':False})
+        res = super(InheritPurchaseOrderLine,self).button_cancel()
+        return res
+
+    @api.multi
+    @api.depends('order_id')
+    def _filter_cancel(self):
+        for item in self:
+            if item.order_id.state == 'cancel':
+                item.trigger_filter_cancel = True
 
 
 class QuotationComparisonForm(models.Model):
@@ -464,18 +485,45 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def _get_value_purchase_order_line(self):
         arrOrderLine = []
-        purchase = self.env['purchase.order'].search([('comparison_id','=',self.id),('state','=','purchase')])
-        order_line = self.env['purchase.order.line'].search([('comparison_id','=',self.id),('order_id','=',purchase.id)])
+        remarks = ''
+        v_remarks = ''
+        goods_name = ''
+        vendor_name = ''
+        payment_term = ''
+        goods_price = ''
+        delivery_term = ''
+        incoterm = ''
+
         for item in self:
-            for record in purchase:
-                arrOrderLine.extend((record.delivery_term,record.incoterm_id.name,
-                                     record.payment_term_id.name))
+
+            order_line = item.env['purchase.order.line'].search([('comparison_id','=',item.id),('trigger_state','=',True)])
+
             for record in order_line:
                 arrOrderLine.extend((record.product_id.name,record.product_qty,
                                      record.price_unit,record.partner_id.name))
-            remarks = 'Item dengan nama barang '+' '+ arrOrderLine[3] +' Vendor yang di pilih adalah '+' '+arrOrderLine[6] +\
-                  ' karena Kondisi Barang '+arrOrderLine[0]+" memberikan harga kompetitif dengan harga  "+str(arrOrderLine[5])+\
-                  " dengan klausul pembayaran "+arrOrderLine[2]+' incoterm bertipe ' + arrOrderLine[1]
+
+                goods_name = record.product_id.name
+                vendor_name = record.partner_id.name
+                goods_price = str(record.price_unit)
+
+                purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
+                for record in purchase:
+                    arrOrderLine.extend((record.delivery_term,record.incoterm_id.name,
+                                         record.payment_term_id.name))
+
+                    delivery_term = record.delivery_term
+                    incoterm = record.incoterm_id.name
+                    payment_term = record.payment_term_id.name
+
+                v_remarks =  '* Item dengan nama barang '+' '+ goods_name \
+                             +' Vendor yang di pilih adalah '+' '+vendor_name \
+                             +' karena Kondisi Barang '+delivery_term\
+                             +' memberikan harga kompetitif dengan harga '+goods_price\
+                             +' dengan klausul pembayaran '+payment_term\
+                             +' incoterm bertipe ' + incoterm\
+                             +'\n\n'
+                remarks = remarks + v_remarks
+
             item.remarks = remarks
 
 
