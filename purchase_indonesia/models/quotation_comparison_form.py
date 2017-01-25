@@ -202,7 +202,6 @@ class QuotationComparisonForm(models.Model):
     _order = 'complete_name desc'
     _inherit=['mail.thread']
 
-
     name = fields.Char('name')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     date_pp = fields.Date('Date')
@@ -230,6 +229,7 @@ class QuotationComparisonForm(models.Model):
     reject_reason = fields.Text('Reject Reason')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
+    purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line')
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -246,6 +246,11 @@ class QuotationComparisonForm(models.Model):
     _defaults = {
         'state' : 'draft'
     }
+
+    @api.multi
+    def generated_po(self):
+        po_lines = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)])
+        po_lines.generate_po()
 
     @api.multi
     def create(self,vals, context=None):
@@ -354,7 +359,9 @@ class QuotationComparisonForm(models.Model):
     def action_confirm(self):
         """ Confirms QCF.
         """
+        self._get_value_purchase_order_line()
         self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
+
 
 
     @api.multi
@@ -371,6 +378,7 @@ class QuotationComparisonForm(models.Model):
     def action_approve(self):
         if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
+            self.generated_po()
         elif self._get_purchase_request().code == 'KPST' and self._get_max_price() > self._get_price_low():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
 
@@ -378,6 +386,7 @@ class QuotationComparisonForm(models.Model):
     def action_approve1(self):
         if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
+            self.generated_po()
         elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve2','assign_to':self._get_director()})
 
@@ -385,18 +394,21 @@ class QuotationComparisonForm(models.Model):
     def action_approve2(self):
         if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
             self.write({'state' : 'done'})
+            self.generated_po()
         elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3','assign_to':self._get_president_director()})
 
     @api.multi
     def action_approve3(self):
         self.write({'state': 'done'})
+        self.generated_po()
         return True
 
     @api.multi
     def action_approve4(self):
         if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
+            self.generated_po()
         elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
         return True
@@ -448,6 +460,23 @@ class QuotationComparisonForm(models.Model):
         }
         res['domain'] = [('id', 'in', [line.id for line in po_lines])]
         return res
+
+    @api.multi
+    def _get_value_purchase_order_line(self):
+        arrOrderLine = []
+        purchase = self.env['purchase.order'].search([('comparison_id','=',self.id),('state','=','purchase')])
+        order_line = self.env['purchase.order.line'].search([('comparison_id','=',self.id),('order_id','=',purchase.id)])
+        for item in self:
+            for record in purchase:
+                arrOrderLine.extend((record.delivery_term,record.incoterm_id.name,
+                                     record.payment_term_id.name))
+            for record in order_line:
+                arrOrderLine.extend((record.product_id.name,record.product_qty,
+                                     record.price_unit,record.partner_id.name))
+            remarks = 'Item dengan nama barang '+' '+ arrOrderLine[3] +' Vendor yang di pilih adalah '+' '+arrOrderLine[6] +\
+                  ' karena Kondisi Barang '+arrOrderLine[0]+" memberikan harga kompetitif dengan harga  "+str(arrOrderLine[5])+\
+                  " dengan klausul pembayaran "+arrOrderLine[2]+' incoterm bertipe ' + arrOrderLine[1]
+            item.remarks = remarks
 
 
 class QuotationComparisonFormLine(models.Model):

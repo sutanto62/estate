@@ -61,7 +61,7 @@
                      </header>
                     <sheet>
                          <div class="oe_right oe_button_box">
-                                <button name="open_product_line" type="object" attrs="{'invisible' : [('state', '!=', 'done')]}"
+                                <button name="open_product_line" type="object" invisible ='1'
                                         string="Product Lines"
                                         class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>
                          </div>
@@ -143,6 +143,12 @@
                                                            }"/>
                             <separator string="Recomendation/Remarks"/>
                             <field name="remarks"/>
+
+                            <field name="purchase_line_ids" track_visibility="onchange" invisible="0"
+                                                   attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
+                                                context="{'tree_view_ref' : 'purchase_requisition.purchase_order_line_tree_tender',
+                                                      'search_default_groupby_product':True,'search_default_hide_cancelled':True}"/>
+
                             <field name="quotation_comparison_line_ids" track_visibility="onchange" invisible="1"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_indonesia.view_quotation_comparison_line',
