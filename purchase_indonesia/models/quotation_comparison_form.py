@@ -242,7 +242,7 @@ class QuotationComparisonForm(models.Model):
         ('approve1', 'Approval GM Finance'),
         ('approve2','Approval Director'),
         ('approve3','Approval President Director'),
-        ('approve4','Approval head of the representative office'),
+        ('approve4','Approval Head of the Representative Office'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
