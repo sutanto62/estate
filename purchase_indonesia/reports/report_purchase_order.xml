@@ -103,7 +103,12 @@
 							
 							<div class="row" style="text-align:center; font-size:20pt;">
 		              			<div class="col-xs-12" >
-		                       		<b>PURCHASE ORDER (PO) / SERVICE PURCHASE ORDER (SPO)</b>
+									<t t-if="o.request_id.type_product == 'service' ">
+										<b>SERVICE PURCHASE ORDER (SPO)</b>
+									</t>
+									<t t-if="o.request_id.type_product in ['consu','product'] ">
+										<b>PURCHASE ORDER (PO)</b>
+									</t>
 								</div>
 							</div>
 							
