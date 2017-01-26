@@ -40,7 +40,7 @@
 							</div>
 		           			
 		           			<!-- Variabel -->
-		           			<t t-set="idx" t-value="0"/>
+		           			<t t-set="idx" t-value="-1"/>
 		           			
 		           			<!-- Detail Header -->
 		           			<div class="row" style="text-align:left;font-size:14pt;">
@@ -81,162 +81,186 @@
 											<t t-if="l.isheader > 1">
 											 	<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -284,189 +308,213 @@
 											<t t-if="l.isheader > 1">
 											 	<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+														<td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -520,216 +568,240 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+														<td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -789,243 +861,267 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -1091,270 +1187,294 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -1426,297 +1546,321 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -1794,324 +1938,348 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+														<td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -2195,351 +2363,375 @@
 											<t t-if="l.isheader >= 1">
 												<t t-set="idx" t-value="idx+1"/>
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -2629,378 +2821,402 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												   <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -3096,405 +3312,429 @@
 											<t t-if="l.isheader > 1">
 												<t t-set="idx" t-value="idx+1"/>   	
 												<tr>
-												    <td>
-														<t t-if="l.isheader == 1">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 2">
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																&#160;
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												      	<t t-if="l.isheader == 3">
+													<t t-if="l.isheader == 1">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 2">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															&#160;
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+											      	<t t-if="l.isheader == 3">
+											      	    <td>
 															<span t-esc="idx"/>
-															<td>
-																<span t-field="l.product_id.name"/>
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 4">
-															<td>
-																Subtotal
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 5">
-															<td>
-																Tax %
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 6">
-															<td>
-																Grand Total
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 7">
-															<td>
-																TOP
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 8">
-															<td>
-																Delivery
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-														<t t-if="l.isheader == 9">
-															<td>
-																Incoterm
-															</td>
-															<td>
-																<span t-field="l.qty_request"/>
-															</td>
-															<td>
-																<span t-field="l.product_uom"/>
-															</td>
-															<td>
-																<span t-field="l.vendor1"/>
-															</td>
-															<td>
-																<span t-field="l.vendor2"/>
-															</td>
-															<td>
-																<span t-field="l.vendor3"/>
-															</td>
-															<td>
-																<span t-field="l.vendor4"/>
-															</td>
-															<td>
-																<span t-field="l.vendor5"/>
-															</td>
-															<td>
-																<span t-field="l.vendor6"/>
-															</td>
-															<td>
-																<span t-field="l.vendor7"/>
-															</td>
-															<td>
-																<span t-field="l.vendor8"/>
-															</td>
-															<td>
-																<span t-field="l.vendor9"/>
-															</td>
-															<td>
-																<span t-field="l.vendor10"/>
-															</td>
-															<td>
-																<span t-field="l.po_des_all_name"/>
-															</td>
-														</t>
-												    </td>
+														</td>
+														<td>
+															<span t-field="l.product_id.name"/>
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor9"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 4">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Subtotal
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor9"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 5">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Tax %
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor9"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 6">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Grand Total
+														</td>
+														<td align="right">
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor1"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor2"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor3"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor4"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor5"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor6"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor7"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor8"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor9"/>
+														</td>
+														<td align="right">
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 7">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															TOP
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 8">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Delivery
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
+													<t t-if="l.isheader == 9">
+													    <td>
+															&#160;
+														</td>
+														<td>
+															Incoterm
+														</td>
+														<td>
+															<span t-field="l.qty_request"/>
+														</td>
+														<td>
+															<span t-field="l.product_uom"/>
+														</td>
+														<td>
+															<span t-field="l.vendor1"/>
+														</td>
+														<td>
+															<span t-field="l.vendor2"/>
+														</td>
+														<td>
+															<span t-field="l.vendor3"/>
+														</td>
+														<td>
+															<span t-field="l.vendor4"/>
+														</td>
+														<td>
+															<span t-field="l.vendor5"/>
+														</td>
+														<td>
+															<span t-field="l.vendor6"/>
+														</td>
+														<td>
+															<span t-field="l.vendor7"/>
+														</td>
+														<td>
+															<span t-field="l.vendor8"/>
+														</td>
+														<td>
+															<span t-field="l.vendor9"/>
+														</td>
+														<td>
+															<span t-field="l.vendor10"/>
+														</td>
+														<td>
+															<span t-field="l.po_des_all_name"/>
+														</td>
+													</t>
 												</tr>
 											</t>
 										</t>
@@ -3529,7 +3769,7 @@
 							</div>
 
 		           			<!-- Tanda Tangan -->
-		                    <div class="row">
+		                    <div class="row" style="display:none;">
 		                        <div class="col-xs-6">	
 			                        <table width="100%" class="noborder">
 			                            <tr>
@@ -3616,6 +3856,170 @@
 			                        </table>
 		                        </div>
 		                    </div>
+		                    
+		                    <!-- Tanda Tangan -->
+		                    <div class="row">
+		                        <div class="col-xs-6">	
+			                        <table width="100%" class="noborder">
+			                            <tr>
+			                                <td colspan="6" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="6" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="6" class="noborder">
+			                                    &#160;
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td colspan="2" class="noborder">
+			                                  Proposed By
+			                                </td>
+			                                <td colspan="5" class="noborder">
+			                                  Approved By
+			                                </td>
+			                            </tr>
+			                            <tr>
+			                                <td class="noborder">
+			                                    Pengaju
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and (mids_tracking.old_value_char == 'Send QCF' or mids_tracking.old_value_char == 'Send QCF RO')">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                                <td class="noborder">
+			                                    RO Head
+			                                </td>
+			                                <td class="noborder">
+			                                     <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Head of the Representative Office'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                                <td class="noborder">
+			                                    Director
+			                                </td>
+			                                <td class="noborder">
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Director'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                            </tr>
+			                          	<tr>
+                                        	<td colspan="2" class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    Proc &amp; Log Div Head
+			                                </td>
+			                                <td class="noborder">
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval GM Finance'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                                <td class="noborder">
+			                                    President Director
+			                                </td>
+			                                <td class="noborder">
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval President Director'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                            </tr>
+			                            <tr>
+                                        	<td colspan="2" class="noborder">
+			                                    &#160;
+			                                </td>
+			                                <td class="noborder">
+			                                    Finance Div Head
+			                                </td>
+			                                <td colspan="3" class="noborder">
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Finance'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
+			                                </td>
+			                            </tr>
+			                        </table>
+		                        </div>
+		                    </div>
+		                    
 		             	</div>
                     </t>
                 </t>
