@@ -87,3 +87,6 @@
 "access_purchase_order_purchase_line_user","purchase_order_purchase_line_user","purchase.model_purchase_order_line","purchase_request.group_purchase_request_user","TRUE","True","True","True"
 
 "access_account_journal_user","account_journal_user","account.model_account_journal","purchase_request.group_purchase_request_user","TRUE","True","True","True"
+
+"access_stock_picking_director","stock_picking_director","stock.model_stock_picking","purchase_indonesia.group_purchase_request_director","False","True","True","False"
+"access_stock_picking_president_director","stock_picking_president_director","stock.model_stock_picking","purchase_indonesia.group_purchase_request_president_director","False","True","True","False"

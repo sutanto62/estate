@@ -380,7 +380,6 @@ class QuotationComparisonForm(models.Model):
     def action_confirm(self):
         """ Confirms QCF.
         """
-        self._get_value_purchase_order_line()
         self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
 
 
@@ -481,6 +480,10 @@ class QuotationComparisonForm(models.Model):
         }
         res['domain'] = [('id', 'in', [line.id for line in po_lines])]
         return res
+
+    @api.multi
+    def change_remarks(self):
+        self._get_value_purchase_order_line()
 
     @api.multi
     def _get_value_purchase_order_line(self):
