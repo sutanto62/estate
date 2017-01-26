@@ -487,7 +487,6 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def _get_value_purchase_order_line(self):
-        arrOrderLine = []
         remarks = ''
         v_remarks = ''
         goods_name = ''
@@ -502,21 +501,17 @@ class QuotationComparisonForm(models.Model):
             order_line = item.env['purchase.order.line'].search([('comparison_id','=',item.id),('trigger_state','=',True)])
 
             for record in order_line:
-                arrOrderLine.extend((record.product_id.name,record.product_qty,
-                                     record.price_unit,record.partner_id.name))
 
-                goods_name = record.product_id.name
-                vendor_name = record.partner_id.name
-                goods_price = str(record.price_unit)
+
+                goods_name = '' if not record.product_id.name else record.product_id.name
+                vendor_name = '' if not record.partner_id.name else record.partner_id.name
+                goods_price = '' if not str(record.price_unit) else str(record.price_unit)
 
                 purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
                 for record in purchase:
-                    arrOrderLine.extend((record.delivery_term,record.incoterm_id.name,
-                                         record.payment_term_id.name))
-
-                    delivery_term = record.delivery_term
-                    incoterm = record.incoterm_id.name
-                    payment_term = record.payment_term_id.name
+                    delivery_term = '' if not record.delivery_term else record.delivery_term
+                    incoterm = '' if not record.incoterm_id.name else record.incoterm_id.name
+                    payment_term = '' if not record.payment_term_id.name else record.payment_term_id.name
 
                 v_remarks =  '* Item dengan nama barang '+' '+ goods_name \
                              +' Vendor yang di pilih adalah '+' '+vendor_name \
