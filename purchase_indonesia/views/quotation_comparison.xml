@@ -7,7 +7,7 @@
              <field name="inherit_id" ref="purchase_requisition.purchase_order_line_tree_tender"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='name']" position="before">
-                          <field name="trigger_state" string="Trigger State" invisible="1"/>
+                          <field name="trigger_state" string="Picked" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
                           <field name="trigger_filter_cancel" string="Filter Cancel" invisible="1"/>
                  </xpath>
 
@@ -118,7 +118,7 @@
                             <button name="action_approve1" states="approve1"  type="object" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                             <button name="action_approve2" states="approve2" type="object" string="Approval Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
                             <button name="action_approve3" states="approve3"  type="object" string="Approval President Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
-                            <button name="action_approve4" states="confirm2"  type="object" string="Approval Head Of RO" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of RO"/>
+                            <button name="action_approve4" states="confirm2"  type="object" string="Approval Head Of RO" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of_ro"/>
                             <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action" groups="purchase_request.group_purchase_request_manager"/>
                             <button name="button_draft" states="draft" type="object" string="Cancel"/>
                             <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
@@ -207,17 +207,27 @@
                                                     context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',
                                                            }"/>
                             <separator string="Recomendation/Remarks"/>
-                            <field name="remarks"/>
 
-                            <field name="purchase_line_ids" track_visibility="onchange" invisible="0"
+                            <field name="remarks"/>
+                            <notebook>
+                                <page string="Purchase Line">
+                                    <div class="oe_right oe_button_box">
+                                        <button name="change_remarks" type="object"
+                                        string="Generate Remarks"
+                                        class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>
+                                    </div>
+                                    <field name="purchase_line_ids" track_visibility="onchange" invisible="0"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_requisition.purchase_order_line_tree_tender',
                                                       'search_default_groupby_product':True,'search_default_hide_cancelled':True}"/>
 
-                            <field name="quotation_comparison_line_ids" track_visibility="onchange" invisible="1"
+                                    <field name="quotation_comparison_line_ids" track_visibility="onchange" invisible="1"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
                                                 context="{'tree_view_ref' : 'purchase_indonesia.view_quotation_comparison_line',
                                                        }"/>
+                                </page>
+                            </notebook>
+
 
                     </sheet>
                     <div class="oe_chatter">

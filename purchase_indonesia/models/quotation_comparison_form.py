@@ -242,7 +242,7 @@ class QuotationComparisonForm(models.Model):
         ('approve1', 'Approval GM Finance'),
         ('approve2','Approval Director'),
         ('approve3','Approval President Director'),
-        ('approve4','Approval head of the representative office'),
+        ('approve4','Approval Head of the Representative Office'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
@@ -380,7 +380,6 @@ class QuotationComparisonForm(models.Model):
     def action_confirm(self):
         """ Confirms QCF.
         """
-        self._get_value_purchase_order_line()
         self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
 
 
@@ -481,6 +480,10 @@ class QuotationComparisonForm(models.Model):
         }
         res['domain'] = [('id', 'in', [line.id for line in po_lines])]
         return res
+
+    @api.multi
+    def change_remarks(self):
+        self._get_value_purchase_order_line()
 
     @api.multi
     def _get_value_purchase_order_line(self):
