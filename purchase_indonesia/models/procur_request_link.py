@@ -800,13 +800,12 @@ class InheritPurchaseRequest(models.Model):
         else:
             self.type_functional
 
-    @api.multi
-    @api.onchange('company_id')
-    def _onchange_company_id(self):
-
-        if self._get_employee().company_id.id:
-            self.company_id = self._get_employee().company_id.id
-
+    # @api.multi
+    # @api.onchange('company_id')
+    # def _onchange_company_id(self):
+    #
+    #     if self._get_employee().company_id.id:
+    #         self.company_id = self._get_employee().company_id.id
 
     @api.multi
     @api.onchange('requested_by')
