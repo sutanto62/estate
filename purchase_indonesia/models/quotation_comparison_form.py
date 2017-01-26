@@ -521,7 +521,7 @@ class QuotationComparisonForm(models.Model):
                              +' memberikan harga kompetitif dengan harga '+goods_price\
                              +' dengan klausul pembayaran '+payment_term\
                              +' incoterm bertipe ' + incoterm\
-                             +'\n\n'
+                             +'\n'+'\n'
                 remarks = remarks + v_remarks
 
             item.remarks = remarks
