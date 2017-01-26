@@ -36,6 +36,7 @@ class InheritRequisitionPartner(models.TransientModel):
         #set quotation comparison data
         comparison_data = {
             'source_purchase_request' : purchase_tender.origin,
+            'request_id' : purchase_tender.request_id.id,
             'origin' : purchase_tender.complete_name,
             'companys_id' :purchase_tender.companys_id.id,
             'location':purchase_tender.location,

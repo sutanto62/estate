@@ -200,6 +200,7 @@ class InheritPurchaseTenders(models.Model):
                 'po_no':self.pool.get('ir.sequence').next_by_code(cr, uid,'purchase.po_no'),
                 # 'location':tender.location,
                 'source_purchase_request' : tender.origin,
+                'request_id':tender.request_id.id,
                 'companys_id' :tender.companys_id.id,
                 'origin': tender.complete_name}
 

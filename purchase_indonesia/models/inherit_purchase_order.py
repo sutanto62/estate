@@ -25,6 +25,7 @@ class InheritPurchaseOrder(models.Model):
     type_location = fields.Char('Location')
     location = fields.Char('Location')
     source_purchase_request = fields.Char('Source Purchase Request')
+    request_id = fields.Many2one('purchase.request','Purchase Request')
     po_no = fields.Char('Purchase order number')
     hide = fields.Boolean('Hide')
     confirmed_by = fields.Selection([
