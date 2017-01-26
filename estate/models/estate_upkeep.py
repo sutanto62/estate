@@ -216,7 +216,7 @@ class Upkeep(models.Model):
                 unit_amount = res.unit_amount
 
                 # Sum of labour quantity less than or equal to unit amount
-                if sum_labour_quantity > unit_amount:
+                if round(sum_labour_quantity,6) > round(unit_amount,6):
                     error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, unit_amount))
                     raise ValidationError(error_msg)
 
@@ -243,7 +243,7 @@ class Upkeep(models.Model):
                 res = record.activity_line_ids.search(domains)
 
                 # Check sum of labour quantity
-                if sum_quantity > res.unit_amount:
+                if round(sum_quantity,6) > round(res.unit_amount,6):
                     error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, res.unit_amount))
                     raise ValidationError(error_msg)
 
@@ -1138,11 +1138,16 @@ class UpkeepLabour(models.Model):
         upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
                                                               ('upkeep_date', '=', self.upkeep_date)])
         number_of_day = sum(item.number_of_day for item in upkeep_ids)
-        if number_of_day > 1:
+        if number_of_day >= 1:
+            # Error if there was number_of_day >= 1
             error_msg = _(
                 "%s has been work for more than 1 worked day." % self.employee_id.name)
             raise ValidationError(error_msg)
-
+        elif number_of_day + self.attendance_code_ratio >= 1:
+            # Error if total number_of_day >= 1
+            error_msg = _(
+                "%s is going to work for more than 1 worked day." % self.employee_id.name)
+            raise ValidationError(error_msg)
 
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.

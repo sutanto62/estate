@@ -36,12 +36,21 @@
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
-
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(months=1,days=-1)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
                     <group string="Group By">
                         <filter name="by_activity" string="Activity"
                                 context="{'group_by': 'activity_id'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'upkeep_date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'upkeep_date:week'}"/>
                         <filter name="by_date" string="Date"
-                                context="{'group_by': 'upkeep_date'}"/>
+                                context="{'group_by': 'upkeep_date:day'}"/>
                     </group>
                 </search>
             </field>
@@ -69,6 +78,12 @@
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(months=1,days=-1)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
                     <group string="Group By">
                         <!--
                         Please retain filter order
@@ -93,8 +108,12 @@
                                 context="{'group_by': 'attendance_code_id'}"/>
                         <filter name="by_activity_contract" string="Contract"
                                 context="{'group_by': 'activity_contract'}"/>
-                        <filter name="by_date" string="Month"
-                                context="{'group_by': 'upkeep_date'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'upkeep_date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'upkeep_date:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'upkeep_date:day'}"/>
                         <filter name="by_team" string="Team"
                                 context="{'group_by': 'upkeep_team_id'}"/>
                         <!-- Hold cross team implementation
@@ -129,7 +148,7 @@
             <field name="model">estate.upkeep</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <search>
+                <search default_order="date desc">
                     <field name="team_id"/>
                     <field name="division_id"/>
                     <field name="estate_id"/>
@@ -145,8 +164,15 @@
                             domain="[('state', '=', 'correction')]"/>
                     <filter name="filter_payslip" string="Payslip"
                             domain="[('state', '=', 'payslip')]"/>
+                    <separator/>
                     <filter icon="terp-go-month" string="This Month"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(months=1,days=-1)).strftime('%Y-%m-%d')), ('date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
                     <group string="Group By">
                         <filter name="by_company" string="Company"
                                 context="{'group_by': 'company_id'}"/>
@@ -155,8 +181,12 @@
                         <filter name="by_division" string="Division"
                                 context="{'group_by': 'division_id'}"/>
                         <separator/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date:week'}"/>
                         <filter name="by_date" string="Date"
-                                context="{'group_by': 'date'}"/>
+                                context="{'group_by': 'date:day'}"/>
                         <separator/>
                         <filter name="by_team" string="Team"
                                 context="{'group_by': 'team_id'}"/>
@@ -170,7 +200,7 @@
             <field name="model">estate.upkeep</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree colors="red:state in ('draft','confirmed')">
+                <tree colors="red:state in ('draft','confirmed')" default_order="date desc">
                     <field name="name"/>
                     <field name="date"/>
                     <field name="company_id"/>
@@ -510,7 +540,7 @@
             <field name="priority" eval="1"/>
             <field name="context" eval="{'search_default_employee_id': 1}"/>
             <field name="arch" type="xml">
-                <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100">
+                <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100" default_order="upkeep_date desc">
                     <!--
                     Use 2 decimal digits to shorten width
                     -->
@@ -545,7 +575,7 @@
             <field name="priority" eval="1"/>
             <field name="context" eval="{'search_default_division_id': 1}"/>
             <field name="arch" type="xml">
-                <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100">
+                <tree colors="red:state in ('draft','confirmed');orange:prod_quantity_day&lt;100" default_order="upkeep_date desc">
                     <field name="upkeep_date" string="Date"/>
                     <field name="employee_id"/>
                     <field name="location_id" string="Block"/>
@@ -571,7 +601,7 @@
             <field name="model">estate.upkeep.material</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree colors="red:state in ('draft','confirmed')">
+                <tree colors="red:state in ('draft','confirmed')" default_order="upkeep_date desc">
                     <field name="upkeep_date" string="Date"/>
                     <field name="product_id" string="Material" invisible="True"/>
                     <field name="unit_amount" string="Qty."/>
@@ -609,7 +639,12 @@
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <filter name="filter_year" icon="terp-go-year" string="This Year"
                             domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
-
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(months=1,days=-1)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
                     <group string="Group By">
                         <filter name="by_company" string="Company"
                                 context="{'group_by': 'company_id'}"/>
@@ -621,8 +656,12 @@
                         <filter name="by_activity" string="Activity"
                                 context="{'group_by': 'activity_id'}"/>
                         <separator/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'upkeep_date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'upkeep_date:week'}"/>
                         <filter name="by_date" string="Date"
-                                context="{'group_by': 'upkeep_date'}"/>
+                                context="{'group_by': 'upkeep_date:day'}"/>
                         <separator/>
                         <filter name="by_product" string="Material"
                                 context="{'group_by': 'product_id'}"/>
