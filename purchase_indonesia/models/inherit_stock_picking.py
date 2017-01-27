@@ -84,6 +84,48 @@ class InheritStockPicking(models.Model):
                 else:
                     record.not_seed = True
 
+    @api.multi
+    def action_move_picking_force_stop(self):
+        po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
+
+        #search Tender
+
+        tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
+
+        purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
+
+        #create Stock move From Purchase to warehouse
+        for item in purchase_requisition_line:
+            #search Pack Operation Ids
+            pack_operation_line = self.env['stock.pack.operation'].search([('picking_id','=',self.id),
+                                                                       ('product_id','=',item.product_id.id)
+                                                               ])
+
+            stock_move = self.env['stock.move'].search([('origin','=',self.purchase_id.name),
+                                                        ('product_id','=',item.product_id.id)])
+
+            quantity_move = sum(record.qty_done for record in pack_operation_line if record.qty_done > 0)
+
+            for record in pack_operation_line:
+
+                move_data = {
+                    'product_uom_qty': quantity_move,
+                }
+
+                stock_move.write(move_data)
+                stock_move.action_confirm()
+                stock_move.action_done()
+
+    @api.multi
+    def do_transfer(self):
+        qty = min(item.product_qty for item in self.pack_operation_product_ids)
+        done = min(item.qty_done for item in self.pack_operation_product_ids)
+
+        if qty and done < 0:
+            self.action_move_picking_force_stop()
+            self.write({'state':'done'})
+        else :
+            super(InheritStockPicking,self).do_transfer()
 
     @api.multi
     def do_new_transfer(self):
