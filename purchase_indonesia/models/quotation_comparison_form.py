@@ -365,33 +365,15 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def action_send(self):
         if self._get_purchase_request().code == 'KPST':
-            self.write({'state' : 'confirm'})
+            self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
         elif self._get_purchase_request().code in ['KOKB','KPWK']:
-            self.write({'state' : 'confirm2'})
+            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
         return True
 
     @api.multi
     def button_draft(self):
         for rec in self:
             rec.state = 'draft'
-        return True
-
-    @api.multi
-    def action_confirm(self):
-        """ Confirms QCF.
-        """
-        self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
-
-
-
-    @api.multi
-    def action_confirm2(self):
-        """ Confirms QCF.
-        """
-        if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
-            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
-        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_low():
-            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
         return True
 
     @api.multi
