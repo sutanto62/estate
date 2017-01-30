@@ -22,6 +22,10 @@
             <field name="arch" type="xml">
                 <form>
                      <header coolspan="10">
+                            <button name="button_send_return" states="draft" string="Send Good Return" class="oe_highlight" />
+                            <button name="button_confirm_return" states="confirm" string="Confirm" class="oe_highlight" groups="stock.group_stock_manager"/>
+                            <button name="%(action_good_return_reject)d" states="confirm" string="Reject Goods Return" type="action" groups="stock.group_stock_manager"/>
+                            <button name="button_cancel" states="draft" string="Cancel"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
                      </header>
                     <sheet>
@@ -37,6 +41,8 @@
                             <group col = '2'>
                                  <group>
                                      <field name="company_id" string="Company" options="{'no_create_edit': True}"
+                                            attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
+                                     <field name="request_id" string="BPB No" options="{'no_create_edit': True}"
                                             attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
                                      <field name="division_id" string="Division" options="{'no_create_edit': True}"
                                             attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"/>
@@ -80,7 +86,6 @@
                     <field name="code_product" string="Product Code"/>
                     <field name="product_id" string="Product" options="{'no_create_edit': True}"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
-                    <field name="request_id" string="BPB" options="{'no_create_edit': True}"/>
                     <field name="product_qty" string="Qty Return"/>
                     <field name="code" string="COA"/>
                     <field name="block_id" string="Block" options="{'no_create_edit': True}"/>

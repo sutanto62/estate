@@ -22,8 +22,8 @@ class InheritStockPicking(models.Model):
     _inherit = 'stock.picking'
 
     complete_name_picking =fields.Char("Complete Name", compute="_complete_name_picking", store=True)
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location code')
+    location = fields.Char('Location')
     pr_source = fields.Char("Purchase Request Source")
     companys_id = fields.Many2one('res.company','Company')
     code_sequence = fields.Char('Good Receipt Note Sequence')
@@ -65,7 +65,7 @@ class InheritStockPicking(models.Model):
             month = result
 
             self.complete_name_picking = self.grn_no +'/' \
-                                 + self.companys_id.code+' - '\
+                                 + self.companys_id.code+'-'\
                                  +'GRN'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:
@@ -84,6 +84,48 @@ class InheritStockPicking(models.Model):
                 else:
                     record.not_seed = True
 
+    @api.multi
+    def action_move_picking_force_stop(self):
+        po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
+
+        #search Tender
+
+        tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
+
+        purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
+
+        #create Stock move From Purchase to warehouse
+        for item in purchase_requisition_line:
+            #search Pack Operation Ids
+            pack_operation_line = self.env['stock.pack.operation'].search([('picking_id','=',self.id),
+                                                                       ('product_id','=',item.product_id.id)
+                                                               ])
+
+            stock_move = self.env['stock.move'].search([('origin','=',self.purchase_id.name),
+                                                        ('product_id','=',item.product_id.id)])
+
+            quantity_move = sum(record.qty_done for record in pack_operation_line if record.qty_done > 0)
+
+            for record in pack_operation_line:
+
+                move_data = {
+                    'product_uom_qty': quantity_move,
+                }
+
+                stock_move.write(move_data)
+                stock_move.action_confirm()
+                stock_move.action_done()
+
+    @api.multi
+    def do_transfer(self):
+        qty = min(item.product_qty for item in self.pack_operation_product_ids)
+        done = min(item.qty_done for item in self.pack_operation_product_ids)
+
+        if qty and done < 0:
+            self.action_move_picking_force_stop()
+            self.write({'state':'done'})
+        else :
+            super(InheritStockPicking,self).do_transfer()
 
     @api.multi
     def do_new_transfer(self):
@@ -141,7 +183,6 @@ class InheritStockPicking(models.Model):
 
         else:
             self.do_transfer()
-            self.tracking_approval()
 
         super(InheritStockPicking,self).do_new_transfer()
 
@@ -151,18 +192,7 @@ class InheritStockPicking(models.Model):
     def print_grn(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
-    @api.multi
-    def tracking_approval(self):
-        user= self.env['res.users'].browse(self.env.uid)
-        employee = self.env['hr.employee'].search([('user_id','=',user.id)]).name_related
-        current_date=str(datetime.now().today())
-        tracking_data = {
-            'owner_id': self.id,
-            'state' : self.state,
-            'name_user' : employee,
-            'datetime'  :current_date
-        }
-        self.env['tracking.approval'].create(tracking_data)
+
 
 class InheritStockPackOperation(models.Model):
 
@@ -179,7 +209,7 @@ class InheritStockPackOperation(models.Model):
     def split_quantities(self):
         #constraint split quantities in stock.pack.operation
         for pack in self:
-            if pack.qty_done < pack.product_qty:
+            if pack.qty_done < 0:
                 error = 'Quantity done must be higher than 0 '
                 raise exceptions.ValidationError(error)
         super(InheritStockPackOperation,self).split_quantities()

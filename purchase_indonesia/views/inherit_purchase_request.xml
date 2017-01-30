@@ -9,6 +9,10 @@
                       <field name="type_location" string="Location"/>
                       <field name="type_functional" string="Unit Functional" required="1"/>
                       <field name="department_id" string="Department" required="1" options="{'no_create_edit': True}"/>
+                      <field name="type_budget" widget="radio" string="Budget" attrs="{'invisible': [('state','not in', ['budget','approval3','approval4','approval5','approval6'])]}"/>
+                      <field name="pta_code" string="PTA Reference"
+                             attrs="{'invisible': [('state','not in', ['budget','approval3','approval4','approval5','approval6'])]}"/>
+                      <field name="currency_id" invisible="1"/>
                       <field name="employee_id" string="Employee" invisible="1" required="0" options="{'no_create_edit': True}"/>
                  </xpath>
              </field>
@@ -21,6 +25,10 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='assigned_to']" position="after">
                           <field name="type_product" string="Product Type"/>
+                          <field name="validation_user" invisible="1"/>
+                          <field name="validation_reject" invisible="1"/>
+                          <field name="validation_finance" invisible="1"/>
+                          <field name="validation_state_budget" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" options="{'no_create_edit': True}"/>
                  </xpath>
              </field>
@@ -60,7 +68,10 @@
                           <field name="total_price" invisible="0" string="Total Price"/>
                  </xpath>
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="after">
-                          <field name="budget_available" string="Budget Available"/>
+                     <field name="validation_budget" invisible="1"/>
+                     <field name="control_unit" string="Unit Control" attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
+                     <field name="budget_available" string="Budget Available"
+                                 attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
              </field>
          </record>
@@ -84,98 +95,10 @@
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//form//field[@name='analytic_account_id']" position="after">
-                          <field name="budget_available" string="Budget Available"/>
-                 </xpath>
-             </field>
-         </record>
-
-
-        <record model="ir.ui.view" id="inherit_purchase_request_line_origin7">
-             <field name="name">Inherit purchase request</field>
-             <field name="model">purchase.request</field>
-             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//button[@name='button_rejected']" position="replace">
-                     <button name="%(action_purchase_request_reject)d"
-                             states="to_approve,approval1,approval2,technic1,technic2,technic3,technic4,technic5,budget" string="Reject Purchase Request" type="action"
-                             groups="purchase_request.group_purchase_request_dept_head,
-                             purchase_request.group_purchase_request_manager,
-                             purchase_request.group_purchase_request_budget,
-                             purchase_request.group_purchase_request_div_head,
-                             purchase_request.group_purchase_request_technical1,
-                             purchase_request.group_purchase_request_technical2,
-                             purchase_request.group_purchase_request_technical3,
-                             purchase_request.group_purchase_request_technical4,
-                             purchase_request.group_purchase_request_technical5
-                             "/>
-                 </xpath>
-                 <xpath expr="//button[@name='button_to_approve']" position="replace">
-                     <button name="button_to_approve" states="button_to_approve"
-                            string="Approve Finance" type="object"
-                            class="oe_highlight"/>
-
-                 </xpath>
-                 <xpath expr="//button[@name='button_draft']" position="replace">
-                     <button name="button_draft"
-                            states="approval1,approval2"
-                            string="Reset"
-                            type="object"
-                            groups="purchase_request.group_purchase_request_manager"/>
-                 </xpath>
-                 <xpath expr="//button[@name='button_approved']" position="replace">
-                       <button name="button_approved"
-                            states="to_approve"
-                            string="Approve Finance"
-                            type="object"
-                            class="oe_highlight"
-                            groups="purchase_request.group_purchase_request_manager"/>
-                 </xpath>
-                 <xpath expr="//field[@name='state']" position="replace">
-                     <field name="state" widget="statusbar"
-                           statusbar_visible="draft"
-                           statusbar_colors='{"approved":"blue"}'/>
-                 </xpath>
-                 <xpath expr="//button[@name='button_draft']" position="after">
-                     <button name="check_wkf_requester" states="draft"
-                            string="Confirm Purchase" type="object"
-                            class="oe_highlight"
-                             groups="purchase_request.group_purchase_request_user"/>
-                     <button name="action_confirm1" states="approval1"
-                            string="Approve Dept Head" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_dept_head"/>
-                     <button name="action_confirm2" states="approval2"
-                            string="Approve Div Head" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
-                     <button name="action_budget" states="budget"
-                            string="Approve Budget" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
-                     <button name="action_techic" states="technic1,technic2,technic3,technic4,technic5"
-                            string="Approve Technical Check" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_technical1,
-                            purchase_request.group_purchase_request_technical2,
-                            purchase_request.group_purchase_request_technical3,
-                            purchase_request.group_purchase_request_technical4,
-                            purchase_request.group_purchase_request_technical5"/>
-                 </xpath>
-                 <xpath expr="//button[@name='button_approved']" position="after">
-                     <button name="print_purchase_request" string="Print PR/PP" type="object" states="approved" groups="base.group_user"/>
-                 </xpath>
-                 <xpath expr="//field[@name='description']" position="after">
-                     <group name="budget">
-                          <field name="type_budget" widget="radio" string="Budget"/>
-                          <field name="currency_id" invisible="1"/>
-                     </group>
-                 </xpath>
-                 <xpath expr="//field[@name='description']" position="before">
-                     <group class="oe_subtotal_footer oe_right">
-                            <div class="oe_subtotal_footer_separator oe_inline">
-                                <label for="total_estimate_price"/>
-                                    <button name="button_dummy" states="draft"
-                            string="(update)" type="object" class="oe_edit_only oe_link"/>
-                            </div>
-                        <field name="total_estimate_price" nolabel="1" class="oe_subtotal_footer_separator"
-                            widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
-                    </group>
+                     <field name="validation_budget" invisible="1"/>
+                     <field name="control_unit" string="Unit Control" attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
+                     <field name="budget_available" string="Budget Available"
+                                 attrs="{'invisible':[('validation_budget','!=',True)],'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
              </field>
          </record>
@@ -188,6 +111,148 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
+
+
+        <record model="ir.ui.view" id="inherit_purchase_request_line_origin8">
+             <field name="name">Inherit purchase request</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+             <field name="arch" type="xml">
+                <xpath expr="//button[@name='button_rejected']" position="replace">
+                     <button name="%(action_purchase_request_reject)d"
+                             attrs="{'invisible': [('validation_reject','!=',True)]}"
+                             string="Reject Purchase Request" type="action"
+                             />
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_to_approve']" position="replace">
+                     <button name="button_to_approve" states="button_to_approve"
+                            string="Approve Finance" type="object"
+                            class="oe_highlight"/>
+
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_draft']" position="replace">
+                     <button name="button_draft"
+                            states="confirm"
+                            string="Reset"
+                            type="object"
+                            groups="purchase_request.group_purchase_request_manager"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_approved']" position="replace">
+                       <button name="button_approved"
+                            states="to_approve"
+                            string="Approve Finance"
+                            type="object"
+                            class="oe_highlight"
+                            groups="purchase_request.group_purchase_request_manager"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='date_start']" position="replace">
+                    <field name="date_start" string="Request Date"
+                                    readonly="1" invisible="0"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='state']" position="replace">
+                     <field name="state" widget="statusbar"
+                           statusbar_visible="draft"
+                           statusbar_colors='{"approved":"blue"}'/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='assigned_to']" position="replace">
+                     <field name="assigned_to" attrs="{
+                     'invisible':[('state','=','draft')]}"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_draft']" position="after">
+                     <button name="check_wkf_requester" states="draft"
+                            string="Confirm Purchase" type="object"
+                            class="oe_highlight"
+                             groups="purchase_request.group_purchase_request_user"/>
+                     <button name="action_confirm1"
+                            string="Approve Dept Head" type="object"
+                             attrs="{'invisible': [('validation_user','!=',True)]}"
+                            class="oe_highlight" />
+                     <button name="action_confirm2" states="approval2"
+                            string="Approve Div Head" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
+                     <button name="action_budget" states="budget"
+                            string="Approve Budget" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
+                     <button name="action_technic" states="technic1,technic2,technic3,technic4,technic5"
+                            string="Approve Technical Check" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_technical1,
+                            purchase_request.group_purchase_request_technical2,
+                            purchase_request.group_purchase_request_technical3,
+                            purchase_request.group_purchase_request_technical4,
+                            purchase_request.group_purchase_request_technical5"/>
+                     <button name="action_financial_approval1"
+                             attrs="{'invisible': [('validation_finance','!=',True)]}"
+                             string="Approve" type="object"
+                            class="oe_highlight" />
+                     <button name="action_financial_approval2" states="approval4"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
+                     <button name="action_financial_approval3" states="approval5"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
+                     <button name="action_financial_approval4" states="approval6"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
+                     <button name="action_ro_head_approval" states="approval7"
+                             string="Approve" type="object"
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of RO"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='button_approved']" position="after">
+                     <button name="print_purchase_request" string="Print PR/PP" type="object" states="approved" groups="purchase_request.group_purchase_request_procstaff"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='description']" position="before">
+                     <group class="oe_subtotal_footer oe_right">
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                <label for="total_estimate_price"/>
+                            </div>
+                        <field name="total_estimate_price" nolabel="1" class="oe_subtotal_footer_separator"
+                            widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
+                    </group>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_purchase_request_tree">
+             <field name="name">Inherit purchase request Tree</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//tree" position="attributes">
+                          <attribute name='decoration-info'></attribute>
+                          <attribute name='decoration-danger'>state in ('draft','approval1','approval2','to_approve','budget','technic1','technic2','technic3','technic4','technic5','approval3','approval4','approval5','approval6')</attribute>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.actions.act_window" id="purchase_request.purchase_request_form_action">
+            <field name="name">Purchase Requests</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="purchase_request.view_purchase_request_search"/>
+            <field name="context">{"search_default_assigned_approve":1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new purchase request process.
+              </p><p>
+                A purchase request is an instruction to Purchasing to procure
+                a certain quantity of materials services, so that they are
+                available at a certain point in time.
+              </p>
+            </field>
+        </record>
+
+
 
     </data>
 </openerp>

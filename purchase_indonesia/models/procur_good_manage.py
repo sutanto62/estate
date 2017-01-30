@@ -21,15 +21,16 @@ class ManagementGoodRequest(models.Model):
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     location_id = fields.Many2one('stock.location','Source Location')
     destination_id = fields.Many2one('stock.location','Destination Location')
-    picking_type_id = fields.Many2one('stock.picking.type','Stock Picking Type',domain=[('code','in',['outgoing','internal'])])
+    picking_type_id = fields.Many2one('stock.picking.type','Stock Picking Type')
     date_schedule = fields.Date('Date Schedule',required=True)
     requester_id = fields.Many2one('hr.employee','Requester')
     department_id = fields.Many2one('hr.department','Department')
+    request_id = fields.Many2one('procur.good.request','Number Request Good')
     company_id = fields.Many2one('res.company','Company')
     warehouse_id = fields.Many2one('stock.location','Source Warehouse',domain=[('usage','=','internal'),
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
     goodrequestline_ids = fields.One2many('management.good.request.line','owner_id','Good Request Line')
-    # goodreturnline_ids = fields.One2many('')
+    goodreturnline_ids = fields.One2many('management.good.return.line','owner_id','Good Return Line')
     type = fields.Selection([
         ('request', 'Request Goods'),
         ('return', 'Return Goods')
@@ -64,8 +65,12 @@ class ManagementGoodRequest(models.Model):
         name = self.name
         self.write({'name':"Management Good Request %s " %(name)})
         self.write({'state': 'done'})
-        self.action_move()
-        self.action_generate_qty_done()
+        if self.type == 'request':
+            self.action_move()
+            self.action_generate_qty_done()
+
+        elif self.type == 'return':
+            self.action_move_return()
         return True
 
     def action_done(self, cr, uid, ids, context=None):
@@ -100,7 +105,33 @@ class ManagementGoodRequest(models.Model):
                     'name': record.product_id.name,
                     'date_expected': self.date_schedule,
                     'location_id': self.warehouse_id.id,
-                    'location_dest_id': record.block_id.inherit_location_id.id,
+                    'location_dest_id': self.destination_id.id,
+                    'state': 'confirmed', # set to done if no approval required
+                }
+
+                move = self.env['stock.move'].create(move_data)
+                move.action_confirm()
+                move.action_done()
+
+    @api.multi
+    def action_move_return(self):
+        #create Stock move From Warehouse To PB
+        for item in self.goodreturnline_ids:
+            management_line = self.env['management.good.return.line'].search([('product_id','=',item.product_id.id),
+                                                               ('owner_id', '=', self.id)
+                                                               ])
+            for record in management_line:
+
+                move_data = {
+                    'product_id': record.product_id.id,
+                    'product_uom_qty': record.qty,
+                    'picking_type_id' : self.picking_type_id.id,
+                    'origin':self.origin,
+                    'product_uom': record.uom_id.id,
+                    'name': record.product_id.name,
+                    'date_expected': self.date_schedule,
+                    'location_id':self.destination_id.id ,
+                    'location_dest_id': self.warehouse_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -120,7 +151,7 @@ class ManagementGoodRequest(models.Model):
                         'qty_done':record.qty_done
                     }
                 good_request = self.env['procur.good.request'].search([('complete_name','like',self.origin)]).id
-                good_request_line = self.env['procur.good.requestline'].search([('owner_id','=',good_request),
+                good_request_line = self.env['procur.good.requestline'].search([('request_id','=',good_request),
                                                                                 ('product_id','=',record.product_id.id)]).write(good_request_data)
 
     @api.one
@@ -161,6 +192,28 @@ class ManagementGoodRequest(models.Model):
                     'requester_id' :[('id','in',arrEmployee)]
                 }
             }
+
+    @api.multi
+    @api.onchange('type')
+    def _onchange_picking_id(self):
+        #onchange picking type ID
+
+        if self.type == 'request':
+
+            return {
+                'domain':{
+                    'picking_type_id' :[('code','in',['outgoing','internal'])]
+                }
+            }
+
+        elif self.type == 'return':
+
+            return {
+                'domain':{
+                    'picking_type_id' :[('code','in',['incoming'])]
+                }
+            }
+
 
 class ManagementGoodRequestLine(models.Model):
 
@@ -205,10 +258,23 @@ class ManagementGoodRequestLine(models.Model):
             self.uom_id = self.product_id.uom_id
 
 
-# class ManagementGoodReturnLine(models.Model):
-#
-#     _name = 'management.good.request.line'
-#     _description = 'Management Good Request Line '
+class ManagementGoodReturnLine(models.Model):
+
+    _name = 'management.good.return.line'
+    _description = 'Management Good Return Line'
+
+    product_id = fields.Many2one('product.product','Product')
+    code_product = fields.Char('Product Code')
+    uom_id = fields.Many2one('product.uom','UOM')
+    qty = fields.Integer('Quantity Return')
+    code = fields.Char('Transaction Code')
+    block_id = fields.Many2one('estate.block.template', "Block", required=True,
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
+                                  ,('estate_location_type','=','planted')])
+    planted_year_id = fields.Many2one('estate.planted.year','Planted Year')
+    description = fields.Text('Description')
+    owner_id = fields.Integer()
+
 
 
 

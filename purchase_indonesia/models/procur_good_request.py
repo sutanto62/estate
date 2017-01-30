@@ -13,6 +13,30 @@ from openerp import tools
 
 class ProcurGoodRequest(models.Model):
 
+    #Method Get user
+    @api.multi
+    def _get_user(self):
+        #find User
+        user= self.env['res.users'].browse(self.env.uid)
+
+        return user
+
+    @api.multi
+    def _get_employee(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
+    @api.multi
+    def _get_user_manager(self):
+        #Find Employee user Manager
+        employeemanager = self.env['hr.employee'].search([('user_id','=',self._get_user().id)]).parent_id.id
+        assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
+
+        return assigned_manager
+
     _name = 'procur.good.request'
     _description = 'Request good from user to warehouse'
     _rec_name = 'complete_name'
@@ -28,7 +52,8 @@ class ProcurGoodRequest(models.Model):
                                                                         ('estate_location','=',False),('name','in',['Stock','stock'])])
     department_id = fields.Many2one('hr.department','Department')
     requester_id = fields.Many2one('hr.employee','Requester')
-    date_request = fields.Date('Date Request',required=True)
+    date_request = fields.Date('Date Request',default=fields.Date.context_today,required=True)
+    reject_reason = fields.Text('Reject Reason')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send Request'),
@@ -36,10 +61,17 @@ class ProcurGoodRequest(models.Model):
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True)
-    procur_request_line_ids = fields.One2many('procur.good.requestline','owner_id','Procur Good Request Line')
+    procur_request_line_ids = fields.One2many('procur.good.requestline','request_id','Procur Good Request Line')
     _defaults = {
         'state' : 'draft'
     }
+
+    @api.multi
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+
+        if self._get_employee().company_id.id:
+            self.company_id = self._get_employee().company_id.id
 
     #sequence
     def create(self, cr, uid,vals, context=None):
@@ -95,7 +127,7 @@ class ProcurGoodRequest(models.Model):
             res = self.env['management.good.request'].create(request_data)
 
 
-        for requestline in self.env['procur.good.requestline'].search([('owner_id','=',self.id)]):
+        for requestline in self.env['procur.good.requestline'].search([('request_id','=',self.id)]):
             requestline_data = {
                 'product_id':requestline.product_id.id,
                 'uom_id' : requestline.uom_id.id,
@@ -158,6 +190,19 @@ class ProcurGoodRequest(models.Model):
                 }
             }
 
+    @api.multi
+    @api.constrains('procur_request_line_ids')
+    def _constrains_product_request_id(self):
+        self.ensure_one()
+        if self.procur_request_line_ids:
+            temp={}
+            for part in self.procur_request_line_ids:
+                part_value_name = part.product_id.name
+                if part_value_name in temp.values():
+                    error_msg = "Product \"%s\" is set more than once " % part_value_name
+                    raise exceptions.ValidationError(error_msg)
+                temp[part.id] = part_value_name
+            return temp
 
 class ProcurGoodRequestLine(models.Model):
 
@@ -165,6 +210,7 @@ class ProcurGoodRequestLine(models.Model):
     _description = 'Line of Procur Good Request'
 
     product_id = fields.Many2one('product.product','Product')
+    request_id = fields.Many2one('procur.good.request','Request Id')
     uom_id = fields.Many2one('product.uom','UOM')
     qty = fields.Integer('Quantity Request')
     qty_done = fields.Integer('Quantity Actual')
@@ -189,5 +235,36 @@ class ProcurGoodRequestLine(models.Model):
         #onchange Planted year
         if self.block_id:
             self.planted_year_id = self.block_id.planted_year_id
+
+    @api.multi
+    @api.onchange('request_id','product_id')
+    def _onchange_product_purchase_request_line(self):
+        #use to onchange domain product same as product_category
+        if self.request_id.department_id:
+            arrProductCateg = []
+            mappingFuntional = self.env['mapping.department.product'].search([('department_id.id','=',self.request_id.department_id.id)])
+
+            for productcateg in mappingFuntional:
+                arrProductCateg.append(productcateg.product_category_id.id)
+
+            arrProdCatId = []
+            prod_categ = self.env['product.category'].search([('parent_id','in',arrProductCateg)])
+
+            for productcategparent in prod_categ:
+                arrProdCatId.append(productcategparent.id)
+
+            if prod_categ:
+                return  {
+                    'domain':{
+                        'product_id':[('categ_id','in',arrProdCatId)]
+                         }
+                    }
+            elif prod_categ != ():
+                return  {
+                    'domain':{
+                        'product_id':[('categ_id','in',arrProductCateg)]
+                         }
+                    }
+
 
 

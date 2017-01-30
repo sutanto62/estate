@@ -10,16 +10,14 @@
                  </xpath>
                  <xpath expr="//field[@name='partner_id']" position="before">
                      <field name="companys_id" string ="Company" attrs="{'readonly': [('state', '=', 'done')]}"/>
-                     <field name="type_location" string="Location" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                     <field name="type_location" string="Location" invisible="1"/>
+                     <field name="location" string="Location" attrs="{'readonly': [('state', '=', 'done')]}"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="replace">
                      <field name="origin" invisible="1"/>
                  </xpath>
-                 <xpath expr="//field[@name='age_seed']" position="replace">
-                     <field name="age_seed" attrs="{'invisible': [('not_seed', '=', True)]}"/>
-                     <field name="not_seed" invisible="1" />
-                 </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
+                     <field name="not_seed" invisible="1" />
                      <field name="purchase_id" string="Ref PO"/>
                      <field name="pr_source" string="REF PP NO" attrs="{'readonly': [('state', '=', 'done')]}"/>
                      <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>

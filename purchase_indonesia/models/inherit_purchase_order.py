@@ -22,9 +22,10 @@ class InheritPurchaseOrder(models.Model):
     days = fields.Float('Days Of Indent')
     companys_id = fields.Many2one('res.company','Company')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location')
+    location = fields.Char('Location')
     source_purchase_request = fields.Char('Source Purchase Request')
+    request_id = fields.Many2one('purchase.request','Purchase Request')
     po_no = fields.Char('Purchase order number')
     hide = fields.Boolean('Hide')
     confirmed_by = fields.Selection([
@@ -71,9 +72,9 @@ class InheritPurchaseOrder(models.Model):
               month -= ints[i] * count
             month = result
 
-            self.complete_name = self.po_no + ' / ' \
-                                 +str(month) +' / '+str(year)\
-                                 +' / '+self.companys_id.code+' / '\
+            self.complete_name = self.po_no + '/' \
+                                 +str(month) +'/'+str(year)\
+                                 +'/'+self.companys_id.code+'/'\
                                  +str(self.type_location)
         elif not self.po_no and self.date_order and self.companys_id.code and self.type_location:
             date = self.date_order
@@ -118,45 +119,6 @@ class InheritPurchaseOrder(models.Model):
     def print_purchase_order(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_purchase_order')
 
-    #todo change template email purchase_quotation
-    # @api.multi
-    # def action_rfq_send(self):
-    #     '''
-    #     This function opens a window to compose an email, with the edi purchase template message loaded by default
-    #     '''
-    #     self.ensure_one()
-    #     ir_model_data = self.env['ir.model.data']
-    #     try:
-    #         if self.env.context.get('send_rfq', False):
-    #             template_id = ir_model_data.get_object_reference('purchase_indonesia', 'new_email_template_edi_purchase')[1]
-    #         else:
-    #             template_id = ir_model_data.get_object_reference('purchase_indonesia', 'new_email_template_edi_purchase_done')[1]
-    #     except ValueError:
-    #         template_id = False
-    #     try:
-    #         compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
-    #     except ValueError:
-    #         compose_form_id = False
-    #     ctx = dict(self.env.context or {})
-    #     ctx.update({
-    #         'default_model': 'purchase.order',
-    #         'default_res_id': self.ids[0],
-    #         'default_use_template': bool(template_id),
-    #         'default_template_id': template_id,
-    #         'default_composition_mode': 'comment',
-    #     })
-    #     return {
-    #         'name': _('Compose Email'),
-    #         'type': 'ir.actions.act_window',
-    #         'view_type': 'form',
-    #         'view_mode': 'form',
-    #         'res_model': 'mail.compose.message',
-    #         'views': [(compose_form_id, 'form')],
-    #         'view_id': compose_form_id,
-    #         'target': 'new',
-    #         'context': ctx,
-    #     }
-
     @api.multi
     def _update_po_no(self):
         po = self.env['purchase.order'].search([('id','=',self.id)])
@@ -174,6 +136,7 @@ class InheritPurchaseOrder(models.Model):
                 'companys_id': purchase_order.companys_id.id,
                 'purchase_id': purchase_order.id,
                 'type_location': purchase_order.type_location,
+                'location':purchase_order.location,
                 'pr_source' : purchase_order.source_purchase_request,
             }
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)

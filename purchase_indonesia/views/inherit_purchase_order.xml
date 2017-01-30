@@ -15,10 +15,12 @@
                  <xpath expr="//field[@name='partner_id']" position="before">
                           <field name="po_no" string="Name" invisible="1"/>
                           <field name="companys_id" string="Company" invisible="0" required="0" options="{'no_create_edit': True}"/>
-                          <field name="type_location" string="Location"/>
+                          <field name="type_location" string="Location" invisible="1"/>
+                          <field name="location" string="Location"/>
                  </xpath>
                  <xpath expr="//field[@name='date_order']" position="after">
-                          <field name="source_purchase_request" string="Source Purchase Request" />
+                          <field name="source_purchase_request" invisible="1" string="Source Purchase Request" />
+                          <field name="request_id" string="PP NO"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
                           <field name="confirmed_by" string="Confirmed By" attrs="{'invisible': [('state','=', 'purchase')]}"/>

@@ -24,19 +24,50 @@
              <field name="model">purchase.requisition</field>
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
              <field name="arch" type="xml">
+
+                 <!--<xpath expr="//header/button[@name='sent_suppliers']" position="before">-->
+                     <!--<button name="print_purchase_request_tender" string="Print PR/PP" type="object"  groups="purchase_request.group_purchase_request_procstaff"/>-->
+                 <!--</xpath>-->
+
                  <xpath expr="//h1/field[@name='name']" position="replace">
                            <field name="complete_name" class="oe_inline" invisible="0"
                                attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
+
+                 <xpath expr="//field[@name='origin']" position="replace">
+                     <field name="origin" placeholder="e.g. PO0025"
+                            invisible="1"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='origin']" position="after">
+                     <field name="request_id" readonly="1" string="No PP"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='schedule_date']" position="replace">
+                     <field name="schedule_date" string="Due Date" invisible="1" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='schedule_date']" position="after">
+                     <field name="due_date" string="Due Date" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                     <field name="validation_due_date" invisible="1"/>
+                 </xpath>
+
                  <xpath expr="//field[@name='user_id']" position="after">
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
-                     <field name="type_location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                     <field name="type_location" string="Location" invisible="1"/>
+                     <field name="location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
                  <xpath expr="//tree/field[@name='product_qty']" position="after">
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
                            <field name="qty_outstanding" class="oe_inline" invisible="0"
                                readonly="0"/>
+                 </xpath>
+                 <xpath expr="//tree/field[@name='schedule_date']" position="replace">
+                           <field name="schedule_date" string="Due Date" invisible="1"/>
+                 </xpath>
+                 <xpath expr="//form/group/field[@name='schedule_date']" position="replace">
+                           <field name="schedule_date" string="Due Date" invisible="1"/>
                  </xpath>
                  <xpath expr="//tree/field[@name='name']" position="replace">
                         <field name="name" invisible="1" string="Reference"/>
@@ -52,13 +83,28 @@
              </field>
          </record>
 
+        <record model="ir.ui.view" id="inherit_purchase_requisition_tree">
+             <field name="name">Inherit purchase requisition Tree</field>
+             <field name="model">purchase.requisition</field>
+             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//tree" position="attributes">
+                          <attribute name='colors'>red:validation_due_date==True</attribute>
+                 </xpath>
+             </field>
+         </record>
+
         <record model="ir.ui.view" id="view_form_inherit_purchase_requisition_tree">
              <field name="name">Inherit Purchase Requisition Tree</field>
              <field name="model">purchase.requisition</field>
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='name']" position="replace">
-                           <field name="complete_name" invisible="0"/>
+                     <field name="complete_name" invisible="0"/>
+                 </xpath>
+                 <xpath expr="//field[@name='ordering_date']" position="after">
+                     <field name="due_date" string="Due Date"/>
+                     <field name="validation_due_date" invisible="1"/>
                  </xpath>
 
              </field>

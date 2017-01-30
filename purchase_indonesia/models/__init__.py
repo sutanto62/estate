@@ -10,3 +10,4 @@ import quotation_comparison_form
 import inherit_purchase_tenders
 import procur_good_returns
 import tracking_approval
+import mapping_department_to_product

@@ -23,6 +23,7 @@
 
     # always loaded
     'data': [
+        'security/purchase_request.xml',
         'security/ir.model.access.csv',
         'wizard/reject.xml',
         # 'wizard/inherit_purchase_indonesia_requisition_partner.xml',
@@ -44,7 +45,9 @@
         'views/inherit_purchase_tender.xml',
         'views/procurement_process.xml',
         'views/procur_return_view.xml',
+        'views/mapping_department_to_product.xml',
         'workflow/workflow_procur_good_request.xml',
+        'workflow/workflow_procur_good_return.xml',
         'workflow/workflow_management_good_request.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
@@ -60,6 +63,8 @@
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
+        'demo/account_payment_term.xml',
+        'demo/stock_incoterms.xml'
     ],
     'qweb': [
         'static/src/xml/purchase_requisition.xml',

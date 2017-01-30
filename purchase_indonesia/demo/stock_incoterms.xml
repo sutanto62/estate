@@ -1,0 +1,19 @@
+<openerp>
+    <data>
+        <record id="invoterm_stock_1" model="stock.incoterms">
+            <field name="name">FRANCO PT</field>
+            <field name="code">FPT</field>
+            <field name="active">True</field>
+        </record>
+        <record id="invoterm_stock_2" model="stock.incoterms">
+            <field name="name">LOCO Vendor</field>
+            <field name="code">LCV</field>
+            <field name="active">True</field>
+        </record>
+        <record id="invoterm_stock_3" model="stock.incoterms">
+            <field name="name">LOCO Ekspedisi</field>
+            <field name="code">LCE</field>
+            <field name="active">True</field>
+        </record>
+    </data>
+</openerp>

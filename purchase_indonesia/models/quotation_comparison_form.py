@@ -26,6 +26,27 @@ class InheritPurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     comparison_id = fields.Many2one('quotation.comparison.form','QCF')
+    trigger_state = fields.Boolean('Trigger State')
+    trigger_filter_cancel = fields.Boolean('Trigger Cancel',default=False,compute='_filter_cancel')
+
+    @api.multi
+    def button_confirm(self):
+        self.write({'trigger_state':True})
+        res = super(InheritPurchaseOrderLine,self).button_confirm()
+        return res
+
+    @api.multi
+    def button_cancel(self):
+        self.write({'trigger_state':False})
+        res = super(InheritPurchaseOrderLine,self).button_cancel()
+        return res
+
+    @api.multi
+    @api.depends('order_id')
+    def _filter_cancel(self):
+        for item in self:
+            if item.order_id.state == 'cancel':
+                item.trigger_filter_cancel = True
 
 
 class QuotationComparisonForm(models.Model):
@@ -42,17 +63,173 @@ class QuotationComparisonForm(models.Model):
             return res
         return False
 
+    @api.multi
+    def purchase_request_dpt_head(self):
+        return 'Purchase Request Department Head'
+
+    @api.multi
+    def purchase_request_division_head(self):
+        return 'Purchase Request Division Head'
+
+    @api.multi
+    def purchase_request_budget(self):
+        return 'Purchase Request Budget'
+
+    @api.multi
+    def purchase_request_technical1(self):
+        return 'Purchase Request Technical Dept Head'
+
+    @api.multi
+    def purchase_request_technical2(self):
+        return 'Purchase Request Technical Div Head'
+
+    @api.multi
+    def purchase_request_technical3(self):
+        return 'Purchase Request Technical ICT'
+
+    @api.multi
+    def purchase_request_technical4(self):
+        return 'Purchase Request Technical Agronomy'
+
+    @api.multi
+    def purchase_request_technical5(self):
+        return 'Purchase Request Technical IE'
+
+    @api.multi
+    def purchase_request_director(self):
+        return 'Purchase Request Director'
+
+    @api.multi
+    def purchase_request_president_director(self):
+        return 'Purchase Request President Director'
+
+    @api.multi
+    def purchase_ro_head(self):
+        return 'Purchase Request RO Head'
+
+    @api.multi
+    def purchase_procurement_staff(self):
+        return 'Purchase Request Procurment Staff'
+
+    @api.multi
+    def purchase_request_manager(self):
+        return 'Purchase Request Manager'
+
+    @api.multi
+    def purchase_request_finance(self):
+        return 'Purchase Request Finance Procurement'
+
+    #Method Get user
+    @api.multi
+    def _get_user(self):
+        #find User
+        user= self.env['res.users'].browse(self.env.uid)
+
+        return user
+
+    @api.multi
+    def _get_employee(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
+    @api.multi
+    def _get_user_ro_manager(self):
+        #get List of Ro Manager from user.groups
+        arrRO = []
+
+        list_ro_manager = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
+
+        for ro_manager_id in list_ro_manager:
+                arrRO.append(ro_manager_id.id)
+        try:
+            ro_manager = self.env['res.users'].search([('id','in',arrRO)]).id
+        except:
+            raise exceptions.ValidationError('User get Role President Director Not Found in User Access')
+
+        return ro_manager
+
+    @api.multi
+    def _get_president_director(self):
+        #get List of president director from user.groups
+        arrPresidentDirector = []
+
+        #search User President director from user list
+        list_president= self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
+
+        for president_id in list_president:
+            arrPresidentDirector.append(president_id.id)
+        try:
+            president = self.env['res.users'].search([('id','=',arrPresidentDirector[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role President Director Not Found in User Access')
+        return president
+
+    @api.multi
+    def _get_director(self):
+        #get List of director from user.groups
+        arrDirector = []
+
+        #search User Director from user list
+        list_director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
+        for director_id in list_director:
+            arrDirector.append(director_id.id)
+        try:
+            director = self.env['res.users'].search([('id','=',arrDirector[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Director Purchase Not Found in User Access')
+        return director
+
+    @api.multi
+    def _get_division_finance(self):
+        #get List of Finance from user.groups
+        arrDivhead = []
+
+        #search User Finance from user list
+        listdivision= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
+
+        for divhead in listdivision:
+            arrDivhead.append(divhead.id)
+        try:
+            division = self.env['res.users'].search([('id','=',arrDivhead[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Division Head Not Found in User Access')
+
+        return division
+
+    @api.multi
+    def _get_procurement_finance(self):
+        #get List of Finance from user.groups
+        arrFinancehead = []
+
+        #search User Finance from user list
+        listprocurement= self.env['res.groups'].search([('name','like',self.purchase_request_finance())]).users
+
+        for financeproc in listprocurement:
+            arrFinancehead.append(financeproc.id)
+        try:
+            fin_procur = self.env['res.users'].search([('id','=',arrFinancehead[0])]).id
+        except:
+            raise exceptions.ValidationError('User get Role Finance Procurement Not Found in User Access')
+
+        return fin_procur
+
+
+
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
     _order = 'complete_name desc'
     _inherit=['mail.thread']
 
-
     name = fields.Char('name')
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     date_pp = fields.Date('Date')
-    type_location = fields.Selection([('KOKB','Estate'),
-                                     ('KPST','HO'),('KPWK','RO')],'Location Type')
+    type_location = fields.Char('Location')
+    pic_id = fields.Many2one('res.users','Created By')
+    assign_to = fields.Many2one('res.users','Approver by')
+    location = fields.Char('Location')
     origin = fields.Char('Source Purchase Request')
     partner_id = fields.Many2one('res.partner')
     company_id = fields.Many2one('res.company','Company')
@@ -60,12 +237,12 @@ class QuotationComparisonForm(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Send QCF'),
-        ('confirm2','Send QCF'),
-        ('approve','Approve Finance'),
-        ('approve1', 'Approve GM'),
-        ('approve2','Approve Director'),
-        ('approve3','Approve President Director'),
-        ('approve4','Approve head of the representative office'),
+        ('confirm2','Send QCF RO'),
+        ('approve','Approval Finance'),
+        ('approve1', 'Approval GM Finance'),
+        ('approve2','Approval Director'),
+        ('approve3','Approval President Director'),
+        ('approve4','Approval Head of the Representative Office'),
         ('done', 'Done'),
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
@@ -73,6 +250,7 @@ class QuotationComparisonForm(models.Model):
     reject_reason = fields.Text('Reject Reason')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
+    purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line')
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -91,10 +269,51 @@ class QuotationComparisonForm(models.Model):
     }
 
     @api.multi
+    def generated_po(self):
+        po_lines = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)])
+        po_lines.generate_po()
+
+    @api.multi
     def create(self,vals, context=None):
         vals['name']=self.env['ir.sequence'].next_by_code('quotation.comparison.form')
         res=super(QuotationComparisonForm, self).create(vals)
         return res
+
+    @api.multi
+    def _get_purchase_request(self):
+        #get Purchase.request model
+        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
+        return purchase_request
+    
+    @api.multi
+    def _get_max_price(self):
+        purchase_request_a = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)]).purchase_ids
+        price = max(purchase.amount_total for purchase in purchase_request_a)
+        return price
+
+    @api.multi
+    def _get_price_low(self):
+        #get Minimal price from purchase params for Quotation comparison Form
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        price = min(price.value_params for price in price_standard)
+        return float(price)
+
+    @api.multi
+    def _get_price_mid(self):
+        #get middle price from purchase params for Quotation comparison Form
+        arrMid = []
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        for price in price_standard:
+            arrMid.append(price.value_params)
+        price = arrMid[1]
+        return float(price)
+    
+    @api.multi
+    def _get_price_high(self):
+        #get Maximal price from purchase params for Quotation comparison Form
+        price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
+        price = max(price.value_params for price in price_standard)
+        return float(price)
 
     @api.one
     @api.depends('name','date_pp','company_id','type_location')
@@ -124,7 +343,7 @@ class QuotationComparisonForm(models.Model):
             month = result
 
             self.complete_name = self.name + '/' \
-                                 + self.company_id.code+' - '\
+                                 + self.company_id.code+'-'\
                                  +'QCF'+'/'\
                                  +str(self.type_location)+'/'+str(month)+'/'+str(year)
         else:
@@ -145,117 +364,59 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_send(self):
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST':
-            self.write({'state' : 'confirm'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK':
-            self.write({'state' : 'confirm2'})
-            self.tracking_approval()
+        if self._get_purchase_request().code == 'KPST':
+            self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
+        elif self._get_purchase_request().code in ['KOKB','KPWK']:
+            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
         return True
 
     @api.multi
     def button_draft(self):
         for rec in self:
             rec.state = 'draft'
-            self.tracking_approval()
-        return True
-
-    @api.multi
-    def action_confirm(self):
-        """ Confirms QCF.
-        """
-        self.write({'state' : 'approve'})
-        self.tracking_approval()
-
-    @api.multi
-    def action_confirm2(self):
-        """ Confirms QCF.
-        """
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price <= float(price_standard3):
-            self.write({'state' : 'approve4'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard3):
-            self.write({'state' : 'approve4'})
-            self.tracking_approval()
         return True
 
     @api.multi
     def action_approve(self):
-
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price < float(price_standard3):
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
-            self.write({'state' : 'approve1'})
-            self.tracking_approval()
+            self.generated_po()
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() > self._get_price_low():
+            self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
 
     @api.multi
     def action_approve1(self):
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price < float(price_standard1):
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
-            self.write({'state' : 'approve2'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price < float(price_standard1):
-            self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
-            self.write({'state' : 'approve2'})
-            self.tracking_approval()
-        return True
+            self.generated_po()
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
+            self.write({'state' : 'approve2','assign_to':self._get_director()})
 
     @api.multi
     def action_approve2(self):
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard2 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',50000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard1):
+        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPST' and purchase_request.total_estimate_price >= float(price_standard2):
-            self.write({'state' : 'approve3'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
-            self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard2):
-            self.write({'state' : 'approve3'})
-            self.tracking_approval()
-        return True
+            self.generated_po()
+        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
+            self.write({'state' : 'approve3','assign_to':self._get_president_director()})
 
     @api.multi
     def action_approve3(self):
         self.write({'state': 'done'})
-        self.tracking_approval()
+        self.generated_po()
         return True
 
     @api.multi
     def action_approve4(self):
-        price_standard1 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',10000000)]).value_params
-        price_standard3 = self.env['purchase.params.setting'].search([('name','=',self._name),('value_params','=',1000000)]).value_params
-        purchase_request = self.env['purchase.request'].search([('complete_name','like',self.origin)])
-        if purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price < float(price_standard3):
+        if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
-            self.tracking_approval()
-        elif purchase_request.type_location == 'KPWK' and purchase_request.total_estimate_price >= float(price_standard1):
-            self.write({'state' : 'approve1'})
-            self.tracking_approval()
+            self.generated_po()
+        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
+            self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
         return True
 
     def action_done(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'done'})
-        self.tracking_approval()
         return True
 
     @api.multi
@@ -301,6 +462,49 @@ class QuotationComparisonForm(models.Model):
         }
         res['domain'] = [('id', 'in', [line.id for line in po_lines])]
         return res
+
+    @api.multi
+    def change_remarks(self):
+        self._get_value_purchase_order_line()
+
+    @api.multi
+    def _get_value_purchase_order_line(self):
+        remarks = ''
+        v_remarks = ''
+        goods_name = ''
+        vendor_name = ''
+        payment_term = ''
+        goods_price = ''
+        delivery_term = ''
+        incoterm = ''
+
+        for item in self:
+
+            order_line = item.env['purchase.order.line'].search([('comparison_id','=',item.id),('trigger_state','=',True)])
+
+            for record in order_line:
+
+
+                goods_name = '' if not record.product_id.name else record.product_id.name
+                vendor_name = '' if not record.partner_id.name else record.partner_id.name
+                goods_price = '' if not str(record.price_unit) else str(record.price_unit)
+
+                purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
+                for record in purchase:
+                    delivery_term = '' if not record.delivery_term else record.delivery_term
+                    incoterm = '' if not record.incoterm_id.name else record.incoterm_id.name
+                    payment_term = '' if not record.payment_term_id.name else record.payment_term_id.name
+
+                v_remarks =  '* Item dengan nama barang '+' '+ goods_name \
+                             +' Vendor yang di pilih adalah '+' '+vendor_name \
+                             +' karena Kondisi Barang '+delivery_term\
+                             +' memberikan harga kompetitif dengan harga '+goods_price\
+                             +' dengan klausul pembayaran '+payment_term\
+                             +' incoterm bertipe ' + incoterm\
+                             +'\n'+'\n'
+                remarks = remarks + v_remarks
+
+            item.remarks = remarks
 
 
 class QuotationComparisonFormLine(models.Model):
@@ -457,16 +661,16 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,cast(sum(vendor10) as varchar) vendor10,cast('' as varchar) po_des_all_name,4 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
-                                                     MAX(CASE WHEN r.rownum = 1 THEN r.price_unit ELSE NULL END) AS "vendor1",
-                                                     MAX(CASE WHEN r.rownum = 2 THEN r.price_unit ELSE NULL END) AS "vendor2",
-                                                     MAX(CASE WHEN r.rownum = 3 THEN r.price_unit ELSE NULL END) AS "vendor3",
-                                                     MAX(CASE WHEN r.rownum = 4 THEN r.price_unit ELSE NULL END) AS "vendor4",
-                                                     MAX(CASE WHEN r.rownum = 5 THEN r.price_unit ELSE NULL END) AS "vendor5",
-                                                     MAX(CASE WHEN r.rownum = 6 THEN r.price_unit ELSE NULL END) AS "vendor6",
-	                                                 MAX(CASE WHEN r.rownum = 7 THEN r.price_unit ELSE NULL END) AS "vendor7",
-	                                                 MAX(CASE WHEN r.rownum = 8 THEN r.price_unit ELSE NULL END) AS "vendor8",
-	                                                 MAX(CASE WHEN r.rownum = 9 THEN r.price_unit ELSE NULL END) AS "vendor9",
-	                                                 MAX(CASE WHEN r.rownum = 10 THEN r.price_unit ELSE NULL END) AS "vendor10"
+                                                     MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
+                                                     MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
+                                                     MAX(CASE WHEN r.rownum = 3 THEN r.price_subtotal ELSE NULL END) AS "vendor3",
+                                                     MAX(CASE WHEN r.rownum = 4 THEN r.price_subtotal ELSE NULL END) AS "vendor4",
+                                                     MAX(CASE WHEN r.rownum = 5 THEN r.price_subtotal ELSE NULL END) AS "vendor5",
+                                                     MAX(CASE WHEN r.rownum = 6 THEN r.price_subtotal ELSE NULL END) AS "vendor6",
+	                                                 MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
+	                                                 MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
+	                                                 MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
+	                                                 MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,po_des_all_name,
@@ -508,26 +712,28 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         )h group by req_id)footer2
                                         union all
                                         select * from (
-                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,
-                                        cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,
-                                        cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,
-                                        cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,
-                                        cast(sum(vendor10) as varchar) vendor10,cast('' as varchar) po_des_all_name,6 isheader from (
+                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+                                        cast(max(vendor1) as varchar) vendor1,cast(max(vendor2) as varchar) vendor2,
+                                        cast(max(vendor3) as varchar) vendor3,cast(max(vendor4) as varchar) vendor4,
+                                        cast(max(vendor5) as varchar) vendor5,cast(max(vendor6) as varchar) vendor6,
+                                        cast(max(vendor7) as varchar) vendor7,cast(max(vendor8) as varchar) vendor8,
+                                        cast(max(vendor9) as varchar) vendor9,cast(max(vendor10) as varchar) vendor10,
+                                        cast('' as varchar) po_des_all_name,6 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
-                                                     MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
-                                                     MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
-                                                     MAX(CASE WHEN r.rownum = 3 THEN r.price_subtotal ELSE NULL END) AS "vendor3",
-                                                     MAX(CASE WHEN r.rownum = 4 THEN r.price_subtotal ELSE NULL END) AS "vendor4",
-                                                     MAX(CASE WHEN r.rownum = 5 THEN r.price_subtotal ELSE NULL END) AS "vendor5",
-                                                     MAX(CASE WHEN r.rownum = 6 THEN r.price_subtotal ELSE NULL END) AS "vendor6",
-                                                     MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
-                                                     MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
-                                                     MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
-                                                     MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
-                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+                                                     MAX(CASE WHEN r.rownum = 1 THEN r.amount_total ELSE NULL END) AS "vendor1",
+                                                     MAX(CASE WHEN r.rownum = 2 THEN r.amount_total ELSE NULL END) AS "vendor2",
+                                                     MAX(CASE WHEN r.rownum = 3 THEN r.amount_total ELSE NULL END) AS "vendor3",
+                                                     MAX(CASE WHEN r.rownum = 4 THEN r.amount_total ELSE NULL END) AS "vendor4",
+                                                     MAX(CASE WHEN r.rownum = 5 THEN r.amount_total ELSE NULL END) AS "vendor5",
+                                                     MAX(CASE WHEN r.rownum = 6 THEN r.amount_total ELSE NULL END) AS "vendor6",
+                                                     MAX(CASE WHEN r.rownum = 7 THEN r.amount_total ELSE NULL END) AS "vendor7",
+                                                     MAX(CASE WHEN r.rownum = 8 THEN r.amount_total ELSE NULL END) AS "vendor8",
+                                                     MAX(CASE WHEN r.rownum = 9 THEN r.amount_total ELSE NULL END) AS "vendor9",
+                                                     MAX(CASE WHEN r.rownum = 10 THEN r.amount_total ELSE NULL END) AS "vendor10"
+                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
