@@ -1,0 +1,39 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="inherit_mro_order_to_purchase_request">
+             <field name="name">Inherit mro order purchase request</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='company_id']" position="after">
+                        <field name="mro_order_id" string ='Maintenance Order' class="oe_inline"
+                               readonly="1" attrs="{'invisible': [('validation_mro', '!=', True)]}"/>
+                        <field name="validation_mro" invisible="1"/>
+                 </xpath>
+             </field>
+         </record>
+
+         <record id="purchase_request_workshop" model="ir.actions.act_window">
+            <field name="name">Purchase Request Workshop</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state','=','exception')]</field>
+        </record>
+
+
+        <record model="ir.ui.view" id="inherit_purchase_request_planning_mro_workshop">
+             <field name="name">Inherit Planning Mro Workshop</field>
+             <field name="model">mro.order</field>
+             <field name="inherit_id" ref="estate_workshop.view_form_inherit_field_type_service_template"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='location_id']" position="after">
+                     <button name="%(purchase_workshop.purchase_request_workshop)d" string="Part Request"
+                     target="new" type="action" icon="fa-shopping-cart" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                 </xpath>
+             </field>
+         </record>
+
+    </data>
+</openerp>
