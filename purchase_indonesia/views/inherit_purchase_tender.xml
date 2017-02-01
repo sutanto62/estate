@@ -110,5 +110,42 @@
              </field>
          </record>
 
+        <record id="purchase_requisition.purchase_requisition_dashboard_kanban_view" model="ir.ui.view">
+            <field name="name">purchase.requisition.dashboard.kanban</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                <kanban create="false" class="oe_background_grey o_kanban_dashboard o_account_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <templates>
+                        <t t-name="kanban-box">
+
+                        </t>
+                </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="purchase_requisition.action_purchase_requisition">
+            <field name="name">Purchase Tenders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.requisition</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <field name="context">{"search_default_user_id":uid}</field>
+            <field name="search_view_id" ref="purchase_requisition.view_purchase_requisition_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new Call for Tenders process.
+              </p><p>
+                A Call for Tenders is a procedure for generating competing offers from
+                different bidders. In the call for tenders, you can record the
+                products you need to buy and generate the creation of RfQs to
+                vendors. Once the tenders have been registered, you can review and
+                compare them and you can validate some and cancel others.
+              </p>
+            </field>
+        </record>
+
     </data>
 </openerp>
