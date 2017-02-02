@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-13 05:22+0000\n"
-"PO-Revision-Date: 2017-01-13 12:27+0700\n"
+"POT-Creation-Date: 2017-02-02 04:35+0000\n"
+"PO-Revision-Date: 2017-02-02 11:45+0700\n"
 "Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: palma group\n"
 "Language: en\n"
@@ -24,13 +24,13 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:287
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:309
 #, python-format
 msgid "%s approved imported AMS fingerprint at %s (server time)"
 msgstr "%s menyetujui semua data impor fingerprint AMS pada %s (waktu server)"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:269
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:291
 #, python-format
 msgid "%s confirmed imported AMS fingerprint at %s (server time)"
 msgstr ""
@@ -103,11 +103,6 @@ msgid "Auto Assign"
 msgstr "Jam Otomatis"
 
 #. module: hr_fingerprint_ams
-#: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint
-msgid "Compare number of day with fingerprint."
-msgstr ""
-
-#. module: hr_fingerprint_ams
 #: model:ir.actions.server,name:hr_fingerprint_ams.action_hr_fingerprint_confirm
 msgid "Confirm All"
 msgstr "Konfirmasi Semua"
@@ -116,18 +111,20 @@ msgstr "Konfirmasi Semua"
 #: selection:hr_fingerprint_ams.attendance,state:0
 #: selection:hr_fingerprint_ams.fingerprint,state:0
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_form
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Confirmed"
 msgstr "Konfirm"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_contract_period
 msgid "Contract Period"
-msgstr ""
+msgstr "Periode Kontrak"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_contract_type
 msgid "Contract Type"
-msgstr ""
+msgstr "Tipe Kontrak"
 
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
@@ -148,7 +145,7 @@ msgstr "Dibuat pada"
 #. module: hr_fingerprint_ams
 #: selection:hr.action.reason,contract_period:0
 msgid "Daily"
-msgstr ""
+msgstr "Harian"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_date
@@ -173,14 +170,10 @@ msgstr "Nama Lengkap"
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 #: selection:hr_fingerprint_ams.fingerprint,state:0
-msgid "Draft"
-msgstr "Draft"
-
-#. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
-msgid "Draft/Confirmed"
-msgstr "Draft/Confirmed"
+msgid "Draft"
+msgstr "Draft"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_hour_early_leave
@@ -203,6 +196,13 @@ msgstr "ID Karyawan dan Tanggal BKM"
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_employee_name
 msgid "Employee Name"
 msgstr "Nama Karyawan"
+
+#. module: hr_fingerprint_ams
+#: constraint:hr.attendance:0
+msgid "Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)"
+msgstr ""
+"Error ! Sidik jari masuk (atau keluar) harus setelah sidik jari keluar (atau "
+"masuk)"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_day_finger
@@ -230,6 +230,13 @@ msgstr "Sidik Jari"
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Fingerprint Data"
 msgstr "Data Sidik Jari"
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:116
+#, python-format
+msgid "Fingerprint not created. %s (%s), %s is not registered as employee."
+msgstr ""
+"Fingerprint tidak dicatat. %s (%s), %s tidak terdaftar sebagai karyawan."
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_state
@@ -282,6 +289,11 @@ msgid "Included time rest"
 msgstr "Termasuk jam istirahat"
 
 #. module: hr_fingerprint_ams
+#: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint
+msgid "Labour Fingerprint"
+msgstr "Sidik Jari"
+
+#. module: hr_fingerprint_ams
 #: model:ir.actions.act_window,name:hr_fingerprint_ams.labour_fingerprint_report_action
 #: model:ir.ui.menu,name:hr_fingerprint_ams.labour_fingerprint_report_menu
 msgid "Labour Fingerprint Report"
@@ -311,7 +323,7 @@ msgstr "Terlambat Masuk"
 #. module: hr_fingerprint_ams
 #: selection:hr.action.reason,contract_period:0
 msgid "Monthly"
-msgstr ""
+msgstr "Bulanan"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_nik
@@ -376,6 +388,20 @@ msgstr ""
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Payslip"
 msgstr "Payslip"
+
+#. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+msgid "Previous Month"
+msgstr "Bulan Lalu"
+
+#. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+msgid "Previous Week"
+msgstr "Minggu Lalu"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_required_in
@@ -455,7 +481,7 @@ msgstr "Format waktu hh:mm"
 #. module: hr_fingerprint_ams
 #: model:ir.model,name:hr_fingerprint_ams.model_estate_upkeep_labour
 msgid "Upkeep Labour"
-msgstr ""
+msgstr "Tenaga Kerja"
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_work_schedules
@@ -504,22 +530,28 @@ msgid "Yes"
 msgstr "Ada"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:277
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:299
 #, python-format
 msgid "You are not authorized to approve all fingerprint imported data"
 msgstr "Anda tidak memiliki hak Setujui Semua"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:259
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:281
 #, python-format
 msgid "You are not authorized to confirm all fingerprint imported data"
 msgstr "Anda tidak memiliki hak Konfirmasi Semua"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:197
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:218
 #, python-format
 msgid "You cannot delete approved Fingerprint records."
 msgstr "Tidak boleh menghapus data fingprint yang telah disetujui."
+
+#~ msgid "Compare number of day with fingerprint."
+#~ msgstr "Membandingkan jumlah HK dg presensi sidik jari"
+
+#~ msgid "Draft/Confirmed"
+#~ msgstr "Draft/Confirmed"
 
 #~ msgid "Compare number of day with fingerprint"
 #~ msgstr "Membandingkan jumlah HK dg presensi sidik jari"

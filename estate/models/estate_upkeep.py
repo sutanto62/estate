@@ -509,6 +509,7 @@ class UpkeepActivity(models.Model):
     # line_id = fields.Many2one('account.analytic.line', 'Analytic Line', ondelete='cascade', required=True),
     activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'),('activity_type', '=', 'estate')],
                                   track_visibility='onchange', help='Any update will reset Block.', required=True)
+    general_account_id = fields.Many2one(related='activity_id.general_account_id')
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
 
     location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id', string='Location',
