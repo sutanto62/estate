@@ -506,6 +506,13 @@ class InheritPurchaseRequest(models.Model):
         return True
 
     @api.multi
+    def action_revert(self):
+        """ revert approval to financial approval.
+        """
+        state_data = {'state':'approval4','assigned_to' : self._get_division_finance()}
+        self.write(state_data)
+
+    @api.multi
     def action_financial_approval1(self):
         """ Confirms department Head Financial Approval.
         """
@@ -921,6 +928,16 @@ class InheritPurchaseRequestLine(models.Model):
 
     _inherit = 'purchase.request.line'
     _description = 'Inherit Purchase Request Line'
+
+    @api.multi
+    @api.depends('product_id', 'name', 'product_uom_id', 'product_qty',
+                 'analytic_account_id', 'date_required', 'specifications')
+    def _compute_is_editable(self):
+        for rec in self:
+            if rec.request_id.state != 'draft':
+                rec.is_editable = False
+            else:
+                rec.is_editable = True
 
     price_per_product = fields.Float('Prod Price',compute='_compute_price_per_product')
     total_price = fields.Float('Total Price',compute='_compute_total_price')
