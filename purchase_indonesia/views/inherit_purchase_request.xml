@@ -202,7 +202,7 @@
                             class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
                      <button name="action_ro_head_approval" states="approval7"
                              string="Approve" type="object"
-                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of RO"/>
+                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of_ro"/>
                  </xpath>
 
                  <xpath expr="//button[@name='button_approved']" position="after">

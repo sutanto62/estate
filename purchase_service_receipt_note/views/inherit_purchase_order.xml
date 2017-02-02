@@ -1,0 +1,14 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="inherit_purchase_order_srn">
+             <field name="name">Inherit purchase order to SRN</field>
+             <field name="model">purchase.order</field>
+             <field name="inherit_id" ref="purchase.purchase_order_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='origin']" position="after">
+                          <field name="validation_srn" string=" Validation SRN" invisible="0"/>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>
