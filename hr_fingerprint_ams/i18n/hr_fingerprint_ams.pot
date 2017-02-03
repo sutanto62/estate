@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-13 05:22+0000\n"
-"PO-Revision-Date: 2017-01-13 05:22+0000\n"
+"POT-Creation-Date: 2017-02-02 04:35+0000\n"
+"PO-Revision-Date: 2017-02-02 04:35+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,13 +16,13 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:287
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:309
 #, python-format
 msgid "%s approved imported AMS fingerprint at %s (server time)"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:269
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:291
 #, python-format
 msgid "%s confirmed imported AMS fingerprint at %s (server time)"
 msgstr ""
@@ -94,11 +94,6 @@ msgid "Auto Assign"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint
-msgid "Compare number of day with fingerprint."
-msgstr ""
-
-#. module: hr_fingerprint_ams
 #: model:ir.actions.server,name:hr_fingerprint_ams.action_hr_fingerprint_confirm
 msgid "Confirm All"
 msgstr ""
@@ -107,6 +102,8 @@ msgstr ""
 #: selection:hr_fingerprint_ams.attendance,state:0
 #: selection:hr_fingerprint_ams.fingerprint,state:0
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_form
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Confirmed"
 msgstr ""
 
@@ -164,13 +161,9 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: selection:hr_fingerprint_ams.attendance,state:0
 #: selection:hr_fingerprint_ams.fingerprint,state:0
-msgid "Draft"
-msgstr ""
-
-#. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
-msgid "Draft/Confirmed"
+msgid "Draft"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -193,6 +186,11 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_employee_name
 msgid "Employee Name"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: constraint:hr.attendance:0
+msgid "Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -220,6 +218,12 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_form
 msgid "Fingerprint Data"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:116
+#, python-format
+msgid "Fingerprint not created. %s (%s), %s is not registered as employee."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -268,6 +272,11 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_worked_hours
 msgid "Included time rest"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint
+msgid "Labour Fingerprint"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -364,6 +373,20 @@ msgstr ""
 #: selection:hr_fingerprint_ams.fingerprint,state:0
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
 msgid "Payslip"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+msgid "Previous Month"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+msgid "Previous Week"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -493,19 +516,19 @@ msgid "Yes"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:277
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:299
 #, python-format
 msgid "You are not authorized to approve all fingerprint imported data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:259
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:281
 #, python-format
 msgid "You are not authorized to confirm all fingerprint imported data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/inherited_hr_attendance.py:197
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:218
 #, python-format
 msgid "You cannot delete approved Fingerprint records."
 msgstr ""

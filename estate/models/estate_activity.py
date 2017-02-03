@@ -156,6 +156,16 @@ class Activity(models.Model):
                 raise ValidationError(error_msg)
             return True
 
+    @api.multi
+    @api.constrains('contract', 'wage_method')
+    def _check_contract_wage_method(self):
+        """ Attendance based wage method should not be contractable."""
+        for record in self:
+            if record.wage_method == 'attendance' and record.contract:
+                error_msg = _("Contract only allowed for standard based wage method.")
+                raise ValidationError(error_msg)
+            return True
+
     @api.one
     def get_qty(self):
         """Encapsulated selection algorithm

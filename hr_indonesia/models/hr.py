@@ -91,7 +91,7 @@ class Employee(models.Model):
             res = seq_obj.with_context(ir_sequence_code_1='1').next_by_code('hr_indonesia.nik')
         elif vals.get('contract_type') == '2' and vals.get('contract_period') == '1':
             # Contract / PKWT Montly
-            res = seq_obj.with_context(ir_sequence_code_1='2').next_by_code('hr_indonesia.nik')
+            res = seq_obj.with_context(ir_sequence_code_1='2').next_by_code('hr_indonesia.nik_pkwt_monthly')
         else:
             return
         return res

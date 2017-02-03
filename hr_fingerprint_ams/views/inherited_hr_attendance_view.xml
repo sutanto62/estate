@@ -27,6 +27,23 @@
                 </xpath>
             </field>
         </record>
+        
+        <record id="inherited_hr_attendance_filter_view_search" model="ir.ui.view">
+            <field name="name">inherited_view_hr_attendance_filter</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.view_hr_attendance_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="before">
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('name','&lt;=',(context_today()+relativedelta(months=1,days=-1)).strftime('%Y-%m-%d')), ('name','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('name','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('name','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    
+                </xpath>
+            </field>
+        </record>
 
         <!-- move to hr_fingerprint.xml
         <record id="hr_attendance_ams_attendance_view_search" model="ir.ui.view">

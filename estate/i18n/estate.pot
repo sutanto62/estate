@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-13 05:22+0000\n"
-"PO-Revision-Date: 2017-01-13 05:22+0000\n"
+"POT-Creation-Date: 2017-02-02 05:02+0000\n"
+"PO-Revision-Date: 2017-02-02 05:02+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,39 +16,45 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:467
-#: code:addons/estate/models/estate_upkeep.py:1197
+#: code:addons/estate/models/estate_upkeep.py:459
+#: code:addons/estate/models/estate_upkeep.py:1218
 #, python-format
 msgid "%s approved upkeep data at %s (server time)"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:444
-#: code:addons/estate/models/estate_upkeep.py:1170
+#: code:addons/estate/models/estate_upkeep.py:440
+#: code:addons/estate/models/estate_upkeep.py:1191
 #, python-format
 msgid "%s confirmed upkeep data at %s (server time)"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1119
+#: code:addons/estate/models/estate_upkeep.py:1135
 #, python-format
 msgid "%s has %s number of day. Please change attendance code."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1127
+#: code:addons/estate/models/estate_upkeep.py:1144
 #, python-format
 msgid "%s has been work for more than 1 worked day."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1108
+#: code:addons/estate/models/estate_upkeep.py:1149
+#, python-format
+msgid "%s is going to work for more than 1 worked day."
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1122
 #, python-format
 msgid "%s not allowed to have piece rate due to under achievement of %s"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1111
+#: code:addons/estate/models/estate_upkeep.py:1127
 #, python-format
 msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr ""
@@ -579,6 +585,11 @@ msgstr ""
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "COA"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "CT"
 msgstr ""
 
@@ -675,7 +686,7 @@ msgid "Coefficient"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_activity.py:287
+#: code:addons/estate/models/estate_activity.py:297
 #, python-format
 msgid "Coefficient should in between 0 and 1"
 msgstr ""
@@ -737,9 +748,18 @@ msgid "Configure Estate"
 msgstr ""
 
 #. module: estate
+#: model:ir.actions.server,name:estate.upkeep_confirm_action
+#: model:ir.actions.server,name:estate.upkeep_labour_confirm_action
+msgid "Confirm All"
+msgstr ""
+
+#. module: estate
 #: selection:estate.operation,state:0
 #: selection:estate.upkeep,state:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Confirmed"
 msgstr ""
 
@@ -781,6 +801,12 @@ msgstr ""
 #: model:ir.model.fields,help:estate.field_estate_activity_contract
 #: model:ir.model.fields,help:estate.field_estate_upkeep_activity_activity_contract
 msgid "Contract based activity allows upkeep record without number of day"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_activity.py:165
+#, python-format
+msgid "Contract only allowed for standard based wage method."
 msgstr ""
 
 #. module: estate
@@ -974,6 +1000,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_date
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_upkeep_date
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
@@ -1184,14 +1211,14 @@ msgstr ""
 #: selection:estate.hr.team,state:0
 #: selection:estate.operation,state:0
 #: selection:estate.upkeep,state:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Draft"
 msgstr ""
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Draft/Confirmed"
 msgstr ""
 
@@ -1468,6 +1495,7 @@ msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_general_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_general_account_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_general_account_id
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
@@ -1688,7 +1716,7 @@ msgid "Labour Usage"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1009
+#: code:addons/estate/models/estate_upkeep.py:1023
 #, python-format
 msgid "Labour Usage should be created within Daily Upkeep"
 msgstr ""
@@ -1907,8 +1935,8 @@ msgid "Material Usage"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:649
-#: code:addons/estate/models/estate_upkeep.py:1313
+#: code:addons/estate/models/estate_upkeep.py:643
+#: code:addons/estate/models/estate_upkeep.py:1334
 #, python-format
 msgid "Material Usage should be created within Daily Upkeep"
 msgstr ""
@@ -2002,7 +2030,10 @@ msgid "Minimum should less than maximum."
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Month"
 msgstr ""
 
@@ -2033,7 +2064,7 @@ msgid "Name"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:844
+#: code:addons/estate/models/estate_upkeep.py:854
 #, python-format
 msgid "No Regional Wage defined."
 msgstr ""
@@ -2425,6 +2456,22 @@ msgid "Pre Nursery"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
+msgid "Previous Month"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
+msgid "Previous Week"
+msgstr ""
+
+#. module: estate
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 msgid "Print"
 msgstr ""
@@ -2650,6 +2697,7 @@ msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_activity_general_account_id
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_general_account_id
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_general_account_id
 msgid "Set as default general account."
 msgstr ""
@@ -3096,12 +3144,12 @@ msgid "Upkeep Activity Line"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:829
-#: code:addons/estate/models/estate_upkeep.py:842
-#: code:addons/estate/models/estate_upkeep.py:1016
-#: code:addons/estate/models/estate_upkeep.py:1070
-#: code:addons/estate/models/estate_upkeep.py:1320
-#: code:addons/estate/models/estate_upkeep.py:1350
+#: code:addons/estate/models/estate_upkeep.py:839
+#: code:addons/estate/models/estate_upkeep.py:852
+#: code:addons/estate/models/estate_upkeep.py:1030
+#: code:addons/estate/models/estate_upkeep.py:1084
+#: code:addons/estate/models/estate_upkeep.py:1341
+#: code:addons/estate/models/estate_upkeep.py:1371
 #, python-format
 msgid "Upkeep Activity should be defined first"
 msgstr ""
@@ -3229,15 +3277,23 @@ msgstr ""
 
 #. module: estate
 #: code:addons/estate/models/estate_hr.py:112
-#: code:addons/estate/models/estate_upkeep.py:648
-#: code:addons/estate/models/estate_upkeep.py:673
-#: code:addons/estate/models/estate_upkeep.py:1008
-#: code:addons/estate/models/estate_upkeep.py:1015
-#: code:addons/estate/models/estate_upkeep.py:1084
-#: code:addons/estate/models/estate_upkeep.py:1312
-#: code:addons/estate/models/estate_upkeep.py:1319
+#: code:addons/estate/models/estate_upkeep.py:642
+#: code:addons/estate/models/estate_upkeep.py:667
+#: code:addons/estate/models/estate_upkeep.py:1022
+#: code:addons/estate/models/estate_upkeep.py:1029
+#: code:addons/estate/models/estate_upkeep.py:1098
+#: code:addons/estate/models/estate_upkeep.py:1333
+#: code:addons/estate/models/estate_upkeep.py:1340
 #, python-format
 msgid "Warning!"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
+msgid "Week"
 msgstr ""
 
 #. module: estate
@@ -3252,7 +3308,7 @@ msgid "Weight"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_activity.py:202
+#: code:addons/estate/models/estate_activity.py:212
 #, python-format
 msgid "Weight value should between 0 and 1"
 msgstr ""
@@ -3294,13 +3350,13 @@ msgid "YTD"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:452
+#: code:addons/estate/models/estate_upkeep.py:448
 #, python-format
 msgid "You are not authorized to approve all upkeep data"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1178
+#: code:addons/estate/models/estate_upkeep.py:1199
 #, python-format
 msgid "You are not authorized to approve upkeep data"
 msgstr ""
@@ -3312,14 +3368,14 @@ msgid "You are not authorized to confirm all upkeep data"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1151
+#: code:addons/estate/models/estate_upkeep.py:1172
 #, python-format
 msgid "You are not authorized to confirm upkeep data"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:674
-#: code:addons/estate/models/estate_upkeep.py:1085
+#: code:addons/estate/models/estate_upkeep.py:668
+#: code:addons/estate/models/estate_upkeep.py:1099
 #, python-format
 msgid "You must first select a Division!"
 msgstr ""

@@ -75,7 +75,7 @@ class TestAttendance(TransactionCase):
         )
 
     def test_01_create_complete_fingerprint(self):
-        """ Create fingerprint attendance"""
+        """ Create and import fingerprint attendance"""
         vals = self.finger_in_out
 
         # I created a normal fingerprint (employee, nik, sign_in and sign_out)
@@ -162,6 +162,64 @@ class TestAttendance(TransactionCase):
         # fingerprint_kebun = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
         # self.assertFalse(fingerprint_kebun)
 
+    def test_05_update_complete_fingerprint(self):
+        """ Update fingerprint"""
+        vals = self.finger_in_out
+
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint, 'Fingerprint did not created.')
+
+        # I checked attendance
+        for attendance in fingerprint.attendance_ids:
+            self.assertTrue(attendance)
+            self.assertTrue(attendance.action in ('sign_in', 'sign_out', 'action'),
+                            'Action did not belong to in/out/action.')
+
+        # I changed imported sign_in and sign_out time
+        fingerprint_id = fingerprint.id
+        self.assertEqual(fingerprint.state, 'draft', 'Fingerprint should be draft.')
+
+        vals['sign_in'] = 5
+        vals['sign_out'] = 15
+
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertEqual(fingerprint.id, fingerprint_id, 'Fingerprint failed to update existing record')
+        self.assertEqual(fingerprint.sign_in, 5, 'Fingerprint failed to update sign_in.')
+        self.assertEqual(fingerprint.sign_out, 15, 'Fingerprint failed to update sign_out.')
+
+        for attendance in fingerprint.attendance_ids:
+            if attendance.action == 'sign_in':
+                self.assertEqual(attendance.name, '2015-12-31 22:00:00')
+            elif attendance.action == 'sign_out':
+                self.assertEqual(attendance.name, '2016-01-01 08:00:00')
+
+    def test_06_update_not_complete_fingerprint(self):
+        """ Update existing fingerprint's sign_in to 0."""
+        vals = self.finger_in_out
+
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+
+        # I change imported no action reason nor sign_in
+        vals['sign_in'] = 0
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertFalse(fingerprint, 'Fingerprint should not be created.')
+
+    def test_07_update_action_reason_fingerprint(self):
+        """ Update existing fingerprint's sign_in 0 with action reason"""
+        vals = self.finger_in_out
+
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+
+        # I change imported no action reason nor sign_in
+        vals['sign_in'] = 0
+        vals['action_reason'] = 'Leave'
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertEqual(fingerprint.sign_in, 0, 'Fingerprint failed to update sign_in.')
+        self.assertEqual(len(fingerprint.attendance_ids), 1, 'Fingerprint should return only 1 attendance.')
+        self.assertEqual(fingerprint.attendance_ids[0].action, 'action', 'Attendance should be an action.')
 
     def test_00_get_employee(self):
         """ Test to get active employee using name and employee identification number."""
