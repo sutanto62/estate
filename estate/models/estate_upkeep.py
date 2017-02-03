@@ -1139,13 +1139,12 @@ class UpkeepLabour(models.Model):
         upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
                                                               ('upkeep_date', '=', self.upkeep_date)])
         number_of_day = sum(item.number_of_day for item in upkeep_ids)
-        if number_of_day >= 1:
-            # Error if there was number_of_day >= 1
+
+        if number_of_day > 1.0:
             error_msg = _(
                 "%s has been work for more than 1 worked day." % self.employee_id.name)
             raise ValidationError(error_msg)
-        elif number_of_day + self.attendance_code_ratio >= 1:
-            # Error if total number_of_day >= 1
+        elif number_of_day + self.attendance_code_ratio > 1.0:
             error_msg = _(
                 "%s is going to work for more than 1 worked day." % self.employee_id.name)
             raise ValidationError(error_msg)
