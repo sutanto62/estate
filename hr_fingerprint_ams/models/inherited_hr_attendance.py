@@ -336,11 +336,13 @@ class HrAttendance(models.Model):
 
     def _altern_si_so(self, cr, uid, ids, context=None):
         """ Implementing this logic must be in old api. Using new api will not overide inheritance method"""
+
         for att in self.browse(cr, uid, ids, context=context):
-            if att.action == 'action':
+            # bypass super to allow insert old record
+            if att.action == 'action' or att.action == 'sign_in' or att.action == 'sign_out':
                 return True
             else:
-                return super(HrAttendance,self)._altern_si_so(cr, uid, ids, context)
+                return super(HrAttendance, self)._altern_si_so(cr, uid, ids, context)
 
     _constraints = [(_altern_si_so, 'Error ! Sign in (resp. Sign out) must follow Sign out (resp. Sign in)', ['action'])]
 

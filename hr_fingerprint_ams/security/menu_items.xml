@@ -13,5 +13,9 @@
             and the `ref()` method to resolve the group XML ID -->
             <field name="groups_id" eval="[(4,[ref('base.group_hr_attendance'),ref('base.group_hr_user')])]"/>
         </record>
+
+        <record id="hr_attendance.menu_open_view_attendance" model="ir.ui.menu">
+            <field name="groups_id" eval="[(4,[ref('base.group_hr_user')])]"/>
+        </record>
     </data>
 </openerp>
