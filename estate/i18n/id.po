@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-13 05:22+0000\n"
-"PO-Revision-Date: 2017-01-13 12:25+0700\n"
+"POT-Creation-Date: 2017-02-02 05:02+0000\n"
+"PO-Revision-Date: 2017-02-02 12:07+0700\n"
 "Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: palma group\n"
 "Language: id\n"
@@ -29,33 +29,39 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:467
-#: code:addons/estate/models/estate_upkeep.py:1197
+#: code:addons/estate/models/estate_upkeep.py:459
+#: code:addons/estate/models/estate_upkeep.py:1218
 #, python-format
 msgid "%s approved upkeep data at %s (server time)"
 msgstr "%s menyetujui semua BKM pada % (waktu server)"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:444
-#: code:addons/estate/models/estate_upkeep.py:1170
+#: code:addons/estate/models/estate_upkeep.py:440
+#: code:addons/estate/models/estate_upkeep.py:1191
 #, python-format
 msgid "%s confirmed upkeep data at %s (server time)"
 msgstr "%s mengkonfirmasi semua BKM pada % (waktu server)"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1119
+#: code:addons/estate/models/estate_upkeep.py:1135
 #, python-format
 msgid "%s has %s number of day. Please change attendance code."
 msgstr "%s HK %s. Harap ganti kode presensi agar sesuai."
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1127
+#: code:addons/estate/models/estate_upkeep.py:1144
 #, python-format
 msgid "%s has been work for more than 1 worked day."
-msgstr ""
+msgstr "%s telah bekerja lebih dari 1 HK"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1108
+#: code:addons/estate/models/estate_upkeep.py:1149
+#, python-format
+msgid "%s is going to work for more than 1 worked day."
+msgstr "%s akan mendapat lebih dari 1 HK."
+
+#. module: estate
+#: code:addons/estate/models/estate_upkeep.py:1122
 #, python-format
 msgid "%s not allowed to have piece rate due to under achievement of %s"
 msgstr ""
@@ -63,7 +69,7 @@ msgstr ""
 "di bawah standar."
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1111
+#: code:addons/estate/models/estate_upkeep.py:1127
 #, python-format
 msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr "Jumlah premi %s untuk kegiatan %s tidak boleh melebihi %s"
@@ -135,7 +141,7 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<strong>Total Cost</strong>"
-msgstr ""
+msgstr "<strong>Total Biaya</strong>"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_qty_tree_mature_abnormal
@@ -184,12 +190,12 @@ msgstr "Qty. Keg."
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_message_needaction
 #: model:ir.model.fields,field_description:estate.field_estate_wage_message_needaction
 msgid "Action Needed"
-msgstr ""
+msgstr "Perlu Jawaban"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_hr_attendance_contract
 msgid "Activate to remark contract based attendance."
-msgstr ""
+msgstr "Aktifkan sebagai kode kerja borongan."
 
 #. module: estate
 #: selection:estate.hr.team,state:0
@@ -252,7 +258,7 @@ msgstr "Lokasi Kegiatan"
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_code_name
 msgid "Activity Name"
-msgstr ""
+msgstr "Nama Kegiatan"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_activity_norm_ids
@@ -289,7 +295,7 @@ msgstr "Keterangan"
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_default_cross_team
 msgid "Allow cross team labour record."
-msgstr ""
+msgstr "Perkenankan asistensi kemandoran"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_activity_ratio_day_quantity
@@ -453,7 +459,7 @@ msgstr "Kehadiran & Produktifitas"
 #. module: estate
 #: selection:estate.activity,wage_method:0
 msgid "Attendance Code"
-msgstr "Kode Kehadiran"
+msgstr "Satuan Waktu"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
@@ -602,6 +608,11 @@ msgstr "Non aktif lokasi tanpa harus menghapus."
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
+msgid "COA"
+msgstr "COA"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "CT"
 msgstr "AST"
 
@@ -630,7 +641,7 @@ msgstr "Karbofuran 3%"
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_max_day
 msgid "Change to override maximum upkeep date day(s) configuration"
-msgstr ""
+msgstr "Menganulir konfigurasi maksimum tanggal BKM"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_block_return_location
@@ -664,7 +675,7 @@ msgstr "Pilih untuk daftar seluruh blok."
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Checked By"
-msgstr ""
+msgstr "Diperiksa oleh"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_parameter_mandatory
@@ -674,12 +685,12 @@ msgstr "Parameter wajib blok."
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_child_ids
 msgid "Child Activities"
-msgstr ""
+msgstr "Sub Kegiatan"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_activity_code
 msgid "Choose your transaction code"
-msgstr ""
+msgstr "Pilih kode transaksi"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_closing
@@ -699,7 +710,7 @@ msgid "Coefficient"
 msgstr "Koefisien"
 
 #. module: estate
-#: code:addons/estate/models/estate_activity.py:287
+#: code:addons/estate/models/estate_activity.py:297
 #, python-format
 msgid "Coefficient should in between 0 and 1"
 msgstr "Nilai koefisien seharusnya antara 0 dan 1"
@@ -726,18 +737,18 @@ msgstr "Perusahaan"
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_employee_company_id
 msgid "Company of employee"
-msgstr ""
+msgstr "Perusahaan karyawan"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_company_id
 #: model:ir.model.fields,help:estate.field_estate_upkeep_material_company_id
 msgid "Company of location"
-msgstr ""
+msgstr "Perusahaan lokasi"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Company:"
-msgstr ""
+msgstr "Perusahaan:"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_complete_name
@@ -769,7 +780,10 @@ msgstr "Konfirmasi Semua"
 #. module: estate
 #: selection:estate.operation,state:0
 #: selection:estate.upkeep,state:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Confirmed"
 msgstr "Konfirm"
 
@@ -793,7 +807,7 @@ msgstr "Borongan"
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_contract
 msgid "Contract Based"
-msgstr ""
+msgstr "Tipe Kontrak"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_contract_period
@@ -812,6 +826,12 @@ msgstr "Tipe Kontrak"
 #: model:ir.model.fields,help:estate.field_estate_upkeep_activity_activity_contract
 msgid "Contract based activity allows upkeep record without number of day"
 msgstr "Kegiatan borongan dapat dicatat tanpa HK"
+
+#. module: estate
+#: code:addons/estate/models/estate_activity.py:165
+#, python-format
+msgid "Contract only allowed for standard based wage method."
+msgstr "Borongan hanya untuk metode hitung upah dengan Satuan Hasil"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.block_template_view_search
@@ -846,6 +866,8 @@ msgstr "Biaya"
 #: model:ir.model.fields,help:estate.field_estate_upkeep_material_product_standard_price
 msgid "Cost of the product template used for standard stock valuation in accounting and used as a base price on purchase orders. Expressed in the default unit of measure of the product."
 msgstr ""
+"Biaya template produk digunakan untuk penilaian harga stok pada akunting dan "
+"digunakan sebagai harga dasar pada pembelian. Sesuaikan dengan satuan produk."
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
@@ -860,7 +882,7 @@ msgstr "Tulis nama kegiatan (harus unik)."
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Created By"
-msgstr ""
+msgstr "Dibuat oleh"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_create_uid
@@ -1004,6 +1026,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_upkeep_date
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_upkeep_date
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
@@ -1015,7 +1038,7 @@ msgstr "Tanggal"
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_max_day
 msgid "Date Constraint"
-msgstr ""
+msgstr "Batasan Tanggal"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_team_date_effective
@@ -1033,7 +1056,7 @@ msgstr "Tanggal Efektif"
 #: model:ir.model.fields,help:estate.field_estate_upkeep_message_last_post
 #: model:ir.model.fields,help:estate.field_estate_wage_message_last_post
 msgid "Date of the last message posted on the record."
-msgstr ""
+msgstr "Tanggal pesan terakhir yang diposting."
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.estate_wage_view_tree
@@ -1060,12 +1083,12 @@ msgstr "Jurnal Umum"
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_material_product_uom_id
 msgid "Default Unit of Measure used for all of stock operation"
-msgstr ""
+msgstr "Satuan yang digunakan untuk seluruh pencatatan stok"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_material_norm_product_uom_id
 msgid "Default Unit of Measure used for all stock operation."
-msgstr ""
+msgstr "Satuan yang digunakan untuk seluruh pencatatan stok."
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_parameter_level
@@ -1086,12 +1109,12 @@ msgstr "Menentukan divisi dari kemandoran"
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_company_id
 msgid "Define location company."
-msgstr ""
+msgstr "Tentukan perusahaan dari lokasi."
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_quantity_piece_rate
 msgid "Define piece rate work result."
-msgstr ""
+msgstr "Menentukan hasil kerja target."
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_quantity
@@ -1214,14 +1237,14 @@ msgstr "Divisi:"
 #: selection:estate.hr.team,state:0
 #: selection:estate.operation,state:0
 #: selection:estate.upkeep,state:0
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Draft"
 msgstr "Draft"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
-#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Draft/Confirmed"
 msgstr "Draft/Konfirm"
 
@@ -1231,7 +1254,7 @@ msgstr "Draft/Konfirm"
 #: model:ir.model,name:estate.model_estate_hr_team
 #: model:ir.model,name:estate.model_estate_wage
 msgid "Email Thread"
-msgstr ""
+msgstr "Email"
 
 #. module: estate
 #: selection:stock.location,estate_location_type:0
@@ -1257,7 +1280,7 @@ msgstr "Karyawan"
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_employee_company_id
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
 msgid "Employee Company"
-msgstr ""
+msgstr "Perusahaan Karyawan"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_nik_number
@@ -1286,7 +1309,7 @@ msgstr "Tanggal Akhir tidak boleh sebelum Tanggal Mulai"
 #: code:addons/estate/wizard/estate_common_report.py:121
 #, python-format
 msgid "Error!"
-msgstr ""
+msgstr "Error!"
 
 #. module: estate
 #: selection:estate.parameter,level:0
@@ -1341,7 +1364,7 @@ msgstr "Blok Kebun"
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_estate_code
 #: model:ir.model.fields,field_description:estate.field_stock_location_estate_code
 msgid "Estate Code"
-msgstr ""
+msgstr "Kode Kebun"
 
 #. module: estate
 #: model:ir.model,name:estate.model_estate_common_report
@@ -1411,7 +1434,7 @@ msgstr "Kemandoran"
 #. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_estate_team_member
 msgid "Estate Team Member"
-msgstr ""
+msgstr "Kemandoran"
 
 #. module: estate
 #: model:res.groups,name:estate.group_user
@@ -1498,6 +1521,7 @@ msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_general_account_id
+#: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_general_account_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_general_account_id
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
@@ -1535,7 +1559,7 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,help:estate.field_hr_employee_estate_id
 msgid "Help to define NIK for estate labour"
-msgstr ""
+msgstr "Menentukan NIK KHT/L"
 
 #. module: estate
 #: model:ir.module.category,description:estate.module_category_estate
@@ -1551,7 +1575,7 @@ msgstr "Jam"
 #: code:addons/estate/models/estate_hr.py:113
 #, python-format
 msgid "Hour and Quantity Ratio has been reset."
-msgstr ""
+msgstr "Jam dan rasio produktifitas telah direset."
 
 #. module: estate
 #: model:estate.parameter.value,name:estate.parameter_value_forest
@@ -1720,7 +1744,7 @@ msgid "Labour Usage"
 msgstr "Penggunaan HK"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1009
+#: code:addons/estate/models/estate_upkeep.py:1023
 #, python-format
 msgid "Labour Usage should be created within Daily Upkeep"
 msgstr "Penggunaan HK harus dibuat melalui Kegiatan Mandor"
@@ -1747,7 +1771,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_message_last_post
 #: model:ir.model.fields,field_description:estate.field_estate_wage_message_last_post
 msgid "Last Message Date"
-msgstr ""
+msgstr "Tanggal Pesan Terakhir"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity___last_update
@@ -1939,8 +1963,8 @@ msgid "Material Usage"
 msgstr "Penggunaan Bahan"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:649
-#: code:addons/estate/models/estate_upkeep.py:1313
+#: code:addons/estate/models/estate_upkeep.py:643
+#: code:addons/estate/models/estate_upkeep.py:1334
 #, python-format
 msgid "Material Usage should be created within Daily Upkeep"
 msgstr ""
@@ -2034,7 +2058,10 @@ msgid "Minimum should less than maximum."
 msgstr "Nilai minimun seharusnya kurang dari maksimum."
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
 msgid "Month"
 msgstr "Bulan"
 
@@ -2065,7 +2092,7 @@ msgid "Name"
 msgstr "Nama"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:844
+#: code:addons/estate/models/estate_upkeep.py:854
 #, python-format
 msgid "No Regional Wage defined."
 msgstr "UMR belum didefinisikan"
@@ -2074,13 +2101,13 @@ msgstr "UMR belum didefinisikan"
 #: code:addons/estate/models/estate_upkeep.py:399
 #, python-format
 msgid "No Upkeep Labour need to be approved"
-msgstr ""
+msgstr "Tidak ada penggunaan HK yang perlu dikonfirmasi"
 
 #. module: estate
 #: code:addons/estate/models/estate_upkeep.py:388
 #, python-format
 msgid "No Upkeep Labour need to be confirmed"
-msgstr ""
+msgstr "Tidak ada penggunaan HK yang perlu dikonfirmasi"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_area_non_company
@@ -2155,7 +2182,7 @@ msgstr "Hari Kerja"
 #: model:ir.model.fields,help:estate.field_estate_upkeep_message_needaction_counter
 #: model:ir.model.fields,help:estate.field_estate_wage_message_needaction_counter
 msgid "Number of messages which requires an action"
-msgstr ""
+msgstr "Jumlah pesan yang perlu dikerjakan"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_activity_message_unread_counter
@@ -2168,7 +2195,7 @@ msgstr ""
 #: model:ir.model.fields,help:estate.field_estate_upkeep_message_unread_counter
 #: model:ir.model.fields,help:estate.field_estate_wage_message_unread_counter
 msgid "Number of unread messages"
-msgstr ""
+msgstr "Jumlah pesan belum dibaca"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_wage_number_of_days
@@ -2200,6 +2227,8 @@ msgid "Nursery: location for nursery. \n"
 "Planted: location for planting. \n"
 "Emplacement: location for non-planting/nursery."
 msgstr ""
+"Pembibitan: lokasi untuk pembibitan. Ditanam: lokasi untuk tanam. Emplasemen:"
+" lokasi untuk non tanaman/pembibitan."
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
@@ -2457,6 +2486,22 @@ msgid "Pre Nursery"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
+msgid "Previous Month"
+msgstr "Bulan Lalu"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
+msgid "Previous Week"
+msgstr "Minggu Lalu"
+
+#. module: estate
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 msgid "Print"
 msgstr "Cetak"
@@ -2686,6 +2731,7 @@ msgstr "Pilih sebagai nilai baku pada Blok baru."
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_activity_general_account_id
+#: model:ir.model.fields,help:estate.field_estate_upkeep_activity_general_account_id
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_general_account_id
 msgid "Set as default general account."
 msgstr "Tentukan akun umum."
@@ -2796,7 +2842,7 @@ msgstr "Harga Standar"
 #. module: estate
 #: selection:estate.activity,wage_method:0
 msgid "Standard Quantity"
-msgstr "Jumlah Standar"
+msgstr "Satuan Hasil"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.view_activity_config_form
@@ -3135,12 +3181,12 @@ msgid "Upkeep Activity Line"
 msgstr "Detil Kegiatan"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:829
-#: code:addons/estate/models/estate_upkeep.py:842
-#: code:addons/estate/models/estate_upkeep.py:1016
-#: code:addons/estate/models/estate_upkeep.py:1070
-#: code:addons/estate/models/estate_upkeep.py:1320
-#: code:addons/estate/models/estate_upkeep.py:1350
+#: code:addons/estate/models/estate_upkeep.py:839
+#: code:addons/estate/models/estate_upkeep.py:852
+#: code:addons/estate/models/estate_upkeep.py:1030
+#: code:addons/estate/models/estate_upkeep.py:1084
+#: code:addons/estate/models/estate_upkeep.py:1341
+#: code:addons/estate/models/estate_upkeep.py:1371
 #, python-format
 msgid "Upkeep Activity should be defined first"
 msgstr "Kegiatan pemeliharaan harus didefinisikan."
@@ -3268,16 +3314,24 @@ msgstr "Metode Hitung Upah"
 
 #. module: estate
 #: code:addons/estate/models/estate_hr.py:112
-#: code:addons/estate/models/estate_upkeep.py:648
-#: code:addons/estate/models/estate_upkeep.py:673
-#: code:addons/estate/models/estate_upkeep.py:1008
-#: code:addons/estate/models/estate_upkeep.py:1015
-#: code:addons/estate/models/estate_upkeep.py:1084
-#: code:addons/estate/models/estate_upkeep.py:1312
-#: code:addons/estate/models/estate_upkeep.py:1319
+#: code:addons/estate/models/estate_upkeep.py:642
+#: code:addons/estate/models/estate_upkeep.py:667
+#: code:addons/estate/models/estate_upkeep.py:1022
+#: code:addons/estate/models/estate_upkeep.py:1029
+#: code:addons/estate/models/estate_upkeep.py:1098
+#: code:addons/estate/models/estate_upkeep.py:1333
+#: code:addons/estate/models/estate_upkeep.py:1340
 #, python-format
 msgid "Warning!"
 msgstr "Peringatan!"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
+#: model:ir.ui.view,arch_db:estate.upkeep_view_search
+msgid "Week"
+msgstr ""
 
 #. module: estate
 #: selection:estate.common.report,period:0
@@ -3291,7 +3345,7 @@ msgid "Weight"
 msgstr "Bobot"
 
 #. module: estate
-#: code:addons/estate/models/estate_activity.py:202
+#: code:addons/estate/models/estate_activity.py:212
 #, python-format
 msgid "Weight value should between 0 and 1"
 msgstr "Nilai bobot seharusnya antara 0 dan 1"
@@ -3333,13 +3387,13 @@ msgid "YTD"
 msgstr "SBI"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:452
+#: code:addons/estate/models/estate_upkeep.py:448
 #, python-format
 msgid "You are not authorized to approve all upkeep data"
 msgstr "Anda tidak memiliki hak Setujui Semua"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1178
+#: code:addons/estate/models/estate_upkeep.py:1199
 #, python-format
 msgid "You are not authorized to approve upkeep data"
 msgstr "Anda tidak memiliki hak Setujui Semua"
@@ -3351,14 +3405,14 @@ msgid "You are not authorized to confirm all upkeep data"
 msgstr "Anda tidak memiliki hak Konfirmasi Semua"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1151
+#: code:addons/estate/models/estate_upkeep.py:1172
 #, python-format
 msgid "You are not authorized to confirm upkeep data"
 msgstr "Anda tidak memiliki hak Konfirmasi Semua"
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:674
-#: code:addons/estate/models/estate_upkeep.py:1085
+#: code:addons/estate/models/estate_upkeep.py:668
+#: code:addons/estate/models/estate_upkeep.py:1099
 #, python-format
 msgid "You must first select a Division!"
 msgstr "Pilih Divisi lebih dulu."
