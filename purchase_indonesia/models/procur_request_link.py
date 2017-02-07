@@ -613,7 +613,19 @@ class InheritPurchaseRequest(models.Model):
 
     @api.model
     def create(self, vals):
-        vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq')
+        company_code = self.env['res.company'].search([('id','=',vals['company_id'])]).code
+        if company_code == 'HJA' and self._get_office_level_id() == 'HO':
+            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ho.hja')
+        elif company_code == 'APK' and self._get_office_level_id() == 'HO':
+            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ho.apk')
+        elif company_code == 'TPN' and self._get_office_level_id() == 'HO':
+            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ho.tpn')
+        elif company_code == 'HJA' and self._get_office_level_id() == 'RO':
+            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ro.hja')
+        elif company_code == 'APK' and self._get_office_level_id() == 'RO':
+            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ro.apk')
+        elif company_code == 'TPN' and self._get_office_level_id() == 'RO':
+            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ro.tpn')
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
 
@@ -772,6 +784,11 @@ class InheritPurchaseRequest(models.Model):
             month = result
 
             departement_code = ''
+            type_location = ''
+            if self.type_location == 'HO':
+                type_location = 'HO'
+            elif self.type_location == 'RO' or self.type_location == 'Estate':
+                type_location = 'EST'
 
             try :
                 departement_code = self.department_id.code
@@ -784,7 +801,7 @@ class InheritPurchaseRequest(models.Model):
                 self.complete_name = self.name + '/' \
                                          + self.company_id.code+'-'\
                                          +'PP'+'/'\
-                                         +departement_code+'/'+str(month)+'/'+str(year)
+                                         +type_location+'-'+departement_code+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
 
@@ -939,7 +956,7 @@ class InheritPurchaseRequestLine(models.Model):
             else:
                 rec.is_editable = True
 
-    price_per_product = fields.Float('Prod Price',compute='_compute_price_per_product')
+    price_per_product = fields.Float('Prod Price',)
     total_price = fields.Float('Total Price',compute='_compute_total_price')
     budget_available = fields.Float('Budget Available')
     control_unit =  fields.Float('Budget Control Unit')
@@ -961,13 +978,16 @@ class InheritPurchaseRequestLine(models.Model):
                 price.total_price = price.product_qty * price.price_per_product
 
     @api.multi
-    @api.depends('product_id')
+    @api.onchange('product_id','request_state')
     def _compute_price_per_product(self):
-        for item in self:
-            if item.product_id:
-                product_temp = item.env['product.price.history'].search([('product_id','=',item.product_id.id)])
-                price = max(producttemp.cost for producttemp in product_temp)
-                item.price_per_product = price
+        if self.product_id  :
+            product_temp = self.env.cr.execute('select cost from product_price_history where product_id = %d order by id desc limit 1' %(self.product_id.id))
+            line = self.env.cr.fetchone()[0]
+            if self.request_state == 'draft':
+                self.price_per_product = line
+            elif self.request_state != 'draft' :
+                self.price_per_product
+
 
     @api.multi
     @api.onchange('analytic_account_id')

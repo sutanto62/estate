@@ -37,31 +37,30 @@ class InheritPurchaseRequestLine(models.Model):
                 for productcategparent in prod_categ:
                     arrProdCatId.append(productcategparent.id)
 
-                if prod_categ:
-                    if item.type_product == 'service':
+                if item.type_product == 'service':
+                    if prod_categ:
                         return  {
                             'domain':{
-                                'product_id':[('categ_id','in',arrProdCatId),('type','=','service')]
+                                'product_id':[('type','=','service')]
                                  }
                             }
-                    else:
-                        return  {
-                            'domain':{
-                                'product_id':[('categ_id','in',arrProdCatId)]
-                                 }
-                            }
-                elif prod_categ != ():
-                    if item.type_product == 'service':
-
+                    elif prod_categ != ():
                         return  {
                         'domain':{
-                            'product_id':[('categ_id','in',arrProductCateg),('type','=','service')]
+                            'product_id':[('type','=','service')]
+                             }
+                        }
+                elif item.type_product == 'product':
+                    if prod_categ:
+                        return  {
+                            'domain':{
+                                'product_id':[('categ_id','in',arrProdCatId),('type','!=','service')]
+                                 }
+                            }
+                    elif prod_categ != ():
+                        return  {
+                        'domain':{
+                            'product_id':[('categ_id','in',arrProductCateg),('type','!=','service')]
                              }
                         }
 
-                    else:
-                        return  {
-                        'domain':{
-                            'product_id':[('categ_id','in',arrProductCateg)]
-                             }
-                        }
