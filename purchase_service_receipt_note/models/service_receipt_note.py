@@ -20,9 +20,10 @@ class ServiceReceiptNote(models.Model):
     _inherit= 'stock.picking'
 
     complete_name_picking =fields.Char("Complete Name", compute="_complete_name_picking", store=True)
+    srn_no =  fields.Char()
 
     @api.one
-    @api.depends('grn_no','min_date','companys_id','type_location')
+    @api.depends('srn_no','grn_no','min_date','companys_id','type_location')
     def _complete_name_picking(self):
         """ Forms complete name of location from parent category to child category.
         """
@@ -48,7 +49,7 @@ class ServiceReceiptNote(models.Model):
                   month -= ints[i] * count
                 month = result
 
-                self.complete_name_picking = self.grn_no +'/' \
+                self.complete_name_picking = self.srn_no +'/' \
                                      + self.companys_id.code+'-'\
                                      +'SRN'+'/'\
                                      +str(self.type_location)+'/'+str(month)+'/'+str(year)

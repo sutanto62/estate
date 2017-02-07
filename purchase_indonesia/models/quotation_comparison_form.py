@@ -217,7 +217,6 @@ class QuotationComparisonForm(models.Model):
         return fin_procur
 
 
-
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
     _order = 'complete_name desc'
@@ -272,12 +271,6 @@ class QuotationComparisonForm(models.Model):
     def generated_po(self):
         po_lines = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)])
         po_lines.generate_po()
-
-    @api.multi
-    def create(self,vals, context=None):
-        vals['name']=self.env['ir.sequence'].next_by_code('quotation.comparison.form')
-        res=super(QuotationComparisonForm, self).create(vals)
-        return res
 
     @api.multi
     def _get_purchase_request(self):

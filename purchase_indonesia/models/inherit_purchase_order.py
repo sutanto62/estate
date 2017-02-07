@@ -122,8 +122,9 @@ class InheritPurchaseOrder(models.Model):
     @api.multi
     def _update_po_no(self):
         po = self.env['purchase.order'].search([('id','=',self.id)])
+        sequence_name = 'purchase.request.seq.'+self.location.lower()+'.'+self.companys_id.code.lower()
         purchase_data = {
-            'po_no' : self.env['ir.sequence'].next_by_code('purchase.po_no')
+            'po_no' : self.env['ir.sequence'].next_by_code(sequence_name)
         }
         po.write(purchase_data)
 
@@ -132,12 +133,14 @@ class InheritPurchaseOrder(models.Model):
         #update data in stock.picking
         #return : companys_id,purchase_id,type_location.pr_source
         for purchase_order in self:
+            sequence_name = 'stock.grn.seq.'+self.location.lower()+'.'+self.companys_id.code.lower()
             purchase_data = {
                 'companys_id': purchase_order.companys_id.id,
                 'purchase_id': purchase_order.id,
                 'type_location': purchase_order.type_location,
                 'location':purchase_order.location,
                 'pr_source' : purchase_order.source_purchase_request,
+                'grn_no' : self.env['ir.sequence'].next_by_code(sequence_name)
             }
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
         return True

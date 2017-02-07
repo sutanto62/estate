@@ -33,6 +33,26 @@ class InheritPurchaseOrder(models.Model):
                 item.validation_srn = False
 
     @api.multi
+    def _update_shipping(self):
+        #update data in stock.picking
+        #return : companys_id,purchase_id,type_location.pr_source
+        if self.validation_srn == True:
+            for purchase_order in self:
+                sequence_name = 'stock.srn.seq.'+self.location.lower()+'.'+self.companys_id.code.lower()
+                purchase_data = {
+                    'companys_id': purchase_order.companys_id.id,
+                    'purchase_id': purchase_order.id,
+                    'type_location': purchase_order.type_location,
+                    'location':purchase_order.location,
+                    'pr_source' : purchase_order.source_purchase_request,
+                    'srn_no' : self.env['ir.sequence'].next_by_code(sequence_name)
+                }
+                self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
+        else:
+            super(InheritPurchaseOrder,self)._update_shipping()
+        return True
+
+    @api.multi
     def _create_picking(self):
 
         for order in self:

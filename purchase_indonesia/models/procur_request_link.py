@@ -75,6 +75,7 @@ class InheritPurchaseRequest(models.Model):
     def purchase_request_finance(self):
         return 'Purchase Request Finance Procurement'
 
+
     #Method Get user
     @api.multi
     def _get_user(self):
@@ -167,6 +168,14 @@ class InheritPurchaseRequest(models.Model):
     validation_finance = fields.Boolean("Validation Finance",compute='_change_validation_finance')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
+
+    @api.multi
+    def _get_type_product(self):
+        for item in self:
+            if item.type_product == 'consu':
+                return True
+            elif item.type_product in ['service','product']:
+                return False
 
 
     @api.multi
@@ -404,6 +413,14 @@ class InheritPurchaseRequest(models.Model):
         return price
 
     @api.multi
+    def _get_max_price_budget(self):
+        #get total budget_available from purchase request
+
+        price = float(sum(record.budget_available for record in self.line_ids))
+
+        return price
+
+    @api.multi
     def _get_price_mid(self):
         #get middle price from purchase params for Purchase Request
         arrMid = []
@@ -526,21 +543,37 @@ class InheritPurchaseRequest(models.Model):
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
-        if self._get_max_price() < self._get_price_mid():
-                self.button_approved()
-        elif self._get_max_price() >= self._get_price_mid():
-            state_data = {'state':'approval5','assigned_to' : self._get_director()}
-            self.write(state_data)
+        if self._get_type_product() == True:
+            # product Capital
+            if self._get_max_price_budget() < self._get_price_mid():
+                    self.button_approved()
+            elif self._get_max_price_budget() >= self._get_price_mid():
+                state_data = {'state':'approval5','assigned_to' : self._get_director()}
+                self.write(state_data)
+        elif self._get_type_product() == False:
+            #Product service and stockable
+            if self._get_max_price() < self._get_price_mid():
+                    self.button_approved()
+            elif self._get_max_price() >= self._get_price_mid():
+                state_data = {'state':'approval5','assigned_to' : self._get_director()}
+                self.write(state_data)
 
     @api.multi
     def action_financial_approval3(self):
         """ Confirms Director  Financial Approval.
         """
-        if self._get_max_price() < self._get_price_high():
-                self.button_approved()
-        elif self._get_max_price() >= self._get_price_high():
-            state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
-            self.write(state_data)
+        if self._get_type_product() == True:
+            if self._get_max_price_budget() < self._get_price_high():
+                    self.button_approved()
+            elif self._get_max_price_budget() >= self._get_price_high():
+                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+                self.write(state_data)
+        elif self._get_type_product() == False:
+            if self._get_max_price() < self._get_price_high():
+                    self.button_approved()
+            elif self._get_max_price() >= self._get_price_high():
+                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+                self.write(state_data)
 
     @api.multi
     def action_financial_approval4(self):
@@ -613,19 +646,14 @@ class InheritPurchaseRequest(models.Model):
 
     @api.model
     def create(self, vals):
-        company_code = self.env['res.company'].search([('id','=',vals['company_id'])]).code
-        if company_code == 'HJA' and self._get_office_level_id() == 'HO':
-            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ho.hja')
-        elif company_code == 'APK' and self._get_office_level_id() == 'HO':
-            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ho.apk')
-        elif company_code == 'TPN' and self._get_office_level_id() == 'HO':
-            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ho.tpn')
-        elif company_code == 'HJA' and self._get_office_level_id() == 'RO':
-            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ro.hja')
-        elif company_code == 'APK' and self._get_office_level_id() == 'RO':
-            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ro.apk')
-        elif company_code == 'TPN' and self._get_office_level_id() == 'RO':
-            vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq.ro.tpn')
+        try:
+            company_code = self.env['res.company'].search([('id','=',vals['company_id'])]).code
+        except:
+            raise exceptions.ValidationError('Company Code is Null')
+
+        sequence_name = 'purchase.request.seq.'+self._get_office_level_id().lower()+'.'+company_code.lower()
+        vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
+
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
 
@@ -633,7 +661,6 @@ class InheritPurchaseRequest(models.Model):
     def check_wkf_requester(self):
         #checking Approval Requester
         state_data = []
-
         if self._get_compare_hr():
             self.write({'state':'confirm'})
             state_data = {'state':'approval7','assigned_to':self._get_user_ro_manager()}
@@ -722,7 +749,13 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def create_quotation_comparison_form(self):
         purchase_requisition = self.env['purchase.requisition'].search([('origin','like',self.complete_name)])
+        try:
+            company_code = self.env['res.company'].search([('id','=',self.company_id.id)]).code
+        except:
+            raise exceptions.ValidationError('Company Code is Null abcd')
+        sequence_name = 'quotation.comparison.form.'+self.type_location.lower()+'.'+company_code.lower()
         purchase_data = {
+                'name' : self.env['ir.sequence'].next_by_code(sequence_name),
                 'company_id': purchase_requisition.companys_id.id,
                 'date_pp': datetime.today(),
                 'requisition_id': purchase_requisition.id,
@@ -801,7 +834,7 @@ class InheritPurchaseRequest(models.Model):
                 self.complete_name = self.name + '/' \
                                          + self.company_id.code+'-'\
                                          +'PP'+'/'\
-                                         +type_location+'-'+departement_code+'/'+str(month)+'/'+str(year)
+                                         +type_location+'/'+departement_code+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
 

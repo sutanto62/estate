@@ -195,9 +195,10 @@ class InheritPurchaseTenders(models.Model):
 
         :param tender: the source tender from which we generate a purchase order
         """
+        sequence_name = 'purchase.request.seq.'+tender.location.lower()+'.'+tender.companys_id.code.lower()
         return {'order_line': [],
                 'requisition_id': tender.id,
-                'po_no':self.pool.get('ir.sequence').next_by_code(cr, uid,'purchase.po_no'),
+                'po_no':self.pool.get('ir.sequence').next_by_code(cr, uid,sequence_name),
                 # 'location':tender.location,
                 'source_purchase_request' : tender.origin,
                 'request_id':tender.request_id.id,

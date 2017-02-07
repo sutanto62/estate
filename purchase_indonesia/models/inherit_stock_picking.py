@@ -19,6 +19,32 @@ import re
 
 class InheritStockPicking(models.Model):
 
+    @api.multi
+    def _get_user(self):
+        #find User
+        user= self.env['res.users'].browse(self.env.uid)
+
+        return user
+
+    @api.multi
+    def _get_employee(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
+    @api.multi
+    def _get_office_level_id(self):
+
+        try:
+            employee = self._get_employee().office_level_id.name
+        except:
+            raise exceptions.ValidationError('Office level Name Is Null')
+
+        return employee
+
+
     _inherit = 'stock.picking'
 
     complete_name_picking =fields.Char("Complete Name", compute="_complete_name_picking", store=True)
@@ -34,8 +60,8 @@ class InheritStockPicking(models.Model):
 
     _defaults = {
         'not_seed':True,
-        'grn_no' : lambda obj, cr, uid, context: obj.pool.get('ir.sequence').next_by_code(cr, uid, 'stock.grn')
     }
+
 
     @api.one
     @api.depends('grn_no','min_date','companys_id','type_location')
