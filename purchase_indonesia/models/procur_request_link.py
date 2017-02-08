@@ -93,6 +93,14 @@ class InheritPurchaseRequest(models.Model):
         return employee
 
     @api.multi
+    def _get_employee_request(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self.requested_by.id)])
+
+        return employee
+
+    @api.multi
     def _get_user_manager(self):
         #Find Employee user Manager
         try:
@@ -166,6 +174,7 @@ class InheritPurchaseRequest(models.Model):
     validation_user = fields.Boolean("Validation User",compute='_change_validation_user')
     validation_reject = fields.Boolean("Validation Reject",compute='_change_validation_reject')
     validation_finance = fields.Boolean("Validation Finance",compute='_change_validation_finance')
+    validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
 
@@ -380,6 +389,20 @@ class InheritPurchaseRequest(models.Model):
         arrJobs2 = []
 
         jobs = self.env['hr.job'].search([('id','=',self._get_employee().job_id.id)]).id
+        jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant',
+                                                                   'Administration Assistant','KTU','ktu'])])
+
+        for item in jobs_non_hr:
+            arrJobs2.append(item.id)
+
+        return jobs in arrJobs2
+
+    @api.multi
+    def _get_compare_requester_non_hr(self):
+        #Non Comparing Hr Jobs
+        arrJobs2 = []
+
+        jobs = self.env['hr.job'].search([('id','=',self._get_employee_request().job_id.id)]).id
         jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant',
                                                                    'Administration Assistant','KTU','ktu'])])
 
@@ -629,18 +652,19 @@ class InheritPurchaseRequest(models.Model):
     def action_technic(self):
         """ Confirms Technical request.
         """
-        state_data = []
-
-        if self._get_compare_hr() and self.type_functional != 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_user_agronomy()}
-        elif self._get_compare_hr() and self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_technic_ie}
-        elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low() or self._get_compare_non_hr():
+        if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low():
+            self.button_approved()
+        elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
+            state_data = {'state':'approval3','assigned_to':self._get_technic_agronomy}
+            self.write(state_data)
+        elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
+            state_data = {'state':'approval3','assigned_to':self._get_technic_agronomy}
+            self.write(state_data)
+        elif self._get_max_price() >= self._get_price_low() or self._get_compare_requester_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
+            self.write(state_data)
         else:
             raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
-
-        self.write(state_data)
 
     @api.model
     def create(self, vals):
@@ -737,7 +761,7 @@ class InheritPurchaseRequest(models.Model):
             purchaseline_data = {
                 'product_id': purchaseline.product_id.id,
                 'product_uom_id': purchaseline.product_uom_id.id,
-                'product_qty' : purchaseline.product_qty,
+                'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
                 'requisition_id' : res.id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
@@ -774,6 +798,12 @@ class InheritPurchaseRequest(models.Model):
 
         if self.assigned_to.id == self._get_user().id and self.state == 'approval3':
             self.validation_finance = True
+
+    @api.depends('assigned_to')
+    def _change_validation_technic(self):
+
+        if self.assigned_to.id == self._get_user().id and self.state in ['technic1','technic2','technic3','technic4','technic5']:
+            self.validation_technic = True
 
     @api.multi
     @api.depends('assigned_to')

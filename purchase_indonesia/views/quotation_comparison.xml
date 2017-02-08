@@ -212,6 +212,11 @@
                             <notebook>
                                 <page string="Purchase Line">
                                     <div class="oe_right oe_button_box">
+                                        <button name="generated_po" type="object"
+                                        string="Generate PO" attrs="{
+                                                       'invisible':[('state','!=','done')]}"
+                                        class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>
+
                                         <button name="change_remarks" type="object"
                                         string="Generate Remarks"
                                         class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>

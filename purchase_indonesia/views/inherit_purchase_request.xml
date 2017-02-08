@@ -37,6 +37,7 @@
                           <field name="validation_user" invisible="1"/>
                           <field name="validation_reject" invisible="1"/>
                           <field name="validation_finance" invisible="1"/>
+                          <field name="validation_technic" invisible="1"/>
                           <field name="validation_state_budget" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
                  </xpath>
@@ -184,13 +185,9 @@
                      <button name="action_budget" states="budget"
                             string="Approve Budget" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
-                     <button name="action_technic" states="technic1,technic2,technic3,technic4,technic5"
+                     <button name="action_technic"
                             string="Approve Technical Check" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_technical1,
-                            purchase_request.group_purchase_request_technical2,
-                            purchase_request.group_purchase_request_technical3,
-                            purchase_request.group_purchase_request_technical4,
-                            purchase_request.group_purchase_request_technical5"/>
+                            class="oe_highlight" attrs="{'invisible': [('validation_technic','!=',True)]}"/>
                      <button name="action_financial_approval1"
                              attrs="{'invisible': [('validation_finance','!=',True)]}"
                              string="Approve" type="object"
