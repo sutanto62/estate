@@ -79,7 +79,7 @@
         <!--Sequence Purchase Order-->
         <record id="seq_quotation_po_no_kpst_hja" model="ir.sequence">
             <field name="name">Sequence Purchase Order HO HJA</field>
-            <field name="code">purchase.order.seq.seq.kpst.hja</field>
+            <field name="code">purchase.order.seq.kpst.hja</field>
             <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
