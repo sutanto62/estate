@@ -600,9 +600,7 @@ class InheritPurchaseRequest(models.Model):
     def action_confirm2(self,):
         """ Confirms Good request.
         """
-        jobs_compare_hr = self.env['hr.job'].search([('name','in',['Budgeting','budget','budgeting','Budget'])]).id
-        employeemanager = self.env['hr.employee'].search([('job_id','=',jobs_compare_hr)]).user_id.id
-        self.write({'state': 'budget','assigned_to':employeemanager})
+        self.write({'state': 'budget','assigned_to':self._get_budget_manager()})
 
     @api.multi
     def action_budget(self,):
