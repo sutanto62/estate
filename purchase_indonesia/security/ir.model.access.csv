@@ -93,3 +93,12 @@
 
 "access_stock_move_director","stock_move_director","stock.model_stock_move","purchase_indonesia.group_purchase_request_director","True","True","True","False"
 "access_stock_move_president_director","stock_move_president_director","stock.model_stock_move","purchase_indonesia.group_purchase_request_president_director","True","True","True","False"
+
+"access_purchase_requisition_ro_head","purchase_requisition_ro_head","purchase_requisition.model_purchase_requisition","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+"access_purchase_requisition_line_ro_head","purchase_requisition_line_ro_head","purchase_requisition.model_purchase_requisition_line","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+"quotation_comparison_form_ro_head","comparison_form_ro_head","purchase_indonesia.model_quotation_comparison_form","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+"quotation_comparison_form_line_ro_head","quotation_comparison_form_line_ro_head","purchase_indonesia.model_quotation_comparison_form_line","purchase_indonesia.group_purchase_request_head_of_ro","True","False","False","False"
+"v_quotation_comparison_form_line_ro_head","v_quotation_comparison_form_line_ro_head","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_indonesia.group_purchase_request_head_of_ro","True","False","False","False"
+"access_purchase_order_purchase_ro_head","purchase_order_purchase_ro_head","purchase.model_purchase_order","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+"access_purchase_order_purchase_line_ro_head","purchase_order_purchase_line_ro_head","purchase.model_purchase_order_line","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+

@@ -404,7 +404,7 @@ class QuotationComparisonForm(models.Model):
         if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() > self._get_price_low() :
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
         return True
 

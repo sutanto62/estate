@@ -651,7 +651,7 @@ class InheritPurchaseRequest(models.Model):
         except:
             raise exceptions.ValidationError('Company Code is Null')
 
-        sequence_name = 'purchase.request.seq.'+self._get_office_level_id().lower()+'.'+company_code.lower()
+        sequence_name = 'purchase.request.seq.'+self._get_office_level_id_code().lower()+'.'+company_code.lower()
         vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
 
         request = super(InheritPurchaseRequest, self).create(vals)
@@ -753,7 +753,7 @@ class InheritPurchaseRequest(models.Model):
             company_code = self.env['res.company'].search([('id','=',self.company_id.id)]).code
         except:
             raise exceptions.ValidationError('Company Code is Null abcd')
-        sequence_name = 'quotation.comparison.form.'+self.type_location.lower()+'.'+company_code.lower()
+        sequence_name = 'quotation.comparison.form.'+self.code.lower()+'.'+company_code.lower()
         purchase_data = {
                 'name' : self.env['ir.sequence'].next_by_code(sequence_name),
                 'company_id': purchase_requisition.companys_id.id,

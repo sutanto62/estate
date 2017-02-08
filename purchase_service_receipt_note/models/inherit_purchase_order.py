@@ -38,7 +38,7 @@ class InheritPurchaseOrder(models.Model):
         #return : companys_id,purchase_id,type_location.pr_source
         if self.validation_srn == True:
             for purchase_order in self:
-                sequence_name = 'stock.srn.seq.'+self.location.lower()+'.'+self.companys_id.code.lower()
+                sequence_name = 'stock.srn.seq.'+self.type_location.lower()+'.'+self.companys_id.code.lower()
                 purchase_data = {
                     'companys_id': purchase_order.companys_id.id,
                     'purchase_id': purchase_order.id,

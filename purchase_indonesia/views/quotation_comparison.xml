@@ -118,7 +118,7 @@
                             <button name="action_approve1" states="approve1"  type="object" string="Approval GM" class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                             <button name="action_approve2" states="approve2" type="object" string="Approval Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
                             <button name="action_approve3" states="approve3"  type="object" string="Approval President Director" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
-                            <button name="action_approve4" states="confirm2"  type="object" string="Approval Head Of RO" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of_ro"/>
+                            <button name="action_approve4" states="approve4"  type="object" string="Approval Head Of RO" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of_ro"/>
                             <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action" groups="purchase_request.group_purchase_request_manager"/>
                             <button name="button_draft" states="draft" type="object" string="Cancel"/>
                             <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
@@ -675,7 +675,7 @@
         <record id="purchase_indonesia.menu_quotation_comparison1_act" model="ir.ui.menu">
             <!-- Use the special many2many value syntax to add a child record,
                  and the `ref()` method to resolve the group XML ID -->
-            <field name="groups_id" eval="[(4,ref('purchase_indonesia.group_purchase_request_director')),(4,ref('purchase_indonesia.group_purchase_request_president_director'))]"/>
+            <field name="groups_id" eval="[(4,ref('purchase_indonesia.group_purchase_request_director')),(4,ref('purchase_indonesia.group_purchase_request_president_director')),(4,ref('purchase_indonesia.group_purchase_request_head_of_ro'))]"/>
         </record>
 
         <menuitem
