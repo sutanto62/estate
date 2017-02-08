@@ -122,7 +122,7 @@ class InheritPurchaseOrder(models.Model):
     @api.multi
     def _update_po_no(self):
         po = self.env['purchase.order'].search([('id','=',self.id)])
-        sequence_name = 'purchase.request.seq.'+self.type_location.lower()+'.'+self.companys_id.code.lower()
+        sequence_name = 'purchase.order.seq.'+self.type_location.lower()+'.'+self.companys_id.code.lower()
         purchase_data = {
             'po_no' : self.env['ir.sequence'].next_by_code(sequence_name)
         }
