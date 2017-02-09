@@ -37,6 +37,7 @@
                           <field name="validation_user" invisible="1"/>
                           <field name="validation_reject" invisible="1"/>
                           <field name="validation_finance" invisible="1"/>
+                          <field name="validation_correction" invisible="1"/>
                           <field name="validation_technic" invisible="1"/>
                           <field name="validation_state_budget" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
@@ -203,10 +204,9 @@
                              string="Approve" type="object"
                             class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
 
-                     <button name="action_revert" states="approval5,approval6"
+                     <button name="action_revert" attrs="{'invisible': [('validation_correction','!=',True)]}"
                              string="Correction" type="object"
-                            class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director,
-                            purchase_indonesia.group_purchase_request_director"/>
+                            class="oe_highlight" />
 
                      <button name="action_ro_head_approval" states="approval7"
                              string="Approve" type="object"

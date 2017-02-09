@@ -174,6 +174,7 @@ class InheritPurchaseRequest(models.Model):
     validation_user = fields.Boolean("Validation User",compute='_change_validation_user')
     validation_reject = fields.Boolean("Validation Reject",compute='_change_validation_reject')
     validation_finance = fields.Boolean("Validation Finance",compute='_change_validation_finance')
+    validation_correction = fields.Boolean("Validation Correction",compute='_change_validation_correction')
     validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
@@ -798,6 +799,12 @@ class InheritPurchaseRequest(models.Model):
 
         if self.assigned_to.id == self._get_user().id and self.state == 'approval3':
             self.validation_finance = True
+
+    @api.depends('assigned_to')
+    def _change_validation_correction(self):
+
+        if self.assigned_to.id == self._get_user().id and self.state in ['approval5','approval6']:
+            self.validation_correction = True
 
     @api.depends('assigned_to')
     def _change_validation_technic(self):
