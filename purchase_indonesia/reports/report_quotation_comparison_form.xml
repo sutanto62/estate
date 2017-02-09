@@ -3954,9 +3954,9 @@
 			                                    Proc &amp; Log Div Head
 			                                </td>
 			                                <td class="noborder">
-												<t t-foreach="o.message_ids" t-as="mids">
+			                                    <t t-foreach="o.message_ids" t-as="mids">
 													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval GM Finance'">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Finance'">
 														    <u>
 														        <span t-field="mids.author_id"/>&#160;
 															</u>
@@ -4001,7 +4001,7 @@
 			                                <td colspan="3" class="noborder">
 			                                    <t t-foreach="o.message_ids" t-as="mids">
 													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Finance'">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval GM Finance'">
 														    <u>
 														        <span t-field="mids.author_id"/>&#160;
 															</u>
