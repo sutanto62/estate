@@ -52,6 +52,10 @@ class InheritPurchaseRequest(models.Model):
         return 'Purchase Request Technical IE'
 
     @api.multi
+    def purchase_request_technical6(self):
+        return 'Purchase Request Technical HRGA Head'
+
+    @api.multi
     def purchase_request_director(self):
         return 'Purchase Request Director'
 
@@ -161,6 +165,7 @@ class InheritPurchaseRequest(models.Model):
                        ('technic3', 'Technic ICT Dept Approval'),
                        ('technic4', 'Technic GM Plantation Dept Approval'),
                        ('technic5', 'Technic EA Dept Approval'),
+                       ('technic6', 'Technic HR Approval'),
                        ('approval3','Department Head Financial Approval'),
                        ('approval4','Div Head Financial Approval'),
                        ('approval5','Director Financial Approval'),
@@ -280,6 +285,24 @@ class InheritPurchaseRequest(models.Model):
             raise exceptions.ValidationError('User Technic ICT Not Found in User Access')
 
         return technical_ict
+
+    @api.multi
+    def _get_technic_ga(self):
+        #get List of Technical Dept GAfrom user.groups
+        #technical GA in user groups same Like Technic6
+
+        arrTechnic6 = []
+
+        list_technicalga = self.env['res.groups'].search([('name','like',self.purchase_request_technical6())]).users
+
+        for technic6 in list_technicalga:
+               arrTechnic6.append(technic6.id)
+        try:
+            technical_ga = self.env['res.users'].search([('id','=',arrTechnic6[0])]).id
+        except:
+            raise exceptions.ValidationError('User Technic GA Not Found in User Access')
+
+        return technical_ga
 
     @api.multi
     def _get_technic_agronomy(self):
@@ -643,6 +666,8 @@ class InheritPurchaseRequest(models.Model):
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
                elif self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR']and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR'] and self._get_max_price() >= self._get_price_low() :
                     state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+               elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR']and self._get_max_price() < self._get_price_low():
+                    state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
                elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR'] and self._get_max_price() >= self._get_price_low() :
                     state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             except:
@@ -656,11 +681,9 @@ class InheritPurchaseRequest(models.Model):
         if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low():
             self.button_approved()
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_technic_agronomy}
-            self.write(state_data)
+            self.button_approved()
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_technic_agronomy}
-            self.write(state_data)
+            self.button_approved()
         elif self._get_max_price() >= self._get_price_low() or self._get_compare_requester_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
@@ -705,11 +728,11 @@ class InheritPurchaseRequest(models.Model):
         if self._get_max_price() >= self._get_price_low():
             state_data = {'state':'approval2','assigned_to':self._get_division_finance()}
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
-            state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         else:
             raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
@@ -809,7 +832,7 @@ class InheritPurchaseRequest(models.Model):
     @api.depends('assigned_to')
     def _change_validation_technic(self):
 
-        if self.assigned_to.id == self._get_user().id and self.state in ['technic1','technic2','technic3','technic4','technic5']:
+        if self.assigned_to.id == self._get_user().id and self.state in ['technic1','technic2','technic3','technic4','technic5','technic6']:
             self.validation_technic = True
 
     @api.multi
@@ -856,7 +879,7 @@ class InheritPurchaseRequest(models.Model):
             if self.type_location == 'HO':
                 type_location = 'HO'
             elif self.type_location == 'RO' or self.type_location == 'Estate':
-                type_location = 'EST'
+                type_location = 'KOKB'
 
             try :
                 departement_code = self.department_id.code
@@ -1077,7 +1100,6 @@ class InheritPurchaseRequestLine(models.Model):
             if item.request_id.type_functional and item.request_id.department_id and item.request_id.type_product:
                 arrProductCateg = []
                 mappingFuntional = item.env['mapping.department.product'].search([('type_functional','=',item.request_id.type_functional),
-                                                                                      ('type_product','=',item.request_id.type_product),
                                                                                       ('department_id.id','=',item.request_id.department_id.id)])
 
                 for productcateg in mappingFuntional:
@@ -1089,18 +1111,51 @@ class InheritPurchaseRequestLine(models.Model):
                 for productcategparent in prod_categ:
                     arrProdCatId.append(productcategparent.id)
 
-                if prod_categ:
-                    return  {
+                if prod_categ :
+                    if item.request_id.type_product == 'service':
+                        return  {
+                            'domain':{
+                                'product_id':[('categ_id','in',arrProdCatId),('type','=','service')]
+                                 }
+                            }
+                    elif item.request_id.type_product == 'consu':
+                        return  {
+                            'domain':{
+                                'product_id':[('categ_id','in',arrProdCatId),('|',('type_machine','=',True),
+                                                                              ('type_tools','=',True),
+                                                                              ('type_other','=',True),
+                                                                              ('type_computing','=',True))]
+                                 }
+                            }
+                    else :
+                        return  {
+                            'domain':{
+                                'product_id':[('categ_id','in',arrProdCatId)]
+                                 }
+                            }
+                elif prod_categ != ():
+                    if item.request_id.type_product == 'service':
+                        return  {
                         'domain':{
-                            'product_id':[('categ_id','in',arrProdCatId)]
+                            'product_id':[('categ_id','in',arrProductCateg),('type','=','service')]
                              }
                         }
-                elif prod_categ != ():
-                    return  {
+                    elif item.request_id.type_product == 'consu':
+                        return  {
+                        'domain':{
+                            'product_id':[('categ_id','in',arrProductCateg),('|',('type_machine','=',True),
+                                                                              ('type_tools','=',True),
+                                                                              ('type_other','=',True),
+                                                                              ('type_computing','=',True))]
+                             }
+                        }
+                    else :
+                        return  {
                         'domain':{
                             'product_id':[('categ_id','in',arrProductCateg)]
                              }
                         }
+
 
 
 

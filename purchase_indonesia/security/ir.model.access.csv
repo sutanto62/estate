@@ -101,4 +101,5 @@
 "v_quotation_comparison_form_line_ro_head","v_quotation_comparison_form_line_ro_head","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_indonesia.group_purchase_request_head_of_ro","True","False","False","False"
 "access_purchase_order_purchase_ro_head","purchase_order_purchase_ro_head","purchase.model_purchase_order","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
 "access_purchase_order_purchase_line_ro_head","purchase_order_purchase_line_ro_head","purchase.model_purchase_order_line","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+"stock_picking_ro_head","stock_picking_ro_head","purchase.model_stock_picking","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
 

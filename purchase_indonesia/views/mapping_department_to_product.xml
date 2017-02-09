@@ -10,7 +10,6 @@
                     <field name="type_functional" string="Unit Functional"/>
                     <field name="department_id" string="Department"/>
                     <field name="product_category_id" placeholder="Product Category ..." string="Product Category"/>
-                    <field name="type_product" string="Product Type"/>
                     <field name="assigned_id" string="Assigned To"/>
                 </tree>
             </field>
