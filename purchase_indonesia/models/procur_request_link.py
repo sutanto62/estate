@@ -1066,28 +1066,34 @@ class InheritPurchaseRequestLine(models.Model):
     @api.onchange('request_id','product_id')
     def _onchange_product_purchase_request_line(self):
         #use to onchange domain product same as product_category
-        if self.request_id.type_functional and self.request_id.department_id:
-            arrProductCateg = []
-            mappingFuntional = self.env['mapping.department.product'].search([('type_functional','=',self.request_id.type_functional),
-                                                                              ('department_id.id','=',self.request_id.department_id.id)])
-            for productcateg in mappingFuntional:
-                arrProductCateg.append(productcateg.product_category_id.id)
-            arrProdCatId = []
-            prod_categ = self.env['product.category'].search([('parent_id','in',arrProductCateg)])
-            for productcategparent in prod_categ:
-                arrProdCatId.append(productcategparent.id)
-            if prod_categ:
-                return  {
-                    'domain':{
-                        'product_id':[('categ_id','in',arrProdCatId)]
-                         }
-                    }
-            elif prod_categ != ():
-                return  {
-                    'domain':{
-                        'product_id':[('categ_id','in',arrProductCateg)]
-                         }
-                    }
+        for item in self:
+            if item.request_id.type_functional and item.request_id.department_id and item.request_id.type_product:
+                arrProductCateg = []
+                mappingFuntional = item.env['mapping.department.product'].search([('type_functional','=',item.request_id.type_functional),
+                                                                                      ('type_product','=',item.request_id.type_product),
+                                                                                      ('department_id.id','=',item.request_id.department_id.id)])
+
+                for productcateg in mappingFuntional:
+                    arrProductCateg.append(productcateg.product_category_id.id)
+
+                arrProdCatId = []
+                prod_categ = item.env['product.category'].search([('parent_id','in',arrProductCateg)])
+
+                for productcategparent in prod_categ:
+                    arrProdCatId.append(productcategparent.id)
+
+                if prod_categ:
+                    return  {
+                        'domain':{
+                            'product_id':[('categ_id','in',arrProdCatId)]
+                             }
+                        }
+                elif prod_categ != ():
+                    return  {
+                        'domain':{
+                            'product_id':[('categ_id','in',arrProductCateg)]
+                             }
+                        }
 
 
 

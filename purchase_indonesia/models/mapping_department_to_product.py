@@ -25,6 +25,8 @@ class MappingDepartmentToProduct(models.Model):
     department_id = fields.Many2one('hr.department')
     product_category_id = fields.Many2one('product.category',domain=[('parent_id','!=',False),('type','=','normal')])
     assigned_id = fields.Many2one('hr.job','Approver')
+    type_product = fields.Selection([('consu','Capital'),
+                                     ('service','Service'),('product','Stockable Product')],'Location Type')
 
     @api.multi
     @api.onchange('type_functional')
