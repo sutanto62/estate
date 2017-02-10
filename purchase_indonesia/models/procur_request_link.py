@@ -703,6 +703,13 @@ class InheritPurchaseRequest(models.Model):
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
 
+    # def all_are_greater_than_value(self, value):
+    #     for element in self.line_ids:
+    #
+    #         if element.product_id.categ_id != value:
+    #             return False
+    #     return True
+
     @api.multi
     def check_wkf_requester(self):
         #checking Approval Requester
@@ -784,6 +791,7 @@ class InheritPurchaseRequest(models.Model):
         for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
             purchaseline_data = {
                 'product_id': purchaseline.product_id.id,
+                'est_price':purchaseline.price_per_product,
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
                 'requisition_id' : res.id
@@ -798,7 +806,7 @@ class InheritPurchaseRequest(models.Model):
         try:
             company_code = self.env['res.company'].search([('id','=',self.company_id.id)]).code
         except:
-            raise exceptions.ValidationError('Company Code is Null abcd')
+            raise exceptions.ValidationError('Company Code is Null')
         sequence_name = 'quotation.comparison.form.'+self.code.lower()+'.'+company_code.lower()
         purchase_data = {
                 'name' : self.env['ir.sequence'].next_by_code(sequence_name),
@@ -807,7 +815,8 @@ class InheritPurchaseRequest(models.Model):
                 'requisition_id': purchase_requisition.id,
                 'origin' : purchase_requisition.origin,
                 'type_location' : purchase_requisition.type_location,
-                'location':purchase_requisition.location
+                'location':purchase_requisition.location,
+                'state':'draft'
             }
         res = self.env['quotation.comparison.form'].create(purchase_data)
 
@@ -1017,9 +1026,21 @@ class InheritPurchaseRequest(models.Model):
             if item.price_per_product <=0:
                 raise exceptions.ValidationError('Call Your Procurment Admin to Fill last Cost')
 
+    # @api.multi
+    # @api.constrains('line_ids')
+    # def _constraint_line_ids_category_id(self):
+    #         temp={}
+    #         value_categ_id = 0
+    #         line_length = len(self.line_ids)
+    #         for part in self.line_ids:
+    #             if line_length > 0:
+    #                 if part.product_id.categ_id and line_length > 0:
+    #                 value_categ_id += 1
+    #                 if
+
     @api.multi
     @api.constrains('line_ids')
-    def _constrains_product__purchase_request_id(self):
+    def _constrains_product_purchase_request_id(self):
         self.ensure_one()
         if self.line_ids:
             temp={}
@@ -1111,6 +1132,8 @@ class InheritPurchaseRequestLine(models.Model):
                 for productcategparent in prod_categ:
                     arrProdCatId.append(productcategparent.id)
 
+
+
                 if prod_categ :
                     if item.request_id.type_product == 'service':
                         return  {
@@ -1163,6 +1186,7 @@ class InheritPurchaseRequestLine(models.Model):
                                                                               ('type_computing','=',False)]
                              }
                         }
+
 
 
 

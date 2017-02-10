@@ -39,6 +39,7 @@ class InheritPurchaseTenders(models.Model):
     request_id = fields.Many2one('purchase.request','Purchase Request')
     due_date = fields.Date('Due Date',compute='_compute_due_date')
     validation_due_date = fields.Boolean('Validation Due Date',compute='_compute_validation_due_date')
+    quotation_state = fields.Char('QCF state',compute='_compute_quotation_state')
 
     @api.multi
     def _get_value_low(self):
@@ -73,6 +74,16 @@ class InheritPurchaseTenders(models.Model):
             'pic_id': self.user_id.id
         }
         res = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id)]).write(data)
+
+    @api.multi
+    @api.depends('quotation_state')
+    def _compute_quotation_state(self):
+        for item in self:
+            qcf_state = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)]).state
+            if qcf_state in [True,False]:
+                item.quotation_state = qcf_state
+            else:
+                item.quotation_state = qcf_state.title()
 
     @api.multi
     def _compute_date(self):
@@ -311,6 +322,7 @@ class InheritPurchaseRequisitionLine(models.Model):
 
     qty_received = fields.Float('Quantity received',readonly=True)
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
+    est_price = fields.Float('Estimated Price',readonly=True)
 
 
 

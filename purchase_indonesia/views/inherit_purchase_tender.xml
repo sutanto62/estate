@@ -39,6 +39,11 @@
                             invisible="1"/>
                  </xpath>
 
+                 <xpath expr="//field[@name='schedule_date']" position="after">
+                     <field name="quotation_state" string="Status QCF"
+                            invisible="0"/>
+                 </xpath>
+
                  <xpath expr="//field[@name='origin']" position="after">
                      <field name="request_id" readonly="1" string="No PP"/>
                  </xpath>
@@ -57,6 +62,12 @@
                      <field name="type_location" string="Location" invisible="1"/>
                      <field name="location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                  </xpath>
+
+                 <xpath expr="//tree/field[@name='product_id']" position="after">
+                           <field name="est_price" string="Est Price" class="oe_inline" invisible="0"
+                               readonly="1"/>
+                 </xpath>
+
                  <xpath expr="//tree/field[@name='product_qty']" position="after">
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
@@ -90,6 +101,11 @@
              <field name="arch" type="xml">
                  <xpath expr="//tree" position="attributes">
                           <attribute name='colors'>red:validation_due_date==True</attribute>
+                 </xpath>
+
+                 <xpath expr="//field[@name='state']" position="after">
+                     <field name="quotation_state" string="Status QCF"
+                            invisible="0"/>
                  </xpath>
              </field>
          </record>
