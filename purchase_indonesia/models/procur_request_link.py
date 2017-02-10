@@ -886,7 +886,7 @@ class InheritPurchaseRequest(models.Model):
             departement_code = ''
             type_location = ''
             if self.type_location == 'HO':
-                type_location = 'HO'
+                type_location = 'KPST'
             elif self.type_location == 'RO' or self.type_location == 'Estate':
                 type_location = 'KOKB'
 
