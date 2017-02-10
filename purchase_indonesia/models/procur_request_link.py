@@ -1121,16 +1121,20 @@ class InheritPurchaseRequestLine(models.Model):
                     elif item.request_id.type_product == 'consu':
                         return  {
                             'domain':{
-                                'product_id':[('categ_id','in',arrProdCatId),('|',('type_machine','=',True),
-                                                                              ('type_tools','=',True),
-                                                                              ('type_other','=',True),
-                                                                              ('type_computing','=',True))]
+                                'product_id':['&',('categ_id','in',arrProdCatId),'|',('type_machine','=',True),
+                                                                              '|',('type_tools','=',True),
+                                                                              '|',('type_other','=',True),
+                                                                              ('type_computing','=',True)]
                                  }
                             }
-                    else :
+                    elif item.request_id.type_product == 'product':
                         return  {
                             'domain':{
-                                'product_id':[('categ_id','in',arrProdCatId)]
+                                'product_id':['&',('categ_id','in',arrProdCatId),('type','=','product'),
+                                                                            '&',('type_machine','=',False),
+                                                                              '&',('type_tools','=',False),
+                                                                              '&',('type_other','=',False),
+                                                                              ('type_computing','=',False)]
                                  }
                             }
                 elif prod_categ != ():
@@ -1143,16 +1147,20 @@ class InheritPurchaseRequestLine(models.Model):
                     elif item.request_id.type_product == 'consu':
                         return  {
                         'domain':{
-                            'product_id':[('categ_id','in',arrProductCateg),('|',('type_machine','=',True),
-                                                                              ('type_tools','=',True),
-                                                                              ('type_other','=',True),
-                                                                              ('type_computing','=',True))]
+                            'product_id':['&',('categ_id','in',arrProductCateg),'|',('type_machine','=',True),
+                                                                              '|',('type_tools','=',True),
+                                                                              '|',('type_other','=',True),
+                                                                              ('type_computing','=',True)]
                              }
                         }
-                    else :
+                    elif item.request_id.type_product == 'product':
                         return  {
                         'domain':{
-                            'product_id':[('categ_id','in',arrProductCateg)]
+                            'product_id':['&',('categ_id','in',arrProductCateg),('type','=','product'),
+                                                                            '&',('type_machine','=',False),
+                                                                              '&',('type_tools','=',False),
+                                                                              '&',('type_other','=',False),
+                                                                              ('type_computing','=',False)]
                              }
                         }
 
