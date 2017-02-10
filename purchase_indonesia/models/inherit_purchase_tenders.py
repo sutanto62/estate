@@ -322,7 +322,16 @@ class InheritPurchaseRequisitionLine(models.Model):
 
     qty_received = fields.Float('Quantity received',readonly=True)
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
-    est_price = fields.Float('Estimated Price',readonly=True)
+    est_price = fields.Float('Estimated Price',compute='_compute_est_price')
+
+    @api.multi
+    @api.depends('est_price')
+    def _compute_est_price(self):
+        if self.est_price == 0 :
+            for item in self:
+                request_line  = item.env['purchase.request.line'].search([('request_id','=',item.requisition_id.request_id.id),
+                                                                          ('product_id','=',item.product_id.id)]).price_per_product
+                item.est_price = request_line
 
 
 
