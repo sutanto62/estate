@@ -46,37 +46,21 @@ class InheritPurchaseOrder(models.Model):
         'hide' : False
     }
 
+    @api.multi
+    def button_confirm(self):
+        self._update_po_no()
+        super(InheritPurchaseOrder,self).button_confirm()
+        self._update_shipping()
+        self._update_delivery_term()
+        return True
+
     @api.one
-    @api.depends('name','date_order','companys_id','type_location')
+    @api.depends('po_no','name','date_order','companys_id','type_location')
     def _complete_name(self):
         """ Forms complete name of location from parent category to child category.
         """
         fmt = '%Y-%m-%d %H:%M:%S'
-        if self.po_no and self.date_order and self.companys_id.code and self.type_location:
-            date = self.date_order
-            conv_date = datetime.strptime(str(date), fmt)
-            month = conv_date.month
-            year = conv_date.year
-
-            #change integer to roman
-            if type(month) != type(1):
-                raise TypeError, "expected integer, got %s" % type(month)
-            if not 0 < month < 4000:
-                raise ValueError, "Argument must be between 1 and 3999"
-            ints = (1000, 900,  500, 400, 100,  90, 50,  40, 10,  9,   5,  4,   1)
-            nums = ('M',  'CM', 'D', 'CD','C', 'XC','L','XL','X','IX','V','IV','I')
-            result = ""
-            for i in range(len(ints)):
-              count = int(month / ints[i])
-              result += nums[i] * count
-              month -= ints[i] * count
-            month = result
-
-            self.complete_name = self.po_no + '/' \
-                                 +str(month) +'/'+str(year)\
-                                 +'/'+self.companys_id.code+'/'\
-                                 +str(self.type_location)
-        elif not self.po_no and self.date_order and self.companys_id.code and self.type_location:
+        if self.date_order and self.companys_id.code and self.type_location:
             date = self.date_order
             conv_date = datetime.strptime(str(date), fmt)
             month = conv_date.month
@@ -96,19 +80,16 @@ class InheritPurchaseOrder(models.Model):
               result += nums[i] * count
               month -= ints[i] * count
             month = result
-            self.complete_name = ' Draft '+self.name  + '/' \
+            po_no = ''
+            if not self.po_no:
+                self.complete_name = ' Draft '+self.name  + '/' \
                                  +str(month) +'/'+str(year)\
                                  +'/'+self.companys_id.code+'/'+str(self.type_location)
-
-        return True
-
-    @api.multi
-    def button_confirm(self):
-        super(InheritPurchaseOrder,self).button_confirm()
-        self._update_shipping()
-        self._update_po_no()
-        self._update_delivery_term()
-        return True
+            elif self.po_no:
+                self.complete_name = self.po_no + '/' \
+                                 +str(month) +'/'+str(year)\
+                                 +'/'+self.companys_id.code+'/'\
+                                 +str(self.type_location)
 
     @api.multi
     def print_quotation(self):

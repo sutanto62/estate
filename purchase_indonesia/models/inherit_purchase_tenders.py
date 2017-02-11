@@ -224,9 +224,10 @@ class InheritPurchaseTenders(models.Model):
             'type_location':requisition.type_location,
             'location':requisition.location,
             'currency_id': requisition.company_id and requisition.company_id.currency_id.id,
-            'company_id': requisition.company_id.id,
+            'companys_id': requisition.companys_id.id,
             'fiscal_position_id': self.pool.get('account.fiscal.position').get_fiscal_position(cr, uid, supplier.id, context=context),
             'requisition_id': requisition.id,
+            'request_id':requisition.request_id.id,
             'notes': requisition.description,
             'picking_type_id': requisition.picking_type_id.id
         }
