@@ -11,6 +11,7 @@ from dateutil.relativedelta import *
 import calendar
 from openerp import tools
 import re
+import numpy
 
 class InheritPurchaseRequisition(models.Model):
     _inherit = 'purchase.requisition'
@@ -703,13 +704,6 @@ class InheritPurchaseRequest(models.Model):
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
 
-    # def all_are_greater_than_value(self, value):
-    #     for element in self.line_ids:
-    #
-    #         if element.product_id.categ_id != value:
-    #             return False
-    #     return True
-
     @api.multi
     def check_wkf_requester(self):
         #checking Approval Requester
@@ -1026,17 +1020,23 @@ class InheritPurchaseRequest(models.Model):
             if item.price_per_product <=0:
                 raise exceptions.ValidationError('Call Your Procurment Admin to Fill last Cost')
 
-    # @api.multi
-    # @api.constrains('line_ids')
-    # def _constraint_line_ids_category_id(self):
-    #         temp={}
-    #         value_categ_id = 0
-    #         line_length = len(self.line_ids)
-    #         for part in self.line_ids:
-    #             if line_length > 0:
-    #                 if part.product_id.categ_id and line_length > 0:
-    #                 value_categ_id += 1
-    #                 if
+    @api.multi
+    @api.constrains('line_ids')
+    def _constraint_line_ids_category_id(self):
+        mapping_functional = self.env['mapping.department.product'].search([('type_functional','=',self.type_functional),
+                                                                        ('department_id.id','=',self.department_id.id)])
+        temp_category_line = None
+        for temp_category in mapping_functional:
+            for record in self.line_ids:
+                if not record.product_id.categ_id.parent_id:
+                    temp_category_line = record.product_id.categ_id.id
+                else:
+                    temp_category_line = record.product_id.categ_id.parent_id.id
+
+                if temp_category.product_category_id.id != temp_category_line:
+                    error_msg = "Product \"%s\" is not in Department Product Category" % record.product_id.name
+                    raise exceptions.ValidationError(error_msg)
+
 
     @api.multi
     @api.constrains('line_ids')
