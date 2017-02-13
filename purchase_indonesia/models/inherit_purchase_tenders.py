@@ -307,7 +307,8 @@ class InheritPurchaseTenders(models.Model):
             purchase_order.message_post(cr, uid, [purchase_id], body=_("RFQ created"), context=context)
             res[requisition.id] = purchase_id
             for line in requisition.line_ids:
-                purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
+                if line.qty_outstanding > 0 :
+                    purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
     @api.multi
