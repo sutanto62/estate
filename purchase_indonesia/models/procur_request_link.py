@@ -11,7 +11,6 @@ from dateutil.relativedelta import *
 import calendar
 from openerp import tools
 import re
-import numpy
 
 class InheritPurchaseRequisition(models.Model):
     _inherit = 'purchase.requisition'
