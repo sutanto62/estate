@@ -1026,18 +1026,37 @@ class InheritPurchaseRequest(models.Model):
                                                                         ('department_id.id','=',self.department_id.id)])
         temp_category_line = None
         for record in self.line_ids:
-            for temp_category in mapping_functional:
-                if not record.product_id.categ_id.parent_id:
-                    temp_category_line = record.product_id.categ_id.id
-                else:
-                    temp_category_line = record.product_id.categ_id.parent_id.id
+            if not record.product_id.categ_id.parent_id:
+                temp_category_line = record.product_id.categ_id.id
+            else:
+                temp_category_line = record.product_id.categ_id.parent_id.id
 
+            len_check = 0
+            for temp_category in mapping_functional:
                 if temp_category.product_category_id.id == temp_category_line:
                     break
                 else :
-                    error_msg = "Product \"%s\" is not in Department Product Category" % record.product_id.name
-                    raise exceptions.ValidationError(error_msg)
+                    len_check = len_check + 1
 
+            if len_check == len(mapping_functional):
+                error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (record.product_id.name,self.department_id.name)
+                raise exceptions.ValidationError(error_msg)
+        #second Way to Use Combining Sets temp_category and Sets temp line
+        # temp_category = []
+        # temp_line = []
+        # for record in mapping_functional:
+        #     temp_category.append(record.product_category_id.id)
+        #
+        # for item in self.line_ids:
+        #     if not item.product_id.categ_id.parent_id.id:
+        #         temp_line.append(item.product_id.categ_id.id)
+        #     else:
+        #         temp_line.append(item.product_id.categ_id.parent_id.id)
+        #
+        # equals_temp = set(temp_line) - set(temp_category)
+        # if equals_temp:
+        #      error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (item.product_id.name,self.department_id.name)
+        #      raise exceptions.ValidationError(error_msg)
 
     @api.multi
     @api.constrains('line_ids')
