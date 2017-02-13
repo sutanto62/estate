@@ -1053,6 +1053,15 @@ class InheritPurchaseRequest(models.Model):
                 temp[part.id] = part_value_name
             return temp
 
+    @api.multi
+    @api.constrains('line_ids')
+    def _constraint_product_line_not_null(self):
+        len_line_ids = len(self.line_ids)
+        for item in self:
+            if len_line_ids == 0:
+                error_msg = "Please Fill Your Product"
+                raise exceptions.ValidationError(error_msg)
+
 
 class InheritPurchaseRequestLine(models.Model):
 
