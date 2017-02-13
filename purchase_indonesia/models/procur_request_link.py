@@ -1025,14 +1025,16 @@ class InheritPurchaseRequest(models.Model):
         mapping_functional = self.env['mapping.department.product'].search([('type_functional','=',self.type_functional),
                                                                         ('department_id.id','=',self.department_id.id)])
         temp_category_line = None
-        for temp_category in mapping_functional:
-            for record in self.line_ids:
+        for record in self.line_ids:
+            for temp_category in mapping_functional:
                 if not record.product_id.categ_id.parent_id:
                     temp_category_line = record.product_id.categ_id.id
                 else:
                     temp_category_line = record.product_id.categ_id.parent_id.id
 
-                if temp_category.product_category_id.id != temp_category_line:
+                if temp_category.product_category_id.id == temp_category_line:
+                    break
+                else :
                     error_msg = "Product \"%s\" is not in Department Product Category" % record.product_id.name
                     raise exceptions.ValidationError(error_msg)
 
