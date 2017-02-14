@@ -1097,7 +1097,8 @@ class InheritPurchaseRequestLine(models.Model):
             else:
                 rec.is_editable = True
 
-    price_per_product = fields.Float('Prod Price',)
+    price_per_product = fields.Float('Product Price')
+    price_per_product_label = fields.Char('Product Price',readonly=True)
     total_price = fields.Float('Total Price',compute='_compute_total_price')
     budget_available = fields.Float('Budget Available')
     control_unit =  fields.Float('Budget Control Unit')
@@ -1126,6 +1127,7 @@ class InheritPurchaseRequestLine(models.Model):
             line = self.env.cr.fetchone()[0]
             if self.request_state == 'draft':
                 self.price_per_product = line
+                self.price_per_product_label = str(line)
             elif self.request_state != 'draft' :
                 self.price_per_product
 

@@ -75,8 +75,8 @@
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="before">
-                          <field name="price_per_product" invisible="0" string="Est Price" attrs="{'readonly': [('is_editable','=', False)]}"/>
-                          <field name="total_price" invisible="0" string="Total Price"/>
+                     <field name="price_per_product" invisible="0" string="Est Price"/>
+                     <field name="total_price" invisible="0" string="Total Price"/>
                  </xpath>
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
@@ -94,7 +94,8 @@
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//form//group[@name='group6']//div" position="after">
-                          <field name="price_per_product" string="Est Price " attrs="{'readonly': [('is_editable','=', False)]}"/>
+                          <field name="price_per_product" string="Est Price " attrs="{'invisible': [('is_editable','=', True)],'readonly': [('is_editable','=', False)]}"/>
+                          <field name="price_per_product_label" string="Est Price " attrs="{'invisible': [('is_editable','=', False)]}"/>
                           <field name="total_price" string="Total Price"/>
                  </xpath>
              </field>
