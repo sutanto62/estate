@@ -90,6 +90,28 @@
             </field>
         </record>
 
+        <!-- Require to filter new employee this month -->
+        <record id="inherited_hr_view_employee_filter" model="ir.ui.view">
+            <field name="name">Inherited Employee View Filter</field>
+            <field name="model">hr.employee</field>
+            <field name="inherited_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <separator/>
+                    <filter string="Last Month New Employee" name="last_month_employee"
+                        domain="[('joindate','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                        ('joindate','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="This Month New Employee" name="this_month_employee"
+                        domain="[('joindate', '&lt;=', (context_today()+relativedelta(months=1,day=1,days=-1)).strftime('%Y-%m-%d')),
+                        ('joindate','&gt;=',(context_today()+relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Next Month New Employee" name="next_month_employee"
+                        domain="[('joindate','&lt;=',(context_today()+relativedelta(months=2,day=1,days=-1)).strftime('%Y-%m-%d')),
+                        ('joindate','&gt;=',(context_today()+relativedelta(months=1,day=1)).strftime('%Y-%m-%d'))]"/>
+
+                </xpath>
+            </field>
+        </record>
+
         <!-- Work Schedule -->
         <record id="inherited_resource_calendar_view_tree" model="ir.ui.view">
             <field name="name">resource.calendar.tree.inherit</field>

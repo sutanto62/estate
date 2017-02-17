@@ -103,7 +103,7 @@ class Activity(models.Model):
 
     @api.one
     @api.constrains('qty_base_min', 'qty_base_max', 'qty_base')
-    def _check_qty_base(self):
+    def _check_qty_base_val(self):
         """Keep base quantity, min and max.
         """
         if self.qty_base_min or self.qty_base_max:
@@ -165,6 +165,17 @@ class Activity(models.Model):
                 error_msg = _("Contract only allowed for standard based wage method.")
                 raise ValidationError(error_msg)
             return True
+
+    @api.multi
+    @api.constrains('wage_method', 'contract', 'qty_base')
+    def _check_qty_base(self):
+        """ Standard quantity wage method should have standard work result/day to calculate quantity."""
+        for record in self:
+            if record.wage_method == 'standard' and not record.qty_base:
+                error_msg = _("You should set standard work result/day if attendance code is standard quantity/contract based.")
+                raise ValidationError(error_msg)
+            return True
+
 
     @api.one
     def get_qty(self):
@@ -295,7 +306,7 @@ class ActivityNorm(models.Model):
         for rec in self:
             if not 1 >= rec.coefficient >= 0:
                 error_msg = _("Coefficient should in between 0 and 1")
-                raise exceptions.ValidationError(error_msg)
+                raise ValidationError(error_msg)
 
 
 class MaterialNorm(models.Model):

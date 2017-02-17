@@ -1127,6 +1127,17 @@ class UpkeepLabour(models.Model):
                 error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, result))
                 raise ValidationError(error_msg)
 
+    @api.multi
+    @api.onchange('attendance_code_id')
+    def _onchange_attendance_code(self):
+        """ Attendance code with contract active should record quantity in piece rate field."""
+        self.ensure_one()
+        if self.attendance_code_id.contract:
+            self.quantity = 0
+            self.quantity_overtime = 0
+        else:
+            self.quantity_piece_rate = 0
+
     @api.constrains('attendance_code_id')
     def _check_attendance_code(self):
         """ Attendance code ratio should follow work result number of day calculation """

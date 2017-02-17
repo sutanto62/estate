@@ -11,8 +11,13 @@
                     <!--<field name="complete_name"/>-->
                     <field name="code"/>
                     <field name="complete_name"/>
+                    <field name="uom_id" string="UoM"/>
+                    <field name="qty_base" string="Std. Qty."/>
+                    <field name="standard_price" digits="[16,2]"/>
                     <field name="wage_method"/>
-                    <field name="type"/>
+                    <field name="contract"/>
+                    <!-- do not delete field below -->
+                    <field name="type" invisible="True"/>
                 </tree>
             </field>
         </record>
