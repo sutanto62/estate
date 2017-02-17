@@ -197,7 +197,8 @@ class ProcurGoodReturns(models.Model):
                 'block_id' : returnline.block_id.id,
                 'description': returnline.description,
                 'planted_year_id' : returnline.planted_year_id.id,
-                'code' :returnline.code
+                'code' :returnline.code,
+                'general_account_id':returnline.general_account_id.id
             }
             self.env['management.good.return.line'].create(returnline_data)
 
@@ -230,6 +231,7 @@ class ProcurementGoodReturnsLine(models.Model):
 
     product_qty = fields.Float('Product Quantity')
     code = fields.Char('Account Cost',compute='_change_code')
+    general_account_id = fields.Many2one('account.account','General Account')
     block_id = fields.Many2one('estate.block.template', "Block", required=True,
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
                                   ,('estate_location_type','=','planted')],compute='_change_block_tt')

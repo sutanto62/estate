@@ -10,6 +10,11 @@ from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
 from openerp import tools
 
+class InheritStockMove(models.Model):
+
+    _inherit = 'stock.move'
+
+    general_account_id = fields.Many2one('account.account','General Account')
 
 class ManagementGoodRequest(models.Model):
 
@@ -106,6 +111,7 @@ class ManagementGoodRequest(models.Model):
                     'date_expected': self.date_schedule,
                     'location_id': self.warehouse_id.id,
                     'location_dest_id': self.destination_id.id,
+                    'general_account_id':record.general_account_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -132,6 +138,7 @@ class ManagementGoodRequest(models.Model):
                     'date_expected': self.date_schedule,
                     'location_id':self.destination_id.id ,
                     'location_dest_id': self.warehouse_id.id,
+                    'general_account_id':record.general_account_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -226,6 +233,7 @@ class ManagementGoodRequestLine(models.Model):
     qty_stock = fields.Integer('Quantity Stock',compute='_change_get_qty_available')
     qty_done = fields.Integer('Quantity Done')
     code = fields.Char('Transaction Code')
+    general_account_id = fields.Many2one('account.account','General Account')
     block_id = fields.Many2one('estate.block.template', "Block", required=True,
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
                                   ,('estate_location_type','=','planted')])
@@ -268,6 +276,7 @@ class ManagementGoodReturnLine(models.Model):
     uom_id = fields.Many2one('product.uom','UOM')
     qty = fields.Integer('Quantity Return')
     code = fields.Char('Transaction Code')
+    general_account_id = fields.Many2one('account.account','General Account')
     block_id = fields.Many2one('estate.block.template', "Block", required=True,
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
                                   ,('estate_location_type','=','planted')])

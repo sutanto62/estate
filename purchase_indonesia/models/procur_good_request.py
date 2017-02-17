@@ -136,7 +136,8 @@ class ProcurGoodRequest(models.Model):
                 'block_id' : requestline.block_id.id,
                 'description': requestline.description,
                 'planted_year_id' : requestline.planted_year_id.id,
-                'code' :requestline.code
+                'code' :requestline.code,
+                'general_account_id':requestline.general_account_id.id
             }
             self.env['management.good.request.line'].create(requestline_data)
 
@@ -215,6 +216,7 @@ class ProcurGoodRequestLine(models.Model):
     qty = fields.Integer('Quantity Request')
     qty_done = fields.Integer('Quantity Actual')
     code = fields.Char('Transaction Code')
+    general_account_id = fields.Many2one('account.account','General Account')
     block_id = fields.Many2one('estate.block.template', "Block", required=True,
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '3')
                                   ,('estate_location_type','=','planted')])
