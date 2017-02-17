@@ -24,8 +24,8 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
         'security/security.xml',
+        'security/ir.model.access.csv',
         'templates.xml',
         'views/hr_fingerprint.xml',
         'views/inherited_hr_attendance_view.xml',

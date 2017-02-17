@@ -166,6 +166,17 @@ class Activity(models.Model):
                 raise ValidationError(error_msg)
             return True
 
+    @api.multi
+    @api.constrains('wage_method', 'contract')
+    def _check_qty_base(self):
+        """ Standard quantity wage method should have standard work result/day to calculate quantity."""
+        for record in self:
+            if record.wage_method == 'standard' and not record.qty_base:
+                error_msg = _("You should set standard work result/day if attendance code is standard quantity/contract based.")
+                raise ValidationError(error_msg)
+            return True
+
+
     @api.one
     def get_qty(self):
         """Encapsulated selection algorithm
