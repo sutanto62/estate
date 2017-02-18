@@ -39,6 +39,17 @@
                             invisible="1"/>
                  </xpath>
 
+                 <xpath expr="//button[@name='open_product_line']" position="replace">
+                     <button name="open_product_line" type="object" string="Product Lines" class="oe_stat_button" icon="fa-list"
+                        invisible="1" groups="purchase.group_advance_bidding"/>
+                 </xpath>
+
+                  <xpath expr="//button[@name='open_rfq']" position="replace">
+                     <button name="open_rfq" type="object" string="RFQs/Bids" class="oe_stat_button" icon="fa-list-alt"
+                        invisible="1"/>
+                 </xpath>
+
+
                  <xpath expr="//field[@name='schedule_date']" position="after">
                      <field name="quotation_state" string="Status QCF"
                             invisible="0"/>
@@ -125,6 +136,32 @@
 
              </field>
          </record>
+
+        <record id="purchase_requisition.view_purchase_requisition_filter" model="ir.ui.view">
+            <field name="name">purchase.requisition.list.select</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                <search string="Search Call for Tenders">
+                    <field name="name" string="Call for Tenders"/>
+                    <field name="exclusive" />
+                    <field name="request_id" string="No PP"/>
+                    <filter string="New" domain="[('state','=','draft')]" help="New Call for Tenders"/>
+                    <filter string="Confirmed" domain="[('state','=','in_progress')]" help="Call for Tenders in negotiation"/>
+                    <filter string="Closed Tenders" domain="[('state','=','open')]" help="Call for Tenders where tenders are closed"/>
+                    <separator/>
+                    <filter string="Unassigned"  domain="[('user_id','=', False)]" help="Unassigned  Requisition"/>
+                    <!--<filter name="due_date" string="Due Date" domain="[('state','!=','done'),('schedule_date','&lt;',ordering_date)]"/>-->
+                    <field name="user_id" />
+                    <group expand="0" string="Group By">
+                        <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                        <filter string="Source" domain="[]" context="{'group_by':'origin'}"/>
+                        <filter string="Status" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Ordering Date" domain="[]" context="{'group_by':'ordering_date'}"/>
+                        <filter string="End Month" domain="[]" context="{'group_by':'date_end'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
         <!--<record id="purchase_requisition.purchase_requisition_dashboard_kanban_view" model="ir.ui.view">-->
             <!--<field name="name">purchase.requisition.dashboard.kanban</field>-->
