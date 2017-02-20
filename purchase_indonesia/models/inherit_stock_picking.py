@@ -188,6 +188,16 @@ class InheritStockPicking(models.Model):
                         'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                         }
                     record.write(tender_line_data)
+                    if sumitemmin < 0 :
+                        purchase_data = {
+                            'state' : 'received_force_done'
+                        }
+                        po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
+                    else:
+                        purchase_data = {
+                            'state' : 'done'
+                        }
+                        po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
 
                     if stock_pack_operation_length == 1 and sumitemmin < 0 :
                         count_action_cancel_status = count_action_cancel_status +1

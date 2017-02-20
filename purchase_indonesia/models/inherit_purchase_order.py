@@ -39,7 +39,7 @@ class InheritPurchaseOrder(models.Model):
         ('to approve', 'To Approve'),
         ('purchase', 'Purchase Order'),
         ('done', 'Done'),
-        ('cancel', 'Cancelled')
+        ('cancel', 'Cancelled'),('received_all','Received All'),('received_force_done','Received Force Done')
         ], string='Status', readonly=True, select=True, copy=False, default='draft', track_visibility='onchange')
 
     _defaults = {
