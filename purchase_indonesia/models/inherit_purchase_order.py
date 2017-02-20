@@ -48,6 +48,7 @@ class InheritPurchaseOrder(models.Model):
 
     @api.multi
     def button_confirm(self):
+        self._constraint_quantity_backorder_po()
         self._update_po_no()
         super(InheritPurchaseOrder,self).button_confirm()
         self._update_shipping()
@@ -125,6 +126,24 @@ class InheritPurchaseOrder(models.Model):
             }
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
         return True
+
+    @api.multi
+    def _constraint_quantity_backorder_po(self):
+
+        #search Purchase Tender
+        requisition_id = self.env['purchase.requisition'].search([('request_id','=',self.request_id.id)]).id
+        for item in self:
+            if item.state == 'draft':
+
+                for record in item.order_line:
+                    requisition_line_id = self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id),
+                                                                          ('product_id','=',record.product_id.id)])
+                    order_line = self.env['purchase.order.line'].search([('order_id','=',self.id),
+                                                                         ('product_id','=',requisition_line_id.product_id.id)]).product_qty
+                    if requisition_line_id.qty_outstanding > 0 :
+                        if order_line > requisition_line_id.qty_outstanding :
+                            error_msg = 'Cannot Approve Back Order Cause Product Qty Is more Than Qty Outstanding'
+                            raise exceptions.ValidationError(error_msg)
 
     @api.multi
     def _update_delivery_term(self):
