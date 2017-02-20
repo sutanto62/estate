@@ -23,9 +23,9 @@
                      <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>
                  </xpath>
                  <xpath expr="//button[@name='show_details']" position="before">
-                     <button name="split_quantities" class="oe_link"  icon="fa-list" string="Split" type="object"/>
+                     <button name="split_quantities" attrs="{'invisible': ['|',('qty_done', '=', 0),('qty_done', '&lt;', 0)]}" class="oe_link"  icon="fa-list" string="Split" type="object"/>
                      <button name="do_force_donce"
-                      class="oe_link"  icon="fa-scissors" string="Force Done" type="object"/>
+                      class="oe_link"  attrs="{'invisible': ['|',('qty_done', '&gt;', 0),('qty_done', '&lt;', 0)]}" icon="fa-scissors" string="Force Done" type="object"/>
                  </xpath>
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
                      <button name="print_grn" string="Print GRN/SRN" type="object" states="assigned" groups="base.group_user"/>

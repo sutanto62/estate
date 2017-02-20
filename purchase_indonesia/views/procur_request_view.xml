@@ -87,7 +87,8 @@
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
                     <field name="qty" string="QTY Request"/>
                     <field name="qty_done" string="QTY Actual" readonly="1"/>
-                    <field name="code" string="COA"/>
+                    <field name="code" string="TCode"/>
+                    <field name="general_account_id" string="COA"/>
                     <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
                     <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>
                     <field name="description" string="Description" />

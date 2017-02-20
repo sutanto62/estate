@@ -1,5 +1,16 @@
 <openerp>
     <data>
+         <record model="ir.ui.view" id="inherit_stock_move_general_account">
+             <field name="name">Inherit stock move general Account</field>
+             <field name="model">stock.move</field>
+             <field name="inherit_id" ref="stock.view_move_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='priority']" position="after">
+                          <field name='general_account_id' string="COA"/>
+                 </xpath>
+             </field>
+         </record>
+
         <record model="ir.ui.view" id="view_management_good_request_tree">
             <field name="name">management Goods </field>
             <field name="model">management.good.request</field>
@@ -98,7 +109,8 @@
                     <field name="qty" string="QTY Request"/>
                     <field name="qty_stock" string="QTY Stock"/>
                     <field name="qty_done" string="QTY Actual"/>
-                    <field name="code" string="COA"/>
+                    <field name="code" string="Tcode"/>
+                    <field name="general_account_id" string="COA"/>
                     <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
                     <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>
                     <field name="description" string="Description" />
@@ -116,7 +128,8 @@
                     <field name="code_product" string="Product Code"/>
                     <field name="uom_id" string="UOM" options="{'no_create_edit': True}"/>
                     <field name="qty" string="QTY Request"/>
-                    <field name="code" string="COA"/>
+                    <field name="code" string="TCode"/>
+                    <field name="general_account_id" string="COA"/>
                     <field name="block_id" string="Block" options="{'no_create_edit': True}"/>
                     <field name="planted_year_id" string="TT" options="{'no_create_edit': True}"/>
                     <field name="description" string="Description" />

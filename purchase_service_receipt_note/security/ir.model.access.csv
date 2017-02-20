@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_service_receipt_note_purchase_service_receipt_note,purchase_service_receipt_note.purchase_service_receipt_note,model_purchase_service_receipt_note_purchase_service_receipt_note,,1,0,0,0

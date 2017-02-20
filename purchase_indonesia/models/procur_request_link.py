@@ -52,6 +52,10 @@ class InheritPurchaseRequest(models.Model):
         return 'Purchase Request Technical IE'
 
     @api.multi
+    def purchase_request_technical6(self):
+        return 'Purchase Request Technical HRGA Head'
+
+    @api.multi
     def purchase_request_director(self):
         return 'Purchase Request Director'
 
@@ -75,6 +79,7 @@ class InheritPurchaseRequest(models.Model):
     def purchase_request_finance(self):
         return 'Purchase Request Finance Procurement'
 
+
     #Method Get user
     @api.multi
     def _get_user(self):
@@ -88,6 +93,14 @@ class InheritPurchaseRequest(models.Model):
         #find User Employee
 
         employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
+    @api.multi
+    def _get_employee_request(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self.requested_by.id)])
 
         return employee
 
@@ -152,6 +165,7 @@ class InheritPurchaseRequest(models.Model):
                        ('technic3', 'Technic ICT Dept Approval'),
                        ('technic4', 'Technic GM Plantation Dept Approval'),
                        ('technic5', 'Technic EA Dept Approval'),
+                       ('technic6', 'Technic HR Approval'),
                        ('approval3','Department Head Financial Approval'),
                        ('approval4','Div Head Financial Approval'),
                        ('approval5','Director Financial Approval'),
@@ -165,8 +179,18 @@ class InheritPurchaseRequest(models.Model):
     validation_user = fields.Boolean("Validation User",compute='_change_validation_user')
     validation_reject = fields.Boolean("Validation Reject",compute='_change_validation_reject')
     validation_finance = fields.Boolean("Validation Finance",compute='_change_validation_finance')
+    validation_correction = fields.Boolean("Validation Correction",compute='_change_validation_correction')
+    validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
+
+    @api.multi
+    def _get_type_product(self):
+        for item in self:
+            if item.type_product == 'consu':
+                return True
+            elif item.type_product in ['service','product']:
+                return False
 
 
     @api.multi
@@ -261,6 +285,24 @@ class InheritPurchaseRequest(models.Model):
             raise exceptions.ValidationError('User Technic ICT Not Found in User Access')
 
         return technical_ict
+
+    @api.multi
+    def _get_technic_ga(self):
+        #get List of Technical Dept GAfrom user.groups
+        #technical GA in user groups same Like Technic6
+
+        arrTechnic6 = []
+
+        list_technicalga = self.env['res.groups'].search([('name','like',self.purchase_request_technical6())]).users
+
+        for technic6 in list_technicalga:
+               arrTechnic6.append(technic6.id)
+        try:
+            technical_ga = self.env['res.users'].search([('id','=',arrTechnic6[0])]).id
+        except:
+            raise exceptions.ValidationError('User Technic GA Not Found in User Access')
+
+        return technical_ga
 
     @api.multi
     def _get_technic_agronomy(self):
@@ -379,6 +421,20 @@ class InheritPurchaseRequest(models.Model):
 
         return jobs in arrJobs2
 
+    @api.multi
+    def _get_compare_requester_non_hr(self):
+        #Non Comparing Hr Jobs
+        arrJobs2 = []
+
+        jobs = self.env['hr.job'].search([('id','=',self._get_employee_request().job_id.id)]).id
+        jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant',
+                                                                   'Administration Assistant','KTU','ktu'])])
+
+        for item in jobs_non_hr:
+            arrJobs2.append(item.id)
+
+        return jobs in arrJobs2
+
 
     #--------------------------end of Method search User--------------------------
 
@@ -400,6 +456,14 @@ class InheritPurchaseRequest(models.Model):
         #get total price from purchase request
 
         price = float(sum(record.total_price for record in self.line_ids))
+
+        return price
+
+    @api.multi
+    def _get_max_price_budget(self):
+        #get total budget_available from purchase request
+
+        price = float(sum(record.budget_available for record in self.line_ids))
 
         return price
 
@@ -506,6 +570,13 @@ class InheritPurchaseRequest(models.Model):
         return True
 
     @api.multi
+    def action_revert(self):
+        """ revert approval to financial approval.
+        """
+        state_data = {'state':'approval4','assigned_to' : self._get_division_finance()}
+        self.write(state_data)
+
+    @api.multi
     def action_financial_approval1(self):
         """ Confirms department Head Financial Approval.
         """
@@ -519,21 +590,37 @@ class InheritPurchaseRequest(models.Model):
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
-        if self._get_max_price() < self._get_price_mid():
-                self.button_approved()
-        elif self._get_max_price() >= self._get_price_mid():
-            state_data = {'state':'approval5','assigned_to' : self._get_director()}
-            self.write(state_data)
+        if self._get_type_product() == True:
+            # product Capital
+            if self._get_max_price_budget() < self._get_price_mid():
+                    self.button_approved()
+            elif self._get_max_price_budget() >= self._get_price_mid():
+                state_data = {'state':'approval5','assigned_to' : self._get_director()}
+                self.write(state_data)
+        elif self._get_type_product() == False:
+            #Product service and stockable
+            if self._get_max_price() < self._get_price_mid():
+                    self.button_approved()
+            elif self._get_max_price() >= self._get_price_mid():
+                state_data = {'state':'approval5','assigned_to' : self._get_director()}
+                self.write(state_data)
 
     @api.multi
     def action_financial_approval3(self):
         """ Confirms Director  Financial Approval.
         """
-        if self._get_max_price() < self._get_price_high():
-                self.button_approved()
-        elif self._get_max_price() >= self._get_price_high():
-            state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
-            self.write(state_data)
+        if self._get_type_product() == True:
+            if self._get_max_price_budget() < self._get_price_high():
+                    self.button_approved()
+            elif self._get_max_price_budget() >= self._get_price_high():
+                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+                self.write(state_data)
+        elif self._get_type_product() == False:
+            if self._get_max_price() < self._get_price_high():
+                    self.button_approved()
+            elif self._get_max_price() >= self._get_price_high():
+                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+                self.write(state_data)
 
     @api.multi
     def action_financial_approval4(self):
@@ -560,9 +647,7 @@ class InheritPurchaseRequest(models.Model):
     def action_confirm2(self,):
         """ Confirms Good request.
         """
-        jobs_compare_hr = self.env['hr.job'].search([('name','in',['Budgeting','budget','budgeting','Budget'])]).id
-        employeemanager = self.env['hr.employee'].search([('job_id','=',jobs_compare_hr)]).user_id.id
-        self.write({'state': 'budget','assigned_to':employeemanager})
+        self.write({'state': 'budget','assigned_to':self._get_budget_manager()})
 
     @api.multi
     def action_budget(self,):
@@ -581,6 +666,8 @@ class InheritPurchaseRequest(models.Model):
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
                elif self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR']and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR'] and self._get_max_price() >= self._get_price_low() :
                     state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+               elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR']and self._get_max_price() < self._get_price_low():
+                    state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
                elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR'] and self._get_max_price() >= self._get_price_low() :
                     state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             except:
@@ -591,22 +678,28 @@ class InheritPurchaseRequest(models.Model):
     def action_technic(self):
         """ Confirms Technical request.
         """
-        state_data = []
-
-        if self._get_compare_hr() and self.type_functional != 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_user_agronomy()}
-        elif self._get_compare_hr() and self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'approval3','assigned_to':self._get_technic_ie}
-        elif self._get_compare_hr() and self._get_max_price() >= self._get_price_low() or self._get_compare_non_hr():
+        if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low():
+            self.button_approved()
+        elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
+            self.button_approved()
+        elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
+            self.button_approved()
+        elif self._get_max_price() >= self._get_price_low() or self._get_compare_requester_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
+            self.write(state_data)
         else:
             raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
 
-        self.write(state_data)
-
     @api.model
     def create(self, vals):
-        vals['name']=self.env['ir.sequence'].next_by_code('purchase.request.seq')
+        try:
+            company_code = self.env['res.company'].search([('id','=',vals['company_id'])]).code
+        except:
+            raise exceptions.ValidationError('Company Code is Null')
+
+        sequence_name = 'purchase.request.seq.'+self._get_office_level_id_code().lower()+'.'+company_code.lower()
+        vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
+
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
 
@@ -614,7 +707,6 @@ class InheritPurchaseRequest(models.Model):
     def check_wkf_requester(self):
         #checking Approval Requester
         state_data = []
-
         if self._get_compare_hr():
             self.write({'state':'confirm'})
             state_data = {'state':'approval7','assigned_to':self._get_user_ro_manager()}
@@ -636,11 +728,11 @@ class InheritPurchaseRequest(models.Model):
         if self._get_max_price() >= self._get_price_low():
             state_data = {'state':'approval2','assigned_to':self._get_division_finance()}
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
-            state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
-            state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         else:
             raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
@@ -652,7 +744,7 @@ class InheritPurchaseRequest(models.Model):
        state_data = []
 
        if self._get_max_price() >= self._get_price_low() and self._get_employee().parent_id.id:
-            state_data = {'state':'approval2','assigned_to':self._get_employee().parent_id.id}
+            state_data = {'state':'approval2','assigned_to':self._get_employee().parent_id.user_id.id}
        elif self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id or self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
        else:
@@ -692,8 +784,9 @@ class InheritPurchaseRequest(models.Model):
         for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
             purchaseline_data = {
                 'product_id': purchaseline.product_id.id,
+                'est_price':purchaseline.price_per_product,
                 'product_uom_id': purchaseline.product_uom_id.id,
-                'product_qty' : purchaseline.product_qty,
+                'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
                 'requisition_id' : res.id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
@@ -703,13 +796,20 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def create_quotation_comparison_form(self):
         purchase_requisition = self.env['purchase.requisition'].search([('origin','like',self.complete_name)])
+        try:
+            company_code = self.env['res.company'].search([('id','=',self.company_id.id)]).code
+        except:
+            raise exceptions.ValidationError('Company Code is Null')
+        sequence_name = 'quotation.comparison.form.'+self.code.lower()+'.'+company_code.lower()
         purchase_data = {
+                'name' : self.env['ir.sequence'].next_by_code(sequence_name),
                 'company_id': purchase_requisition.companys_id.id,
                 'date_pp': datetime.today(),
                 'requisition_id': purchase_requisition.id,
                 'origin' : purchase_requisition.origin,
                 'type_location' : purchase_requisition.type_location,
-                'location':purchase_requisition.location
+                'location':purchase_requisition.location,
+                'state':'draft'
             }
         res = self.env['quotation.comparison.form'].create(purchase_data)
 
@@ -724,6 +824,18 @@ class InheritPurchaseRequest(models.Model):
 
         if self.assigned_to.id == self._get_user().id and self.state == 'approval3':
             self.validation_finance = True
+
+    @api.depends('assigned_to')
+    def _change_validation_correction(self):
+
+        if self.assigned_to.id == self._get_user().id and self.state in ['approval5','approval6']:
+            self.validation_correction = True
+
+    @api.depends('assigned_to')
+    def _change_validation_technic(self):
+
+        if self.assigned_to.id == self._get_user().id and self.state in ['technic1','technic2','technic3','technic4','technic5','technic6']:
+            self.validation_technic = True
 
     @api.multi
     @api.depends('assigned_to')
@@ -765,6 +877,11 @@ class InheritPurchaseRequest(models.Model):
             month = result
 
             departement_code = ''
+            type_location = ''
+            if self.type_location == 'HO':
+                type_location = 'KPST'
+            elif self.type_location == 'RO' or self.type_location == 'Estate':
+                type_location = 'KOKB'
 
             try :
                 departement_code = self.department_id.code
@@ -777,7 +894,7 @@ class InheritPurchaseRequest(models.Model):
                 self.complete_name = self.name + '/' \
                                          + self.company_id.code+'-'\
                                          +'PP'+'/'\
-                                         +departement_code+'/'+str(month)+'/'+str(year)
+                                         +type_location+'/'+departement_code+'/'+str(month)+'/'+str(year)
         else:
             self.complete_name = self.name
 
@@ -904,7 +1021,46 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     @api.constrains('line_ids')
-    def _constrains_product__purchase_request_id(self):
+    def _constraint_line_ids_category_id(self):
+        mapping_functional = self.env['mapping.department.product'].search([('type_functional','=',self.type_functional),
+                                                                        ('department_id.id','=',self.department_id.id)])
+        temp_category_line = None
+        for record in self.line_ids:
+            if not record.product_id.categ_id.parent_id:
+                temp_category_line = record.product_id.categ_id.id
+            else:
+                temp_category_line = record.product_id.categ_id.parent_id.id
+
+            len_check = 0
+            for temp_category in mapping_functional:
+                if temp_category.product_category_id.id == temp_category_line:
+                    break
+                else :
+                    len_check = len_check + 1
+
+            if len_check == len(mapping_functional):
+                error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (record.product_id.name,self.department_id.name)
+                raise exceptions.ValidationError(error_msg)
+        #second Way to Use Combining Sets temp_category and Sets temp line
+        # temp_category = []
+        # temp_line = []
+        # for record in mapping_functional:
+        #     temp_category.append(record.product_category_id.id)
+        #
+        # for item in self.line_ids:
+        #     if not item.product_id.categ_id.parent_id.id:
+        #         temp_line.append(item.product_id.categ_id.id)
+        #     else:
+        #         temp_line.append(item.product_id.categ_id.parent_id.id)
+        #
+        # equals_temp = set(temp_line) - set(temp_category)
+        # if equals_temp:
+        #      error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (item.product_id.name,self.department_id.name)
+        #      raise exceptions.ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('line_ids')
+    def _constrains_product_purchase_request_id(self):
         self.ensure_one()
         if self.line_ids:
             temp={}
@@ -916,13 +1072,33 @@ class InheritPurchaseRequest(models.Model):
                 temp[part.id] = part_value_name
             return temp
 
+    @api.multi
+    @api.constrains('line_ids')
+    def _constraint_product_line_not_null(self):
+        len_line_ids = len(self.line_ids)
+        for item in self:
+            if len_line_ids == 0:
+                error_msg = "Please Fill Your Product"
+                raise exceptions.ValidationError(error_msg)
+
 
 class InheritPurchaseRequestLine(models.Model):
 
     _inherit = 'purchase.request.line'
     _description = 'Inherit Purchase Request Line'
 
-    price_per_product = fields.Float('Prod Price',compute='_compute_price_per_product')
+    @api.multi
+    @api.depends('product_id', 'name', 'product_uom_id', 'product_qty',
+                 'analytic_account_id', 'date_required', 'specifications')
+    def _compute_is_editable(self):
+        for rec in self:
+            if rec.request_id.state != 'draft':
+                rec.is_editable = False
+            else:
+                rec.is_editable = True
+
+    price_per_product = fields.Float('Product Price')
+    price_per_product_label = fields.Char('Product Price',readonly=True)
     total_price = fields.Float('Total Price',compute='_compute_total_price')
     budget_available = fields.Float('Budget Available')
     control_unit =  fields.Float('Budget Control Unit')
@@ -944,13 +1120,17 @@ class InheritPurchaseRequestLine(models.Model):
                 price.total_price = price.product_qty * price.price_per_product
 
     @api.multi
-    @api.depends('product_id')
+    @api.onchange('product_id','request_state')
     def _compute_price_per_product(self):
-        for item in self:
-            if item.product_id:
-                product_temp = item.env['product.price.history'].search([('product_id','=',item.product_id.id)])
-                price = max(producttemp.cost for producttemp in product_temp)
-                item.price_per_product = price
+        if self.product_id  :
+            product_temp = self.env.cr.execute('select cost from product_price_history where product_id = %d order by id desc limit 1' %(self.product_id.id))
+            line = self.env.cr.fetchone()[0]
+            if self.request_state == 'draft':
+                self.price_per_product = line
+                self.price_per_product_label = str(line)
+            elif self.request_state != 'draft' :
+                self.price_per_product
+
 
     @api.multi
     @api.onchange('analytic_account_id')
@@ -968,28 +1148,77 @@ class InheritPurchaseRequestLine(models.Model):
     @api.onchange('request_id','product_id')
     def _onchange_product_purchase_request_line(self):
         #use to onchange domain product same as product_category
-        if self.request_id.type_functional and self.request_id.department_id:
-            arrProductCateg = []
-            mappingFuntional = self.env['mapping.department.product'].search([('type_functional','=',self.request_id.type_functional),
-                                                                              ('department_id.id','=',self.request_id.department_id.id)])
-            for productcateg in mappingFuntional:
-                arrProductCateg.append(productcateg.product_category_id.id)
-            arrProdCatId = []
-            prod_categ = self.env['product.category'].search([('parent_id','in',arrProductCateg)])
-            for productcategparent in prod_categ:
-                arrProdCatId.append(productcategparent.id)
-            if prod_categ:
-                return  {
-                    'domain':{
-                        'product_id':[('categ_id','in',arrProdCatId)]
-                         }
-                    }
-            elif prod_categ != ():
-                return  {
-                    'domain':{
-                        'product_id':[('categ_id','in',arrProductCateg)]
-                         }
-                    }
+        for item in self:
+            if item.request_id.type_functional and item.request_id.department_id and item.request_id.type_product:
+                arrProductCateg = []
+                mappingFuntional = item.env['mapping.department.product'].search([('type_functional','=',item.request_id.type_functional),
+                                                                                      ('department_id.id','=',item.request_id.department_id.id)])
+
+                for productcateg in mappingFuntional:
+                    arrProductCateg.append(productcateg.product_category_id.id)
+
+                arrProdCatId = []
+                prod_categ = item.env['product.category'].search([('parent_id','in',arrProductCateg)])
+
+                for productcategparent in prod_categ:
+                    arrProdCatId.append(productcategparent.id)
+
+
+
+                if prod_categ :
+                    if item.request_id.type_product == 'service':
+                        return  {
+                            'domain':{
+                                'product_id':[('categ_id','in',arrProdCatId),('type','=','service')]
+                                 }
+                            }
+                    elif item.request_id.type_product == 'consu':
+                        return  {
+                            'domain':{
+                                'product_id':['&',('categ_id','in',arrProdCatId),'|',('type_machine','=',True),
+                                                                              '|',('type_tools','=',True),
+                                                                              '|',('type_other','=',True),
+                                                                              ('type_computing','=',True)]
+                                 }
+                            }
+                    elif item.request_id.type_product == 'product':
+                        return  {
+                            'domain':{
+                                'product_id':['&',('categ_id','in',arrProdCatId),('type','=','product'),
+                                                                            '&',('type_machine','=',False),
+                                                                              '&',('type_tools','=',False),
+                                                                              '&',('type_other','=',False),
+                                                                              ('type_computing','=',False)]
+                                 }
+                            }
+                elif prod_categ != ():
+                    if item.request_id.type_product == 'service':
+                        return  {
+                        'domain':{
+                            'product_id':[('categ_id','in',arrProductCateg),('type','=','service')]
+                             }
+                        }
+                    elif item.request_id.type_product == 'consu':
+                        return  {
+                        'domain':{
+                            'product_id':['&',('categ_id','in',arrProductCateg),'|',('type_machine','=',True),
+                                                                              '|',('type_tools','=',True),
+                                                                              '|',('type_other','=',True),
+                                                                              ('type_computing','=',True)]
+                             }
+                        }
+                    elif item.request_id.type_product == 'product':
+                        return  {
+                        'domain':{
+                            'product_id':['&',('categ_id','in',arrProductCateg),('type','=','product'),
+                                                                            '&',('type_machine','=',False),
+                                                                              '&',('type_tools','=',False),
+                                                                              '&',('type_other','=',False),
+                                                                              ('type_computing','=',False)]
+                             }
+                        }
+
+
 
 
 

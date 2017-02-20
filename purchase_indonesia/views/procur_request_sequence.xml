@@ -26,29 +26,250 @@
             <field name="company_id" eval="False"/>
         </record>
 
-        <record id="seq_quotation_comparison" model="ir.sequence">
-            <field name="name">Sequence Quotation Comparison </field>
-            <field name="code">quotation.comparison.form</field>
+        <!--Sequence Quotation Comparison Form-->
+        <record id="seq_quotation_comparison_kpst_hja" model="ir.sequence">
+            <field name="name">Sequence Quotation Comparison HO HJA</field>
+            <field name="code">quotation.comparison.form.kpst.hja</field>
             <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
 
-        <record id="seq_quotation_po_no" model="ir.sequence">
-            <field name="name">Sequence Purchase Order</field>
-            <field name="code">purchase.po_no</field>
+         <record id="seq_quotation_comparison_kpst_apk" model="ir.sequence">
+            <field name="name">Sequence Quotation Comparison HO APK</field>
+            <field name="code">quotation.comparison.form.kpst.apk</field>
             <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
 
-        <record id="seq_quotation_grn" model="ir.sequence">
-            <field name="name">Sequence Goods Receipt Note</field>
-            <field name="code">stock.grn</field>
+         <record id="seq_quotation_comparison_kpst_tpn" model="ir.sequence">
+            <field name="name">Sequence Quotation Comparison HO TPN</field>
+            <field name="code">quotation.comparison.form.kpst.tpn</field>
             <field name="prefix"> </field>
             <field name="padding">3</field>
             <field name="company_id" eval="False"/>
         </record>
+
+        <record id="seq_quotation_comparison_kokb_hja" model="ir.sequence">
+            <field name="name">Sequence Quotation Comparison RO HJA</field>
+            <field name="code">quotation.comparison.form.kokb.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+         <record id="seq_quotation_comparison_kokb_apk" model="ir.sequence">
+            <field name="name">Sequence Quotation Comparison RO APK</field>
+            <field name="code">quotation.comparison.form.kokb.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+         <record id="seq_quotation_comparison_kokb_tpn" model="ir.sequence">
+            <field name="name">Sequence Quotation Comparison RO TPN</field>
+            <field name="code">quotation.comparison.form.kokb.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!--End Sequence Quotation Comparison Form-->
+
+        <!--Sequence Purchase Order-->
+        <record id="seq_quotation_po_no_kpst_hja" model="ir.sequence">
+            <field name="name">Sequence Purchase Order HO HJA</field>
+            <field name="code">purchase.order.seq.kpst.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_po_no_kpst_apk" model="ir.sequence">
+            <field name="name">Sequence Purchase Order HO APK</field>
+            <field name="code">purchase.order.seq.kpst.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_po_no_kpst_tpn" model="ir.sequence">
+            <field name="name">Sequence Purchase Order HO TPN</field>
+            <field name="code">purchase.order.seq.kpst.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_po_no_kokb_hja" model="ir.sequence">
+            <field name="name">Sequence Purchase Order RO HJA</field>
+            <field name="code">purchase.order.seq.kokb.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_po_no_kokb_apk" model="ir.sequence">
+            <field name="name">Sequence Purchase Order RO APK</field>
+            <field name="code">purchase.order.seq.kokb.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_po_no_kokb_tpn" model="ir.sequence">
+            <field name="name">Sequence Purchase Order RO APK</field>
+            <field name="code">purchase.order.seq.kokb.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!--End Sequence Purchase Order-->
+
+        <!--Sequence Good Receipt Note-->
+        <record id="seq_quotation_grn_kpst_hja" model="ir.sequence">
+            <field name="name">Sequence Goods Receipt Note HO HJA</field>
+            <field name="code">stock.grn.seq.kpst.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_grn_kpst_apk" model="ir.sequence">
+            <field name="name">Sequence Goods Receipt Note HO APK</field>
+            <field name="code">stock.grn.seq.kpst.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_grn_kpst_tpn" model="ir.sequence">
+            <field name="name">Sequence Goods Receipt Note HO TPN</field>
+            <field name="code">stock.grn.seq.kpst.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_grn_kokb_hja" model="ir.sequence">
+            <field name="name">Sequence Goods Receipt Note RO HJA</field>
+            <field name="code">stock.grn.seq.kokb.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_grn_kokb_apk" model="ir.sequence">
+            <field name="name">Sequence Goods Receipt Note RO APK</field>
+            <field name="code">stock.grn.seq.kokb.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_grn_kokb_tpn" model="ir.sequence">
+            <field name="name">Sequence Goods Receipt Note RO TPN</field>
+            <field name="code">stock.grn.seq.kokb.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!--End Sequence Good Receipt Note-->
+
+        <!--Sequence Service Receipt Note-->
+        <record id="seq_quotation_srn_kpst_hja" model="ir.sequence">
+            <field name="name">Sequence Service Receipt Note HO HJA</field>
+            <field name="code">stock.srn.seq.kpst.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_srn_kpst_apk" model="ir.sequence">
+            <field name="name">Sequence Service Receipt Note HO APK</field>
+            <field name="code">stock.srn.seq.kpst.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_srn_kpst_tpn" model="ir.sequence">
+            <field name="name">Sequence Service Receipt Note HO TPN</field>
+            <field name="code">stock.srn.seq.kpst.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_srn_kokb_hja" model="ir.sequence">
+            <field name="name">Sequence Service Receipt Note RO HJA</field>
+            <field name="code">stock.srn.seq.kokb.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_srn_kokb_apk" model="ir.sequence">
+            <field name="name">Sequence Service Receipt Note RO APK</field>
+            <field name="code">stock.srn.seq.kokb.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_quotation_srn_kokb_tpn" model="ir.sequence">
+            <field name="name">Sequence Service Receipt Note RO TPN</field>
+            <field name="code">stock.srn.seq.kokb.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        <!--End Sequence Service Receipt Note-->
+
+        <!--Sequence Purchase request-->
+        <record id="seq_purchase_request_kpst_hja" model="ir.sequence">
+            <field name="name">Purchase Request HO HJA </field>
+            <field name="code">purchase.request.seq.kpst.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="seq_purchase_request_kpst_apk" model="ir.sequence">
+            <field name="name">Purchase Request HO APK</field>
+            <field name="code">purchase.request.seq.kpst.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="seq_purchase_request_kpst_tpn" model="ir.sequence">
+            <field name="name">Purchase Request HO TPN</field>
+            <field name="code">purchase.request.seq.kpst.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="seq_purchase_request_kokb_hja" model="ir.sequence">
+            <field name="name">Purchase Request RO HJA</field>
+            <field name="code">purchase.request.seq.kokb.hja</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="seq_purchase_request_kokb_apk" model="ir.sequence">
+            <field name="name">Purchase Request RO APK</field>
+            <field name="code">purchase.request.seq.kokb.apk</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+
+        <record id="seq_purchase_request_kokb_tpn" model="ir.sequence">
+            <field name="name">Purchase Request RO TPN</field>
+            <field name="code">purchase.request.seq.kokb.tpn</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+        <!--End Sequence Purchase Request-->
+
 
     </data>
 </openerp>
