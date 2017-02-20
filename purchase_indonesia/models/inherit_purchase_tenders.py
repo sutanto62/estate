@@ -299,7 +299,7 @@ class InheritPurchaseTenders(models.Model):
         supplier = res_partner.browse(cr, uid, partner_id, context=context)
         res = {}
         for requisition in self.browse(cr, uid, ids, context=context):
-            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [rfq.state in ['cancel','received_force_done'] and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
+            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [rfq.state not in ['cancel','received_force_done'] and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
                 error_msg = "You have already one  purchase order for this partner, you must cancel this purchase order to create a new quotation."
                 raise exceptions.ValidationError(error_msg)
             context.update({'mail_create_nolog': True})
