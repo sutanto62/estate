@@ -13,6 +13,8 @@ from openerp import tools
 import re
 from lxml import etree
 from openerp.tools.translate import _
+import babel.numbers
+import decimal
 
 
 class InheritPurchaseOrder(models.Model):
@@ -482,6 +484,9 @@ class QuotationComparisonForm(models.Model):
                 vendor_name = '' if not record.partner_id.name else record.partner_id.name
                 goods_price = '' if not str(record.price_unit) else str(record.price_unit)
 
+                #convert Goods Price to Currency IDR indonesia
+                price = babel.numbers.format_currency( decimal.Decimal(goods_price), "IDR" )
+
                 purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
                 for record in purchase:
                     delivery_term = '' if not record.delivery_term else record.delivery_term
@@ -491,7 +496,7 @@ class QuotationComparisonForm(models.Model):
                 v_remarks =  '* Item dengan nama barang '+' '+ goods_name \
                              +' Vendor yang di pilih adalah '+' '+vendor_name \
                              +' karena Kondisi Barang '+delivery_term\
-                             +' memberikan harga kompetitif dengan harga '+goods_price\
+                             +' memberikan harga kompetitif dengan harga '+price\
                              +' dengan klausul pembayaran '+payment_term\
                              +' incoterm bertipe ' + incoterm\
                              +'\n'+'\n'
@@ -627,19 +632,19 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                                 )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
                                         )h group by req_id)header
-                                           union all
+                                         union all
                                          select * from (
                                            SELECT r.req_id,r.product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast(qty_request as varchar) qty_request,product_uom,
-                                                 MAX(CASE WHEN r.rownum = 1 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor1",
-                                                 MAX(CASE WHEN r.rownum = 2 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor2",
-                                                 MAX(CASE WHEN r.rownum = 3 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor3",
-                                                 MAX(CASE WHEN r.rownum = 4 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor4",
-                                                 MAX(CASE WHEN r.rownum = 5 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor5",
-                                                 MAX(CASE WHEN r.rownum = 6 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor6",
-                                                 MAX(CASE WHEN r.rownum = 7 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor7",
-                                                 MAX(CASE WHEN r.rownum = 8 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor8",
-                                                 MAX(CASE WHEN r.rownum = 9 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor9",
-                                                 MAX(CASE WHEN r.rownum = 10 THEN CAST(r.price_unit as varchar) ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,3 isheader
+                                                 MAX(CASE WHEN r.rownum = 1 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor1",
+                                                 MAX(CASE WHEN r.rownum = 2 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor2",
+                                                 MAX(CASE WHEN r.rownum = 3 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor3",
+                                                 MAX(CASE WHEN r.rownum = 4 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor4",
+                                                 MAX(CASE WHEN r.rownum = 5 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor5",
+                                                 MAX(CASE WHEN r.rownum = 6 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor6",
+                                                 MAX(CASE WHEN r.rownum = 7 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor7",
+                                                 MAX(CASE WHEN r.rownum = 8 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor8",
+                                                 MAX(CASE WHEN r.rownum = 9 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor9",
+                                                 MAX(CASE WHEN r.rownum = 10 THEN CAST(r.price_unit ::money::varchar as varchar)  ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,3 isheader
                                             FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                               select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                 qcfl_rn.req_id,qcfl_rn.partner_id,
@@ -652,7 +657,12 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc )content
                                         union all
                                         select * from (
-                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,cast(sum(vendor10) as varchar) vendor10,cast('' as varchar) po_des_all_name,4 isheader from (
+                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+                                        cast(sum(vendor1) ::money::varchar as varchar)  vendor1,cast(sum(vendor2) ::money::varchar as varchar) vendor2,
+                                        cast(sum(vendor3) ::money::varchar as varchar)  vendor3,cast(sum(vendor4) ::money::varchar as varchar) vendor4,
+                                        cast(sum(vendor5) ::money::varchar as varchar)  vendor5,cast(sum(vendor6) ::money::varchar as varchar) vendor6,
+                                        cast(sum(vendor7) ::money::varchar as varchar)  vendor7,cast(sum(vendor8) ::money::varchar as varchar) vendor8,
+                                        cast(sum(vendor9) ::money::varchar as varchar)  vendor9,cast(sum(vendor10) ::money::varchar as varchar) vendor10,cast('' as varchar) po_des_all_name,4 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
@@ -677,10 +687,13 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         )h group by req_id)footer1
                                         union all
                                         select * from (
-                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,cast(sum(vendor1) as varchar) vendor1,cast(sum(vendor2) as varchar) vendor2,cast(sum(vendor3) as varchar) vendor3,cast(sum(vendor4) as varchar) vendor4,cast(sum(vendor5) as varchar) vendor5,
-                                        cast(sum(vendor6) as varchar) vendor6,cast(sum(vendor7) as varchar) vendor7,
-                                        cast(sum(vendor8) as varchar) vendor8,cast(sum(vendor9) as varchar) vendor9,
-                                        cast(sum(vendor10) as varchar) vendor10,cast('' as varchar) po_des_all_name,5 isheader from (
+                                        select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+                                        cast(sum(vendor1) ::money::varchar as varchar) vendor1,cast(sum(vendor2) ::money::varchar as varchar) vendor2,
+                                        cast(sum(vendor3) ::money::varchar as varchar) vendor3,cast(sum(vendor4) ::money::varchar as varchar) vendor4,
+                                        cast(sum(vendor5) ::money::varchar as varchar) vendor5,
+                                        cast(sum(vendor6) ::money::varchar as varchar) vendor6,cast(sum(vendor7) ::money::varchar as varchar) vendor7,
+                                        cast(sum(vendor8) ::money::varchar as varchar) vendor8,cast(sum(vendor9) ::money::varchar as varchar) vendor9,
+                                        cast(sum(vendor10) ::money::varchar as varchar) vendor10,cast('' as varchar) po_des_all_name,5 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_tax ELSE NULL END) AS "vendor1",
                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_tax ELSE NULL END) AS "vendor2",
@@ -706,11 +719,11 @@ select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_c
                                         union all
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
-                                        cast(max(vendor1) as varchar) vendor1,cast(max(vendor2) as varchar) vendor2,
-                                        cast(max(vendor3) as varchar) vendor3,cast(max(vendor4) as varchar) vendor4,
-                                        cast(max(vendor5) as varchar) vendor5,cast(max(vendor6) as varchar) vendor6,
-                                        cast(max(vendor7) as varchar) vendor7,cast(max(vendor8) as varchar) vendor8,
-                                        cast(max(vendor9) as varchar) vendor9,cast(max(vendor10) as varchar) vendor10,
+                                        cast(max(vendor1) ::money::varchar as varchar)  vendor1,cast(max(vendor2) ::money::varchar as varchar)  vendor2,
+                                        cast(max(vendor3) ::money::varchar as varchar)  vendor3,cast(max(vendor4) ::money::varchar as varchar)  vendor4,
+                                        cast(max(vendor5) ::money::varchar as varchar)  vendor5,cast(max(vendor6) ::money::varchar as varchar)  vendor6,
+                                        cast(max(vendor7) ::money::varchar as varchar)  vendor7,cast(max(vendor8) ::money::varchar as varchar)  vendor8,
+                                        cast(max(vendor9) ::money::varchar as varchar)  vendor9,cast(max(vendor10) ::money::varchar as varchar)  vendor10,
                                         cast('' as varchar) po_des_all_name,6 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.amount_total ELSE NULL END) AS "vendor1",
