@@ -11,6 +11,7 @@ from dateutil.relativedelta import *
 import calendar
 from openerp import tools
 import re
+import itertools
 
 class InheritPurchaseRequisition(models.Model):
     _inherit = 'purchase.requisition'
@@ -1021,43 +1022,57 @@ class InheritPurchaseRequest(models.Model):
                 raise exceptions.ValidationError('Call Your Procurment Admin to Fill last Cost')
 
     @api.multi
-    @api.constrains('line_ids')
+    @api.constrains('line_ids','type_functional','department_id')
     def _constraint_line_ids_category_id(self):
-        mapping_functional = self.env['mapping.department.product'].search([('type_functional','=',self.type_functional),
+        if self.department_id and self.type_functional :
+            mapping_functional = self.env['mapping.department.product'].search([('type_functional','=',self.type_functional),
                                                                         ('department_id.id','=',self.department_id.id)])
-        temp_category_line = None
-        for record in self.line_ids:
-            if not record.product_id.categ_id.parent_id:
-                temp_category_line = record.product_id.categ_id.id
-            else:
-                temp_category_line = record.product_id.categ_id.parent_id.id
+            temp_category = []
+            temp_line = []
+            temp_product_template = []
+            temp_name = []
+            for record in mapping_functional:
+                #Search Product Category in mapping functional
+                temp_category.append(record.product_category_id.id)
 
-            len_check = 0
-            for temp_category in mapping_functional:
-                if temp_category.product_category_id.id == temp_category_line:
-                    break
-                else :
-                    len_check = len_check + 1
+            for item in self.line_ids:
+                #Search Product Category in Purchase Request Line
+                temp_product_template.append(item.product_id.product_tmpl_id.id)
+                temp_line.append(item.product_id.categ_id.id)
+            #second Way to Use Combining Sets temp_category and Sets temp line
+            equals_temp = set(temp_line) - set(temp_category)
+            list_equals = list(equals_temp)
 
-            if len_check == len(mapping_functional):
-                error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (record.product_id.name,self.department_id.name)
-                raise exceptions.ValidationError(error_msg)
-        #second Way to Use Combining Sets temp_category and Sets temp line
-        # temp_category = []
-        # temp_line = []
-        # for record in mapping_functional:
-        #     temp_category.append(record.product_category_id.id)
-        #
-        # for item in self.line_ids:
-        #     if not item.product_id.categ_id.parent_id.id:
-        #         temp_line.append(item.product_id.categ_id.id)
+            #Search Product Name
+            product_template = self.env['product.template'].search([('id','in',temp_product_template),('categ_id','in',list_equals)])
+            for name in product_template:
+                temp_name.append(name.name)
+
+            if list_equals != [] :
+                 error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (temp_name[0],self.department_id.name)
+                 raise exceptions.ValidationError(error_msg)
+
+        # temp_category_line = None
+        # temp
+        # for record in self.line_ids:
+        #     if not record.product_id.categ_id.parent_id:
+        #         temp_category_line = record.product_id.categ_id.id
         #     else:
-        #         temp_line.append(item.product_id.categ_id.parent_id.id)
+        #         temp_category_line = record.product_id.categ_id.parent_id.id
         #
-        # equals_temp = set(temp_line) - set(temp_category)
-        # if equals_temp:
-        #      error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (item.product_id.name,self.department_id.name)
-        #      raise exceptions.ValidationError(error_msg)
+        #     len_check = 0
+        #     for temp_category in mapping_functional:
+        #         if temp_category.product_category_id.id == temp_category_line:
+        #             break
+        #         else :
+        #             len_check = len_check + 1
+        #
+        #     if len_check == len(mapping_functional):
+        #         error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (record.product_id.name,self.department_id.name)
+        #         raise exceptions.ValidationError(error_msg)
+
+
+
 
     @api.multi
     @api.constrains('line_ids')
