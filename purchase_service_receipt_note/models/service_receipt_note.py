@@ -60,11 +60,11 @@ class ServiceReceiptNote(models.Model):
 
         return True
 
-    @api.multi
-    def do_new_transfer(self):
-        for item in self:
-            if item.purchase_id.request_id.type_product == 'service':
-                item.write({'state':'done'})
-            else:
-                super(ServiceReceiptNote,self).do_new_transfer()
+    # @api.multi
+    # def do_new_transfer(self):
+    #     for item in self:
+    #         if item.purchase_id.request_id.type_product == 'service':
+    #             item.write({'state':'done'})
+    #         else:
+    #             super(ServiceReceiptNote,self).do_new_transfer()
 
