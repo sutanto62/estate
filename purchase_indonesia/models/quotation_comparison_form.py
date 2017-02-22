@@ -486,7 +486,7 @@ class QuotationComparisonForm(models.Model):
 
                 #convert Goods Price to Currency IDR indonesia
                 company_currency_name = item.env['res.company'].search([('id','=',item.company_id.id)]).currency_id.name
-                price = babel.numbers.format_currency( decimal.Decimal(goods_price), company_currency_name)
+                price = babel.numbers.format_currency( decimal.Decimal(goods_price), company_currency_name,locale='id_ID')
 
                 purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
                 for record in purchase:
