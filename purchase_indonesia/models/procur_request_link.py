@@ -1031,6 +1031,7 @@ class InheritPurchaseRequest(models.Model):
             temp_line = []
             temp_product_template = []
             temp_name = []
+            temp_line_parent = []
             for record in mapping_functional:
                 #Search Product Category in mapping functional
                 temp_category.append(record.product_category_id.id)
@@ -1039,16 +1040,21 @@ class InheritPurchaseRequest(models.Model):
                 #Search Product Category in Purchase Request Line
                 temp_product_template.append(item.product_id.product_tmpl_id.id)
                 temp_line.append(item.product_id.categ_id.id)
+                temp_line_parent.append(item.product_id.categ_id.parent_id.id)
+
             #second Way to Use Combining Sets temp_category and Sets temp line
             equals_temp = set(temp_line) - set(temp_category)
             list_equals = list(equals_temp)
+
+            equals_temp_parent = set(temp_line_parent)-set(temp_category)
+            list_equals_parent = list(equals_temp_parent)
 
             #Search Product Name
             product_template = self.env['product.template'].search([('id','in',temp_product_template),('categ_id','in',list_equals)])
             for name in product_template:
                 temp_name.append(name.name)
 
-            if list_equals != [] :
+            if list_equals != [] and list_equals_parent != []:
                  error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (temp_name[0],self.department_id.name)
                  raise exceptions.ValidationError(error_msg)
 
