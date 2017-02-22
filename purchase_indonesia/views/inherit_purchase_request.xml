@@ -227,6 +227,31 @@
                             widget="monetary" readonly="1" options="{'currency_field': 'currency_id'}"/>
                     </group>
                  </xpath>
+
+                 <xpath expr="//field[@name='description']" position="after">
+                     <field name="purchase_ids" readonly="1">
+                            <tree string="Purchase Order">
+                                <field name="complete_name" string="Reference"/>
+                                <field name="date_order" string="Order Date"/>
+                                <field name="partner_id"/>
+                                <field name="state"/>
+                            </tree>
+                            <form>
+                                    <sheet>
+                                        <group>
+                                            <group name="group6">
+                                                 <field name="complete_name" string="Reference"/>
+                                                 <field name="date_order" string="Order Date"/>
+                                            </group>
+                                            <group name="group7">
+                                                 <field name="partner_id"/>
+                                                 <field name="state"/>
+                                            </group>
+                                        </group>
+                                    </sheet>
+                                </form>
+                     </field>
+                 </xpath>
              </field>
          </record>
 
