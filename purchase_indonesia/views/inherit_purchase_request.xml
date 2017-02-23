@@ -238,6 +238,13 @@
                             </tree>
                             <form>
                                     <sheet>
+                                        <div class="oe_right oe_button_box" name="buttons">
+                                            <button type="object"
+                                                name="action_view_picking"
+                                                class="oe_stat_button"
+                                                icon="fa-truck" string="GRN/SRN">
+                                            </button>
+                                        </div>
                                         <group>
                                             <group name="group6">
                                                  <field name="complete_name" string="Reference"/>

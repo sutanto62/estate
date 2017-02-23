@@ -17,10 +17,17 @@
                      <field name="origin" invisible="1"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
+                     <field name="validation_manager" invisible="1"/>
+                     <field name="requested_by" string="Requester PP"/>
+                     <field name="assigned_to" string="Assigned to Manager"/>
+                     <field name="validation_receive" string="Validation" />
                      <field name="not_seed" invisible="1" />
                      <field name="purchase_id" string="Ref PO"/>
                      <field name="pr_source" string="REF PP NO" attrs="{'readonly': [('state', '=', 'done')]}"/>
                      <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                 </xpath>
+                 <xpath expr="//button[@name='do_new_transfer']" position="replace">
+                     <button name="do_new_transfer" states="draft,partially_available,assigned" string="Validate" groups="purchase_request.group_purchase_request_user" type="object" class="oe_highlight"/>
                  </xpath>
                  <xpath expr="//button[@name='show_details']" position="before">
                      <button name="split_quantities" attrs="{'invisible': ['|',('qty_done', '=', 0),('qty_done', '&lt;', 0)]}" class="oe_link"  icon="fa-list" string="Split" type="object"/>
@@ -30,8 +37,16 @@
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
                      <button name="print_grn" string="Print GRN/SRN" type="object" states="assigned" groups="base.group_user"/>
                  </xpath>
+
+                 <xpath expr="//button[@name='do_new_transfer']" position="after">
+                    <button name="action_validate_manager"
+                            attrs="{'invisible': [('validation_manager','!=',True)]}"
+                            string="Approve Manager" type="object"
+                            class="oe_highlight"/>
+                 </xpath>
              </field>
          </record>
+
 
     </data>
 </openerp>
