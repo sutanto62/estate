@@ -139,6 +139,16 @@ class InheritPurchaseRequest(models.Model):
 
         return employee
 
+    @api.multi
+    def _get_department_code(self):
+        department_code = []
+        for item in self:
+            department = item.env['hr.department'].search([])
+            for record in department:
+                if record.code != 'ICT' and record.code:
+                    department_code.append(record.code)
+        return department_code
+
     _inherit = ['purchase.request']
     _rec_name = 'complete_name'
     _order = 'complete_name desc'
@@ -658,7 +668,7 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
         if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
-        elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR','PRC','SLS']and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_max_price() < self._get_price_low():
             self.button_approved()
         else:
             try:
@@ -666,11 +676,11 @@ class InheritPurchaseRequest(models.Model):
                     state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
                elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-               elif self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR','PRC','SLS']and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self.department_id.code not in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR','PRC','SLS'] and self._get_max_price() >= self._get_price_low() :
+               elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_max_price() >= self._get_price_low()) :
                     state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-               elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR','PRC','SLS']and self._get_max_price() < self._get_price_low():
+               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_max_price() < self._get_price_low():
                     state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
-               elif self.type_functional == 'general' and self.department_id.code in ['GA','FIN','GIS','ACC','LGL','HR','SPC','CSR','PRC','SLS'] and self._get_max_price() >= self._get_price_low() :
+               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code() and self._get_max_price() >= self._get_price_low() :
                     state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             except:
                 raise exceptions.ValidationError('Call Your Hr Admin to Fill Department Code')
@@ -704,6 +714,8 @@ class InheritPurchaseRequest(models.Model):
 
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
+
+
 
     @api.multi
     def check_wkf_requester(self):
