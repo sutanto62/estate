@@ -17,3 +17,4 @@ class InheritResCompany(models.Model):
     _inherit = 'res.company'
 
     code = fields.Char('Code Company')
+    locale_code = fields.Char('locale code')

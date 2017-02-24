@@ -15,6 +15,7 @@ from lxml import etree
 from openerp.tools.translate import _
 import babel.numbers
 import decimal
+import locale
 
 
 class InheritPurchaseOrder(models.Model):
@@ -485,8 +486,13 @@ class QuotationComparisonForm(models.Model):
                 goods_price = '' if not str(record.price_unit) else str(record.price_unit)
 
                 #convert Goods Price to Currency IDR indonesia
+                company_locale_name = ''
                 company_currency_name = item.env['res.company'].search([('id','=',item.company_id.id)]).currency_id.name
-                price = babel.numbers.format_currency( decimal.Decimal(goods_price), company_currency_name,locale='id_ID')
+                try:
+                    company_locale_name = item.env['res.company'].search([('id','=',item.company_id.id)]).locale_code
+                except:
+                    company_locale_name = 'id_ID'
+                price = babel.numbers.format_currency( decimal.Decimal(goods_price), company_currency_name,locale=company_locale_name)
 
                 purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
                 for record in purchase:
