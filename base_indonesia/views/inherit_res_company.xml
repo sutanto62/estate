@@ -6,7 +6,8 @@
              <field name="inherit_id" ref="base.view_company_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='partner_id']" position="after">
-                          <field name="code" string="Company Code"/>
+                     <field name="code" string="Company Code"/>
+                     <field name="locale_code" string="Locale Code"/>
                  </xpath>
              </field>
          </record>

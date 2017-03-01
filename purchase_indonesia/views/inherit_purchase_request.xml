@@ -229,15 +229,23 @@
                  </xpath>
 
                  <xpath expr="//field[@name='description']" position="after">
-                     <field name="purchase_ids" readonly="1">
+                     <separator string="Purchase Order" attrs="{'invisible': [('state','!=', 'done')]}"/>
+                     <field name="purchase_ids" readonly="1" attrs="{'invisible': [('state','!=', 'done')]}">
                             <tree string="Purchase Order">
-                                <field name="complete_name" string="Reference"/>
+                                <field name="complete_name" string="Purchase Order No"/>
                                 <field name="date_order" string="Order Date"/>
-                                <field name="partner_id"/>
-                                <field name="state"/>
+                                <field name="partner_id" string="Vendor"/>
+                                <field name="state" string="Status"/>
                             </tree>
                             <form>
                                     <sheet>
+                                        <div class="oe_right oe_button_box" name="buttons">
+                                            <button type="object"
+                                                name="action_view_picking"
+                                                class="oe_stat_button"
+                                                icon="fa-truck" string="GRN/SRN">
+                                            </button>
+                                        </div>
                                         <group>
                                             <group name="group6">
                                                  <field name="complete_name" string="Reference"/>

@@ -23,7 +23,14 @@
                           <field name="request_id" string="PP NO"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
-                          <field name="confirmed_by" string="Confirmed By" attrs="{'invisible': [('state','=', 'purchase')]}"/>
+                          <field name="validation_confirmed_by" string="Validation Confirmed by" invisible="1"/>
+                          <field name="confirmed_by_person" class="oe_inline" string="Confirmed by Person Name" attrs="{'invisible': [('state','!=', 'draft')]}"/>
+                          <div name="Confirmed By" string = 'Confirmed By'>
+                            <field name="confirmed_by"  class="oe_inline" string="Confirmed By" attrs="{'invisible': [('state','!=', 'draft')]}"/>
+                            <field name="confirmed_by_value" class="oe_inline" string="Value" attrs="{'invisible': [('state','!=', 'draft')]}"/>
+                          </div>
+
+
                  </xpath>
                  <xpath expr="//field[@name='payment_term_id']" position="replace">
                      <field name="payment_term_id" options="{'no_open': True, 'no_create': False}" attrs="{'readonly': [('invoice_status','=', 'invoiced')]}"/>

@@ -35,6 +35,31 @@ class InheritStockPicking(models.Model):
         return employee
 
     @api.multi
+    def _get_requested_purchase_request(self):
+        #find Requested Purchase Request
+        for item in self:
+            request_id = item.purchase_id.request_id.id
+            purchase_request = item.env['purchase.request'].search([('id','=',request_id)]).requested_by.id
+
+            return purchase_request
+
+
+    @api.multi
+    def _get_manager_requested_by(self):
+        #find Manager to approved:
+        try:
+            employeemanager = self.env['hr.employee'].search([('user_id','=',self._get_requested_purchase_request())]).parent_id.id
+            assigned_manager = self.env['hr.employee'].search([('id','=',employeemanager)]).user_id.id
+        except:
+            raise exceptions.ValidationError('Please Contact your HR Admin to fill your manager')
+
+        if not assigned_manager:
+            raise exceptions.ValidationError('Please Contact your HR Admin to fill your manager')
+
+        return assigned_manager
+
+
+    @api.multi
     def _get_office_level_id(self):
 
         try:
@@ -48,6 +73,13 @@ class InheritStockPicking(models.Model):
     _inherit = 'stock.picking'
 
     complete_name_picking =fields.Char("Complete Name", compute="_complete_name_picking", store=True)
+    requested_by = fields.Many2one('res.users',
+                                   'Requested by',
+                                   required=False,
+                                   track_visibility='onchange',compute='_onchange_requested_by'
+                                   )
+    assigned_to = fields.Many2one('res.users', 'Approver',compute='_onchange_assigned_to',
+                                  track_visibility='onchange')
     type_location = fields.Char('Location code')
     location = fields.Char('Location')
     pr_source = fields.Char("Purchase Request Source")
@@ -57,11 +89,43 @@ class InheritStockPicking(models.Model):
     not_seed = fields.Boolean(compute='_change_not_seed')
     grn_no = fields.Char()
     delivery_number = fields.Char()
+    validation_receive = fields.Char()
+    validation_manager = fields.Boolean('Validation Manager',compute='_check_validation_manager')
+    description = fields.Text('Description')
 
     _defaults = {
         'not_seed':True,
     }
 
+    @api.multi
+    @api.depends('assigned_to')
+    def _check_validation_manager(self):
+        for item in self:
+            if not item.validation_receive:
+                item.validation_manager = True if item.assigned_to.id == item._get_user().id else False
+            else:
+                item.validation_manager = False
+
+    @api.multi
+    def action_validate_manager(self):
+        for item in self:
+            receive_message = 'This GRN / SRN Approved by Manager \"%s\" '%(item.assigned_to.name)
+            item.validation_receive = receive_message
+
+
+    @api.multi
+    @api.depends('purchase_id')
+    def _onchange_requested_by(self):
+        for item in self:
+            if item.purchase_id:
+                item.requested_by = item._get_requested_purchase_request()
+
+    @api.multi
+    @api.depends('requested_by')
+    def _onchange_assigned_to(self):
+        for item in self:
+            if item.requested_by:
+                item.assigned_to = item._get_manager_requested_by()
 
     @api.one
     @api.depends('grn_no','min_date','companys_id','type_location')
@@ -167,59 +231,63 @@ class InheritStockPicking(models.Model):
 
             count_product =0
             count_action_cancel_status =0
-            for record in purchase_requisition_line:
-                stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
-                stock_pack_operation_length = len(stock_pack_operation)
-
-                if stock_pack_operation_length > 0 :
-                    sumitem =0
-
-                    sumitemmin =0
-
-                    for item in stock_pack_operation:
-                        if item.product_id.type in ['service','consu','product']:
-                            if item.qty_done > 0:
-                                sumitem = sumitem + item.qty_done
-                            else:
-                                sumitemmin = sumitemmin + item.qty_done
-                    tender_line_data = {
-
-                        'qty_received' : sumitem + record.qty_received,
-                        'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
-                        }
-                    record.write(tender_line_data)
-                    if sumitemmin < 0 :
-                        purchase_data = {
-                            'state' : 'received_force_done'
-                        }
-                        po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
-                    else:
-                        purchase_data = {
-                            'state' : 'done'
-                        }
-                        po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
-
-                    if stock_pack_operation_length == 1 and sumitemmin < 0 :
-                        count_action_cancel_status = count_action_cancel_status +1
-
-                    count_product = count_product +1
-
-            if count_action_cancel_status == count_product :
-                po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
-                po.button_cancel()
-                for itemmin in self.pack_operation_product_ids:
-                    purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender),('product_id','=',itemmin.product_id.id)])
-                    if itemmin.qty_done < 0 :
-                        for recordoutstanding in purchase_requisition_linemin:
-                            outstanding_data = {
-                                        'qty_outstanding' : itemmin.qty_done * -1
-                                    }
-                            recordoutstanding.write(outstanding_data)
-                self.action_cancel()
+            if self._get_user().id != self.requested_by.id:
+                error_msg = 'You cannot approve this \"%s\" cause you are not requested this PP '%(self.complete_name_picking)
+                raise exceptions.ValidationError(error_msg)
             else:
-                self.do_transfer()
+                for record in purchase_requisition_line:
+                    stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
+                    stock_pack_operation_length = len(stock_pack_operation)
 
-            super(InheritStockPicking,self).do_new_transfer()
+                    if stock_pack_operation_length > 0 :
+                        sumitem =0
+
+                        sumitemmin =0
+
+                        for item in stock_pack_operation:
+                            if item.product_id.type in ['service','consu','product']:
+                                if item.qty_done > 0:
+                                    sumitem = sumitem + item.qty_done
+                                else:
+                                    sumitemmin = sumitemmin + item.qty_done
+                        tender_line_data = {
+
+                            'qty_received' : sumitem + record.qty_received,
+                            'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
+                            }
+                        record.write(tender_line_data)
+                        if sumitemmin <= 0 :
+                            purchase_data = {
+                                'state' : 'received_force_done'
+                            }
+                            po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
+                        else:
+                            purchase_data = {
+                                'state' : 'done'
+                            }
+                            po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
+
+                        if stock_pack_operation_length == 1 and sumitemmin < 0 :
+                            count_action_cancel_status = count_action_cancel_status +1
+
+                        count_product = count_product +1
+
+                if count_action_cancel_status == count_product :
+                    po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
+                    po.button_cancel()
+                    for itemmin in self.pack_operation_product_ids:
+                        purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender),('product_id','=',itemmin.product_id.id)])
+                        if itemmin.qty_done < 0 :
+                            for recordoutstanding in purchase_requisition_linemin:
+                                outstanding_data = {
+                                            'qty_outstanding' : itemmin.qty_done * -1
+                                        }
+                                recordoutstanding.write(outstanding_data)
+                    self.action_cancel()
+                else:
+                    self.do_transfer()
+
+                super(InheritStockPicking,self).do_new_transfer()
 
     @api.multi
     def print_grn(self):

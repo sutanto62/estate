@@ -4,8 +4,8 @@
             <field name="name">Config Report Quotation Comparison Form</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
-            <field name="page_height">842</field><!--tinggi height papernya -->
-            <field name="page_width">595</field><!--tinggi widht papernya -->
+            <field name="page_height">674</field><!--tinggi height papernya -->
+            <field name="page_width">476</field><!--tinggi widht papernya -->
             <field name="orientation">Landscape</field>
             <field name="margin_top">60</field><!--margin content dengan top papernya -->
             <field name="margin_bottom">23</field><!--margin content dengan bawah papernya -->

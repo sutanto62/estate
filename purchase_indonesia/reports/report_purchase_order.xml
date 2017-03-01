@@ -2,11 +2,13 @@
 <!--Custom report.-->
 <openerp>
     <data>
+        <!--
       	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
 		      <xpath expr="//head" position="inside">
 		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_purchase_order.css"/>
 		      </xpath>
 		</template>
+         -->
         <template id="report_purchase_order">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
@@ -16,23 +18,28 @@
 		              		<div class="row" style="text-align:left;font-size:14pt;">
 		              			<div class="col-xs-12" >
 		                       		<table class="noborder">
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="10%">
 		                       		            <b>Date</b>
 		                       		        </td>
 		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.date_order"/></b>
+		                       		            <b>: <span t-field="o.date_order" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/></b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
-		                       		            <b>PO/SPO No.</b>
+		                       		            <t t-if="o.request_id.type_product == 'service' ">
+													<b>SPO No.</b>
+												</t>
+												<t t-if="o.request_id.type_product in ['consu','product'] ">
+													<b>PO No.</b>
+												</t>
 		                       		        </td>
 		                       		        <td class="noborder">
 		                       		            <b>: <span t-field="o.complete_name"/></b>	
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
 		                       		            <b>Page</b>
 		                       		        </td>
@@ -40,7 +47,7 @@
 		                       		            <b>: </b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
 		                       		            <b>To</b>
 		                       		        </td>
@@ -48,7 +55,7 @@
 		                       		          	<b>: <span t-field="o.partner_id.name"/></b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
 		                       		            <b>Address</b>
 		                       		        </td>
@@ -61,11 +68,11 @@
 		                       		          	</b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" colspan="2">
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
 		                       		            <b>Attn</b>
 		                       		        </td>
@@ -73,7 +80,7 @@
 		                       		            <b>: </b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
 		                       		            <b>Phone</b>
 		                       		        </td>
@@ -81,7 +88,7 @@
 		                       		            : <span t-field="o.partner_id.phone"/>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="20%">
 		                       		            <b>Email</b>
 		                       		        </td>
@@ -89,7 +96,7 @@
 		                       		         	: <span t-field="o.partner_id.email"/>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" colspan="2" style="text-align: right;">
 		                       		            <b>Reff PP : <span t-field="o.source_purchase_request"/></b>
 		                       		        </td>
@@ -149,16 +156,16 @@
 										    <td>
 										      	<span t-field="l.product_id.name"/>
 										    </td>
-										    <td>
+										    <td align="center">
 										      	<span t-field="l.product_qty"/>
 										    </td>
-										    <td>
+										    <td align="center">
 										      	<span t-field="l.product_uom"/>
 										    </td>
-										    <td>
+										    <td align="right">
 										      	<span t-field="l.price_unit"/>
 										    </td>
-										    <td>
+										    <td align="right">
 										      	<span t-field="l.price_subtotal"/>
 										    </td>
 										</tr>
@@ -171,7 +178,7 @@
 									    <td>
 									      	Sub Total
 									    </td>
-									    <td>
+									    <td align="right">
 									      	<span t-field="o.amount_untaxed"/>
 									    </td>
 									</tr>
@@ -182,15 +189,15 @@
 									    <td>
 									      	Tax
 									    </td>
-									    <td>
+									    <td align="right">
 									      	<span t-field="o.amount_tax"/>
 									    </td>
 									</tr>
 									<tr>
 									    <td colspan="5" style="text-align: center;">
-									      	GRAN TOTAL
+									      	GRAND TOTAL
 									    </td>
-									    <td>
+									    <td align="right">
 									      	<span t-field="o.amount_total"/>
 									    </td>
 									</tr>
@@ -198,8 +205,8 @@
 									    <td colspan="3" class="noborder" style="border-right: 1px solid black;">
 									      	Delivery 	:
 									    </td>
-									    <td colspan="3" class="noborder">
-									      	PAYMENT
+									    <td colspan="3" class="noborder" align="center">
+									      	<u>PAYMENT</u>
 									    </td>
 									</tr>
 									<tr>
@@ -260,7 +267,22 @@
 		                          		    3. File
 		                          		</td>
 		                          		<td class="noborder" style="text-align: center;">
-		                          		    ___________________
+		                          		    <t t-foreach="o.message_ids" t-as="mids">
+												<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+												    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Purchase Order'">
+													    <u>
+													        <span t-field="mids.author_id"/>&#160;
+														</u>
+														<br/>
+														    <span t-field="mids.date"/>&#160;
+														<br/>
+														[
+													        <span t-field="mids_tracking.old_value_char"/>&#160;to
+													        <span t-field="mids_tracking.new_value_char"/>
+														]
+												    </t>
+												</t>
+											</t>
 		                          		</td>
 		                          	</tr>
 		                          	<tr>
@@ -268,7 +290,7 @@
 		                          		    &#160;
 		                          		</td>
 		                          		<td class="noborder" style="text-align: center;">
-		                          		    [todo] objek orang yang approve
+		                          		    
 		                          		</td>
 		                          	</tr>
 								</table>

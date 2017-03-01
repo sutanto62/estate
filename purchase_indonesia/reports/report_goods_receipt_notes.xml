@@ -2,11 +2,13 @@
 <!--Custom report.-->
 <openerp>
     <data>
+        <!-- 
       	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
 		      <xpath expr="//head" position="inside">
 		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_goods_receipt_notes.css"/>
 		      </xpath>
 		</template>
+		 -->
         <template id="report_goods_receipet_notes_document">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
@@ -16,7 +18,7 @@
 		              		<div class="row" style="text-align:left;font-size:14pt;">
 		              			<div class="col-xs-6" >
 		                       		<table class="noborder">
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
 		                       		            <b>PT</b>
 		                       		        </td>
@@ -24,7 +26,7 @@
 		                       		            <b>: <span t-field="o.company_id.name"/></b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
 		                       		            <b>Lokasi</b>
 		                       		        </td>
@@ -36,20 +38,25 @@
 		                      	</div>
 		                      	<div class="col-xs-6" >
 		                       		<table class="noborder">
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
-		                       		            <b>G/SRN No.</b>
+		                       		            <t t-if="o.purchase_id.request_id.type_product == 'service' ">
+													<b>SRN No.</b>
+												</t>
+												<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
+													<b>GRN No.</b>
+												</t>
 		                       		        </td>
 		                       		        <td class="noborder">
 		                       		            <b>: <span t-field="o.complete_name_picking"/></b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
 		                       		            <b>Tanggal</b>
 		                       		        </td>
 		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.create_date"/></b>
+		                       		            <b>: <span t-field="o.create_date" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/></b>
 		                       		        </td>
 		                       		    </tr>
 		                       		</table>
@@ -61,7 +68,12 @@
 							
 							<div class="row" style="text-align:center; font-size:20pt;">
 		              			<div class="col-xs-12" >
-		                       		<b>GOODS/SERVICES RECEIVED NOTE (G/SRN)</b>
+		                       		<t t-if="o.purchase_id.request_id.type_product == 'service' ">
+										<b>SERVICES RECEIVED NOTE (SRN)</b>
+									</t>
+									<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
+										<b>GOODS RECEIVED NOTE (GRN)</b>
+									</t>
 								</div>
 							</div>
 							
@@ -71,7 +83,7 @@
 							<div class="row" style="text-align:left;font-size:14pt;">
 		              			<div class="col-xs-6" >
 		                       		<table class="noborder">
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
 		                       		            <b>Penerimaan dari </b>
 		                       		        </td>
@@ -83,12 +95,12 @@
 		                      	</div>
 		                      	<div class="col-xs-6" >
 		                       		<table class="noborder">
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%" colspan="2">
 		                       		            <b>Referensi :</b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
 		                       		            <b>PP No.</b>
 		                       		        </td>
@@ -96,15 +108,20 @@
 		                       		            <b>: <span t-field="o.pr_source"/></b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
-		                       		            <b>PO/SPO No.</b>
+		                       		            <t t-if="o.purchase_id.request_id.type_product == 'service' ">
+													<b>SPO No.</b>
+												</t>
+												<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
+													<b>PO No.</b>
+												</t>
 		                       		        </td>
 		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.purchase_id"/></b>
+		                       		            <b>: <span t-field="o.purchase_id.complete_name"/></b>
 		                       		        </td>
 		                       		    </tr>
-		                       		    <tr>
+		                       		    <tr style="height:30px;">
 		                       		        <td class="noborder" width="25%">
 		                       		            <b>DO No.</b>
 		                       		        </td>
@@ -115,7 +132,8 @@
 		                       		</table>
 		                      	</div>
 		                  	</div>
-							
+							<br></br>
+							<br></br>
 							<!-- Variabel -->
 							<t t-set="idx" t-value="0"/>
 							<t t-set="delta" t-value="0"/>
@@ -160,16 +178,16 @@
 										    <td>
 										      	<span t-field="l.product_id.name"/>
 										    </td>
-										    <td>
+										    <td align="center">
 										      	<span t-field="l.product_qty"/>
 										    </td>
-										    <td>
+										    <td align="center">
 										      	<span t-field="l.qty_done"/>
 										    </td>
-										    <td>
+										    <td align="center">
 										      	<span t-field="l.product_id.uom_id"/>	    
 										    </td>
-										    <td>
+										    <td align="center">
 										      	<span t-esc="delta"/>
 										    </td>
 										</tr>
@@ -177,6 +195,9 @@
 								</table>
 							</div>
 							
+		              		<br></br>
+							<br></br>
+		              		
 		              		<div class="row">
 		                        <div class="col-xs-12">
 		                            <table width="100%" class="noborder">
@@ -191,6 +212,9 @@
 		                      	</div>
 		                  	</div>      
 		              		
+		              		<br></br>
+							<br></br>
+		              		
 							<!-- Tanda Tangan -->
 		                    <div class="row">
 		                        <div class="col-xs-12">	
@@ -203,9 +227,23 @@
 			                                    <br></br>
 			                                    <br></br>
 			                                    <br></br>
-			                                    (PIC Unit Kerja Pengadaan)
+			                                    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															    <span t-field="mids.date"/>&#160;
+															<br/>
+															[
+														        <span t-field="mids_tracking.old_value_char"/>&#160;to
+														        <span t-field="mids_tracking.new_value_char"/>
+															]
+													    </t>
+													</t>
+												</t>
 			                                    <br></br>
-			                                    Tgl.
 			                                </td>
 			                                <td class="noborder">
 			                                    Diterima Oleh,
@@ -214,7 +252,7 @@
 			                                    <br></br>
 			                                    <br></br>
 			                                    <br></br>
-			                                    (Pihak Pengaju PP)
+			                                    <u><span t-field="o.requested_by"/></u>
 			                                    <br></br>
 			                                    Tgl.
 			                                </td>
@@ -225,7 +263,7 @@
 			                                    <br></br>
 			                                    <br></br>
 			                                    <br></br>
-			                                    (Atasn Pihak Pengaju PP)
+			                                    <u><span t-field="o.assigned_to"/></u>
 			                                    <br></br>
 			                                    Tgl.
 			                                </td>
@@ -236,7 +274,7 @@
 			                                    <br></br>
 			                                    <br></br>
 			                                    <br></br>
-			                                    (Administrasi Gudang)
+			                                    ____________________
 			                                    <br></br>
 			                                    Tgl.
 			                                </td>
