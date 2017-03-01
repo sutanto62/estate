@@ -488,10 +488,11 @@ class QuotationComparisonForm(models.Model):
                 #convert Goods Price to Currency IDR indonesia
                 company_locale_name = ''
                 company_currency_name = item.env['res.company'].search([('id','=',item.company_id.id)]).currency_id.name
-                try:
-                    company_locale_name = item.env['res.company'].search([('id','=',item.company_id.id)]).locale_code
-                except:
-                    company_locale_name = 'id_ID'
+
+                company = item.env['res.company'].search([('id','=',item.company_id.id)])
+
+                company_locale_name = 'id_ID' if not company.locale_code else company.locale_code
+
                 price = babel.numbers.format_currency( decimal.Decimal(goods_price), company_currency_name,locale=company_locale_name)
 
                 purchase = item.env['purchase.order'].search([('id','=',record.order_id.id)])
