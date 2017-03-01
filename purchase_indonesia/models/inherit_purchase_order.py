@@ -33,6 +33,9 @@ class InheritPurchaseOrder(models.Model):
         ('email', 'E-Mail'),
         ('phone', 'Phone'),
         ('other','Other')])
+    confirmed_by_value = fields.Char('Confirmed ByValue')
+    confirmed_by_person = fields.Char('Confirmed ByPerson')
+    validation_confirmed_by = fields.Boolean('Validation Confirmed By',default = False,compute='change_validation_confirmed_by')
     state = fields.Selection([
         ('draft', 'Quotation'),
         ('sent', 'RFQ Sent'),
@@ -54,6 +57,13 @@ class InheritPurchaseOrder(models.Model):
         self._update_shipping()
         self._update_delivery_term()
         return True
+
+    @api.multi
+    @api.depends('confirmed_by')
+    def change_validation_confirmed_by(self):
+        for item in self:
+            if item.confirmed_by:
+                item.validation_confirmed_by = True
 
     @api.one
     @api.depends('po_no','name','date_order','companys_id','type_location')

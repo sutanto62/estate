@@ -91,6 +91,7 @@ class InheritStockPicking(models.Model):
     delivery_number = fields.Char()
     validation_receive = fields.Char()
     validation_manager = fields.Boolean('Validation Manager',compute='_check_validation_manager')
+    description = fields.Text('Description')
 
     _defaults = {
         'not_seed':True,
