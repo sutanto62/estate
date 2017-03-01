@@ -2,11 +2,13 @@
 <!--Custom report.-->
 <openerp>
     <data>
+        <!--
       	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
 			<xpath expr="//head" position="inside">
 		      	<link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_purchase_quotation.css"/>
 		  	</xpath>
 		</template>
+		 -->
         <template id="report_purchase_quotation">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
@@ -35,7 +37,7 @@
 							</div>
 							<div class="row" style="text-align:right;">
 		              			<div class="col-xs-12" >
-		                       		<b>Date	: <span t-field="o.date_order"/> </b>
+		                       		<b>Date	: <span t-field="o.date_order" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/> </b>
 								</div>
 							</div>
 							
@@ -90,80 +92,77 @@
 										      	<span t-field="l.product_uom"/>
 										    </td>
 										    <td>
-										      	<span t-field="l.price_unit"/>
+										      	&#160;
 										    </td>
 										    <td>
-										      	<span t-field="l.price_subtotal"/>
+										      	&#160;
 										    </td>
 										    <td>
-										      	
+										      	&#160;
 										    </td>
 										</tr>
 									</t>
 									<tr>
-									    <td colspan="7">
+									    <td colspan="5">
 									      	Sub Total
 									    </td>
-									    <td>
-									      	<span t-field="o.amount_untaxed"/>
+									    <td colspan="2">
+									      	&#160;
 									    </td>
 									    <td>
 									     	&#160; 	
 									    </td>
 									</tr>
 									<tr>
-									    <td colspan="7">
+									    <td colspan="5">
 									      	Discount
 									    </td>
-									    <td>
-									      	[todo] diskon
+									    <td colspan="2">
+									     	&#160; 	
 									    </td>
 									    <td>
 									     	&#160; 	
 									    </td>
 									</tr>
 									<tr>
-									    <td colspan="7">
+									    <td colspan="5">
 									      	Tax
 									    </td>
-									    <td>
-									      	<span t-field="o.amount_tax"/>
+									    <td colspan="2">
+									      	&#160;
 									    </td>
 									    <td>
 									     	&#160; 	
 									    </td>
 									</tr>
 									<tr>
-									    <td colspan="7" style="text-align: center;">
+									    <td colspan="5" style="text-align: center;">
 									      	GRAN TOTAL
 									    </td>
-									    <td>
-									      	<span t-field="o.amount_total"/>
+									    <td colspan="2">
+									      	&#160;
 									    </td>
 									    <td>
 									     	&#160; 	
 									    </td>
 									</tr>
 									<tr>
-									    <td colspan="7" class="noborder">
-									      	Pembayaran
+									    <td colspan="5" class="noborder">
+									      	Pembayaran&#160;:
 									    </td>
-									    <td class="noborder">
-									      	: <span t-field="o.payment_term_id"/>
+									    <td class="noborder" colspan="2">
+									      	Cash&#160;/&#160;Kredit&#160;____&#160;hari
 									    </td>
 									    <td class="noborder">
 									     	&#160; 	
 									    </td>
 									</tr>
 									<tr>
-									    <td colspan="7" class="noborder">
-									      	Alamat Pengiriman
+									    <td colspan="5" class="noborder">
+									      	Alamat Pengiriman&#160;:
 									    </td>
-									    <td class="noborder">
-									      	: <span t-field="o.picking_type_id.warehouse_id.partner_id.street"/>
-                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>
-                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.zip"/>
-                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.city"/>
+									    <td class="noborder" colspan="2">
+									      	Kantor Palma Group&#160;/&#160;Site Gorontalo
 									    </td>
 									    <td class="noborder">
 									     	&#160; 	
@@ -173,10 +172,10 @@
 								<table width="100%">
 		                            <tr>
 		                          		<td class="noborder">
-		                          		    Confirmed By	:
+		                          		    Confirmed By&#160;:
 		                          		</td>
                                         <td class="noborder">
-                                        	: <span t-field="o.confirmed_by"/>
+                                        	Fax&#160;/&#160;Email&#160;/&#160;Phone&#160;/&#160;Other
                                         </td>
                                         <td class="noborder">
                                         	&#160;
@@ -188,66 +187,69 @@
 		                       	</table>   	
 								<table width="100%">
 		                            <tr>
-		                          		<td class="noborder" width="25%">
+		                          		<td class="noborder" width="50%">
 		                          		    Vendor	:
 		                          		</td>
                                         <td class="noborder">
                                         	&#160;
                                         </td>
-		                          		<td class="noborder" style="text-align: center;">
+                                        <td class="noborder">
+                                        	&#160;
+                                        </td>
+		                          		<td class="noborder" style="text-align: left;">
 		                          		    Name ,
 		                          		</td>
 		                          	</tr>
                                     <tr>
-                                        <td colspan="3" class="noborder">
+                                        <td colspan="4" class="noborder">
                                         	&#160;
                                         </td>
 		                          	</tr> 
 								    <tr>
-		                          		<td class="noborder">
+		                          		<td colspan="2" class="noborder">
 		                          		    1.
 		                          		</td>
-		                          		<td class="noborder">
+		                          		<td class="noborder" style="text-align: left;">
 		                          		    Procurement &amp; Log Staff
 		                          		</td>
-                                        <td class="noborder" style="text-align: center;">
+                                        <td class="noborder" style="text-align: left;">
 		                          		    ___________________
 		                          		</td>
 		                          	</tr>
                                     <tr>
-                                        <td colspan="3" class="noborder">
+                                        <td colspan="4" class="noborder">
                                         	&#160;
                                         </td>
 		                          	</tr> 
 		                          	<tr>
-		                          		<td class="noborder" width="25%">
-		                          		    2.___________________
+		                          		<td colspan="2" class="noborder" width="25%">
+		                          		    2.______________________________________
 		                          		</td>
-		                          		<td class="noborder">
+		                          		<td class="noborder" style="text-align: left;">
 		                          		    Procurement &amp; Log Dept. Head
 		                          		</td>
-                                        <td class="noborder" style="text-align: center;">
+                                        <td class="noborder" style="text-align: left;">
 		                          		    ___________________
 		                          		</td>
 		                          	</tr>
                                     <tr>
-                                        <td colspan="3" class="noborder">
+                                        <td colspan="4" class="noborder">
                                         	&#160;&#160;&#160;Signature
                                         </td>
 		                          	</tr> 
 		                          	<tr>
-		                          		<td class="noborder">
+		                          		<td colspan="2" class="noborder">
 		                          		    3.
 		                          		</td>
-		                          		<td class="noborder">
+		                          		<td class="noborder" style="text-align: left;">
 		                          		    Procurement &amp; Log Div. Head
 		                          		</td>
-                                        <td class="noborder" style="text-align: center;">
+                                        <td class="noborder" style="text-align: left;">
 		                          		    ___________________
 		                          		</td>
 		                          	</tr>
                                     <tr>
-                                        <td colspan="3" class="noborder">
+                                        <td colspan="4" class="noborder">
                                         	&#160;
                                         </td>
 		                          	</tr>
