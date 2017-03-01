@@ -15,6 +15,14 @@
                                 attrs="{'invisible': [('state', '=', 'draft')]}"
                                 >
                      </button>
+                     <button name="purchase_request_correction" type="object"
+                                class="oe_stat_button"
+                                string="Corection PP"
+                                icon ="fa-reply"
+                             attrs="{'invisible': [('state', '=', 'draft')]}"
+                             >
+
+                     </button>
                  </xpath>
              </field>
          </record>

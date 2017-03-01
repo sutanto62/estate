@@ -86,6 +86,16 @@ class InheritPurchaseTenders(models.Model):
                 item.quotation_state = qcf_state.title()
 
     @api.multi
+    def purchase_request_correction(self):
+        for item in self:
+            purchase_request = item.env['purchase.request'].search([('id','=',item.request_id.id)])
+            update_purchase_request = purchase_request.write({
+                'state':'approval4',
+                'assigned_to' : purchase_request._get_division_finance(),
+                'validation_correction_procurement' : True
+            })
+
+    @api.multi
     def _compute_date(self):
         arrMinDateNorm = []
         arrMaxDateNorm = []

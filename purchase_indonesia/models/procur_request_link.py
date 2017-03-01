@@ -194,6 +194,7 @@ class InheritPurchaseRequest(models.Model):
     validation_correction = fields.Boolean("Validation Correction",compute='_change_validation_correction')
     validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
+    validation_correction_procurement = fields.Boolean("Validation Correction Procurement",default=False)
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
 
     @api.multi
@@ -642,9 +643,12 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def button_approved(self):
-        self.tracking_approval()
-        self.create_purchase_requisition()
-        self.create_quotation_comparison_form()
+        if self.validation_correction_procurement == True:
+            self.update_purchase_requisition()
+        else:
+            self.tracking_approval()
+            self.create_purchase_requisition()
+            self.create_quotation_comparison_form()
         super(InheritPurchaseRequest, self).button_approved()
         return True
 
@@ -740,7 +744,7 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
 
         if self._get_max_price() >= self._get_price_low():
-            state_data = {'state':'approval2','assigned_to':self._get_division_finance()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
@@ -804,6 +808,21 @@ class InheritPurchaseRequest(models.Model):
                 'requisition_id' : res.id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
+
+        return True
+
+    @api.multi
+    def update_purchase_requisition(self):
+        # Update Purchase Requisition
+        requisition_id = self.env['purchase.requisition'].search([('request_id','=',self.id)]).id
+        for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
+            purchaseline_data = {
+                'product_id': purchaseline.product_id.id,
+                'est_price':purchaseline.price_per_product,
+                'product_uom_id': purchaseline.product_uom_id.id,
+                'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
+            }
+            self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id)]).write(purchaseline_data)
 
         return True
 
@@ -1126,10 +1145,10 @@ class InheritPurchaseRequestLine(models.Model):
                  'analytic_account_id', 'date_required', 'specifications')
     def _compute_is_editable(self):
         for rec in self:
-            if rec.request_id.state != 'draft':
-                rec.is_editable = False
-            else:
+            if rec.request_id.state in ['draft','approval4']:
                 rec.is_editable = True
+            else:
+                rec.is_editable = False
 
     price_per_product = fields.Float('Product Price')
     price_per_product_label = fields.Char('Product Price',readonly=True)
