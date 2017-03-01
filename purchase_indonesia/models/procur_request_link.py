@@ -159,7 +159,7 @@ class InheritPurchaseRequest(models.Model):
                                      ('technic','Technic'),('general','General')],'Unit Functional')
     department_id = fields.Many2one('hr.department','Department')
     employee_id = fields.Many2one('hr.employee','Employee')
-    purchase_ids = fields.One2many('purchase.order','request_id','Purchase Order Line')
+    purchase_ids = fields.One2many('purchase.order','request_id','Purchase Order Line',domain=[('state','!=','cancel')])
     type_location = fields.Char('Location',default=_get_office_level_id,readonly = 1)
     code =  fields.Char('code location',default=_get_office_level_id_code,readonly = 1)
     type_product = fields.Selection([('consu','Capital'),
