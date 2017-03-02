@@ -5,11 +5,142 @@
              <field name="model">res.partner</field>
              <field name="inherit_id" ref="base.view_partner_form"/>
              <field name="arch" type="xml">
+                 <xpath expr="//form/*" position="before">
+                     <header>
+                         <button name="action_confirm" states="draft" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
+                         <button name="action_approve" states="confirm" type="object" string="Approval" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <button name="action_nonactive" states="done" type="object" string="Non Actived" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <field name="state" widget="statusbar"
+                           statusbar_visible="draft"
+                           statusbar_colors='{"approved":"blue"}'/>
+                     </header>
+                 </xpath>
+                 <xpath expr="//field[@name='website']" position="after">
+                     <field name="confirmed_by" string="Confirmed By" readonly="1" attrs="{'invisible': [('state', '!=','confirm'),('state', '!=','done')]}"/>
+                     <field name="assign_to" string="Assign To" readonly="1" attrs="{'invisible': [('state', '!=','confirm'),('state', '!=','done')]}"/>
+                     <field name="approved_by" string="Approved By" readonly="1" attrs="{'invisible': [('state', '!=','done')]}" />
+                 </xpath>
                  <xpath expr="//field[@name='category_id']" position="after">
                       <field name="partner_product" string="Partner Product"/>
                       <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
                  </xpath>
+                 <xpath expr="//field[@name='website']" position="before">
+                      <field name="partner_code" string="Partner code" invisible="1"/>
+                      <field name="partner_running_number" string="Partner Running Number"/>
+                 </xpath>
+                 <xpath expr="//notebook" position="inside">
+                     <page  string="Business Permit" autofocus="autofocus">
+                        <field name="businesspermit_ids"
+                               context="{'tree_view_ref' : 'base_indonesia.view_base_indonesia_vendor_business_permit_tree'}"/>
+                     </page>
+                     <page  string="Taxes" autofocus="autofocus">
+                        <field name="businessteaxes_ids"
+                               context="{'tree_view_ref' : 'base_indonesia.view_base_indonesia_taxes_tree'}"/>
+                     </page>
+                 </xpath>
              </field>
          </record>
+
+        <record model="ir.ui.view" id="view_base_indonesia_vendor_business_permit_tree">
+            <field name="name">base.indonesia.vendor.business.permit.tree</field>
+            <field name="model">base.indonesia.vendor.business.permit</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="no_identity_business" string="No Identity Business"/>
+                    <field name="due_date_business_permit" string="Due Date Business Permit"/>
+                    <field name="no_certificate_of_company_registration" string="No Certificate"/>
+                    <field name="due_date_certificate_of_company_cegistration" string="Due Date Certificate"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_base_indonesia_vendor_business_permit_form" model="ir.ui.view">
+            <field name="name">base.indonesia.vendor.business.permit.form</field>
+            <field name="model">base.indonesia.vendor.business.permit</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <separator string="Business Permit" />
+                           <group>
+                                <field name="partner_id" string="Partner" invisible="1"/>
+                                <field name="no_identity_business" string="No SIUP/SIUJK/SIUPAL"/>
+                                <field name="due_date_business_permit" string="Due Date Business Permit"/>
+                                <field name="published_by_business_permit" string="Published By"/>
+                           </group>
+                        <separator string="Certificate of Company Registration" />
+                           <group>
+                                <field name="no_certificate_of_company_registration" string="No Certificate of Company Registration"/>
+                                <field name="due_date_certificate_of_company_cegistration" string="Due Date Certificate of Company Registration"/>
+                                <field name="published_by_certificate_of_company_cegistration" string="Published By Certificate of Company Registration"/>
+                           </group>
+
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="view_base_indonesia_vendor_business_permit_action">
+            <field name="name">base.indonesia.vendor.business.permit.action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">base.indonesia.vendor.business.permit</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new vendor business permit.
+              </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_base_indonesia_taxes_tree">
+            <field name="name">base.indonesia.taxes</field>
+            <field name="model">base.indonesia.taxes</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="nppkp_no" string="NPPKP NO"/>
+                    <field name="npwp_no" string="NPWP NO"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_base_indonesia_taxes_form" model="ir.ui.view">
+            <field name="name">base.indonesia.taxes</field>
+            <field name="model">base.indonesia.taxes</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <separator string="Business Vendor Taxes" />
+                        <group>
+                            <field name="partner_id" string="Partner ID" invisible="1" />
+                            <field name="nppkp_no" string="NPPKP NO"/>
+                            <field name="npwp_no" string="NPWP NO"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="view_base_indonesia_taxes_action">
+            <field name="name">base.indonesia.taxes.action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">base.indonesia.taxes</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new vendor business permit.
+              </p>
+            </field>
+        </record>
+
     </data>
 </openerp>

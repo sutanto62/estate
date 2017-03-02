@@ -655,8 +655,12 @@
             </field>
         </record>
 
+        <menuitem id="master_vendor_product" name="Master"
+                  parent="base.menu_purchase_root"
+                  sequence="2"/>
+
         <menuitem id="base.menu_procurement_management_supplier_name" name="Vendors"
-            parent="purchase.menu_procurement_management"
+            parent="master_vendor_product"
             action="base.action_partner_supplier_form" sequence="1"/>
 
         <menuitem action="purchase.purchase_rfq" id="purchase.menu_purchase_rfq"
@@ -668,7 +672,7 @@
 
         <menuitem  id="purchase.menu_procurement_partner_contact_form"
                   action="purchase.product_normal_action_puchased"
-          parent="purchase.menu_procurement_management" sequence="21"/>
+          parent="master_vendor_product" sequence="21"/>
 
         <menuitem
             id="menu_quotation_comparison1_act"

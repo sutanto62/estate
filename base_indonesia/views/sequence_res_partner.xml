@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--Sequence Vendor-->
+        <record id="seq_vendor" model="ir.sequence">
+            <field name="name">Sequence Vendor </field>
+            <field name="code">sequence.vendor</field>
+            <field name="prefix"> </field>
+            <field name="padding">3</field>
+        </record>
+
+
+        <!--End Sequence Purchase Request-->
+
+
+    </data>
+</openerp>
