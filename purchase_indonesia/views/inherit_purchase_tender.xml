@@ -19,7 +19,7 @@
                                 class="oe_stat_button"
                                 string="Corection PP"
                                 icon ="fa-reply"
-                             attrs="{'invisible': [('state', '=', 'draft')]}"
+                             attrs="{'invisible': [('state','!=','in_progress')]}"
                              >
 
                      </button>
