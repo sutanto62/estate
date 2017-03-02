@@ -1,14 +1,16 @@
-<!--<openerp>-->
-    <!--<data>-->
-        <!--<record model="ir.ui.view" id="view_form_inherit_back_order">-->
-             <!--<field name="name">Button back Order</field>-->
-             <!--<field name="model">purchase.requisition.partner</field>-->
-             <!--<field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_partner"/>-->
-             <!--<field name="arch" type="xml">-->
-                 <!--<xpath expr="//button[@name='create_order']" position="after">-->
-                     <!--&lt;!&ndash;<button name="create_backorder" string="Create Request for Back Order Quotation" type="object" class="btn-primary"/>&ndash;&gt;-->
-                 <!--</xpath>-->
-             <!--</field>-->
-         <!--</record>-->
-    <!--</data>-->
-<!--</openerp>-->
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_form_inherit_back_order">
+             <field name="name">Button back Order</field>
+             <field name="model">purchase.requisition.partner</field>
+             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_partner"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='partner_ids']" position="replace">
+                     <field name="partner_ids" widget="many2many_tags" options="{'no_create_edit': True,'no_create':True}" context="{'default_supplier': 1, 'default_customer': 0}"/>
+                 </xpath>
+             </field>
+         </record>
+
+    </data>
+
+</openerp>

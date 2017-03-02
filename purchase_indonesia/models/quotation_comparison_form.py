@@ -219,6 +219,14 @@ class QuotationComparisonForm(models.Model):
 
         return fin_procur
 
+    @api.multi
+    def _get_employee_location(self):
+        for item in self:
+            hr = item.env['hr.employee']
+            hr_location_code = hr.search([('user_id','=',item.pic_id.id)]).office_level_id.code
+
+        return hr_location_code
+
 
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
@@ -360,10 +368,14 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_send(self):
-        if self._get_purchase_request().code == 'KPST':
-            self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
-        elif self._get_purchase_request().code in ['KOKB','KPWK']:
-            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
+        for item in self:
+            if item._get_user().id != item.pic_id.id:
+                raise exceptions.ValidationError('You not PIC for This Quotation Comparison Form')
+            else:
+                if item._get_employee_location() == 'KPST':
+                    item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
+                elif item._get_employee_location() in ['KOKB','KPWK']:
+                    item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
         return True
 
     @api.multi

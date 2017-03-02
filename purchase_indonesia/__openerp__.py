@@ -26,7 +26,7 @@
         'security/purchase_request.xml',
         'security/ir.model.access.csv',
         'wizard/reject.xml',
-        # 'wizard/inherit_purchase_indonesia_requisition_partner.xml',
+        'wizard/inherit_purchase_indonesia_requisition_partner.xml',
         'config_report/config_quotation_comparison_form.xml',
         'config_report/config_goods_receipt_notes.xml',
         'config_report/config_purchase_order.xml',
