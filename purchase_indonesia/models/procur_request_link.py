@@ -1145,7 +1145,7 @@ class InheritPurchaseRequestLine(models.Model):
                  'analytic_account_id', 'date_required', 'specifications')
     def _compute_is_editable(self):
         for rec in self:
-            if rec.request_id.state in ['draft','approval4']:
+            if rec.request_id.state in ['draft','approval4','approval5','approval6']:
                 rec.is_editable = True
             else:
                 rec.is_editable = False
