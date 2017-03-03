@@ -243,7 +243,10 @@
                                             <button type="object"
                                                 name="action_view_picking"
                                                 class="oe_stat_button"
-                                                icon="fa-truck" string="GRN/SRN">
+                                                icon="fa-truck" >
+                                                <field name="count_grn_done" widget="statinfo" string="Dn"/>
+
+                                                <field name="count_grn_assigned" widget="statinfo"  string="Av"/>
                                             </button>
                                         </div>
                                         <group>

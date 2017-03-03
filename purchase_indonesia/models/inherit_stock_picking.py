@@ -206,20 +206,27 @@ class InheritStockPicking(models.Model):
                 stock_move.action_confirm()
                 stock_move.action_done()
 
+    #method to use if you want not create back order
+    # @api.multi
+    # def do_transfer(self):
+    #     qty = min(item.product_qty for item in self.pack_operation_product_ids)
+    #     done = min(item.qty_done for item in self.pack_operation_product_ids)
+    #
+    #     if qty and done < 0:
+    #         # self.action_move_picking_force_stop()
+    #         self.write({'state':'done'})
+    #     else :
+    #         super(InheritStockPicking,self).do_transfer()
+
+    # @api.multi
+    # def _create_backorder(self):
+    #     for item in self:
+    #         super(InheritStockPicking,self)._create_backorder()
+    #         backorder_id
+
+
     @api.multi
-    def do_transfer(self):
-        qty = min(item.product_qty for item in self.pack_operation_product_ids)
-        done = min(item.qty_done for item in self.pack_operation_product_ids)
-
-        if qty and done < 0:
-            self.action_move_picking_force_stop()
-            self.write({'state':'done'})
-        else :
-            super(InheritStockPicking,self).do_transfer()
-
-
-    @api.multi
-    def do_new_transfer(self):
+    def do_new_transfer(self,pick):
             #update Quantity Received in Purchase Tender after shipping
             po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
 
@@ -250,16 +257,12 @@ class InheritStockPicking(models.Model):
                                     sumitem = sumitem + item.qty_done
                                 else:
                                     sumitemmin = sumitemmin + item.qty_done
-                                purchase_data = {
-                                    'state' : 'received_force_done' if sumitem <= 0 else 'done'}
                         tender_line_data = {
 
                             'qty_received' : sumitem + record.qty_received,
                             'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                             }
                         record.write(tender_line_data)
-
-                        po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
 
                         if stock_pack_operation_length == 1 and sumitemmin < 0 :
                             count_action_cancel_status = count_action_cancel_status +1
@@ -279,6 +282,12 @@ class InheritStockPicking(models.Model):
                                 recordoutstanding.write(outstanding_data)
                     self.action_cancel()
                 else:
+                    # purchase_data = {
+                    #                 'state' : 'received_force_done' if self.check_backorder(pick) else 'done'}
+                    # print self.check_backorder(pick)
+                    # raise exceptions.ValidationError()
+
+                    # po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
                     self.do_transfer()
 
                 super(InheritStockPicking,self).do_new_transfer()

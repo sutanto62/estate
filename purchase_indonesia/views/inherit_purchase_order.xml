@@ -14,6 +14,8 @@
                  </xpath>
                  <xpath expr="//field[@name='partner_id']" position="before">
                           <field name="po_no" string="Name" invisible="1"/>
+                          <field name="count_grn_done" invisible="1"/>
+                          <field name="count_grn_assigned" invisible="1"/>
                           <field name="companys_id" string="Company" invisible="0" required="0" options="{'no_create_edit': True}"/>
                           <field name="type_location" string="Location" invisible="1"/>
                           <field name="location" string="Location"/>
@@ -24,13 +26,12 @@
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
                           <field name="validation_confirmed_by" string="Validation Confirmed by" invisible="1"/>
-                          <field name="confirmed_by_person" class="oe_inline" string="Confirmed by Person Name" attrs="{'invisible': [('state','!=', 'draft')]}"/>
+                          <field name="validation_check_confirm_vendor" string="Confirm Vendor" attrs="{'invisible': [('state','not in', ['draft','sent'])]}"/>
+                          <field name="confirmed_by_person" class="oe_inline" string="Confirmed by Person Name" attrs="{'invisible': [('validation_check_confirm_vendor','!=',True)]}"/>
                           <div name="Confirmed By" string = 'Confirmed By'>
-                            <field name="confirmed_by"  class="oe_inline" string="Confirmed By" attrs="{'invisible': [('state','!=', 'draft')]}"/>
-                            <field name="confirmed_by_value" class="oe_inline" string="Value" attrs="{'invisible': [('state','!=', 'draft')]}"/>
+                            <field name="confirmed_by"  class="oe_inline" string="Confirmed By" attrs="{'invisible': [('validation_check_confirm_vendor','!=',True)]}" />
+                            <field name="confirmed_by_value" class="oe_inline" string="Value" attrs="{'invisible': [('validation_check_confirm_vendor','!=',True)]}"/>
                           </div>
-
-
                  </xpath>
                  <xpath expr="//field[@name='payment_term_id']" position="replace">
                      <field name="payment_term_id" options="{'no_open': True, 'no_create': False}" attrs="{'readonly': [('invoice_status','=', 'invoiced')]}"/>
@@ -47,6 +48,7 @@
                         <field name="days" string="Days Of Indent" class="oe_inline" attrs="{'readonly': [('term_of_goods','!=', 'indent')]}"/>
                         <field name="spesification" string="Spesification" invisible="1"/>
                  </xpath>
+
              </field>
          </record>
 

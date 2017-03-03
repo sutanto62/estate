@@ -44,6 +44,9 @@ class InheritPurchaseOrder(models.Model):
         ('done', 'Done'),
         ('cancel', 'Cancelled'),('received_all','Received All'),('received_force_done','Received Force Done')
         ], string='Status', readonly=True, select=True, copy=False, default='draft', track_visibility='onchange')
+    count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
+    count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
+    validation_check_confirm_vendor = fields.Boolean('Confirm Vendor')
 
     _defaults = {
         'hide' : False
@@ -64,6 +67,29 @@ class InheritPurchaseOrder(models.Model):
         for item in self:
             if item.confirmed_by:
                 item.validation_confirmed_by = True
+
+    @api.multi
+    @api.depends('picking_ids')
+    def _compute_grn_or_srn(self):
+        for item in self:
+            request_name = item.request_id.complete_name
+            arrPickingDone = []
+            arrPickingAssigned = []
+            done = item.env['stock.picking'].search([('pr_source','in',[request_name]),('state','=','done')])
+            assigned = item.env['stock.picking'].search([('pr_source','in',[request_name]),('state','=','assigned')])
+            for itemDone in done:
+                arrPickingDone.append(itemDone.id)
+            for itemAssign in assigned:
+                arrPickingAssigned.append(itemAssign.id)
+            assign_picking_done = item.env['stock.picking'].search([('id','in',arrPickingDone)])
+            assign_picking_assigned = item.env['stock.picking'].search([('id','in',arrPickingAssigned)])
+            picking_done = len(assign_picking_done)
+            picking_assigned = len(assign_picking_assigned)
+
+            item.count_grn_done = picking_done
+
+
+            item.count_grn_assigned = picking_assigned
 
     @api.one
     @api.depends('po_no','name','date_order','companys_id','type_location')

@@ -40,6 +40,8 @@ class InheritPurchaseTenders(models.Model):
     due_date = fields.Date('Due Date',compute='_compute_due_date')
     validation_due_date = fields.Boolean('Validation Due Date',compute='_compute_validation_due_date')
     quotation_state = fields.Char('QCF state',compute='_compute_quotation_state')
+    validation_correction = fields.Boolean('Validation Correction',compute='_compute_validation_correction')
+    validation_qcf = fields.Boolean('Validation QCF',compute='_compute_validation_qcf')
 
     @api.multi
     def _get_value_low(self):
@@ -76,6 +78,33 @@ class InheritPurchaseTenders(models.Model):
         res = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id)]).write(data)
 
     @api.multi
+    @api.depends('request_id')
+    def _compute_validation_correction(self):
+
+        for item in self:
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','open','done']):
+                item.validation_correction = True
+            else:
+                 item.validation_correction = False
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_validation_qcf(self):
+        for item in self:
+            count_confirm = 0
+            count_purchase = len(item.purchase_ids)
+            if count_purchase > 0:
+                order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['draft','sent'])])
+                count_order = len(order)
+                for record in order:
+                    if record.validation_check_confirm_vendor == True:
+                        count_confirm = count_confirm + 1
+                if count_order == count_confirm:
+                    item.validation_qcf = True
+                else:
+                    item.validation_qcf = False
+
+    @api.multi
     @api.depends('quotation_state')
     def _compute_quotation_state(self):
         for item in self:
@@ -90,8 +119,8 @@ class InheritPurchaseTenders(models.Model):
         for item in self:
             purchase_request = item.env['purchase.request'].search([('id','=',item.request_id.id)])
             update_purchase_request = purchase_request.write({
-                'state':'approval4',
-                'assigned_to' : purchase_request._get_division_finance(),
+                'state':'budget' if purchase_request._get_max_price() < purchase_request._get_price_low() else'approval4' ,
+                'assigned_to' : purchase_request._get_budget_manager() if purchase_request._get_max_price() < purchase_request._get_price_low() else purchase_request._get_division_finance(),
                 'validation_correction_procurement' : True
             })
 
