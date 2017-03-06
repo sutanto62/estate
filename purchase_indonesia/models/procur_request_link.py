@@ -814,9 +814,12 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def update_purchase_requisition(self):
         # Update Purchase Requisition
-        requisition_id = self.env['purchase.requisition'].search([('request_id','=',self.id)]).id
+        requisition=self.env['purchase.requisition'].search([('request_id','=',self.id)])
+        update_requisition = requisition.write({'state':'in_progress'})
+        requisition_id = requisition.id
         for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
             purchaseline_data = {
+
                 'product_id': purchaseline.product_id.id,
                 'est_price':purchaseline.price_per_product,
                 'product_uom_id': purchaseline.product_uom_id.id,

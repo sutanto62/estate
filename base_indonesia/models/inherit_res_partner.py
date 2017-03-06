@@ -93,6 +93,17 @@ class InheritResPartner(models.Model):
                 )
 
     @api.multi
+    def action_set_to_draft(self):
+        for item in self:
+            if item.assign_to.id != item._get_user().id:
+                raise exceptions.ValidationError('User not Match with Field Assign To')
+            else:
+                item.write(
+                    {'assign_to':item.confirmed_by.id,
+                     'state':'draft'}
+                )
+
+    @api.multi
     def action_nonactive(self):
         for item in self:
             item.write({'active':False})

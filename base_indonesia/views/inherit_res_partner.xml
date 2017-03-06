@@ -9,7 +9,7 @@
              <field name="arch" type="xml">
 
                  <xpath expr="//field[@name='display_name']" position="before">
-                      <field name="partner_running_number" string="Partner Number"/>
+                      <field name="partner_running_number" string="Partner No"/>
                  </xpath>
 
                  <xpath expr="//field[@name='email']" position="after">
@@ -30,6 +30,7 @@
                          <button name="action_confirm" states="draft" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
                          <button name="action_approved" states="confirm" type="object" string="Approval" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <button name="action_nonactive" states="done" type="object" string="Non Actived" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <button name="action_set_to_draft" states="confirm" type="object" string="Set To Draft" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <field name="state" widget="statusbar"
                            statusbar_visible="draft"
                            statusbar_colors='{"approved":"blue"}'/>
@@ -37,7 +38,7 @@
                  </xpath>
                  <xpath expr="//field[@name='website']" position="after">
                      <field name="confirmed_by" string="Confirmed By" readonly="1" attrs="{'invisible': [('state', '!=','confirm'),('state', '!=','done')]}"/>
-                     <field name="assign_to" string="Assign To" readonly="1" attrs="{'invisible': [('state', '!=','confirm'),('state', '!=','done')]}"/>
+                     <field name="assign_to" string="Assign To" readonly="1"/>
                      <field name="approved_by" string="Approved By" readonly="1" attrs="{'invisible': [('state', '!=','done')]}" />
                  </xpath>
                  <xpath expr="//field[@name='category_id']" position="after">
@@ -46,7 +47,7 @@
                  </xpath>
                  <xpath expr="//field[@name='website']" position="before">
                       <field name="partner_code" string="Partner code" invisible="1"/>
-                      <field name="partner_running_number" string="Partner Number"/>
+                      <field name="partner_running_number" string="Partner No"/>
                  </xpath>
                  <xpath expr="//notebook" position="inside">
                      <page  string="Business Permit" autofocus="autofocus">
@@ -160,6 +161,35 @@
               <p class="oe_view_nocontent_create">
                 Click to start a new vendor business permit.
               </p>
+            </field>
+        </record>
+
+        <record id="base.view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner">
+                   <field name="state"/>
+                   <field name="name"
+                       filter_domain="['|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self)]"/>
+                   <filter help="My Partners" domain="[('user_id','=',uid)]"/>
+                   <separator/>
+                   <filter string="Persons" name="type_person" domain="[('is_company','=',0)]"/>
+                   <filter string="Companies" name="type_company" domain="[('is_company','=',1)]"/>
+                   <separator/>
+                   <filter string="Customers" name="customer" domain="[('customer','=',1), ('parent_id', '=', False)]"/>
+                   <filter string="Vendors" name="supplier" domain="[('supplier','=',1), ('parent_id', '=', False)]"/>
+                   <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                   <separator/>
+                   <field name="category_id" string="Tag" filter_domain="[('category_id','ilike', self)]"/>
+                   <field name="user_id"/>
+                   <field name="parent_id" domain="[('is_company','=',1)]" operator="child_of"/>
+                   <group expand="0" name="group_by" string="Group By">
+                       <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}" />
+                       <filter string="Company" context="{'group_by': 'parent_id'}"/>
+                       <filter string="Country" context="{'group_by': 'country_id'}"/>
+                   </group>
+               </search>
             </field>
         </record>
 

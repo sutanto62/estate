@@ -34,6 +34,7 @@ class InheritPurchaseTenders(models.Model):
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Char('Location')
+    state = fields.Selection(selection_add = [('rollback','Roll Back PP')])
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
@@ -117,6 +118,7 @@ class InheritPurchaseTenders(models.Model):
     @api.multi
     def purchase_request_correction(self):
         for item in self:
+            item.state = 'rollback'
             purchase_request = item.env['purchase.request'].search([('id','=',item.request_id.id)])
             update_purchase_request = purchase_request.write({
                 'state':'budget' if purchase_request._get_max_price() < purchase_request._get_price_low() else'approval4' ,
