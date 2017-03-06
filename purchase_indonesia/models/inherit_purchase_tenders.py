@@ -359,6 +359,31 @@ class InheritPurchaseTenders(models.Model):
         res=super(InheritPurchaseTenders,self).generate_po()
         return res
 
+    @api.multi
+    @api.constrains('purchase_ids')
+    def _constraint_po_line_ids(self):
+
+        for item in self:
+
+            arrPoid = []
+            tender_line =item.env['purchase.requisition.line']
+            tender_line_id = tender_line.search([('requisition_id','=',item.id)])
+            if item.purchase_ids:
+                for record in item.purchase_ids:
+                    arrPoid.append(record.id)
+
+                for tender in tender_line_id:
+
+                    order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
+
+                    for order in order_line_ids:
+                        if order.quantity_tendered > tender.product_qty:
+                            error_msg = 'Quantity tendered cannot more than Product Quantity in Tender Line'
+                            raise exceptions.ValidationError(error_msg)
+                        elif order.product_qty > tender.product_qty:
+                            error_msg = 'Product Quantity \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
+                            raise exceptions.ValidationError(error_msg)
+
 class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'

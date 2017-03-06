@@ -372,10 +372,28 @@ class QuotationComparisonForm(models.Model):
             if item._get_user().id != item.pic_id.id:
                 raise exceptions.ValidationError('You not PIC for This Quotation Comparison Form')
             else:
-                if item._get_employee_location() == 'KPST':
-                    item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
-                elif item._get_employee_location() in ['KOKB','KPWK']:
-                    item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
+                arrPoid = []
+                tender_line =item.env['purchase.requisition.line']
+                tender_line_id = tender_line.search([('requisition_id','=',item.requisition_id.id)])
+                purchase = item.env['purchase.order']
+                purchase_ids = purchase.search([('comparison_id','=',item.id)])
+                if purchase_ids:
+                    for record in purchase_ids:
+                        arrPoid.append(record.id)
+
+                    for tender in tender_line_id:
+
+                        order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
+
+                        for order in order_line_ids:
+                            if order.quantity_tendered > tender.product_qty:
+                                error_msg = 'Quantity tendered \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
+                                raise exceptions.ValidationError(error_msg)
+                            else:
+                                if item._get_employee_location() == 'KPST':
+                                    item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
+                                elif item._get_employee_location() in ['KOKB','KPWK']:
+                                    item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
         return True
 
     @api.multi
@@ -523,6 +541,30 @@ class QuotationComparisonForm(models.Model):
                 remarks = remarks + v_remarks
 
             item.remarks = remarks
+
+    @api.multi
+    @api.constrains('purchase_line_ids')
+    def _constraint_purchase_line_ids(self):
+
+        for item in self:
+
+            arrPoid = []
+            tender_line =item.env['purchase.requisition.line']
+            tender_line_id = tender_line.search([('requisition_id','=',item.requisition_id.id)])
+            purchase = item.env['purchase.order']
+            purchase_ids = purchase.search([('comparison_id','=',item.id)])
+            if purchase_ids:
+                for record in purchase_ids:
+                    arrPoid.append(record.id)
+
+                for tender in tender_line_id:
+
+                    order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
+
+                    for order in order_line_ids:
+                        if order.quantity_tendered > tender.product_qty:
+                            error_msg = 'Quantity tendered \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
+                            raise exceptions.ValidationError(error_msg)
 
 
 class QuotationComparisonFormLine(models.Model):
