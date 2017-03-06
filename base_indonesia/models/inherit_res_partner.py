@@ -26,6 +26,14 @@ class InheritResPartner(models.Model):
 
         return user
 
+    @api.multi
+    def _get_employee_request(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self._get_user().id)])
+
+        return employee
+
     _inherit = 'res.partner'
 
     _description = 'Inherit Res Partner'
@@ -73,11 +81,26 @@ class InheritResPartner(models.Model):
     @api.multi
     def action_confirm(self):
         for item in self:
+            check_employee = 0
+            arrEmployee = []
+            arrParent = []
+            hr_employee  = item._get_employee_request()
+            employee = item.env['hr.employee']
+            for hr in hr_employee:
+                arrEmployee.append(hr.id)
+            #searching id in parent id employee
+            employee_parent_id = employee.search([('parent_id','in',arrEmployee)])
+
+            for parent in employee_parent_id:
+                arrParent.append(parent.id)
+
+            if arrParent == []:
+                check_employee = check_employee + 1
             item.write(
                 {
                  'partner_code':item.env['ir.sequence'].next_by_code('sequence.vendor'),
                  'confirmed_by':item._get_user().id,
-                 'assign_to':item._get_requestedby_manager().id,
+                 'assign_to':item._get_requestedby_manager().id if check_employee > 0 else item._get_user().id ,
                  'state':'confirm'}
             )
 
