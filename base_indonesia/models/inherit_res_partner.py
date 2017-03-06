@@ -36,7 +36,7 @@ class InheritResPartner(models.Model):
                        ('reject','Reject')],default='draft')
     confirmed_by = fields.Many2one('res.users','Confirmed By')
     approved_by = fields.Many2one('res.users','Approved By')
-    assign_to = fields.Many2one('res.users','Approved By')
+    assign_to = fields.Many2one('res.users','Assign To')
     partner_code = fields.Char('Partner Code')
     partner_running_number = fields.Char('Partner Running Number',compute='_generate_running_number_vendor')
     businesspermit_ids = fields.One2many('base.indonesia.vendor.business.permit','partner_id')
@@ -84,7 +84,7 @@ class InheritResPartner(models.Model):
     @api.multi
     def action_approved(self):
         for item in self:
-            if item.assign_to.id != item.get_user().id:
+            if item.assign_to.id != item._get_user().id:
                 raise exceptions.ValidationError('User not Match with Field Assign To')
             else:
                 item.write(

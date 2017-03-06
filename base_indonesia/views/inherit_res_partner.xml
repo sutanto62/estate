@@ -1,5 +1,25 @@
 <openerp>
     <data>
+
+
+        <record model="ir.ui.view" id="inherit_res_partner_product_tree">
+             <field name="name">Inherit res Partner</field>
+             <field name="model">res.partner</field>
+             <field name="inherit_id" ref="base.view_partner_tree"/>
+             <field name="arch" type="xml">
+
+                 <xpath expr="//field[@name='display_name']" position="before">
+                      <field name="partner_running_number" string="Partner Number"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='email']" position="after">
+                      <field name="confirmed_by" string="Confirmed By"/>
+                      <field name="approved_by" string="Approved By"/>
+                      <field name="state" string="State"/>
+                 </xpath>
+
+             </field>
+         </record>
         <record model="ir.ui.view" id="inherit_res_partner_product">
              <field name="name">Inherit res Partner</field>
              <field name="model">res.partner</field>
@@ -8,7 +28,7 @@
                  <xpath expr="//form/*" position="before">
                      <header>
                          <button name="action_confirm" states="draft" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
-                         <button name="action_approve" states="confirm" type="object" string="Approval" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <button name="action_approved" states="confirm" type="object" string="Approval" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <button name="action_nonactive" states="done" type="object" string="Non Actived" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <field name="state" widget="statusbar"
                            statusbar_visible="draft"
@@ -26,7 +46,7 @@
                  </xpath>
                  <xpath expr="//field[@name='website']" position="before">
                       <field name="partner_code" string="Partner code" invisible="1"/>
-                      <field name="partner_running_number" string="Partner Running Number"/>
+                      <field name="partner_running_number" string="Partner Number"/>
                  </xpath>
                  <xpath expr="//notebook" position="inside">
                      <page  string="Business Permit" autofocus="autofocus">
@@ -40,6 +60,7 @@
                  </xpath>
              </field>
          </record>
+
 
         <record model="ir.ui.view" id="view_base_indonesia_vendor_business_permit_tree">
             <field name="name">base.indonesia.vendor.business.permit.tree</field>
