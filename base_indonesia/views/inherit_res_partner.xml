@@ -28,7 +28,7 @@
                  <xpath expr="//form/*" position="before">
                      <header>
                          <button name="action_confirm" states="draft" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
-                         <button name="action_approved" states="confirm" type="object" string="Approval" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <button name="action_approved" states="confirm" type="object" string="Approve" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <button name="action_nonactive" states="done" type="object" string="Non Actived" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <button name="action_set_to_draft" states="confirm" type="object" string="Set To Draft" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
                          <field name="state" widget="statusbar"
