@@ -67,7 +67,7 @@ class InheritResPartner(models.Model):
 
             name_substring = '' if not item.name else item.name
             substring_first_caracter = name_substring[:1]
-            if item.partner_code and item.state=='confirm':
+            if item.partner_code:
 
                 vendor_code = substring_first_caracter.upper() + ' - ' + item.partner_code
                 item.partner_running_number = vendor_code
