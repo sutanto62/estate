@@ -49,6 +49,15 @@ class InheritResPartner(models.Model):
     partner_running_number = fields.Char('Partner Running Number',compute='_generate_running_number_vendor')
     businesspermit_ids = fields.One2many('base.indonesia.vendor.business.permit','partner_id')
     businessteaxes_ids = fields.One2many('base.indonesia.taxes','partner_id')
+    street = fields.Char('Street',required=True)
+    street2 = fields.Char('Street2',required=True)
+    zip = fields.Char('Zip',required=True,size=24, change_default=True)
+    city =fields.Char('City',required=True)
+    state_id =fields.Many2one("res.country.state", 'State',required=True,ondelete='restrict')
+    country_id = fields.Many2one('res.country', 'Country',required=True, ondelete='restrict')
+    email = fields.Char('Email',required=True)
+    phone = fields.Char('Phone',required=True)
+    mobile = fields.Char('Mobile',required=True)
 
 
     @api.multi
@@ -98,7 +107,6 @@ class InheritResPartner(models.Model):
                 check_employee = check_employee + 1
             item.write(
                 {
-                 'partner_code':item.env['ir.sequence'].next_by_code('sequence.vendor'),
                  'confirmed_by':item._get_user().id,
                  'assign_to':item._get_requestedby_manager().id if check_employee > 0 else item._get_user().id ,
                  'state':'confirm'}
@@ -111,8 +119,11 @@ class InheritResPartner(models.Model):
                 raise exceptions.ValidationError('User not Match with Field Assign To')
             else:
                 item.write(
-                    {'approved_by':item._get_user().id,
-                     'state':'done'}
+                    {
+                     'partner_code':item.env['ir.sequence'].next_by_code('sequence.vendor'),
+                     'approved_by':item._get_user().id,
+                     'state':'done'
+                    }
                 )
 
     @api.multi
