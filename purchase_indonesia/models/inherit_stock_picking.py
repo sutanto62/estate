@@ -6,6 +6,8 @@ import openerp
 import openerp.addons.decimal_precision as dp
 from openerp.tools import float_compare, float_is_zero
 from datetime import datetime, date,time
+from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
 import calendar
@@ -13,6 +15,7 @@ from openerp import tools
 import re
 import json
 import logging
+import time
 from operator import attrgetter
 import re
 
@@ -92,6 +95,7 @@ class InheritStockPicking(models.Model):
     validation_receive = fields.Char()
     validation_manager = fields.Boolean('Validation Manager',compute='_check_validation_manager')
     description = fields.Text('Description')
+    pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
 
     _defaults = {
         'not_seed':True,
@@ -206,27 +210,50 @@ class InheritStockPicking(models.Model):
                 stock_move.action_confirm()
                 stock_move.action_done()
 
-    #method to use if you want not create back order
-    # @api.multi
-    # def do_transfer(self):
-    #     qty = min(item.product_qty for item in self.pack_operation_product_ids)
-    #     done = min(item.qty_done for item in self.pack_operation_product_ids)
-    #
-    #     if qty and done < 0:
-    #         # self.action_move_picking_force_stop()
-    #         self.write({'state':'done'})
-    #     else :
-    #         super(InheritStockPicking,self).do_transfer()
-
-    # @api.multi
-    # def _create_backorder(self):
-    #     for item in self:
-    #         super(InheritStockPicking,self)._create_backorder()
-    #         backorder_id
-
 
     @api.multi
-    def do_new_transfer(self,pick):
+    def do_transfer(self):
+        for item in self:
+            #search list of pack operation
+            pack_operation = item.env['stock.pack.operation'].search([('picking_id','=',self.id)])
+
+            #search minimal quantity product qty and qty done
+            qty = min(item.product_qty for item in pack_operation)
+            done = min(item.qty_done for item in pack_operation)
+
+            super(InheritStockPicking,item).do_transfer()
+
+            purchase_order = item.env['purchase.order'].search([('id','=',self.purchase_id.id)])
+
+            sequence_name = 'stock.srn.seq.'+item.type_location.lower()+'.'+item.companys_id.code.lower() if purchase_order.validation_srn == True else 'stock.grn.seq.'+item.type_location.lower()+'.'+item.companys_id.code.lower()
+
+            purchase_data_srn = {
+                    'pr_source' : purchase_order.request_id.complete_name,
+                    'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name)
+                    }
+            purchase_data = {
+                    'pr_source' : purchase_order.request_id.complete_name,
+                    'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name)
+                }
+
+            picking = item.env['stock.picking']
+            backorder_picking = picking.search([('backorder_id','=',item.id)])
+            purchase_state = {'state' : 'received_force_done'}
+
+            if qty and done < 0:
+                purchase_order.write(purchase_state)
+                # method to use if you want not create back order
+                # self.action_move_picking_force_stop()
+
+                if purchase_order.validation_srn == True :
+                    backorder_picking.write(purchase_data_srn)
+                else:
+                    backorder_picking.write(purchase_data)
+            else:
+                purchase_order.write({'state':'done'})
+
+    @api.multi
+    def do_new_transfer(self):
             #update Quantity Received in Purchase Tender after shipping
             po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
 
@@ -282,12 +309,6 @@ class InheritStockPicking(models.Model):
                                 recordoutstanding.write(outstanding_data)
                     self.action_cancel()
                 else:
-                    # purchase_data = {
-                    #                 'state' : 'received_force_done' if self.check_backorder(pick) else 'done'}
-                    # print self.check_backorder(pick)
-                    # raise exceptions.ValidationError()
-
-                    # po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
                     self.do_transfer()
 
                 super(InheritStockPicking,self).do_new_transfer()
@@ -302,6 +323,9 @@ class InheritStockPackOperation(models.Model):
 
     _inherit='stock.pack.operation'
 
+    checking_split = fields.Boolean('Checking Split',default=False)
+    initial_qty = fields.Float('Initial Qty',readonly=1)
+
     @api.multi
     def do_force_donce(self):
         # do force down line stock picking
@@ -309,14 +333,24 @@ class InheritStockPackOperation(models.Model):
         self.product_qty = compute_product
         self.qty_done = compute_product
 
-    @api.multi
-    def split_quantities(self):
-        #constraint split quantities in stock.pack.operation
-        for pack in self:
+
+    def split_quantities2(self, cr, uid, ids, context=None):
+        for pack in self.browse(cr, uid, ids, context=context):
+            if pack.product_qty - pack.qty_done > 0.0 and pack.qty_done < pack.product_qty:
+                pack2 = self.copy(cr, uid, pack.id,
+                                  default={
+                                        'qty_done': 0.0,
+                                        'product_qty': pack.product_qty - pack.qty_done,
+                                        'checking_split':True,
+                                        'initial_qty':pack.product_qty}, context=context)
+                copy_pack = pack.env['stock.pack.operation'].search([('id','=',pack2)])
+                copy_pack.do_force_donce()
+                self.write(cr, uid, [pack.id], {'initial_qty':pack.product_qty,'product_qty': pack.qty_done}, context=context)
             if pack.qty_done < 0:
                 error = 'Quantity done must be higher than 0 '
                 raise exceptions.ValidationError(error)
-        super(InheritStockPackOperation,self).split_quantities()
+
+        return True
 
 
 
