@@ -42,7 +42,7 @@ class InheritPurchaseOrder(models.Model):
         ('to approve', 'To Approve'),
         ('purchase', 'Purchase Order'),
         ('done', 'Done'),
-        ('cancel', 'Cancelled'),('received_all','Received All'),('received_force_done','Received Force Done')
+        ('cancel', 'Cancelled'),('received_all','Received All'),('received_force_done','Received Partial')
         ], string='Status', readonly=True, select=True, copy=False, default='draft', track_visibility='onchange')
     count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
     count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
@@ -157,7 +157,7 @@ class InheritPurchaseOrder(models.Model):
                 'purchase_id': purchase_order.id,
                 'type_location': purchase_order.type_location,
                 'location':purchase_order.location,
-                'pr_source' : purchase_order.source_purchase_request,
+                'pr_source' :purchase_order.request_id.complete_name,
                 'grn_no' : self.env['ir.sequence'].next_by_code(sequence_name)
             }
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)
