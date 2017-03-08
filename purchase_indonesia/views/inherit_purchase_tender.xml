@@ -130,6 +130,10 @@
                         attrs="{'invisible': [('validation_correction','=',False)]}"/>
                  </xpath>
 
+                 <xpath expr="//field/tree[1]/field[@name='name']" position="before">
+                     <field name="validation_check_confirm_vendor" string="QR"/>
+                 </xpath>
+
              </field>
          </record>
 
