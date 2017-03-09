@@ -63,13 +63,14 @@ class InheritPurchaseTenders(models.Model):
 
     @api.multi
     def tender_in_progress(self):
-        super(InheritPurchaseTenders,self).tender_in_progress()
-        data={
-            'user_id':self._get_user().id
-        }
-        self.write(data)
-        self._change_created_by_qcf()
-        return True
+        for item in self:
+            super(InheritPurchaseTenders,item).tender_in_progress()
+            data={
+                'user_id':item._get_user().id
+            }
+            item.write(data)
+            item._change_created_by_qcf()
+            return True
 
     @api.multi
     def _change_created_by_qcf(self):
@@ -110,10 +111,12 @@ class InheritPurchaseTenders(models.Model):
     def _compute_quotation_state(self):
         for item in self:
             qcf_state = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)]).state
+            categ_state = dict(self._columns['state'].selection).get(qcf_state)
+
             if qcf_state in [True,False]:
                 item.quotation_state = qcf_state
             else:
-                item.quotation_state = qcf_state.title()
+                item.quotation_state = categ_state
 
     @api.multi
     def purchase_request_correction(self):
