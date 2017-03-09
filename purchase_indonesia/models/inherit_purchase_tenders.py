@@ -110,8 +110,9 @@ class InheritPurchaseTenders(models.Model):
     @api.depends('quotation_state')
     def _compute_quotation_state(self):
         for item in self:
-            qcf_state = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)]).state
-            categ_state = dict(self._columns['state'].selection).get(qcf_state)
+            qcf = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)])
+            qcf_state = qcf.state
+            categ_state = dict(qcf._columns['state'].selection).get(qcf_state)
 
             if qcf_state in [True,False]:
                 item.quotation_state = qcf_state
