@@ -113,7 +113,12 @@
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_material)"/></td>
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
                                                         <!-- Cost/Uom -->
-                                                        <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
+                                                        <t t-if="amount_total != 0">
+                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
+                                                    	</t>
+                                                    	<t t-if="amount_total == 0">
+                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
+                                                    	</t>
                                                 </t>
 
                                                 <!-- multi location -->
@@ -149,7 +154,12 @@
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_material)"/></td>
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
                                                         <!-- Cost/Uom -->
-                                                        <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
+                                                        <t t-if="amount_total != 0">
+                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
+                                                    	</t>
+                                                    	<t t-if="amount_total == 0">
+                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
+                                                    	</t>
                                                     </tr>
                                                 </t>
 
