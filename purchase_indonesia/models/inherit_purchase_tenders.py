@@ -381,7 +381,7 @@ class InheritPurchaseTenders(models.Model):
                             error_msg = 'Quantity tendered cannot more than Product Quantity in Tender Line'
                             raise exceptions.ValidationError(error_msg)
                         elif order.product_qty > tender.product_qty:
-                            error_msg = 'Product Quantity \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
+                            error_msg = 'Product Quantity \"%s\" cannot greater than Product Quantity \"%s\" in Tender Line Vendor \"%s\"'%(order.product_id.name,tender.product_id.name,order.partner_id.name)
                             raise exceptions.ValidationError(error_msg)
 
 class InheritPurchaseRequisitionLine(models.Model):
