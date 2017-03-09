@@ -63,6 +63,10 @@
                  <xpath expr="//field[@name='name']" position="after">
                           <field name="complete_name" string="Reference" invisible="0"/>
                  </xpath>
+                 <xpath expr="//field[@name='state']" position="after">
+                        <field name="count_grn_done" string="GRN/SRN Dn" />
+                        <field name="count_grn_assigned" string="GRN/SRN Av" />
+                 </xpath>
              </field>
          </record>
 

@@ -195,6 +195,10 @@ class InheritPurchaseRequest(models.Model):
     validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
     validation_correction_procurement = fields.Boolean("Validation Correction Procurement",default=False)
+    count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
+    count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
+    count_po_partial = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
+    count_po_done = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
 
     @api.multi
@@ -1092,27 +1096,43 @@ class InheritPurchaseRequest(models.Model):
                  error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (temp_name[0],self.department_id.name)
                  raise exceptions.ValidationError(error_msg)
 
-        # temp_category_line = None
-        # temp
-        # for record in self.line_ids:
-        #     if not record.product_id.categ_id.parent_id:
-        #         temp_category_line = record.product_id.categ_id.id
-        #     else:
-        #         temp_category_line = record.product_id.categ_id.parent_id.id
-        #
-        #     len_check = 0
-        #     for temp_category in mapping_functional:
-        #         if temp_category.product_category_id.id == temp_category_line:
-        #             break
-        #         else :
-        #             len_check = len_check + 1
-        #
-        #     if len_check == len(mapping_functional):
-        #         error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (record.product_id.name,self.department_id.name)
-        #         raise exceptions.ValidationError(error_msg)
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_grn_or_srn(self):
+        for item in self:
+            arrPickingDone = []
+            arrPickingAssigned = []
+            done = item.env['stock.picking'].search([('pr_source','in',[item.complete_name]),('state','=','done')])
+            assigned = item.env['stock.picking'].search([('pr_source','in',[item.complete_name]),('state','=','assigned')])
+            for itemDone in done:
+                arrPickingDone.append(itemDone.id)
+            for itemAssign in assigned:
+                arrPickingAssigned.append(itemAssign.id)
+            assign_picking_done = item.env['stock.picking'].search([('id','in',arrPickingDone)])
+            assign_picking_assigned = item.env['stock.picking'].search([('id','in',arrPickingAssigned)])
+            picking_done = len(assign_picking_done)
+            picking_assigned = len(assign_picking_assigned)
+
+            item.count_grn_done = picking_done
 
 
+            item.count_grn_assigned = picking_assigned
 
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_po_line(self):
+        for item in self:
+            purchase = item.env['purchase.order']
+            purchase_done = purchase.search([('request_id','=',item.id),('state','=','done')])
+            purchase_partial = purchase.search([('request_id','=',item.id),('state','=','received_force_done')])
+            done = len(purchase_done)
+            partial = len(purchase_partial)
+
+
+            item.count_po_partial = partial
+
+
+            item.count_po_done = done
 
     @api.multi
     @api.constrains('line_ids')
