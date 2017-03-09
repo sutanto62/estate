@@ -108,8 +108,8 @@ class InheritStockPicking(models.Model):
     def _check_validation_manager(self):
         for item in self:
             if item.validation_manager == True:
-                item.validation_check_approve = True if item.assigned_to.id == item._get_user().id else False
-            else:
+                item.validation_check_approve = True if item.assigned_to.id == item._get_user().id  and item.state != 'done' else False
+            elif item.validation_manager == True and item.validation_receive and item.state == 'done':
                 item.validation_check_approve = False
 
     @api.multi
