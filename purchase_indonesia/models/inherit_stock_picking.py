@@ -81,7 +81,7 @@ class InheritStockPicking(models.Model):
                                    required=False,
                                    track_visibility='onchange',compute='_onchange_requested_by'
                                    )
-    assigned_to = fields.Many2one('res.users', 'Approver',compute='_onchange_assigned_to',
+    assigned_to = fields.Many2one('res.users', 'Approver',
                                   track_visibility='onchange')
     type_location = fields.Char('Location code')
     location = fields.Char('Location')
@@ -93,7 +93,9 @@ class InheritStockPicking(models.Model):
     grn_no = fields.Char()
     delivery_number = fields.Char()
     validation_receive = fields.Char()
-    validation_manager = fields.Boolean('Validation Manager',compute='_check_validation_manager')
+    validation_manager = fields.Boolean('Validation Manager')
+    validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
+    validation_check_approve = fields.Boolean('Validation checking approve',compute='_check_validation_manager')
     description = fields.Text('Description')
     pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
 
@@ -105,10 +107,19 @@ class InheritStockPicking(models.Model):
     @api.depends('assigned_to')
     def _check_validation_manager(self):
         for item in self:
-            if not item.validation_receive:
-                item.validation_manager = True if item.assigned_to.id == item._get_user().id else False
+            if item.validation_manager == True:
+                item.validation_check_approve = True if item.assigned_to.id == item._get_user().id else False
             else:
-                item.validation_manager = False
+                item.validation_check_approve = False
+
+    @api.multi
+    @api.depends('requested_by')
+    def _check_validation_user(self):
+        for item in self:
+            if item.validation_manager == False:
+                item.validation_user = True if item.requested_by.id == item._get_user().id else False
+            else:
+                item.validation_user = False
 
     @api.multi
     def action_validate_manager(self):
@@ -116,6 +127,17 @@ class InheritStockPicking(models.Model):
             receive_message = 'This GRN / SRN Approved by Manager \"%s\" '%(item.assigned_to.name)
             item.validation_receive = receive_message
 
+    @api.multi
+    def action_validate_user(self):
+        for item in self:
+            if item.pack_operation_product_ids.qty_done <= 0:
+                error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
+                raise exceptions.ValidationError(error_msg)
+            else:
+                item.write({
+                    'validation_manager':True,
+                    'assigned_to':item._get_manager_requested_by()
+                })
 
     @api.multi
     @api.depends('purchase_id')
@@ -123,13 +145,6 @@ class InheritStockPicking(models.Model):
         for item in self:
             if item.purchase_id:
                 item.requested_by = item._get_requested_purchase_request()
-
-    @api.multi
-    @api.depends('requested_by')
-    def _onchange_assigned_to(self):
-        for item in self:
-            if item.requested_by:
-                item.assigned_to = item._get_manager_requested_by()
 
     @api.one
     @api.depends('grn_no','min_date','companys_id','type_location')
@@ -265,8 +280,8 @@ class InheritStockPicking(models.Model):
 
             count_product =0
             count_action_cancel_status =0
-            if self._get_user().id != self.requested_by.id:
-                error_msg = 'You cannot approve this \"%s\" cause you are not requested this PP '%(self.complete_name_picking)
+            if self._get_user().id != self.assigned_to.id:
+                error_msg = 'You cannot approve this \"%s\" , you are not requester of this PP '%(self.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
             else:
                 for record in purchase_requisition_line:
@@ -310,6 +325,7 @@ class InheritStockPicking(models.Model):
                     self.action_cancel()
                 else:
                     self.do_transfer()
+                    self.action_validate_manager()
 
                 super(InheritStockPicking,self).do_new_transfer()
 
@@ -317,7 +333,13 @@ class InheritStockPicking(models.Model):
     def print_grn(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
-
+    @api.multi
+    @api.constrains('pack_operation_product_ids')
+    def _constraint_pack_operation_product_ids(self):
+        for item in self:
+            if item._get_user().id != item.requested_by.id:
+                error_msg = 'You cannot Process this \"%s\" , you are not requester of this PP '%(item.complete_name_picking)
+                raise exceptions.ValidationError(error_msg)
 
 class InheritStockPackOperation(models.Model):
 

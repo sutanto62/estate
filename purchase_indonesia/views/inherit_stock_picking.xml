@@ -20,7 +20,9 @@
                      <field name="description" string="Description"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
+                     <field name="validation_check_approve" invisible="1"/>
                      <field name="validation_manager" invisible="1"/>
+                     <field name="validation_user" invisible="1"/>
                      <field name="requested_by" string="Requester PP"/>
                      <field name="assigned_to" string="Assigned to Manager"/>
                      <field name="validation_receive" string="Validation" />
@@ -33,7 +35,7 @@
                      <field name="initial_qty" string="Init QTY"/>
                  </xpath>
                  <xpath expr="//button[@name='do_new_transfer']" position="replace">
-                     <button name="do_new_transfer" states="draft,partially_available,assigned" string="Validate" groups="purchase_request.group_purchase_request_user" type="object" class="oe_highlight"/>
+                     <button name="do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate Manager"  type="object" class="oe_highlight"/>
                  </xpath>
                  <xpath expr="//button[@name='show_details']" position="before">
                      <field name="checking_split" invisible="1"/>
@@ -46,9 +48,10 @@
                  </xpath>
 
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
-                    <button name="action_validate_manager"
-                            attrs="{'invisible': [('validation_manager','!=',True)]}"
-                            string="Approve Manager" type="object"
+                    <button name="action_validate_user"
+                            attrs="{'invisible': [('validation_user','!=',True)]}"
+                            groups="purchase_request.group_purchase_request_user"
+                            string="Requester Approve" type="object"
                             class="oe_highlight"/>
                  </xpath>
              </field>
