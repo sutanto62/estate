@@ -116,7 +116,7 @@ class InheritStockPicking(models.Model):
     @api.depends('requested_by')
     def _check_validation_user(self):
         for item in self:
-            if item.validation_manager == False:
+            if item.validation_manager == False and item.state != 'done':
                 item.validation_user = True if item.requested_by.id == item._get_user().id else False
             else:
                 item.validation_user = False
