@@ -72,12 +72,36 @@
 
                                         <t t-if="activity.type == 'normal'">
                                             <t t-set="location_len" t-value="get_location_length(activity)"/>
+                                            <!-- for subtotal activity
+                                            <t t-set="location_len" t-value="get_location_length(activity) + 1"/>
+                                            -->
 
                                             <td t-att-rowspan="location_len"><span t-field="activity.general_account_id.code"/></td>
                                             <td t-att-rowspan="location_len"><span t-field="activity.name"/></td>
                                             <td t-att-rowspan="location_len"><span t-field="activity.uom_id.name"/></td>
 
+                                            <!-- subtotal activity -->
+                                            <!-- need to add tr tag at single location upkeep activity
+                                            <td colspan="2">1</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>5</td>
+                                            <td>6</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>9</td>
+                                            <td>10</td>
+                                            <td>11</td>
+                                            <td>12</td>
+                                            <td>13</td>
+                                            <td>14</td>
+                                            <td>15</td>
+                                            -->
+                                            <!-- /subtotal activity -->
+
                                             <t t-foreach="get_upkeep_labour_by_location(activity)" t-as="location">
+
+                                                <t t-set="qty_location" t-value="location['quantity'] + location['quantity_piece_rate']"/>
                                                 <!--
                                                 single and multi location should match for each td.
                                                 -->
@@ -100,7 +124,7 @@
                                                     <td class="text-right"><span t-esc="location['ytd_quantity']"/></td>
                                                     <!-- Material-->
                                                     <td>
-                                                        <t t-foreach="get_upkeep_activity_material(activity, location['quantity'])" t-as="material">
+                                                        <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
                                                             <span t-esc="material['name']"/> <span t-esc="round(material['unit_amount'], 2)"/>
                                                             <span t-esc="material['uom']"/><br/>
                                                         </t>
@@ -113,13 +137,14 @@
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_material)"/></td>
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
                                                         <!-- Cost/Uom -->
-                                                        <t t-if="amount_total != 0">
-                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
+                                                        <t t-if="qty_location != 0">
+                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/qty_location)"/></td>
                                                     	</t>
-                                                    	<t t-if="amount_total == 0">
+                                                    	<t t-if="qty_location == 0">
                                                         	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
                                                     	</t>
                                                 </t>
+                                                <!-- /single location -->
 
                                                 <!-- multi location -->
                                                 <t t-if="location['id']>1">
@@ -141,7 +166,7 @@
                                                         <td class="text-right"><span t-esc="location['ytd_quantity']"/></td>
                                                         <!-- Material-->
                                                         <td>
-                                                            <t t-foreach="get_upkeep_activity_material(activity, location['quantity'])" t-as="material">
+                                                            <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
                                                                 <span t-esc="material['name']"/> <span t-esc="round(material['unit_amount'], 2)"/>
                                                                 <span t-esc="material['uom']"/><br/>
                                                             </t>
@@ -154,14 +179,15 @@
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_material)"/></td>
                                                         <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
                                                         <!-- Cost/Uom -->
-                                                        <t t-if="amount_total != 0">
-                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/location['quantity'])"/></td>
+                                                        <t t-if="qty_location != 0">
+                                                        	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total/qty_location)"/></td>
                                                     	</t>
-                                                    	<t t-if="amount_total == 0">
+                                                    	<t t-if="qty_location == 0">
                                                         	<td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_total)"/></td>
                                                     	</t>
                                                     </tr>
                                                 </t>
+                                                <!-- /multi location -->
 
                                                 <!-- Sum for single and multi location -->
                                                 <t t-set="total_cost_labour" t-value="total_cost_labour + amount_wage"/>
