@@ -765,9 +765,12 @@ class InheritPurchaseRequest(models.Model):
        #check total product price in purchase request
        state_data = []
 
-       if self._get_max_price() >= self._get_price_low() and self._get_employee().parent_id.id:
-            state_data = {'state':'approval2','assigned_to':self._get_employee().parent_id.user_id.id}
-       elif self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id or self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() < self._get_price_low() :
+       if self._get_max_price() >= self._get_price_low() and self._get_employee_request().parent_id.id:
+           if self._get_employee().parent_id.user_id.id == self._get_division_finance():
+               state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+           else:
+               state_data = {'state':'approval2','assigned_to':self._get_employee_request().parent_id.user_id.id}
+       elif (self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id) or (self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'technic' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self._get_max_price() < self._get_price_low()) :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
        else:
             raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
