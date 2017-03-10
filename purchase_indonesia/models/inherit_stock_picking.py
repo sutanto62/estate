@@ -98,6 +98,7 @@ class InheritStockPicking(models.Model):
     validation_check_approve = fields.Boolean('Validation checking approve',compute='_check_validation_manager')
     description = fields.Text('Description')
     pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
+    purchase_order_name = fields.Char('Purchase Order Complete Name',related='purchase_id.complete_name')
 
     _defaults = {
         'not_seed':True,

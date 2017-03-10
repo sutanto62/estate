@@ -27,7 +27,8 @@
                      <field name="assigned_to" string="Assigned to Manager"/>
                      <field name="validation_receive" string="Validation" />
                      <field name="not_seed" invisible="1" />
-                     <field name="purchase_id" string="Ref PO"/>
+                     <field name="purchase_id" string="Ref PO" invisible="1"/>
+                     <field name="purchase_order_name" string="Ref PO"/>
                      <field name="pr_source" string="REF PP NO" attrs="{'readonly': [('state', '=', 'done')]}"/>
                      <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>
                  </xpath>
