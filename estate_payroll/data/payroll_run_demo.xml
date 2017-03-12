@@ -20,7 +20,7 @@
         </record>
         <record id="estate_upk_lbr_7" model="estate.upkeep.labour">
             <field name="upkeep_id" ref="estate_upkeep_4"/>
-            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field name="employee_id" ref="estate.khl_1"/>
             <field name="activity_id" ref="estate.activity_135"/>
             <field name="location_id" ref="estate.block_1"/>
             <field name="attendance_code_id" ref="estate.hr_attendance_k"/>
@@ -31,7 +31,7 @@
 
         <record id="estate_upk_lbr_8" model="estate.upkeep.labour">
             <field name="upkeep_id" ref="estate_upkeep_4"/>
-            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field name="employee_id" ref="estate.khl_2"/>
             <field name="activity_id" ref="estate.activity_135"/>
             <field name="location_id" ref="estate.block_1"/>
             <field name="attendance_code_id" ref="estate.hr_attendance_k"/>
@@ -53,7 +53,7 @@
         <record id="estate_payslip_1" model="hr.payslip">
             <field name="payslip_run_id" ref="estate_payroll_1"/>
             <field name="name">SLIP/AKUMALI</field>
-            <field name="employee_id" ref="hr_employee.khl_1"/>
+            <field name="employee_id" ref="estate.khl_1"/>
             <field name="date_from" eval="(datetime.today() + relativedelta(months=-1, day=1)).strftime('%Y-%m-%d')"/>
             <field name="date_to" eval="(datetime.today() + relativedelta(day=1, months=0, days=-1)).strftime('%Y-%m-%d')"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
@@ -82,7 +82,7 @@
         <record id="estate_payslip_2" model="hr.payslip">
             <field name="payslip_run_id" ref="estate_payroll_1"/>
             <field name="name">SLIP/DEPO</field>
-            <field name="employee_id" ref="hr_employee.khl_2"/>
+            <field name="employee_id" ref="estate.khl_2"/>
             <field name="date_from" eval="(datetime.today() + relativedelta(day=1, months=-1)).strftime('%Y-%m-%d')"/>
             <field name="date_to" eval="(datetime.today() + relativedelta(day=1, months=0, days=-1)).strftime('%Y-%m-%d')"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
