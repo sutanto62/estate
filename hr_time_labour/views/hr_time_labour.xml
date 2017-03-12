@@ -2,6 +2,17 @@
 <openerp>
     <data>
         <!-- Schedule View -->
+        <record id="schedule_view_tree" model="ir.ui.view">
+            <field name="name">Schedule Tree</field>
+            <field name="model">hr_time_labour.schedule</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
         <record id="schedule_view_form" model="ir.ui.view">
             <field name="name">Schedule</field>
             <field name="model">hr_time_labour.schedule</field>
@@ -10,15 +21,16 @@
                     <label for="name" class="oe_edit_only"/>
                     <h1><field name="name"/></h1>
                     <group>
-                        <group name="information" string="Additional Information">
+                        <group name="schedule" string="Schedule Information">
                             <field name="code"/>
                             <field name="effective_date"/>
-                            <field name="active"/>
+                            <field name="active" groups="base.group_no_one"/>
                             <field name="description"/>
                         </group>
                         <group name="detail" string="Optional Detail">
                             <field name="type"/>
                             <field name="rotating_schedule"/>
+                            <field name="overnight_schedule"/>
                             <field name="days_in_schedule"/>
                             <field name="calendar_id"/>
                         </group>
