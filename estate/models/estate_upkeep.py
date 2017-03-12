@@ -80,7 +80,8 @@ class Upkeep(models.Model):
             delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == seq_upkeep.reset_period]
             reset_time_datetime = datetime.strptime(seq_upkeep.reset_time, '%Y-%m-%d %H:%M:%S')
 
-            previous_reset_time = reset_time_datetime - relativedelta(months=delta[0][1])
+            # Upkeep sequence reset monthly
+            previous_reset_time = reset_time_datetime - relativedelta(months=delta[0][1], day=1)
             tx_date = datetime.strptime(vals['date'], '%Y-%m-%d')
 
             if tx_date < previous_reset_time:
