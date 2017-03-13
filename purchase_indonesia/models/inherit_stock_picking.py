@@ -131,14 +131,15 @@ class InheritStockPicking(models.Model):
     @api.multi
     def action_validate_user(self):
         for item in self:
-            if item.pack_operation_product_ids.qty_done <= 0:
-                error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
-                raise exceptions.ValidationError(error_msg)
-            else:
-                item.write({
-                    'validation_manager':True,
-                    'assigned_to':item._get_manager_requested_by()
-                })
+            for record in item.pack_operation_product_ids:
+                if record.qty_done <= 0:
+                    error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
+                    raise exceptions.ValidationError(error_msg)
+                else:
+                    item.write({
+                        'validation_manager':True,
+                        'assigned_to':item._get_manager_requested_by()
+                    })
 
     @api.multi
     @api.depends('purchase_id')

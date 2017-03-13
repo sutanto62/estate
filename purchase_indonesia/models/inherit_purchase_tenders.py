@@ -43,6 +43,7 @@ class InheritPurchaseTenders(models.Model):
     quotation_state = fields.Char('QCF state',compute='_compute_quotation_state')
     validation_correction = fields.Boolean('Validation Correction',compute='_compute_validation_correction')
     validation_qcf = fields.Boolean('Validation QCF',compute='_compute_validation_qcf')
+    validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
 
     @api.multi
     def _get_value_low(self):
@@ -84,19 +85,25 @@ class InheritPurchaseTenders(models.Model):
     def _compute_validation_correction(self):
 
         for item in self:
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','open','done']) :
+                item.validation_correction = True
+            else:
+                 item.validation_correction = False
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_button_correction(self):
+
+        for item in self:
             count_order = 0
             order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['purchase','done','receive_all','receive_force_done'])])
             for record in order:
                 if len(record) > 0 :
                     count_order = count_order + 1
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','open','done']) :
-
-                if (count_order == 0):
-                    item.validation_correction = True
-                else:
-                    item.validation_correction = False
+            if (count_order == 0):
+                item.validation_button_correction = True
             else:
-                 item.validation_correction = False
+                item.validation_button_correction = False
 
     @api.multi
     @api.depends('purchase_ids')

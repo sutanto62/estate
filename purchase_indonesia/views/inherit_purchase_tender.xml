@@ -19,7 +19,7 @@
                                 class="oe_stat_button"
                                 string="Corection PP"
                                 icon ="fa-reply"
-                             attrs="{'invisible': [('validation_correction','=',False)]}"
+                             attrs="{'invisible': [('validation_button_correction','=',False)]}"
                              >
 
                      </button>
@@ -89,6 +89,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='user_id']" position="after">
+                     <field name="validation_button_correction" invisible="1"/>
                      <field name="validation_correction" invisible="1"/>
                      <field name="validation_qcf" invisible="1"/>
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
