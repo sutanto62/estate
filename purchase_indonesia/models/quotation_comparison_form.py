@@ -139,6 +139,14 @@ class QuotationComparisonForm(models.Model):
         return employee
 
     @api.multi
+    def _get_employee_request(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self.pic_id.id)])
+
+        return employee
+
+    @api.multi
     def _get_user_ro_manager(self):
         #get List of Ro Manager from user.groups
         arrRO = []
@@ -206,6 +214,7 @@ class QuotationComparisonForm(models.Model):
     def _get_procurement_finance(self):
         #get List of Finance from user.groups
         arrFinancehead = []
+        arrEmployee = []
 
         #search User Finance from user list
         listprocurement= self.env['res.groups'].search([('name','like',self.purchase_request_finance())]).users
@@ -213,7 +222,8 @@ class QuotationComparisonForm(models.Model):
         for financeproc in listprocurement:
             arrFinancehead.append(financeproc.id)
         try:
-            fin_procur = self.env['res.users'].search([('id','=',arrFinancehead[0])]).id
+            parent_employee = self._get_employee_request().parent_id.user_id.id
+            fin_procur = self.env['res.users'].search([('id','in',arrFinancehead),('id','=',parent_employee)]).id
         except:
             raise exceptions.ValidationError('User get Role Finance Procurement Not Found in User Access')
 
@@ -225,7 +235,7 @@ class QuotationComparisonForm(models.Model):
             hr = item.env['hr.employee']
             hr_location_code = hr.search([('user_id','=',item.pic_id.id)]).office_level_id.code
 
-        return hr_location_code
+            return hr_location_code
 
 
     _name = 'quotation.comparison.form'
