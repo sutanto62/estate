@@ -8,6 +8,9 @@
                  <xpath expr="//field[@name='name']" position="replace">
                           <field name="name" string="Name" invisible="1"/>
                  </xpath>
+                 <xpath expr="//button[@name='action_view_picking']" position="replace">
+                         <button name="action_view_picking" string="Receive Products" type="object" attrs="{'invisible': ['|', ('state','not in', ('purchase','done','received_force_done','received_all')), ('picking_count', '=', 0)]}"/>
+                 </xpath>
                  <xpath expr="//field[@name='name']" position="after">
                           <field name="complete_name" string="Name" invisible="0"/>
                           <field name="hide" string="hide" invisible="1"/>

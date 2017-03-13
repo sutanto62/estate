@@ -82,7 +82,7 @@ class InheritStockPicking(models.Model):
                                    track_visibility='onchange',compute='_onchange_requested_by'
                                    )
     assigned_to = fields.Many2one('res.users', 'Approver',
-                                  track_visibility='onchange')
+                                  track_visibility='onchange',readonly=1)
     type_location = fields.Char('Location code')
     location = fields.Char('Location')
     pr_source = fields.Char("Purchase Request Source")

@@ -104,16 +104,16 @@ class InheritPurchaseTenders(models.Model):
         for item in self:
             count_confirm = 0
             count_purchase = len(item.purchase_ids)
+            order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['draft','sent'])])
+            count_order = len(order)
             if count_purchase > 0:
-                order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['draft','sent'])])
-                count_order = len(order)
                 for record in order:
                     if record.validation_check_confirm_vendor == True:
                         count_confirm = count_confirm + 1
-                if count_order == count_confirm:
-                    item.validation_qcf = True
-                else:
-                    item.validation_qcf = False
+                    if count_order == count_confirm:
+                        item.validation_qcf = True
+                    else:
+                        item.validation_qcf = False
 
 
     @api.multi
