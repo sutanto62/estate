@@ -68,7 +68,8 @@
                  </xpath>
                  <xpath expr="//field[@name='state']" position="after">
                         <field name="count_grn_done" string="GRN/SRN Dn" />
-                        <field name="count_grn_assigned" string="GRN/SRN Av" />
+                        <field name="picking_count" string="GRN/SRN Av"/>
+                        <field name="count_grn_assigned" string="GRN/SRN Av" invisible="1"/>
                  </xpath>
              </field>
          </record>
