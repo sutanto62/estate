@@ -68,8 +68,9 @@
                  </xpath>
                  <xpath expr="//field[@name='state']" position="after">
                         <field name="count_grn_done" string="GRN/SRN Dn" />
-                        <field name="picking_count" string="GRN/SRN Av"/>
-                        <field name="count_grn_assigned" string="GRN/SRN Av" invisible="1"/>
+                        <field name="picking_count" string="GRN/SRN All"/>
+                        <field name="count_grn_assigned" string="GRN/SRN Av " invisible="0"/>
+                        <field name="count_grn_assigned_user" string="GRN/SRN Av User" invisible="0"/>
                  </xpath>
              </field>
          </record>
@@ -128,25 +129,25 @@
              </field>
          </record>
 
-        <!--<record id="purchase.purchase_form_action" model="ir.actions.act_window">-->
-            <!--<field name="name">Purchase Orders</field>-->
-            <!--<field name="type">ir.actions.act_window</field>-->
-            <!--<field name="res_model">purchase.order</field>-->
-            <!--<field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>-->
-            <!--<field name="context">{'search_default_status':1,'search_default_status_draft':1,'search_default_status_cancel':1}</field>-->
-            <!--<field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>-->
-            <!--<field name="search_view_id" ref="purchase.view_purchase_order_filter"/>-->
-            <!--<field name="help" type="html">-->
-              <!--<p class="oe_view_nocontent_create">-->
-                <!--Click to create a quotation that will be converted into a purchase order.-->
-              <!--</p><p>-->
-                <!--Use this menu to search within your purchase orders by-->
-                <!--references, vendor, products, etc. For each purchase order,-->
-                <!--you can track the related discussion with the vendor, control-->
-                <!--the products received and control the vendor bills.-->
-              <!--</p>-->
-            <!--</field>-->
-        <!--</record>-->
+        <record id="purchase.purchase_form_action" model="ir.actions.act_window">
+            <field name="name">Purchase Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
+            <field name="context">{'search_default_status':1,'search_default_approved':1}</field>
+            <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>
+            <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a quotation that will be converted into a purchase order.
+              </p><p>
+                Use this menu to search within your purchase orders by
+                references, vendor, products, etc. For each purchase order,
+                you can track the related discussion with the vendor, control
+                the products received and control the vendor bills.
+              </p>
+            </field>
+        </record>
 
 
     </data>

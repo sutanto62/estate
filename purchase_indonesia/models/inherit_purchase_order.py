@@ -46,6 +46,7 @@ class InheritPurchaseOrder(models.Model):
         ], string='Status', readonly=True, select=True, copy=False, default='draft', track_visibility='onchange')
     count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
     count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
+    count_grn_assigned_user = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
     validation_check_confirm_vendor = fields.Boolean('Confirm Vendor')
 
     _defaults = {
@@ -75,21 +76,28 @@ class InheritPurchaseOrder(models.Model):
             request_name = item.request_id.complete_name
             arrPickingDone = []
             arrPickingAssigned = []
+            arrPickingAssignedManager = []
             done = item.env['stock.picking'].search([('pr_source','in',[request_name]),('state','=','done')])
-            assigned = item.env['stock.picking'].search([('pr_source','in',[request_name]),('state','=','assigned')])
+            assigned = item.env['stock.picking'].search([('purchase_id','=',item.id),('validation_manager','=',True),('state','=','assigned')])
+            assigned_user = item.env['stock.picking'].search([('purchase_id','=',item.id),('validation_user','=',True),('state','=','assigned')])
             for itemDone in done:
                 arrPickingDone.append(itemDone.id)
             for itemAssign in assigned:
-                arrPickingAssigned.append(itemAssign.id)
+                arrPickingAssignedManager.append(itemAssign.id)
+            for itemAssign1 in assigned_user:
+                arrPickingAssigned.append(itemAssign1.id)
             assign_picking_done = item.env['stock.picking'].search([('id','in',arrPickingDone)])
             assign_picking_assigned = item.env['stock.picking'].search([('id','in',arrPickingAssigned)])
+            assign_picking_assigned_manager = item.env['stock.picking'].search([('id','in',arrPickingAssignedManager)])
             picking_done = len(assign_picking_done)
             picking_assigned = len(assign_picking_assigned)
+            picking_assigned_manager = len(assign_picking_assigned_manager)
 
             item.count_grn_done = picking_done
 
+            item.count_grn_assigned_user = picking_assigned
 
-            item.count_grn_assigned = picking_assigned
+            item.count_grn_assigned = picking_assigned_manager
 
     @api.one
     @api.depends('po_no','name','date_order','companys_id','type_location')
