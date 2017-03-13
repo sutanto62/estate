@@ -89,14 +89,13 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         ids = payslip_obj.search(self.cr, self.uid, [('contract_type_id', '=', 'Estate Worker'),
                                                      ('team_id', '=', id),
                                                      ('date_from', '=', date_start),
-                                                     ('date_to', '=', date_end),
-                                                     ('state', '=', 'done')], order='employee_id')
+                                                     ('date_to', '=', date_end)], order='employee_id')
         res = payslip_obj.browse(self.cr, self.uid, ids)
         return res
 
     def get_overtime_employee(self, id, start, end):
         """
-        Get overtime unit
+        Get overtime unit of approved upkeep
         :param id: employee
         :param start: payslip run date start
         :param end: payslip run date end
@@ -106,7 +105,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         upkeep_labour_ids = upkeep_labour_obj.search(self.cr, self.uid, [('employee_id', '=', id),
                                                                          ('upkeep_date', '>=', start),
                                                                          ('upkeep_date', '<=', end),
-                                                                         ('state', '=', 'payslip')])
+                                                                         ('state', '=', 'approved')])
         return sum(upkeep.quantity_overtime for upkeep in upkeep_labour_obj.browse(self.cr, self.uid, upkeep_labour_ids))
 
 

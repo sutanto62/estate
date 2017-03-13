@@ -94,6 +94,7 @@
                             <field name="name"/>
                             <field name="code"/>
                             <field name="contract"/>
+                            <field name="piece_rate"/>
                         </group>
                         <group id="att_hour" name="Worked Hours">
                             <field name="qty_ratio" attrs="{'invisible': [('contract', '=', True)]}"/>
@@ -186,25 +187,29 @@
                   groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
         <menuitem id="estate_estate_team_menu" name="Estate Team"
+                  sequence="10"
                   parent="estate_labour_menu"
                   action="action_list_estate_team"
                   groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
+        <menuitem id="hr_member_menu" name="Team Member"
+                  sequence="20"
+                  parent="estate_operation_menu"
+                  groups="estate.group_user"
+                  action="action_list_estate_team_member"/>
+
         <menuitem id="estate_estate_attendance_menu" name="Estate Attendance"
+                  sequence="30"
                   parent="estate_labour_menu"
                   action="action_list_attendance_code"
                   groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
         <menuitem id="estate_estate_wage" name="Regional Wage"
+                  sequence="40"
                   parent="estate_labour_menu"
                   action="estate_wage_action"
                   groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
 
-        <menuitem id="hr_member_menu" name="Team Member"
-                  parent="estate_operation_menu"
-                  groups="estate.group_user"
-                  action="action_list_estate_team_member"
-                  sequence="80"/>
 
     </data>
 </openerp>
