@@ -14,6 +14,15 @@
             </field>
         </record>
 
+         <record id="action_good_return_reject" model="ir.actions.act_window">
+            <field name="name">Reject Good Return</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase_indonesia.good.return.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
         <!-- View Form: Path -->
         <record id="view_procur_goods_return_form" model="ir.ui.view">
             <field name="name">Procur Good Return</field>
@@ -96,14 +105,7 @@
             </field>
         </record>
 
-        <record id="action_good_return_reject" model="ir.actions.act_window">
-            <field name="name">Reject Good Return</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">estate_procurement.good.return.reject</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
-        </record>
+
 
         <record model="ir.actions.act_window" id="procur_good_return_action">
             <field name="name">Goods Return</field>

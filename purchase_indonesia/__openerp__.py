@@ -35,8 +35,6 @@
 
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
-        'views/procur_request_view.xml',
-        'views/management_good_request.xml',
         'views/inherit_purchaseorder_report.xml',
         'views/inherit_purchase_order.xml',
         'views/inherit_stock_picking.xml',
@@ -44,7 +42,6 @@
         'views/quotation_comparison.xml',
         'views/inherit_purchase_tender.xml',
         'views/procurement_process.xml',
-        'views/procur_return_view.xml',
         'views/mapping_department_to_product.xml',
         'workflow/workflow_procur_good_request.xml',
         'workflow/workflow_procur_good_return.xml',

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Purchase Workshop",
+    'name': "Purchase Indonesia Workshop",
 
     'summary': """
         Module Purchase Indonesia Can be use on Wokrhop Module""",
