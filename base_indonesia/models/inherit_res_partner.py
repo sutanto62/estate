@@ -17,7 +17,7 @@ import re
 class InheritResPartner(models.Model):
     @api.multi
     def purchase_procurement_staff(self):
-        return 'Purchase Request Procurment Staff'
+        return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
 
     @api.multi
     def _get_user(self):
