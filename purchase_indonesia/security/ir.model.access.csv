@@ -112,3 +112,13 @@
 
 "stock_move_ro_head","stock_move_ro_head","purchase.model_stock_move","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
 "access_stock_warehouse_orderpoint_user","stock_warehouse_orderpoint_user","stock.model_stock_warehouse_orderpoint","purchase_request.group_purchase_request_user","TRUE","False","False","False"
+
+"account_indonesia_ro_head","account_indonesia_ro_head","account.model_account_invoice","purchase_indonesia.group_purchase_request_head_of_ro","TRUE","True","True","True"
+"account_indonesia_dept_head","account_indonesia_dept_head","account.model_account_invoice","purchase_request.group_purchase_request_dept_head","True","False","False","False"
+"account_indonesia_div_head","account_indonesia_div_head","account.model_account_invoice","purchase_request.group_purchase_request_div_head","True","True","True","False"
+"account_indonesia_user_purchase","account_indonesia_user_purchase","account.model_account_invoice","purchase_request.group_purchase_request_user","True","False","False","False"
+"account_indonesia_user_manager","account_indonesia_user_manager","account.model_account_invoice","purchase_request.group_purchase_request_manager","True","True","True","False"
+"account_indonesia_user_procurement","account_indonesia_user_procurement","account.model_account_invoice","purchase_request.group_purchase_request_procstaff","True","True","True","False"
+"account_indonesia_user_budget","account_indonesia_user_budget","account.model_account_invoice","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
+"account_indonesia_user_finance_procurement","account_indonesia_user_procurement","account.model_account_invoice","purchase_indonesia.group_purchase_request_finance_procurement","TRUE","True","True","True"
+"account_indonesia_form_line_user","account_indonesia_form_line","account.model_account_invoice","purchase_request.group_purchase_request_user","True","False","False","False"
