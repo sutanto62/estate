@@ -8,8 +8,21 @@
                  <xpath expr="//field[@name='name']" position="replace">
                           <field name="name" string="Name" invisible="1"/>
                  </xpath>
-                 <xpath expr="//button[@name='action_view_picking']" position="replace">
-                         <button name="action_view_picking" string="Receive Products" type="object" attrs="{'invisible': ['|', ('state','not in', ('purchase','done','received_force_done','received_all')), ('picking_count', '=', 0)]}"/>
+                 <xpath expr="//div[@class='oe_button_box']" position="replace">
+                         <div class="oe_button_box" name="button_box" attrs="{'invisible': [('state', 'in', ('draft','sent','to_approve'))]}">
+                             <button type="object"
+                                name="action_view_picking"
+                                class="oe_stat_button"
+                                icon="fa-truck">
+                                <field name="picking_count" widget="statinfo" string="Shipment" help="Incoming Shipments"/>
+                            </button>
+                            <button type="object"  name="action_view_invoice"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o">
+                                <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                            </button>
+
+                         </div>
                  </xpath>
                  <xpath expr="//field[@name='name']" position="after">
                           <field name="complete_name" string="Name" invisible="0"/>
@@ -100,7 +113,8 @@
                     <filter string="status Purchase" name="status_draft" icon="terp-personal" domain="[('state','=','draft')]" />
                     <filter string="status canceled" name="status_cancel" icon="terp-personal" domain="[('state','=','cancel')]" />
                     <filter name="draft" string="Quotations" domain="[('state','in',('draft','sent','to approve'))]"/>
-                    <filter name="approved" string="Purchase Orders" domain="[('state','in',('purchase','done'))]"/>
+                    <filter name="approved" string="Purchase Orders" domain="[('state','in',('purchase', 'done',))]"/>
+                    <filter name="approved_received" string="Purchase Orders Receive" domain="[('state','in',('purchase', 'done','received_all','received_force_done'))]"/>
                     <separator/>
                     <filter name="not_invoiced" string="Not Invoiced" domain="[('invoice_status','=', 'to invoice')]" help="Purchase orders that include lines not invoiced."/>
                     <filter name="invoiced" string="Invoiced" domain="[('invoice_status','=', 'invoiced')]" help="Purchase orders that include lines not invoiced."/>
@@ -114,27 +128,12 @@
             </field>
         </record>
 
-
-        <record model="ir.actions.act_window" id="inherit_purchase_order_action">
-             <field name="name">Inherit purchase order action</field>
-             <field name="res_model">purchase.order</field>
-             <field name="inherit_id" ref="purchase.purchase_form_action"/>
-             <field name="arch" type="xml">
-                 <xpath expr="//field[@name='context']" position="replace">
-                     <field name="context">{'search_default_status':1,'search_default_status_draft':1,'search_default_status_cancel':1}</field>
-                 </xpath>
-                 <xpath expr="//field[@name='domain']" position="replace">
-                     <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>
-                 </xpath>
-             </field>
-         </record>
-
         <record id="purchase.purchase_form_action" model="ir.actions.act_window">
             <field name="name">Purchase Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
             <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
-            <field name="context">{'search_default_status':1,'search_default_approved':1}</field>
+            <field name="context">{'search_default_approved_received':1}</field>
             <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed'))]</field>
             <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
             <field name="help" type="html">

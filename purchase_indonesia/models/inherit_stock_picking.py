@@ -136,10 +136,29 @@ class InheritStockPicking(models.Model):
                     error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
                     raise exceptions.ValidationError(error_msg)
                 else:
-                    item.write({
-                        'validation_manager':True,
-                        'assigned_to':item._get_manager_requested_by()
-                    })
+                    if record.qty_done > 0 and record.qty_done < record.product_qty:
+                        #show wizard Split quantity
+                        wizard_form = item.env.ref('purchase_indonesia.view_stock_picking_split', False)
+                        view_id = item.env['stock.picking.wizard.split']
+                        vals = {
+                                    'name'   : 'this is for set name',
+                                }
+                        new = view_id.create(vals)
+                        return {
+                                    'name'      : _('Split Your Delivery Quantity List'),
+                                    'type'      : 'ir.actions.act_window',
+                                    'res_model' : 'stock.picking.wizard.split',
+                                    'res_id'    : new.id,
+                                    'view_id'   : wizard_form.id,
+                                    'view_type' : 'form',
+                                    'view_mode' : 'form',
+                                    'target'    : 'new'
+                                }
+                    elif record.qty_done == record.product_qty:
+                        item.write({
+                            'validation_manager':True,
+                            'assigned_to':item._get_manager_requested_by()
+                        })
 
     @api.multi
     @api.depends('purchase_id')
@@ -246,11 +265,15 @@ class InheritStockPicking(models.Model):
 
             purchase_data_srn = {
                     'pr_source' : purchase_order.request_id.complete_name,
-                    'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name)
+                    'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
+                    'assigned_to' : None,
+                    'validation_manager':False,
                     }
             purchase_data = {
                     'pr_source' : purchase_order.request_id.complete_name,
-                    'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name)
+                    'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
+                    'assigned_to' : None,
+                    'validation_manager':False,
                 }
 
             picking = item.env['stock.picking']
@@ -342,6 +365,7 @@ class InheritStockPicking(models.Model):
             if item._get_user().id != item.requested_by.id:
                 error_msg = 'You cannot Process this \"%s\" , you are not requester of this PP '%(item.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
+
 
 class InheritStockPackOperation(models.Model):
 
