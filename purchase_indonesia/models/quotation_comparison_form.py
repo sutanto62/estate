@@ -124,7 +124,7 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def purchase_request_finance(self):
-        return self.env.ref('purchase_request.group_purchase_request_finance_procurement', False).id
+        return self.env.ref('purchase_indonesia.group_purchase_request_finance_procurement', False).id
 
     #Method Get user
     @api.multi
