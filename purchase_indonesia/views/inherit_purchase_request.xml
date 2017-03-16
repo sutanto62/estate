@@ -242,6 +242,8 @@
                                 <field name="date_order" string="Order Date"/>
                                 <field name="partner_id" string="Vendor"/>
                                 <field name="state" string="Status"/>
+                                <field name="count_grn_assigned" widget="statinfo"  string="GRN/SRN Av Mgr"/>
+                                <field name="count_grn_assigned_user" widget="statinfo"  string="GRN/SRN Av Usr"/>
                             </tree>
                             <form>
                                     <sheet>
@@ -251,8 +253,8 @@
                                                 class="oe_stat_button"
                                                 icon="fa-truck" >
                                                 <field name="count_grn_done" widget="statinfo" string="Dn"/>
-
-                                                <field name="count_grn_assigned" widget="statinfo"  string="Av"/>
+                                                <field name="count_grn_assigned" widget="statinfo"  string="Mgr"/>
+                                                <field name="count_grn_assigned_user" widget="statinfo"  string="Usr"/>
                                             </button>
                                         </div>
                                         <group>

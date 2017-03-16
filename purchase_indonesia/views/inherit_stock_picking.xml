@@ -20,9 +20,9 @@
                      <field name="description" string="Description"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
-                     <field name="validation_check_approve" invisible="1"/>
-                     <field name="validation_manager" invisible="1"/>
-                     <field name="validation_user" invisible="1"/>
+                     <field name="validation_check_approve" invisible="0"/>
+                     <field name="validation_manager" invisible="0"/>
+                     <field name="validation_user" invisible="0"/>
                      <field name="requested_by" string="Requester PP"/>
                      <field name="assigned_to" string="Assigned to Manager"/>
                      <field name="validation_receive" string="Validation" />
