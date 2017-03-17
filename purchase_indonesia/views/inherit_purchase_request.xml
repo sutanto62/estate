@@ -6,7 +6,7 @@
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='company_id']" position="after">
-                      <field name="type_location" string="Location" attrs="{'readonly': [('state','!=','draft')]}"/>
+                      <field name="type_location" string="Location" readonly="1"/>
                       <field name="type_functional" string="Unit Functional" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
                       <field name="department_id" string="Department" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
                       <field name="type_budget" widget="radio" string="Budget" attrs="{'invisible': [('state','not in', ['budget','approval3','approval4','approval5','approval6'])]}"/>
