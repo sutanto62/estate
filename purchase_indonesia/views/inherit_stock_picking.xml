@@ -1,5 +1,17 @@
 <openerp>
     <data>
+
+        <record model="ir.ui.view" id="view_form_inherit_stock_picking_grn_tree">
+             <field name="name">Inherit Stock Picking Tree</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.vpicktree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='origin']" position="replace">
+                        <field name="purchase_order_name" string="PO No"/>
+                 </xpath>
+             </field>
+         </record>
+
         <record model="ir.ui.view" id="view_form_inherit_stock_picking_grn">
              <field name="name">Inherit Stock Picking</field>
              <field name="model">stock.picking</field>
@@ -68,6 +80,67 @@
                 </xpath>
             </field>
         </record>
+
+         <record id="stock.view_picking_internal_search" model="ir.ui.view">
+            <field name="name">stock.picking.internal.search</field>
+            <field name="model">stock.picking</field>
+            <field name="arch" type="xml">
+                <search string="Picking Lists">
+                    <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]"/>
+                    <filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves"/>
+                    <filter icon="terp-check" name="available" string="Ready" domain="[('state','in',('assigned', 'partially_available'))]" help="Assigned Moves"/>
+                    <filter icon="terp-check" name="waiting" string="Waiting Availability" domain="[('state','=', 'confirmed')]" help="Waiting Moves"/>
+                    <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','in', ('confirmed', 'waiting', 'assigned'))]" help="Confirmed Moves"/>
+                    <filter icon="terp-dialog-close" name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
+                    <filter icon="terp-dialog-close" name="purchase_order_name" string="Purchase Order No"/>
+                    <separator/>
+                    <filter name="late" string="Late" domain="[('min_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S'))]" help="Pickings that are late on scheduled time"/>
+                    <separator/>
+                    <filter name="backorder" string="Backorders" domain="[('backorder_id','&lt;&gt;', False)]" help="Remaining parts of picking partially processed"/>
+                    <field name="partner_id" filter_domain="[('partner_id','child_of',self)]"/>
+                    <field name="product_id"/>
+                    <field name="picking_type_id"/>
+                    <field name="group_id"/>
+                    <field name="purchase_order_name" string="Purchase Order No"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
+                        <filter string="Order Date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
+                        <filter string="Expected Date" icon="terp-go-month" domain="[]"  context="{'group_by':'min_date'}"/>
+                        <filter string="Origin" domain="[]" context="{'group_by':'origin'}"/>
+                        <filter string="Purchase Order No" domain="[]" context="{'group_by':'purchase_order_name'}"/>
+                        <filter string="Picking Type" domain="[]" context="{'group_by':'picking_type_id'}"/>
+                        <filter string="Procurement Group" domain="[]" context="{'group_by':'group_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="stock.action_picking_tree_ready" model="ir.actions.act_window">
+            <field name="name">GRN/SRN Ready Transfers</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="domain"></field>
+            <field name="context">{
+
+                    'contact_display': 'partner_address',
+                    'search_default_available': 1,
+            }
+            </field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+        </record>
+
+        <menuitem
+            id="stock_picking_grn_srn_menu_request"
+            sequence="11"
+            parent="purchase_request.menu_purchase_request"
+            action="stock.action_picking_tree_ready"
+            />
+
+        <menuitem  id="stock_picking_grn_srn_menu_purchase"
+                  action="stock.action_picking_tree_ready"
+          parent="purchase.menu_procurement_management" sequence="22"/>
 
 
     </data>
