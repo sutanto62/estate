@@ -42,7 +42,7 @@
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
                           <field name="validation_confirmed_by" string="Validation Confirmed by" invisible="1"/>
-                          <field name="validation_check_confirm_vendor" string="Quotation Received" attrs="{'invisible': [('state','not in', ['draft','sent'])]}"/>
+                          <field name="validation_check_confirm_vendor" string="Quotation Received" attrs="{'invisible': [('state','not in', ['draft','sent','done','received_all','received_force_done'])]}"/>
                           <field name="confirmed_by_person" class="oe_inline" string="Confirmed by Person Name" attrs="{'invisible': [('validation_check_confirm_vendor','!=',True)],'required':[('validation_check_confirm_vendor','=',True)]}"/>
                           <div name="Confirmed By" string = 'Confirmed By'>
                             <field name="confirmed_by"  class="oe_inline" string="Confirmed By" attrs="{'invisible': [('validation_check_confirm_vendor','!=',True)],'required':[('validation_check_confirm_vendor','=',True)]}" />

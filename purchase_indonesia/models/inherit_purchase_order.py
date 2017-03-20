@@ -32,9 +32,9 @@ class InheritPurchaseOrder(models.Model):
         ('fax', 'Fax'),
         ('email', 'E-Mail'),
         ('phone', 'Phone'),
-        ('other','Other')])
-    confirmed_by_value = fields.Char('Confirmed ByValue')
-    confirmed_by_person = fields.Char('Confirmed ByPerson')
+        ('other','Other')],store=True)
+    confirmed_by_value = fields.Char('Confirmed ByValue',store=True)
+    confirmed_by_person = fields.Char('Confirmed ByPerson',store=True)
     validation_confirmed_by = fields.Boolean('Validation Confirmed By',default = False,compute='change_validation_confirmed_by')
     state = fields.Selection([
         ('draft', 'Quotation'),
