@@ -93,7 +93,7 @@
 		                       		            <b>Confirmed By</b>
 		                       		        </td>
 		                       		        <td class="noborder">
-		                       		         	:<b><span t-field="o.confirmed_by"/>(<span t-field="o.confirmed_by_value"/>)</b>
+		                       		         	: <b><span t-field="o.confirmed_by"/> (<span t-field="o.confirmed_by_value"/>)</b>
 		                       		        </td>
 		                       		    </tr>
 		                       		    <tr style="height:30px;">
