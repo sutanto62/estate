@@ -92,6 +92,7 @@ class InheritStockPicking(models.Model):
     not_seed = fields.Boolean(compute='_change_not_seed')
     grn_no = fields.Char()
     delivery_number = fields.Char()
+    shipper_by = fields.Char('Shipper By',compute='_compute_default_shipper',store=True)
     validation_receive = fields.Char()
     validation_manager = fields.Boolean('Validation Manager')
     validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
@@ -127,6 +128,22 @@ class InheritStockPicking(models.Model):
         for item in self:
             receive_message = 'This GRN / SRN Approved by Manager \"%s\" '%(item.assigned_to.name)
             item.validation_receive = receive_message
+
+    @api.multi
+    @api.depends('pr_source')
+    def _compute_default_shipper(self):
+        for item in self:
+            if item.pr_source:
+                pr = item.env['purchase.request']
+                pr_id = pr.search([('complete_name','like',item.pr_source)]).id
+                tender = item.env['purchase.requisition']
+                tender_id = tender.search([('request_id','=',pr_id)])
+                user = ''
+                for record in tender_id:
+                    user = record.user_id.name
+                    print user
+
+                item.shipper_by = user
 
     @api.multi
     def action_validate_user(self):
