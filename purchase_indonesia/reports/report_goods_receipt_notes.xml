@@ -227,23 +227,10 @@
 			                                    <br></br>
 			                                    <br></br>
 			                                    <br></br>
-			                                    <t t-foreach="o.message_ids" t-as="mids">
-													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-													    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
-														    <u>
-														        <span t-field="mids.author_id"/>&#160;
-															</u>
-															<br/>
-															    <span t-field="mids.date"/>&#160;
-															<br/>
-															[
-														        <span t-field="mids_tracking.old_value_char"/>&#160;to
-														        <span t-field="mids_tracking.new_value_char"/>
-															]
-													    </t>
-													</t>
-												</t>
-			                                    <br></br>
+												<u><span t-field="o.shipper_by"/></u>
+												<br></br>
+			                                    Tgl.
+
 			                                </td>
 			                                <td class="noborder">
 			                                    Diterima Oleh,

@@ -92,7 +92,7 @@ class InheritStockPicking(models.Model):
     not_seed = fields.Boolean(compute='_change_not_seed')
     grn_no = fields.Char()
     delivery_number = fields.Char()
-    shipper_by = fields.Char('Shipper By',compute='_compute_default_shipper',store=True)
+    shipper_by = fields.Char('Shipper By',compute='_compute_default_shipper')
     validation_receive = fields.Char()
     validation_manager = fields.Boolean('Validation Manager')
     validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
