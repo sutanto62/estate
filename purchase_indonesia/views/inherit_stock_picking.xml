@@ -29,6 +29,7 @@
                      <field name="origin" invisible="1"/>
                  </xpath>
                  <xpath expr="//field[@name='pack_operation_product_ids']" position="after">
+                     <separator string="Description of GRN/SRN"/>
                      <field name="description" string="Description"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">

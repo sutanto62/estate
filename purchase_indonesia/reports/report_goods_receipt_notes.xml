@@ -205,7 +205,7 @@
 										    <td colspan="5" class="noborder">
 										      	Penjelasan :
 										    	<br></br>
-										      	[todo] add penjelasan di objek G/SRN
+										      	<span t-field="o.description"/>
 										    </td>
 										</tr>
 									</table>    	
