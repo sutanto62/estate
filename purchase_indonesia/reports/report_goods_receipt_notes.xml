@@ -31,7 +31,7 @@
 		                       		            <b>Lokasi</b>
 		                       		        </td>
 		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.type_location"/></b>
+		                       		            <b>: <span t-field="o.location"/></b>
 		                       		        </td>
 		                       		    </tr>
 		                       		</table>

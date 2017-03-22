@@ -91,13 +91,10 @@
 									      No
 									    </td>
 									    <td>
-									      No. Material/Part Code
+									      Stock Code
 									    </td>
 									    <td>
 									      Nama Barang/Jasa (Part Name)
-									    </td>
-									    <td>
-									      No. Referensi
 									    </td>
 									    <td>
 									      Jumlah
@@ -114,6 +111,9 @@
 									    <td>
 									      Budget Tersedia
 									    </td>
+										<td>
+									      Description
+									    </td>
 									</tr>
 								
 									<t t-foreach="o.line_ids" t-as="l">
@@ -124,9 +124,6 @@
 										    </td>
 										    <td>
 										      	<span t-field="l.product_id.default_code"/>
-										    </td>
-										    <td>
-										      	<span t-field="l.product_id.name"/>
 										    </td>
 										    <td>
 										      	<span t-field="l.product_id.name"/>
@@ -146,16 +143,22 @@
 										    <td>
 										      	<span t-field="l.budget_available"/>
 										    </td>
+											<td>
+										      	<span t-field="l.specifications"/>
+										    </td>
 										</tr>
 									</t>
 									<tr>
-									    <td colspan="7">
+									    <td colspan="6">
 									      Total
 									    </td>
 									    <td>
 									      <span t-field="o.total_estimate_price"/>
 									    </td>
 									    <td>
+									      &#160;
+									    </td>
+										<td>
 									      &#160;
 									    </td>
 									</tr>
