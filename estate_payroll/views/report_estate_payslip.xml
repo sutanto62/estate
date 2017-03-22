@@ -17,6 +17,7 @@
                             <t t-set="total_allowance" t-value="0"/>
                             <t t-set="total_amount_brutto" t-value="0"/>
                             <t t-set="total_deduction" t-value="0"/>
+                            <t t-set="total_amount_rounding" t-value="0"/>
                             <t t-set="total_amount_netto" t-value="0"/>
                             <t t-set="total_bpjs_tk" t-value="0"/>
                             <t t-set="total_bpjs_k" t-value="0"/>
@@ -58,9 +59,10 @@
                                         <th rowspan="2" colspan="4">Kemandoran</th>
                                         <th colspan="6" class="text-center">Upah</th>
                                         <th rowspan="2">Tunjangan</th>
-                                        <th rowspan="2">Jumlah Penghasil-an</th>
+                                        <th rowspan="2">Jumlah Penghasilan</th>
                                         <th rowspan="2">Potongan</th>
-                                        <th rowspan="2">Penghasil-an Bersih</th>
+                                        <th rowspan="2">≈</th>
+                                        <th rowspan="2">Penghasilan Bersih</th>
                                         <th colspan="3" class="text-center">Lain-Lain</th>
                                         <th rowspan="2">Total Lain-Lain</th>
                                         <!--<th rowspan="2" colspan="2">Signature</th>-->
@@ -83,6 +85,7 @@
                                 <t t-foreach="get_team(batch.slip_ids)" t-as="team">
                                     <tbody>
                                         <!-- Reset variable per team -->
+                                        <t t-set="amount_rounding_team" t-value="0"/>
                                         <t t-set="amount_netto_team" t-value="0"/>
                                         <t t-set="amount_brutto_team" t-value="0"/>
                                         <t t-set="amount_total_other" t-value="0"/>
@@ -100,6 +103,7 @@
                                         <t t-set="total_allowance_team" t-value="0"/>
                                         <t t-set="total_amount_brutto_team" t-value="0"/>
                                         <t t-set="total_deduction_team" t-value="0"/>
+                                        <t t-set="total_amount_rounding_team" t-value="0"/>
                                         <t t-set="total_amount_netto_team" t-value="0"/>
                                         <t t-set="total_bpjs_tk_team" t-value="0"/>
                                         <t t-set="total_bpjs_k_team" t-value="0"/>
@@ -117,7 +121,7 @@
                                             <t t-set="amount_pr" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'PR')+get_line_total(payslip.id, payslip.employee_id.id, 'PRWD')"/>
                                             <t t-set="amount_adja" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJA')"/>
                                             <t t-set="amount_adjb" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJB')"/>
-                                            <t t-set="amount_adj" t-value="amount_adja-amount_adjb"/>
+                                            <t t-set="amount_adj" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'ADJB')"/>
                                             <t t-set="jhte" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JHTE')"/>
                                             <t t-set="jhtc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JHTC')"/>
                                             <t t-set="jkkc" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'JKKC')"/>
@@ -129,7 +133,8 @@
                                             <t t-set="amount_allowance" t-value="0"/> <!-- no allowance define yet -->
                                             <t t-set="amount_brutto" t-value="amount_edw+amount_ot+amount_pr+amount_adj"/>
                                             <t t-set="amount_deduction" t-value="jhte+bpjspkwte"/>
-                                            <t t-set="amount_netto" t-value="amount_brutto-amount_deduction"/>
+                                            <t t-set="amount_rounding" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'RND')+get_line_total(payslip.id, payslip.employee_id.id, 'RNDJ')"/>
+                                            <t t-set="amount_netto" t-value="amount_brutto-amount_deduction+amount_rounding"/>
                                             <t t-set="amount_sub_total_other" t-value="amount_bpjs_labour+amount_bpjs_health"/>
 
                                             <t t-set="amount_netto_team" t-value="amount_netto_team+amount_netto"/>
@@ -146,6 +151,7 @@
                                             <t t-set="total_allowance_team" t-value="total_allowance_team + amount_allowance"/>
                                             <t t-set="total_amount_brutto_team" t-value="total_amount_brutto_team + amount_brutto"/>
                                             <t t-set="total_deduction_team" t-value="total_deduction_team + amount_deduction"/>
+                                            <t t-set="total_amount_rounding_team" t-value="total_amount_rounding_team + amount_rounding"/>
                                             <t t-set="total_amount_netto_team" t-value="total_amount_netto_team + amount_netto"/>
                                             <t t-set="total_bpjs_tk_team" t-value="total_bpjs_tk_team + amount_bpjs_labour"/>
                                             <t t-set="total_bpjs_k_team" t-value="total_bpjs_k_team + amount_bpjs_health"/>
@@ -163,7 +169,7 @@
                                             <t t-set="total_allowance" t-value="total_allowance + amount_allowance"/>
                                             <t t-set="total_amount_brutto" t-value="total_amount_brutto + amount_brutto"/>
                                             <t t-set="total_deduction" t-value="total_deduction + amount_deduction"/>
-                                            <!--<t t-set="total_total" t-value="total_total + amount_netto"/>-->
+                                            <t t-set="total_amount_rounding" t-value="total_amount_rounding + amount_rounding"/>
                                             <t t-set="total_amount_netto" t-value="total_amount_netto + amount_netto"/>
                                             <t t-set="total_bpjs_tk" t-value="total_bpjs_tk + amount_bpjs_labour"/>
                                             <t t-set="total_bpjs_k" t-value="total_bpjs_k + amount_bpjs_health"/>
@@ -174,21 +180,23 @@
                                         <!-- /payslip team member -->
 
                                         <tr>
+                                            <!-- all currency use 0 decimal, do not use font size less than 65% -->
                                             <td colspan="4">Kemandoran <t t-esc="team.name"/> (<t t-esc="team.employee_id.name"/>)</td>
                                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_day_team)"/></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_edw_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_edw_team)"/></td>
                                             <td class="text-right"></td>
                                             <td class="text-right"></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_ot_team+total_pr_team)"/></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_adj_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_ot_team+total_pr_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_adj_team)"/></td>
                                             <td class="text-right"></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_amount_brutto_team)"/></td>
-                                            <td class="text-right"><t t-esc="'({0:,.2f})'.format(total_deduction_team)"/></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_netto_team)"/></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_bpjs_tk_team)"/></td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_bpjs_k_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_amount_brutto_team)"/></td>
+                                            <td class="text-right"><t t-esc="'({0:,.0f})'.format(total_deduction_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_amount_rounding_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_amount_netto_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_bpjs_tk_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_bpjs_k_team)"/></td>
                                             <td class="text-right">0</td>
-                                            <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_st_other_team)"/></td>
+                                            <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_st_other_team)"/></td>
                                         </tr>
                                     </tbody>
                                 </t>
@@ -196,18 +204,19 @@
 
                                 <tr>
                                     <td colspan="4" class="text-right"><strong>Total</strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.1f}'.format(total_day)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_edw)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_day)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_edw)"/></strong></td>
                                     <td class="text-right"><strong></strong></td>
                                     <td class="text-right"><strong></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_ot+total_pr)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_adj)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_allowance)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_amount_brutto)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'({0:,.2f})'.format(total_deduction)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_amount_netto)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_bpjs_tk)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_bpjs_k)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_ot+total_pr)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_adj)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_allowance)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_amount_brutto)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'({0:,.0f})'.format(total_deduction)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_amount_rounding)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_amount_netto)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_bpjs_tk)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_bpjs_k)"/></strong></td>
                                     <td class="text-right"></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_st_other)"/></strong></td>
                                 </tr>
@@ -243,7 +252,7 @@
                             </table>
 
 
-                            <!-- Payroll List by Team -->
+            <!-- Payroll List by Team -->
                             <p style="page-break-after:always;">  </p>
 
                             <t t-foreach="get_team(batch.slip_ids)" t-as="team">
@@ -256,6 +265,9 @@
                                 <t t-set="total_adj_team" t-value="0"/>
                                 <t t-set="total_allowance_team" t-value="0"/>
                                 <t t-set="total_deduction_team" t-value="0"/>
+                                <t t-set="total_brutto_team" t-value="0"/>
+                                <t t-set="total_rounding_team" t-value="0"/>
+                                <t t-set="total_netto_team" t-value="0"/>
                                 <t t-set="total_bpjs_tk_team" t-value="0"/>
                                 <t t-set="total_bpjs_k_team" t-value="0"/>
                                 <t t-set="total_tax_team" t-value="0"/>
@@ -301,6 +313,7 @@
                                             <th rowspan="2">Tunjangan</th>
                                             <th rowspan="2">Jumlah Penghasilan</th>
                                             <th rowspan="2">Potongan</th>
+                                            <th rowspan="2">≈</th>
                                             <th rowspan="2">Penghasilan Bersih</th>
                                             <th rowspan="2" colspan="2">Tanda Tangan</th>
                                         </tr>
@@ -316,6 +329,7 @@
                                     </thead>
                                     <tbody>
                                         <t t-set="amount_brutto_team" t-value="0"/>
+                                        <t t-set="amount_rounding_team" t-value="0"/>
                                         <t t-set="amount_netto_team" t-value="0"/>
                                         <t t-set="amount_total_other" t-value="0"/>
                                         <t t-set="no" t-value="0"/>
@@ -342,10 +356,9 @@
                                                 <t t-set="amount_allowance" t-value="0"/> <!-- no allowance define yet -->
                                                 <t t-set="amount_brutto" t-value="amount_edw+amount_ot+amount_pr+amount_adj"/>
                                                 <t t-set="amount_deduction" t-value="jhte+bpjspkwte"/>
-                                                <t t-set="amount_netto" t-value="amount_brutto-amount_deduction"/>
+                                                <t t-set="amount_rounding" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'RND')"/>
+                                                <t t-set="amount_netto" t-value="amount_brutto-amount_deduction+amount_rounding"/>
                                                 <t t-set="amount_sub_total_other" t-value="amount_bpjs_labour+amount_bpjs_health"/>
-                                                <t t-set="amount_brutto_team" t-value="amount_brutto_team+amount_brutto"/>
-                                                <t t-set="amount_netto_team" t-value="amount_netto_team+amount_netto"/>
                                                 <t t-set="amount_total_other" t-value="amount_total_other+amount_sub_total_other"/>
                                                 <t t-set="no" t-value="no+1"/>
 
@@ -358,6 +371,9 @@
                                                 <t t-set="total_adj_team" t-value="total_adj_team + amount_adj"/>
                                                 <t t-set="total_allowance_team" t-value="total_allowance_team + amount_allowance"/>
                                                 <t t-set="total_deduction_team" t-value="total_deduction_team + amount_deduction"/>
+                                                <t t-set="total_brutto_team" t-value="total_brutto_team+amount_brutto"/>
+                                                <t t-set="total_rounding_team" t-value="total_rounding_team + amount_rounding"/>
+                                                <t t-set="total_netto_team" t-value="total_netto_team+amount_netto"/>
                                                 <t t-set="total_bpjs_tk_team" t-value="total_bpjs_tk_team + amount_bpjs_labour"/>
                                                 <t t-set="total_bpjs_k_team" t-value="total_bpjs_k_team + amount_bpjs_health"/>
                                                 <t t-set="total_tax_team" t-value="0"/>
@@ -367,15 +383,16 @@
                                                 <td><span t-field="payslip.employee_id.nik_number"/></td>
                                                 <td><span t-field="payslip.employee_id.contract_type"/>/<span t-field="payslip.employee_id.contract_period"/></td>
                                                 <td><span t-field="payslip.worked_days_line_ids[0].number_of_days"/></td>
-                                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_edw)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_edw)"/></td>
                                                 <td class="text-right"></td>
                                                 <td class="text-right"></td>
-                                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_ot+amount_pr)"/></td>
-                                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_adj)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_ot+amount_pr)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_adj)"/></td>
                                                 <td class="text-right"></td>
-                                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_brutto)"/></td>
-                                                <td class="text-right"><t t-esc="'({0:,.2f})'.format(amount_deduction)"/></td>
-                                                <td class="text-right"><t t-esc="'{0:,.2f}'.format(amount_netto)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_brutto)"/></td>
+                                                <td class="text-right"><t t-esc="'({0:,.0f})'.format(amount_deduction)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_rounding)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_netto)"/></td>
 
                                                 <!-- Signature column layout side-by-side or span for two columns -->
                                                 <t t-if="no%2!=0"> <!-- modulus to check even row -->
@@ -392,16 +409,17 @@
 
                                         <tr>
                                             <td colspan="4" class="text-right"><strong>Sub Total Team <t t-esc="team.name"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.1f}'.format(total_day_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_edw_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_day_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_edw_team)"/></strong></td>
                                             <td class="text-right"><strong></strong></td>
                                             <td class="text-right"><strong></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_ot_team+total_pr_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_adj_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_allowance_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(amount_brutto_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'({0:,.2f})'.format(total_deduction_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(amount_netto_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_ot_team+total_pr_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_adj_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_allowance_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_brutto_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'({0:,.0f})'.format(total_deduction_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_rounding_team)"/></strong></td>
+                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_netto_team)"/></strong></td>
                                             <td colspan="2" style="width:20%"></td>
                                         </tr>
                                     </tbody>
