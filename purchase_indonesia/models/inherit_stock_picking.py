@@ -141,8 +141,6 @@ class InheritStockPicking(models.Model):
                 user = ''
                 for record in tender_id:
                     user = record.user_id.name
-                    print user
-
                 item.shipper_by = user
 
     @api.multi
