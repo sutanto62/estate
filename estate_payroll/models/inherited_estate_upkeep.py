@@ -51,6 +51,7 @@ class Upkeep(models.Model):
                                                     ('labour_line_ids.employee_id', 'in', employees)]).ids
         return upkeeps
 
+
 class UpkeepLabour(models.Model):
     _inherit = 'estate.upkeep.labour'
 
@@ -58,13 +59,31 @@ class UpkeepLabour(models.Model):
     def get_worked_days(self, ids):
         """
         Number of worked days required by salary rules
-        :param ids: upkeep id
+        :param ids: upkeep ids
         :return:
         """
         number_of_days = 0
-
-        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
+        att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', False)]).ids
+        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids),
+                                                              ('attendance_code_id', 'in', att_code)]):
             number_of_days += record['number_of_day']
+
+        return number_of_days
+
+    @api.multi
+    def get_piece_rate_worked_days(self, ids):
+        """
+        Number of worked days which attendance code's is piece rate day (premi pengganti HK)
+        Args:
+            ids: upkeep ids
+        Returns:
+        """
+        number_of_days = 0
+        att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', True)]).ids
+        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids),
+                                                               ('attendance_code_id', 'in', att_code)]):
+            number_of_days += record['number_of_day']
+
         return number_of_days
 
     @api.multi
@@ -102,7 +121,27 @@ class UpkeepLabour(models.Model):
         """
         workhour = 0.00
         att_obj = self.env['estate.hr.attendance']
-        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
+        att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', False)]).ids
+        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids),
+                                                               ('attendance_code_id', 'in', att_code)]):
+            att_code_id = record['attendance_code_id']['id']
+            att_hour = att_obj.search([('id', '=', att_code_id)]).unit_amount
+            hour = record['number_of_day'] * att_hour
+            workhour += hour
+        return workhour
+
+    @api.multi
+    def get_piece_rate_workhour(self, ids):
+        """
+        Number of hours might be required by salary rules
+        :param ids: upkeep labour
+        :return: number of hours
+        """
+        workhour = 0.00
+        att_obj = self.env['estate.hr.attendance']
+        att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', True)]).ids
+        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids),
+                                                               ('attendance_code_id', 'in', att_code)]):
             att_code_id = record['attendance_code_id']['id']
             att_hour = att_obj.search([('id', '=', att_code_id)]).unit_amount
             hour = record['number_of_day'] * att_hour

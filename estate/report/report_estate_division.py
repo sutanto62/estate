@@ -33,7 +33,7 @@ import logging
 import time
 
 _logger = logging.getLogger(__name__)
-STATE = ('approved', 'correction', 'payslip')
+STATE = ('draft', 'confirmed', 'approved', 'correction', 'payslip')
 
 class estate_division_report(report_sxw.rml_parse):
     """
@@ -137,7 +137,7 @@ class estate_division_report(report_sxw.rml_parse):
         res += set(activity_hierarchy)
 
         # Arrange activity
-        res_sorted = sorted(res, key=lambda field: field['complete_name'])
+        res_sorted = sorted(set(res), key=lambda field: field['complete_name'])
 
         return res_sorted
 
@@ -153,19 +153,19 @@ class estate_division_report(report_sxw.rml_parse):
         group_by = 'location_id'
         query = 'SELECT row_number() over(order by l.location_id) as id, l.location_id as location_id, ' \
                 'COALESCE(sum(l.number_of_day), 0) as number_of_day, ' \
-                + self._sub_query_ytd('number_of_day', activity, group_by) + ', ' \
+                + self._sub_query_mtd('number_of_day', activity, group_by) + ', ' \
                 'COALESCE(sum(l.quantity_overtime), 0) as quantity_overtime, ' \
-                + self._sub_query_ytd('quantity_overtime', activity, group_by) + ', ' \
+                + self._sub_query_mtd('quantity_overtime', activity, group_by) + ', ' \
                 'COALESCE(sum(l.quantity_piece_rate), 0) as quantity_piece_rate, ' \
-                + self._sub_query_ytd('quantity_piece_rate', activity, group_by) + ', ' \
+                + self._sub_query_mtd('quantity_piece_rate', activity, group_by) + ', ' \
                 'COALESCE(sum(l.wage_number_of_day), 0) as wage_number_of_day, ' \
-                + self._sub_query_ytd('wage_number_of_day', activity, group_by) + ', ' \
+                + self._sub_query_mtd('wage_number_of_day', activity, group_by) + ', ' \
                 'COALESCE(sum(l.wage_overtime), 0) as wage_overtime, ' \
-                + self._sub_query_ytd('wage_overtime', activity, group_by) + ', ' \
+                + self._sub_query_mtd('wage_overtime', activity, group_by) + ', ' \
                 'COALESCE(sum(l.wage_piece_rate), 0) as wage_piece_rate, ' \
-                + self._sub_query_ytd('wage_piece_rate', activity, group_by) + ', ' \
+                + self._sub_query_mtd('wage_piece_rate', activity, group_by) + ', ' \
                 'COALESCE(sum(l.quantity), 0) as quantity, ' \
-                + self._sub_query_ytd('quantity', activity, group_by) + ' ' \
+                + self._sub_query_mtd('quantity', activity, group_by) + ' ' \
                 'FROM estate_upkeep_labour l ' \
                 'WHERE l.activity_id = %s AND ' \
                 'l.estate_id = %s AND ' \
@@ -208,6 +208,29 @@ class estate_division_report(report_sxw.rml_parse):
                                             STATE, start, self.date_end, group_by, group_by, group_by, col)
         return query
 
+    def _sub_query_mtd(self, col, activity, group_by):
+        """
+        Get month to date
+        :param col: column name
+        :param activity: activity
+        :param group_by: use 'location_id' for mtd per location and 'activity_id' for mtd per activity
+        :return: sum of column
+        """
+        # Make sure start from Jan 1.
+        start = datetime.strptime(self.date_start, DF).replace(day=1).strftime(DF)
+        query = '(SELECT COALESCE(sum(%s),0) ' \
+                'FROM estate_upkeep_labour ' \
+                'WHERE activity_id = %s AND ' \
+                'estate_id = %s AND ' \
+                'division_id = %s AND ' \
+                'state in %s AND ' \
+                'upkeep_date >= \'%s\' AND ' \
+                'upkeep_date <= \'%s\' AND ' \
+                '%s = l.%s ' \
+                'group by %s) as mtd_%s' % (col, activity.id, self.estate_id[0], self.division_id[0],
+                                            STATE, start, self.date_end, group_by, group_by, group_by, col)
+        return query
+
     def _get_upkeep_activity_material(self, activity, qty_location):
         """
         Get activity's material usage by location. Note: material usage will be proportionally split based on activity quantity
@@ -237,7 +260,7 @@ class estate_division_report(report_sxw.rml_parse):
         group_by = 'activity_id'
         query_quantity = 'SELECT l.activity_id, ' \
                 'sum(COALESCE(l.quantity, 0) + COALESCE(l.quantity_piece_rate, 0)) as quantity, ' \
-                + self._sub_query_ytd('quantity', activity, group_by) + ' ' \
+                + self._sub_query_mtd('quantity', activity, group_by) + ' ' \
                 'FROM estate_upkeep_labour l ' \
                 'WHERE l.activity_id = %s AND ' \
                 'l.estate_id = %s AND ' \
@@ -277,6 +300,7 @@ class estate_division_report(report_sxw.rml_parse):
                                self.date_start, self.date_end)
             self.cr.execute(query_materials)
             res_materials = self.cr.dictfetchall()
+
             return res_materials
 
     def _get_location_name(self, list):

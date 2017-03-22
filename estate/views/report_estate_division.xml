@@ -31,24 +31,24 @@
                                     <th class="text-center" colspan="2">Work Day(s)</th>
                                     <th class="text-center" colspan="2">Overtime</th>
                                     <th class="text-center" colspan="2">Piece Rate</th>
-                                    <th class="text-center" colspan="2">Quantity</th>
+                                    <th class="text-center" colspan="2">Output</th>
                                     <th class="text-center" rowspan="2">Material</th>
                                     <th class="text-center" colspan="3">Cost</th>
                                     <th class="text-center" rowspan="2">Cost/UoM</th>
                                 </tr>
                                 <tr>
                                     <!-- DW -->
+                                    <th class="text-center">TD</th>
                                     <th class="text-center">MTD</th>
-                                    <th class="text-center">YTD</th>
                                     <!-- OT -->
+                                    <th class="text-center">TD</th>
                                     <th class="text-center">MTD</th>
-                                    <th class="text-center">YTD</th>
                                     <!-- PR -->
+                                    <th class="text-center">TD</th>
                                     <th class="text-center">MTD</th>
-                                    <th class="text-center">YTD</th>
                                     <!-- Qty -->
+                                    <th class="text-center">TD</th>
                                     <th class="text-center">MTD</th>
-                                    <th class="text-center">YTD</th>
                                     <!-- Cost -->
                                     <th class="text-center">Labour</th>
                                     <th class="text-center">Material</th>
@@ -61,7 +61,7 @@
                                 <t t-set="total_cost_material" t-value="0"/>
                                 <t t-set="total_cost" t-value="0"/>
 
-                                <!-- Coding -->
+                                <!-- Estate Activity -->
                                 <t t-foreach="get_upkeep_activity(data)" t-as="activity">
                                     <tr>
                                         <!-- TODO add message when no upkeep found -->
@@ -99,6 +99,7 @@
                                             -->
                                             <!-- /subtotal activity -->
 
+                                            <!-- per location -->
                                             <t t-foreach="get_upkeep_labour_by_location(activity)" t-as="location">
 
                                                 <t t-set="qty_location" t-value="location['quantity'] + location['quantity_piece_rate']"/>
@@ -112,16 +113,16 @@
                                                     <td><span t-esc="get_block_planted_year(location['location_id'])"/></td>
                                                     <!-- DW -->
                                                     <td class="text-right"><span t-esc="location['number_of_day']"/></td>
-                                                    <td class="text-right"><span t-esc="location['ytd_number_of_day']"/></td>
+                                                    <td class="text-right"><span t-esc="location['mtd_number_of_day']"/></td>
                                                     <!-- OT -->
                                                     <td class="text-right"><span t-esc="location['quantity_overtime']"/></td>
-                                                    <td class="text-right"><span t-esc="location['ytd_quantity_overtime']"/></td>
+                                                    <td class="text-right"><span t-esc="location['mtd_quantity_overtime']"/></td>
                                                     <!-- PR -->
                                                     <td class="text-right"><span t-esc="location['quantity_piece_rate']"/></td>
-                                                    <td class="text-right"><span t-esc="location['ytd_quantity_piece_rate']"/></td>
+                                                    <td class="text-right"><span t-esc="location['mtd_quantity_piece_rate']"/></td>
                                                     <!-- Qty -->
                                                     <td class="text-right"><span t-esc="location['quantity']"/></td>
-                                                    <td class="text-right"><span t-esc="location['ytd_quantity']"/></td>
+                                                    <td class="text-right"><span t-esc="location['mtd_quantity']"/></td>
                                                     <!-- Material-->
                                                     <td>
                                                         <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
@@ -154,16 +155,16 @@
                                                         <td><span t-esc="get_block_planted_year(location['location_id'])"/></td>
                                                         <!-- DW -->
                                                         <td class="text-right"><span t-esc="location['number_of_day']"/></td>
-                                                        <td class="text-right"><span t-esc="location['ytd_number_of_day']"/></td>
+                                                        <td class="text-right"><span t-esc="location['mtd_number_of_day']"/></td>
                                                         <!-- OT -->
                                                         <td class="text-right"><span t-esc="location['quantity_overtime']"/></td>
-                                                        <td class="text-right"><span t-esc="location['ytd_quantity_overtime']"/></td>
+                                                        <td class="text-right"><span t-esc="location['mtd_quantity_overtime']"/></td>
                                                         <!-- PR -->
                                                         <td class="text-right"><span t-esc="location['quantity_piece_rate']"/></td>
-                                                        <td class="text-right"><span t-esc="location['ytd_quantity_piece_rate']"/></td>
+                                                        <td class="text-right"><span t-esc="location['mtd_quantity_piece_rate']"/></td>
                                                         <!-- Qty -->
                                                         <td class="text-right"><span t-esc="location['quantity']"/></td>
-                                                        <td class="text-right"><span t-esc="location['ytd_quantity']"/></td>
+                                                        <td class="text-right"><span t-esc="location['mtd_quantity']"/></td>
                                                         <!-- Material-->
                                                         <td>
                                                             <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
@@ -194,10 +195,12 @@
                                                 <t t-set="total_cost_material" t-value="total_cost_material + amount_material"/>
                                                 <t t-set="total_cost" t-value="total_cost + amount_wage + amount_material"/>
                                             </t>
+                                            <!-- /per location -->
 
                                         </t>
                                     </tr>
                                 </t>
+                                <!-- /Estate Activity -->
                                 <tr>
                                     <td colspan="14" class="text-right"><strong>Total Cost</strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost_labour)"/></strong></td>
@@ -215,18 +218,15 @@
                                     <table class="table table-bordered" style="font-size:65%; width: auto">
                                         <tr>
                                             <td style="width: 120px">Created By</td>
-                                            <td style="width: 120px">Checked By</td>
                                             <td style="width: 120px">Approved By</td>
                                         </tr>
                                         <tr style="height: 80px">
                                             <td></td>
                                             <td></td>
-                                            <td></td>
                                         </tr>
                                         <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td><br/><strong>Estate Assistant</strong></td>
+                                            <td><br/><strong>Estate Manager</strong></td>
                                         </tr>
                                     </table>
                                 </td>

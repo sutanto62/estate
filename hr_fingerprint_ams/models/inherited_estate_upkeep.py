@@ -54,21 +54,41 @@ class UpkeepLabour(models.Model):
         number_of_days = 0
         att_obj = self.env['hr.attendance']
 
-        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
+        # Some attendance should not display at HK
+        att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', False)]).ids
+
+        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids),
+                                                               ('attendance_code_id', 'in', att_code)]):
             res = UpkeepFingerprint(att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_in'),
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_out'),
                                     record.attendance_code_id,
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'))
-            # TODO need to centralize this rule.
-            att_rule = UpkeepFingerprintSpecification().\
-                and_specification(SignInSpecification()).\
-                and_specification(SignOutSpecification()).\
-                and_specification(AttendanceCodeSpecification()). \
-                or_specification(ActionSpecification())
+
+            # Support attendance code's fingerprint requirements
+            attendance_fingerprint = record['attendance_code_id']['fingerprint']
+
+            if attendance_fingerprint == 'complete':
+                # Attendance code required complete fingerprint check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInSpecification()). \
+                    and_specification(SignOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()).\
+                    or_specification(ActionSpecification())
+            elif attendance_fingerprint == 'single':
+                # Attendance code required single sign-in/out check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()). \
+                    or_specification(ActionSpecification())
+            else:
+                # Attendance code required no fingerprint check.
+                att_rule = AttendanceCodeSpecification()
 
             if att_rule.is_satisfied_by(res):
                 number_of_days += record['number_of_day']
+
         return number_of_days
+
 
     @api.multi
     def get_workhour(self, ids):
@@ -81,17 +101,33 @@ class UpkeepLabour(models.Model):
         workhour = 0.00
         att_obj = self.env['hr.attendance']
         att_estate_obj = self.env['estate.hr.attendance']
-        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids)]):
+        att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', False)]).ids
+        for record in self.env['estate.upkeep.labour'].search([('id', 'in', ids),
+                                                               ('attendance_code_id', 'in', att_code)]):
             res = UpkeepFingerprint(att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_in'),
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_out'),
                                     record.attendance_code_id,
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'))
 
-            att_rule = UpkeepFingerprintSpecification(). \
-                and_specification(SignInSpecification()). \
-                and_specification(SignOutSpecification()). \
-                and_specification(AttendanceCodeSpecification()).\
-                or_specification(ActionSpecification())
+            # Support attendance code's fingerprint requirements
+            attendance_fingerprint = record['attendance_code_id']['fingerprint']
+
+            if attendance_fingerprint == 'complete':
+                # Attendance code required complete fingerprint check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInSpecification()). \
+                    and_specification(SignOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()). \
+                    or_specification(ActionSpecification())
+            elif attendance_fingerprint == 'single':
+                # Attendance code required single sign-in/out check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()). \
+                    or_specification(ActionSpecification())
+            else:
+                # Attendance code required no fingerprint check.
+                att_rule = AttendanceCodeSpecification()
 
             if att_rule.is_satisfied_by(res):
                 att_code_id = record['attendance_code_id']['id']
@@ -115,6 +151,10 @@ class UpkeepLabour(models.Model):
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'sign_out'),
                                     record.attendance_code_id,
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'),)
+
+            # This method worked only if attendance code's fingerprint requirement is complete
+            if record['attendance_code_id']['fingerprint'] != 'complete':
+                return
 
             att_rule = UpkeepFingerprintSpecification(). \
                 and_specification(SignInSpecification()). \
@@ -142,12 +182,27 @@ class UpkeepLabour(models.Model):
                                     record.attendance_code_id,
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'))
 
-            att_rule = UpkeepFingerprintSpecification(). \
-                and_specification(SignInSpecification()). \
-                and_specification(SignOutSpecification()). \
-                and_specification(AttendanceCodeSpecification()).\
-                or_specification(ActionSpecification())
+            # Support attendance code's fingerprint requirements
+            attendance_fingerprint = record['attendance_code_id']['fingerprint']
 
-            if att_rule.is_satisfied_by(res) or record.activity_contract:
+            if attendance_fingerprint == 'complete':
+                # Attendance code required complete fingerprint check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInSpecification()). \
+                    and_specification(SignOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()).\
+                    or_specification(ActionSpecification())
+            elif attendance_fingerprint == 'single':
+                # Attendance code required single sign-in/out check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()). \
+                    or_specification(ActionSpecification())
+            else:
+                # Attendance code required no fingerprint check.
+                att_rule = AttendanceCodeSpecification()
+
+            if att_rule.is_satisfied_by(res) and record.activity_contract:
                 amount += record['wage_piece_rate']
         return amount
+
