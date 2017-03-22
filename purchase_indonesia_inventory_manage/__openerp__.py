@@ -28,7 +28,8 @@
         'views/view_purchase_indonesia_good_request.xml',
         'views/view_purchase_indonesia_management_good.xml',
         'views/view_purchase_indonesia_good_return.xml',
-        'views/purchase_indonesia_sequence.xml'
+        'views/purchase_indonesia_sequence.xml',
+        # 'views/view_purchase_indonesia_goods_report_in.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
