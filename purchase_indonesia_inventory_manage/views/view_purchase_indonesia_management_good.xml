@@ -8,6 +8,12 @@
                  <xpath expr="//field[@name='priority']" position="after">
                           <field name='general_account_id' string="COA"/>
                  </xpath>
+                  <xpath expr="//field[@name='string_availability_info']" position="after">
+                      <group>
+                        <separator string="Description"/>
+                        <field name='description'/>
+                      </group>
+                 </xpath>
              </field>
          </record>
 
