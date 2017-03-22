@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-02 05:02+0000\n"
-"PO-Revision-Date: 2017-02-02 05:02+0000\n"
+"POT-Creation-Date: 2017-03-15 10:25+0000\n"
+"PO-Revision-Date: 2017-03-15 10:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -17,32 +17,32 @@ msgstr ""
 
 #. module: estate
 #: code:addons/estate/models/estate_upkeep.py:459
-#: code:addons/estate/models/estate_upkeep.py:1218
+#: code:addons/estate/models/estate_upkeep.py:1228
 #, python-format
 msgid "%s approved upkeep data at %s (server time)"
 msgstr ""
 
 #. module: estate
 #: code:addons/estate/models/estate_upkeep.py:440
-#: code:addons/estate/models/estate_upkeep.py:1191
+#: code:addons/estate/models/estate_upkeep.py:1201
 #, python-format
 msgid "%s confirmed upkeep data at %s (server time)"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1135
+#: code:addons/estate/models/estate_upkeep.py:1146
 #, python-format
 msgid "%s has %s number of day. Please change attendance code."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1144
+#: code:addons/estate/models/estate_upkeep.py:1155
 #, python-format
 msgid "%s has been work for more than 1 worked day."
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1149
+#: code:addons/estate/models/estate_upkeep.py:1159
 #, python-format
 msgid "%s is going to work for more than 1 worked day."
 msgstr ""
@@ -113,6 +113,16 @@ msgstr ""
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>\n"
 "                            End Date:"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+msgid "<br/><strong>Estate Assistant</strong>"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+msgid "<br/><strong>Estate Manager</strong>"
 msgstr ""
 
 #. module: estate
@@ -456,11 +466,6 @@ msgid "Average stand per hectare planted."
 msgstr ""
 
 #. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_we
-msgid "Barat Timur"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_barcode
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_barcode
 msgid "Barcode"
@@ -489,57 +494,11 @@ msgid "Batch/Location"
 msgstr ""
 
 #. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_hilly
-msgid "Berbukit"
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_wave
-msgid "Bergelombang"
-msgstr ""
-
-#. module: estate
 #: selection:estate.parameter,level:0
 #: model:ir.ui.view,arch_db:estate.upkeep_lha_view_tree
 #: model:ir.ui.view,arch_db:estate.view_form_block_config
 #: selection:stock.location,estate_location_level:0
 msgid "Block"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_1
-#: model:stock.location,name:estate.block_1_stock_location
-msgid "Block 1"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_2
-#: model:stock.location,name:estate.block_2_stock_location
-msgid "Block 2"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_3
-#: model:stock.location,name:estate.block_3_stock_location
-msgid "Block 3"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_4
-#: model:stock.location,name:estate.block_4_stock_location
-msgid "Block 4"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_5
-#: model:stock.location,name:estate.block_5_stock_location
-msgid "Block 5"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_6
-#: model:stock.location,name:estate.block_6_stock_location
-msgid "Block 6"
 msgstr ""
 
 #. module: estate
@@ -610,12 +569,6 @@ msgid "Cancel"
 msgstr ""
 
 #. module: estate
-#: model:product.product,name:estate.product_product_c
-#: model:product.template,name:estate.product_product_c_product_template
-msgid "Carbofuran 3%"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_max_day
 msgid "Change to override maximum upkeep date day(s) configuration"
 msgstr ""
@@ -646,11 +599,6 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_activity_cross_team
 msgid "Check to open all locations."
-msgstr ""
-
-#. module: estate
-#: model:ir.ui.view,arch_db:estate.report_estate_division
-msgid "Checked By"
 msgstr ""
 
 #. module: estate
@@ -686,7 +634,7 @@ msgid "Coefficient"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_activity.py:297
+#: code:addons/estate/models/estate_activity.py:308
 #, python-format
 msgid "Coefficient should in between 0 and 1"
 msgstr ""
@@ -935,18 +883,6 @@ msgid "Ctr."
 msgstr ""
 
 #. module: estate
-#: model:estate.block.template,name:estate.block_culling_1
-#: model:stock.location,name:estate.block_culling_1_stock_location
-msgid "Culling 1"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_culling_2
-#: model:stock.location,name:estate.block_culling_2_stock_location
-msgid "Culling 2"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,help:estate.field_estate_material_norm_qty_available
 msgid "Current quantity of products.\n"
 "In a context with a single Stock Location, this includes goods stored at this Location, or any of its children.\n"
@@ -987,11 +923,6 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_wage_number_of_day
 msgid "Daily/Target Wage"
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_flat
-msgid "Datar"
 msgstr ""
 
 #. module: estate
@@ -1174,18 +1105,6 @@ msgid "Division"
 msgstr ""
 
 #. module: estate
-#: model:estate.block.template,name:estate.division_1
-#: model:stock.location,name:estate.division_1_stock_location
-msgid "Division 1"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.division_2
-#: model:stock.location,name:estate.division_2_stock_location
-msgid "Division 2"
-msgstr ""
-
-#. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_upkeep_lha
 #: model:ir.actions.report.xml,name:estate.estate_division_report_action
 #: model:ir.model,name:estate.model_estate_division_report
@@ -1220,14 +1139,6 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
 msgid "Draft/Confirmed"
-msgstr ""
-
-#. module: estate
-#: model:ir.model,name:estate.model_estate_activity
-#: model:ir.model,name:estate.model_estate_block_template
-#: model:ir.model,name:estate.model_estate_hr_team
-#: model:ir.model,name:estate.model_estate_wage
-msgid "Email Thread"
 msgstr ""
 
 #. module: estate
@@ -1427,12 +1338,6 @@ msgid "Expense Account"
 msgstr ""
 
 #. module: estate
-#: model:product.product,name:estate.product_product_fr
-#: model:product.template,name:estate.product_product_fr_product_template
-msgid "Feromon"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_wage_overtime_amount
 msgid "Flat Overtime"
 msgstr ""
@@ -1486,11 +1391,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_area_gis
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_area_gis
 msgid "GIS Area (ha)"
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_gambut
-msgid "Gambut"
 msgstr ""
 
 #. module: estate
@@ -1549,11 +1449,6 @@ msgstr ""
 #: code:addons/estate/models/estate_hr.py:113
 #, python-format
 msgid "Hour and Quantity Ratio has been reset."
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_forest
-msgid "Hutan"
 msgstr ""
 
 #. module: estate
@@ -1643,11 +1538,6 @@ msgid "Inventory Locations"
 msgstr ""
 
 #. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_irregular
-msgid "Iregular"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_message_is_follower
 #: model:ir.model.fields,field_description:estate.field_estate_block_message_is_follower
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_message_is_follower
@@ -1690,12 +1580,6 @@ msgid "Keep activity in order as plantation stages."
 msgstr ""
 
 #. module: estate
-#: model:estate.block.template,name:estate.estate
-#: model:stock.location,name:estate.estate_stock_location
-msgid "LYD"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_employee_id
 #: model:ir.ui.menu,name:estate.estate_labour_menu
 #: model:ir.ui.view,arch_db:estate.report_estate_division
@@ -1725,11 +1609,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_amount
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
 msgid "Labour Wage"
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_thatch
-msgid "Lalang"
 msgstr ""
 
 #. module: estate
@@ -1881,20 +1760,8 @@ msgid "Location Type"
 msgstr ""
 
 #. module: estate
-#: model:estate.block.template,name:estate.block_mn_1
-#: model:stock.location,name:estate.block_mn_1_stock_location
-msgid "MN 1"
-msgstr ""
-
-#. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "MTD"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.division_main_nursery
-#: model:stock.location,name:estate.division_main_nursery_stock_location
-msgid "Main Nursery"
 msgstr ""
 
 #. module: estate
@@ -1936,7 +1803,7 @@ msgstr ""
 
 #. module: estate
 #: code:addons/estate/models/estate_upkeep.py:643
-#: code:addons/estate/models/estate_upkeep.py:1334
+#: code:addons/estate/models/estate_upkeep.py:1344
 #, python-format
 msgid "Material Usage should be created within Daily Upkeep"
 msgstr ""
@@ -1994,11 +1861,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_message_ids
 #: model:ir.model.fields,field_description:estate.field_estate_wage_message_ids
 msgid "Messages"
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_mineral
-msgid "Mineral"
 msgstr ""
 
 #. module: estate
@@ -2175,9 +2037,7 @@ msgid "Number of working days"
 msgstr ""
 
 #. module: estate
-#: model:estate.block.template,name:estate.division_nursery
 #: selection:stock.location,estate_location_type:0
-#: model:stock.location,name:estate.division_nursery_stock_location
 msgid "Nursery"
 msgstr ""
 
@@ -2244,6 +2104,11 @@ msgid "Optional localization details, for information purpose only"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+msgid "Output"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_labour_overtime_amount
 msgid "Over Time"
 msgstr ""
@@ -2274,24 +2139,6 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
 msgid "P/A"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_pn_1
-#: model:stock.location,name:estate.block_pn_1_stock_location
-msgid "PN 1"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_pn_2
-#: model:stock.location,name:estate.block_pn_2_stock_location
-msgid "PN 2"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.block_pn_3
-#: model:stock.location,name:estate.block_pn_3_stock_location
-msgid "PN 3"
 msgstr ""
 
 #. module: estate
@@ -2379,11 +2226,6 @@ msgid "Parent Right"
 msgstr ""
 
 #. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_pasir
-msgid "Pasir"
-msgstr ""
-
-#. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_search
 #: model:ir.ui.view,arch_db:estate.upkeep_view_search
@@ -2447,12 +2289,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_planted_year_id
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Planted Year"
-msgstr ""
-
-#. module: estate
-#: model:estate.block.template,name:estate.division_pre_nursery
-#: model:stock.location,name:estate.division_pre_nursery_stock_location
-msgid "Pre Nursery"
 msgstr ""
 
 #. module: estate
@@ -2535,7 +2371,6 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_unit_amount
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_quantity
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_activity_unit_amount
-#: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Quantity"
 msgstr ""
 
@@ -2592,11 +2427,6 @@ msgstr ""
 #: model:ir.actions.act_window,name:estate.estate_wage_action
 #: model:ir.ui.menu,name:estate.estate_estate_wage
 msgid "Regional Wage"
-msgstr ""
-
-#. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_regular
-msgid "Regular"
 msgstr ""
 
 #. module: estate
@@ -2763,12 +2593,6 @@ msgid "Shelves (Y)"
 msgstr ""
 
 #. module: estate
-#: model:product.product,name:estate.product_product_sp
-#: model:product.template,name:estate.product_product_sp_product_template
-msgid "Sipermetrin"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_is_smallholder
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_is_smallholder
 msgid "Smallholder Area"
@@ -2860,6 +2684,11 @@ msgid "State"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.view_activity_list_tree
+msgid "Std. Qty."
+msgstr ""
+
+#. module: estate
 #: selection:estate.parameter,level:0
 #: selection:stock.location,estate_location_level:0
 msgid "Sub Block"
@@ -2921,9 +2750,14 @@ msgid "Suspend"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/report/report_estate_division.py:343
+#: code:addons/estate/report/report_estate_division.py:384
 #, python-format
 msgid "System print-out division report: %s;%s;%s;%s"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_estate_division
+msgid "TD"
 msgstr ""
 
 #. module: estate
@@ -3105,6 +2939,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 #: model:ir.ui.view,arch_db:estate.view_activity_config_form
+#: model:ir.ui.view,arch_db:estate.view_activity_list_tree
 msgid "UoM"
 msgstr ""
 
@@ -3148,8 +2983,8 @@ msgstr ""
 #: code:addons/estate/models/estate_upkeep.py:852
 #: code:addons/estate/models/estate_upkeep.py:1030
 #: code:addons/estate/models/estate_upkeep.py:1084
-#: code:addons/estate/models/estate_upkeep.py:1341
-#: code:addons/estate/models/estate_upkeep.py:1371
+#: code:addons/estate/models/estate_upkeep.py:1351
+#: code:addons/estate/models/estate_upkeep.py:1381
 #, python-format
 msgid "Upkeep Activity should be defined first"
 msgstr ""
@@ -3223,11 +3058,6 @@ msgid "Used to compute work day(s) per unit of measurement."
 msgstr ""
 
 #. module: estate
-#: model:estate.parameter.value,name:estate.parameter_value_ns
-msgid "Utara Selatan"
-msgstr ""
-
-#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_parameter_parameter_value_id
 #: model:ir.model.fields,field_description:estate.field_estate_parameter_value_name
 msgid "Value"
@@ -3282,8 +3112,8 @@ msgstr ""
 #: code:addons/estate/models/estate_upkeep.py:1022
 #: code:addons/estate/models/estate_upkeep.py:1029
 #: code:addons/estate/models/estate_upkeep.py:1098
-#: code:addons/estate/models/estate_upkeep.py:1333
-#: code:addons/estate/models/estate_upkeep.py:1340
+#: code:addons/estate/models/estate_upkeep.py:1343
+#: code:addons/estate/models/estate_upkeep.py:1350
 #, python-format
 msgid "Warning!"
 msgstr ""
@@ -3308,7 +3138,7 @@ msgid "Weight"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_activity.py:212
+#: code:addons/estate/models/estate_activity.py:223
 #, python-format
 msgid "Weight value should between 0 and 1"
 msgstr ""
@@ -3345,18 +3175,13 @@ msgid "Work result within a work day."
 msgstr ""
 
 #. module: estate
-#: model:ir.ui.view,arch_db:estate.report_estate_division
-msgid "YTD"
-msgstr ""
-
-#. module: estate
 #: code:addons/estate/models/estate_upkeep.py:448
 #, python-format
 msgid "You are not authorized to approve all upkeep data"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1199
+#: code:addons/estate/models/estate_upkeep.py:1209
 #, python-format
 msgid "You are not authorized to approve upkeep data"
 msgstr ""
@@ -3368,7 +3193,7 @@ msgid "You are not authorized to confirm all upkeep data"
 msgstr ""
 
 #. module: estate
-#: code:addons/estate/models/estate_upkeep.py:1172
+#: code:addons/estate/models/estate_upkeep.py:1182
 #, python-format
 msgid "You are not authorized to confirm upkeep data"
 msgstr ""
@@ -3378,6 +3203,12 @@ msgstr ""
 #: code:addons/estate/models/estate_upkeep.py:1099
 #, python-format
 msgid "You must first select a Division!"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/estate_activity.py:175
+#, python-format
+msgid "You should set standard work result/day if attendance code is standard quantity/contract based."
 msgstr ""
 
 #. module: estate
@@ -3401,6 +3232,11 @@ msgid "day/unit"
 msgstr ""
 
 #. module: estate
+#: model:ir.model,name:estate.model_estate_activity
+msgid "estate.activity"
+msgstr ""
+
+#. module: estate
 #: model:ir.model,name:estate.model_estate_activity_norm
 msgid "estate.activity.norm"
 msgstr ""
@@ -3416,6 +3252,11 @@ msgid "estate.block.parameter"
 msgstr ""
 
 #. module: estate
+#: model:ir.model,name:estate.model_estate_block_template
+msgid "estate.block.template"
+msgstr ""
+
+#. module: estate
 #: model:ir.model,name:estate.model_estate_config_settings
 msgid "estate.config.settings"
 msgstr ""
@@ -3428,6 +3269,11 @@ msgstr ""
 #. module: estate
 #: model:ir.model,name:estate.model_estate_hr_member
 msgid "estate.hr.member"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_estate_hr_team
+msgid "estate.hr.team"
 msgstr ""
 
 #. module: estate
@@ -3476,6 +3322,11 @@ msgid "estate.stand.hectare"
 msgstr ""
 
 #. module: estate
+#: model:ir.model,name:estate.model_estate_wage
+msgid "estate.wage"
+msgstr ""
+
+#. module: estate
 #: model:product.uom,name:estate.product_uom_hectare
 msgid "ha"
 msgstr ""
@@ -3498,7 +3349,7 @@ msgstr ""
 
 #. module: estate
 #: model:product.uom,name:estate.product_uom_pokok
-msgid "pkk"
+msgid "pkk (hapus)"
 msgstr ""
 
 #. module: estate

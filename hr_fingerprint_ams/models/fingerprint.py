@@ -68,6 +68,7 @@ class FingerAttendance(models.Model):
         Must meet attendance rule:
         1. It must be registered employee (name and employee identification number).
         2. It has sign-in/out OR has registered action reason.
+        3. OR if there is attendance code's fingerprint requirement single allow fingerprint without action reason.
         """
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
 
@@ -81,15 +82,22 @@ class FingerAttendance(models.Model):
         # Override create should return a recordset
         res = self
 
-        # Attendance constraints required employee and complete sign-in and sign-out
         attendance = Attendance(self._get_employee(vals['employee_name'], vals['nik']),
                                 vals['sign_in'],
                                 vals['sign_out'])
 
-        att_rule = AttendanceSpecification().\
-            and_specification(EmployeeSpecification()).\
-            and_specification(SignInSpecification()).\
-            and_specification(SignOutSpecification())
+        # Attendance code's fingerprint requirement allow single sign-in/out.
+        attendance_code_ids = self.env['estate.hr.attendance'].search([('fingerprint', '=', 'single')])
+        if len(attendance_code_ids) > 0:
+            # This condition override sign-in and sign-out.
+            att_rule = AttendanceSpecification().\
+                and_specification(EmployeeSpecification()).\
+                and_specification(SignInOutSpecification())
+        else:
+            att_rule = AttendanceSpecification().\
+                and_specification(EmployeeSpecification()).\
+                and_specification(SignInSpecification()).\
+                and_specification(SignOutSpecification())
 
         if att_rule.is_satisfied_by(attendance):
             if current:
@@ -108,6 +116,8 @@ class FingerAttendance(models.Model):
                 self._create_attendance(res, vals)
                 self._create_attendance(res, vals, 'sign_out')
         else:
+            # Applied when there is no attendance code with single fingerprint requirements
+
             # Prevent create fingerprint attendance if employee not found
             try:
                 self._get_employee(vals['employee_name'], vals['nik']).id
@@ -117,7 +127,7 @@ class FingerAttendance(models.Model):
                 _logger.info(err_msg)
                 return self
 
-            # Create only fingerprint attendance with action reason.
+            # Create only fingerprint attendance with action reason
             action_reason_ids = self.env['hr.action.reason'].search([('active', '=', True),
                                                                      ('action_type', '=', 'action')])
 
@@ -281,9 +291,12 @@ class FingerAttendance(models.Model):
             err_msg = _('You are not authorized to confirm all fingerprint imported data')
             raise ValidationError(err_msg)
 
-        self.write({
-            'state': 'confirmed'
-        })
+        for record in self:
+            if not record.state == 'draft':
+                err_msg = _('Selected records is not a draft data.')
+                raise ValidationError(err_msg)
+
+        self.write({'state': 'confirmed'})
 
         # Log confirm all action
         confirm_date = datetime.today()
@@ -299,9 +312,12 @@ class FingerAttendance(models.Model):
             err_msg = _('You are not authorized to approve all fingerprint imported data')
             raise ValidationError(err_msg)
 
-        self.write({
-            'state': 'approved'
-        })
+        for record in self:
+            if not record.state == 'confirmed':
+                err_msg = _('Selected records is not a confirmed data.')
+                raise ValidationError(err_msg)
+
+        self.write({'state': 'approved'})
 
         # Log confirm all action
         confirm_date = datetime.today()

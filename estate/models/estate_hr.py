@@ -95,25 +95,56 @@ class AttendanceCode(models.Model):
 
     name = fields.Char('Attendance')
     code = fields.Char('Code')
-    contract = fields.Boolean('Contract Based', help='Activate to remark contract based attendance.')
+    contract = fields.Boolean('Contract Based', help='No worked day recorded.')
     unit_amount = fields.Float('Hour')
-    qty_ratio = fields.Float('Quantity Ratio', help='Use to calculate work result quantity.')
+    qty_ratio = fields.Float('Quantity Ratio', help='Use to calculate worked day quantity.')
+    piece_rate = fields.Boolean('Piece Rate Day', help='Worked day recorded. Payroll as piece rate.')
 
     @api.onchange('contract')
     def _onchange_contract(self):
         """
         Contract based should not calculated hours and qty_ratio
         """
-        if self.contract:
+        if self.contract and self.piece_rate:
             self.unit_amount = 0
             self.qty_ratio = 0
+            self.piece_rate = False
 
             warning = {
                 'title': _('Warning!'),
-                'message': _('Hour and Quantity Ratio has been reset.'),
+                'message': _('Contract deactivated Piece Rate Day and reset Hour and Quantity Ratio.'),
             }
 
             return {'warning': warning}
+
+    @api.onchange('piece_rate')
+    def _onchange_piece_rate(self):
+        """
+        Piece rate based should calculated hours and qty_ratio - reset contract field.
+        """
+        if self.piece_rate and self.contract:
+            self.contract = False
+
+            warning = {
+                'title': _('Warning!'),
+                'message': _('Piece Rate Day deactivated Contract.'),
+            }
+
+            return {'warning': warning}
+
+    @api.multi
+    @api.constrains('qty_ratio', 'unit_amount')
+    def check_piece_rate(self):
+        if self.piece_rate:
+            if not self.qty_ratio or not self.unit_amount:
+                warning = {
+                    'title': _('Warning!'),
+                    'message': _('Quantity Ratio and Hour should be defined.'),
+                }
+
+                return {'warning': warning}
+
+        return True
 
 
 class Wage(models.Model):

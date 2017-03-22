@@ -36,6 +36,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
             'get_overtime_employee': self.get_overtime_employee,
             'get_line_total': self.get_line_total,
             'get_payslip_total': self.get_payslip_total,
+            'get_number_of_day': self.get_number_of_day,
             'number_round': self.number_round,
             # 'get_qrcode': self.get_qrcode,
             #'get_payslip_lines': self.get_payslip_lines,
@@ -88,14 +89,13 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         ids = payslip_obj.search(self.cr, self.uid, [('contract_type_id', '=', 'Estate Worker'),
                                                      ('team_id', '=', id),
                                                      ('date_from', '=', date_start),
-                                                     ('date_to', '=', date_end),
-                                                     ('state', '=', 'done')], order='employee_id')
+                                                     ('date_to', '=', date_end)], order='employee_id')
         res = payslip_obj.browse(self.cr, self.uid, ids)
         return res
 
     def get_overtime_employee(self, id, start, end):
         """
-        Get overtime unit
+        Get overtime unit of approved upkeep
         :param id: employee
         :param start: payslip run date start
         :param end: payslip run date end
@@ -105,7 +105,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         upkeep_labour_ids = upkeep_labour_obj.search(self.cr, self.uid, [('employee_id', '=', id),
                                                                          ('upkeep_date', '>=', start),
                                                                          ('upkeep_date', '<=', end),
-                                                                         ('state', '=', 'payslip')])
+                                                                         ('state', '=', 'approved')])
         return sum(upkeep.quantity_overtime for upkeep in upkeep_labour_obj.browse(self.cr, self.uid, upkeep_labour_ids))
 
 
@@ -136,6 +136,10 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         for id in range(len(obj)):
             line_ids.append(obj[id].id)
         return sum(line.total for line in line_obj.browse(self.cr, self.uid, line_ids))
+
+    def get_number_of_day(self, obj):
+        """ Get ratio HK/Bulan"""
+        return True
 
     def number_round(self, val, round):
         return float(math.ceil(val / round)) * round

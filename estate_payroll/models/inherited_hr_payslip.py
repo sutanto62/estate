@@ -55,6 +55,7 @@ class Payslip(models.Model):
     @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):
         """Contract type Estate Worker use upkeep labour number of days.
+        Get worked days from upkeep labour with number_of_day > 0
         @param contract_ids: list of contract id
         @return: returns a list of dict containing the input that should be applied for the given contract between date_from and date_to
         """
@@ -66,22 +67,41 @@ class Payslip(models.Model):
                                                         ('date_start', '<=', date_from)],
                                                        limit=1,
                                                        order='date_start desc'):
+
             if contract.type_id.name == _("Estate Worker"):  #todo change to external id
-                attendances = {
-                     'name': _("Estate Upkeep Working Days paid at 100%"),
-                     'sequence': 1,
-                     'code': 'WORK300',
-                     'number_of_days': 0.0,
-                     'number_of_hours': 0.0,
-                     'contract_id': contract.id,
-                }
                 upkeep_labour_ids = upkeep_labour_obj.search([('employee_id', '=', contract.employee_id.id),
                                                               ('upkeep_date', '>=', date_from),
                                                               ('upkeep_date', '<=', date_to),
                                                               ('state', '=', 'approved')]).ids
-                attendances['number_of_days'] = upkeep_labour_obj.get_worked_days(upkeep_labour_ids)
-                attendances['number_of_hours'] = upkeep_labour_obj.get_workhour(upkeep_labour_ids)
-                res += [attendances]
+
+                # Get worked days
+                att_number_of_days = upkeep_labour_obj.get_worked_days(upkeep_labour_ids)
+                att_hour = upkeep_labour_obj.get_workhour(upkeep_labour_ids)
+                if att_number_of_days:
+                    attendances = {
+                        'name': _("Estate Upkeep Working Days paid at 100%"),
+                        'sequence': 1,
+                        'code': 'WORK300',
+                        'number_of_days': att_number_of_days,
+                        'number_of_hours': att_hour,
+                        'contract_id': contract.id,
+                    }
+                    res += [attendances]
+
+                # Get piece rate worked days
+                piece_rate_worked_days = upkeep_labour_obj.get_piece_rate_worked_days(upkeep_labour_ids)
+                piece_rate_hour = upkeep_labour_obj.get_piece_rate_workhour(upkeep_labour_ids)
+                if piece_rate_worked_days:
+                    attendances = {
+                        'name': _("Piece Rate Working Days"),
+                        'sequence': 2,
+                        'code': 'WORK310',
+                        'number_of_days': piece_rate_worked_days,
+                        'number_of_hours': piece_rate_hour,
+                        'contract_id': contract.id,
+                    }
+                    res += [attendances]
+
                 return res
             else:
                 return super(Payslip, self).get_worked_day_lines(contract_ids, date_from, date_to)

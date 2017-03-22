@@ -636,7 +636,6 @@ class UpkeepActivity(models.Model):
     def _onchange_upkeep(self):
         """Set domain for location while create new record
         """
-        print '_onchange_upkeep activity'
         if not self.upkeep_id:
             warning = {
                     'title': _('Warning!'),
