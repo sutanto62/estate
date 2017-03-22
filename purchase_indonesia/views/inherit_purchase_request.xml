@@ -6,7 +6,7 @@
              <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='company_id']" position="after">
-                      <field name="type_location" string="Location" attrs="{'readonly': [('state','!=','draft')]}"/>
+                      <field name="type_location" string="Location" readonly="1"/>
                       <field name="type_functional" string="Unit Functional" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
                       <field name="department_id" string="Department" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
                       <field name="type_budget" widget="radio" string="Budget" attrs="{'invisible': [('state','not in', ['budget','approval3','approval4','approval5','approval6'])]}"/>
@@ -65,6 +65,12 @@
                  <xpath expr="//field[@name='name']" position="replace">
                            <field name="complete_name" class="oe_inline" invisible="0"
                                readonly="1" string="Request Reference"/>
+                 </xpath>
+                 <xpath expr="//field[@name='state']" position="after">
+                     <field name="count_po_done" string="PO Dn"/>
+                     <field name="count_po_partial" string="PO Partial"/>
+                     <field name="count_grn_done" string="GRN/SRN Dn"/>
+                     <field name="count_grn_assigned" string="GRN/SRN Av"/>
                  </xpath>
              </field>
          </record>
@@ -139,7 +145,7 @@
 
                  <xpath expr="//button[@name='button_to_approve']" position="replace">
                      <button name="button_to_approve" states="button_to_approve"
-                            string="Approve Finance" type="object"
+                            string="Approve" type="object"
                             class="oe_highlight"/>
 
                  </xpath>
@@ -155,7 +161,7 @@
                  <xpath expr="//button[@name='button_approved']" position="replace">
                        <button name="button_approved"
                             states="to_approve"
-                            string="Approve Finance"
+                            string="Approve"
                             type="object"
                             class="oe_highlight"
                             groups="purchase_request.group_purchase_request_manager"/>
@@ -178,17 +184,17 @@
                             class="oe_highlight"
                              groups="purchase_request.group_purchase_request_user"/>
                      <button name="action_confirm1"
-                            string="Approve Dept Head" type="object"
+                            string="Approve" type="object"
                              attrs="{'invisible': [('validation_user','!=',True)]}"
                             class="oe_highlight" />
                      <button name="action_confirm2" states="approval2"
-                            string="Approve Div Head" type="object"
+                            string="Approve" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
                      <button name="action_budget" states="budget"
-                            string="Approve Budget" type="object"
+                            string="Approve" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
                      <button name="action_technic"
-                            string="Approve Technical Check" type="object"
+                            string="Approve" type="object"
                             class="oe_highlight" attrs="{'invisible': [('validation_technic','!=',True)]}"/>
                      <button name="action_financial_approval1"
                              attrs="{'invisible': [('validation_finance','!=',True)]}"
@@ -236,6 +242,8 @@
                                 <field name="date_order" string="Order Date"/>
                                 <field name="partner_id" string="Vendor"/>
                                 <field name="state" string="Status"/>
+                                <field name="count_grn_assigned" widget="statinfo"  string="GRN/SRN Av Mgr"/>
+                                <field name="count_grn_assigned_user" widget="statinfo"  string="GRN/SRN Av Usr"/>
                             </tree>
                             <form>
                                     <sheet>
@@ -243,7 +251,10 @@
                                             <button type="object"
                                                 name="action_view_picking"
                                                 class="oe_stat_button"
-                                                icon="fa-truck" string="GRN/SRN">
+                                                icon="fa-truck" >
+                                                <field name="count_grn_done" widget="statinfo" string="Dn"/>
+                                                <field name="count_grn_assigned" widget="statinfo"  string="Mgr"/>
+                                                <field name="count_grn_assigned_user" widget="statinfo"  string="Usr"/>
                                             </button>
                                         </div>
                                         <group>

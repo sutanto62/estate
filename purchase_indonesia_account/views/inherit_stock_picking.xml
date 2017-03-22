@@ -1,0 +1,24 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_form_inherit_button_invoice">
+             <field name="name">Inherit Button Invoice</field>
+             <field name="model">stock.picking</field>
+             <field name="inherit_id" ref="stock.view_picking_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//div[@class='oe_button_box']" position="inside">
+                      <button name="return_action_to_open"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-pencil-square-o"
+                                context="{'xml_id':'action_invoice_tree2'}"
+                                attrs="{'invisible': ['|',('state','!=','done')]}"
+                                groups="purchase_request.group_purchase_request_procstaff,purchase_indonesia.group_purchase_request_finance_procurement"
+                                >
+                          <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                     </button>
+                 </xpath>
+
+             </field>
+         </record>
+    </data>
+</openerp>

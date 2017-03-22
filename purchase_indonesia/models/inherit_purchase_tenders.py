@@ -34,12 +34,16 @@ class InheritPurchaseTenders(models.Model):
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Char('Location')
+    state = fields.Selection(selection_add = [('rollback','Roll Back PP')])
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
     due_date = fields.Date('Due Date',compute='_compute_due_date')
     validation_due_date = fields.Boolean('Validation Due Date',compute='_compute_validation_due_date')
     quotation_state = fields.Char('QCF state',compute='_compute_quotation_state')
+    validation_correction = fields.Boolean('Validation Correction',compute='_compute_validation_correction')
+    validation_qcf = fields.Boolean('Validation QCF',compute='_compute_validation_qcf')
+    validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
 
     @api.multi
     def _get_value_low(self):
@@ -60,13 +64,14 @@ class InheritPurchaseTenders(models.Model):
 
     @api.multi
     def tender_in_progress(self):
-        super(InheritPurchaseTenders,self).tender_in_progress()
-        data={
-            'user_id':self._get_user().id
-        }
-        self.write(data)
-        self._change_created_by_qcf()
-        return True
+        for item in self:
+            super(InheritPurchaseTenders,item).tender_in_progress()
+            data={
+                'user_id':item._get_user().id
+            }
+            item.write(data)
+            item._change_created_by_qcf()
+            return True
 
     @api.multi
     def _change_created_by_qcf(self):
@@ -76,14 +81,71 @@ class InheritPurchaseTenders(models.Model):
         res = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id)]).write(data)
 
     @api.multi
+    @api.depends('request_id')
+    def _compute_validation_correction(self):
+
+        for item in self:
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','open','done']) :
+                item.validation_correction = True
+            else:
+                 item.validation_correction = False
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_button_correction(self):
+
+        for item in self:
+            count_order = 0
+            order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['purchase','done','receive_all','receive_force_done'])])
+            for record in order:
+                if len(record) > 0 :
+                    count_order = count_order + 1
+            if (count_order == 0):
+                item.validation_button_correction = True
+            else:
+                item.validation_button_correction = False
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_validation_qcf(self):
+        for item in self:
+            count_confirm = 0
+            count_purchase = len(item.purchase_ids)
+            order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['draft','sent'])])
+            count_order = len(order)
+            if count_purchase > 0:
+                for record in order:
+                    if record.validation_check_confirm_vendor == True:
+                        count_confirm = count_confirm + 1
+                    if count_order == count_confirm:
+                        item.validation_qcf = True
+                    else:
+                        item.validation_qcf = False
+
+
+    @api.multi
     @api.depends('quotation_state')
     def _compute_quotation_state(self):
         for item in self:
-            qcf_state = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)]).state
+            qcf = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)])
+            qcf_state = qcf.state
+            categ_state = dict(qcf._columns['state'].selection).get(qcf_state)
+
             if qcf_state in [True,False]:
                 item.quotation_state = qcf_state
             else:
-                item.quotation_state = qcf_state.title()
+                item.quotation_state = categ_state
+
+    @api.multi
+    def purchase_request_correction(self):
+        for item in self:
+            item.state = 'rollback'
+            purchase_request = item.env['purchase.request'].search([('id','=',item.request_id.id)])
+            update_purchase_request = purchase_request.write({
+                'state':'budget' if purchase_request._get_max_price() < purchase_request._get_price_low() else'approval4' ,
+                'assigned_to' : purchase_request._get_budget_manager() if purchase_request._get_max_price() < purchase_request._get_price_low() else purchase_request._get_division_finance(),
+                'validation_correction_procurement' : True
+            })
 
     @api.multi
     def _compute_date(self):
@@ -317,6 +379,31 @@ class InheritPurchaseTenders(models.Model):
         self.env['purchase.request'].search([('complete_name','like',self.origin)]).write(pp_data)
         res=super(InheritPurchaseTenders,self).generate_po()
         return res
+
+    @api.multi
+    @api.constrains('purchase_ids')
+    def _constraint_po_line_ids(self):
+
+        for item in self:
+
+            arrPoid = []
+            tender_line =item.env['purchase.requisition.line']
+            tender_line_id = tender_line.search([('requisition_id','=',item.id)])
+            if item.purchase_ids:
+                for record in item.purchase_ids:
+                    arrPoid.append(record.id)
+
+                for tender in tender_line_id:
+
+                    order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
+
+                    for order in order_line_ids:
+                        if order.quantity_tendered > tender.product_qty:
+                            error_msg = 'Quantity tendered cannot more than Product Quantity in Tender Line'
+                            raise exceptions.ValidationError(error_msg)
+                        elif order.product_qty > tender.product_qty:
+                            error_msg = 'Product Quantity \"%s\" cannot greater than Product Quantity \"%s\" in Tender Line Vendor \"%s\"'%(order.product_id.name,tender.product_id.name,order.partner_id.name)
+                            raise exceptions.ValidationError(error_msg)
 
 class InheritPurchaseRequisitionLine(models.Model):
 

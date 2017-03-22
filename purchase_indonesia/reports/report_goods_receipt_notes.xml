@@ -12,7 +12,7 @@
         <template id="report_goods_receipet_notes_document">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
-            		<t t-call="report.external_layout">
+            		<t t-call="report.internal_layout">
 						<div class="page" style="font-family: times; background-color:white; color:black;">
 		              		<!-- Header -->
 		              		<div class="row" style="text-align:left;font-size:14pt;">
@@ -31,7 +31,7 @@
 		                       		            <b>Lokasi</b>
 		                       		        </td>
 		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.type_location"/></b>
+		                       		            <b>: <span t-field="o.location"/></b>
 		                       		        </td>
 		                       		    </tr>
 		                       		</table>
@@ -205,7 +205,7 @@
 										    <td colspan="5" class="noborder">
 										      	Penjelasan :
 										    	<br></br>
-										      	[todo] add penjelasan di objek G/SRN
+										      	<span t-field="o.description"/>
 										    </td>
 										</tr>
 									</table>    	
@@ -227,23 +227,10 @@
 			                                    <br></br>
 			                                    <br></br>
 			                                    <br></br>
-			                                    <t t-foreach="o.message_ids" t-as="mids">
-													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-													    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
-														    <u>
-														        <span t-field="mids.author_id"/>&#160;
-															</u>
-															<br/>
-															    <span t-field="mids.date"/>&#160;
-															<br/>
-															[
-														        <span t-field="mids_tracking.old_value_char"/>&#160;to
-														        <span t-field="mids_tracking.new_value_char"/>
-															]
-													    </t>
-													</t>
-												</t>
-			                                    <br></br>
+												<u><span t-field="o.shipper_by"/></u>
+												<br></br>
+			                                    Tgl.
+
 			                                </td>
 			                                <td class="noborder">
 			                                    Diterima Oleh,

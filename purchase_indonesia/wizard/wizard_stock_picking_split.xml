@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_stock_picking_split" model="ir.ui.view">
+            <field name="name">Wizard Stock Picking Split</field>
+            <field name="model">stock.picking.wizard.split</field>
+            <field name="arch" type="xml">
+                <form string="Wizard Stock Picking Split" version="9.0">
+                    <footer>
+                        <button name="split_quantity" string="Split quantity" type="object"  class="oe_highlight"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_stock_picking_split" model="ir.actions.act_window">
+            <field name="name">Wizard Stock Picking Split</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">stock.picking.wizard.split</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

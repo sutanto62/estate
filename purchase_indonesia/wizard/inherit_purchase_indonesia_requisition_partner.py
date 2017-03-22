@@ -54,5 +54,22 @@ class InheritRequisitionPartner(models.TransientModel):
             for item in po :
                 self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
 
+    @api.multi
+    @api.onchange('partner_ids')
+    def _onchange_partner_ids(self):
+        for item in self:
+            arrPartner=[]
+
+            partner= item.env['res.partner'].search([('state','=','done')])
+
+            for record in partner:
+                arrPartner.append(record.id)
+
+            return {
+                'domain':{
+                    'partner_ids' :[('id','in',arrPartner)]
+                }
+            }
+
 
 

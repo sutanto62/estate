@@ -44,7 +44,7 @@ class InheritPurchaseOrder(models.Model):
                     'purchase_id': purchase_order.id,
                     'type_location': purchase_order.type_location,
                     'location':purchase_order.location,
-                    'pr_source' : purchase_order.source_purchase_request,
+                    'pr_source' : purchase_order.purchase_order.request_id.complete_name,
                     'srn_no' : self.env['ir.sequence'].next_by_code(sequence_name)
                 }
                 self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)

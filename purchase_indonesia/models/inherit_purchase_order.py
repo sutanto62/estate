@@ -32,9 +32,9 @@ class InheritPurchaseOrder(models.Model):
         ('fax', 'Fax'),
         ('email', 'E-Mail'),
         ('phone', 'Phone'),
-        ('other','Other')])
-    confirmed_by_value = fields.Char('Confirmed ByValue')
-    confirmed_by_person = fields.Char('Confirmed ByPerson')
+        ('other','Other')],store=True)
+    confirmed_by_value = fields.Char('Confirmed ByValue',store=True)
+    confirmed_by_person = fields.Char('Confirmed ByPerson',store=True)
     validation_confirmed_by = fields.Boolean('Validation Confirmed By',default = False,compute='change_validation_confirmed_by')
     state = fields.Selection([
         ('draft', 'Quotation'),
@@ -42,8 +42,12 @@ class InheritPurchaseOrder(models.Model):
         ('to approve', 'To Approve'),
         ('purchase', 'Purchase Order'),
         ('done', 'Done'),
-        ('cancel', 'Cancelled'),('received_all','Received All'),('received_force_done','Received Force Done')
+        ('cancel', 'Cancelled'),('received_all','Received All'),('received_force_done','Received Partial')
         ], string='Status', readonly=True, select=True, copy=False, default='draft', track_visibility='onchange')
+    count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
+    count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
+    count_grn_assigned_user = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
+    validation_check_confirm_vendor = fields.Boolean('Confirm Vendor')
 
     _defaults = {
         'hide' : False
@@ -64,6 +68,36 @@ class InheritPurchaseOrder(models.Model):
         for item in self:
             if item.confirmed_by:
                 item.validation_confirmed_by = True
+
+    @api.multi
+    @api.depends('picking_ids')
+    def _compute_grn_or_srn(self):
+        for item in self:
+            request_name = item.request_id.complete_name
+            arrPickingDone = []
+            arrPickingAssigned = []
+            arrPickingAssignedManager = []
+            done = item.env['stock.picking'].search([('purchase_id','=',item.id),('state','=','done')])
+            assigned = item.env['stock.picking'].search([('purchase_id','=',item.id),('validation_manager','=',True),('state','=','assigned')])
+            assigned_user = item.env['stock.picking'].search([('purchase_id','=',item.id),('validation_user','=',True),('state','=','assigned')])
+            for itemDone in done:
+                arrPickingDone.append(itemDone.id)
+            for itemAssign in assigned:
+                arrPickingAssignedManager.append(itemAssign.id)
+            for itemAssign1 in assigned_user:
+                arrPickingAssigned.append(itemAssign1.id)
+            assign_picking_done = item.env['stock.picking'].search([('id','in',arrPickingDone)])
+            assign_picking_assigned = item.env['stock.picking'].search([('id','in',arrPickingAssigned)])
+            assign_picking_assigned_manager = item.env['stock.picking'].search([('id','in',arrPickingAssignedManager)])
+            picking_done = len(assign_picking_done)
+            picking_assigned = len(assign_picking_assigned)
+            picking_assigned_manager = len(assign_picking_assigned_manager)
+
+            item.count_grn_done = picking_done
+
+            item.count_grn_assigned_user = picking_assigned
+
+            item.count_grn_assigned = picking_assigned_manager
 
     @api.one
     @api.depends('po_no','name','date_order','companys_id','type_location')
@@ -131,7 +165,7 @@ class InheritPurchaseOrder(models.Model):
                 'purchase_id': purchase_order.id,
                 'type_location': purchase_order.type_location,
                 'location':purchase_order.location,
-                'pr_source' : purchase_order.source_purchase_request,
+                'pr_source' :purchase_order.request_id.complete_name,
                 'grn_no' : self.env['ir.sequence'].next_by_code(sequence_name)
             }
             self.env['stock.picking'].search([('purchase_id','=',self.id)]).write(purchase_data)

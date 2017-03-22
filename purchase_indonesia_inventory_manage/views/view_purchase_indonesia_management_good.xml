@@ -27,6 +27,15 @@
             </field>
         </record>
 
+        <record id="action_management_good_request_reject" model="ir.actions.act_window">
+            <field name="name">Reject Management Good Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase_indonesia.management.good.request.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
         <!-- View Form: Path -->
         <record id="view_management_good_request_form" model="ir.ui.view">
             <field name="name">Management Goods</field>
