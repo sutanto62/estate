@@ -162,7 +162,7 @@ result = 0.02 * (wage_days + wage_piece_rate + wage_overtime)</field>
 wage_days = (worked_days.WORK300 and worked_days.WORK300.number_of_days) * (contract.wage/25)
 wage_piece_rate = inputs.PR and inputs.PR.amount
 wage_overtime = inputs.OT and inputs.OT.amount
-result = 0.054 * (wage_days + wage_piece_rate + wage_overtime)</field>
+result = 0.0054 * (wage_days + wage_piece_rate + wage_overtime)</field>
          </record>
 
         <record id="hr_salary_rule_jkm_c" model="hr.salary.rule">
@@ -195,7 +195,30 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
             <field name="category_id" ref="hr_payroll.ALW"/>
             <field name="name">Piece Rate Worked Day</field>
             <field name="sequence" eval="18"/>
-            <field name="amount_python_compute">result = (worked_days.WORK310 and worked_days.WORK310.number_of_days) * (contract.wage/25)</field>
+            <field name="amount_python_compute">
+                result = (worked_days.WORK310 and worked_days.WORK310.number_of_days) * (contract.wage/25)</field>
+        </record>
+
+        <record id="hr_salary_rule_salary_rounding" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">RND</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Salary Rounding</field>
+            <field name="sequence" eval="19"/>
+            <field name="amount_python_compute"># Available variables:
+brutto = EDW + OT + PR
+if PRWD:
+    brutto += PRWD
+netto = brutto
+if netto == 0:
+    netto_rounding = 0
+elif netto <= 1000:
+    netto_rounding = 1000
+elif netto%1000 == 0:
+    netto_rounding = netto
+else:
+    netto_rounding = int(round(netto/1000)+1)*1000
+result = netto_rounding - netto</field>
         </record>
 
         <!-- Checkroll Scructure -->
@@ -203,7 +226,11 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
             <field name="code">CHKBASE</field>
             <field name="name">Checkroll Estate</field>
             <field name="parent_id" eval="False"/>
-            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'), ref('hr_salary_rule_flat_overtime'),ref('hr_salary_rule_piece_rate')])]"/>
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'),
+            ref('hr_salary_rule_flat_overtime'),
+            ref('hr_salary_rule_piece_rate'),
+            ref('hr_salary_rule_piece_rate_worked_day'),
+            ref('hr_salary_rule_salary_rounding')])]"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
@@ -237,7 +264,9 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
             <field name="code">CHKINSD</field>
             <field name="parent_id" ref="hr_payroll.structure_estate"/>
             <field name="company_id" ref="base.main_company"/>
-            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_jkm_c'), ref('hr_salary_rule_jkk_c')])]"/>
+            <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_jkm_c'),
+            ref('hr_salary_rule_jkk_c'),
+            ref('hr_salary_rule_salary_rounding')])]"/>
         </record>
 
     </data>
