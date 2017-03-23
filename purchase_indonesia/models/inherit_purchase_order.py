@@ -48,6 +48,7 @@ class InheritPurchaseOrder(models.Model):
     count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
     count_grn_assigned_user = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
     validation_check_confirm_vendor = fields.Boolean('Confirm Vendor')
+    validation_check_backorder = fields.Boolean('Confirm Vendor',compute='_compute_check_backorder')
 
     _defaults = {
         'hide' : False
@@ -68,6 +69,15 @@ class InheritPurchaseOrder(models.Model):
         for item in self:
             if item.confirmed_by:
                 item.validation_confirmed_by = True
+
+    @api.multi
+    @api.depends('state')
+    def _compute_check_backorder(self):
+        for item in self:
+            if item.state in ['cancel','done','purchase','received_all','received_force_done']:
+                item.validation_check_backorder = True
+            else:
+                item.validation_check_backorder = False
 
     @api.multi
     @api.depends('picking_ids')

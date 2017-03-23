@@ -23,6 +23,26 @@ import re
 class InheritStockPicking(models.Model):
 
     @api.multi
+    def purchase_request_technical3(self):
+        return self.env.ref('purchase_request.group_purchase_request_technical3', False).id
+
+    @api.multi
+    def purchase_request_technical4(self):
+        return self.env.ref('purchase_request.group_purchase_request_technical4', False).id
+
+    @api.multi
+    def purchase_request_technical5(self):
+        return self.env.ref('purchase_request.group_purchase_request_technical5', False).id
+
+    @api.multi
+    def purchase_request_technical6(self):
+        return self.env.ref('purchase_indonesia.group_purchase_request_technical6', False).id
+
+    @api.multi
+    def purchase_request_estate_manager(self):
+        return self.env.ref('estate.group_manager', False).id
+
+    @api.multi
     def _get_user(self):
         #find User
         user= self.env['res.users'].browse(self.env.uid)
@@ -38,6 +58,25 @@ class InheritStockPicking(models.Model):
         return employee
 
     @api.multi
+    def _get_estate_manager(self):
+        #get List of Estate Manager from user.groups
+        #Estate Manager
+
+        arrEstateManager = []
+
+        estate_manager = self.env['res.groups'].search([('id','=',self.purchase_request_estate_manager())]).users
+
+        for estate in estate_manager:
+               arrEstateManager.append(estate.id)
+
+        try:
+            manager_estate = self.env['res.users'].search([('id','=',arrEstateManager[0])]).id
+        except:
+            raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
+
+        return manager_estate
+
+    @api.multi
     def _get_requested_purchase_request(self):
         #find Requested Purchase Request
         for item in self:
@@ -46,6 +85,31 @@ class InheritStockPicking(models.Model):
 
             return purchase_request
 
+    @api.multi
+    def _get_department_code(self):
+        department_code = []
+        for item in self:
+            department = item.env['hr.department'].search([])
+            for record in department:
+                if record.code != 'ICT' and record.code:
+                    department_code.append(record.code)
+        return department_code
+
+    @api.multi
+    def _get_technical_user_id(self):
+        for item in self:
+            technic_user_id = 0
+            purchase_request = item.env['purchase.request'].search([('id','=',item._get_purchase_request_id())])
+            if purchase_request.type_functional == 'general' and purchase_request.department_id.code not in item._get_department_code():
+                technic_user_id = item._get_manager_requested_by()
+            elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+                technic_user_id = purchase_request._get_technic_ict()
+            elif purchase_request.type_functional == 'technic':
+                technic_user_id = purchase_request._get_technic_ie()
+            elif purchase_request.type_functional == 'agronomy':
+                technic_user_id = item._get_estate_manager()
+
+            return technic_user_id
 
     @api.multi
     def _get_manager_requested_by(self):
@@ -72,6 +136,14 @@ class InheritStockPicking(models.Model):
 
         return employee
 
+    @api.multi
+    def _get_purchase_request_id(self):
+        for item in self:
+
+            purchase_request = item.env['purchase.request']
+            purchase_request_id = purchase_request.search([('complete_name','like',item.pr_source)]).id
+
+            return purchase_request_id
 
     _inherit = 'stock.picking'
 
@@ -143,6 +215,7 @@ class InheritStockPicking(models.Model):
                     user = record.user_id.name
                 item.shipper_by = user
 
+
     @api.multi
     def action_validate_user(self):
         for item in self:
@@ -172,7 +245,7 @@ class InheritStockPicking(models.Model):
                     elif record.qty_done == record.product_qty:
                         item.write({
                             'validation_manager':True,
-                            'assigned_to':item._get_manager_requested_by()
+                            'assigned_to':item._get_technical_user_id()
                         })
 
     @api.multi
