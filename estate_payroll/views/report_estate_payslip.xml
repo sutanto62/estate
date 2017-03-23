@@ -142,7 +142,7 @@
                                             <t t-set="no" t-value="no+1"/>
 
                                             <!-- sum by team-->
-                                            <t t-set="total_day_team" t-value="total_day_team + payslip.worked_days_line_ids[0].number_of_days"/>
+                                            <t t-set="total_day_team" t-value="total_day_team + get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/>
                                             <t t-set="total_edw_team" t-value="total_edw_team + amount_edw"/>
                                             <t t-set="total_hour_team" t-value="total_hour_team + amount_hour"/>
                                             <t t-set="total_ot_team" t-value="total_ot_team + amount_ot"/>
@@ -160,7 +160,7 @@
                                             <!-- /sum by team-->
 
                                             <!-- sum all -->
-                                            <t t-set="total_day" t-value="total_day + payslip.worked_days_line_ids[0].number_of_days"/>
+                                            <t t-set="total_day" t-value="total_day + get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/>
                                             <t t-set="total_edw" t-value="total_edw + amount_edw"/>
                                             <t t-set="total_hour" t-value="total_hour + amount_hour"/>
                                             <t t-set="total_ot" t-value="total_ot + amount_ot"/>
@@ -363,7 +363,7 @@
                                                 <t t-set="no" t-value="no+1"/>
 
                                                 <!-- Sum -->
-                                                <t t-set="total_day_team" t-value="total_day_team + payslip.worked_days_line_ids[0].number_of_days"/>
+                                                <t t-set="total_day_team" t-value="total_day_team + get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/>
                                                 <t t-set="total_edw_team" t-value="total_edw_team + amount_edw"/>
                                                 <t t-set="total_hour_team" t-value="total_hour_team + amount_hour"/>
                                                 <t t-set="total_ot_team" t-value="total_ot_team + amount_ot"/>
@@ -382,7 +382,7 @@
                                                 <td><span t-field="payslip.employee_id.name"/></td>
                                                 <td><span t-field="payslip.employee_id.nik_number"/></td>
                                                 <td><span t-field="payslip.employee_id.contract_type"/>/<span t-field="payslip.employee_id.contract_period"/></td>
-                                                <td><span t-field="payslip.worked_days_line_ids[0].number_of_days"/></td>
+                                                <td class="text-right"><span t-esc="get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/></td>
                                                 <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_edw)"/></td>
                                                 <td class="text-right"></td>
                                                 <td class="text-right"></td>

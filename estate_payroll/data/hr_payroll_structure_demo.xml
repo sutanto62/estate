@@ -188,6 +188,16 @@ wage_overtime = inputs.OT and inputs.OT.amount
 result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
          </record>
 
+        <!-- Premi Pengganti HK -->
+        <record id="hr_salary_rule_piece_rate_worked_day" model="hr.salary.rule">
+            <field name="amount_select">code</field>
+            <field name="code">PRWD</field>
+            <field name="category_id" ref="hr_payroll.ALW"/>
+            <field name="name">Piece Rate Worked Day</field>
+            <field name="sequence" eval="18"/>
+            <field name="amount_python_compute">result = (worked_days.WORK310 and worked_days.WORK310.number_of_days) * (contract.wage/25)</field>
+        </record>
+
         <!-- Checkroll Scructure -->
         <record id="hr_payroll.structure_estate" model="hr.payroll.structure">
             <field name="code">CHKBASE</field>

@@ -38,6 +38,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
             'get_payslip_total': self.get_payslip_total,
             'get_number_of_day': self.get_number_of_day,
             'number_round': self.number_round,
+            'get_worked_day': self.get_worked_day
             # 'get_qrcode': self.get_qrcode,
             #'get_payslip_lines': self.get_payslip_lines,
         })
@@ -144,6 +145,18 @@ class estate_payslip_run_report(report_sxw.rml_parse):
     def number_round(self, val, round):
         return float(math.ceil(val / round)) * round
 
+    def get_worked_day(self, obj, code):
+        """
+            Get number of days based on code
+        Args:
+            obj: worked day collection
+            code: salary rule code
+        Returns:
+        """
+        worked_days_obj = self.pool.get('hr.payslip.worked_days')
+        worked_days_ids = worked_days_obj.search(self.cr, self.uid, [('code', '=', code),
+                                                                     ('id', 'in', obj.ids)])
+        return sum(line.number_of_days for line in worked_days_obj.browse(self.cr, self.uid, worked_days_ids))
 
 class wrapped_report_payslip(osv.AbstractModel):
     _name = 'report.estate_payroll.report_estate_payslip'
