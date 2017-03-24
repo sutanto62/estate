@@ -62,11 +62,11 @@ class Activity(models.Model):
                                       ('vehicle', 'Vehicle activity'),
                                       ('general', 'General Affair Activity')],
                                      'Activity Type')
-    wage_method = fields.Selection([('standard', 'Standard Quantity'),
-                                    ('attendance', 'Attendance Code')], 'Wage Method',
+    wage_method = fields.Selection([('standard', 'Quantity Based'),
+                                    ('attendance', 'Time Based')], 'Wage Method',
                                    default='standard', track_visibility="onchange",
-                                   help='* Standard Quantity, labour wage based on work result.'\
-                                        '* Worked Day, labour wage based on attendance code.')
+                                   help='* Quantity Based, wage calculated by quantity.\n'
+                                        '* Time Based, wage calculated by attendance code.')
     contract = fields.Boolean('Contract', default=False, track_visibility="onchange",
                               help='Contract based activity allows upkeep record without number of day')
 
@@ -171,6 +171,9 @@ class Activity(models.Model):
     def _check_qty_base(self):
         """ Standard quantity wage method should have standard work result/day to calculate quantity."""
         for record in self:
+            if record.type == 'view':
+                return True
+
             if record.wage_method == 'standard' and not record.qty_base:
                 error_msg = _("You should set standard work result/day if attendance code is standard quantity/contract based.")
                 raise ValidationError(error_msg)

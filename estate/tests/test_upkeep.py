@@ -47,6 +47,20 @@ class TestUpkeep(TransactionCase):
         }
 
     def test_00_check_date_00_today(self):
+        assistant_id = self.env.ref('hr.employee_al')
+        team_id = self.env.ref('estate.team_syukur')
+        estate_id = self.env.ref('stock.stock_main_estate')
+        division_id = self.env.ref('stock.stock_division_1')
+
+        self.upkeep_val = {
+            'name': 'BKM',
+            'assistant_id': team_id.id,
+            'team_id': assistant_id.id,
+            'date': datetime.today().strftime(DF),
+            'estate_id': estate_id.id,
+            'division_id': division_id.id,
+        }
+
         config = self.env['estate.config.settings'].search([], limit=1)
 
         # I changed default max day to 3
