@@ -34,7 +34,10 @@ class InheritPurchaseTenders(models.Model):
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Char('Location')
-    state = fields.Selection(selection_add = [('rollback','Roll Back PP')])
+    state = fields.Selection(selection_add = [('rollback','Roll Back PP'),
+                                              ('closed','PP Closed'),
+                                              ('open', 'PP Outstanding'),
+                                              ('done', 'Shipment Done')])
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
@@ -44,6 +47,7 @@ class InheritPurchaseTenders(models.Model):
     validation_correction = fields.Boolean('Validation Correction',compute='_compute_validation_correction')
     validation_qcf = fields.Boolean('Validation QCF',compute='_compute_validation_qcf')
     validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
+    force_closing = fields.Boolean('Force Closing Tender')
 
     @api.multi
     def _get_value_low(self):
@@ -74,6 +78,18 @@ class InheritPurchaseTenders(models.Model):
             return True
 
     @api.multi
+    def tender_state_closed(self):
+        for item in self:
+            tracking = item.env['validate.tracking.purchase.order.invoice'].search([('requisition_id','=',item.id)])
+            if (tracking.sum_quantity_tender == tracking.sum_quantity_purchase) and (tracking.sum_quantity_tender == tracking.sum_quantity_picking) and (tracking.sum_quantity_tender == tracking.sum_quantity_invoice):
+                return item.write({'state':'closed'})
+            elif item.force_closing == True and ((tracking.sum_quantity_tender == tracking.sum_quantity_purchase) and (tracking.sum_quantity_tender == tracking.sum_quantity_picking) and (tracking.sum_quantity_tender == tracking.sum_quantity_invoice)):
+                return item.write({'state':'closed'})
+            else:
+                raise exceptions.ValidationError('You Must Complete Your Purchase Order')
+
+
+    @api.multi
     def _change_created_by_qcf(self):
         data = {
             'pic_id': self.user_id.id
@@ -85,7 +101,7 @@ class InheritPurchaseTenders(models.Model):
     def _compute_validation_correction(self):
 
         for item in self:
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','open','done']) :
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','closed']) :
                 item.validation_correction = True
             else:
                  item.validation_correction = False
@@ -120,7 +136,8 @@ class InheritPurchaseTenders(models.Model):
                     if count_order == count_confirm:
                         item.validation_qcf = True
                     else:
-                        item.validation_qcf = False
+                        if item.state in ['draft','cancel','closed','done','rollback']:
+                            item.validation_qcf = False
 
 
     @api.multi
@@ -291,7 +308,8 @@ class InheritPurchaseTenders(models.Model):
             'requisition_id': requisition.id,
             'request_id':requisition.request_id.id,
             'notes': requisition.description,
-            'picking_type_id': requisition.picking_type_id.id
+            'picking_type_id': requisition.picking_type_id.id,
+            'validation_check_backorder':True
         }
 
     def _prepare_purchase_backorder_line(self, cr, uid, requisition, requisition_line, purchase_id, supplier, context=None):
@@ -421,6 +439,110 @@ class InheritPurchaseRequisitionLine(models.Model):
                 request_line  = item.env['purchase.request.line'].search([('request_id','=',item.requisition_id.request_id.id),
                                                                           ('product_id','=',item.product_id.id)]).price_per_product
                 item.est_price = request_line
+
+
+class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
+
+    _name = 'validate.tracking.purchase.order.invoice'
+    _description = 'Validation Tracking Purchase Order To Invoice'
+    _auto = False
+    _order = 'id'
+
+    id = fields.Char('ID')
+    requisition_id = fields.Many2one('purchase.requisition')
+    product_id = fields.Many2one('product.product')
+    sum_quantity_tender = fields.Float('Quantity Tender')
+    sum_quantity_purchase = fields.Float('Quantity Purchase')
+    sum_quantity_picking = fields.Float('Quantity Picking')
+    sum_quantity_invoice = fields.Float('Quantity Invoice')
+
+    def init(self, cr):
+        cr.execute("""create or replace view validate_tracking_purchase_order_invoice as
+                        select
+                            row_number() over() id,
+                            tender.requisition_id,
+                            tender.product_id,
+                            sum_quantity_tender,
+                            sum_quantity_purchase,
+                            sum_quantity_picking,
+                            sum_quantity_invoice
+                            from (
+                            select
+                                requisition_id,
+                                product_id,
+                                sum(product_qty) sum_quantity_tender
+                            from purchase_requisition_line prl group by requisition_id,product_id
+                            )tender
+                        left join(
+                        select requisition_id,product_id,sum(quantity) sum_quantity_invoice from (
+                            select
+                                po.id purchase_id,
+                                invoice_id,
+                                requisition_id,
+                                purchase_name,
+                                product_id,
+                                quantity from (
+                                    select
+                                        ai.id invoice_id,
+                                        ai.origin purchase_name,
+                                        product_id,
+                                        quantity
+                                        from account_invoice ai
+                                    inner join
+                                        account_invoice_line ail
+                                        on ai.id = ail.invoice_id
+                                        where state in ('open','paid') and ai.picking_id is null
+                                        )invoice
+                                inner join
+                                    purchase_order po
+                                    on invoice.purchase_name = po.name
+                                )inv  group by requisition_id,product_id
+                        union all
+                        select requisition_id,product_id,sum(quantity) sum_quantity_invoice from (
+                            select
+                                po.id purchase_id,
+                                invoice_id,
+                                requisition_id,
+                                purchase_name,
+                                product_id,
+                                quantity from (
+                                    select
+                                        ai.id invoice_id,
+                                        ai.origin purchase_name,
+                                        product_id,
+                                        quantity
+                                        from account_invoice ai
+                                    inner join
+                                        account_invoice_line ail
+                                        on ai.id = ail.invoice_id
+                                        where state in ('open','paid') and ai.picking_id is not null
+                                        )invoice
+                                inner join
+                                    purchase_order po
+                                    on invoice.purchase_name = po.name
+                                )inv  group by requisition_id,product_id)invoice
+                        on tender.requisition_id = invoice.requisition_id and tender.product_id = invoice.product_id
+                        left join (
+                        select requisition_id,product_id,sum(qty_done) sum_quantity_picking from (
+                            select po.group_id,picking_id,product_id,qty_done,requisition_id from (
+                                select group_id,picking_id,product_id,qty_done,state from stock_picking pick
+                            inner join
+                                stock_pack_operation spo on pick.id = spo.picking_id where qty_done > 0 and state in ('done')
+                            )picking
+                            inner join purchase_order po on picking.group_id = po.group_id
+                        )order_picking group by requisition_id,product_id)picking
+                        on tender.requisition_id = picking.requisition_id and tender.product_id = picking.product_id
+                        left join
+                        (
+                            select product_id,requisition_id,sum(product_qty) sum_quantity_purchase from purchase_order po
+                        inner join
+                            purchase_order_line pol
+                        on po.id = pol.order_id
+                        where state in ('done','received_partial','received_force_done')
+                        group by requisition_id,product_id
+                        )porder
+                        on tender.requisition_id = porder.requisition_id and tender.product_id = porder.product_id
+                        """)
 
 
 

@@ -12,7 +12,7 @@
                                 icon="fa-pencil-square-o"
                                 context="{'xml_id':'action_invoice_tree2'}"
                                 attrs="{'invisible': ['|',('state','!=','done')]}"
-                                groups="purchase_request.group_purchase_request_procstaff,purchase_indonesia.group_purchase_request_finance_procurement"
+                                groups="purchase_request.group_purchase_request_procstaff"
                                 >
                           <field name="invoice_count" widget="statinfo" string="Invoices"/>
                      </button>

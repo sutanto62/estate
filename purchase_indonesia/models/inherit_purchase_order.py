@@ -48,7 +48,7 @@ class InheritPurchaseOrder(models.Model):
     count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
     count_grn_assigned_user = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
     validation_check_confirm_vendor = fields.Boolean('Confirm Vendor')
-    validation_check_backorder = fields.Boolean('Confirm Vendor',compute='_compute_check_backorder')
+    validation_check_backorder = fields.Boolean('Confirm backorder')
 
     _defaults = {
         'hide' : False
@@ -70,14 +70,14 @@ class InheritPurchaseOrder(models.Model):
             if item.confirmed_by:
                 item.validation_confirmed_by = True
 
-    @api.multi
-    @api.depends('state')
-    def _compute_check_backorder(self):
-        for item in self:
-            if item.state in ['cancel','done','purchase','received_all','received_force_done']:
-                item.validation_check_backorder = True
-            else:
-                item.validation_check_backorder = False
+    # @api.multi
+    # @api.depends('state')
+    # def _compute_check_backorder(self):
+    #     for item in self:
+    #         if item.state in ['cancel','done','purchase','received_all','received_force_done']:
+    #             item.validation_check_backorder = True
+    #         else:
+    #             item.validation_check_backorder = False
 
     @api.multi
     @api.depends('picking_ids')
@@ -96,9 +96,11 @@ class InheritPurchaseOrder(models.Model):
                 arrPickingAssignedManager.append(itemAssign.id)
             for itemAssign1 in assigned_user:
                 arrPickingAssigned.append(itemAssign1.id)
+
             assign_picking_done = item.env['stock.picking'].search([('id','in',arrPickingDone)])
             assign_picking_assigned = item.env['stock.picking'].search([('id','in',arrPickingAssigned)])
             assign_picking_assigned_manager = item.env['stock.picking'].search([('id','in',arrPickingAssignedManager)])
+
             picking_done = len(assign_picking_done)
             picking_assigned = len(assign_picking_assigned)
             picking_assigned_manager = len(assign_picking_assigned_manager)
@@ -213,6 +215,7 @@ class InheritPurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     qty_request = fields.Float('Quantity Actual')
+    validation_check_backorder = fields.Boolean('Confirm backorder',related='order_id.validation_check_backorder')
     spesification = fields.Text('Spesification')
     term_of_goods = fields.Selection([('indent','Indent'),('ready','Ready Stock')],'Term Of Goods')
     days = fields.Float('Days Of Indent')

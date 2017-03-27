@@ -100,7 +100,7 @@ class InheritStockPicking(models.Model):
         for item in self:
             technic_user_id = 0
             purchase_request = item.env['purchase.request'].search([('id','=',item._get_purchase_request_id())])
-            if purchase_request.type_functional == 'general' and purchase_request.department_id.code not in item._get_department_code():
+            if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
                 technic_user_id = item._get_manager_requested_by()
             elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
                 technic_user_id = purchase_request._get_technic_ict()
@@ -160,7 +160,7 @@ class InheritStockPicking(models.Model):
     pr_source = fields.Char("Purchase Request Source")
     companys_id = fields.Many2one('res.company','Company')
     code_sequence = fields.Char('Good Receipt Note Sequence')
-    purchase_id = fields.Many2one('purchase.order','Purchase Order')
+    purchase_id = fields.Many2one('purchase.order','Purchase Order',store=True)
     not_seed = fields.Boolean(compute='_change_not_seed')
     grn_no = fields.Char()
     delivery_number = fields.Char()
@@ -243,6 +243,7 @@ class InheritStockPicking(models.Model):
                                     'target'    : 'new'
                                 }
                     elif record.qty_done == record.product_qty:
+                        item._get_technical_user_id()
                         item.write({
                             'validation_manager':True,
                             'assigned_to':item._get_technical_user_id()
@@ -386,10 +387,11 @@ class InheritStockPicking(models.Model):
             po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
 
             #search Tender
+            list_tender = self.env['purchase.requisition']
+            search_tender = list_tender.search([('complete_name','like',po_list)])
+            tender_id = search_tender.id
 
-            tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
-
-            purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
+            purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id)])
 
             count_product =0
             count_action_cancel_status =0
@@ -418,6 +420,9 @@ class InheritStockPicking(models.Model):
                             'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                             }
                         record.write(tender_line_data)
+                        search_tender.write({
+                            'state': 'open' if record.qty_outstanding > 0 else 'done'
+                        })
 
                         if stock_pack_operation_length == 1 and sumitemmin < 0 :
                             count_action_cancel_status = count_action_cancel_status +1
@@ -428,7 +433,7 @@ class InheritStockPicking(models.Model):
                     po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
                     po.button_cancel()
                     for itemmin in self.pack_operation_product_ids:
-                        purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender),('product_id','=',itemmin.product_id.id)])
+                        purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
                         if itemmin.qty_done < 0 :
                             for recordoutstanding in purchase_requisition_linemin:
                                 outstanding_data = {
