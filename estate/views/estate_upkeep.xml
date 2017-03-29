@@ -211,12 +211,16 @@
                     <field name="name"/>
                     <field name="date"/>
                     <field name="company_id"/>
-                    <field name="estate_id"/>
                     <field name="division_id"/>
                     <field name="team_id"/>
                     <field name="assistant_id"/>
+                    <field name="total_labour" string="TL"/>
+                    <field name="total_number_of_day" string="TND"/>
+                    <field name="total_overtime" string="TOT" widget="float_time" />
+                    <field name="total_piece_rate" string="TPR"/>
                     <!-- do not remove -->
-                    <field name="state" invisible="False"/>
+                    <field name="estate_id" invisible="True"/>
+                    <field name="state" invisible="True"/>
                 </tree>
             </field>
         </record>
@@ -250,6 +254,10 @@
                                        attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="assistant_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                <field name="total_labour"/>
+                                <field name="total_number_of_day"/>
+                                <field name="total_overtime"/>
+                                <field name="total_piece_rate"/>
                                 <!-- do not remove -->
                                 <field name="max_day" invisible="True"/>
                             </group>
@@ -314,15 +322,16 @@
                                         <field name="quantity" string="Qty."
                                                attrs="{'readonly':[('activity_contract', '=', True)]}"/>
                                         <field name="activity_uom_id" string="UoM" readonly="True"/>
-                                        <field name="quantity_overtime" widget="float_time" string="OT"
+                                        <field name="quantity_overtime" widget="float_time" string="OT" sum="Total Overtime"
                                             attrs="{'readonly':[('activity_wage_method','!=','attendance')]}"/>
                                         <field name="quantity_piece_rate" string="PR"
                                                 attrs="{'readonly':[('activity_wage_method','!=','standard')]}"/>
-                                        <field name="wage_number_of_day" string="D Wage"/>
-                                        <field name="wage_overtime" string="OT Wage"/>
-                                        <field name="wage_piece_rate" string="PR Wage"/>
-                                        <field name="amount" string="Wage"/>
-                                        <field name="prod_quantity_day" string="Prod (%)" groups="estate.group_assistant"/>
+                                        <field name="wage_number_of_day" string="D Wage" sum="Total Number of Day Wage"/>
+                                        <field name="wage_overtime" string="OT Wage" sum="Total Overtime Wage"/>
+                                        <field name="wage_piece_rate" string="PR Wage" sum="Total Piece Rate Wage"/>
+                                        <field name="amount" string="Wage" sum="Total Wage"/>
+                                        <field name="prod_quantity_day" string="Prod (%)" avg="Average Productivity"
+                                               groups="estate.group_assistant"/>
                                         <!-- do not remove field below -->
                                         <field name="activity_contract" invisible="True"/>
                                         <field name="activity_location_ids" invisible="True"/>
@@ -564,16 +573,17 @@
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
                     <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
                     <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
-                    <field name="ratio_quantity_day" digits="(8,2)" string="Q/D"/>
-                    <field name="ratio_day_quantity" digits="(8,2)" string="D/Q"/>
-                    <field name="ratio_wage_quantity" digits="(12,2)" string="W/Q"/>
                     <field name="wage_number_of_day" string="D Wage"/>
                     <field name="wage_overtime" string="OT Wage"/>
                     <field name="wage_piece_rate" string="PR Wage"/>
                     <field name="amount" string="Wage" sum="Wage"/>
                     <field name="prod_quantity_day" string="Prod (%)" avg="Productivity"/>
-                    <field name="state" invisible="True"/>
                     <field name="activity_contract" string="Ctr."/>
+                    <!-- Do not remove line below -->
+                    <field name="state" invisible="True"/>
+                    <field name="ratio_quantity_day" digits="(8,2)" string="Q/D" invisible="True"/>
+                    <field name="ratio_day_quantity" digits="(8,2)" string="D/Q" invisible="True"/>
+                    <field name="ratio_wage_quantity" digits="(12,2)" string="W/Q" invisible="True"/>
                 </tree>
             </field>
         </record>

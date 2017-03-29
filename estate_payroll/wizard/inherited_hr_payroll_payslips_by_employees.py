@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, osv, exceptions
 
+
 class PayslipEmployee(models.Model):
     _inherit = 'hr.payslip.employees'
 
@@ -13,8 +14,6 @@ class PayslipEmployee(models.Model):
         3. Division (optional).
         :return:
         """
-        # print 'Start get active labour with context %s' % self._context
-
         # Get payslip run date start and end
         payslip_run = self.env['hr.payslip.run'].search([('id', '=', self._context['active_id'])])
 
@@ -22,11 +21,11 @@ class PayslipEmployee(models.Model):
         domain = [('state', '=', 'approved'),
                   ('upkeep_date', '>=', payslip_run.date_start),
                   ('upkeep_date', '<=', payslip_run.date_end)]
+
         if payslip_run.estate_id:
             domain.append(('estate_id', '=', payslip_run.estate_id.id))
-        elif payslip_run.estate_id and payslip_run.division_id:
-            domain.append(('estate_id', '=', payslip_run.estate_id.id),
-                           ('division_id', '=', payslip_run.division_id.id))
+        if payslip_run.division_id:
+            domain.append(('division_id', '=', payslip_run.division_id.id))
 
         # Get labour
         labour = []

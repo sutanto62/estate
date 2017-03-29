@@ -81,6 +81,7 @@
             <field name="inherit_id" ref="hr_payroll.view_hr_payslip_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='employee_id']" position="after">
+                    <filter string="Company" icon="terp-personal" name="company_id" context="{'group_by':'company_id'}"/>
                     <filter string="Team" icon="terp-personal" name="team_id" context="{'group_by':'team_id'}"/>
                 </xpath>
             </field>

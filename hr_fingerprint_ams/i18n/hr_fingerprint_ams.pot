@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-02 04:35+0000\n"
-"PO-Revision-Date: 2017-02-02 04:35+0000\n"
+"POT-Creation-Date: 2017-03-30 06:21+0000\n"
+"PO-Revision-Date: 2017-03-30 06:21+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,15 +16,21 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:309
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:325
 #, python-format
 msgid "%s approved imported AMS fingerprint at %s (server time)"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:291
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:304
 #, python-format
 msgid "%s confirmed imported AMS fingerprint at %s (server time)"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_estate_hr_attendance_fingerprint
+msgid "* Complete, employee with this attendance code should clock-in AND clock-out.\n"
+"* Single, employee with this attendance code allowed to have clock-in OR clock-out only."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -91,6 +97,11 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_auto_assign
 msgid "Auto Assign"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: selection:estate.hr.attendance,fingerprint:0
+msgid "Complete"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -221,7 +232,12 @@ msgid "Fingerprint Data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:116
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_estate_hr_attendance_fingerprint
+msgid "Fingerprint Requirement"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:126
 #, python-format
 msgid "Fingerprint not created. %s (%s), %s is not registered as employee."
 msgstr ""
@@ -376,6 +392,11 @@ msgid "Payslip"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_estate_hr_attendance_piece_rate
+msgid "Piece Rate Day"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
@@ -405,6 +426,18 @@ msgid "Row Name"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:317
+#, python-format
+msgid "Selected records is not a confirmed data."
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:296
+#, python-format
+msgid "Selected records is not a draft data."
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_estate_upkeep_labour_attendance_in
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_sign_in
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_sign_in
@@ -416,6 +449,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_sign_out
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_sign_out
 msgid "Sign Out"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: selection:estate.hr.attendance,fingerprint:0
+msgid "Single"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -495,6 +533,11 @@ msgid "Worked Hours"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_estate_hr_attendance_piece_rate
+msgid "Worked day recorded. Payroll as piece rate."
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_work_schedules
 msgid "Working Schedule"
 msgstr ""
@@ -516,20 +559,25 @@ msgid "Yes"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:299
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:312
 #, python-format
 msgid "You are not authorized to approve all fingerprint imported data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:281
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:291
 #, python-format
 msgid "You are not authorized to confirm all fingerprint imported data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:218
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:228
 #, python-format
 msgid "You cannot delete approved Fingerprint records."
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model,name:hr_fingerprint_ams.model_estate_hr_attendance
+msgid "estate.hr.attendance"
 msgstr ""
 

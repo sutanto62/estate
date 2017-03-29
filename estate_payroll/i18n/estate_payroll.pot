@@ -6,14 +6,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-05 02:02+0000\n"
-"PO-Revision-Date: 2016-10-05 02:02+0000\n"
+"POT-Creation-Date: 2017-03-30 06:21+0000\n"
+"PO-Revision-Date: 2017-03-30 06:21+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "(Draft)"
+msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
@@ -27,7 +32,42 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<strong>Total Other</strong>"
+msgid "<br/>HR GA Head Assistant"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<br/>KTU"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<br/>Senior Kerani Administrasi"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>Divisi</strong>"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>HK/Bulan</strong>"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>HK/Hari</strong>"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>Kebun</strong>"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<strong>Periode</strong>"
 msgstr ""
 
 #. module: estate_payroll
@@ -42,52 +82,22 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<u>Ekos Albar</u><br/>Direktur"
+msgid "<u>Cahyo Wibawanto</u><br/>Agronomy Dept. Head"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<u>Eny Maryoto</u><br/>Kerani"
+msgid "<u>Ekos Albar</u><br/>Director"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<u>Mertha Lidyawati</u><br/>HR Manager"
+msgid "<u>Mertha Lidyawati</u><br/>HR Dept. Head"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<u>Muh Wahid A.A.</u><br/>Kase"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<u>NN</u><br/>KTU"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<u>Petrus T. Wijoyo</u><br/>Ka Perwakilan"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "ADJ"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Acknowledge By"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Allowance"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Approved By"
+msgid "<u>Petrus T. Wijoyo</u><br/>GM Operation"
 msgstr ""
 
 #. module: estate_payroll
@@ -131,28 +141,8 @@ msgid "By Estate/Division create Payslip Batches for Estate."
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Checked By"
-msgstr ""
-
-#. module: estate_payroll
 #: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_contract_type_id
 msgid "Contract Type"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Created By"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Day"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Deduction"
 msgstr ""
 
 #. module: estate_payroll
@@ -162,19 +152,33 @@ msgid "Define alternate location of payroll disbursement other than division"
 msgstr ""
 
 #. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Dibuat oleh,"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Diketahui oleh,"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Diperiksa oleh,"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Disetujui oleh,"
+msgstr ""
+
+#. module: estate_payroll
 #: model:ir.model.fields,field_description:estate_payroll.field_report_estate_payroll_report_estate_payslip_display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_division_id
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Division"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "EDW"
 msgstr ""
 
 #. module: estate_payroll
@@ -184,21 +188,30 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_estate_id
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Estate"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:57
+#: model:ir.actions.report.xml,name:estate_payroll.action_report_payslip
+msgid "Estate Payslip List"
+msgstr ""
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:82
 #, python-format
 msgid "Estate Upkeep Working Days paid at 100%"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:55
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:89
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:71
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:130
 #, python-format
 msgid "Estate Worker"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Gaji"
 msgstr ""
 
 #. module: estate_payroll
@@ -208,13 +221,38 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Hour"
+msgid "HK"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.model.fields,field_description:estate_payroll.field_report_estate_payroll_report_estate_payslip_id
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "ID"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Jam Lembur"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Jumlah Penghasilan"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Kemandoran"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Koreksi"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Lain-Lain"
 msgstr ""
 
 #. module: estate_payroll
@@ -229,42 +267,40 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "No."
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Non Kemandoran"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:99
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:141
 #, python-format
 msgid "OT"
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Other"
-msgstr ""
-
-#. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:98
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:140
 #, python-format
 msgid "Overtime"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:110
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:152
 #, python-format
 msgid "PR"
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.model,name:estate_payroll.model_hr_payslip
-msgid "Pay Slip"
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Pajak"
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Payroll"
+#: model:ir.model,name:estate_payroll.model_hr_payslip
+msgid "Pay Slip"
 msgstr ""
 
 #. module: estate_payroll
@@ -284,11 +320,6 @@ msgid "Payslip Batches"
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.actions.report.xml,name:estate_payroll.action_report_payslip
-msgid "Payslip List"
-msgstr ""
-
-#. module: estate_payroll
 #: model:ir.actions.act_window,name:estate_payroll.action_list_upkeep_labour
 #: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_upkeep_labour_count
 #: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_form
@@ -296,19 +327,51 @@ msgid "Payslip Upkeep Labour Details"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:109
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Penghasilan Bersih"
+msgstr ""
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:151
 #, python-format
 msgid "Piece Rate"
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Signature"
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:96
+#, python-format
+msgid "Piece Rate Working Days"
+msgstr ""
+
+#. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:126
+#, python-format
+msgid "Please check all employee contract date should be in period of payroll batch."
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Sub Total"
+msgid "Potongan"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Rekapitulasi Daftar Upah KHL"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Rekapitulasi Daftar Upah Kemandoran"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Rp Lembur"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Rp Premi"
 msgstr ""
 
 #. module: estate_payroll
@@ -324,7 +387,7 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Tax"
+msgid "Tanda Tangan"
 msgstr ""
 
 #. module: estate_payroll
@@ -340,7 +403,22 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Total Lain-Lain"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Tunjangan"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Type"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Upah"
 msgstr ""
 
 #. module: estate_payroll
@@ -356,14 +434,9 @@ msgid "Upkeep Labour"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:134
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:186
 #, python-format
 msgid "Upkeep Labour Records %s"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "Wage"
 msgstr ""
 
 #. module: estate_payroll
@@ -375,11 +448,6 @@ msgstr ""
 #. module: estate_payroll
 #: model:ir.model,name:estate_payroll.model_estate_hr_team
 msgid "estate.hr.team"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "no."
 msgstr ""
 
 #. module: estate_payroll
