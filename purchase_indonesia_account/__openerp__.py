@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Purchase Workshop",
+    'name': "Purchase Indonesia Account Invoice",
 
     'summary': """
-        Module Purchase Indonesia Can be use on Wokrhop Module""",
+        Inheritance of Account.invoice for purchase_indonesia""",
 
     'description': """
-        Long description of module's purpose
+        This module created to provide purchase indonesia use account.invoice
     """,
 
-    'author': "Mahroza Pradana <Mahroza.pradana@palmagroup.co.id>",
-    'website': "http://www.palmagroup.co.id",
+    'author': "Mahroza",
+    'website': "",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
@@ -19,15 +19,17 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','purchase_indonesia','estate_workshop'],
+    'depends': ['base','purchase_indonesia'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/inherit_mro_order.xml',
+        # 'templates.xml',
+        'views/inherit_stock_picking.xml',
+        'views/inherit_account_invoice.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo.xml',
+        # 'demo.xml',
     ],
 }

@@ -15,6 +15,7 @@ class InheritStockMove(models.Model):
     _inherit = 'stock.move'
 
     general_account_id = fields.Many2one('account.account','General Account')
+    description = fields.Text('Description')
 
 class ManagementGoodRequest(models.Model):
 
@@ -112,6 +113,7 @@ class ManagementGoodRequest(models.Model):
                     'location_id': self.warehouse_id.id,
                     'location_dest_id': self.destination_id.id,
                     'general_account_id':record.general_account_id.id,
+                    'description':record.description,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -139,6 +141,7 @@ class ManagementGoodRequest(models.Model):
                     'location_id':self.destination_id.id ,
                     'location_dest_id': self.warehouse_id.id,
                     'general_account_id':record.general_account_id.id,
+                    'description':record.description,
                     'state': 'confirmed', # set to done if no approval required
                 }
 

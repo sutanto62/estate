@@ -1,15 +1,226 @@
 <openerp>
     <data>
+
+
+        <record model="ir.ui.view" id="inherit_res_partner_product_tree">
+             <field name="name">Inherit res Partner</field>
+             <field name="model">res.partner</field>
+             <field name="inherit_id" ref="base.view_partner_tree"/>
+             <field name="arch" type="xml">
+
+                 <xpath expr="//field[@name='display_name']" position="before">
+                      <field name="partner_running_number" string="Partner No"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='email']" position="after">
+                      <field name="confirmed_by" string="Confirmed By"/>
+                      <field name="approved_by" string="Approved By"/>
+                      <field name="state" string="State"/>
+                 </xpath>
+
+             </field>
+         </record>
         <record model="ir.ui.view" id="inherit_res_partner_product">
              <field name="name">Inherit res Partner</field>
              <field name="model">res.partner</field>
              <field name="inherit_id" ref="base.view_partner_form"/>
              <field name="arch" type="xml">
+                 <xpath expr="//form/*" position="before">
+                     <header>
+                         <button name="action_confirm" states="draft" type="object" string="Confirm" class="oe_highlight" groups="purchase_request.group_purchase_request_procstaff"/>
+                         <button name="action_approved" states="confirm" type="object" string="Approve" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <button name="action_set_to_draft" states="confirm" type="object" string="Set To Draft" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_finance_procurement"/>
+                         <field name="state" widget="statusbar"
+                           statusbar_visible="draft"
+                           statusbar_colors='{"approved":"blue"}'/>
+                     </header>
+                 </xpath>
+                 <xpath expr="//field[@name='website']" position="after">
+                     <field name="confirmed_by" string="Confirmed By" readonly="1" attrs="{'invisible': [('state', '!=','confirm'),('state', '!=','done')]}"/>
+                     <field name="assign_to" string="Assign To" readonly="1"/>
+                     <field name="approved_by" string="Approved By" readonly="1" attrs="{'invisible': [('state', '!=','done')]}" />
+                 </xpath>
                  <xpath expr="//field[@name='category_id']" position="after">
                       <field name="partner_product" string="Partner Product"/>
                       <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
                  </xpath>
+                 <xpath expr="//button[@name='toggle_active']" position="replace">
+                    <button name="toggle_active" type="object" groups="purchase_indonesia.group_purchase_request_finance_procurement" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                        </button>
+                 </xpath>
+                 <xpath expr="//field[@name='website']" position="before">
+                      <field name="partner_code" string="Partner code" invisible="1"/>
+                      <field name="partner_running_number" string="Partner No"/>
+                 </xpath>
+                 <xpath expr="//field[@name='street']" position="replace">
+                      <field name="street" placeholder="Street..." required="1" class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='street2']" position="replace">
+                      <field name="street2" placeholder="Street 2..." required="1" class="o_address_street" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='city']" position="replace">
+                      <field name="city" placeholder="City" required="1" class="o_address_city" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='state_id']" position="replace">
+                      <field name="state_id" class="o_address_state" required="1"  placeholder="State" options="{&quot;no_open&quot;: True}" on_change="onchange_state(state_id)" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}" context="{'country_id': country_id, 'zip': zip}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='zip']" position="replace">
+                      <field name="zip" placeholder="ZIP" required="1" class="o_address_zip" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='country_id']" position="replace">
+                      <field name="country_id" placeholder="Country" required="1" class="o_address_country" options="{&quot;no_open&quot;: True, &quot;no_create&quot;: True}" attrs="{'readonly': [('type', '=', 'contact'),('parent_id', '!=', False)]}"/>
+                 </xpath>
+                 <xpath expr="//field[@name='phone']" position="replace">
+                      <field name="phone" widget="phone" required="1"/>
+                 </xpath>
+                 <xpath expr="//field[@name='mobile']" position="replace">
+                      <field name="mobile" widget="phone" required="1"/>
+                 </xpath>
+
+                 <xpath expr="//notebook" position="inside">
+                     <page  string="Business Permit" autofocus="autofocus">
+                        <field name="businesspermit_ids"
+                               context="{'tree_view_ref' : 'base_indonesia.view_base_indonesia_vendor_business_permit_tree'}"/>
+                     </page>
+                     <page  string="Taxes" autofocus="autofocus">
+                        <field name="businessteaxes_ids"
+                               context="{'tree_view_ref' : 'base_indonesia.view_base_indonesia_taxes_tree'}"/>
+                     </page>
+                 </xpath>
              </field>
          </record>
+
+
+        <record model="ir.ui.view" id="view_base_indonesia_vendor_business_permit_tree">
+            <field name="name">base.indonesia.vendor.business.permit.tree</field>
+            <field name="model">base.indonesia.vendor.business.permit</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="no_identity_business" string="No Identity Business"/>
+                    <field name="due_date_business_permit" string="Due Date Business Permit"/>
+                    <field name="no_certificate_of_company_registration" string="No Certificate"/>
+                    <field name="due_date_certificate_of_company_cegistration" string="Due Date Certificate"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_base_indonesia_vendor_business_permit_form" model="ir.ui.view">
+            <field name="name">base.indonesia.vendor.business.permit.form</field>
+            <field name="model">base.indonesia.vendor.business.permit</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <separator string="Business Permit" />
+                           <group>
+                                <field name="partner_id" string="Partner" invisible="1"/>
+                                <field name="no_identity_business" string="No SIUP/SIUJK/SIUPAL"/>
+                                <field name="due_date_business_permit" string="Due Date Business Permit"/>
+                                <field name="published_by_business_permit" string="Published By"/>
+                           </group>
+                        <separator string="Certificate of Company Registration" />
+                           <group>
+                                <field name="no_certificate_of_company_registration" string="No Certificate of Company Registration"/>
+                                <field name="due_date_certificate_of_company_cegistration" string="Due Date Certificate of Company Registration"/>
+                                <field name="published_by_certificate_of_company_cegistration" string="Published By Certificate of Company Registration"/>
+                           </group>
+
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="view_base_indonesia_vendor_business_permit_action">
+            <field name="name">base.indonesia.vendor.business.permit.action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">base.indonesia.vendor.business.permit</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new vendor business permit.
+              </p>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_base_indonesia_taxes_tree">
+            <field name="name">base.indonesia.taxes</field>
+            <field name="model">base.indonesia.taxes</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="nppkp_no" string="NPPKP NO"/>
+                    <field name="npwp_no" string="NPWP NO"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- View Form: Path -->
+        <record id="view_base_indonesia_taxes_form" model="ir.ui.view">
+            <field name="name">base.indonesia.taxes</field>
+            <field name="model">base.indonesia.taxes</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <separator string="Business Vendor Taxes" />
+                        <group>
+                            <field name="partner_id" string="Partner ID" invisible="1" />
+                            <field name="nppkp_no" string="NPPKP NO"/>
+                            <field name="npwp_no" string="NPWP NO"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.actions.act_window" id="view_base_indonesia_taxes_action">
+            <field name="name">base.indonesia.taxes.action</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">base.indonesia.taxes</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new vendor business permit.
+              </p>
+            </field>
+        </record>
+
+        <record id="base.view_res_partner_filter" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <search string="Search Partner">
+                   <field name="state"/>
+                   <field name="name"
+                       filter_domain="['|','|',('display_name','ilike',self),('ref','=',self),('email','ilike',self)]"/>
+                   <filter help="My Partners" domain="[('user_id','=',uid)]"/>
+                   <separator/>
+                   <filter string="Persons" name="type_person" domain="[('is_company','=',0)]"/>
+                   <filter string="Companies" name="type_company" domain="[('is_company','=',1)]"/>
+                   <separator/>
+                   <filter string="Customers" name="customer" domain="[('customer','=',1), ('parent_id', '=', False)]"/>
+                   <filter string="Vendors" name="supplier" domain="[('supplier','=',1), ('parent_id', '=', False)]"/>
+                   <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                   <separator/>
+                   <field name="category_id" string="Tag" filter_domain="[('category_id','ilike', self)]"/>
+                   <field name="user_id"/>
+                   <field name="parent_id" domain="[('is_company','=',1)]" operator="child_of"/>
+                   <group expand="0" name="group_by" string="Group By">
+                       <filter name="salesperson" string="Salesperson" domain="[]" context="{'group_by' : 'user_id'}" />
+                       <filter string="Company" context="{'group_by': 'parent_id'}"/>
+                       <filter string="Country" context="{'group_by': 'country_id'}"/>
+                   </group>
+               </search>
+            </field>
+        </record>
+
     </data>
 </openerp>

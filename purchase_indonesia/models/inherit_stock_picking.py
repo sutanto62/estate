@@ -6,6 +6,8 @@ import openerp
 import openerp.addons.decimal_precision as dp
 from openerp.tools import float_compare, float_is_zero
 from datetime import datetime, date,time
+from openerp.tools.translate import _
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
 import calendar
@@ -13,6 +15,7 @@ from openerp import tools
 import re
 import json
 import logging
+import time
 from operator import attrgetter
 import re
 
@@ -78,8 +81,8 @@ class InheritStockPicking(models.Model):
                                    required=False,
                                    track_visibility='onchange',compute='_onchange_requested_by'
                                    )
-    assigned_to = fields.Many2one('res.users', 'Approver',compute='_onchange_assigned_to',
-                                  track_visibility='onchange')
+    assigned_to = fields.Many2one('res.users', 'Approver',
+                                  track_visibility='onchange',readonly=1)
     type_location = fields.Char('Location code')
     location = fields.Char('Location')
     pr_source = fields.Char("Purchase Request Source")
@@ -89,9 +92,14 @@ class InheritStockPicking(models.Model):
     not_seed = fields.Boolean(compute='_change_not_seed')
     grn_no = fields.Char()
     delivery_number = fields.Char()
+    shipper_by = fields.Char('Shipper By',compute='_compute_default_shipper')
     validation_receive = fields.Char()
-    validation_manager = fields.Boolean('Validation Manager',compute='_check_validation_manager')
+    validation_manager = fields.Boolean('Validation Manager')
+    validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
+    validation_check_approve = fields.Boolean('Validation checking approve',compute='_check_validation_manager')
     description = fields.Text('Description')
+    pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
+    purchase_order_name = fields.Char('Purchase Order Complete Name',related='purchase_id.complete_name',store=True)
 
     _defaults = {
         'not_seed':True,
@@ -101,10 +109,19 @@ class InheritStockPicking(models.Model):
     @api.depends('assigned_to')
     def _check_validation_manager(self):
         for item in self:
-            if not item.validation_receive:
-                item.validation_manager = True if item.assigned_to.id == item._get_user().id else False
+            if item.validation_manager == True:
+                item.validation_check_approve = True if item.assigned_to.id == item._get_user().id  and item.state != 'done' else False
+            elif item.validation_manager == True and item.validation_receive and item.state == 'done':
+                item.validation_check_approve = False
+
+    @api.multi
+    @api.depends('requested_by')
+    def _check_validation_user(self):
+        for item in self:
+            if item.validation_manager == False and item.state != 'done':
+                item.validation_user = True if item.requested_by.id == item._get_user().id else False
             else:
-                item.validation_manager = False
+                item.validation_user = False
 
     @api.multi
     def action_validate_manager(self):
@@ -112,6 +129,51 @@ class InheritStockPicking(models.Model):
             receive_message = 'This GRN / SRN Approved by Manager \"%s\" '%(item.assigned_to.name)
             item.validation_receive = receive_message
 
+    @api.multi
+    @api.depends('pr_source')
+    def _compute_default_shipper(self):
+        for item in self:
+            if item.pr_source:
+                pr = item.env['purchase.request']
+                pr_id = pr.search([('complete_name','like',item.pr_source)]).id
+                tender = item.env['purchase.requisition']
+                tender_id = tender.search([('request_id','=',pr_id)])
+                user = ''
+                for record in tender_id:
+                    user = record.user_id.name
+                item.shipper_by = user
+
+    @api.multi
+    def action_validate_user(self):
+        for item in self:
+            for record in item.pack_operation_product_ids:
+                if record.qty_done < 0:
+                    error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
+                    raise exceptions.ValidationError(error_msg)
+                else:
+                    if record.qty_done > 0 and record.qty_done < record.product_qty:
+                        #show wizard Split quantity
+                        wizard_form = item.env.ref('purchase_indonesia.view_stock_picking_split', False)
+                        view_id = item.env['stock.picking.wizard.split']
+                        vals = {
+                                    'name'   : 'this is for set name',
+                                }
+                        new = view_id.create(vals)
+                        return {
+                                    'name'      : _('Split Your Delivery Quantity List'),
+                                    'type'      : 'ir.actions.act_window',
+                                    'res_model' : 'stock.picking.wizard.split',
+                                    'res_id'    : new.id,
+                                    'view_id'   : wizard_form.id,
+                                    'view_type' : 'form',
+                                    'view_mode' : 'form',
+                                    'target'    : 'new'
+                                }
+                    elif record.qty_done == record.product_qty:
+                        item.write({
+                            'validation_manager':True,
+                            'assigned_to':item._get_manager_requested_by()
+                        })
 
     @api.multi
     @api.depends('purchase_id')
@@ -119,13 +181,6 @@ class InheritStockPicking(models.Model):
         for item in self:
             if item.purchase_id:
                 item.requested_by = item._get_requested_purchase_request()
-
-    @api.multi
-    @api.depends('requested_by')
-    def _onchange_assigned_to(self):
-        for item in self:
-            if item.requested_by:
-                item.assigned_to = item._get_manager_requested_by()
 
     @api.one
     @api.depends('grn_no','min_date','companys_id','type_location')
@@ -206,17 +261,51 @@ class InheritStockPicking(models.Model):
                 stock_move.action_confirm()
                 stock_move.action_done()
 
+
     @api.multi
     def do_transfer(self):
-        qty = min(item.product_qty for item in self.pack_operation_product_ids)
-        done = min(item.qty_done for item in self.pack_operation_product_ids)
+        for item in self:
+            #search list of pack operation
+            pack_operation = item.env['stock.pack.operation'].search([('picking_id','=',self.id)])
 
-        if qty and done < 0:
-            self.action_move_picking_force_stop()
-            self.write({'state':'done'})
-        else :
-            super(InheritStockPicking,self).do_transfer()
+            #search minimal quantity product qty and qty done
+            qty = min(item.product_qty for item in pack_operation)
+            done = min(item.qty_done for item in pack_operation)
 
+            super(InheritStockPicking,item).do_transfer()
+
+            purchase_order = item.env['purchase.order'].search([('id','=',self.purchase_id.id)])
+
+            sequence_name = 'stock.srn.seq.'+item.type_location.lower()+'.'+item.companys_id.code.lower() if purchase_order.validation_srn == True else 'stock.grn.seq.'+item.type_location.lower()+'.'+item.companys_id.code.lower()
+
+            purchase_data_srn = {
+                    'pr_source' : purchase_order.request_id.complete_name,
+                    'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
+                    'assigned_to' : None,
+                    'validation_manager':False,
+                    }
+            purchase_data = {
+                    'pr_source' : purchase_order.request_id.complete_name,
+                    'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
+                    'assigned_to' : None,
+                    'validation_manager':False,
+                }
+
+            picking = item.env['stock.picking']
+            backorder_picking = picking.search([('backorder_id','=',item.id)])
+            purchase_state = {'state' : 'received_force_done'}
+
+            if qty and done < 0:
+                purchase_order.write(purchase_state)
+                # method to use if you want not create back order
+                # self.action_move_picking_force_stop()
+
+                if purchase_order.validation_srn == True :
+                    backorder_picking.write(purchase_data_srn)
+                else:
+                    backorder_picking.write(purchase_data)
+            else:
+                purchase_order.write({'state':'done'})
 
     @api.multi
     def do_new_transfer(self):
@@ -231,8 +320,8 @@ class InheritStockPicking(models.Model):
 
             count_product =0
             count_action_cancel_status =0
-            if self._get_user().id != self.requested_by.id:
-                error_msg = 'You cannot approve this \"%s\" cause you are not requested this PP '%(self.complete_name_picking)
+            if self._get_user().id != self.assigned_to.id:
+                error_msg = 'You cannot approve this \"%s\" , you are not requester of this PP '%(self.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
             else:
                 for record in purchase_requisition_line:
@@ -256,16 +345,6 @@ class InheritStockPicking(models.Model):
                             'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                             }
                         record.write(tender_line_data)
-                        if sumitemmin <= 0 :
-                            purchase_data = {
-                                'state' : 'received_force_done'
-                            }
-                            po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
-                        else:
-                            purchase_data = {
-                                'state' : 'done'
-                            }
-                            po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).write(purchase_data)
 
                         if stock_pack_operation_length == 1 and sumitemmin < 0 :
                             count_action_cancel_status = count_action_cancel_status +1
@@ -286,6 +365,7 @@ class InheritStockPicking(models.Model):
                     self.action_cancel()
                 else:
                     self.do_transfer()
+                    self.action_validate_manager()
 
                 super(InheritStockPicking,self).do_new_transfer()
 
@@ -293,11 +373,21 @@ class InheritStockPicking(models.Model):
     def print_grn(self):
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
+    @api.multi
+    @api.constrains('pack_operation_product_ids')
+    def _constraint_pack_operation_product_ids(self):
+        for item in self:
+            if item._get_user().id != item.requested_by.id:
+                error_msg = 'You cannot Process this \"%s\" , you are not requester of this PP '%(item.complete_name_picking)
+                raise exceptions.ValidationError(error_msg)
 
 
 class InheritStockPackOperation(models.Model):
 
     _inherit='stock.pack.operation'
+
+    checking_split = fields.Boolean('Checking Split',default=False)
+    initial_qty = fields.Float('Initial Qty',readonly=1)
 
     @api.multi
     def do_force_donce(self):
@@ -306,14 +396,24 @@ class InheritStockPackOperation(models.Model):
         self.product_qty = compute_product
         self.qty_done = compute_product
 
-    @api.multi
-    def split_quantities(self):
-        #constraint split quantities in stock.pack.operation
-        for pack in self:
+
+    def split_quantities2(self, cr, uid, ids, context=None):
+        for pack in self.browse(cr, uid, ids, context=context):
+            if pack.product_qty - pack.qty_done > 0.0 and pack.qty_done < pack.product_qty:
+                pack2 = self.copy(cr, uid, pack.id,
+                                  default={
+                                        'qty_done': 0.0,
+                                        'product_qty': pack.product_qty - pack.qty_done,
+                                        'checking_split':True,
+                                        'initial_qty':pack.product_qty}, context=context)
+                copy_pack = pack.env['stock.pack.operation'].search([('id','=',pack2)])
+                copy_pack.do_force_donce()
+                self.write(cr, uid, [pack.id], {'initial_qty':pack.product_qty,'product_qty': pack.qty_done}, context=context)
             if pack.qty_done < 0:
                 error = 'Quantity done must be higher than 0 '
                 raise exceptions.ValidationError(error)
-        super(InheritStockPackOperation,self).split_quantities()
+
+        return True
 
 
 

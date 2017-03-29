@@ -12,7 +12,7 @@
         <template id="report_purchase_quotation">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
-            		<t t-call="report.external_layout">
+            		<t t-call="report.internal_layout">
 						<div class="page" style="font-family: times; background-color:white; color:black;">
 		              		<!-- Header -->
 		              		<div class="row" style="text-align:left;">

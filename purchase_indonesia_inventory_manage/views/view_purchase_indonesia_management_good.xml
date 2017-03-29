@@ -8,6 +8,12 @@
                  <xpath expr="//field[@name='priority']" position="after">
                           <field name='general_account_id' string="COA"/>
                  </xpath>
+                  <xpath expr="//field[@name='string_availability_info']" position="after">
+                      <group>
+                        <separator string="Description"/>
+                        <field name='description'/>
+                      </group>
+                 </xpath>
              </field>
          </record>
 
@@ -25,6 +31,15 @@
                     <field name="state" string="State"/>
                 </tree>
             </field>
+        </record>
+
+        <record id="action_management_good_request_reject" model="ir.actions.act_window">
+            <field name="name">Reject Management Good Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">purchase_indonesia.management.good.request.reject</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
         </record>
 
         <!-- View Form: Path -->

@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_indonesia_account_purchase_indonesia_account,purchase_indonesia_account.purchase_indonesia_account,model_purchase_indonesia_account_purchase_indonesia_account,,1,0,0,0

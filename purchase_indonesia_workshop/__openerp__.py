@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Purchase Service Receipt Note",
+    'name': "Purchase Indonesia Workshop",
 
     'summary': """
-       Module For Service Receipt Note""",
+        Module Purchase Indonesia Can be use on Wokrhop Module""",
 
     'description': """
         Long description of module's purpose
     """,
 
-    'author': "Mahroza Pradana <mahroza.pradana@palmagroup.co.id>",
+    'author': "Mahroza Pradana <Mahroza.pradana@palmagroup.co.id>",
     'website': "http://www.palmagroup.co.id",
 
     # Categories can be used to filter modules in modules listing
@@ -19,12 +19,12 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','purchase_indonesia'],
+    'depends': ['base','purchase_indonesia','estate_workshop'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
-        'views/inherit_purchase_order.xml',
+        'views/inherit_mro_order.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -22,63 +22,63 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def purchase_request_dpt_head(self):
-        return 'Purchase Request Department Head'
+        return self.env.ref('purchase_request.group_purchase_request_dept_head', False).id
 
     @api.multi
     def purchase_request_division_head(self):
-        return 'Purchase Request Division Head'
+        return self.env.ref('purchase_request.group_purchase_request_div_head', False).id
 
     @api.multi
     def purchase_request_budget(self):
-        return 'Purchase Request Budget'
+        return self.env.ref('purchase_request.group_purchase_request_budget', False).id
 
     @api.multi
     def purchase_request_technical1(self):
-        return 'Purchase Request Technical Dept Head'
+        return self.env.ref('purchase_request.group_purchase_request_technical1', False).id
 
     @api.multi
     def purchase_request_technical2(self):
-        return 'Purchase Request Technical Div Head'
+        return self.env.ref('purchase_request.group_purchase_request_technical2', False).id
 
     @api.multi
     def purchase_request_technical3(self):
-        return 'Purchase Request Technical ICT'
+        return self.env.ref('purchase_request.group_purchase_request_technical3', False).id
 
     @api.multi
     def purchase_request_technical4(self):
-        return 'Purchase Request Technical Agronomy'
+        return self.env.ref('purchase_request.group_purchase_request_technical4', False).id
 
     @api.multi
     def purchase_request_technical5(self):
-        return 'Purchase Request Technical IE'
+        return self.env.ref('purchase_request.group_purchase_request_technical5', False).id
 
     @api.multi
     def purchase_request_technical6(self):
-        return 'Purchase Request Technical HRGA Head'
+        return self.env.ref('purchase_indonesia.group_purchase_request_technical6', False).id
 
     @api.multi
     def purchase_request_director(self):
-        return 'Purchase Request Director'
+        return self.env.ref('purchase_indonesia.group_purchase_request_director', False).id
 
     @api.multi
     def purchase_request_president_director(self):
-        return 'Purchase Request President Director'
+        return self.env.ref('purchase_indonesia.group_purchase_request_president_director', False).id
 
     @api.multi
     def purchase_ro_head(self):
-        return 'Purchase Request RO Head'
+        return self.env.ref('purchase_indonesia.group_purchase_request_head_of_ro', False).id
 
     @api.multi
     def purchase_procurement_staff(self):
-        return 'Purchase Request Procurment Staff'
+        return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
 
     @api.multi
     def purchase_request_manager(self):
-        return 'Purchase Request Manager'
+        return self.env.ref('purchase_request.group_purchase_request_manager', False).id
 
     @api.multi
     def purchase_request_finance(self):
-        return 'Purchase Request Finance Procurement'
+        return self.env.ref('purchase_request.group_purchase_request_finance_procurement', False).id
 
 
     #Method Get user
@@ -194,6 +194,11 @@ class InheritPurchaseRequest(models.Model):
     validation_correction = fields.Boolean("Validation Correction",compute='_change_validation_correction')
     validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
+    validation_correction_procurement = fields.Boolean("Validation Correction Procurement",default=False)
+    count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
+    count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
+    count_po_partial = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
+    count_po_done = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
 
     @api.multi
@@ -221,7 +226,7 @@ class InheritPurchaseRequest(models.Model):
         #get List of Ro Manager from user.groups
         arrRO = []
 
-        list_ro_manager = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
+        list_ro_manager = self.env['res.groups'].search([('id','=',self.purchase_ro_head())]).users
 
         for ro_manager_id in list_ro_manager:
                 arrRO.append(ro_manager_id.id)
@@ -238,7 +243,7 @@ class InheritPurchaseRequest(models.Model):
         arrPresidentDirector = []
 
         #search User President director from user list
-        list_president= self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
+        list_president= self.env['res.groups'].search([('id','=',self.purchase_request_president_director())]).users
 
         for president_id in list_president:
             arrPresidentDirector.append(president_id.id)
@@ -254,7 +259,7 @@ class InheritPurchaseRequest(models.Model):
         arrDirector = []
 
         #search User Director from user list
-        list_director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
+        list_director= self.env['res.groups'].search([('id','=',self.purchase_request_director())]).users
         for director_id in list_director:
             arrDirector.append(director_id.id)
         try:
@@ -269,7 +274,7 @@ class InheritPurchaseRequest(models.Model):
         arrDivhead = []
 
         #search User Finance from user list
-        listdivision= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
+        listdivision= self.env['res.groups'].search([('id','=',self.purchase_request_division_head())]).users
 
         for divhead in listdivision:
             arrDivhead.append(divhead.id)
@@ -287,7 +292,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrTechnic3 = []
 
-        list_technicalict = self.env['res.groups'].search([('name','like',self.purchase_request_technical3())]).users
+        list_technicalict = self.env['res.groups'].search([('id','=',self.purchase_request_technical3())]).users
 
         for technic3 in list_technicalict:
                arrTechnic3.append(technic3.id)
@@ -305,7 +310,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrTechnic6 = []
 
-        list_technicalga = self.env['res.groups'].search([('name','like',self.purchase_request_technical6())]).users
+        list_technicalga = self.env['res.groups'].search([('id','=',self.purchase_request_technical6())]).users
 
         for technic6 in list_technicalga:
                arrTechnic6.append(technic6.id)
@@ -323,7 +328,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrTechnic4 = []
 
-        technic4 = self.env['res.groups'].search([('name','like',self.purchase_request_technical4())]).users
+        technic4 = self.env['res.groups'].search([('id','=',self.purchase_request_technical4())]).users
 
         for technic4 in technic4:
                arrTechnic4.append(technic4.id)
@@ -340,7 +345,7 @@ class InheritPurchaseRequest(models.Model):
         #get List of Budget from user.groups
        arrBudget = []
 
-       list_budget_manager = self.env['res.groups'].search([('name','like',self.purchase_request_budget())]).users
+       list_budget_manager = self.env['res.groups'].search([('id','=',self.purchase_request_budget())]).users
 
        for budgetgroupsrecord in list_budget_manager:
             arrBudget.append(budgetgroupsrecord.id)
@@ -357,7 +362,7 @@ class InheritPurchaseRequest(models.Model):
 
          arrTechnic5 = []
 
-         list_technic_ie = self.env['res.groups'].search([('name','like',self.purchase_request_technical5())]).users
+         list_technic_ie = self.env['res.groups'].search([('id','=',self.purchase_request_technical5())]).users
 
          for technic5 in list_technic_ie:
                arrTechnic5.append(technic5.id)
@@ -376,8 +381,8 @@ class InheritPurchaseRequest(models.Model):
         arrDept=[]
 
         #search User in 2 groups
-        budget_manager = self.env['res.groups'].search([('name','like',self.purchase_request_budget())]).users
-        dept_manager =  self.env['res.groups'].search([('name','like',self.purchase_request_dpt_head())]).users
+        budget_manager = self.env['res.groups'].search([('id','=',self.purchase_request_budget())]).users
+        dept_manager =  self.env['res.groups'].search([('id','=',self.purchase_request_dpt_head())]).users
 
         for budgetgroupsrecord in budget_manager:
             arrBudget.append(budgetgroupsrecord.id)
@@ -395,7 +400,7 @@ class InheritPurchaseRequest(models.Model):
 
         arrDepartment = []
 
-        assign_department= self.env['res.groups'].search([('name','like',self.purchase_request_dpt_head())]).users
+        assign_department= self.env['res.groups'].search([('id','=',self.purchase_request_dpt_head())]).users
 
 
         #Search ID user from user.groups
@@ -517,14 +522,14 @@ class InheritPurchaseRequest(models.Model):
         arrPresidentDirector = []
 
         #search User from res.user
-        assign_division= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
-        technic3 = self.env['res.groups'].search([('name','like',self.purchase_request_technical3())]).users
-        technic4 = self.env['res.groups'].search([('name','like',self.purchase_request_technical4())]).users
-        technic5 = self.env['res.groups'].search([('name','like',self.purchase_request_technical5())]).users
-        budget = self.env['res.groups'].search([('name','like',self.purchase_request_budget())]).users
-        director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
-        president_director = self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
-        ro_head = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
+        assign_division= self.env['res.groups'].search([('id','=',self.purchase_request_division_head())]).users
+        technic3 = self.env['res.groups'].search([('id','=',self.purchase_request_technical3())]).users
+        technic4 = self.env['res.groups'].search([('id','=',self.purchase_request_technical4())]).users
+        technic5 = self.env['res.groups'].search([('id','=',self.purchase_request_technical5())]).users
+        budget = self.env['res.groups'].search([('id','=',self.purchase_request_budget())]).users
+        director= self.env['res.groups'].search([('id','=',self.purchase_request_director())]).users
+        president_director = self.env['res.groups'].search([('id','=',self.purchase_request_president_director())]).users
+        ro_head = self.env['res.groups'].search([('id','=',self.purchase_ro_head())]).users
 
         #Search ID user from user.groups
 
@@ -642,9 +647,12 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def button_approved(self):
-        self.tracking_approval()
-        self.create_purchase_requisition()
-        self.create_quotation_comparison_form()
+        if self.validation_correction_procurement == True:
+            self.update_purchase_requisition()
+        else:
+            self.tracking_approval()
+            self.create_purchase_requisition()
+            self.create_quotation_comparison_form()
         super(InheritPurchaseRequest, self).button_approved()
         return True
 
@@ -740,7 +748,7 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
 
         if self._get_max_price() >= self._get_price_low():
-            state_data = {'state':'approval2','assigned_to':self._get_division_finance()}
+            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
@@ -757,9 +765,12 @@ class InheritPurchaseRequest(models.Model):
        #check total product price in purchase request
        state_data = []
 
-       if self._get_max_price() >= self._get_price_low() and self._get_employee().parent_id.id:
-            state_data = {'state':'approval2','assigned_to':self._get_employee().parent_id.user_id.id}
-       elif self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id or self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'general' and self._get_max_price() < self._get_price_low() :
+       if self._get_max_price() >= self._get_price_low() and self._get_employee_request().parent_id.id:
+           if self._get_employee().parent_id.user_id.id == self._get_division_finance():
+               state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+           else:
+               state_data = {'state':'approval2','assigned_to':self._get_employee_request().parent_id.user_id.id}
+       elif (self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id) or (self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'technic' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self._get_max_price() < self._get_price_low()) :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
        else:
             raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
@@ -804,6 +815,24 @@ class InheritPurchaseRequest(models.Model):
                 'requisition_id' : res.id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
+
+        return True
+
+    @api.multi
+    def update_purchase_requisition(self):
+        # Update Purchase Requisition
+        requisition=self.env['purchase.requisition'].search([('request_id','=',self.id)])
+        update_requisition = requisition.write({'state':'in_progress'})
+        requisition_id = requisition.id
+        for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
+            purchaseline_data = {
+
+                'product_id': purchaseline.product_id.id,
+                'est_price':purchaseline.price_per_product,
+                'product_uom_id': purchaseline.product_uom_id.id,
+                'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
+            }
+            self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id)]).write(purchaseline_data)
 
         return True
 
@@ -1070,27 +1099,43 @@ class InheritPurchaseRequest(models.Model):
                  error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (temp_name[0],self.department_id.name)
                  raise exceptions.ValidationError(error_msg)
 
-        # temp_category_line = None
-        # temp
-        # for record in self.line_ids:
-        #     if not record.product_id.categ_id.parent_id:
-        #         temp_category_line = record.product_id.categ_id.id
-        #     else:
-        #         temp_category_line = record.product_id.categ_id.parent_id.id
-        #
-        #     len_check = 0
-        #     for temp_category in mapping_functional:
-        #         if temp_category.product_category_id.id == temp_category_line:
-        #             break
-        #         else :
-        #             len_check = len_check + 1
-        #
-        #     if len_check == len(mapping_functional):
-        #         error_msg = "Product \"%s\" is not in Department \"%s\" Product Category" % (record.product_id.name,self.department_id.name)
-        #         raise exceptions.ValidationError(error_msg)
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_grn_or_srn(self):
+        for item in self:
+            arrPickingDone = []
+            arrPickingAssigned = []
+            done = item.env['stock.picking'].search([('pr_source','in',[item.complete_name]),('state','=','done')])
+            assigned = item.env['stock.picking'].search([('pr_source','in',[item.complete_name]),('state','=','assigned')])
+            for itemDone in done:
+                arrPickingDone.append(itemDone.id)
+            for itemAssign in assigned:
+                arrPickingAssigned.append(itemAssign.id)
+            assign_picking_done = item.env['stock.picking'].search([('id','in',arrPickingDone)])
+            assign_picking_assigned = item.env['stock.picking'].search([('id','in',arrPickingAssigned)])
+            picking_done = len(assign_picking_done)
+            picking_assigned = len(assign_picking_assigned)
+
+            item.count_grn_done = picking_done
 
 
+            item.count_grn_assigned = picking_assigned
 
+    @api.multi
+    @api.depends('purchase_ids')
+    def _compute_po_line(self):
+        for item in self:
+            purchase = item.env['purchase.order']
+            purchase_done = purchase.search([('request_id','=',item.id),('state','=','done')])
+            purchase_partial = purchase.search([('request_id','=',item.id),('state','=','received_force_done')])
+            done = len(purchase_done)
+            partial = len(purchase_partial)
+
+
+            item.count_po_partial = partial
+
+
+            item.count_po_done = done
 
     @api.multi
     @api.constrains('line_ids')
@@ -1126,10 +1171,10 @@ class InheritPurchaseRequestLine(models.Model):
                  'analytic_account_id', 'date_required', 'specifications')
     def _compute_is_editable(self):
         for rec in self:
-            if rec.request_id.state != 'draft':
-                rec.is_editable = False
-            else:
+            if rec.request_id.state in ['draft','approval4','approval5','approval6']:
                 rec.is_editable = True
+            else:
+                rec.is_editable = False
 
     price_per_product = fields.Float('Product Price')
     price_per_product_label = fields.Char('Product Price',readonly=True)

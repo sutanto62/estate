@@ -68,59 +68,63 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def purchase_request_dpt_head(self):
-        return 'Purchase Request Department Head'
+        return self.env.ref('purchase_request.group_purchase_request_dept_head', False).id
 
     @api.multi
     def purchase_request_division_head(self):
-        return 'Purchase Request Division Head'
+        return self.env.ref('purchase_request.group_purchase_request_div_head', False).id
 
     @api.multi
     def purchase_request_budget(self):
-        return 'Purchase Request Budget'
+        return self.env.ref('purchase_request.group_purchase_request_budget', False).id
 
     @api.multi
     def purchase_request_technical1(self):
-        return 'Purchase Request Technical Dept Head'
+        return self.env.ref('purchase_request.group_purchase_request_technical1', False).id
 
     @api.multi
     def purchase_request_technical2(self):
-        return 'Purchase Request Technical Div Head'
+        return self.env.ref('purchase_request.group_purchase_request_technical2', False).id
 
     @api.multi
     def purchase_request_technical3(self):
-        return 'Purchase Request Technical ICT'
+        return self.env.ref('purchase_request.group_purchase_request_technical3', False).id
 
     @api.multi
     def purchase_request_technical4(self):
-        return 'Purchase Request Technical Agronomy'
+        return self.env.ref('purchase_request.group_purchase_request_technical4', False).id
 
     @api.multi
     def purchase_request_technical5(self):
-        return 'Purchase Request Technical IE'
+        return self.env.ref('purchase_request.group_purchase_request_technical5', False).id
+
+    @api.multi
+    def purchase_request_technical6(self):
+        return self.env.ref('purchase_indonesia.group_purchase_request_technical6', False).id
 
     @api.multi
     def purchase_request_director(self):
-        return 'Purchase Request Director'
+        return self.env.ref('purchase_indonesia.group_purchase_request_director', False).id
 
     @api.multi
     def purchase_request_president_director(self):
-        return 'Purchase Request President Director'
+        return self.env.ref('purchase_indonesia.group_purchase_request_president_director', False).id
 
     @api.multi
     def purchase_ro_head(self):
-        return 'Purchase Request RO Head'
+        return self.env.ref('purchase_indonesia.group_purchase_request_head_of_ro', False).id
 
     @api.multi
     def purchase_procurement_staff(self):
-        return 'Purchase Request Procurment Staff'
+        return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
 
     @api.multi
     def purchase_request_manager(self):
-        return 'Purchase Request Manager'
+        return self.env.ref('purchase_request.group_purchase_request_manager', False).id
 
     @api.multi
     def purchase_request_finance(self):
-        return 'Purchase Request Finance Procurement'
+        return self.env.ref('purchase_indonesia.group_purchase_request_finance_procurement', False).id
 
     #Method Get user
     @api.multi
@@ -139,11 +143,19 @@ class QuotationComparisonForm(models.Model):
         return employee
 
     @api.multi
+    def _get_employee_request(self):
+        #find User Employee
+
+        employee = self.env['hr.employee'].search([('user_id','=',self.pic_id.id)])
+
+        return employee
+
+    @api.multi
     def _get_user_ro_manager(self):
         #get List of Ro Manager from user.groups
         arrRO = []
 
-        list_ro_manager = self.env['res.groups'].search([('name','like',self.purchase_ro_head())]).users
+        list_ro_manager = self.env['res.groups'].search([('id','=',self.purchase_ro_head())]).users
 
         for ro_manager_id in list_ro_manager:
                 arrRO.append(ro_manager_id.id)
@@ -160,7 +172,7 @@ class QuotationComparisonForm(models.Model):
         arrPresidentDirector = []
 
         #search User President director from user list
-        list_president= self.env['res.groups'].search([('name','like',self.purchase_request_president_director())]).users
+        list_president= self.env['res.groups'].search([('id','=',self.purchase_request_president_director())]).users
 
         for president_id in list_president:
             arrPresidentDirector.append(president_id.id)
@@ -176,7 +188,7 @@ class QuotationComparisonForm(models.Model):
         arrDirector = []
 
         #search User Director from user list
-        list_director= self.env['res.groups'].search([('name','like',self.purchase_request_director())]).users
+        list_director= self.env['res.groups'].search([('id','=',self.purchase_request_director())]).users
         for director_id in list_director:
             arrDirector.append(director_id.id)
         try:
@@ -191,7 +203,7 @@ class QuotationComparisonForm(models.Model):
         arrDivhead = []
 
         #search User Finance from user list
-        listdivision= self.env['res.groups'].search([('name','like',self.purchase_request_division_head())]).users
+        listdivision= self.env['res.groups'].search([('id','=',self.purchase_request_division_head())]).users
 
         for divhead in listdivision:
             arrDivhead.append(divhead.id)
@@ -206,18 +218,28 @@ class QuotationComparisonForm(models.Model):
     def _get_procurement_finance(self):
         #get List of Finance from user.groups
         arrFinancehead = []
+        arrEmployee = []
 
         #search User Finance from user list
-        listprocurement= self.env['res.groups'].search([('name','like',self.purchase_request_finance())]).users
+        listprocurement= self.env['res.groups'].search([('id','=',self.purchase_request_finance())]).users
 
         for financeproc in listprocurement:
             arrFinancehead.append(financeproc.id)
         try:
-            fin_procur = self.env['res.users'].search([('id','=',arrFinancehead[0])]).id
+            parent_employee = self._get_employee_request().parent_id.user_id.id
+            fin_procur = self.env['res.users'].search([('id','in',arrFinancehead),('id','=',parent_employee)]).id
         except:
             raise exceptions.ValidationError('User get Role Finance Procurement Not Found in User Access')
 
         return fin_procur
+
+    @api.multi
+    def _get_employee_location(self):
+        for item in self:
+            hr = item.env['hr.employee']
+            hr_location_code = hr.search([('user_id','=',item.pic_id.id)]).office_level_id.code
+
+            return hr_location_code
 
 
     _name = 'quotation.comparison.form'
@@ -360,10 +382,32 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_send(self):
-        if self._get_purchase_request().code == 'KPST':
-            self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
-        elif self._get_purchase_request().code in ['KOKB','KPWK']:
-            self.write({'state' : 'approve4','assign_to':self._get_user_ro_manager()})
+        for item in self:
+            if item._get_user().id != item.pic_id.id:
+                raise exceptions.ValidationError('You not PIC for This Quotation Comparison Form')
+            else:
+                arrPoid = []
+                tender_line =item.env['purchase.requisition.line']
+                tender_line_id = tender_line.search([('requisition_id','=',item.requisition_id.id)])
+                purchase = item.env['purchase.order']
+                purchase_ids = purchase.search([('comparison_id','=',item.id)])
+                if purchase_ids:
+                    for record in purchase_ids:
+                        arrPoid.append(record.id)
+
+                    for tender in tender_line_id:
+
+                        order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
+
+                        for order in order_line_ids:
+                            if order.quantity_tendered > tender.product_qty:
+                                error_msg = 'Quantity tendered \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
+                                raise exceptions.ValidationError(error_msg)
+                            else:
+                                if item._get_employee_location() == 'KPST':
+                                    item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
+                                elif item._get_employee_location() in ['KOKB','KPWK']:
+                                    item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
         return True
 
     @api.multi
@@ -374,26 +418,26 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_low():
+        if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_low():
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() > self._get_price_low():
+        elif self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() > self._get_price_low():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
 
     @api.multi
     def action_approve1(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
+        if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
+        elif self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
             self.write({'state' : 'approve2','assign_to':self._get_director()})
 
     @api.multi
     def action_approve2(self):
-        if self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
+        if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code == 'KPST' and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
+        elif self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3','assign_to':self._get_president_director()})
 
     @api.multi
@@ -511,6 +555,30 @@ class QuotationComparisonForm(models.Model):
                 remarks = remarks + v_remarks
 
             item.remarks = remarks
+
+    @api.multi
+    @api.constrains('purchase_line_ids')
+    def _constraint_purchase_line_ids(self):
+
+        for item in self:
+
+            arrPoid = []
+            tender_line =item.env['purchase.requisition.line']
+            tender_line_id = tender_line.search([('requisition_id','=',item.requisition_id.id)])
+            purchase = item.env['purchase.order']
+            purchase_ids = purchase.search([('comparison_id','=',item.id)])
+            if purchase_ids:
+                for record in purchase_ids:
+                    arrPoid.append(record.id)
+
+                for tender in tender_line_id:
+
+                    order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
+
+                    for order in order_line_ids:
+                        if order.quantity_tendered > tender.product_qty:
+                            error_msg = 'Quantity tendered \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
+                            raise exceptions.ValidationError(error_msg)
 
 
 class QuotationComparisonFormLine(models.Model):
