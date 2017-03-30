@@ -27,8 +27,10 @@
                             <!-- Payroll Cover Slip - show list of all by team -->
 
                             <!-- Cover Slip Header -->
-                            <h2 class="text-center">Rekapitulasi Daftar Upah Kemandoran
-                                <t t-if="batch.state != 'close'">(Draft)</t></h2>
+                            <t t-esc="batch.state"></t>
+                            <h2 class="text-center">
+                                Rekapitulasi Daftar Upah Kemandoran <t t-if="batch.state != 'close'">(Draft)</t>
+                            </h2>
 
                             <table class="table-condensed table-borderless" style="font-size:65%" width="100%">
                                 <tr>
