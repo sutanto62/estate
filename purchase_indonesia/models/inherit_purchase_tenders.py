@@ -603,6 +603,42 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                         """)
 
 
+class ViewResultTrackingPurchaseOrderInvoice(models.Model):
+
+    _name = 'result.tracking.purchase.order'
+    _description = 'Result Tracking Purchase Order To Invoice'
+    _auto = False
+    _order = 'id'
+    _inherit=['mail.thread']
+
+    id = fields.Char('ID')
+    requisition_id = fields.Many2one('purchase.requisition')
+    date_report = fields.Datetime('Date',track_visibility='onchange')
+    product_id = fields.Many2one('product.product')
+    status_pp = fields.Char('Status PP',track_visibility='onchange')
+    progress_po = fields.Char('Status PO',track_visibility='onchange')
+    progress_picking = fields.Char('Status Picking',track_visibility='onchange')
+    progress_invoice = fields.Char('Status Invoice',track_visibility='onchange')
+    sum_quantity_tender = fields.Float('Quantity Tender')
+    sum_quantity_purchase = fields.Float('Quantity Purchase')
+    sum_quantity_picking = fields.Float('Quantity Picking')
+    sum_quantity_invoice = fields.Float('Quantity Invoice')
+
+    def init(self, cr):
+        cr.execute("""create or replace view result_tracking_purchase_order as
+                        select id,now() date_report,
+                            requisition_id ,
+                            product_id ,
+                            case
+                            when sum_quantity_tender = sum_quantity_purchase and sum_quantity_tender = sum_quantity_picking and sum_quantity_tender = sum_quantity_invoice then 'PP Closed' else 'PP Outstanding' end status_pp,
+                            case when sum_quantity_tender = sum_quantity_purchase then 'Done' else 'in Progress' end progress_po,
+                            case when sum_quantity_tender = sum_quantity_picking then 'Done' else 'in Progress' end progress_picking,
+                            case when sum_quantity_tender = sum_quantity_invoice then 'Done' else 'in Progress' end progress_invoice,
+                            sum_quantity_tender,sum_quantity_purchase,sum_quantity_picking,sum_quantity_invoice
+                            from validate_tracking_purchase_order_invoice
+                        """)
+
+
 
 
 
