@@ -38,6 +38,7 @@ class InheritPurchaseTenders(models.Model):
                                               ('closed','PP Closed'),
                                               ('open', 'PP Outstanding'),
                                               ('done', 'Shipment Done')])
+    validation_check_backorder = fields.Boolean('Confirm backorder')
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
@@ -78,6 +79,20 @@ class InheritPurchaseTenders(models.Model):
             return True
 
     @api.multi
+    def tender_open(self):
+        for item in self:
+            count_order = 0
+            order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['draft'])])
+            for record in order:
+                if len(record) > 0 :
+                    count_order = count_order + 1
+            if (count_order == 0):
+                super(InheritPurchaseTenders,item).tender_open()
+            else:
+                msg_error = 'You Must Proceed Your Order'
+                raise exceptions.ValidationError(msg_error)
+
+    @api.multi
     def tender_state_closed(self):
         for item in self:
             tracking = item.env['validate.tracking.purchase.order.invoice'].search([('requisition_id','=',item.id)])
@@ -104,6 +119,9 @@ class InheritPurchaseTenders(models.Model):
             if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','closed']) :
                 item.validation_correction = True
             else:
+               if item.validation_check_backorder == True:
+                   item.validation_correction = True
+               else:
                  item.validation_correction = False
 
     @api.multi
@@ -135,6 +153,8 @@ class InheritPurchaseTenders(models.Model):
                         count_confirm = count_confirm + 1
                     if count_order == count_confirm:
                         item.validation_qcf = True
+                    elif (count_order == count_confirm) and (record.validation_check_backorder == True):
+                        item.validation_qcf = True
                     else:
                         if item.state in ['draft','cancel','closed','done','rollback']:
                             item.validation_qcf = False
@@ -144,14 +164,28 @@ class InheritPurchaseTenders(models.Model):
     @api.depends('quotation_state')
     def _compute_quotation_state(self):
         for item in self:
-            qcf = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)])
-            qcf_state = qcf.state
-            categ_state = dict(qcf._columns['state'].selection).get(qcf_state)
-
-            if qcf_state in [True,False]:
-                item.quotation_state = qcf_state
+            domain1 = [('requisition_id','=',item.id)]
+            qcf = item.env['quotation.comparison.form'].search(domain1)
+            count_qcf = len(qcf)
+            index_a = 0
+            if count_qcf > 1:
+                for record in qcf:
+                    if record.state == 'done':
+                        index_a = index_a + 1
+                if index_a == count_qcf:
+                    qcf_state = 'QCF Done'
+                    item.quotation_state = qcf_state
+                else :
+                    qcf_state = 'In Progress QCF'
+                    item.quotation_state = qcf_state
             else:
-                item.quotation_state = categ_state
+                qcf_state = qcf.state
+                categ_state = dict(qcf._columns['state'].selection).get(qcf_state)
+
+                if qcf_state in [True,False]:
+                    item.quotation_state = qcf_state
+                else:
+                    item.quotation_state = categ_state
 
     @api.multi
     def purchase_request_correction(self):
@@ -163,6 +197,30 @@ class InheritPurchaseTenders(models.Model):
                 'assigned_to' : purchase_request._get_budget_manager() if purchase_request._get_max_price() < purchase_request._get_price_low() else purchase_request._get_division_finance(),
                 'validation_correction_procurement' : True
             })
+
+    @api.multi
+    def create_backorder_quotation_comparison_form(self):
+        for record in self:
+            purchase_requisition = record.env['purchase.requisition'].search([('id','=',record.id)])
+            try:
+                company_code = record.env['res.company'].search([('id','=',record.companys_id.id)]).code
+            except:
+                raise exceptions.ValidationError('Company Code is Null')
+            sequence_name = 'quotation.comparison.form.'+record.request_id.code.lower()+'.'+company_code.lower()
+            purchase_data = {
+                    'name' : record.env['ir.sequence'].next_by_code(sequence_name),
+                    'company_id': purchase_requisition.companys_id.id,
+                    'date_pp': datetime.today(),
+                    'requisition_id': purchase_requisition.id,
+                    'origin' : purchase_requisition.origin,
+                    'type_location' : purchase_requisition.type_location,
+                    'location':purchase_requisition.location,
+                    'state':'draft',
+                    'pic_id': record.user_id.id,
+                    'validation_check_backorder':True
+                }
+            record.validation_check_backorder = True
+            res = record.env['quotation.comparison.form'].create(purchase_data)
 
     @api.multi
     def _compute_date(self):

@@ -215,7 +215,7 @@ class InheritPurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
     qty_request = fields.Float('Quantity Actual')
-    validation_check_backorder = fields.Boolean('Confirm backorder',related='order_id.validation_check_backorder')
+    validation_check_backorder = fields.Boolean('Confirm backorder',related='order_id.validation_check_backorder',store=True)
     spesification = fields.Text('Spesification')
     term_of_goods = fields.Selection([('indent','Indent'),('ready','Ready Stock')],'Term Of Goods')
     days = fields.Float('Days Of Indent')

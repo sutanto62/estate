@@ -1,4 +1,5 @@
 from openerp import models, fields, api, osv, exceptions
+from datetime import datetime, date,time
 
 class InheritRequisitionPartner(models.TransientModel):
 
@@ -15,6 +16,7 @@ class InheritRequisitionPartner(models.TransientModel):
 
     @api.multi
     def create_order(self):
+        purchase_requisition = self.env['purchase.requisition'].search([('id','=',self._context.get('active_id'))])
         purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',self._context.get('active_id'))])
         idx_qty_received_zero = 0
         for record in purchase_requisition_line:
@@ -26,6 +28,7 @@ class InheritRequisitionPartner(models.TransientModel):
             self.create_comparison()
         else:
             self.create_backorder()
+            self.create_backorder_quotation_comparison_form()
         return True
 
     @api.multi
@@ -53,6 +56,35 @@ class InheritRequisitionPartner(models.TransientModel):
             po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))])
             for item in po :
                 self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+
+
+    @api.multi
+    def create_backorder_quotation_comparison_form(self):
+        for record in self:
+            purchase_tender = self.env['purchase.requisition'].browse(self._context.get('active_id'))
+            quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
+
+            #set quotation comparison data
+            comparison_data = {
+                'source_purchase_request' : purchase_tender.origin,
+                'request_id' : purchase_tender.request_id.id,
+                'origin' : purchase_tender.complete_name,
+                'companys_id' :purchase_tender.companys_id.id,
+                'location':purchase_tender.location,
+                'type_location' : purchase_tender.type_location,
+                'comparison_id' : quotation_comparison_form.id
+            }
+            self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))]).write(comparison_data)
+
+            for requisition in purchase_tender.line_ids:
+                comparisonline_data={
+                    'qty_request' : requisition.product_qty,
+                    'comparison_id' : quotation_comparison_form.id
+                }
+            po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
+            for item in po :
+                self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+
 
     @api.multi
     @api.onchange('partner_ids')
