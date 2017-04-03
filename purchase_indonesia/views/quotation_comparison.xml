@@ -153,6 +153,7 @@
                                     <field name="type_location" string="Location" invisible="1"/>
                                     <field name="location" string="Location"/>
                                     <field name="line_remarks" invisible="1"/>
+                                    <field name="partner_ids" invisible="1" widget="many2many_tags"/>
                                     <!--<field name="line_remarks_backorder" invisible="1"/>-->
                                     <field name="validation_check_backorder" string='Backorder' attrs="{
                                                    'invisible':[('validation_check_backorder','=',False)]}"/>
