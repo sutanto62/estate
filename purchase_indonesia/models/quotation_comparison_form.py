@@ -687,6 +687,11 @@ class QuotationComparisonFormLine(models.Model):
 
 
     def init(self, cr):
+
+        cr.execute("""DROP view v_quotation_comparison_form_line""")
+
+        cr.execute("""DROP view quotation_comparison_form_line""")
+
         cr.execute("""create or replace view quotation_comparison_form_line as
                         select row_number() over() id,
                                 pol_po_backorder,
@@ -860,8 +865,6 @@ class ViewQuotationComparison(models.Model):
                         end;
                     END
         		    $function$""")
-
-        cr.execute("""DROP view v_quotation_comparison_form_line""")
 
         cr.execute("""create or replace view v_quotation_comparison_form_line as
                         select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char from (
