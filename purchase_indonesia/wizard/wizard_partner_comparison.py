@@ -1,6 +1,6 @@
 from openerp import models, fields, api, osv, exceptions
 from datetime import datetime, date,time
-import numpy as np
+
 
 class WizardPartnerComparison(models.TransientModel):
 
