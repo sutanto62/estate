@@ -861,6 +861,8 @@ class ViewQuotationComparison(models.Model):
                     END
         		    $function$""")
 
+        cr.execute("""DROP view v_quotation_comparison_form_line""")
+
         cr.execute("""create or replace view v_quotation_comparison_form_line as
                         select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char from (
                         select row_number() over() id,vqcf.*,qcf.id qcf_id from (
