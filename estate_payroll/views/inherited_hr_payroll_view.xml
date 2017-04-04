@@ -62,6 +62,21 @@
             </field>
         </record>
 
+        <record id="inherited_hr_salary_rule_form" model="ir.ui.view">
+            <field name="name">hr.salary.rule.form.inherit</field>
+            <field name="model">hr.salary.rule</field>
+            <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="/form/notebook" position="inside">
+                    <page string="Payroll">
+                        <group colspan="4">
+                            <field name="bpjs" />
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
         <act_window name="Payslip Upkeep Labour Details"
                     context="{'default_employee_id': active_id}"
                     res_model="estate.upkeep.labour"

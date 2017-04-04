@@ -34,16 +34,28 @@ class HrAttendance(models.Model):
 
     @api.model
     def get_attendance(self, employee, att_date, action='sign_in'):
+        """
+        Return attendance record based on action
+        Args:
+            employee: employee
+            att_date: date of attendance
+            action: attendance action reason
+
+        Returns: single attendance
+
+        """
         # Attendance saved in UTC
         local = pytz.timezone(self._context['tz'])
         date_from = datetime.strptime(att_date, DF)
         date_from_utc = local.localize(date_from, is_dst=None).astimezone(pytz.utc)
         date_to_utc = date_from_utc + timedelta(days=1)
 
+        # make sure only return one recordset
         res = self.search([('employee_id', '=', employee.id),
                            ('action', '=', action),
                            ('name', '>=', date_from_utc.strftime(DT)),
-                           ('name', '<=', date_to_utc.strftime(DT))])
+                           ('name', '<=', date_to_utc.strftime(DT))],
+                          limit=1)
 
         return res
 

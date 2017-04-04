@@ -173,7 +173,7 @@
 
                                             <!-- sum all -->
                                             <t t-set="total_day" t-value="total_day + get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/>
-                                            <t t-set="total_labour" t-value="total_edw + amount_labour"/>
+                                            <t t-set="total_labour" t-value="total_labour + amount_labour"/>
                                             <t t-set="total_edw" t-value="total_edw + amount_edw"/>
                                             <t t-set="total_hour" t-value="total_hour + amount_hour"/>
                                             <t t-set="total_ot" t-value="total_ot + amount_ot"/>
@@ -208,7 +208,7 @@
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_amount_netto_team)"/></td>
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_bpjs_tk_team)"/></td>
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_bpjs_k_team)"/></td>
-                                            <td class="text-right">0</td>
+                                            <td class="text-right"></td>
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_st_other_team)"/></td>
                                         </tr>
                                     </tbody>
@@ -223,7 +223,7 @@
                                     <td class="text-right"><strong></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_ot+total_pr)"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_adj)"/></strong></td>
-                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_allowance)"/></strong></td>
+                                    <td class="text-right"><strong></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_amount_brutto)"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'({0:,.0f})'.format(total_deduction)"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_amount_rounding)"/></strong></td>
@@ -434,7 +434,7 @@
                                             <td class="text-right"><strong></strong></td>
                                             <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_ot_team+total_pr_team)"/></strong></td>
                                             <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_adj_team)"/></strong></td>
-                                            <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_allowance_team)"/></strong></td>
+                                            <td class="text-right"><strong></strong></td>
                                             <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_brutto_team)"/></strong></td>
                                             <td class="text-right"><strong><t t-esc="'({0:,.0f})'.format(total_deduction_team)"/></strong></td>
                                             <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_rounding_team)"/></strong></td>

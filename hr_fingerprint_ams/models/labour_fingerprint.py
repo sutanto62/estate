@@ -3,6 +3,7 @@
 from openerp import models, fields, tools
 from openerp.exceptions import MissingError
 
+
 class LabourFingerprint(models.Model):
     """
     Control fingerprint over claimed work day at upkeep.
@@ -20,6 +21,12 @@ class LabourFingerprint(models.Model):
     employee_id = fields.Many2one('hr.employee', 'Employee')
     team_id = fields.Many2one('estate.hr.team', 'Team')
     assistant_id = fields.Many2one('hr.employee', 'Assistant')
+    company_id = fields.Many2one('res.company', 'Company')
+    estate_id = fields.Many2one('stock.location', "Estate",
+                                domain=[('estate_location', '=', True), ('estate_location_level', '=', '1'),
+                                        ('estate_location_type', '=', 'planted')])
+    division_id = fields.Many2one('stock.location', "Division",
+                                  domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')])
     worked_hours = fields.Float('Worked Hours', help='Included time rest')
     number_of_day = fields.Float('Number of Days')
     state = fields.Selection([('draft', 'Draft'),
@@ -37,44 +44,42 @@ class LabourFingerprint(models.Model):
             """
             CREATE or REPLACE VIEW hr_fingerprint_ams_fingerprint
             as
-            select
-                row_number() over (order by concat(a.employee_id,'/',a.upkeep_date)) as id,
-                concat(a.employee_id,'/',a.upkeep_date) as name,
-                a.employee_id,
-                a.upkeep_date as date,
-                c.name as sign_in,
-                d.name as sign_out,
-                a.upkeep_team_id as team_id,
-                b.employee_id as assistant_id,
-                (date_part('hour', d.name - c.name)+(date_part('minute', d.name - c.name)/60)::numeric(4,2)) as worked_hours,
-                f.number_of_day,
-                CASE WHEN c.state isnull THEN 'attendance'
-                    ELSE c.state
-                        END
-                from estate_upkeep_labour a
-                join estate_hr_team b on a.upkeep_team_id = b.id
-                left outer join (
-                    select
-                        concat(cc.employee_id,'/', cc.name::date),
+            SELECT row_number() OVER (ORDER BY concat(a.employee_id, '/', a.upkeep_date)) AS id,
+            concat(a.employee_id, '/', a.upkeep_date) AS name,
+            a.employee_id,
+            a.upkeep_date AS date,
+            c.name AS sign_in,
+            d.name AS sign_out,
+            a.upkeep_team_id AS team_id,
+            b.assistant_id,
+            a.estate_id,
+            a.division_id,
+            a.company_id,
+            date_part('hour'::text, d.name - c.name) + (date_part('minute'::text, d.name - c.name) / 60::double precision)::numeric(4,2)::double precision AS worked_hours,
+            f.number_of_day,
+                    CASE
+                        WHEN c.state IS NULL THEN 'attendance'::character varying
+                        ELSE c.state
+                    END AS state
+               FROM estate_upkeep_labour a
+                 JOIN estate_hr_team b ON a.upkeep_team_id = b.id
+                 LEFT JOIN ( SELECT concat(cc.employee_id, '/', cc.name::date) AS concat,
                         cc.employee_id,
                         cc.name,
                         cc.state
-                    from hr_attendance cc
-                        where cc.action = 'sign_in'
-                    ) c on concat(a.employee_id,'/', (a.upkeep_date at time zone 'UTC')::date) = concat(c.employee_id,'/', c.name::date) -- convert to utc
-                left outer join (
-                    select
-                        dd.employee_id,
+                       FROM hr_attendance cc
+                      WHERE cc.action::text = 'sign_in'::text) c ON concat(a.employee_id, '/', timezone('UTC'::text, a.upkeep_date::timestamp with time zone)::date) = concat(c.employee_id, '/', c.name::date)
+                 LEFT JOIN ( SELECT dd.employee_id,
                         dd.name
-                    from hr_attendance dd
-                        where dd.action = 'sign_out'
-                    ) d on concat(a.employee_id,'/', a.upkeep_date) = concat(d.employee_id,'/', d.name::date)  -- do not convert to utc
-                left outer join (
-                    select ff.employee_id, ff.upkeep_date, sum(ff.number_of_day) as number_of_day
-                    from estate_upkeep_labour ff
-                    group by ff.employee_id, ff.upkeep_date
-                    ) f on ((f.employee_id = a.employee_id) AND (f.upkeep_date = a.upkeep_date))
-                group by a.employee_id, a.upkeep_date, c.name, d.name, a.upkeep_team_id, b.employee_id, f.number_of_day, c.state
-                order by concat(a.employee_id,'/',a.upkeep_date);
+                       FROM hr_attendance dd
+                      WHERE dd.action::text = 'sign_out'::text) d ON concat(a.employee_id, '/', a.upkeep_date) = concat(d.employee_id, '/', d.name::date)
+                 LEFT JOIN ( SELECT ff.employee_id,
+                        ff.upkeep_date,
+                        sum(ff.number_of_day) AS number_of_day
+                       FROM estate_upkeep_labour ff
+                      GROUP BY ff.employee_id, ff.upkeep_date) f ON f.employee_id = a.employee_id AND f.upkeep_date = a.upkeep_date
+              GROUP BY a.employee_id, a.upkeep_date, c.name, d.name, a.upkeep_team_id, b.assistant_id,
+                a.estate_id, a.company_id, a.division_id, f.number_of_day, c.state
+              ORDER BY concat(a.employee_id, '/', a.upkeep_date);
             """
         )
