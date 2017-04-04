@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
+        <record id="payslip_upkeep_labour_view_tree" model="ir.ui.view" >
+            <field name="name">Payslip Upkeep Labour</field>
+            <field name="model">estate.upkeep.labour</field>
+            <field name="priority" eval="2"/>
+            <field name="context" eval="{'search_default_employee_id': 1}"/>
+            <field name="arch" type="xml">
+                <tree colors="red:attendance_code_id==False" default_order="upkeep_date desc">
+                    <field name="upkeep_date" string="Date"/>
+                    <field name="upkeep_team_id" string="Team" invisible="True"/>
+                    <field name="employee_id" string="Employee" invisible="True"/>
+                    <field name="activity_id" string="Activity"/>
+                    <field name="activity_uom_id" string="UoM"/>
+                    <field name="quantity" digits="(8,2)" string="Qty."/>
+                    <field name="attendance_code_id" string="Attn."/>
+                    <field name="location_id" string="Location"/>
+                    <field name="planted_year_id" string="PY"/>
+                    <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
+                    <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
+                    <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
+                    <field name="wage_number_of_day" string="D Wage"/>
+                    <field name="wage_overtime" string="OT Wage"/>
+                    <field name="wage_piece_rate" string="PR Wage"/>
+                    <field name="amount" string="Wage" sum="Wage"/>
+                    <!-- Do not remove line below -->
+                    <field name="prod_quantity_day" string="Prod (%)" avg="Productivity" invisible="True"/>
+                    <field name="state" invisible="True"/>
+                    <field name="activity_contract" string="Ctr." invisible="True"/>
+                    <field name="ratio_quantity_day" digits="(8,2)" string="Q/D" invisible="True"/>
+                    <field name="ratio_day_quantity" digits="(8,2)" string="D/Q" invisible="True"/>
+                    <field name="ratio_wage_quantity" digits="(12,2)" string="W/Q" invisible="True"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- Inherit view -->
         <record id="inherited_hr_payslip_run_form" model="ir.ui.view">
             <field name="name">hr.payslip.run.form.inherit</field>
@@ -12,6 +47,7 @@
                     <!--
                     <field name="location_id" attrs="{'invisible': [('type', 'not in',('estate','division'))]}"/>
                     -->
+                    <field name="company_id" required="True"/>
                     <field name="estate_id" attrs="{'invisible': [('type', 'not in', ('estate', 'division'))], 'required': [('type', '=', 'estate')]}"/>
                     <field name="division_id" attrs="{'invisible': [('type', '!=', 'division')], 'required': [('type', '=', 'division')]}"/>
                 </xpath>

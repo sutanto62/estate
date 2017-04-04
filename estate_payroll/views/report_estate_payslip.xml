@@ -9,6 +9,7 @@
 
                             <!-- Set variable for total -->
                             <t t-set="total_day" t-value="0"/>
+                            <t t-set="total_labour" t-value="0"/>
                             <t t-set="total_edw" t-value="0"/>
                             <t t-set="total_hour" t-value="0"/>
                             <t t-set="total_ot" t-value="0"/>
@@ -34,15 +35,21 @@
 
                             <table class="table-condensed table-borderless" style="font-size:65%" width="100%">
                                 <tr>
+                                    <td width="20%"><strong>Perusahaan</strong></td>
+                                    <td width="50%">: <t t-if="batch.company_id"><t t-esc="batch.company_id.name"/></t></td>
+                                    <td width="15%" class="text-right"><strong>HK/Bulan</strong></td>
+                                    <td width="15%"></td>
+                                </tr>
+                                <tr>
                                     <td width="20%"><strong>Kebun</strong></td>
                                     <td width="50%">: <t t-if="batch.estate_id"><t t-esc="batch.estate_id.name"/></t></td>
-                                    <td width="15%" class="text-right"><strong>HK/Bulan</strong></td>
+                                    <td width="15%" class="text-right"><strong>HK/Hari</strong></td>
                                     <td width="15%"></td>
                                 </tr>
                                 <tr>
                                     <td width="20%"><strong>Divisi</strong></td>
                                     <td width="50%">: <t t-if="batch.division_id"><t t-esc="batch.division_id.name"/></t></td>
-                                    <td width="15%" class="text-right"><strong>HK/Hari</strong></td>
+                                    <td width="15%" class="text-right"></td>
                                     <td width="15%"></td>
                                 </tr>
                                 <tr>
@@ -72,8 +79,8 @@
                                     <tr>
                                         <!-- do not use code as header - i18n problem -->
                                         <th>HK</th>
+                                        <th>TK</th>
                                         <th>Gaji</th>
-                                        <th>Jam Lembur</th>
                                         <th>Rp Lembur</th>
                                         <th>Rp Premi</th>
                                         <th>Koreksi</th>
@@ -92,11 +99,12 @@
                                         <t t-set="amount_brutto_team" t-value="0"/>
                                         <t t-set="amount_total_other" t-value="0"/>
                                         <t t-set="no" t-value="0"/>
-                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id))"/>
+                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id, batch.company_id.id))"/>
                                         <t t-set="round" t-value="1000"/>
 
                                         <!-- reset total team -->
                                         <t t-set="total_day_team" t-value="0"/>
+                                        <t t-set="total_labour_team" t-value="0"/>
                                         <t t-set="total_edw_team" t-value="0"/>
                                         <t t-set="total_hour_team" t-value="0"/>
                                         <t t-set="total_ot_team" t-value="0"/>
@@ -114,9 +122,10 @@
                                         <!-- /reset total team-->
 
                                         <!-- payslip team member-->
-                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id)" t-as="payslip">
+                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id, batch.company_id.id)" t-as="payslip">
 
                                             <!-- amount line -->
+                                            <t t-set="amount_labour" t-value="1"/>
                                             <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
                                             <t t-set="amount_ot" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'OT')"/>
                                             <t t-set="amount_hour" t-value="get_overtime_employee(payslip.employee_id.id, batch.date_start, batch.date_end)"/>
@@ -145,6 +154,7 @@
 
                                             <!-- sum by team-->
                                             <t t-set="total_day_team" t-value="total_day_team + get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/>
+                                            <t t-set="total_labour_team" t-value="total_labour_team + amount_labour"/>
                                             <t t-set="total_edw_team" t-value="total_edw_team + amount_edw"/>
                                             <t t-set="total_hour_team" t-value="total_hour_team + amount_hour"/>
                                             <t t-set="total_ot_team" t-value="total_ot_team + amount_ot"/>
@@ -163,6 +173,7 @@
 
                                             <!-- sum all -->
                                             <t t-set="total_day" t-value="total_day + get_worked_day(payslip.worked_days_line_ids, 'WORK300')"/>
+                                            <t t-set="total_labour" t-value="total_edw + amount_labour"/>
                                             <t t-set="total_edw" t-value="total_edw + amount_edw"/>
                                             <t t-set="total_hour" t-value="total_hour + amount_hour"/>
                                             <t t-set="total_ot" t-value="total_ot + amount_ot"/>
@@ -185,8 +196,8 @@
                                             <!-- all currency use 0 decimal, do not use font size less than 65% -->
                                             <td colspan="4">Kemandoran <t t-esc="team.name"/> (<t t-esc="team.employee_id.name"/>)</td>
                                             <td class="text-right"><t t-esc="'{0:,.2f}'.format(total_day_team)"/></td>
+                                            <td class="text-right"><t t-esc="total_labour_team"/></td>
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_edw_team)"/></td>
-                                            <td class="text-right"></td>
                                             <td class="text-right"></td>
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_ot_team+total_pr_team)"/></td>
                                             <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_adj_team)"/></td>
@@ -207,8 +218,8 @@
                                 <tr>
                                     <td colspan="4" class="text-right"><strong>Total</strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_day)"/></strong></td>
+                                    <td class="text-right"><strong><t t-esc="total_labour"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_edw)"/></strong></td>
-                                    <td class="text-right"><strong></strong></td>
                                     <td class="text-right"><strong></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_ot+total_pr)"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_adj)"/></strong></td>
@@ -225,7 +236,7 @@
                             </table>
 
                             <!-- Signature #1 -->
-                            <table class="borderless" width="100%">
+                            <table class="borderless" width="100%" style="page-break-inside: avoid;">
                                 <tr>
                                     <td style="vertical-align: bottom">
                                         <table class="table table-bordered" style="font-size:65%; width: auto">
@@ -279,15 +290,21 @@
 
                                 <table class="table-condensed table-borderless" style="font-size:65%" width="100%">
                                     <tr>
+                                        <td width="20%"><strong>Perusahaan</strong></td>
+                                        <td width="50%">: <t t-if="batch.company_id"><t t-esc="batch.company_id.name"/></t></td>
+                                        <td width="15%" class="text-right"><strong>HK/Bulan</strong></td>
+                                        <td width="15%"></td>
+                                    </tr>
+                                    <tr>
                                         <td width="20%"><strong>Kebun</strong></td>
                                         <td width="50%">: <t t-if="batch.estate_id"><t t-esc="batch.estate_id.name"/></t></td>
-                                        <td width="15%" class="text-right"><strong>HK/Bulan</strong></td>
+                                        <td width="15%" class="text-right"><strong>HK/Hari</strong></td>
                                         <td width="15%"></td>
                                     </tr>
                                     <tr>
                                         <td width="20%"><strong>Divisi</strong></td>
                                         <td width="50%">: <t t-if="batch.division_id"><t t-esc="batch.division_id.name"/></t></td>
-                                        <td width="15%" class="text-right"><strong>HK/Hari</strong></td>
+                                        <td width="15%" class="text-right"></td>
                                         <td width="15%"></td>
                                     </tr>
                                     <tr>
@@ -335,10 +352,10 @@
                                         <t t-set="amount_netto_team" t-value="0"/>
                                         <t t-set="amount_total_other" t-value="0"/>
                                         <t t-set="no" t-value="0"/>
-                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id))"/>
+                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id, batch.company_id.id))"/>
                                         <t t-set="round" t-value="1000"/>
 
-                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id)" t-as="payslip">
+                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id, batch.company_id.id)" t-as="payslip">
                                             <tr>
                                                 <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
                                                 <t t-set="amount_ot" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'OT')"/>
@@ -428,7 +445,7 @@
                                 </table>
 
                                 <!-- Signature #2 -->
-                                <table class="borderless" width="100%">
+                                <table class="borderless" width="100%" style="page-break-inside: avoid;">
                                     <tr>
                                         <td style="vertical-align: bottom">
                                             <table class="table table-bordered" style="font-size:65%; width: auto">

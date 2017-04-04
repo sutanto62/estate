@@ -182,7 +182,7 @@ class Payslip(models.Model):
         """HR cross check related upkeep labour before and after payslip
         """
         context = self._context.copy()
-        view_id = self.env.ref('estate.upkeep_labour_view_tree').id
+        view_id = self.env.ref('estate_payroll.payslip_upkeep_labour_view_tree').id
 
         # Payslip only processed approved upkeep labour of selected employee within payslip period
 

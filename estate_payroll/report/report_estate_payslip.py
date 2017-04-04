@@ -69,7 +69,8 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         domain = [('state', 'in', ('draft','verify')),
                   ('date_from', '>=', obj.date_start),
                   ('date_to', '<=', obj.date_end),
-                  ('payslip_run_id', '=', obj.id)]
+                  ('payslip_run_id', '=', obj.id),
+                  ('company_id', '=', obj.company_id.id)]
 
         ids = payslip_obj.search(self.cr, self.uid, domain)
 
@@ -82,9 +83,9 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         if team_ids:
             res = team_obj.browse(self.cr, self.uid, team_ids)
             
-        return res
+        return sorted(res, key=lambda d: d.name)
 
-    def get_payslip_team(self, id, date_start, date_end, payslip_run_id):
+    def get_payslip_team(self, id, date_start, date_end, payslip_run_id, company_id):
         """
         Get payslip's estate worker at any state (xml report to filter state) at given period
         Args:
@@ -95,12 +96,14 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         Returns: payslip instances
         """
         payslip_obj = self.pool.get('hr.payslip')
+
         # note: search return ids, browse return instances
         ids = payslip_obj.search(self.cr, self.uid, [('contract_type_id', '=', 'Estate Worker'),
                                                      ('team_id', '=', id),
                                                      ('date_from', '=', date_start),
                                                      ('date_to', '=', date_end),
-                                                     ('payslip_run_id', '=', payslip_run_id)], order='employee_id')
+                                                     ('payslip_run_id', '=', payslip_run_id),
+                                                     ('company_id', '=', company_id)], order='employee_id')
         res = payslip_obj.browse(self.cr, self.uid, ids)
         return res
 

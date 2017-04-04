@@ -152,15 +152,25 @@ class UpkeepLabour(models.Model):
                                     record.attendance_code_id,
                                     att_obj.get_attendance(record.employee_id, record.upkeep_date, 'action'),)
 
-            # This method worked only if attendance code's fingerprint requirement is complete
-            if record['attendance_code_id']['fingerprint'] != 'complete':
-                return
+            # Support attendance code's fingerprint requirements
+            attendance_fingerprint = record['attendance_code_id']['fingerprint']
 
-            att_rule = UpkeepFingerprintSpecification(). \
-                and_specification(SignInSpecification()). \
-                and_specification(SignOutSpecification()). \
-                and_specification(AttendanceCodeSpecification()). \
-                or_specification(ActionSpecification())
+            if attendance_fingerprint == 'complete':
+                # Attendance code required complete fingerprint check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInSpecification()). \
+                    and_specification(SignOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()).\
+                    or_specification(ActionSpecification())
+            elif attendance_fingerprint == 'single':
+                # Attendance code required single sign-in/out check.
+                att_rule = UpkeepFingerprintSpecification(). \
+                    and_specification(SignInOutSpecification()). \
+                    and_specification(AttendanceCodeSpecification()). \
+                    or_specification(ActionSpecification())
+            else:
+                # Attendance code required no fingerprint check.
+                att_rule = AttendanceCodeSpecification()
 
             if att_rule.is_satisfied_by(res):
                 amount += record['wage_overtime']
