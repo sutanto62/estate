@@ -51,6 +51,8 @@ class TestMasterActivity(TransactionCase):
         vals = {
             'name': 'Activity',
             'type': 'normal',
+            'wage_method': 'standard',
+            'qty_base': 1,
             'parameter_weight_ids': [
                 (0, 0, {
                     'parameter_id': self.env.ref('estate.parameter_soil').id,
@@ -86,9 +88,10 @@ class TestMasterActivity(TransactionCase):
                 (0, 0, {
                     'parameter_id': self.env.ref('estate.parameter_soil').id,
                     'parameter_value_id': self.env.ref('estate.parameter_value_mineral').id,
+                    'wage_method': 'standard',
                     'coefficient': 1.00,
                     'ratio_base': 0,
-                    'qty_base': 0,
+                    'qty_base': 1,
                 })
             ]
         }
@@ -111,6 +114,8 @@ class TestMasterActivity(TransactionCase):
         vals = {
             'name': 'Activity',
             'type': 'normal',
+            'wage_method': 'standard',
+            'qty_base': 1,
             'parameter_weight_ids': [
                 (0, 0, {
                     'parameter_id': self.env.ref('estate.parameter_soil').id,
@@ -217,6 +222,8 @@ class TestMasterActivity(TransactionCase):
         child_vals = {
             'name': 'Child',
             'type': 'normal',
+            'wage_method': 'standard',
+            'qty_base': 1,
             'parent_id': a_parent.id
         }
         activity = self.MasterActivity.create(child_vals)
