@@ -277,7 +277,7 @@ class QuotationComparisonForm(models.Model):
     # line_remarks_backorder = fields.Integer(compute='_compute_line_remarks_backorder')
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line')
-    partner_ids = fields.Many2many('res.partner', 'quotation_comparison_supplier_rel', 'requisition_id', 'partner_id', string='Vendors')
+    partner_ids = fields.Many2many('res.partner',string='Vendors')
     backorder_purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line',domain=[('validation_check_backorder','=',True)])
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -407,24 +407,25 @@ class QuotationComparisonForm(models.Model):
     #         back_order_line = item.env.cr.fetchone()[0]
     #         item.line_remarks_backorder = back_order_line
 
+
     @api.multi
     def print_qcf(self):
         for item in self:
+            arrPartner = []
+            purchase_tender = item.env['purchase.requisition'].search([('id','=',item.requisition_id.id)])
+            partner = item.env['purchase.order'].search([('requisition_id','=',purchase_tender.id)])
+            for record in partner:
+                arrPartner.append(record.partner_id.ids)
+            partner_list = list(arrPartner)
+            wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
+            view_id = item.env['wizard.partner.comparison']
+            vals = {
+                        'name'   : 'this is for set name',
+                        'qcf_id' : item.id,
+                        'partner_ids' : [(6, 0, partner_list)]
+                    }
+            new = view_id.create(vals)
             if not item.partner_ids:
-                wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
-                view_id = item.env['wizard.partner.comparison']
-                arrPartner = []
-
-                purchase_tender = item.env['purchase.requisition'].search([('id','=',item.requisition_id.id)])
-                partner = item.env['purchase.order'].search([('requisition_id','=',purchase_tender.id)])
-                for record in partner:
-                    arrPartner.append(record.partner_id.id)
-                partner_list = list(arrPartner)
-                vals = {
-                            'name'   : 'this is for set name',
-                            'partner_ids' : [(6, 0, partner_list)]
-                        }
-                new = view_id.create(vals)
                 return {
                             'name'      : _('Print Your Quotation Comparison'),
                             'type'      : 'ir.actions.act_window',
@@ -436,23 +437,27 @@ class QuotationComparisonForm(models.Model):
                             'target'    : 'new'
                         }
             else:
-                wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
-                view_id = item.env['wizard.partner.comparison']
-                vals = {
-                            'name'   : 'this is for set name',
-                            'partner_ids' : [(6, 0, item.partner_ids.ids)]
-                        }
-                new = view_id.create(vals)
                 return {
-                            'name'      : _('Print Your Quotation Comparison'),
-                            'type'      : 'ir.actions.act_window',
-                            'res_model' : 'wizard.partner.comparison',
-                            'res_id'    : new.id,
-                            'view_id'   : wizard_form.id,
-                            'view_type' : 'form',
-                            'view_mode' : 'form',
-                            'target'    : 'new'
-                        }
+                        'name'      : _('Print Your Quotation Comparison'),
+                        'type'      : 'ir.actions.act_window',
+                        'res_model' : 'wizard.partner.comparison',
+                        'res_id'    : new.id,
+                        'view_id'   : wizard_form.id,
+                        'view_type' : 'form',
+                        'view_mode' : 'form',
+                        'target'    : 'new'
+                    }
+
+    @api.multi
+    def _create_wizard(self):
+        for item in self:
+            wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
+            view_id = item.env['wizard.partner.comparison']
+            vals = {
+                        'name'   : 'this is for set name',
+                        'partner_ids' : [(6, 0, item.partner_ids.ids)]
+                    }
+            new = view_id.create(vals)
 
 
     @api.multi

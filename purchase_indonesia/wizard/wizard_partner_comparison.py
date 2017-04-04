@@ -6,11 +6,11 @@ class WizardPartnerComparison(models.TransientModel):
 
     _name = 'wizard.partner.comparison'
 
-
-    partner_ids = fields.Many2many('res.partner', 'quotation_comparison_supplier_rel', 'requisition_id', 'partner_id', string='Vendors', required=True)
+    qcf_id = fields.Many2one('quotation.comparison.form','qcf')
+    partner_ids = fields.Many2many('res.partner', string='Vendors', required=True)
 
     @api.multi
-    @api.onchange('check','partner_ids')
+    @api.onchange('partner_ids')
     def _onchange_partner_ids(self):
             for item in self:
                     arrPartner = []
@@ -31,9 +31,20 @@ class WizardPartnerComparison(models.TransientModel):
         if 'active_id' in context:
             for item in self :
                 quotation_comparison_form = item.env['quotation.comparison.form']
-                data = {
+                data_partner = {
                 'partner_ids':[(6, 0, item.partner_ids.ids)]}
 
-                list_flow=quotation_comparison_form.search([('id','=',context['active_id'])]).write(data)
-                item.env['report'].get_action(self, 'purchase_indonesia.report_quotation_comparison_form_document')
-                return {'type': 'ir.actions.act_window_close',}
+                list_flow=quotation_comparison_form.search([('id','=',context['active_id'])]).write(data_partner)
+
+                qcf = quotation_comparison_form.search([('id','=',context['active_id'])])
+
+                context = dict({},active_ids=qcf.ids,active_model=item._name)
+
+                return {
+                    'type': 'ir.actions.report.xml',
+                    'report_name': 'purchase_indonesia.report_quotation_comparison_form_document',
+                    'context': context
+                }
+
+
+
