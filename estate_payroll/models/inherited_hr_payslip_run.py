@@ -46,7 +46,7 @@ class PayslipRun(models.Model):
         :return: first estate and set to estate_id
         """
         if self.division_id:
-            res = self.env['stock.location'].search([('id', '=', self.division_id.location_id.id)])
+            res = self.estate_id = self.env['stock.location'].get_estate(self.division_id.id)
             if res:
                 self.estate_id = res
 
