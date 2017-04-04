@@ -84,7 +84,7 @@
                                 </thead>
 
                                 <!-- payslip team -->
-                                <t t-foreach="get_team(batch.slip_ids)" t-as="team">
+                                <t t-foreach="get_team(batch)" t-as="team">
                                     <tbody>
                                         <!-- Reset variable per team -->
                                         <t t-set="amount_rounding_team" t-value="0"/>
@@ -92,7 +92,7 @@
                                         <t t-set="amount_brutto_team" t-value="0"/>
                                         <t t-set="amount_total_other" t-value="0"/>
                                         <t t-set="no" t-value="0"/>
-                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end))"/>
+                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id))"/>
                                         <t t-set="round" t-value="1000"/>
 
                                         <!-- reset total team -->
@@ -114,7 +114,7 @@
                                         <!-- /reset total team-->
 
                                         <!-- payslip team member-->
-                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end)" t-as="payslip">
+                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id)" t-as="payslip">
 
                                             <!-- amount line -->
                                             <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
@@ -257,7 +257,7 @@
             <!-- Payroll List by Team -->
                             <p style="page-break-after:always;">  </p>
 
-                            <t t-foreach="get_team(batch.slip_ids)" t-as="team">
+                            <t t-foreach="get_team(batch)" t-as="team">
                                 <!-- Set row sum variable -->
                                 <t t-set="total_day_team" t-value="0"/>
                                 <t t-set="total_edw_team" t-value="0"/>
@@ -335,10 +335,10 @@
                                         <t t-set="amount_netto_team" t-value="0"/>
                                         <t t-set="amount_total_other" t-value="0"/>
                                         <t t-set="no" t-value="0"/>
-                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end))"/>
+                                        <t t-set="last_row" t-value="len(get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id))"/>
                                         <t t-set="round" t-value="1000"/>
 
-                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end)" t-as="payslip">
+                                        <t t-foreach="get_payslip_team(team.id, batch.date_start, batch.date_end, batch.id)" t-as="payslip">
                                             <tr>
                                                 <t t-set="amount_edw" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'EDW')"/>
                                                 <t t-set="amount_ot" t-value="get_line_total(payslip.id, payslip.employee_id.id, 'OT')"/>

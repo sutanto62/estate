@@ -56,41 +56,51 @@ class estate_payslip_run_report(report_sxw.rml_parse):
 
     def get_team(self, obj):
         """
-        Get team instances
-        :param obj: payslip object
+        Report payslip by team get from payslip.
+        :param obj: Payslip Run
         :return: list of team instances
         """
         team_ids = []
         res = []
+        payslip_obj = self.pool.get('hr.payslip')
         team_obj = self.pool.get('estate.hr.team')
 
-        # Get ids
-        for id in range(len(obj)):
-            team_ids.append(obj[id].team_id.id)
+        # Get team
+        domain = [('state', 'in', ('draft','verify')),
+                  ('date_from', '>=', obj.date_start),
+                  ('date_to', '<=', obj.date_end),
+                  ('payslip_run_id', '=', obj.id)]
+
+        ids = payslip_obj.search(self.cr, self.uid, domain)
+
+        for record in payslip_obj.browse(self.cr, self.uid, ids):
+            team_ids.append(record.team_id.id)
+
         team_ids = set(team_ids)
 
         # Get team instances
         if team_ids:
             res = team_obj.browse(self.cr, self.uid, team_ids)
+            
         return res
 
-    def get_payslip_team(self, id, date_start, date_end):
+    def get_payslip_team(self, id, date_start, date_end, payslip_run_id):
         """
-        Get estate worker payslip at any state (xml report to filter state) at given period.
+        Get payslip's estate worker at any state (xml report to filter state) at given period
         Args:
             id: team
             date_start: payroll batch start date
             date_end: payroll batch end date
-
+            payslip_run_id: payslip run
         Returns: payslip instances
-
         """
         payslip_obj = self.pool.get('hr.payslip')
         # note: search return ids, browse return instances
         ids = payslip_obj.search(self.cr, self.uid, [('contract_type_id', '=', 'Estate Worker'),
                                                      ('team_id', '=', id),
                                                      ('date_from', '=', date_start),
-                                                     ('date_to', '=', date_end)], order='employee_id')
+                                                     ('date_to', '=', date_end),
+                                                     ('payslip_run_id', '=', payslip_run_id)], order='employee_id')
         res = payslip_obj.browse(self.cr, self.uid, ids)
         return res
 

@@ -72,6 +72,136 @@ class Upkeep(models.Model):
     # constrains: material_ids.product_id = activity_ids.product_id
     material_line_ids = fields.One2many('estate.upkeep.material', string='Upkeep Material Line', inverse_name='upkeep_id')
     comment = fields.Text('Additional Information')
+    total_labour = fields.Integer('Total Labour', compute='_compute_total_labour_line')
+    total_number_of_day = fields.Float('Total Number of Day', compute='_compute_total_labour_line')
+    total_overtime = fields.Float('Total Overtime Hours', compute='_compute_total_labour_line')
+    total_piece_rate = fields.Float('Total Piece Rate Amount', compute='_compute_total_labour_line')
+
+    @api.multi
+    @api.depends('labour_line_ids')
+    # @api.depends('labour_line_ids.employee_id', 'labour_line_ids.number_of_day',
+    #              'labour_line_ids.quantity_overtime', 'labour_line_ids.wage_piece_rate')
+    def _compute_total_labour_line(self):
+        """ Provide summary of total labour - upkeep check."""
+        for record in self:
+            # if record.labour_line_ids:
+            labour_ids = []
+
+            for labour in record.labour_line_ids:
+                labour_ids.append(labour.employee_id.id)
+
+            record.total_labour = len(set(labour_ids))
+            record.total_number_of_day = sum(labour.number_of_day for labour in record.labour_line_ids)
+            record.total_overtime = sum(labour.quantity_overtime for labour in record.labour_line_ids)
+            record.total_piece_rate_amount = sum(labour.wage_piece_rate for labour in record.labour_line_ids)
+
+        return True
+
+
+    @api.one
+    @api.constrains('date')
+    def _check_date(self):
+        """Upkeep date should be limited. Didn't support different timezone
+        Condition:
+        1. Zero value of max entry day = today transaction should be entry today.
+        2. Positive value of max entry day = allowed back/future dated transaction.
+        """
+        if self.date:
+            fmt = '%Y-%m-%d'
+            d1 = datetime.strptime(self.date, fmt)
+            d2 = datetime.strptime(fields.Date.today(), fmt)
+            delta = (d2 - d1).days
+            if self.max_day == 0 and abs(delta) > self.max_day:
+                error_msg = _("Transaction date should be today")
+                raise ValidationError(error_msg)
+            elif self.max_day != 0 and abs(delta) > self.max_day:
+                error_msg = _(
+                    "Transaction date should not be less than/greater than or equal to %s day(s)" % self.max_day)
+                raise ValidationError(error_msg)
+            else:
+                return True
+
+    @api.multi
+    @api.constrains('activity_line_ids')
+    def _check_activity_line(self):
+        """ Upkeep activity should only set once.
+        """
+        for record in self:
+            domains = []
+            if not record.activity_line_ids:
+                return
+
+            for activity in record.activity_line_ids.mapped('activity_id'):
+                domains = ([('upkeep_id', 'in', self.ids), ('activity_id', '=', activity.id)])
+                res = record.activity_line_ids.search(domains)
+
+                # Upkeep activity should set once
+                if len(res) > 1:
+                    error_msg = _("Upkeep Activity %s should only set once" % activity.name)
+                    raise ValidationError(error_msg)
+
+                labour_line = self.labour_line_ids.search(domains)
+                sum_labour_quantity = sum(line.quantity for line in labour_line)
+                unit_amount = res.unit_amount
+
+                # Sum of labour quantity less than or equal to unit amount
+                if round(sum_labour_quantity, 6) > round(unit_amount, 6):
+                    error_msg = _(
+                        "Total %s labour's amount should equal or less than %s" % (activity.name, unit_amount))
+                    raise ValidationError(error_msg)
+
+        return True
+
+    @api.multi
+    @api.constrains('labour_line_ids')
+    def _check_labour_line(self):
+        """Check total unit amount of labour equal or less than upkeep unit amount and Total attendance ratio should not exceed 1
+        """
+        for record in self:
+            # End if empty
+            if not record.labour_line_ids:
+                return
+
+            for activity in record.labour_line_ids.mapped('activity_id'):
+                # Check labour activity in upkeep activity
+                if not activity in record.activity_line_ids.mapped('activity_id'):
+                    error_msg = _('There is no %s in Upkeep Activity list' % activity.name)
+                    raise ValidationError(error_msg)
+
+                domains = ([('upkeep_id', 'in', self.ids), ('activity_id', '=', activity.id)])
+                sum_quantity = sum(line.quantity for line in record.labour_line_ids.search(domains))
+                res = record.activity_line_ids.search(domains)
+
+                # Check sum of labour quantity
+                if round(sum_quantity, 6) > round(res.unit_amount, 6):
+                    error_msg = _(
+                        "Total %s labour's amount should equal or less than %s" % (activity.name, res.unit_amount))
+                    raise ValidationError(error_msg)
+
+            # Labour should not worked more than 1 worked day
+            for labour in record.labour_line_ids.mapped('employee_id'):
+                domains = ([('upkeep_id', 'in', self.ids), ('employee_id', '=', labour.id)])
+                sum_attendance_code_ratio = sum(
+                    line.attendance_code_ratio for line in record.labour_line_ids.search(domains))
+                if sum_attendance_code_ratio > 1:
+                    error_msg = _("Total worked day of %s should not more than 1 worked day" % labour.name)
+                    raise ValidationError(error_msg)
+
+    @api.multi
+    @api.constrains('material_line_ids')
+    def _check_material_line(self):
+        """Check activity of material usage
+        """
+        for record in self:
+            # End if empty
+            if not record.material_line_ids:
+                return
+
+            for activity in record.material_line_ids.mapped('activity_id'):
+                # Check material usage activity in upkeep activity
+                if not activity in record.activity_line_ids.mapped('activity_id'):
+                    error_msg = _('There is no %s in Upkeep Activity list' % activity.name)
+                    raise ValidationError(error_msg)
 
     @api.model
     def create(self, vals):
@@ -169,107 +299,6 @@ class Upkeep(models.Model):
             self.estate_id = self.env['stock.location'].get_estate(self.division_id.id)
         elif self.division_id.estate_location_level == '1':  # Costing non block
             self.estate_id = self.division_id.id
-
-    @api.one
-    @api.constrains('date')
-    def _check_date(self):
-        """Upkeep date should be limited. Didn't support different timezone
-        Condition:
-        1. Zero value of max entry day = today transaction should be entry today.
-        2. Positive value of max entry day = allowed back/future dated transaction.
-        """
-        if self.date:
-            fmt = '%Y-%m-%d'
-            d1 = datetime.strptime(self.date, fmt)
-            d2 = datetime.strptime(fields.Date.today(), fmt)
-            delta = (d2 - d1).days
-            if self.max_day == 0 and abs(delta) > self.max_day:
-                error_msg = _("Transaction date should be today")
-                raise ValidationError(error_msg)
-            elif self.max_day != 0 and abs(delta) > self.max_day:
-                error_msg = _("Transaction date should not be less than/greater than or equal to %s day(s)" % self.max_day)
-                raise ValidationError(error_msg)
-            else:
-                return True
-
-    @api.multi
-    @api.constrains('activity_line_ids')
-    def _check_activity_line(self):
-        """ Upkeep activity should only set once.
-        """
-        for record in self:
-            domains = []
-            if not record.activity_line_ids:
-                return
-
-            for activity in record.activity_line_ids.mapped('activity_id'):
-                domains = ([('upkeep_id', 'in', self.ids), ('activity_id', '=', activity.id)])
-                res = record.activity_line_ids.search(domains)
-
-                # Upkeep activity should set once
-                if len(res) > 1:
-                    error_msg = _("Upkeep Activity %s should only set once" % activity.name)
-                    raise ValidationError(error_msg)
-
-                labour_line = self.labour_line_ids.search(domains)
-                sum_labour_quantity = sum(line.quantity for line in labour_line)
-                unit_amount = res.unit_amount
-
-                # Sum of labour quantity less than or equal to unit amount
-                if round(sum_labour_quantity,6) > round(unit_amount,6):
-                    error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, unit_amount))
-                    raise ValidationError(error_msg)
-
-        return True
-
-    @api.multi
-    @api.constrains('labour_line_ids')
-    def _check_labour_line(self):
-        """Check total unit amount of labour equal or less than upkeep unit amount and Total attendance ratio should not exceed 1
-        """
-        for record in self:
-            # End if empty
-            if not record.labour_line_ids:
-                return
-
-            for activity in record.labour_line_ids.mapped('activity_id'):
-                # Check labour activity in upkeep activity
-                if not activity in record.activity_line_ids.mapped('activity_id'):
-                    error_msg = _('There is no %s in Upkeep Activity list' % activity.name)
-                    raise ValidationError(error_msg)
-
-                domains = ([('upkeep_id', 'in', self.ids), ('activity_id', '=', activity.id)])
-                sum_quantity = sum(line.quantity for line in record.labour_line_ids.search(domains))
-                res = record.activity_line_ids.search(domains)
-
-                # Check sum of labour quantity
-                if round(sum_quantity,6) > round(res.unit_amount,6):
-                    error_msg = _("Total %s labour's amount should equal or less than %s" % (activity.name, res.unit_amount))
-                    raise ValidationError(error_msg)
-
-            # Labour should not worked more than 1 worked day
-            for labour in record.labour_line_ids.mapped('employee_id'):
-                domains = ([('upkeep_id', 'in', self.ids), ('employee_id', '=', labour.id)])
-                sum_attendance_code_ratio = sum(line.attendance_code_ratio for line in record.labour_line_ids.search(domains))
-                if sum_attendance_code_ratio > 1:
-                    error_msg = _("Total worked day of %s should not more than 1 worked day" % labour.name)
-                    raise ValidationError(error_msg)
-
-    @api.multi
-    @api.constrains('material_line_ids')
-    def _check_material_line(self):
-        """Check activity of material usage
-        """
-        for record in self:
-            # End if empty
-            if not record.material_line_ids:
-                return
-
-            for activity in record.material_line_ids.mapped('activity_id'):
-                # Check material usage activity in upkeep activity
-                if not activity in record.activity_line_ids.mapped('activity_id'):
-                    error_msg = _('There is no %s in Upkeep Activity list' % activity.name)
-                    raise ValidationError(error_msg)
 
     @api.multi
     def get_activity(self):

@@ -20,16 +20,18 @@ class TestUpkeep(TransactionCase):
 
         self.demo = self.env.ref('estate.estate_upkeep_2')
 
-        assistant_id = self.env.ref('hr.employee_al')
-        team_id = self.env.ref('estate.team_syukur')
-        estate_id = self.env.ref('stock.stock_main_estate')
-        division_id = self.env.ref('stock.stock_division_1')
+        self.assistant_id = self.env.ref('hr.employee_al')
+        self.team_id = self.env.ref('estate.team_syukur')
+        self.estate_id = self.env.ref('stock.stock_main_estate')
+        self.division_id = self.env.ref('stock.stock_division_1')
+        self.att_code_k = self.env.ref('estate.hr_attendance_k')
+        self.att_code_l = self.env.ref('estate.hr_attendance_k2')
 
         wage_val = {
             'name': 'UMR Regional 2016',
             'active': True,
             'date_start': (datetime.today() - relativedelta.relativedelta(month=1,day=1)).strftime(DF),
-            'estate_id': estate_id.id,
+            'estate_id': self.estate_id.id,
             'wage': 1875000,
             'number_of_days': 25,
             'overtime_amount': 10000,
@@ -39,11 +41,40 @@ class TestUpkeep(TransactionCase):
 
         self.upkeep_val = {
             'name': 'BKM',
-            'assistant_id': team_id.id,
-            'team_id': assistant_id.id,
+            'assistant_id': self.team_id.id,
+            'team_id': self.assistant_id.id,
             'date': datetime.today().strftime(DF),
-            'estate_id': estate_id.id,
-            'division_id': division_id.id,
+            'estate_id': self.estate_id.id,
+            'division_id': self.division_id.id,
+        }
+
+        self.upkeep = {
+            'name': 'BKM',
+            'assistant_id': self.team_id.id,
+            'team_id': self.assistant_id.id,
+            'date': datetime.today().strftime(DF),
+            'estate_id': self.estate_id.id,
+            'division_id': self.division_id.id,
+            'activity_line_ids': [
+                (0, 0, {
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'unit_amount': 20,
+                })
+            ],
+            'labour_line_ids': [
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_5').id,
+                    'attendance_code_id': self.att_code_k.id,
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'quantity': 10
+                }),
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_4').id,
+                    'attendance_code_id': self.att_code_k.id,
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'quantity': 10
+                })
+            ]
         }
 
     def test_00_check_date_00_today(self):
@@ -240,3 +271,46 @@ class TestUpkeep(TransactionCase):
     #     # Imitate onchange division event
     #     upkeep._onchange_division_id()
     #     self.assertEqual(upkeep['estate_id']['name'], 'LYD', 'Estate: _onchange_division_id is failed')
+
+    def test_03_compute_total_labour(self):
+        """ Compute total labour in single upkeep."""
+
+        # I created upkeep with single activity and two labours
+        upkeep = self.Upkeep.create(self.upkeep)
+        for labour in upkeep.labour_line_ids:
+            labour._compute_number_of_day()
+            # print 'Labour: %s, Activity: %s (%s), Qty Base %s, HK %s' % \
+            #       (labour.employee_id.name, labour.activity_id.name, labour.activity_id.wage_method,
+            #        labour.activity_id.qty_base, labour.number_of_day)
+        upkeep._compute_total_labour_line()
+
+        self.assertEqual(upkeep.total_labour, 2, 'Upkeep: total labour was not 2.')
+        self.assertEqual(upkeep.total_number_of_day, 2, 'Upkeep: total number of day was not 2.')
+        self.assertEqual(upkeep.total_overtime, 0, 'Upkeep: total number of day was not 0.')
+        self.assertEqual(upkeep.total_piece_rate, 0, 'Upkeep: total number of day was not 0.')
+
+        # I edit upkeep with more activity and two labours works at these activities
+        val = {
+            'activity_line_ids': [
+                (0, 0, {
+                    'activity_id': self.env.ref('estate.activity_136').id,
+                    'unit_amount': 20,
+                })
+            ],
+            'labour_line_ids': [
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_5').id,
+                    'activity_id': self.env.ref('estate.activity_136').id,
+                    'quantity': 10
+                }),
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_4').id,
+                    'activity_id': self.env.ref('estate.activity_136').id,
+                    'quantity': 10
+                })
+            ]
+        }
+
+        upkeep.write(val)
+        upkeep._compute_total_labour_line()
+        self.assertEqual(upkeep.total_labour, 2, 'Total labour returned value is not 2')
