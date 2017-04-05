@@ -21,7 +21,7 @@ class PayslipEmployee(models.Model):
         domain = [('state', '=', 'approved'),
                   ('upkeep_date', '>=', payslip_run.date_start),
                   ('upkeep_date', '<=', payslip_run.date_end),
-                  ('company_id', '=', payslip_run.company_id.id)]
+                  ('employee_id.company_id', '=', payslip_run.company_id.id)]
 
         if payslip_run.estate_id:
             domain.append(('estate_id', '=', payslip_run.estate_id.id))
