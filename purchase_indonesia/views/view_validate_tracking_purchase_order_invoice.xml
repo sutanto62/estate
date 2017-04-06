@@ -5,7 +5,7 @@
              <field name="model">result.tracking.purchase.order</field>
              <field name="priority" eval="1"/>
              <field name="arch" type="xml">
-                <tree string="Tracking Purchase Order">
+                <tree string="Tracking Purchase Order" decoration-danger="status_pp=='PP Outstanding'">
                     <field name="id" invisible="1"/>
                     <field name="requisition_id" string="Tender No"/>
                     <field name="product_id" string="Product" />

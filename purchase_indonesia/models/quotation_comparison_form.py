@@ -448,16 +448,16 @@ class QuotationComparisonForm(models.Model):
                         'target'    : 'new'
                     }
 
-    @api.multi
-    def _create_wizard(self):
-        for item in self:
-            wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
-            view_id = item.env['wizard.partner.comparison']
-            vals = {
-                        'name'   : 'this is for set name',
-                        'partner_ids' : [(6, 0, item.partner_ids.ids)]
-                    }
-            new = view_id.create(vals)
+    # @api.multi
+    # def _create_wizard(self):
+    #     for item in self:
+    #         wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
+    #         view_id = item.env['wizard.partner.comparison']
+    #         vals = {
+    #                     'name'   : 'this is for set name',
+    #                     'partner_ids' : [(6, 0, item.partner_ids.ids)]
+    #                 }
+    #         new = view_id.create(vals)
 
 
     @api.multi
