@@ -321,14 +321,13 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def _get_max_price(self):
         for item in self:
-            purchase_request_a = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)]).purchase_ids
+            purchase_request_backorder = self.env['purchase.requisition'].search([('validation_check_backorder','=',True),('id','=',self.requisition_id.id)]).purchase_ids
+            purchase_request_normalorder = self.env['purchase.requisition'].search([('validation_check_backorder','=',False),('id','=',self.requisition_id.id)]).purchase_ids
             if item.validation_check_backorder:
-                domain_backorder = [('validation_check_backorder','=',True)]
-                price = max(purchase.amount_total for purchase in purchase_request_a.search(domain_backorder))
+                price = max(purchase.amount_total for purchase in purchase_request_backorder)
                 return price
             else:
-                domain_normalorder = [('validation_check_backorder','=',False)]
-                price = max(purchase.amount_total for purchase in purchase_request_a.search(domain_normalorder))
+                price = max(purchase.amount_total for purchase in purchase_request_normalorder)
                 return price
 
     @api.multi
@@ -506,10 +505,10 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve1(self):
-        if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
+        if (self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_mid()) or (self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() < self._get_price_mid()):
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
+        elif (self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid()) or (self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid()):
             self.write({'state' : 'approve2','assign_to':self._get_director()})
 
     @api.multi
