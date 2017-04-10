@@ -220,7 +220,7 @@ class InheritStockPicking(models.Model):
     def action_validate_user(self):
         for item in self:
             for record in item.pack_operation_product_ids:
-                if record.qty_done < 0:
+                if record.qty_done == 0:
                     error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
                     raise exceptions.ValidationError(error_msg)
                 else:
@@ -357,12 +357,14 @@ class InheritStockPicking(models.Model):
                     'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'purchase_order_name':purchase_order.complete_name
                     }
             purchase_data = {
                     'pr_source' : purchase_order.request_id.complete_name,
                     'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'purchase_order_name':purchase_order.complete_name
                 }
 
             picking = item.env['stock.picking']
@@ -431,21 +433,45 @@ class InheritStockPicking(models.Model):
 
                 if count_action_cancel_status == count_product :
                     po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
-                    po.button_cancel()
-                    for itemmin in self.pack_operation_product_ids:
-                        purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
-                        if itemmin.qty_done < 0 :
-                            for recordoutstanding in purchase_requisition_linemin:
-                                outstanding_data = {
-                                            'qty_outstanding' : itemmin.qty_done * -1
-                                        }
-                                recordoutstanding.write(outstanding_data)
-                    self.action_cancel()
+                    if self.checking_picking_backorder() == False:
+                        po.button_cancel()
+                        for itemmin in self.pack_operation_product_ids:
+                            purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
+                            if itemmin.qty_done < 0 :
+                                for recordoutstanding in purchase_requisition_linemin:
+                                    outstanding_data = {
+                                                'qty_outstanding' : itemmin.qty_done * -1
+                                            }
+                                    recordoutstanding.write(outstanding_data)
+                        self.action_cancel()
+                        self.action_validate_manager()
+                        self.validation_manager = False
+                    else:
+                        for itemmin in self.pack_operation_product_ids:
+                            purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
+                            if itemmin.qty_done < 0 :
+                                for recordoutstanding in purchase_requisition_linemin:
+                                    outstanding_data = {
+                                                'qty_outstanding' : itemmin.qty_done * -1
+                                            }
+                                    recordoutstanding.write(outstanding_data)
+                        self.action_cancel()
+                        self.action_validate_manager()
+                        self.validation_manager = False
                 else:
                     self.do_transfer()
                     self.action_validate_manager()
 
                 super(InheritStockPicking,self).do_new_transfer()
+
+    @api.multi
+    def checking_picking_backorder(self):
+        for item in self:
+            if not item.backorder_id.id:
+                vals = False
+            else:
+                vals = True
+            return vals
 
     @api.multi
     def print_grn(self):

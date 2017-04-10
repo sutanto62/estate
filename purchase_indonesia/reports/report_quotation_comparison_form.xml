@@ -2,13 +2,13 @@
 <!--Custom report.-->
 <openerp>
     <data>
-        <!--  
+
       	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
 		      <xpath expr="//head" position="inside">
 		             <link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_quotation_comparison_form.css"/>
 		      </xpath>
 		</template>
-		-->
+
         <template id="report_quotation_comparison_form_document">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">

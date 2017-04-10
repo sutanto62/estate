@@ -116,11 +116,13 @@ class InheritPurchaseTenders(models.Model):
     def _compute_validation_correction(self):
 
         for item in self:
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','closed']) :
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed']) :
                 item.validation_correction = True
             else:
                if item.validation_check_backorder == True:
                    item.validation_correction = True
+               elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed']:
+                   item.validation_correction = False
                else:
                  item.validation_correction = False
 
@@ -134,7 +136,7 @@ class InheritPurchaseTenders(models.Model):
             for record in order:
                 if len(record) > 0 :
                     count_order = count_order + 1
-            if (count_order == 0):
+            if (count_order == 0) and item.state in('in_progress'):
                 item.validation_button_correction = True
             else:
                 item.validation_button_correction = False
@@ -451,10 +453,12 @@ class InheritPurchaseTenders(models.Model):
 
     @api.multi
     def generate_po(self):
-        pp_data={'state':'done'}
-        self.env['purchase.request'].search([('complete_name','like',self.origin)]).write(pp_data)
-        res=super(InheritPurchaseTenders,self).generate_po()
-        return res
+        for item in self:
+            pp_data={'state':'done'}
+            item.env['purchase.request'].search([('complete_name','like',item.origin)]).write(pp_data)
+            super(InheritPurchaseTenders,item).generate_po()
+            item.write({'state' : 'done'})
+
 
     @api.multi
     @api.constrains('purchase_ids')

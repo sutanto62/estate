@@ -134,7 +134,7 @@
                  <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="replace">
                          <button name="%(purchase_requisition.action_purchase_requisition_partner)d" type="action"
                         string="Request a Quotation" icon="fa-cogs"
-                        attrs="{'invisible': [('validation_correction','=',False),('state','in',['draft','done','closed'])]}"/>
+                        attrs="{'invisible': [('validation_correction','=',False)]}"/>
                  </xpath>
 
                  <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="after">
