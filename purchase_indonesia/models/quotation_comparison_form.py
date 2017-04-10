@@ -660,6 +660,113 @@ class QuotationComparisonForm(models.Model):
                             raise exceptions.ValidationError(error_msg)
 
 
+class ViewPurchaseRequisition(models.Model):
+    _name = 'view.purchase.requisition'
+    _description = 'View Purchase Requisition'
+    _auto = False
+    _order = 'requisition_id'
+
+    id = fields.Integer()
+    qty_request = fields.Float('Quantity Request')
+    requisition_id = fields.Many2one('purchase.requisition')
+    product_id = fields.Many2one('product.product','Product')
+
+    def init(self, cr):
+
+        cr.execute("""DROP view v_quotation_comparison_form_line""")
+        cr.execute("""DROP view quotation_comparison_form_line""")
+        cr.execute("""DROP view view_comparison_line""")
+        cr.execute("""DROP view view_purchase_requisition""")
+
+
+        cr.execute("""create or replace view view_purchase_requisition as
+                        select row_number() over() id,
+                                product_id,product_qty as qty_request,requisition_id
+                                      from purchase_requisition pr
+                        inner join purchase_requisition_line prl on prl.requisition_id = pr.id""")
+
+class ViewComparisonLine(models.Model):
+
+    _name = 'view.comparison.line'
+    _description = 'Quotation Comparison Line'
+    _auto = False
+    _order = 'req_id'
+
+    id = fields.Integer()
+    rownum = fields.Integer()
+    cheapest = fields.Integer()
+    req_id = fields.Many2one('purchase.requisition')
+    qcf_id = fields.Many2one('quotation.comparison.form')
+    company_id = fields.Many2one('res.company','Company')
+    product_id = fields.Many2one('product.product','Product')
+    product_uom = fields.Many2one('product.uom','Unit Of Measurement')
+    partner_id = fields.Many2one('res.partner','Vendor')
+    price_unit = fields.Float('Price Unit')
+    price_subtotal = fields.Float('Price Subtotal')
+    amount_untaxed = fields.Float('Amount Untaxed')
+    price_tax = fields.Float('Price Tax')
+    amount_total = fields.Float('Amount Total')
+    payment_term_id = fields.Many2one('account.payment.term','Payment Term')
+    date_planned = fields.Datetime('Planned Date')
+    incoterm_id = fields.Many2one('stock.incoterms','Incoterms')
+    delivery_term = fields.Char('Delivery Term')
+    po_des_all_name = fields.Text('Description')
+    pol_po_backorder = fields.Boolean('Back Order')
+
+
+    def init(self, cr):
+
+        cr.execute("""create or replace view view_comparison_line as
+						select row_number() over() id,
+                                pol_po_backorder,
+                                qcf_id,
+                                com_id company_id,req_id,
+                                po_pol_all.product_id,
+                                row_number() over (partition by req_id,po_pol_all.product_id order by po_pol_all.product_id asc) rownum,
+                                product_uom,
+                                part_id partner_id,
+                                price_unit,
+                                price_subtotal,
+                                amount_untaxed,
+                                price_tax,
+                                amount_total,
+                                payment_term_id,date_planned,incoterm_id,delivery_term,
+                                po_pol_min.cheapest,po_des_all_name from
+                        (
+                        select
+                            pol_des_name po_des_all_name,
+                            qcf.id qcf_id,
+                            qcf.requisition_id req_id,
+                            po_backorder pol_po_backorder,*
+                        from quotation_comparison_form qcf
+                        inner join (
+                            select
+                                row_number() over() id,
+                                po.company_id com_id,
+                                po.partner_id part_id,
+                                po.validation_check_backorder po_backorder,
+                                pol.pol_name pol_des_name,*
+                                from purchase_order po inner join (
+                                    select name pol_name,* from purchase_order_line
+                                        )pol
+                                        on po.id = pol.order_id and po.requisition_id is not null
+                                        )qcf_po
+                                        on qcf.requisition_id = qcf_po.requisition_id
+                                )po_pol_all
+                            inner join
+                            (
+                                select requisition_id, product_id, min(price_subtotal) cheapest
+                                from (
+                                    select * from purchase_order po inner join (
+                                        select * from purchase_order_line
+                                    )pol on po.id = pol.order_id and po.requisition_id is not null
+                                )po_pol group by po_pol.requisition_id, product_id
+                            ) po_pol_min
+                            on
+                            po_pol_all.req_id = po_pol_min.requisition_id
+                            and
+                            po_pol_all.product_id = po_pol_min.product_id""")
+
 class QuotationComparisonFormLine(models.Model):
 
     _name = 'quotation.comparison.form.line'
@@ -692,56 +799,25 @@ class QuotationComparisonFormLine(models.Model):
 
     def init(self, cr):
 
-        cr.execute("""DROP view v_quotation_comparison_form_line""")
-
-        cr.execute("""DROP view quotation_comparison_form_line""")
-
         cr.execute("""create or replace view quotation_comparison_form_line as
-                        select row_number() over() id,
+			select row_number() over() id,
                                 pol_po_backorder,
                                 qcf_id,
-                                com_id company_id,req_id,
-                                po_pol_all.product_id,
-                                row_number() over (partition by req_id,po_pol_all.product_id order by po_pol_all.product_id asc) rownum,
-                                qty_request,
+                                company_id,req_id,
+                                vpr.product_id,
+                                rownum,
                                 product_uom,
-                                part_id partner_id,
+                                partner_id,
                                 price_unit,
                                 price_subtotal,
                                 amount_untaxed,
                                 price_tax,
-                                amount_total,
+                                amount_total,qty_request,
                                 payment_term_id,date_planned,incoterm_id,delivery_term,
-                                po_pol_min.cheapest,po_des_all_name from
-                        (
-                        select
-                            pol_des_name po_des_all_name,
-                            qcf.id qcf_id,
-                            qcf.requisition_id req_id,
-                            po_backorder pol_po_backorder,*
-                        from quotation_comparison_form qcf
-                        inner join (
-                            select
-                                row_number() over() id,
-                                po.company_id com_id,
-                                po.partner_id part_id,
-                                po.validation_check_backorder po_backorder,
-                                pol.pol_name pol_des_name,*
-                                from purchase_order po inner join (
-                                    select name pol_name,* from purchase_order_line
-                                        )pol on po.id = pol.order_id and po.requisition_id is not null
-                                        )qcf_po on qcf.requisition_id = qcf_po.requisition_id
-                                )po_pol_all
-                            inner join
-                            (
-                                select requisition_id, product_id, min(price_subtotal) cheapest
-                                from (
-                                    select * from purchase_order po inner join (
-                                        select * from purchase_order_line
-                                    )pol on po.id = pol.order_id and po.requisition_id is not null
-                                )po_pol group by po_pol.requisition_id, product_id
-                            ) po_pol_min
-                            on po_pol_all.req_id = po_pol_min.requisition_id and po_pol_all.product_id = po_pol_min.product_id
+                                cheapest,po_des_all_name
+                                from view_comparison_line vcl
+                            inner join view_purchase_requisition vpr
+                        	on vcl.req_id = vpr.requisition_id and vpr.product_id = vcl.product_id
                         """)
 
 
