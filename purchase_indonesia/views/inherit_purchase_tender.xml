@@ -99,7 +99,7 @@
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" invisible="1"/>
                      <field name="location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
-                     <field name="force_closing" widget="radio" string="Force Close Tender" attrs="{'readonly': [('state','not in',('done'))]}"/>
+                     <field name="force_closing" string="Force Close Tender" attrs="{'readonly': [('state','not in',('done'))]}"/>
                      <field name="validation_check_backorder" string="Back Order" invisible="1"/>
                  </xpath>
 

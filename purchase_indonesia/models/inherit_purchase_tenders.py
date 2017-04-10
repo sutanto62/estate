@@ -100,6 +100,8 @@ class InheritPurchaseTenders(models.Model):
                 return item.write({'state':'closed'})
             elif item.force_closing == True and ((tracking.sum_quantity_tender == tracking.sum_quantity_purchase) and (tracking.sum_quantity_tender == tracking.sum_quantity_picking) and (tracking.sum_quantity_tender == tracking.sum_quantity_invoice)):
                 return item.write({'state':'closed'})
+            elif item.force_closing == True:
+                return item.write({'state':'closed'})
             else:
                 raise exceptions.ValidationError('You Must Complete Your Purchase Order')
 
@@ -219,6 +221,7 @@ class InheritPurchaseTenders(models.Model):
                     'location':purchase_requisition.location,
                     'state':'draft',
                     'pic_id': record.user_id.id,
+
                     'validation_check_backorder':True
                 }
             record.validation_check_backorder = True
@@ -439,9 +442,10 @@ class InheritPurchaseTenders(models.Model):
         supplier = res_partner.browse(cr, uid, partner_id, context=context)
         res = {}
         for requisition in self.browse(cr, uid, ids, context=context):
-            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [(rfq.state != 'cancel' or rfq.state  == 'received_force_done') and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
-                error_msg = "You have already one  purchase order for this partner, you must cancel this purchase order to create a new quotation."
-                raise exceptions.ValidationError(error_msg)
+            #todo use constraint for vendor.
+            # if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [(rfq.state != 'cancel' or rfq.state  == 'received_force_done') and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
+            #     error_msg = "You have already one  purchase order for this partner, you must cancel this purchase order to create a new quotation."
+            #     raise exceptions.ValidationError(error_msg)
             context.update({'mail_create_nolog': True})
             purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             purchase_order.message_post(cr, uid, [purchase_id], body=_("RFQ created"), context=context)
@@ -553,7 +557,7 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                                     inner join
                                         account_invoice_line ail
                                         on ai.id = ail.invoice_id
-                                        where state in ('open','paid') and ai.picking_id is null
+                                        where state in ('draft','open','paid') and ai.picking_id is null
                                         )invoice
                                 inner join
                                     purchase_order po
@@ -577,7 +581,7 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                                     inner join
                                         account_invoice_line ail
                                         on ai.id = ail.invoice_id
-                                        where state in ('open','paid') and ai.picking_id is not null
+                                        where state in ('draft','open','paid') and ai.picking_id is not null
                                         )invoice
                                 inner join
                                     purchase_order po
@@ -596,7 +600,7 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                         on tender.requisition_id = picking.requisition_id and tender.product_id = picking.product_id
                         left join
                         (
-                            select product_id,requisition_id,sum(product_qty) sum_quantity_purchase from purchase_order po
+                            select product_id,requisition_id,max(product_qty) sum_quantity_purchase from purchase_order po
                         inner join
                             purchase_order_line pol
                         on po.id = pol.order_id

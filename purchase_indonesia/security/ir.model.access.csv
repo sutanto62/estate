@@ -57,6 +57,11 @@
 "v_quotation_comparison_form_line_manager","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_manager","True","True","True","False"
 "v_quotation_comparison_form_line_procurement_staff","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_procstaff","True","True","True","False"
 ,,,,,,,
+"v_report_tracking_pp_user","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_user","True","False","False","False"
+"v_report_tracking_pp_div_head","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_div_head","True","False","False","False"
+"v_report_tracking_pp_dept_head","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_dept_head","True","False","False","False"
+"v_report_tracking_pp_manager","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_manager","True","True","True","False"
+"v_report_tracking_pp_procurement_staff","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_procstaff","True","True","True","False"
 
 
 ,,,,,,,

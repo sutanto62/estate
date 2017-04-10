@@ -81,9 +81,9 @@ class InheritRequisitionPartner(models.TransientModel):
                     'qty_request' : requisition.product_qty,
                     'comparison_id' : quotation_comparison_form.id
                 }
-            po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
-            for item in po :
-                self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+                po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
+                for item in po :
+                    self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
 
 
     @api.multi
