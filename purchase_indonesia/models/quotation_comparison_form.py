@@ -24,6 +24,29 @@ class InheritPurchaseOrder(models.Model):
 
     comparison_id = fields.Many2one('quotation.comparison.form','QCF')
 
+    def button_confirm(self, cr, uid, ids, context=None):
+        res = super(InheritPurchaseOrder, self).button_confirm(cr, uid, ids, context=context)
+        proc_obj = self.pool.get('procurement.order')
+        stock_move_obj = self.pool.get('stock.move')
+        for po in self.browse(cr, uid, ids, context=context):
+            if po.requisition_id and (po.requisition_id.exclusive == 'exclusive'):
+                for order in po.requisition_id.purchase_ids:
+                    if order.id != po.id:
+                        proc_ids = proc_obj.search(cr, uid, [('purchase_id', '=', order.id)])
+                        if proc_ids and po.state == 'confirmed':
+                            proc_obj.write(cr, uid, proc_ids, {'purchase_id': po.id})
+                        order.button_cancel()
+                    po.requisition_id.tender_done(context=context)
+            for element in po.order_line:
+                if element.product_id == po.requisition_id.procurement_id.product_id:
+                    stock_move_obj.write(cr, uid, element.move_ids.ids, {
+                        'procurement_id': po.requisition_id.procurement_id.id,
+                        'move_dest_id': po.requisition_id.procurement_id.move_dest_id.id,
+                        }, context=context)
+                if not element.quantity_tendered:
+                    element.write({'quantity_tendered': element.qty_request})
+        return res
+
 class InheritPurchaseOrderLine(models.Model):
 
     _inherit = 'purchase.order.line'
@@ -32,11 +55,17 @@ class InheritPurchaseOrderLine(models.Model):
     trigger_state = fields.Boolean('Trigger State')
     trigger_filter_cancel = fields.Boolean('Trigger Cancel',default=False,compute='_filter_cancel')
 
-    @api.multi
-    def button_confirm(self):
-        self.write({'trigger_state':True})
-        res = super(InheritPurchaseOrderLine,self).button_confirm()
-        return res
+    # @api.multi
+    # def button_confirm(self):
+    #     self.write({'trigger_state':True})
+    #     res = super(InheritPurchaseOrderLine,self).button_confirm()
+    #     return res
+
+    def button_confirm(self, cr, uid, ids, context=None):
+
+        for element in self.browse(cr, uid, ids, context=context):
+            self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
+        return True
 
     @api.multi
     def button_cancel(self):

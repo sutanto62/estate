@@ -50,7 +50,8 @@ class InheritRequisitionPartner(models.TransientModel):
 
         for requisition in purchase_tender.line_ids:
             comparisonline_data={
-                'qty_request' : requisition.product_qty,
+                'product_qty' : requisition.product_qty,
+                # 'qty_request' : requisition.product_qty,
                 'comparison_id' : quotation_comparison_form.id
             }
             po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))])
@@ -78,7 +79,8 @@ class InheritRequisitionPartner(models.TransientModel):
 
             for requisition in purchase_tender.line_ids:
                 comparisonline_data={
-                    'qty_request' : requisition.product_qty,
+                    'product_qty' : requisition.product_qty,
+                    # 'qty_request' : requisition.product_qty,
                     'comparison_id' : quotation_comparison_form.id
                 }
                 po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])

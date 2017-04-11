@@ -60,6 +60,9 @@
                  <xpath expr="//button[@name='button_done']" position="before">
                      <button name="print_purchase_order" string="Print PO" type="object" states="purchase" groups="base.group_user"/>
                  </xpath>
+                 <xpath expr="//tree//field[@name='product_qty']" position="after">
+                        <field name="qty_request" string="Qty Actual"/>
+                 </xpath>
                  <xpath expr="//tree//field[@name='price_subtotal']" position="after">
                         <field name="term_of_goods" class="oe_inline" string="Delivery Term"/>
                         <field name="validation_check_backorder" invisible="1"/>
