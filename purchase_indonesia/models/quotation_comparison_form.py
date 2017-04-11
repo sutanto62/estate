@@ -672,13 +672,6 @@ class ViewPurchaseRequisition(models.Model):
     product_id = fields.Many2one('product.product','Product')
 
     def init(self, cr):
-
-        cr.execute("""DROP view v_quotation_comparison_form_line""")
-        cr.execute("""DROP view quotation_comparison_form_line""")
-        cr.execute("""DROP view view_comparison_line""")
-        cr.execute("""DROP view view_purchase_requisition""")
-
-
         cr.execute("""create or replace view view_purchase_requisition as
                         select row_number() over() id,
                                 product_id,product_qty as qty_request,requisition_id

@@ -37,7 +37,7 @@ class InheritPurchaseTenders(models.Model):
     state = fields.Selection(selection_add = [('rollback','Roll Back PP'),
                                               ('closed','PP Closed'),
                                               ('open', 'PP Outstanding'),
-                                              ('done', 'Shipment Done')])
+                                              ('done', 'Shipment')])
     validation_check_backorder = fields.Boolean('Confirm backorder')
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
@@ -610,6 +610,92 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                         on tender.requisition_id = porder.requisition_id and tender.product_id = porder.product_id
                         """)
 
+class ViewRequisitionTracking(models.Model):
+
+    _name = 'view.requisition.tracking'
+    _description = 'Tracking Purchase Requisition'
+    _auto = False
+    _order = 'pr_id'
+
+    pr_id = fields.Many2one('purchase.request')
+    requisition_id = fields.Many2one('purchase.requisition')
+    complete_name = fields.Char('Complete Name')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_requisition_tracking as
+                        select pr.id pr_id , prq.id requisition_id,pr.complete_name complete_name
+                        from purchase_requisition prq
+                        inner join
+                        purchase_request pr
+                        on prq.request_id  = pr.id
+                        where pr.state in ('done','approved') group by pr.id,prq.id
+                        """)
+
+class ViewRequestRequisitionTracking(models.Model):
+
+    _name = 'view.request.requisition.tracking'
+    _description = 'Tracking Purchase Requisition'
+    _auto = False
+    _order = 'pr_id'
+    _inherit=['mail.thread']
+
+    id = fields.Char('ID')
+    pr_id = fields.Many2one('purchase.request')
+    requisition_id = fields.Many2one('purchase.requisition')
+    complete_name = fields.Char('Complete Name')
+    detail_ids = fields.One2many('view.detail.request.requisition.tracking','vrrt_id')
+    status_po = fields.Char(compute='status_tracking')
+    status_picking = fields.Char(compute='status_tracking')
+    status_invoice = fields.Char(compute='status_tracking')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_request_requisition_tracking as
+                        select row_number() over() id,* from (
+                            select pr_id,vqt.requisition_id,complete_name from validate_tracking_purchase_order_invoice vtpo
+                                inner join
+                                view_requisition_tracking vqt
+                                on vqt.requisition_id = vtpo.requisition_id
+                                group by pr_id,vqt.requisition_id,complete_name)parent_tracking
+                        """)
+
+    @api.multi
+    @api.depends('detail_ids')
+    def status_tracking(self):
+        for item in self:
+            if item.detail_ids :
+                initial = len(item.detail_ids)
+
+                item.env.cr.execute("select count(CASE WHEN progress_po = 'Done' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                po_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_po = 'in Progress' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                po_notdone = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_picking = 'Done' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                picking_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_picking = 'in Progress' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                picking_not_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_invoice = 'Done' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                invoice_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_invoice = 'in Progress' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                invoice_not_done = item.env.cr.fetchone()[0]
+
+
+                if po_notdone > 0 :
+                    item.status_po = 'In Progress'
+                elif po_done == initial:
+                    item.status_po = 'Done'
+                if picking_not_done > 0:
+                    item.status_picking = 'In Progress'
+                elif picking_done == initial:
+                    item.status_picking = 'Done'
+                if invoice_not_done > 0 :
+                    item.status_invoice = 'In Progress'
+                elif invoice_done == initial:
+                    item.status_invoice = 'Done'
 
 class ViewResultTrackingPurchaseOrderInvoice(models.Model):
 
@@ -645,6 +731,35 @@ class ViewResultTrackingPurchaseOrderInvoice(models.Model):
                             sum_quantity_tender,sum_quantity_purchase,sum_quantity_picking,sum_quantity_invoice
                             from validate_tracking_purchase_order_invoice
                         """)
+
+class ViewDetailRequestRequisitionTracking(models.Model):
+
+    _name = 'view.detail.request.requisition.tracking'
+    _description = 'Tracking Purchase Requisition'
+    _auto = False
+    _order = 'vrrt_id'
+
+    id = fields.Char('ID')
+    vrrt_id = fields.Many2one('view.request.requisition.tracking')
+    date_report = fields.Datetime('Date',track_visibility='onchange')
+    product_id = fields.Many2one('product.product')
+    requisition_id = fields.Many2one('purchase.requisition')
+    progress_po = fields.Char('Status PO',track_visibility='onchange')
+    progress_picking = fields.Char('Status Picking',track_visibility='onchange')
+    progress_invoice = fields.Char('Status Invoice',track_visibility='onchange')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_detail_request_requisition_tracking as
+                        select row_number() over() id,vrrt.id vrrt_id,
+                                now() date_report,
+                                vrrt.requisition_id , product_id,progress_po,progress_picking,progress_invoice
+                            from
+                            result_tracking_purchase_order rtpo
+                            inner join
+                            view_request_requisition_tracking vrrt on rtpo.requisition_id = vrrt.requisition_id
+                        """)
+
+
 
 
 
