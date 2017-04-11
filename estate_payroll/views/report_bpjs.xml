@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_bpjs">
+            <t t-call="report.html_container">
+                <t t-foreach="docs" t-as="payslip_run">
+                    <t t-call="report.internal_layout">
+                        <div class="page">
+                            <h3>Rincian Iuran Tenaga Kerja</h3>
+                            <h4><span t-esc="payslip_run['company_id']['name']"/></h4>
+                            <p>Period:
+                                <span t-esc="time.strftime('%d/%b/%y', time.strptime(payslip_run['date_start'], '%Y-%m-%d'))"/> -
+                                <span t-esc="time.strftime('%d/%b/%y', time.strptime(payslip_run['date_end'], '%Y-%m-%d'))"/>
+                            </p>
+
+
+
+                            <table class="table table-condensed table-bordered"  style="font-size: 65%">
+                                <!--reset total-->
+                                <t t-set="no" t-value="1"/>
+                                <t t-set="total_wage" t-value="0"/>
+                                <t t-set="total_jkkc" t-value="0"/>
+                                <t t-set="total_jkmc" t-value="0"/>
+                                <t t-set="total" t-value="0"/>
+                                <!--/reset total-->
+
+                                <!--table header-->
+                                <thead>
+                                    <tr>
+                                        <td>No</td>
+                                        <td>Employee Number</td>
+                                        <td>Employee</td>
+                                        <td>Join Date</td>
+                                        <td>Gender</td>
+                                        <td>Marital</td>
+                                        <td>Wage</td>
+                                        <td>JKK (0.54%)</td>
+                                        <td>JKM (0.3%)</td>
+                                        <td>JHT TK</td>
+                                        <td>JHT P</td>
+                                        <td>Total</td>
+                                    </tr>
+                                </thead>
+                                <!--/table header-->
+
+                                <!--table body-->
+                                <tbody>
+                                    <t t-foreach="Payslip" t-as="slip">
+                                        <t t-if="slip['company_id']==payslip_run['company_id']">
+
+                                            <t t-set="wage" t-value="sum_wage(slip)"/>
+                                            <t t-set="jkkc" t-value="get_jkkc(slip['line_ids'])"/>
+                                            <t t-set="jkmc" t-value="get_jkmc(slip['line_ids'])"/>
+                                            <t t-set="subtotal" t-value="jkkc+jkmc"/>
+
+                                            <tr>
+                                                <td><t t-esc="no"/></td>
+                                                <td><t t-esc="slip['employee_id']['nik_number']"/></td>
+                                                <td><t t-esc="slip['employee_id']['name']"/></td>
+                                                <td><t t-esc="slip['employee_id']['joindate']"/></td>
+                                                <td><t t-esc="gender[slip['employee_id']['gender']]"/></td>
+                                                <td><t t-esc="marital[slip['employee_id']['marital']]"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(wage)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(jkkc)"/></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(jkmc)"/></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-right"><t t-esc="'{0:,.0f}'.format(subtotal)"/></td>
+                                            </tr>
+
+                                            <!--add total-->
+                                            <t t-set="no" t-value="no+1"/>
+                                            <t t-set="total_wage" t-value="total_wage + wage"/>
+                                            <t t-set="total_jkkc" t-value="total_jkkc + jkkc"/>
+                                            <t t-set="total_jkmc" t-value="total_jkmc + jkmc"/>
+                                            <t t-set="total" t-value="total + subtotal"/>
+                                            <!--/add total-->
+                                        </t>
+                                    </t>
+                                </tbody>
+                                <!--/table body-->
+
+                                <!--table footer-->
+                                <tr style="font-weight: bold;">
+                                    <td colspan="6" class="text-right">Total</td>
+                                    <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_wage)"/></td>
+                                    <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_jkkc)"/></td>
+                                    <td class="text-right"><t t-esc="'{0:,.0f}'.format(total_jkmc)"/></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-right"><t t-esc="'{0:,.0f}'.format(total)"/></td>
+                                </tr>
+                                <!--/table footer-->
+                            </table>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

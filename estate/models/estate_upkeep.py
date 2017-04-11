@@ -740,6 +740,7 @@ class UpkeepLabour(models.Model):
     upkeep_team_employee_id = fields.Many2one(related='upkeep_id.team_id.employee_id', string='Team Leader', store=True)
     employee_id = fields.Many2one('hr.employee', 'Employee', required=True, track_visibility='onchange',
                                   domain=[('contract_type', 'in', ['1', '2'])])
+    employee_nik = fields.Char(related='employee_id.nik_number', string="Employee Identity Number ", store=True)
     employee_company_id = fields.Many2one(related='employee_id.company_id', string='Employee Company', store=True,
                                           help="Company of employee")
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
@@ -1175,9 +1176,11 @@ class UpkeepLabour(models.Model):
             raise ValidationError(error_msg)
 
         # a labour should not have more than 1 work day in a single day
-        upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
-                                                              ('upkeep_date', '=', self.upkeep_date)])
-        number_of_day = sum(item.number_of_day for item in upkeep_ids)
+        current_upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
+                                                                      ('upkeep_date', '=', self.upkeep_date),
+                                                                      ('id', 'not in', self.ids)])
+
+        number_of_day = sum(item.number_of_day for item in current_upkeep_ids)
 
         if number_of_day > 1.0:
             error_msg = _(

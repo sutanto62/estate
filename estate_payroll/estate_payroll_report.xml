@@ -6,12 +6,26 @@
             <field name="default" eval="True"/>
             <field name="format">A4</field>
             <field name="orientation">Landscape</field>
-            <field name="margin_top">15</field>
-            <field name="margin_bottom">15</field>
-            <field name="margin_left">10</field>
-            <field name="margin_right">10</field>
+            <field name="margin_top">5</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
             <field name="header_line" eval="False"/>
             <field name="header_spacing">15</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="bpjs_a4" model="report.paperformat">
+            <field name="name">BPJS Report</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">5</field>
+            <field name="margin_left">5</field>
+            <field name="margin_right">5</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">25</field>
             <field name="dpi">90</field>
         </record>
 
@@ -24,8 +38,21 @@
             file="estate_payroll.report_estate_payslip"
         />
 
+        <report
+            id="action_report_bpjs"
+            model="hr.payslip.run"
+            string="BPJS"
+            report_type="qweb-pdf"
+            name="estate_payroll.report_bpjs"
+            file="estate_payroll.report_bpjs"
+        />
+
         <record id="action_report_payslip" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="paperformat_a4"/>
+        </record>
+
+        <record id="action_report_bpjs" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="bpjs_a4"/>
         </record>
     </data>
 </openerp>

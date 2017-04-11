@@ -195,9 +195,10 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
             <field name="category_id" ref="hr_payroll.ALW"/>
             <field name="name">Piece Rate Worked Day</field>
             <field name="sequence" eval="18"/>
-            <field name="amount_python_compute">
-                result = (worked_days.WORK310 and worked_days.WORK310.number_of_days) * (contract.wage/25)</field>
+            <field name="amount_python_compute">result = (worked_days.WORK310 and worked_days.WORK310.number_of_days) * (contract.wage/25)</field>
         </record>
+
+        <!--Salary Rounding (make sure sequence after PRWD)-->
 
         <record id="hr_salary_rule_salary_rounding" model="hr.salary.rule">
             <field name="amount_select">code</field>
@@ -205,19 +206,16 @@ result = 0.003 * (wage_days + wage_piece_rate + wage_overtime)</field>
             <field name="category_id" ref="hr_payroll.ALW"/>
             <field name="name">Salary Rounding</field>
             <field name="sequence" eval="19"/>
-            <field name="amount_python_compute"># Available variables:
-brutto = EDW + OT + PR
-if PRWD:
-    brutto += PRWD
+            <field name="amount_python_compute">brutto = EDW + OT + PR + PRWD
 netto = brutto
 if netto == 0:
     netto_rounding = 0
-elif netto <= 1000:
+elif netto &lt;= 1000:
     netto_rounding = 1000
 elif netto%1000 == 0:
     netto_rounding = netto
 else:
-    netto_rounding = int(round(netto/1000)+1)*1000
+    netto_rounding = (int(netto/1000)+1)*1000
 result = netto_rounding - netto</field>
         </record>
 
@@ -229,8 +227,7 @@ result = netto_rounding - netto</field>
             <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_labour_daily_wage'),
             ref('hr_salary_rule_flat_overtime'),
             ref('hr_salary_rule_piece_rate'),
-            ref('hr_salary_rule_piece_rate_worked_day'),
-            ref('hr_salary_rule_salary_rounding')])]"/>
+            ref('hr_salary_rule_piece_rate_worked_day')])]"/>
             <field name="company_id" ref="base.main_company"/>
         </record>
 
@@ -265,8 +262,7 @@ result = netto_rounding - netto</field>
             <field name="parent_id" ref="hr_payroll.structure_estate"/>
             <field name="company_id" ref="base.main_company"/>
             <field name="rule_ids" eval="[(6, 0, [ref('hr_salary_rule_jkm_c'),
-            ref('hr_salary_rule_jkk_c'),
-            ref('hr_salary_rule_salary_rounding')])]"/>
+            ref('hr_salary_rule_jkk_c')])]"/>
         </record>
 
     </data>

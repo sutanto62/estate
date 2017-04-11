@@ -46,6 +46,7 @@ There are three salary components.
         'views/inherited_hr_payroll_view.xml',
         'views/inherited_estate_hr_view.xml',
         'views/report_estate_payslip.xml',
+        'views/report_bpjs.xml',
         'estate_payroll_report.xml',
 
     ],
