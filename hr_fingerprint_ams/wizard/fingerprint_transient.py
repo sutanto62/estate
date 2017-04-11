@@ -24,6 +24,7 @@ class UpkeepFingerprintReport(models.TransientModel):
     estate_id = fields.Many2one('stock.location', "Estate",
                                 domain=[('estate_location', '=', True), ('estate_location_level', '=', '1'),
                                 ('estate_location_type', '=', 'planted')])
+    assistant_id = fields.Many2one('hr.employee', 'Assistant')
 
     @api.multi
     @api.onchange('period')
@@ -106,6 +107,7 @@ class UpkeepFingerprintReport(models.TransientModel):
         result['date_to'] = data['form']['date_end'] or False
         result['company_id'] = data['form']['company_id'] or False
         result['estate_id'] = data['form']['estate_id'] or False
+        result['assistant_id'] = data['form']['assistant_id'] or False
         return result
 
     def _print_report(self, data):
@@ -119,7 +121,7 @@ class UpkeepFingerprintReport(models.TransientModel):
         data = {}
         data['ids'] = self.env.context.get('active_ids', [])
         data['model'] = self.env.context.get('active_model', 'ir.ui.menu')
-        data['form'] = self.read(['period', 'date_start', 'date_end', 'company_id', 'estate_id'])[0]
+        data['form'] = self.read(['period', 'date_start', 'date_end', 'company_id', 'estate_id', 'assistant_id'])[0]
         used_context = self._build_contexts(data)
         data['form']['used_context'] = dict(used_context, lang=self.env.context.get('lang', 'en_US'))
         return self._print_report(data)

@@ -17,6 +17,7 @@
                         <group>
                             <field name="company_id"/>
                             <field name="estate_id"/>
+                            <field name="assistant_id"/>
                         </group>
                     </group>
                     <footer>

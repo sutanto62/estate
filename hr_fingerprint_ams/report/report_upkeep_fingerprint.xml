@@ -8,42 +8,36 @@
                     <div class="page">
                         <h2>Laporan Kontrol HK dan Sidik jari</h2>
                         <p>
-                            <strong>Perusahaan</strong>: <span t-esc="report['form']['company_id'][1]"/><br/>
-                            <strong>Kebun</strong>: <span t-esc="report['form']['estate_id'][1]"/><br/>
-                            <strong>Periode</strong>: <span t-esc="report['form']['date_start']"/> -
-                                    <span t-esc="report['form']['date_end']"/>
+                            <strong>Perusahaan</strong>:
+                                <t t-if="report['form']['company_id']">
+                                    <span t-esc="report['form']['company_id'][1]"/>
+                                </t><br/>
+                            <strong>Kebun</strong>:
+                                <t t-if="report['form']['estate_id']">
+                                    <span t-esc="report['form']['estate_id'][1]"/>
+                                </t><br/>
+                            <strong>Periode</strong>: <span t-esc="format_date(report['form']['date_start'],'%Y-%m-%d')"/> -
+                                    <span t-esc="format_date(report['form']['date_end'],'%Y-%m-%d')"/>
                         </p>
-                        <!--<table class="table table-condensed borderless">-->
-                            <!--<tr>-->
-                                <!--<td class="col-md-1">Perusahaan:</td>-->
-                                <!--<td class="col-md-auto"><span t-esc="report['form']['company_id'][1]"/></td>-->
-                                <!--<td class="col-md-1">Periode</td>-->
-                                <!--<td class="col-md-2"><span t-esc="report['form']['date_start']"/> - -->
-                                    <!--<span t-esc="report['form']['date_end']"/></td>-->
-                            <!--</tr>-->
-                            <!--<tr>-->
-                                <!--<td class="col-md-1">Kebun:</td>-->
-                                <!--<td class="col-md-auto"><span t-esc="report['form']['estate_id'][1]"/></td>-->
-                                <!--<td class="col-md-1"></td>-->
-                                <!--<td class="col-md-2"></td>-->
-                            <!--</tr>-->
-                        <!--</table>-->
 
                         <!--table-->
                         <p>Beri tanda pada kolom A s.d. E sebagai keterangan sidik jari</p>
                         <table class="table table-condensed table-bordered" style="font-size: 65%">
                             <thead>
                                 <tr>
-                                    <th class="col-md-auto">KHL</th>
-                                    <th class="col-md-1">Tanggal</th>
-                                    <th class="col-md-1">Sidik Jari Masuk</th>
-                                    <th class="col-md-1">Sidik Jari Pulang</th>
-                                    <th class="col-md-1">HK</th>
-                                    <th class="col-md-1">A</th>
-                                    <th class="col-md-1">B</th>
-                                    <th class="col-md-1">C</th>
-                                    <th class="col-md-1">D</th>
-                                    <th class="col-md-1">E</th>
+                                    <th class="col-md-auto text-center" rowspan="2">KHL</th>
+                                    <th class="col-md-1 text-center" rowspan="2">Tanggal</th>
+                                    <th class="col-md-1 text-center" rowspan="2">Sidik Jari Masuk</th>
+                                    <th class="col-md-1 text-center" rowspan="2">Sidik Jari Pulang</th>
+                                    <th class="col-md-1 text-center" rowspan="2">HK BKM</th>
+                                    <th class="col-md-1 text-center" colspan="5">Alasan</th>
+                                </tr>
+                                <tr>
+                                    <th class="col-md-1 text-center">A</th>
+                                    <th class="col-md-1 text-center">B</th>
+                                    <th class="col-md-1 text-center">C</th>
+                                    <th class="col-md-1 text-center">D</th>
+                                    <th class="col-md-1 text-center">E</th>
                                 </tr>
                             </thead>
                              <!--footer-->
@@ -88,13 +82,13 @@
                                                         <span t-esc="ff['employee_id']['name']"/>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="ff['date']"/>
+                                                        <span t-esc="format_date(ff['date'],'%Y-%m-%d')"/>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="ff['sign_in']"/>
+                                                        <span t-esc="format_time(ff['sign_in'])"/>
                                                     </td>
                                                     <td>
-                                                        <span t-esc="ff['sign_out']"/>
+                                                        <span t-esc="format_time(ff['sign_out'])"/>
                                                     </td>
                                                     <td>
                                                         <span t-esc="ff['number_of_day']"/>
