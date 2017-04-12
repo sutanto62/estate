@@ -443,7 +443,7 @@ class InheritPurchaseTenders(models.Model):
         res = {}
         for requisition in self.browse(cr, uid, ids, context=context):
             #todo use constraint for vendor.
-            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [rfq.validation_check_backorder == True and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
+            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [((rfq.validation_check_backorder == True and rfq.state  not in ('cancel')) or (rfq.validation_check_backorder == False and rfq.state in ('draft')))and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
                 error_msg = "You have already one  purchase order for this partner, you must cancel this purchase order to create a new quotation."
                 raise exceptions.ValidationError(error_msg)
             context.update({'mail_create_nolog': True})
