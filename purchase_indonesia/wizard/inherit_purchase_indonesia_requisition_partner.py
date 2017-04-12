@@ -35,7 +35,6 @@ class InheritRequisitionPartner(models.TransientModel):
     def create_comparison(self,context=None):
         purchase_tender = self.env['purchase.requisition'].browse(self._context.get('active_id'))
         quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',self._context.get('active_id'))])
-
         #set quotation comparison data
         comparison_data = {
             'source_purchase_request' : purchase_tender.origin,
@@ -46,7 +45,9 @@ class InheritRequisitionPartner(models.TransientModel):
             'type_location' : purchase_tender.type_location,
             'comparison_id' : quotation_comparison_form.id
         }
-        self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))]).write(comparison_data)
+        order = self.env['purchase.order']
+        order_line = self.env['purchase.order.line']
+        write_order  = order.search([('requisition_id','=',self._context.get('active_id'))]).write(comparison_data)
 
         for requisition in purchase_tender.line_ids:
             comparisonline_data={
@@ -54,17 +55,22 @@ class InheritRequisitionPartner(models.TransientModel):
                 # 'qty_request' : requisition.product_qty,
                 'comparison_id' : quotation_comparison_form.id
             }
-            po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))])
+            po = order.search([('requisition_id','=',self._context.get('active_id'))])
             for item in po :
-                self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+                order_line.search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
 
 
     @api.multi
     def create_backorder_quotation_comparison_form(self):
         for record in self:
-            purchase_tender = self.env['purchase.requisition'].browse(self._context.get('active_id'))
-            quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
-
+            purchase_tender = record.env['purchase.requisition'].browse(record._context.get('active_id'))
+            quotation_comparison_form = record.env['quotation.comparison.form'].search([('requisition_id','=',record._context.get('active_id')),('validation_check_backorder','=',True)])
+            order = record.env['purchase.order']
+            order_line = record.env['purchase.order.line']
+            tender_line = record.env['purchase.requisition.line']
+            arrPartner = []
+            arrProduct = []
+            arrOrder = []
             #set quotation comparison data
             comparison_data = {
                 'source_purchase_request' : purchase_tender.origin,
@@ -75,17 +81,42 @@ class InheritRequisitionPartner(models.TransientModel):
                 'type_location' : purchase_tender.type_location,
                 'comparison_id' : quotation_comparison_form.id
             }
-            self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id'))]).write(comparison_data)
+            tender_line_id = tender_line.search([('requisition_id','=',purchase_tender.id),('qty_outstanding','>',0)])
+            order.search([('requisition_id','=',record._context.get('active_id'))]).write(comparison_data)
 
             for requisition in purchase_tender.line_ids:
-                comparisonline_data={
-                    'product_qty' : requisition.product_qty,
-                    # 'qty_request' : requisition.product_qty,
-                    'comparison_id' : quotation_comparison_form.id
-                }
-                po = self.env['purchase.order'].search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
+                po = order.search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
                 for item in po :
-                    self.env['purchase.order.line'].search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+                    comparisonline_data={
+                        'product_qty' : requisition.product_qty,
+                        'comparison_id' : quotation_comparison_form.id
+                    }
+                    order_line.search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+
+            for po in order.search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',False)]):
+                arrPartner.append(po.partner_id.id)
+
+            #intersection partner_id in order line to partner id in wizard,
+            intersection_partner = set(arrPartner).intersection(set(record.partner_ids.ids))
+            list_partner = list(intersection_partner)
+
+            po_order = order.search([('requisition_id','=',record._context.get('active_id')),('partner_id','in',list_partner),('validation_check_backorder','=',False)])
+            for record in po_order:
+                arrOrder.append(record.id)
+            #Search Price Unit
+
+            for product in tender_line_id:
+                arrProduct.append(product.product_id.id)
+            poline_order = order_line.search([('product_id','in',arrProduct),('partner_id','in',list_partner),('order_id','=',record.id)])
+            try:
+                price_unit = min(price.price_unit for price in poline_order)
+            except:
+                price_unit = 0
+            price_data = {'price_unit' :price_unit}
+
+            po = order.search([('requisition_id','=',record._context.get('active_id')),('partner_id','in',list_partner),('validation_check_backorder','=',True)])
+            for  purchase in po:
+                test = order_line.search([('order_id','=',purchase.id),('partner_id','in',list_partner),('product_id','=',arrProduct)]).write(price_data)
 
 
     @api.multi
