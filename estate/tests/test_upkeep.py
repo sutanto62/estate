@@ -26,6 +26,17 @@ class TestUpkeep(TransactionCase):
         self.division_id = self.env.ref('stock.stock_division_1')
         self.att_code_k = self.env.ref('estate.hr_attendance_k')
         self.att_code_l = self.env.ref('estate.hr_attendance_k2')
+        self.product_sp = self.env.ref('estate.product_product_sp')
+
+        # Setup user
+        User = self.env['res.users'].with_context({'no_reset_password': True})
+        (group_admin, group_estate) = (self.ref('base.group_no_one'), self.ref('estate.group_user'))
+        self.user_admin = User.create({
+            'name': 'Lukas Peeters', 'login': 'Lukas', 'alias_name': 'lukas', 'email': 'lukas.petters@example.com',
+            'groups_id': [(6, 0, [group_admin, group_estate])]})
+        self.user_estate = User.create({
+            'name': 'Wout Janssens', 'login': 'Wout', 'alias_name': 'wout', 'email': 'wout.janssens@example.com',
+            'groups_id': [(6, 0, [group_estate])]})
 
         wage_val = {
             'name': 'UMR Regional 2016',
@@ -314,3 +325,77 @@ class TestUpkeep(TransactionCase):
         upkeep.write(val)
         upkeep._compute_total_labour_line()
         self.assertEqual(upkeep.total_labour, 2, 'Total labour returned value is not 2')
+
+    def test_04_confirm_approve_draft_upkeep(self):
+        """ Test confirm, approve and draft button and action on single/multiple upkeeps"""
+        val = {
+            'name': 'BKM',
+            'assistant_id': self.team_id.id,
+            'team_id': self.assistant_id.id,
+            'date': datetime.today().strftime(DF),
+            'estate_id': self.estate_id.id,
+            'division_id': self.division_id.id,
+            'activity_line_ids': [
+                (0, 0, {
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'unit_amount': 20,
+                })
+            ],
+            'labour_line_ids': [
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_5').id,
+                    'attendance_code_id': self.att_code_k.id,
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'quantity': 10
+                }),
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_4').id,
+                    'attendance_code_id': self.att_code_k.id,
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'quantity': 10
+                })
+            ],
+            'material_line_ids': [
+                (0, 0, {
+                    'product_id': self.product_sp.id,
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'unit_amount': 3
+                })
+            ]
+        }
+
+        user_admin = self.env.ref('base.user_root')
+        user_estate = self.env.ref('estate.estate_user')
+
+        # I created new upkeep
+        upkeep = self.Upkeep.create(self.upkeep)
+        self.assertTrue(upkeep)
+
+        # It should be in draft state
+        self.assertEqual(upkeep.state, 'draft')
+
+        # I pressed confirm button
+        upkeep.button_confirmed()
+        self.assertEqual(upkeep.state, 'confirmed')
+
+        # I pressed approve button
+        upkeep.button_approved()
+        self.assertEqual(upkeep.state, 'approved')
+
+        # I pressed draft button as normal user
+        with self.assertRaises(ValidationError):
+            upkeep.sudo(user_estate).draft_selected()
+
+        # I imitate base.group_erp_manager
+        upkeep.sudo(user_admin).draft_selected()
+        self.assertEqual(upkeep.state, 'draft')
+
+        # Checked labour line
+        for labour in upkeep.labour_line_ids:
+            self.assertEqual(labour.state, 'draft')
+
+        # Checked material line
+        for material in upkeep.material_line_ids:
+            self.assertEqual(material.state, 'draft')
+
+
