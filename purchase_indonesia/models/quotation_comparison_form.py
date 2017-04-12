@@ -998,26 +998,51 @@ class ViewQuotationComparison(models.Model):
                                          union all
                                          select * from (
                                            SELECT r.req_id,r.product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast(qty_request as varchar) qty_request,product_uom,
-                                                 MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
-                                                 MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
-                                                 MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
-                                                 MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
-                                                 MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
-                                                 MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
-                                                 MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
-                                                 MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
-                                                 MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
-                                                 MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,3 isheader
-                                            FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
-                                              select qcfl_rn.id rownum,company_id,po_des_all_name,
-                                                qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
-                                                            select row_number() over(PARTITION BY req_id
-                                                                        ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
-                                                                        from  quotation_comparison_form_line
-                                                                        group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
-                                            )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
-                                        GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc )content
+								             MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
+								             MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
+								             MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
+								             MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
+								             MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
+								             MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
+								             MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
+								             MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
+								             MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
+								             MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",
+								             cast(max(po_des_all_name)as varchar) po_des_all_name,
+								             3 isheader
+								        FROM  (
+								        select
+								        	rownum,
+								        	name,
+								        	req_id,
+								        	product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name
+								        from (
+								          	select
+								          		qcfl_rn.id rownum,company_id,po_des_all_name,
+								            	qcfl_rn.req_id,qcfl_rn.partner_id,
+								            	product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term
+								            from (
+								            	select qcfl_all.* from
+								            	quotation_comparison_form_line qcfl_all inner join (
+								            		select
+														max(id) id,
+														req_id,
+														partner_id,
+														product_id
+													from
+														quotation_comparison_form_line
+													group by req_id, partner_id, product_id
+								            	) qcfl_last on qcfl_all.id = qcfl_last.id
+								            ) qcfl inner join (
+								            		select row_number() over(PARTITION BY req_id
+								                            ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+								                            from  quotation_comparison_form_line
+								                            group by partner_id,req_id order by req_id desc
+								         	)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+								        )con_qcfl_rn inner join (select id,name from res_partner)partner
+								        on con_qcfl_rn.partner_id = partner.id
+								        ) r
+								    GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc)content
                                         union all
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
@@ -1040,7 +1065,21 @@ class ViewQuotationComparison(models.Model):
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,po_des_all_name,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    (
+										            	select qcfl_all.* from
+										            	quotation_comparison_form_line qcfl_all
+												            	inner join (
+										            		select
+																max(id) id,
+																req_id,
+																partner_id,
+																product_id
+															from
+																quotation_comparison_form_line
+															group by req_id, partner_id, product_id
+										            	) qcfl_last on qcfl_all.id = qcfl_last.id
+										            ) qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -1071,7 +1110,20 @@ class ViewQuotationComparison(models.Model):
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    (
+										            	select qcfl_all.* from
+										            	quotation_comparison_form_line qcfl_all inner join (
+										            		select
+																max(id) id,
+																req_id,
+																partner_id,
+																product_id
+															from
+																quotation_comparison_form_line
+															group by req_id, partner_id, product_id
+										            	) qcfl_last on qcfl_all.id = qcfl_last.id
+										            ) qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -1102,7 +1154,21 @@ class ViewQuotationComparison(models.Model):
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    (
+										            	select qcfl_all.* from
+										            	quotation_comparison_form_line qcfl_all inner join (
+										            		select
+																max(id) id,
+																req_id,
+																partner_id,
+																product_id
+															from
+																quotation_comparison_form_line
+															group by req_id, partner_id, product_id
+										            	) qcfl_last on qcfl_all.id = qcfl_last.id
+										            )
+                                                    qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
