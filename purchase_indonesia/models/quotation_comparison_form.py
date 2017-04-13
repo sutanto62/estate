@@ -44,7 +44,10 @@ class InheritPurchaseOrder(models.Model):
                         'move_dest_id': po.requisition_id.procurement_id.move_dest_id.id,
                         }, context=context)
                 if not element.quantity_tendered:
-                    element.write({'quantity_tendered': element.qty_request})
+                    if element.validation_check_backorder == True:
+                        element.write({'quantity_tendered': element.qty_request})
+                    else:
+                        element.write({'quantity_tendered': element.product_qty})
         return res
 
 class InheritPurchaseOrderLine(models.Model):
@@ -64,7 +67,10 @@ class InheritPurchaseOrderLine(models.Model):
     def button_confirm(self, cr, uid, ids, context=None):
 
         for element in self.browse(cr, uid, ids, context=context):
-            self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
+            if element.validation_check_backorder == False:
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
+            else:
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
         return True
 
     @api.multi
@@ -300,6 +306,7 @@ class QuotationComparisonForm(models.Model):
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
     remarks = fields.Text('Remarks')
+    validation_missing_product = fields.Boolean('Missing Product')
     validation_check_backorder = fields.Boolean('Confirm backorder')
     reject_reason = fields.Text('Reject Reason')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
@@ -338,8 +345,35 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def generated_po(self):
-        po_lines = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)])
-        po_lines.generate_po()
+        for item in self:
+            arrProductLine = []
+            arrPurchase = []
+            arrPurchaseProduct = []
+            tender_line = item.env['purchase.requisition.line']
+            purchase = item.env['purchase.order']
+            purchase_line = item.env['purchase.order.line']
+
+            product_tender_line = tender_line.search([('requisition_id','=',item.requisition_id.id)])
+            for product in product_tender_line:
+                arrProductLine.append(product.product_id.id)
+
+            purchase_id = purchase.search([('requisition_id','=',item.requisition_id.id),('state','=','purchase'),('validation_check_backorder','=',False)])
+            for purchase in purchase_id:
+                arrPurchase.append(purchase.id)
+            purchase_line_id = purchase_line.search([('order_id','in',arrPurchase)])
+            for product_purchase in purchase_line_id:
+                arrPurchaseProduct.append(product_purchase.product_id.id)
+
+            set_product = set(arrProductLine)- set(arrPurchaseProduct)
+
+            po_lines = item.env['purchase.requisition'].search([('id','=',item.requisition_id.id)])
+            line_tender_missing = tender_line.search([('requisition_id','=',item.requisition_id.id),('product_id','in',list(set_product)),('check_missing_product','=',True)])
+
+            if item.validation_missing_product == True:
+                po_lines.generate_po()
+                line_tender_missing.write({'check_missing_product' : False})
+            else:
+                po_lines.generate_po()
 
     @api.multi
     def _get_purchase_request(self):

@@ -39,6 +39,7 @@ class InheritPurchaseTenders(models.Model):
                                               ('open', 'PP Outstanding'),
                                               ('done', 'Shipment')])
     validation_check_backorder = fields.Boolean('Confirm backorder')
+    validation_missing_product = fields.Boolean('Missing Product',compute='compute_validation_check_product')
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
@@ -48,6 +49,7 @@ class InheritPurchaseTenders(models.Model):
     validation_correction = fields.Boolean('Validation Correction',compute='_compute_validation_correction')
     validation_qcf = fields.Boolean('Validation QCF',compute='_compute_validation_qcf')
     validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
+    check_missing_product = fields.Boolean('Check Missing Product')
     force_closing = fields.Boolean('Force Closing Tender')
 
     @api.multi
@@ -123,10 +125,56 @@ class InheritPurchaseTenders(models.Model):
             else:
                if item.validation_check_backorder == True:
                    item.validation_correction = True
-               elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed']:
+               elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed'] and item.check_missing_product == False:
                    item.validation_correction = False
+               elif item.validation_missing_product == False and item.check_missing_product == True:
+                   item.validation_correction = True
                else:
                  item.validation_correction = False
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def compute_validation_check_product(self):
+        for item in self:
+            arrProductLine = []
+            arrPurchase = []
+            arrPurchaseProduct = []
+            tender_line = item.env['purchase.requisition.line']
+            purchase = item.env['purchase.order']
+            purchase_line = item.env['purchase.order.line']
+
+            product_tender_line = tender_line.search([('requisition_id','=',item.id)])
+            for product in product_tender_line:
+                arrProductLine.append(product.product_id.id)
+            if item.state == 'open':
+                purchase_id = purchase.search([('requisition_id','=',item.id),('state','=','purchase'),('validation_check_backorder','=',False)])
+                for purchase in purchase_id:
+                    arrPurchase.append(purchase.id)
+                purchase_line_id = purchase_line.search([('order_id','in',arrPurchase)])
+                for product_purchase in purchase_line_id:
+                    arrPurchaseProduct.append(product_purchase.product_id.id)
+
+                set_product = set(arrProductLine)- set(arrPurchaseProduct)
+            arrOutstanding = []
+            domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+            for line in item.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+
+            if len(arrOutstanding) > 0 :
+                item.validation_missing_product = False
+            else:
+                if list(set_product) != [] and item.check_missing_product == False:
+                    item.validation_missing_product = True
+                    if item.validation_missing_product == True:
+                        line_tender_missing = tender_line.search([('requisition_id','=',item.id),('product_id','in',list(set_product))])
+                        line_tender_missing.write({'check_missing_product' : True})
+                elif set_product != [] and item.check_missing_product == True:
+                    item.validation_missing_product = False
+                else:
+                    item.validation_missing_product = False
+
+
 
     @api.multi
     @api.depends('purchase_ids')
@@ -224,7 +272,41 @@ class InheritPurchaseTenders(models.Model):
 
                     'validation_check_backorder':True
                 }
-            record.validation_check_backorder = True
+            arrOutstanding = []
+            domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+            for line in record.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+
+            if len(arrOutstanding) > 0:
+                res = record.env['quotation.comparison.form'].create(purchase_data)
+                record.write({'validation_check_backorder' : True})
+            else:
+                raise exceptions.ValidationError('You Cannot Run This Process, cause no product have Qty OutStanding')
+
+    @api.multi
+    def create_missing_product_quotation_comparison_form(self):
+        for record in self:
+            purchase_requisition = record.env['purchase.requisition'].search([('id','=',record.id)])
+            try:
+                company_code = record.env['res.company'].search([('id','=',record.companys_id.id)]).code
+            except:
+                raise exceptions.ValidationError('Company Code is Null')
+            sequence_name = 'quotation.comparison.form.'+record.request_id.code.lower()+'.'+company_code.lower()
+            purchase_data = {
+                    'name' : record.env['ir.sequence'].next_by_code(sequence_name),
+                    'company_id': purchase_requisition.companys_id.id,
+                    'date_pp': datetime.today(),
+                    'requisition_id': purchase_requisition.id,
+                    'origin' : purchase_requisition.origin,
+                    'type_location' : purchase_requisition.type_location,
+                    'location':purchase_requisition.location,
+                    'state':'draft',
+                    'pic_id': record.user_id.id,
+
+                    'validation_missing_product':True
+                }
+            record.check_missing_product = True
             res = record.env['quotation.comparison.form'].create(purchase_data)
 
     @api.multi
@@ -375,6 +457,23 @@ class InheritPurchaseTenders(models.Model):
             'validation_check_backorder':True
         }
 
+    def _prepare_missing_purchase_backorder(self, cr, uid, requisition, supplier, context=None):
+        return {
+            'origin': requisition.complete_name,
+            'date_order': requisition.date_end or fields.datetime.now(),
+            'partner_id': supplier.id,
+            'type_location':requisition.type_location,
+            'location':requisition.location,
+            'currency_id': requisition.company_id and requisition.company_id.currency_id.id,
+            'companys_id': requisition.companys_id.id,
+            'fiscal_position_id': self.pool.get('account.fiscal.position').get_fiscal_position(cr, uid, supplier.id, context=context),
+            'requisition_id': requisition.id,
+            'request_id':requisition.request_id.id,
+            'notes': requisition.description,
+            'picking_type_id': requisition.picking_type_id.id,
+            'validation_check_backorder':False
+        }
+
     def _prepare_purchase_backorder_line(self, cr, uid, requisition, requisition_line, purchase_id, supplier, context=None):
         if context is None:
             context = {}
@@ -387,6 +486,60 @@ class InheritPurchaseTenders(models.Model):
         ctx['tz'] = requisition.user_id.tz
         date_order = requisition.ordering_date  or fields.datetime.now()
         qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.qty_outstanding, default_uom_po_id)
+
+        taxes = product.supplier_taxes_id
+        fpos = supplier.property_account_position_id
+        taxes_id = fpos.map_tax(taxes).ids if fpos else []
+
+        po = po_obj.browse(cr, uid, [purchase_id], context=context)
+        seller = requisition_line.product_id._select_seller(
+            requisition_line.product_id,
+            partner_id=supplier,
+            quantity=qty,
+            date=date_order and date_order[:10],
+            uom_id=product.uom_po_id)
+
+        price_unit = seller.price if seller else 0.0
+        if price_unit and seller and po.currency_id and seller.currency_id != po.currency_id:
+            price_unit = seller.currency_id.compute(price_unit, po.currency_id)
+
+        date_planned = po_line_obj._get_date_planned(cr, uid, seller, po=po, context=context).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
+        product_lang = requisition_line.product_id.with_context({
+            'lang': supplier.lang,
+            'partner_id': supplier.id,
+        })
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+
+        vals = {
+            'name': name,
+            'order_id': purchase_id,
+            'product_qty': qty,
+            'qty_request':qty,
+            'product_id': product.id,
+            'product_uom': default_uom_po_id,
+            'price_unit': price_unit,
+            'date_planned': date_planned,
+            'taxes_id': [(6, 0, taxes_id)],
+            'account_analytic_id': requisition_line.account_analytic_id.id,
+        }
+
+        return vals
+
+    def _prepare_missing_purchase_backorder_line(self, cr, uid, requisition, requisition_line, purchase_id, supplier, context=None):
+        if context is None:
+            context = {}
+        po_obj = self.pool.get('purchase.order')
+        po_line_obj = self.pool.get('purchase.order.line')
+        product_uom = self.pool.get('product.uom')
+        product = requisition_line.product_id
+        default_uom_po_id = product.uom_po_id.id
+        ctx = context.copy()
+        ctx['tz'] = requisition.user_id.tz
+        date_order = requisition.ordering_date  or fields.datetime.now()
+        qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.product_qty, default_uom_po_id)
 
         taxes = product.supplier_taxes_id
         fpos = supplier.property_account_position_id
@@ -447,12 +600,17 @@ class InheritPurchaseTenders(models.Model):
                 error_msg = "You have already one  purchase order for this partner, you must cancel this purchase order to create a new quotation."
                 raise exceptions.ValidationError(error_msg)
             context.update({'mail_create_nolog': True})
-            purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            if requisition.validation_check_backorder == True:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            else:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             purchase_order.message_post(cr, uid, [purchase_id], body=_("RFQ created"), context=context)
             res[requisition.id] = purchase_id
             for line in requisition.line_ids:
-                if line.qty_outstanding > 0 :
+                if line.qty_outstanding > 0 and line.check_missing_product == False:
                     purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
+                if line.check_missing_product == True :
+                    purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
     @api.multi
@@ -461,7 +619,7 @@ class InheritPurchaseTenders(models.Model):
             pp_data={'state':'done'}
             item.env['purchase.request'].search([('complete_name','like',item.origin)]).write(pp_data)
             super(InheritPurchaseTenders,item).generate_po()
-            item.write({'state' : 'done'})
+            # item.write({'state' : 'done'})
 
 
     @api.multi
@@ -495,6 +653,7 @@ class InheritPurchaseRequisitionLine(models.Model):
 
     qty_received = fields.Float('Quantity received',readonly=True)
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
+    check_missing_product = fields.Boolean('Checking Missing Product')
     est_price = fields.Float('Estimated Price',compute='_compute_est_price')
 
     @api.multi
@@ -505,7 +664,6 @@ class InheritPurchaseRequisitionLine(models.Model):
                 request_line  = item.env['purchase.request.line'].search([('request_id','=',item.requisition_id.request_id.id),
                                                                           ('product_id','=',item.product_id.id)]).price_per_product
                 item.est_price = request_line
-
 
 class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
 

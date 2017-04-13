@@ -23,9 +23,12 @@ class InheritRequisitionPartner(models.TransientModel):
             if record.qty_received == 0 :
                 idx_qty_received_zero = idx_qty_received_zero + 1
 
-        if idx_qty_received_zero == len(purchase_requisition_line) :
+        if idx_qty_received_zero == len(purchase_requisition_line) and purchase_requisition.check_missing_product == False :
             super(InheritRequisitionPartner,self).create_order()
             self.create_comparison()
+        elif idx_qty_received_zero == len(purchase_requisition_line) and purchase_requisition.check_missing_product == True:
+            self.create_backorder()
+            self.create_missing_comparison()
         else:
             self.create_backorder()
             self.create_backorder_quotation_comparison_form()
@@ -54,6 +57,38 @@ class InheritRequisitionPartner(models.TransientModel):
                 'product_qty' : requisition.product_qty,
                 # 'qty_request' : requisition.product_qty,
                 'comparison_id' : quotation_comparison_form.id
+            }
+            po = order.search([('requisition_id','=',self._context.get('active_id'))])
+            for item in po :
+                order_line.search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
+
+    @api.multi
+    def create_missing_comparison(self,context=None):
+        purchase_tender = self.env['purchase.requisition'].browse(self._context.get('active_id'))
+        quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',self._context.get('active_id')),('validation_missing_product','=',True)])
+        arrQcfid = []
+        for item in quotation_comparison_form:
+            arrQcfid.append(item.id)
+
+        #set quotation comparison data
+        comparison_data = {
+            'source_purchase_request' : purchase_tender.origin,
+            'request_id' : purchase_tender.request_id.id,
+            'origin' : purchase_tender.complete_name,
+            'companys_id' :purchase_tender.companys_id.id,
+            'location':purchase_tender.location,
+            'type_location' : purchase_tender.type_location,
+            'comparison_id' : quotation_comparison_form.id
+        }
+        order = self.env['purchase.order']
+        order_line = self.env['purchase.order.line']
+        write_order  = order.search([('requisition_id','=',self._context.get('active_id'))]).write(comparison_data)
+        purchase_tender.write({'check_missing_product' : False})
+        for requisition in purchase_tender.line_ids:
+            comparisonline_data={
+                'product_qty' : requisition.product_qty,
+                # 'qty_request' : requisition.product_qty,
+                'comparison_id' : max(arrQcfid)
             }
             po = order.search([('requisition_id','=',self._context.get('active_id'))])
             for item in po :

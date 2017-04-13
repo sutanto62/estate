@@ -95,6 +95,8 @@
                  <xpath expr="//field[@name='user_id']" position="after">
                      <field name="validation_button_correction" invisible="1"/>
                      <field name="validation_correction" invisible="1"/>
+                     <field name="validation_missing_product" invisible="1"/>
+                     <field name="check_missing_product" invisible="1"/>
                      <field name="validation_qcf" invisible="1"/>
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" invisible="1"/>
@@ -112,6 +114,9 @@
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
                            <field name="qty_outstanding" class="oe_inline" invisible="0"
+                               readonly="0"/>
+
+                            <field name="check_missing_product" class="oe_inline" invisible="1"
                                readonly="0"/>
                  </xpath>
                  <xpath expr="//tree/field[@name='schedule_date']" position="replace">
@@ -141,7 +146,15 @@
                         <button name="create_backorder_quotation_comparison_form" type="object"
                                 string="Back Order PO"
                                 icon ="fa-reply"
-                             attrs="{'invisible': ['|',('state','!=','open'),('validation_check_backorder','=',True)]}"
+                             attrs="{'invisible': [('validation_check_backorder','=',True)]}"
+                             />
+                 </xpath>
+
+                 <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="after">
+                        <button name="create_missing_product_quotation_comparison_form" type="object"
+                                string="Order Outstanding Product"
+                                icon ="fa-reply"
+                             attrs="{'invisible': [('validation_missing_product','=',False)]}"
                              />
                  </xpath>
 
