@@ -1,0 +1,56 @@
+<odoo>
+    <data noupdate="0">
+        <record id="email_template_purchase_request" model="mail.template">
+          <field name="name">Email Template Purchase Request</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">Approval Purchase Request For ${object.assigned_to.name}</field>
+          <field name="email_to">${object.assigned_to.login}</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_request.model_purchase_request"/>
+          <field name="auto_delete" eval="True"/>
+	  <field name="body_html">
+            <![CDATA[
+	      <p>Dear ${(object.assigned_to.name)},<br/>
+	      <br/>
+	      You have one approval Purchase Request<br/>
+
+	      Please Check This Link  :<br/>
+
+	      ${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}
+	      </p>
+
+
+              Regards,<br/>
+              ${(object.company_id.name)}
+	    ]]>
+	  </field>
+       </record>
+    </data>
+
+    <data noupdate="0">
+        <record id="email_template_purchase_quotation_comparison" model="mail.template">
+          <field name="name">Email Template Quotation Comparison Form</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">Approval Quotation Comparison Form To ${object.assign_to.name}</field>
+          <field name="email_to">${object.assign_to.login}</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_indonesia.model_quotation_comparison_form"/>
+          <field name="auto_delete" eval="True"/>
+	  <field name="body_html">
+            <![CDATA[
+	      <p>Dear ${(object.assign_to.name)},<br/><br/>
+	      You have one approval Quotation Comparison Form<br/>
+
+	      Please Check This Link  :<br/>
+
+	      ${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}
+
+	      </p>
+
+              Regards,<br/>
+              ${(object.company_id.name)}
+	    ]]>
+	  </field>
+       </record>
+    </data>
+</odoo>

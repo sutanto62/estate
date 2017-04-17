@@ -548,8 +548,11 @@ class QuotationComparisonForm(models.Model):
                             else:
                                 if item._get_employee_location() == 'KPST':
                                     item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
+                                    item.send_mail_template()
                                 elif item._get_employee_location() in ['KOKB','KPWK']:
                                     item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
+                                    item.send_mail_template()
+
         return True
 
     @api.multi
@@ -565,6 +568,7 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() > self._get_price_low():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+            self.send_mail_template()
 
     @api.multi
     def action_approve1(self):
@@ -573,6 +577,7 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif (self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid()) or (self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid()):
             self.write({'state' : 'approve2','assign_to':self._get_director()})
+            self.send_mail_template()
 
     @api.multi
     def action_approve2(self):
@@ -581,6 +586,7 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3','assign_to':self._get_president_director()})
+            self.send_mail_template()
 
     @api.multi
     def action_approve3(self):
@@ -595,6 +601,7 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() > self._get_price_low() :
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+            self.send_mail_template()
         return True
 
     def action_done(self, cr, uid, ids, context=None):
@@ -721,6 +728,45 @@ class QuotationComparisonForm(models.Model):
                         if order.quantity_tendered > tender.product_qty:
                             error_msg = 'Quantity tendered \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
                             raise exceptions.ValidationError(error_msg)
+
+    #Email Template Code Starts Here
+
+    @api.multi
+    def send_mail_template(self):
+        for item in self:
+            # Find the e-mail template
+            template = item.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            item.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            #search DB name
+
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            # Search Web URL
+
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            #search Model
+
+            model = item._name
+
+            return model
 
 
 class ViewPurchaseRequisition(models.Model):

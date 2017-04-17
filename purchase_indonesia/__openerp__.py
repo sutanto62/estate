@@ -35,6 +35,7 @@
         'config_report/config_purchase_quotation.xml',
         'config_report/config_purchase_request.xml',
 
+        'views/mail_template_purchase.xml',
         'views/inherit_purchase_requisition_workflow.xml',
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
