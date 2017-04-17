@@ -1168,15 +1168,14 @@ class InheritPurchaseRequest(models.Model):
 
     #Email Template Code Starts Here
 
-    @api.multi
+    @api.one
     def send_mail_template(self):
-        for item in self:
             # Find the e-mail template
-            template = item.env.ref('purchase_indonesia.email_template_purchase_request')
+            template = self.env.ref('purchase_indonesia.email_template_purchase_request')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
-            item.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
 
     @api.multi
     def database(self):

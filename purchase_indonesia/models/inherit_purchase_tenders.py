@@ -127,8 +127,10 @@ class InheritPurchaseTenders(models.Model):
             for line in item.line_ids.search(domain):
                 arrOutstanding.append(line.id)
 
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed']) :
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed'] and item.validation_missing_product == False) :
                 item.validation_correction = True
+            elif (item.request_id.validation_correction_procurement == False and item.state in ['in_progress','done','open']) and item.validation_missing_product == True:
+                item.validation_correction = False
             else:
                if item.validation_check_backorder == True and len(arrOutstanding) > 0:
                    item.validation_correction = True
@@ -137,31 +139,87 @@ class InheritPurchaseTenders(models.Model):
                elif item.validation_missing_product == False and item.check_missing_product == True:
                    item.validation_correction = True
                else:
-                 item.validation_correction = False
+                   item.validation_correction = False
 
     @api.multi
     @api.depends('validation_check_backorder')
     def compute_validation_check_backorder(self):
         for record in self:
             arrOutstanding = []
+            arrMissing = []
             domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+            domain2 = [('requisition_id','=',record.id),('check_missing_product','=',True)]
 
+            for line in record.line_ids.search(domain2):
+                arrMissing.append(line.id)
             for line in record.line_ids.search(domain):
                 arrOutstanding.append(line.id)
-                
+
             if record.state in ['draft','cancel','closed']:
                 record.check_backorder = True
             else:
-                if record.validation_check_backorder == False and len(arrOutstanding) > 0:
+                if record.validation_check_backorder == False and len(arrOutstanding) > 0 and len(arrMissing) > 0:
+                    record.check_backorder = True
+                elif record.validation_check_backorder == False and len(arrOutstanding) > 0 and len(arrMissing) == 0:
                     record.check_backorder = False
                 else:
                     record.check_backorder = True
-
 
     @api.multi
     @api.depends('purchase_ids')
     def compute_validation_check_product(self):
         for item in self:
+            #change Validation missing Product
+
+            if item.state in ['open']:
+                if len(item.purchase_ids.search([('requisition_id','=',item.id),('state','in',('purchase','received_all','received_force_done'))])) > 0:
+                    item.validation_missing_product = item.checking_validation_missing_and_backorder()
+                    if item.validation_missing_product == True:
+                        item.change_line_tender_missing()
+            elif item.state in ['in_progress']:
+
+                if len(item.purchase_ids.search([('requisition_id','=',item.id),('state','=','purchase')])) > 0:
+                    item.validation_missing_product = item.checking_validation_missing_and_backorder()
+                    if item.validation_missing_product == True:
+                        item.change_line_tender_missing()
+
+    @api.multi
+    def checking_validation_missing_and_backorder(self):
+        for item in self:
+
+                #search Missing Product or Outstanding product starts Here
+
+                arrOutstanding = []
+                arrMissing = []
+
+                domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+                domain2 = [('requisition_id','=',item.id),('check_missing_product','=',True)]
+
+                for line in item.line_ids.search(domain):
+                    arrOutstanding.append(line.id)
+
+                for line in item.line_ids.search(domain2):
+                    arrMissing.append(line.id)
+
+                if list(item.list_product()) != [] and item.check_missing_product == False:
+                    validation_missing_product = True
+                elif list(item.list_product()) != [] and item.check_missing_product == True:
+                    validation_missing_product = False
+                else:
+                    validation_missing_product = False
+
+                    if len(arrOutstanding) > 0 and len(arrMissing) == 0 :
+                        validation_missing_product = False
+                    elif len(arrOutstanding) > 0 and len(arrMissing) > 0 :
+                        validation_missing_product = True
+
+                return validation_missing_product
+
+    @api.multi
+    def list_product(self):
+        for item in self:
+            #to list product if check back order missing is True
             arrProductLine = []
             arrPurchase = []
             arrPurchaseProduct = []
@@ -172,35 +230,26 @@ class InheritPurchaseTenders(models.Model):
             product_tender_line = tender_line.search([('requisition_id','=',item.id)])
             for product in product_tender_line:
                 arrProductLine.append(product.product_id.id)
-            if item.state == 'open':
-                purchase_id = purchase.search([('requisition_id','=',item.id),('state','=','purchase'),('validation_check_backorder','=',False)])
-                for purchase in purchase_id:
-                    arrPurchase.append(purchase.id)
-                purchase_line_id = purchase_line.search([('order_id','in',arrPurchase)])
-                for product_purchase in purchase_line_id:
-                    arrPurchaseProduct.append(product_purchase.product_id.id)
 
-                set_product = set(arrProductLine)- set(arrPurchaseProduct)
-                arrOutstanding = []
-                domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+            purchase_id = purchase.search([('requisition_id','=',item.id),('state','in',['purchase','done','received_all','received_force_done']),('validation_check_backorder','=',False)])
+            for purchase in purchase_id:
+                arrPurchase.append(purchase.id)
+            purchase_line_id = purchase_line.search([('order_id','in',arrPurchase)])
 
-                for line in item.line_ids.search(domain):
-                    arrOutstanding.append(line.id)
+            for product_purchase in purchase_line_id:
+                arrPurchaseProduct.append(product_purchase.product_id.id)
 
-                if len(arrOutstanding) > 0 :
-                    item.validation_missing_product = False
-                else:
-                    if list(set_product) != [] and item.check_missing_product == False:
-                        item.validation_missing_product = True
-                        if item.validation_missing_product == True:
-                            line_tender_missing = tender_line.search([('requisition_id','=',item.id),('product_id','in',list(set_product))])
-                            line_tender_missing.write({'check_missing_product' : True})
-                    elif set_product != [] and item.check_missing_product == True:
-                        item.validation_missing_product = False
-                    else:
-                        item.validation_missing_product = False
+            set_product = set(arrProductLine) - set(arrPurchaseProduct)
 
+            return set_product
 
+    @api.multi
+    def change_line_tender_missing(self):
+        for item in self:
+            #change Line tender Missing in Requisition line
+            tender_line = item.env['purchase.requisition.line']
+            line_tender_missing = tender_line.search([('requisition_id','=',item.id),('product_id','in',list(item.list_product()))])
+            line_tender_missing.write({'check_missing_product' : True})
 
     @api.multi
     @api.depends('purchase_ids')
@@ -566,6 +615,7 @@ class InheritPurchaseTenders(models.Model):
         ctx['tz'] = requisition.user_id.tz
         date_order = requisition.ordering_date  or fields.datetime.now()
         qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.product_qty, default_uom_po_id)
+        qty1 = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.qty_outstanding, default_uom_po_id)
 
         taxes = product.supplier_taxes_id
         fpos = supplier.property_account_position_id
@@ -579,9 +629,20 @@ class InheritPurchaseTenders(models.Model):
             date=date_order and date_order[:10],
             uom_id=product.uom_po_id)
 
+        seller2 = requisition_line.product_id._select_seller(
+            requisition_line.product_id,
+            partner_id=supplier,
+            quantity=qty1,
+            date=date_order and date_order[:10],
+            uom_id=product.uom_po_id)
+
         price_unit = seller.price if seller else 0.0
         if price_unit and seller and po.currency_id and seller.currency_id != po.currency_id:
             price_unit = seller.currency_id.compute(price_unit, po.currency_id)
+
+        price_unit2 = seller2.price if seller2 else 0.0
+        if price_unit and seller2 and po.currency_id and seller2.currency_id != po.currency_id:
+            price_unit = seller2.currency_id.compute(price_unit2, po.currency_id)
 
         date_planned = po_line_obj._get_date_planned(cr, uid, seller, po=po, context=context).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
 
@@ -596,8 +657,8 @@ class InheritPurchaseTenders(models.Model):
         vals = {
             'name': name,
             'order_id': purchase_id,
-            'product_qty': qty,
-            'qty_request':qty,
+            'product_qty': qty if requisition_line.qty_outstanding == 0 else qty1,
+            'qty_request':qty if requisition_line.qty_outstanding == 0 else qty1,
             'product_id': product.id,
             'product_uom': default_uom_po_id,
             'price_unit': price_unit,

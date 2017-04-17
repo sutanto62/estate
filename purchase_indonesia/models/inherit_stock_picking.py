@@ -63,14 +63,18 @@ class InheritStockPicking(models.Model):
         #Estate Manager
 
         arrEstateManager = []
+        arrAgronomy = []
 
         estate_manager = self.env['res.groups'].search([('id','=',self.purchase_request_estate_manager())]).users
+        technical_agronomy = self.env['res.groups'].search([('id','=',self.purchase_request_technical4())]).users
 
         for estate in estate_manager:
-               arrEstateManager.append(estate.id)
+            arrEstateManager.append(estate.id)
+        for deptgroupsrecord in technical_agronomy:
+            arrAgronomy.append(deptgroupsrecord.id)
 
         try:
-            manager_estate = self.env['res.users'].search([('id','=',arrEstateManager[0])]).id
+            manager_estate = self.env['res.users'].search([('id','=',arrEstateManager[0]),('id','=',arrAgronomy[0])]).id
         except:
             raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
 
@@ -249,6 +253,8 @@ class InheritStockPicking(models.Model):
                             'assigned_to':item._get_technical_user_id()
                         })
 
+                    item.send_mail_template()
+
     @api.multi
     @api.depends('purchase_id')
     def _onchange_requested_by(self):
@@ -401,6 +407,11 @@ class InheritStockPicking(models.Model):
                 error_msg = 'You cannot approve this \"%s\" , you are not requester of this PP '%(self.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
             else:
+                arrOutstanding = []
+                domain = [('qty_outstanding','>',0)]
+                for outstanding in purchase_requisition_line.search(domain):
+                    arrOutstanding.append(outstanding.id)
+
                 for record in purchase_requisition_line:
                     stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
                     stock_pack_operation_length = len(stock_pack_operation)
@@ -423,7 +434,7 @@ class InheritStockPicking(models.Model):
                             }
                         record.write(tender_line_data)
                         search_tender.write({
-                            'state': 'open' if record.qty_outstanding > 0 else 'done'
+                            'state': 'open' if len(arrOutstanding) > 0 else 'done'
                         })
 
                         if stock_pack_operation_length == 1 and sumitemmin < 0 :
@@ -484,6 +495,45 @@ class InheritStockPicking(models.Model):
             if item._get_user().id != item.requested_by.id:
                 error_msg = 'You cannot Process this \"%s\" , you are not requester of this PP '%(item.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
+
+    #Email Template Code Starts Here
+
+    @api.one
+    def send_mail_template(self):
+
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_stock_picking')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            #search DB name
+
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            # Search Web URL
+
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            #search Model
+
+            model = item._name
+
+            return model
 
 
 class InheritStockPackOperation(models.Model):

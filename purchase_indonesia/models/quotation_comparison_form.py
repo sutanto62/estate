@@ -67,9 +67,17 @@ class InheritPurchaseOrderLine(models.Model):
     def button_confirm(self, cr, uid, ids, context=None):
 
         for element in self.browse(cr, uid, ids, context=context):
-            if element.validation_check_backorder == False:
+            if element.validation_check_backorder == False and element.qty_request == element.product_qty:
+                print'gagal1'
                 self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
+            elif element.validation_check_backorder == False and not element.qty_request:
+                print'gagal4'
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
+            elif element.validation_check_backorder == False and element.qty_request :
+                print'gagal3'
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
             else:
+                print'gagal2'
                 self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
         return True
 
@@ -384,10 +392,17 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     def _get_max_price(self):
         for item in self:
-            purchase_request_backorder = self.env['purchase.requisition'].search([('validation_check_backorder','=',True),('id','=',self.requisition_id.id)]).purchase_ids
-            purchase_request_normalorder = self.env['purchase.requisition'].search([('validation_check_backorder','=',False),('id','=',self.requisition_id.id)]).purchase_ids
+            purchase_order = item.env['purchase.order']
+            purchase_ids = purchase_order.search([('validation_check_backorder','=',True),('requisition_id','=',item.requisition_id.id)])
+            # purchase_request_backorder = item.env['purchase.requisition'].search([('validation_check_backorder','=',True),('id','=',item.requisition_id.id)]).purchase_ids
+            purchase_request_normalorder = item.env['purchase.requisition'].search([('validation_check_backorder','=',False),('id','=',item.requisition_id.id)]).purchase_ids
+            arrBackorder = []
+
             if item.validation_check_backorder:
-                price = max(purchase.amount_total for purchase in purchase_request_backorder)
+                for purchase in purchase_ids:
+                    arrBackorder.append(purchase.amount_total)
+                # price = max(purchase.amount_total for purchase in purchase_request_backorder)
+                price = max(arrBackorder)
                 return price
             else:
                 price = max(purchase.amount_total for purchase in purchase_request_normalorder)
@@ -548,10 +563,9 @@ class QuotationComparisonForm(models.Model):
                             else:
                                 if item._get_employee_location() == 'KPST':
                                     item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
-                                    item.send_mail_template()
                                 elif item._get_employee_location() in ['KOKB','KPWK']:
                                     item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
-                                    item.send_mail_template()
+                self.send_mail_template()
 
         return True
 
@@ -731,15 +745,15 @@ class QuotationComparisonForm(models.Model):
 
     #Email Template Code Starts Here
 
-    @api.multi
+    @api.one
     def send_mail_template(self):
-        for item in self:
+
             # Find the e-mail template
-            template = item.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
+            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
-            item.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
 
     @api.multi
     def database(self):
