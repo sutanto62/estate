@@ -51,6 +51,7 @@ class InheritPurchaseTenders(models.Model):
     validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
     check_missing_product = fields.Boolean('Check Missing Product')
     force_closing = fields.Boolean('Force Closing Tender')
+    check_backorder = fields.Boolean('Check Backorder',compute='compute_validation_check_backorder')
 
     @api.multi
     def _get_value_low(self):
@@ -120,10 +121,16 @@ class InheritPurchaseTenders(models.Model):
     def _compute_validation_correction(self):
 
         for item in self:
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','in_progress','done','open','closed']) :
+            arrOutstanding = []
+            domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+            for line in item.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed']) :
                 item.validation_correction = True
             else:
-               if item.validation_check_backorder == True:
+               if item.validation_check_backorder == True and len(arrOutstanding) > 0:
                    item.validation_correction = True
                elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed'] and item.check_missing_product == False:
                    item.validation_correction = False
@@ -131,6 +138,25 @@ class InheritPurchaseTenders(models.Model):
                    item.validation_correction = True
                else:
                  item.validation_correction = False
+
+    @api.multi
+    @api.depends('validation_check_backorder')
+    def compute_validation_check_backorder(self):
+        for record in self:
+            arrOutstanding = []
+            domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+            for line in record.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+                
+            if record.state in ['draft','cancel','closed']:
+                record.check_backorder = True
+            else:
+                if record.validation_check_backorder == False and len(arrOutstanding) > 0:
+                    record.check_backorder = False
+                else:
+                    record.check_backorder = True
+
 
     @api.multi
     @api.depends('purchase_ids')

@@ -98,6 +98,7 @@
                      <field name="validation_missing_product" invisible="1"/>
                      <field name="check_missing_product" invisible="1"/>
                      <field name="validation_qcf" invisible="1"/>
+                     <field name="check_backorder" invisible="1"/>
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" invisible="1"/>
                      <field name="location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
@@ -146,7 +147,7 @@
                         <button name="create_backorder_quotation_comparison_form" type="object"
                                 string="Back Order PO"
                                 icon ="fa-reply"
-                             attrs="{'invisible': ['|',('state','in',('draft')),('validation_check_backorder','=',True)]}"
+                             attrs="{'invisible': [('check_backorder','=',True)]}"
                              />
                  </xpath>
 
