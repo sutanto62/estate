@@ -120,7 +120,7 @@ class InheritPurchaseTenders(models.Model):
     def _compute_validation_correction(self):
 
         for item in self:
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed']) :
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','in_progress','done','open','closed']) :
                 item.validation_correction = True
             else:
                if item.validation_check_backorder == True:
@@ -154,25 +154,25 @@ class InheritPurchaseTenders(models.Model):
                 for product_purchase in purchase_line_id:
                     arrPurchaseProduct.append(product_purchase.product_id.id)
 
-            set_product = set(arrProductLine)- set(arrPurchaseProduct)
-            arrOutstanding = []
-            domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+                set_product = set(arrProductLine)- set(arrPurchaseProduct)
+                arrOutstanding = []
+                domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
 
-            for line in item.line_ids.search(domain):
-                arrOutstanding.append(line.id)
+                for line in item.line_ids.search(domain):
+                    arrOutstanding.append(line.id)
 
-            if len(arrOutstanding) > 0 :
-                item.validation_missing_product = False
-            else:
-                if list(set_product) != [] and item.check_missing_product == False:
-                    item.validation_missing_product = True
-                    if item.validation_missing_product == True:
-                        line_tender_missing = tender_line.search([('requisition_id','=',item.id),('product_id','in',list(set_product))])
-                        line_tender_missing.write({'check_missing_product' : True})
-                elif set_product != [] and item.check_missing_product == True:
+                if len(arrOutstanding) > 0 :
                     item.validation_missing_product = False
                 else:
-                    item.validation_missing_product = False
+                    if list(set_product) != [] and item.check_missing_product == False:
+                        item.validation_missing_product = True
+                        if item.validation_missing_product == True:
+                            line_tender_missing = tender_line.search([('requisition_id','=',item.id),('product_id','in',list(set_product))])
+                            line_tender_missing.write({'check_missing_product' : True})
+                    elif set_product != [] and item.check_missing_product == True:
+                        item.validation_missing_product = False
+                    else:
+                        item.validation_missing_product = False
 
 
 
