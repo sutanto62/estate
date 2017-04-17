@@ -154,7 +154,7 @@ class InheritPurchaseTenders(models.Model):
                 for product_purchase in purchase_line_id:
                     arrPurchaseProduct.append(product_purchase.product_id.id)
 
-                set_product = set(arrProductLine)- set(arrPurchaseProduct)
+            set_product = set(arrProductLine)- set(arrPurchaseProduct)
             arrOutstanding = []
             domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
 
