@@ -602,6 +602,8 @@ class InheritPurchaseTenders(models.Model):
             context.update({'mail_create_nolog': True})
             if requisition.validation_check_backorder == True:
                 purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            elif requisition.validation_check_backorder == True and requisition.validation_missing_product == True:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             else:
                 purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             purchase_order.message_post(cr, uid, [purchase_id], body=_("RFQ created"), context=context)
@@ -609,7 +611,9 @@ class InheritPurchaseTenders(models.Model):
             for line in requisition.line_ids:
                 if line.qty_outstanding > 0 and line.check_missing_product == False:
                     purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
-                if line.check_missing_product == True :
+                elif line.check_missing_product == True :
+                    purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
+                elif line.check_missing_product == True and line.qty_outstanding > 0:
                     purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
