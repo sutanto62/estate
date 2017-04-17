@@ -146,7 +146,7 @@
                         <button name="create_backorder_quotation_comparison_form" type="object"
                                 string="Back Order PO"
                                 icon ="fa-reply"
-                             attrs="{'invisible': [('validation_check_backorder','=',True)]}"
+                             attrs="{'invisible': ['|',('state','in',('draft')),('validation_check_backorder','=',True)]}"
                              />
                  </xpath>
 
