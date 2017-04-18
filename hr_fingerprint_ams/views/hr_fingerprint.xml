@@ -216,6 +216,7 @@
                   action="labour_fingerprint_report_action"/>
 
         <!-- Confirm All action -->
+        <!-- single approval level
         <record model="ir.actions.server" id="action_hr_fingerprint_confirm">
             <field name="name">Confirm All</field>
             <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance"/>
@@ -234,6 +235,7 @@
             <field name="key">action</field>
             <field name="model">hr_fingerprint_ams.attendance</field>
         </record>
+        -->
 
         <!-- Approve All action -->
         <record model="ir.actions.server" id="action_hr_fingerprint_approve">
@@ -242,7 +244,7 @@
             <field name="groups_id" ref="base.group_hr_manager"/>
             <field name="code">
                 if context.get('active_model') == 'hr_fingerprint_ams.attendance' and context.get('active_ids'):
-                    action = self.approve_all(cr, uid, context['active_ids'], context=context)
+                    action = self.approve_all_admin(cr, uid, context['active_ids'], context=context)
             </field>
         </record>
 

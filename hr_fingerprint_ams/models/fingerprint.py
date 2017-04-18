@@ -304,6 +304,29 @@ class FingerAttendance(models.Model):
         _logger.info(_('%s confirmed imported AMS fingerprint at %s (server time)' % (current_user.name, confirm_date)))
 
     @api.multi
+    def approve_all_admin(self):
+        """ User required single approval level"""
+
+        if not self.user_has_groups('base.group_hr_user'):
+            err_msg = _('You are not authorized to approve all fingerprint data')
+            raise ValidationError(err_msg)
+
+        for record in self:
+            if not record.state in ('draft', 'confirmed'):
+                err_msg = _('Selected records is not a draft data.')
+                raise ValidationError(err_msg)
+
+        fingerprint_ids = self.search([('id', 'in', self.ids), ('state', 'in', ('draft', 'confirmed'))])
+        fingerprint_ids.write({
+            'state': 'approved'
+        })
+
+        # Log confirm all action
+        confirm_date = datetime.today()
+        current_user = self.env.user
+        _logger.info(_('%s approved fingerprint data at %s (server time)' % (current_user.name, confirm_date)))
+
+    @api.multi
     def approve_all(self):
         """ One by one confirmation takes time."""
 

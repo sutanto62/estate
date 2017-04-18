@@ -1,11 +1,11 @@
 "id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
 "hr_attendance.access_hr_attendance_system_user","hr.attendance.system.user","hr_attendance.model_hr_attendance","base.group_user",1,0,0,0
-"hr_attendance.access_hr_attendance_hr_user","hr_attendance.access_hr_attendance_user","hr_attendance.model_hr_attendance","base.group_hr_user",1,0,0,0
+"hr_attendance.access_hr_attendance_hr_user","hr_attendance.access_hr_attendance_user","hr_attendance.model_hr_attendance","base.group_hr_user","True","True","True","True"
 "hr_attendance.access_hr_attendance_hr_ho_user","hr_attendance.access_hr_attendance_ho_user","hr_attendance.model_hr_attendance","base.group_hr_ho_user","True","True","True","True"
 "access_hr_fingerprint_ams_atendance_technical_attendance","hr.fingerprint_ams.attendance.technical_attendance","hr_fingerprint_ams.model_hr_fingerprint_ams_attendance","base.group_hr_attendance","True","True","True","True"
 "access_hr_fingerprint_ams_atendance_ho_user","hr_fingerprint_ams_fingerprint_hr_ho_officer","hr_fingerprint_ams.model_hr_fingerprint_ams_attendance","base.group_hr_ho_user","True","True","True","True"
-"access_hr_fingerprint_ams_atendance_hr_user","hr_fingerprint_ams_fingerprint_hr_officer","hr_fingerprint_ams.model_hr_fingerprint_ams_attendance","base.group_hr_user","True","False","False","False"
-"access_hr_fingerprint_ams_atendance_estate_user","hr_fingerprint_ams_fingerprint_estate_user","hr_fingerprint_ams.model_hr_fingerprint_ams_attendance","estate.group_user","True","False","False","False"
+"access_hr_fingerprint_ams_atendance_hr_user","hr_fingerprint_ams_fingerprint_hr_officer","hr_fingerprint_ams.model_hr_fingerprint_ams_attendance","base.group_hr_user","True","True","True","True"
+"access_hr_fingerprint_ams_atendance_estate_user","hr_fingerprint_ams_fingerprint_estate_user","hr_fingerprint_ams.model_hr_fingerprint_ams_attendance","estate.group_user","True","True","True","True"
 "hr_fingerprint_ams.access_hr_fingerprint_ams_user","hr.fingerprint_ams.user","hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint","base.group_hr_user","True","True","True","True"
-"hr_fingerprint_ams.access_hr_fingerprint_ams_estate","hr.fingerprint_ams.estate","hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint","estate.group_user","True","False","False","False"
+"hr_fingerprint_ams.access_hr_fingerprint_ams_estate","hr.fingerprint_ams.estate","hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint","estate.group_user","True","True","True","True"
 "access_hr_fingerprint_ams_technical_attendance","hr.fingerprint_ams.technical_attendance","hr_fingerprint_ams.model_hr_fingerprint_ams_fingerprint","base.group_hr_attendance","True","True","True","True"

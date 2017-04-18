@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp.tests import TransactionCase
-from openerp.exceptions import ValidationError
+from openerp.exceptions import ValidationError, AccessError
 from openerp import SUPERUSER_ID
 from datetime import datetime, timedelta, tzinfo
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
@@ -263,3 +263,24 @@ class TestAttendance(TransactionCase):
 
         # I checked empty date
         self.assertEqual(fingerprint._get_name('', att_time), None)
+
+    def test_08_approve_all(self):
+        """ Test single level approval by hr officer group"""
+        hrstaff = self.env.ref('estate.hrstaff')
+        estateuser = self.env.ref('estate.estate_user')
+        vals = self.finger_in_out
+
+        # I created a normal fingerprint (employee, nik, sign_in and sign_out)
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint, 'Fingerprint did not created.')
+
+        # Other user ValidationError
+        with self.assertRaises(ValidationError):
+            fingerprint.sudo(estateuser).approve_all_admin()
+
+        fingerprint.sudo(hrstaff).approve_all_admin()
+        self.assertEqual(fingerprint.state, 'approved')
+
+
+
+
