@@ -38,9 +38,20 @@
             <field name="view_id" ref="upkeep_fingerprint_wizard"/>
         </record>
 
-        <menuitem id="upkeep_fingerprint_report_menu" name="Upkeep Fingerprint Report"
-                  parent="estate.estate_operation_control_menu"
+        <!--Estate-->
+        <menuitem id="estate_upkeep_fingerprint_report_menu" name="Upkeep Fingerprint Report"
+                  parent="estate.menu_estate_reporting"
                   action="upkeep_fingerprint_report_wizard_action"/>
+        <!--/Estate-->
+
+        <!--Attendance-->
+        <menuitem id="attendance_report_menu" name="Attendance Reports"
+                  parent="hr_attendance.menu_hr_attendance_root"
+                    sequence="100"/>
+        <menuitem id="upkeep_fingerprint_report_menu" name="Upkeep Fingerprint Report"
+                  parent="attendance_report_menu"
+                  action="upkeep_fingerprint_report_wizard_action"/>
+        <!--/Attendance-->
 
         </data>
     </openerp>
