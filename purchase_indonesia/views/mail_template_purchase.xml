@@ -10,18 +10,61 @@
           <field name="auto_delete" eval="True"/>
 	  <field name="body_html">
             <![CDATA[
+            <style>
+             input[type="submit"]{border:none; background:#f5f5f7; color:#ACCC6C}
+            </style>
 	      <p>Dear ${(object.assigned_to.name)},<br/>
 	      <br/>
-	      You have one approval Purchase Request<br/>
+	      You have one approval Purchase Request , ${(object.complete_name)}<br/>
 
-	      Please Check This Link  :<br/>
+          <br/>
 
-	      ${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}
+          <p>
+	        With Detail:
+            <br/>
+            Requested By , ${(object.requested_by.name)}
 	      </p>
 
+          <p>
+	      Please Follow This Step To Approve Purchase Request:
+	      </p>
 
-              Regards,<br/>
+	      <br/>
+
+
+	      </p>
+
+            <div class="container">
+              <p>
+                Step to Approval Purchase Request.
+              </p>
+
+              <p>
+                <ul>
+                  <li>Login To ERP Palma Group
+                     <ul>
+                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
+                        <li>Input Your Email Palma Group in Field Username. i.e: aaaa@palmagroup.co.id</li>
+                        <li>Input Your Password ERP Palma Group in Field Password.
+                            <ul style="list-style-type:circle">
+                              <li>If You cannot Login Please Contact Department ICT</li>
+                            </ul>
+                        </li>
+                        <li>Click Button Login </li>
+                     </ul>
+                  </li>
+                  <li>Check Purchase Request Inside ERP Palma Group</li>
+                  <li>Click Button Approve Inside Purchase Request in ERP Palma Group</li>
+                </ul>
+              </p>
+
+            </div>
+
+              Regards,
+              <br/>
               ${(object.company_id.name)}
+              <br/>
+
 	    ]]>
 	  </field>
        </record>
@@ -38,17 +81,65 @@
           <field name="auto_delete" eval="True"/>
 	  <field name="body_html">
             <![CDATA[
-	      <p>Dear ${(object.assign_to.name)},<br/><br/>
-	      You have one approval Quotation Comparison Form<br/>
+	      <style>
+             input[type="submit"]{border:none; background:#f5f5f7; color:#ACCC6C}
+            </style>
+	      <p>Dear ${(object.assign_to.name)},<br/>
+	      <br/>
+	      You have one approval Quotation Comparison Form ,  ${(object.complete_name)}<br/>
 
-	      Please Check This Link  :<br/>
+          <br/>
 
-	      ${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}
+          <p>
+	        With Detail:
+	        <br/>
+	        Reference Purchase Tender Number,${(object.requisition_id.complete_name)},<br/>
+	        <br/>
+            Reference Purchase Request Number,${(object.requisition_id.request_id.complete_name)},<br/>
+            <br/>
+            PIC : ${(object.pic_id.name)}
+	      </p>
+
+          <br/>
+          <p>
+	      Please Follow This Step To Quotation Comparison Form:
+	      </p>
+
+	      <br/>
+
 
 	      </p>
 
-              Regards,<br/>
+            <div class="container">
+              <p>
+                Step to Approval Quotation Comparison Form.
+              </p>
+
+              <p>
+                <ul>
+                  <li>Login To ERP Palma Group
+                     <ul>
+                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
+                        <li>Input Your Email Palma Group in Field Username. i.e: aaaa@palmagroup.co.id</li>
+                        <li>Input Your Password ERP Palma Group in Field Password.
+                            <ul style="list-style-type:circle">
+                              <li>If You cannot Login Please Contact Department ICT</li>
+                            </ul>
+                        </li>
+                        <li>Click Button Login </li>
+                    </ul>
+                  </li>
+                  <li>Check Your Quotation Comparison Form Inside ERP Palma Group</li>
+                  <li>Click Button Approve Inside Quotation Comparison Form in ERP Palma Group</li>
+                </ul>
+              </p>
+
+            </div>
+
+              Regards,
+              <br/>
               ${(object.company_id.name)}
+              <br/>
 	    ]]>
 	  </field>
        </record>
@@ -65,17 +156,72 @@
           <field name="auto_delete" eval="True"/>
 	  <field name="body_html">
             <![CDATA[
-	      <p>Dear ${(object.assigned_to.name)},<br/><br/>
-	      You have one approval GRN / SRN <br/>
+	      <style>
+             input[type="submit"]{border:none; background:#f5f5f7; color:#ACCC6C}
+          </style>
+	      <p>Dear ${(object.assigned_to.name)},<br/>
+	      <br/>
+	      You have one approval GRN / SRN , ${(object.complete_name_picking)} <br/>
 
-	      Please Check This Link  :<br/>
+	      <br/>
 
-	      ${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}
+	      <p>
+	        With Detail:
+	        <br/>
+	        Reference Purchase Request Number,${(object.pr_source)},<br/>
+	        <br/>
+            Reference Purchase Order Number,${(object.purchase_order_name)},<br/>
+            <br/>
+            Shipper By , ${(object.shipper_by)}<br/>
+            <br/>
+            Requested By , ${(object.requested_by.name)}
 
 	      </p>
 
-              Regards,<br/>
+
+          <br/>
+
+          <p>
+	      Please Follow This Step To GRN/SRN:
+	      </p>
+
+	      <br/>
+
+
+	      </p>
+
+            <div class="container">
+              <p>
+                Step to Approval GRN / SRN .
+              </p>
+
+              <p>
+                <ul>
+                  <li>Login To ERP Palma Group
+                     <ul>
+                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
+                        <li>Input Your Email Palma Group in Field Username. i.e: aaaa@palmagroup.co.id</li>
+                        <li>Input Your Password ERP Palma Group in Field Password.
+                            <ul style="list-style-type:circle">
+                              <li>If You cannot Login Please Contact Department ICT</li>
+                            </ul>
+                        </li>
+                        <li>Click Button Login </li>
+                     </ul>
+                  </li>
+                  <li>Check Your GRN / SRN  Inside ERP Palma Group</li>
+                  <li>Click Button Approve Inside GRN / SRN in ERP Palma Group</li>
+                </ul>
+              </p>
+
+            </div>
+
+              Regards,
+              <br/>
               ${(object.company_id.name)}
+              <br/>
+
+
 	    ]]>
 	  </field>
        </record>
