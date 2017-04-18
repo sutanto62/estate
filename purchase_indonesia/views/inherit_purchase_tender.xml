@@ -73,6 +73,10 @@
                         invisible="1"/>
                  </xpath>
 
+                 <xpath expr="//button[@name='generate_po']" position="replace">
+                     <button name="set_done" states="open" string="Done" type="object" class="oe_highlight"/>
+                 </xpath>
+
 
                  <xpath expr="//field[@name='schedule_date']" position="after">
                      <field name="quotation_state" string="Status QCF"

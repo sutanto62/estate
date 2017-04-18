@@ -51,6 +51,7 @@ class InheritPurchaseTenders(models.Model):
     validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
     check_missing_product = fields.Boolean('Check Missing Product')
     force_closing = fields.Boolean('Force Closing Tender')
+    comparison_id = fields.Integer('Comparison ID')
     check_backorder = fields.Boolean('Check Backorder',compute='compute_validation_check_backorder')
 
     @api.multi
@@ -99,14 +100,15 @@ class InheritPurchaseTenders(models.Model):
     def tender_state_closed(self):
         for item in self:
             tracking = item.env['validate.tracking.purchase.order.invoice'].search([('requisition_id','=',item.id)])
-            if (tracking.sum_quantity_tender == tracking.sum_quantity_purchase) and (tracking.sum_quantity_tender == tracking.sum_quantity_picking) and (tracking.sum_quantity_tender == tracking.sum_quantity_invoice):
-                return item.write({'state':'closed'})
-            elif item.force_closing == True and ((tracking.sum_quantity_tender == tracking.sum_quantity_purchase) and (tracking.sum_quantity_tender == tracking.sum_quantity_picking) and (tracking.sum_quantity_tender == tracking.sum_quantity_invoice)):
-                return item.write({'state':'closed'})
-            elif item.force_closing == True:
-                return item.write({'state':'closed'})
-            else:
-                raise exceptions.ValidationError('You Must Complete Your Purchase Order')
+            for record in tracking:
+                if (record.sum_quantity_tender == record.sum_quantity_purchase) and (record.sum_quantity_tender == record.sum_quantity_picking) and (record.sum_quantity_tender == record.sum_quantity_invoice):
+                    return item.write({'state':'closed'})
+                elif item.force_closing == True and ((record.sum_quantity_tender == record.sum_quantity_purchase) and (record.sum_quantity_tender == record.sum_quantity_picking) and (record.sum_quantity_tender == record.sum_quantity_invoice)):
+                    return item.write({'state':'closed'})
+                elif item.force_closing == True:
+                    return item.write({'state':'closed'})
+                else:
+                    raise exceptions.ValidationError('You Must Complete Your Purchase Order')
 
 
     @api.multi
@@ -356,6 +358,14 @@ class InheritPurchaseTenders(models.Model):
             if len(arrOutstanding) > 0:
                 res = record.env['quotation.comparison.form'].create(purchase_data)
                 record.write({'validation_check_backorder' : True})
+                quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',record.id),('validation_check_backorder','=',True)])
+                arrQcfid = []
+                for item in quotation_comparison_form:
+                    arrQcfid.append(item.id)
+                data = {
+                    'comparison_id' : max(arrQcfid)
+                }
+                record.write(data)
             else:
                 raise exceptions.ValidationError('You Cannot Run This Process, cause no product have Qty OutStanding')
 
@@ -383,6 +393,14 @@ class InheritPurchaseTenders(models.Model):
                 }
             record.check_missing_product = True
             res = record.env['quotation.comparison.form'].create(purchase_data)
+            quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',record.id),('validation_missing_product','=',True)])
+            arrQcfid = []
+            for item in quotation_comparison_form:
+                arrQcfid.append(item.id)
+            data = {
+                'comparison_id' : max(arrQcfid)
+            }
+            record.write(data)
 
     @api.multi
     def _compute_date(self):
@@ -529,6 +547,7 @@ class InheritPurchaseTenders(models.Model):
             'request_id':requisition.request_id.id,
             'notes': requisition.description,
             'picking_type_id': requisition.picking_type_id.id,
+            'comparison_id' : requisition.comparison_id,
             'validation_check_backorder':True
         }
 
@@ -546,6 +565,7 @@ class InheritPurchaseTenders(models.Model):
             'request_id':requisition.request_id.id,
             'notes': requisition.description,
             'picking_type_id': requisition.picking_type_id.id,
+            'comparison_id' : requisition.comparison_id,
             'validation_check_backorder':False
         }
 
@@ -597,6 +617,7 @@ class InheritPurchaseTenders(models.Model):
             'product_uom': default_uom_po_id,
             'price_unit': price_unit,
             'date_planned': date_planned,
+            'comparison_id' : requisition.comparison_id,
             'taxes_id': [(6, 0, taxes_id)],
             'account_analytic_id': requisition_line.account_analytic_id.id,
         }
@@ -664,6 +685,7 @@ class InheritPurchaseTenders(models.Model):
             'price_unit': price_unit,
             'date_planned': date_planned,
             'taxes_id': [(6, 0, taxes_id)],
+            'comparison_id' : requisition.comparison_id,
             'account_analytic_id': requisition_line.account_analytic_id.id,
         }
 
@@ -704,13 +726,19 @@ class InheritPurchaseTenders(models.Model):
                     purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
+    # @api.multi
+    # def generate_po(self):
+    #     for item in self:
+    #         super(InheritPurchaseTenders,item).generate_po()
+
+
     @api.multi
-    def generate_po(self):
+    def set_done(self):
         for item in self:
+            # Set To Done Purchase Tender
             pp_data={'state':'done'}
             item.env['purchase.request'].search([('complete_name','like',item.origin)]).write(pp_data)
-            super(InheritPurchaseTenders,item).generate_po()
-            # item.write({'state' : 'done'})
+            item.write({'state' : 'done'})
 
 
     @api.multi

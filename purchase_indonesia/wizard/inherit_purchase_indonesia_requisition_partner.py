@@ -91,7 +91,7 @@ class InheritRequisitionPartner(models.TransientModel):
             'companys_id' :purchase_tender.companys_id.id,
             'location':purchase_tender.location,
             'type_location' : purchase_tender.type_location,
-            'comparison_id' : max(arrQcfid)
+            # 'comparison_id' : max(arrQcfid)
         }
 
         order_line = self.env['purchase.order.line']
@@ -103,7 +103,7 @@ class InheritRequisitionPartner(models.TransientModel):
             comparisonline_data={
                 'product_qty' : requisition.product_qty,
                 # 'qty_request' : requisition.product_qty,
-                'comparison_id' : max(arrQcfid)
+                # 'comparison_id' : max(arrQcfid)
                 # 'comparison_id' : write_order.comparison_id.id
             }
             po = order.search([('requisition_id','=',self._context.get('active_id'))])
@@ -134,7 +134,7 @@ class InheritRequisitionPartner(models.TransientModel):
                 'companys_id' :purchase_tender.companys_id.id,
                 'location':purchase_tender.location,
                 'type_location' : purchase_tender.type_location,
-                'comparison_id' : max(arrQcfid)
+                # 'comparison_id' : max(arrQcfid)
             }
             tender_line_id = tender_line.search([('requisition_id','=',purchase_tender.id),('qty_outstanding','>',0)])
             order.search([('requisition_id','=',record._context.get('active_id'))]).write(comparison_data)
@@ -145,7 +145,7 @@ class InheritRequisitionPartner(models.TransientModel):
                 for item in po :
                     comparisonline_data={
                         'product_qty' : requisition.product_qty,
-                        'comparison_id' : max(arrQcfid)
+                        # 'comparison_id' : max(arrQcfid)
                     }
                     order_line.search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
 
