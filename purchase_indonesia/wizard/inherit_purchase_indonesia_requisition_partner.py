@@ -44,6 +44,10 @@ class InheritRequisitionPartner(models.TransientModel):
             self.create_backorder()
             self.create_backorder_quotation_comparison_form()
 
+        else:
+            self.create_backorder()
+            self.create_missing_comparison()
+
         return True
 
     @api.multi

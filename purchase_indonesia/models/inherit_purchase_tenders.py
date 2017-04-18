@@ -713,6 +713,8 @@ class InheritPurchaseTenders(models.Model):
                 purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             elif requisition.validation_check_backorder == True and requisition.validation_missing_product == True:
                 purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            elif requisition.validation_missing_product == True:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             else:
                 purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             purchase_order.message_post(cr, uid, [purchase_id], body=_("RFQ created"), context=context)

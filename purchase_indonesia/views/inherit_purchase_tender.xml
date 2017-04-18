@@ -100,6 +100,7 @@
                      <field name="validation_button_correction" invisible="1"/>
                      <field name="validation_correction" invisible="1"/>
                      <field name="validation_missing_product" invisible="1"/>
+                     <field name="comparison_id" invisible="1"/>
                      <field name="check_missing_product" invisible="1"/>
                      <field name="validation_qcf" invisible="1"/>
                      <field name="check_backorder" invisible="1"/>
