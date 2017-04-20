@@ -11,6 +11,8 @@ class Payslip(models.Model):
     _inherit = 'hr.payslip'
 
     team_id = fields.Many2one('estate.hr.team', 'Team', compute='_get_team', store=True, help="Employee's original Team")
+    division_id = fields.Many2one('stock.location', 'Division', related='team_id.division_id', store=True,
+                                  help="Team's Division")
     payroll_location_id = fields.Many2one(related='team_id.payroll_location_id',
                                           store=True, readonly=True)
     contract_type_id = fields.Many2one(related='contract_id.type_id', readonly=True)
