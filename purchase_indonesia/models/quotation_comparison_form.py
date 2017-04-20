@@ -1119,7 +1119,7 @@ class ViewQuotationComparison(models.Model):
 								            	select qcfl_all.* from
 								            	quotation_comparison_form_line qcfl_all inner join (
 								            		select
-														max(id) id,
+														min(id) id,
 														req_id,
 														partner_id,
 														product_id
@@ -1165,7 +1165,7 @@ class ViewQuotationComparison(models.Model):
 										            	quotation_comparison_form_line qcfl_all
 												            	inner join (
 										            		select
-																max(id) id,
+																min(id) id,
 																req_id,
 																partner_id,
 																product_id
@@ -1209,7 +1209,7 @@ class ViewQuotationComparison(models.Model):
 										            	select qcfl_all.* from
 										            	quotation_comparison_form_line qcfl_all inner join (
 										            		select
-																max(id) id,
+																min(id) id,
 																req_id,
 																partner_id,
 																product_id
@@ -1228,11 +1228,11 @@ class ViewQuotationComparison(models.Model):
                                         union all
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
-                                        cast(monetary(max(vendor1)) as varchar)  vendor1,cast(monetary(max(vendor2)) as varchar)  vendor2,
-                                        cast(monetary(max(vendor3)) as varchar)  vendor3,cast(monetary(max(vendor4)) as varchar)  vendor4,
-                                        cast(monetary(max(vendor5)) as varchar)  vendor5,cast(monetary(max(vendor6)) as varchar)  vendor6,
-                                        cast(monetary(max(vendor7)) as varchar)  vendor7,cast(monetary(max(vendor8)) as varchar)  vendor8,
-                                        cast(monetary(max(vendor9)) as varchar)  vendor9,cast(monetary(max(vendor10)) as varchar)  vendor10,
+                                        cast(monetary(sum(vendor1)) as varchar)  vendor1,cast(monetary(sum(vendor2)) as varchar)  vendor2,
+                                        cast(monetary(sum(vendor3)) as varchar)  vendor3,cast(monetary(sum(vendor4)) as varchar)  vendor4,
+                                        cast(monetary(sum(vendor5)) as varchar)  vendor5,cast(monetary(sum(vendor6)) as varchar)  vendor6,
+                                        cast(monetary(sum(vendor7)) as varchar)  vendor7,cast(monetary(sum(vendor8)) as varchar)  vendor8,
+                                        cast(monetary(sum(vendor9)) as varchar)  vendor9,cast(monetary(sum(vendor10)) as varchar)  vendor10,
                                         cast('' as varchar) po_des_all_name,6 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.amount_total ELSE NULL END) AS "vendor1",
@@ -1245,15 +1245,15 @@ class ViewQuotationComparison(models.Model):
                                                      MAX(CASE WHEN r.rownum = 8 THEN r.amount_total ELSE NULL END) AS "vendor8",
                                                      MAX(CASE WHEN r.rownum = 9 THEN r.amount_total ELSE NULL END) AS "vendor9",
                                                      MAX(CASE WHEN r.rownum = 10 THEN r.amount_total ELSE NULL END) AS "vendor10"
-                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit, (price_subtotal+price_tax) amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
                                                     (
 										            	select qcfl_all.* from
 										            	quotation_comparison_form_line qcfl_all inner join (
 										            		select
-																max(id) id,
+																min(id) id,
 																req_id,
 																partner_id,
 																product_id
