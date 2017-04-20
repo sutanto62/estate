@@ -74,7 +74,7 @@ class InheritStockPicking(models.Model):
             arrAgronomy.append(deptgroupsrecord.id)
 
         try:
-            manager_estate = self.env['res.users'].search([('id','=',arrEstateManager[0]),('id','=',arrAgronomy[0])]).id
+            manager_estate = self.env['res.users'].search([('id','in',arrEstateManager),('id','in',arrAgronomy)]).id
         except:
             raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
 
