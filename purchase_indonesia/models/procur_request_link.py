@@ -18,6 +18,11 @@ class InheritPurchaseRequisition(models.Model):
 
     owner_id = fields.Integer('owner id')
 
+class InheritPurchaseRequisitionLine(models.Model):
+    _inherit = 'purchase.requisition.line'
+
+    owner_id = fields.Integer('owner id')
+
 class InheritPurchaseRequest(models.Model):
 
     @api.multi
@@ -160,6 +165,7 @@ class InheritPurchaseRequest(models.Model):
     department_id = fields.Many2one('hr.department','Department')
     employee_id = fields.Many2one('hr.employee','Employee')
     purchase_ids = fields.One2many('purchase.order','request_id','Purchase Order Line',domain=[('state','!=','cancel')])
+    line_product_ids = fields.One2many('purchase.requisition.line','owner_id','Purchase Requisition Line')
     type_location = fields.Char('Location',default=_get_office_level_id,readonly = 1)
     code =  fields.Char('code location',default=_get_office_level_id_code,readonly = 1)
     type_product = fields.Selection([('consu','Capital'),
@@ -818,7 +824,8 @@ class InheritPurchaseRequest(models.Model):
                 'est_price':purchaseline.price_per_product,
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
-                'requisition_id' : res.id
+                'requisition_id' : res.id,
+                'owner_id' :res.owner_id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
 

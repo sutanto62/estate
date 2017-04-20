@@ -235,41 +235,60 @@
                  </xpath>
 
                  <xpath expr="//field[@name='description']" position="after">
-                     <separator string="Purchase Order" attrs="{'invisible': [('state','not in', ('done','approved'))]}"/>
-                     <field name="purchase_ids" readonly="1" attrs="{'invisible': [('state','not in',  ('done','approved'))]}">
-                            <tree string="Purchase Order">
-                                <field name="complete_name" string="Purchase Order No"/>
-                                <field name="date_order" string="Order Date"/>
-                                <field name="partner_id" string="Vendor"/>
-                                <field name="state" string="Status"/>
-                                <field name="count_grn_assigned" widget="statinfo"  string="GRN/SRN Av Mgr"/>
-                                <field name="count_grn_assigned_user" widget="statinfo"  string="GRN/SRN Av Usr"/>
-                            </tree>
-                            <form>
-                                    <sheet>
-                                        <div class="oe_right oe_button_box" name="buttons">
-                                            <button type="object"
-                                                name="action_view_picking"
-                                                class="oe_stat_button"
-                                                icon="fa-truck" >
-                                                <field name="count_grn_done" widget="statinfo" string="Dn"/>
-                                                <field name="count_grn_assigned" widget="statinfo"  string="Mgr"/>
-                                                <field name="count_grn_assigned_user" widget="statinfo"  string="Usr"/>
-                                            </button>
-                                        </div>
-                                        <group>
-                                            <group name="group6">
-                                                 <field name="complete_name" string="Reference"/>
-                                                 <field name="date_order" string="Order Date"/>
-                                            </group>
-                                            <group name="group7">
-                                                 <field name="partner_id"/>
-                                                 <field name="state"/>
-                                            </group>
-                                        </group>
-                                    </sheet>
-                                </form>
-                     </field>
+                     <separator string="Product And Purchase Order " attrs="{'invisible': [('state','not in', ('done','approved'))]}"/>
+                     <notebook>
+                         <page string="Product">
+                              <field name="line_product_ids" readonly="1" attrs="{'invisible': [('state','not in',  ('done','approved'))]}">
+                                    <tree string="Product Line">
+                                        <field name="product_id" on_change="onchange_product_id(product_id,product_uom_id,parent.account_analytic_id,account_analytic_id,parent.schedule_date,schedule_date)"/>
+                                        <field name="product_qty" string="QTY"/>
+                                        <field name="qty_received" string="QTY Received" class="oe_inline" invisible="0"
+                                               readonly="1"/>
+                                        <field name="qty_outstanding" string="QTY Outstanding" class="oe_inline" invisible="0"
+                                               readonly="0"/>
+                                        <field name="check_missing_product" class="oe_inline" invisible="1"
+                                               readonly="0"/>
+                                        <field name="product_uom_id" string="UOM" groups="product.group_uom"/>
+                                    </tree>
+                              </field>
+                         </page>
+                         <page string="Purchase Order">
+                             <field name="purchase_ids" readonly="1" attrs="{'invisible': [('state','not in',  ('done','approved'))]}">
+                                    <tree string="Purchase Order">
+                                        <field name="complete_name" string="Purchase Order No"/>
+                                        <field name="date_order" string="Order Date"/>
+                                        <field name="partner_id" string="Vendor"/>
+                                        <field name="state" string="Status"/>
+                                        <field name="count_grn_assigned" widget="statinfo"  string="GRN/SRN Av Mgr"/>
+                                        <field name="count_grn_assigned_user" widget="statinfo"  string="GRN/SRN Av Usr"/>
+                                    </tree>
+                                    <form>
+                                            <sheet>
+                                                <div class="oe_right oe_button_box" name="buttons">
+                                                    <button type="object"
+                                                        name="action_view_picking"
+                                                        class="oe_stat_button"
+                                                        icon="fa-truck" >
+                                                        <field name="count_grn_done" widget="statinfo" string="Dn"/>
+                                                        <field name="count_grn_assigned" widget="statinfo"  string="Mgr"/>
+                                                        <field name="count_grn_assigned_user" widget="statinfo"  string="Usr"/>
+                                                    </button>
+                                                </div>
+                                                <group>
+                                                    <group name="group6">
+                                                         <field name="complete_name" string="Reference"/>
+                                                         <field name="date_order" string="Order Date"/>
+                                                    </group>
+                                                    <group name="group7">
+                                                         <field name="partner_id"/>
+                                                         <field name="state"/>
+                                                    </group>
+                                                </group>
+                                            </sheet>
+                                        </form>
+                             </field>
+                         </page>
+                     </notebook>
                  </xpath>
              </field>
          </record>
