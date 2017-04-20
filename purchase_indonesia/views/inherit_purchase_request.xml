@@ -235,8 +235,8 @@
                  </xpath>
 
                  <xpath expr="//field[@name='description']" position="after">
-                     <separator string="Purchase Order" attrs="{'invisible': [('state','!=', 'done')]}"/>
-                     <field name="purchase_ids" readonly="1" attrs="{'invisible': [('state','!=', 'done')]}">
+                     <separator string="Purchase Order" attrs="{'invisible': [('state','not in', ('done','approved'))]}"/>
+                     <field name="purchase_ids" readonly="1" attrs="{'invisible': [('state','not in',  ('done','approved'))]}">
                             <tree string="Purchase Order">
                                 <field name="complete_name" string="Purchase Order No"/>
                                 <field name="date_order" string="Order Date"/>
