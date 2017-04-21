@@ -879,12 +879,16 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                         on tender.requisition_id = picking.requisition_id and tender.product_id = picking.product_id
                         left join
                         (
-                            select product_id,requisition_id,max(product_qty) sum_quantity_purchase from purchase_order po
+                        select
+                            product_id,
+                            requisition_id,
+                            (CASE WHEN qty_request > 0 THEN sum(product_qty)  ELSE max(product_qty)  END) AS "sum_quantity_purchase"
+                            from purchase_order po
                         inner join
                             purchase_order_line pol
                         on po.id = pol.order_id
-                        where state in ('done','received_partial','received_force_done')
-                        group by requisition_id,product_id
+                        where state in ('purchase','done','received_partial','received_force_done')
+                        group by requisition_id,product_id,qty_request
                         )porder
                         on tender.requisition_id = porder.requisition_id and tender.product_id = porder.product_id
                         """)
@@ -913,7 +917,7 @@ class ViewRequisitionTracking(models.Model):
 class ViewRequestRequisitionTracking(models.Model):
 
     _name = 'view.request.requisition.tracking'
-    _description = 'Tracking Purchase Requisition'
+    _description = 'Global Tracking Purchase Requisition'
     _auto = False
     _order = 'pr_id'
     _inherit=['mail.thread']
@@ -1014,7 +1018,7 @@ class ViewResultTrackingPurchaseOrderInvoice(models.Model):
 class ViewDetailRequestRequisitionTracking(models.Model):
 
     _name = 'view.detail.request.requisition.tracking'
-    _description = 'Tracking Purchase Requisition'
+    _description = 'Tracking Detail Purchase Requisition'
     _auto = False
     _order = 'vrrt_id'
 
