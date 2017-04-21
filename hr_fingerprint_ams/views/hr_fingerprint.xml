@@ -183,11 +183,12 @@
         <record id="fingerprint_attendance_action" model="ir.actions.act_window" >
             <field name="name">Fingerprint Attendance</field>
             <field name="res_model">hr_fingerprint_ams.attendance</field>
-            <field name="view_mode">pivot,tree,form</field>
+            <field name="view_mode">tree,form,pivot</field>
             <field name="groups_id" eval="[(4, ref('base.group_hr_user')),(4, ref('estate.group_user'))]"/>
             <field name="context">{'search_default_by_department': 1,
                 'search_default_by_employee': 1,
-                'search_default_filter_new': 1}</field>
+                'search_default_filter_new': 1,
+                'search_default_filter_month': 1}</field>
         </record>
 
         <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
@@ -215,6 +216,7 @@
                   action="labour_fingerprint_report_action"/>
 
         <!-- Confirm All action -->
+        <!-- single approval level
         <record model="ir.actions.server" id="action_hr_fingerprint_confirm">
             <field name="name">Confirm All</field>
             <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance"/>
@@ -233,6 +235,7 @@
             <field name="key">action</field>
             <field name="model">hr_fingerprint_ams.attendance</field>
         </record>
+        -->
 
         <!-- Approve All action -->
         <record model="ir.actions.server" id="action_hr_fingerprint_approve">
@@ -241,7 +244,7 @@
             <field name="groups_id" ref="base.group_hr_manager"/>
             <field name="code">
                 if context.get('active_model') == 'hr_fingerprint_ams.attendance' and context.get('active_ids'):
-                    action = self.approve_all(cr, uid, context['active_ids'], context=context)
+                    action = self.approve_all_admin(cr, uid, context['active_ids'], context=context)
             </field>
         </record>
 

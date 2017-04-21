@@ -450,6 +450,26 @@ class Upkeep(models.Model):
         })
 
     @api.multi
+    def draft_selected(self):
+        """ User asked to reopen approved or confirmed
+        """
+        if not self.user_has_groups('base.group_erp_manager'):
+            err_msg = _('You are not authorized to redraft data')
+            raise ValidationError(err_msg)
+
+        #  Only confirmed and approved could be redraft
+        for record in self:
+            if not record.state in ('confirmed','approved'):
+                err_msg = _('Selected records is not a confirmed/approved data.')
+                raise ValidationError(err_msg)
+
+        upkeep_ids = self.search([('id', 'in', self.ids), ('state', 'in', ('confirmed','approved'))])
+        upkeep_ids.write({
+            'state': 'draft'
+        })
+
+
+    @api.multi
     def confirm_all(self):
         """ One by one confirmation takes time."""
 
@@ -457,6 +477,11 @@ class Upkeep(models.Model):
         if not self.user_has_groups('estate.group_assistant'):
             err_msg = _('You are not authorized to confirm all upkeep data')
             raise ValidationError(err_msg)
+
+        for record in self:
+            if not record.state == 'draft':
+                err_msg = _('Selected records is not a draft data.')
+                raise ValidationError(err_msg)
 
         draft_upkeep_ids = self.search([('id', 'in', self.ids), ('state', '=', 'draft')])
         draft_upkeep_ids.write({
@@ -476,6 +501,11 @@ class Upkeep(models.Model):
         if not self.user_has_groups('estate.group_manager'):
             err_msg = _('You are not authorized to approve all upkeep data')
             raise ValidationError(err_msg)
+
+        for record in self:
+            if not record.state == 'confirmed':
+                err_msg = _('Selected records is not a confirmed data.')
+                raise ValidationError(err_msg)
 
         confirmed_upkeep_ids = self.search([('id', 'in', self.ids), ('state', '=', 'confirmed')])
         confirmed_upkeep_ids.write({

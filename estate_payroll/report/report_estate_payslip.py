@@ -38,7 +38,8 @@ class estate_payslip_run_report(report_sxw.rml_parse):
             'get_payslip_total': self.get_payslip_total,
             'get_number_of_day': self.get_number_of_day,
             'number_round': self.number_round,
-            'get_worked_day': self.get_worked_day
+            'get_worked_day': self.get_worked_day,
+            'get_division': self.get_division,
             # 'get_qrcode': self.get_qrcode,
             #'get_payslip_lines': self.get_payslip_lines,
         })
@@ -54,10 +55,48 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         res = set(team)
         return res
 
-    def get_team(self, obj):
+    def get_division(self, obj):
+        """
+        Report payslip by division
+        Args:
+            obj:
+
+        Returns:
+        list of division instances
+        """
+        division_ids = []
+        res = []
+        payslip_obj = self.pool.get('hr.payslip')
+        division_obj = self.pool.get('stock.location')
+
+        domain = [('state', 'in', ('draft', 'verify')),
+                  ('date_from', '>=', obj.date_start),
+                  ('date_to', '<=', obj.date_end),
+                  ('payslip_run_id', '=', obj.id),
+                  ('company_id', '=', obj.company_id.id)]
+
+        if obj.division_id:
+            domain.append(('division_id', '=', obj.division_id.id))
+
+        ids = payslip_obj.search(self.cr, self.uid, domain)
+
+        for record in payslip_obj.browse(self.cr, self.uid, ids):
+            division_ids.append(record.division_id.id)
+
+        division_ids = set(division_ids)
+
+        # Get team instances
+        if division_ids:
+            res = division_obj.browse(self.cr, self.uid, division_ids)
+
+        return sorted(res, key=lambda d: d.name)
+
+    def get_team(self, obj, division=None):
         """
         Report payslip by team get from payslip.
-        :param obj: Payslip Run
+        :param
+            obj: Payslip Run.
+            division: Upkeep Division.
         :return: list of team instances
         """
         team_ids = []
@@ -71,6 +110,9 @@ class estate_payslip_run_report(report_sxw.rml_parse):
                   ('date_to', '<=', obj.date_end),
                   ('payslip_run_id', '=', obj.id),
                   ('company_id', '=', obj.company_id.id)]
+
+        if division:
+            domain.append(('division_id', '=', division.id))
 
         ids = payslip_obj.search(self.cr, self.uid, domain)
 

@@ -926,7 +926,7 @@
             <field name="model">estate.upkeep</field>
         </record>
 
-        <!-- Approve All action -->
+        <!--Approve All-->
         <record model="ir.actions.server" id="upkeep_approve_action">
             <field name="name">Approve All</field>
             <field name="model_id" ref="estate.model_estate_upkeep"/>
@@ -944,6 +944,27 @@
             <field name="key">action</field>
             <field name="model">estate.upkeep</field>
         </record>
+        <!--/Approve All-->
+
+        <!--Draft Selected-->
+        <record model="ir.actions.server" id="upkeep_draft_action">
+            <field name="name">Draft Selected</field>
+            <field name="model_id" ref="estate.model_estate_upkeep"/>
+            <field name="code">
+                if context.get('active_model') == 'estate.upkeep' and context.get('active_ids'):
+                    action = self.draft_selected(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="upkeep_draft_selected_action_menu">
+            <field name="model_id" ref="estate.model_estate_upkeep" />
+            <field name="name">Draft Selected Action</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('upkeep_draft_action'))" />
+            <field name="key">action</field>
+            <field name="model">estate.upkeep</field>
+        </record>
+        <!--/Draft Selected-->
 
         <!-- Confirm All action through upkeep labour-->
         <record model="ir.actions.server" id="upkeep_labour_confirm_action">

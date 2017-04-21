@@ -81,6 +81,10 @@ class UpkeepFingerprintReport(models.AbstractModel):
     def render_html(self, data=None):
         report_obj = self.env['report']
         report = report_obj._get_report_from_name('hr_fingerprint_ams.report_upkeep_fingerprint')
+
+        if data['form']['company_id']:
+            company = self.env['res.company'].browse(data['form']['company_id'][0])
+
         docargs = {
             'doc_ids': self._ids,
             'doc_model': report.model,
@@ -89,5 +93,6 @@ class UpkeepFingerprintReport(models.AbstractModel):
             'Fingerprint': self._get_fingerprint(data),
             'format_date': self.format_date,
             'format_time': self.format_time,
+            'company': company,
         }
         return report_obj.render('hr_fingerprint_ams.report_upkeep_fingerprint', docargs)
