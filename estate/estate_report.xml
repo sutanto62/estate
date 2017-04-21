@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data noupdate="1">
+        <!--Paper Format-->
         <record id="estate_paperformat_a4" model="report.paperformat">
             <field name="name">Division Report</field>
             <field name="default" eval="True"/>
@@ -14,8 +15,9 @@
             <field name="header_spacing">10</field>
             <field name="dpi">90</field>
         </record>
+        <!--/Paper Format-->
 
-        <!-- QWeb Reports -->
+        <!-- Division Report -->
         <report
             id="estate_division_report_action"
             model="estate.division.report"
@@ -30,6 +32,8 @@
         <record id="estate_division_report_action" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="estate_paperformat_a4"/>
         </record>
+
+
 
     </data>
 </openerp>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--Paper Format-->
+        <record id="upkeep_fingerprint_paperformat_a4" model="report.paperformat">
+            <field name="name">Upkeep Fingerprint A4 Portrait</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">15</field>
+            <field name="dpi">90</field>
+        </record>
+        <!--/Paper Format-->
+
+        <!--Upkeep Fingerprint Report Action-->
+        <report
+            id="upkeep_fingerprint_report_action"
+            model="hr_fingerprint_ams.fingerprint"
+            string="Upkeep Fingerprint Report"
+            report_type="qweb-pdf"
+            name="hr_fingerprint_ams.report_upkeep_fingerprint"
+            file="hr_fingerprint_ams.report_upkeep_fingerprint"
+        />
+        <!--/Upkeep Fingerprint Report Action-->
+
+        <record id="upkeep_fingerprint_report_action" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="upkeep_fingerprint_paperformat_a4"/>
+        </record>
+
+    </data>
+</openerp>

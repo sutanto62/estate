@@ -31,6 +31,9 @@
         'views/inherited_hr_attendance_view.xml',
         'views/inherited_estate_upkeep_view.xml',
         'views/inherited_estate_hr_view.xml',
+        'views/report_action.xml',
+        'wizard/fingerprint_transient_view.xml',
+        'report/report_upkeep_fingerprint.xml',
         'security/menu_items.xml',  # call this xml after all views xml setup
     ],
     # only loaded in demonstration mode

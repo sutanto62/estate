@@ -11,23 +11,31 @@ class Payslip(models.Model):
     _inherit = 'hr.payslip'
 
     team_id = fields.Many2one('estate.hr.team', 'Team', compute='_get_team', store=True, help="Employee's original Team")
+    division_id = fields.Many2one('stock.location', 'Division', related='team_id.division_id', store=True,
+                                  help="Team's Division")
     payroll_location_id = fields.Many2one(related='team_id.payroll_location_id',
                                           store=True, readonly=True)
     contract_type_id = fields.Many2one(related='contract_id.type_id', readonly=True)
     upkeep_labour_count = fields.Integer(compute='_compute_upkeep_labour', string='Payslip Upkeep Labour Details')
 
-    #@api.multi
+    @api.multi
     @api.depends('employee_id')
     def _get_team(self):
-        """Estate worker's payslip disbursed per team
+        """Estate worker's payslip disbursed per team.
         """
+        upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
+                                                                     ('upkeep_date', '>=', self.date_from),
+                                                                     ('upkeep_date', '<=', self.date_to),
+                                                                     ('state', 'in', ['approved', 'payslip'])])
+        team_ids = []
+        for upkeep_labour in upkeep_labour_ids:
+            team_ids.append(upkeep_labour.upkeep_id.team_id.id)
+        team_ids = list(set(team_ids))
+
         for payslip in self:
-            for member in self.env['estate.hr.member'].search([('employee_id', '=', payslip.employee_id.id)], limit=1):
-                if member.team_id.state != 'draft':
-                    payslip.team_id = member.team_id.id
-                    return True
-                else:
-                    return False
+            # Avoid error when KHL registered more than 1 team.
+            payslip.team_id = team_ids[0]
+            return True
 
     @api.multi
     def _get_upkeep_labour(self):
@@ -176,7 +184,7 @@ class Payslip(models.Model):
         """HR cross check related upkeep labour before and after payslip
         """
         context = self._context.copy()
-        view_id = self.env.ref('estate.upkeep_labour_view_tree').id
+        view_id = self.env.ref('estate_payroll.payslip_upkeep_labour_view_tree').id
 
         # Payslip only processed approved upkeep labour of selected employee within payslip period
 
@@ -196,5 +204,10 @@ class Payslip(models.Model):
 
         return res
 
-
+    @api.model
+    def create(self, vals):
+        """ Set payslip company based on employee's company."""
+        company_id = self.env['hr.employee'].search([('id', '=', vals['employee_id'])]).company_id
+        vals['company_id'] = company_id.id
+        return super(Payslip, self).create(vals)
 

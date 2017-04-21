@@ -19,6 +19,7 @@ class PayslipRun(models.Model):
                              ('division', 'By Division')],
                             'Payroll Type', default='employee',
                             help='By Estate/Division create Payslip Batches for Estate.')
+    company_id = fields.Many2one('res.company', 'Company', help='Limit payroll based on employee company.')
     estate_id = fields.Many2one('stock.location', "Estate",
                                 domain=[('estate_location', '=', True), ('estate_location_level', '=', '1'),
                                 ('estate_location_type', '=', 'planted')])
@@ -46,7 +47,7 @@ class PayslipRun(models.Model):
         :return: first estate and set to estate_id
         """
         if self.division_id:
-            res = self.env['stock.location'].search([('id', '=', self.division_id.location_id.id)])
+            res = self.estate_id = self.env['stock.location'].get_estate(self.division_id.id)
             if res:
                 self.estate_id = res
 
