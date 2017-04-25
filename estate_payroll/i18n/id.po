@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-06 08:56+0000\n"
-"PO-Revision-Date: 2017-04-06 16:01+0700\n"
+"POT-Creation-Date: 2017-04-25 07:27+0000\n"
+"PO-Revision-Date: 2017-04-25 14:32+0700\n"
 "Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: palma group\n"
 "Language: id\n"
@@ -34,17 +34,12 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<br/>HR GA Head Assistant"
-msgstr ""
-
-#. module: estate_payroll
-#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "<br/>KTU"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
-msgid "<br/>Senior Kerani Administrasi"
+msgid "<br/>Senior Kerani Adm."
 msgstr ""
 
 #. module: estate_payroll
@@ -104,13 +99,18 @@ msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "<u>Mimin Gunawan</u><br/>HR GA Head Assistant"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "<u>Petrus T. Wijoyo</u><br/>GM Operation"
 msgstr ""
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.payslip_upkeep_labour_view_tree
 msgid "Activity"
-msgstr ""
+msgstr "Kegiatan"
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_run_form
@@ -232,6 +232,12 @@ msgid "Display Name"
 msgstr "Nama Yang Ditampilkan"
 
 #. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
+msgid "Divisi"
+msgstr ""
+
+#. module: estate_payroll
+#: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_division_id
 #: model:ir.model.fields,field_description:estate_payroll.field_hr_payslip_run_division_id
 msgid "Division"
 msgstr "Divisi"
@@ -269,14 +275,14 @@ msgid "Estate Payslip List"
 msgstr "Daftar Upah KHL"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:88
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:90
 #, python-format
 msgid "Estate Upkeep Working Days paid at 100%"
 msgstr "Hari kerja dibayar"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:77
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:136
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:79
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:138
 #, python-format
 msgid "Estate Worker"
 msgstr "Estate Worker"
@@ -373,7 +379,7 @@ msgstr "Dimodifikasi pada"
 #. module: estate_payroll
 #: model:ir.model.fields,help:estate_payroll.field_hr_payslip_run_company_id
 msgid "Limit payroll based on employee company."
-msgstr ""
+msgstr "Batasi penghitungan gaji berdasar perusahaan karyawan."
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.payslip_upkeep_labour_view_tree
@@ -413,6 +419,12 @@ msgid "No"
 msgstr ""
 
 #. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_view_hr_payslip_filter
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_view_hr_view_employee_filter
+msgid "No Contract"
+msgstr "Tanpa Kontrak"
+
+#. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "No."
 msgstr ""
@@ -423,7 +435,7 @@ msgid "Non Kemandoran"
 msgstr ""
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:147
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:149
 #: model:ir.ui.view,arch_db:estate_payroll.payslip_upkeep_labour_view_tree
 #, python-format
 msgid "OT"
@@ -441,13 +453,13 @@ msgid "Other Gender"
 msgstr "Lainnya"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:146
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:148
 #, python-format
 msgid "Overtime"
 msgstr "Lembur"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:158
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:160
 #: model:ir.ui.view,arch_db:estate_payroll.payslip_upkeep_labour_view_tree
 #, python-format
 msgid "PR"
@@ -512,19 +524,19 @@ msgid "Period:"
 msgstr "Periode:"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:157
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:159
 #, python-format
 msgid "Piece Rate"
 msgstr "Target"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:102
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:104
 #, python-format
 msgid "Piece Rate Working Days"
 msgstr "Premi Pengganti HK"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:132
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:134
 #, python-format
 msgid "Please check all employee contract date should be in period of payroll batch."
 msgstr ""
@@ -557,6 +569,16 @@ msgid "Qty."
 msgstr ""
 
 #. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_form
+msgid "Recompute"
+msgstr "Hitung Hari/Masukan"
+
+#. module: estate_payroll
+#: model:ir.actions.server,name:estate_payroll.action_hr_payslip_recompute_sheet
+msgid "Recompute Sheet"
+msgstr "Hitung Ulang"
+
+#. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Rekapitulasi Daftar Upah KHL"
 msgstr ""
@@ -580,11 +602,6 @@ msgstr ""
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Rp Premi"
 msgstr ""
-
-#. module: estate_payroll
-#: model:ir.model,name:estate_payroll.model_hr_payroll_structure
-msgid "Salary Structure"
-msgstr "Struktur Gaji"
 
 #. module: estate_payroll
 #: code:addons/estate_payroll/report/report_bpjs.py:51
@@ -626,34 +643,19 @@ msgid "Team ids"
 msgstr "Kemandoran"
 
 #. module: estate_payroll
+#: model:ir.model.fields,help:estate_payroll.field_hr_payslip_division_id
+msgid "Team's Division"
+msgstr "Divisi Kemandoran"
+
+#. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_bpjs
 msgid "Total"
 msgstr ""
 
 #. module: estate_payroll
-#: model:ir.model.fields,field_description:estate_payroll.field_estate_upkeep_total_labour
-msgid "Total Labour"
-msgstr "Total TK"
-
-#. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
 msgid "Total Lain-Lain"
 msgstr ""
-
-#. module: estate_payroll
-#: model:ir.model.fields,field_description:estate_payroll.field_estate_upkeep_total_number_of_day
-msgid "Total Number of Day"
-msgstr "Total HK"
-
-#. module: estate_payroll
-#: model:ir.model.fields,field_description:estate_payroll.field_estate_upkeep_total_overtime
-msgid "Total Overtime Hours"
-msgstr "Total Jam Lembur"
-
-#. module: estate_payroll
-#: model:ir.model.fields,field_description:estate_payroll.field_estate_upkeep_total_piece_rate
-msgid "Total Piece Rate Amount"
-msgstr "Total Rp Premi"
 
 #. module: estate_payroll
 #: model:ir.ui.view,arch_db:estate_payroll.report_estate_payslip
@@ -676,6 +678,11 @@ msgid "Upah"
 msgstr ""
 
 #. module: estate_payroll
+#: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payslip_form
+msgid "Update worked days or inputs."
+msgstr "Hitung ulang hari kerja/masukan komponen gaji."
+
+#. module: estate_payroll
 #: model:ir.model,name:estate_payroll.model_estate_upkeep
 #: model:ir.ui.view,arch_db:estate_payroll.inherited_hr_payroll_payslip_employees
 msgid "Upkeep"
@@ -688,7 +695,7 @@ msgid "Upkeep Labour"
 msgstr "Penggunaan HK"
 
 #. module: estate_payroll
-#: code:addons/estate_payroll/models/inherited_hr_payslip.py:192
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:194
 #, python-format
 msgid "Upkeep Labour Records %s"
 msgstr "Data Penggunaan HK %s"
@@ -717,6 +724,14 @@ msgid "You cannot delete closed Payslip."
 msgstr "Anda tidak boleh menghapus payslip final."
 
 #. module: estate_payroll
+#: code:addons/estate_payroll/models/inherited_hr_payslip.py:217
+#, python-format
+msgid "You have %s employee(s) without contract. Please create contract for %s"
+msgstr ""
+"Ada %s karyawan belum memiliki struktur gaji/kontrak. Karyawan tanpa "
+"struktur gaji %s"
+
+#. module: estate_payroll
 #: model:ir.model,name:estate_payroll.model_estate_hr_team
 msgid "estate.hr.team"
 msgstr ""
@@ -735,6 +750,21 @@ msgstr ""
 #: model:ir.model,name:estate_payroll.model_report_estate_payroll_report_estate_payslip
 msgid "report.estate_payroll.report_estate_payslip"
 msgstr ""
+
+#~ msgid "Salary Structure"
+#~ msgstr "Struktur Gaji"
+
+#~ msgid "Total Labour"
+#~ msgstr "Total TK"
+
+#~ msgid "Total Number of Day"
+#~ msgstr "Total HK"
+
+#~ msgid "Total Overtime Hours"
+#~ msgstr "Total Jam Lembur"
+
+#~ msgid "Total Piece Rate Amount"
+#~ msgstr "Total Rp Premi"
 
 #~ msgid "<strong>Total Other</strong>"
 #~ msgstr "<strong>Total Lain</strong>"

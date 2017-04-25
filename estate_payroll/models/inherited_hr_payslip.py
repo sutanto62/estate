@@ -2,7 +2,7 @@
 
 from openerp import models, fields, api, exceptions
 from openerp.tools.translate import _
-from openerp.exceptions import ValidationError
+from openerp.exceptions import ValidationError, UserError
 
 class Payslip(models.Model):
     """
@@ -23,18 +23,20 @@ class Payslip(models.Model):
     def _get_team(self):
         """Estate worker's payslip disbursed per team.
         """
-        upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
-                                                                     ('upkeep_date', '>=', self.date_from),
-                                                                     ('upkeep_date', '<=', self.date_to),
-                                                                     ('state', 'in', ['approved', 'payslip'])])
-        team_ids = []
-        for upkeep_labour in upkeep_labour_ids:
-            team_ids.append(upkeep_labour.upkeep_id.team_id.id)
-        team_ids = list(set(team_ids))
-
         for payslip in self:
+            upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', payslip.employee_id.id),
+                                                                         ('upkeep_date', '>=', payslip.date_from),
+                                                                         ('upkeep_date', '<=', payslip.date_to),
+                                                                         ('state', 'in', ['approved', 'payslip'])])
+
+            team_ids = []
+            for upkeep_labour in upkeep_labour_ids:
+                team_ids.append(upkeep_labour.upkeep_id.team_id.id)
+            team_ids = list(set(team_ids))
+
             # Avoid error when KHL registered more than 1 team.
-            payslip.team_id = team_ids[0]
+            if payslip.contract_type_id == 'Estate Worker': # Other employee need no team_id
+                payslip.team_id = team_ids[0]
             return True
 
     @api.multi
@@ -203,6 +205,15 @@ class Payslip(models.Model):
         }
 
         return res
+
+    @api.multi
+    def recompute_sheet(self):
+        """ Estate Worker employee has no contract when payslip processed."""
+        no_contract = []
+        for record in self:
+            if not record.contract_id:
+                no_contract.append(record.employee_id.name_related)
+            record.onchange_employee()
 
     @api.model
     def create(self, vals):

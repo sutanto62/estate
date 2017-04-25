@@ -83,6 +83,27 @@
                     src_model="hr.payslip"
                     id="action_list_upkeep_labour"/>
 
+        <!--Recompute Action-->
+        <record model="ir.actions.server" id="action_hr_payslip_recompute_sheet">
+            <field name="name">Recompute Sheet</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="groups_id" ref="base.group_hr_user"/>
+            <field name="code">
+                if context.get('active_model') == 'hr.payslip' and context.get('active_ids'):
+                    action = self.recompute_sheet(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="hr_payslip_recompute_sheet_menu">
+            <field name="model_id" ref="hr_payroll.model_hr_payslip" />
+            <field name="name">Recompute</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('action_hr_payslip_recompute_sheet'))" />
+            <field name="key">action</field>
+            <field name="model">hr.payslip</field>
+        </record>
+        <!--/Recompute Action-->
+
         <record id="inherited_hr_payslip_form" model="ir.ui.view">
             <field name="name">hr.payslip.form.inherit</field>
             <field name="model">hr.payslip</field>
@@ -100,6 +121,11 @@
                         attrs="{'invisible': [('contract_type_id', '!=', 4)]}">
                         <field name="upkeep_labour_count" widget="statinfo" string="Upkeep Labour" help="Payslip Upkeep Labour Details"/>
                     </button>
+                </xpath>
+                <xpath expr="//header//button" position="after">
+                    <button string="Recompute" name="recompute_sheet"
+                            type="object" states="draft" class="oe_highlight"
+                            help="Update worked days or inputs."/>
                 </xpath>
             </field>
         </record>
@@ -134,6 +160,21 @@
                 <xpath expr="//filter[@name='employee_id']" position="after">
                     <filter string="Company" icon="terp-personal" name="company_id" context="{'group_by':'company_id'}"/>
                     <filter string="Team" icon="terp-personal" name="team_id" context="{'group_by':'team_id'}"/>
+                    <separator/>
+                    <filter string="No Contract" domain="[('contract_id', '=', False)]"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--help hr user to sort employee who has no contract-->
+        <record id="inherited_view_hr_view_employee_filter" model="ir.ui.view">
+            <field name="name">hr.view.employee.filter.inherit</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <separator/>
+                    <filter string="No Contract" domain="[('contract_ids', '=', False)]"/>
                 </xpath>
             </field>
         </record>

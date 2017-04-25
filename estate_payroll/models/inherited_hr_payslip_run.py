@@ -25,6 +25,7 @@ class PayslipRun(models.Model):
                                 ('estate_location_type', '=', 'planted')])
     division_id = fields.Many2one('stock.location', "Division",
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')])
+    team_ids = fields.Many2one('estate.hr.team')
 
     @api.multi
     @api.onchange('date_start')
@@ -39,6 +40,14 @@ class PayslipRun(models.Model):
         #if date_conv:
         #    self.date_to = datetime.date(date_conv) + relativedelta(months=+1, day=1, days=-1))
         # lambda *a: str(datetime.now() + relativedelta.relativedelta(months=+1, day=1, days=-1))[:10]
+
+    @api.multi
+    @api.onchange('date_start', 'date_end')
+    def _onchange_payslip(self):
+        """ Sync with payslip batch's date from and to. Create Automated Action for update workline and input line."""
+        if self.slip_ids:
+            payslip_ids = self.env['hr.payslip'].browse(self.slip_ids.ids)
+            payslip_ids.write({'date_from': self.date_start, 'date_to': self.date_end})
 
     @api.one
     @api.onchange('division_id')
@@ -142,10 +151,3 @@ class PayslipRun(models.Model):
         # Return value to report
         return '%s;%s;%s;%s' % (print_datetime, current_user.name, report_name, self.name)
 
-
-class PayslipRunReport(models.Model):
-    """Payslip List Report required to group by Team
-    """
-    _inherit = 'hr.payslip.run'
-
-    team_ids = fields.Many2one('estate.hr.team')
