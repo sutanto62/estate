@@ -84,7 +84,7 @@
                   <li>Login To ERP Palma Group
                      <ul>
                         <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Email Palma Group in Field Username. i.e: aaaa@palmagroup.co.id</li>
+                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
                         <li>Input Your Password ERP Palma Group in Field Password.
                             <ul style="list-style-type:circle">
                               <li>If You cannot Login Please Contact Department ICT</li>
@@ -160,7 +160,7 @@
                   <li>Login To ERP Palma Group
                      <ul>
                         <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Email Palma Group in Field Username. i.e: aaaa@palmagroup.co.id</li>
+                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
                         <li>Input Your Password ERP Palma Group in Field Password.
                             <ul style="list-style-type:circle">
                               <li>If You cannot Login Please Contact Department ICT</li>
@@ -240,7 +240,7 @@
                   <li>Login To ERP Palma Group
                      <ul>
                         <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Email Palma Group in Field Username. i.e: aaaa@palmagroup.co.id</li>
+                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
                         <li>Input Your Password ERP Palma Group in Field Password.
                             <ul style="list-style-type:circle">
                               <li>If You cannot Login Please Contact Department ICT</li>
