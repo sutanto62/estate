@@ -4,7 +4,7 @@
           <field name="name">Email Template Purchase Request</field>
           <field name="email_from">admin@palmagroup.co.id</field>
           <field name="subject">Approval Purchase Request For ${object.assigned_to.name}</field>
-          <field name="email_to">${object.assigned_to.login}</field>
+          <field name="email_to">${object.assigned_to.partner_id.email}</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="purchase_request.model_purchase_request"/>
           <field name="auto_delete" eval="True"/>
@@ -115,7 +115,7 @@
           <field name="name">Email Template Quotation Comparison Form</field>
           <field name="email_from">admin@palmagroup.co.id</field>
           <field name="subject">Approval Quotation Comparison Form To ${object.assign_to.name}</field>
-          <field name="email_to">${object.assign_to.login}</field>
+          <field name="email_to">${object.assign_to.partner_id.email}</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="purchase_indonesia.model_quotation_comparison_form"/>
           <field name="auto_delete" eval="True"/>
@@ -190,7 +190,7 @@
           <field name="name">Email Template Stock Picking</field>
           <field name="email_from">admin@palmagroup.co.id</field>
           <field name="subject">Approval GRN / SRN  To ${object.assigned_to.name}</field>
-          <field name="email_to">${object.assigned_to.login}</field>
+          <field name="email_to">${object.assigned_to.partner_id.email}</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="stock.model_stock_picking"/>
           <field name="auto_delete" eval="True"/>
