@@ -10,7 +10,7 @@ from openerp.exceptions import ValidationError
 from openerp.tools.translate import _
 from dateutil.relativedelta import *
 import calendar
-from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
+from openerp.tools import (DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT,drop_view_if_exists)
 
 
 class InheritPurchaseTenders(models.Model):
@@ -802,6 +802,7 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
     sum_quantity_invoice = fields.Float('Quantity Invoice')
 
     def init(self, cr):
+        drop_view_if_exists(cr, 'validate_tracking_purchase_order_invoice')
         cr.execute("""create or replace view validate_tracking_purchase_order_invoice as
                         select
                             row_number() over() id,
@@ -905,6 +906,7 @@ class ViewRequisitionTracking(models.Model):
     complete_name = fields.Char('Complete Name')
 
     def init(self, cr):
+        drop_view_if_exists(cr, 'view_requisition_tracking')
         cr.execute("""create or replace view view_requisition_tracking as
                         select pr.id pr_id , prq.id requisition_id,pr.complete_name complete_name
                         from purchase_requisition prq
@@ -932,6 +934,7 @@ class ViewRequestRequisitionTracking(models.Model):
     status_invoice = fields.Char(compute='status_tracking')
 
     def init(self, cr):
+        drop_view_if_exists(cr, 'view_request_requisition_tracking')
         cr.execute("""create or replace view view_request_requisition_tracking as
                         select row_number() over() id,* from (
                             select pr_id,vqt.requisition_id,complete_name from validate_tracking_purchase_order_invoice vtpo
@@ -1002,6 +1005,7 @@ class ViewResultTrackingPurchaseOrderInvoice(models.Model):
     sum_quantity_invoice = fields.Float('Quantity Invoice')
 
     def init(self, cr):
+        drop_view_if_exists(cr, 'result_tracking_purchase_order')
         cr.execute("""create or replace view result_tracking_purchase_order as
                         select id,now() date_report,
                             requisition_id ,
@@ -1032,6 +1036,7 @@ class ViewDetailRequestRequisitionTracking(models.Model):
     progress_invoice = fields.Char('Status Invoice',track_visibility='onchange')
 
     def init(self, cr):
+        drop_view_if_exists(cr, 'view_detail_request_requisition_tracking')
         cr.execute("""create or replace view view_detail_request_requisition_tracking as
                         select row_number() over() id,vrrt.id vrrt_id,
                                 now() date_report,

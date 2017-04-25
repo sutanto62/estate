@@ -4,7 +4,6 @@ from psycopg2 import OperationalError
 from openerp import SUPERUSER_ID
 import openerp
 import openerp.addons.decimal_precision as dp
-from openerp.tools import float_compare, float_is_zero
 from datetime import datetime, date,time
 from openerp.exceptions import ValidationError
 from dateutil.relativedelta import *
@@ -13,6 +12,7 @@ from openerp import tools
 import re
 from lxml import etree
 from openerp.tools.translate import _
+from openerp.tools import (drop_view_if_exists)
 import babel.numbers
 import decimal
 import locale
@@ -831,7 +831,7 @@ class ViewComparisonLine(models.Model):
 
 
     def init(self, cr):
-
+        drop_view_if_exists(cr, 'view_comparison_line')
         cr.execute("""create or replace view view_comparison_line as
 						select row_number() over() id,
                                 pol_po_backorder,
@@ -914,7 +914,7 @@ class QuotationComparisonFormLine(models.Model):
 
 
     def init(self, cr):
-
+        drop_view_if_exists(cr, 'quotation_comparison_form_line')
         cr.execute("""create or replace view quotation_comparison_form_line as
 			select row_number() over() id,
                                 pol_po_backorder,
@@ -1061,6 +1061,8 @@ class ViewQuotationComparison(models.Model):
                         end;
                     END
         		    $function$""")
+
+        drop_view_if_exists(cr, 'v_quotation_comparison_form_line')
 
         cr.execute("""create or replace view v_quotation_comparison_form_line as
                         select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char from (
@@ -1814,6 +1816,7 @@ class StateProcurementProcess(models.Model):
     grn_state = fields.Char('GRN State')
 
     def init(self, cr):
+        drop_view_if_exists(cr, 'state_procurement_process')
         cr.execute(""" create or replace view state_procurement_process as
             select
                 row_number() over() id,
