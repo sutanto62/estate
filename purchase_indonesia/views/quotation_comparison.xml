@@ -153,6 +153,10 @@
                                     <field name="type_location" string="Location" invisible="1"/>
                                     <field name="location" string="Location"/>
                                     <field name="line_remarks" invisible="1"/>
+                                    <field name="partner_ids" invisible="1" widget="many2many_tags"/>
+                                    <!--<field name="line_remarks_backorder" invisible="1"/>-->
+                                    <field name="validation_check_backorder" string='Backorder' attrs="{
+                                                   'invisible':[('validation_check_backorder','=',False)]}"/>
                                 </group>
                             </group>
                             <separator string="Quotation Comparison"/>
@@ -206,11 +210,62 @@
                                                        'invisible':[('line_remarks','!=',10)]}"
                                                     context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',
                                                            }"/>
+                            <!--Back Order -->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids" track_visibility="onchange"-->
+                                                   <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                   <!--'invisible':['|',('line_remarks_backorder','!=',1),('validation_check_backorder','=',False)]}"-->
+                                                <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line1',-->
+                                                       <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids2" track_visibility="onchange"-->
+                                                   <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                   <!--'invisible':['|',('line_remarks_backorder','!=',2),('validation_check_backorder','=',False)]}"-->
+                                                <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line2',-->
+                                                       <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids3" track_visibility="onchange"-->
+                                                   <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                   <!--'invisible':['|',('line_remarks_backorder','!=',3),('validation_check_backorder','=',False)]}"-->
+                                                <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line3',-->
+                                                       <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids4" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',4),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line4',-->
+                                                           <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids5" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',5),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line5',-->
+                                                           <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids6" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',6),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line6',-->
+                                                           <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids7" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',7),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line7',-->
+                                                           <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids8" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',8),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line8',-->
+                                                           <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids9" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',9),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line9',-->
+                                                           <!--}"/>-->
+                            <!--<field name="v_backorder_quotation_comparison_line_ids10" track_visibility="onchange"-->
+                                                       <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
+                                                       <!--'invisible':['|',('line_remarks_backorder','!=',10),('validation_check_backorder','=',False)]}"-->
+                                                    <!--context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',-->
+                                                           <!--}"/>-->
                             <separator string="Recomendation/Remarks"/>
 
                             <field name="remarks"/>
                             <notebook>
-                                <page string="Purchase Line">
+                                <page string="Purchase Line" attrs="{'invisible' : [('validation_check_backorder','=',True)]}">
                                     <div class="oe_right oe_button_box">
                                         <button name="generated_po" type="object"
                                         string="Generate PO" attrs="{
@@ -226,10 +281,24 @@
                                                 context="{'tree_view_ref' : 'purchase_requisition.purchase_order_line_tree_tender',
                                                       'search_default_groupby_product':True,'search_default_hide_cancelled':True}"/>
 
-                                    <field name="quotation_comparison_line_ids" track_visibility="onchange" invisible="1"
-                                                   attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
-                                                context="{'tree_view_ref' : 'purchase_indonesia.view_quotation_comparison_line',
-                                                       }"/>
+                                </page>
+
+                                <page string="Back Order Purchase Line" attrs="{'invisible' : [('validation_check_backorder','=',False)]}">
+                                    <div class="oe_right oe_button_box">
+                                        <button name="generated_po" type="object"
+                                        string="Generate PO" attrs="{
+                                                       'invisible':[('state','!=','done')]}"
+                                        class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>
+
+                                        <button name="change_remarks" type="object"
+                                        string="Generate Remarks"
+                                        class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>
+                                    </div>
+                                    <field name="backorder_purchase_line_ids" track_visibility="onchange" invisible="0" context="{'tree_view_ref' : 'purchase_requisition.purchase_order_line_tree_tender',
+                                                      'search_default_groupby_product':True,'search_default_hide_cancelled':True}">
+
+                                    </field>
+
                                 </page>
                             </notebook>
 
@@ -244,7 +313,28 @@
         </record>
 
 
-         <record model="ir.ui.view" id="view_quotation_comparison_line">
+        <record model="ir.ui.view" id="backorder_purchase_order_line_tree">
+            <field name="name">Backorder Purchase Order Line</field>
+            <field name="model">purchase.order.line</field>
+            <field name="arch" type="xml">
+                <tree string="Purchase Order">
+                    <field name="name" string="Reference"/>
+                    <field name="date_order" string="Order Date"/>
+                    <field name="partner_id"/>
+                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                    <!--<field name="dest_address_id" groups="stock.group_locations"/>-->
+                    <field name="date_planned" invisible="1"/>
+                    <!--<field name="origin"/>-->
+                    <field name="state"/>
+                    <button name="button_cancel" states="draft,sent,to approve,purchase" string="Cancel Purchase Order" type="object" icon="fa-times"/>
+                    <button name="button_confirm" states="draft" string="Confirm Purchase Order" type="object" icon="fa-check"/>
+                    <button name="button_approve" states="to approve" string="Approved by Vendor" type="object" icon="fa-check-square-o"/>
+                    <button name="action_rfq_send" states="draft" string="Send RFQ by Email" type="object" context="{'send_rfq':True}" icon="fa-envelope-o"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_quotation_comparison_line">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">quotation.comparison.form.line</field>
             <field name="arch" type="xml">

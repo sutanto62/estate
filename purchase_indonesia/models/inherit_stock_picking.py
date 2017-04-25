@@ -23,6 +23,26 @@ import re
 class InheritStockPicking(models.Model):
 
     @api.multi
+    def purchase_request_technical3(self):
+        return self.env.ref('purchase_request.group_purchase_request_technical3', False).id
+
+    @api.multi
+    def purchase_request_technical4(self):
+        return self.env.ref('purchase_request.group_purchase_request_technical4', False).id
+
+    @api.multi
+    def purchase_request_technical5(self):
+        return self.env.ref('purchase_request.group_purchase_request_technical5', False).id
+
+    @api.multi
+    def purchase_request_technical6(self):
+        return self.env.ref('purchase_indonesia.group_purchase_request_technical6', False).id
+
+    @api.multi
+    def purchase_request_estate_manager(self):
+        return self.env.ref('estate.group_manager', False).id
+
+    @api.multi
     def _get_user(self):
         #find User
         user= self.env['res.users'].browse(self.env.uid)
@@ -38,6 +58,29 @@ class InheritStockPicking(models.Model):
         return employee
 
     @api.multi
+    def _get_estate_manager(self):
+        #get List of Estate Manager from user.groups
+        #Estate Manager
+
+        arrEstateManager = []
+        arrAgronomy = []
+
+        estate_manager = self.env['res.groups'].search([('id','=',self.purchase_request_estate_manager())]).users
+        technical_agronomy = self.env['res.groups'].search([('id','=',self.purchase_request_technical4())]).users
+
+        for estate in estate_manager:
+            arrEstateManager.append(estate.id)
+        for deptgroupsrecord in technical_agronomy:
+            arrAgronomy.append(deptgroupsrecord.id)
+
+        try:
+            manager_estate = self.env['res.users'].search([('id','in',arrEstateManager),('id','in',arrAgronomy)]).id
+        except:
+            raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
+
+        return manager_estate
+
+    @api.multi
     def _get_requested_purchase_request(self):
         #find Requested Purchase Request
         for item in self:
@@ -46,6 +89,31 @@ class InheritStockPicking(models.Model):
 
             return purchase_request
 
+    @api.multi
+    def _get_department_code(self):
+        department_code = []
+        for item in self:
+            department = item.env['hr.department'].search([])
+            for record in department:
+                if record.code != 'ICT' and record.code:
+                    department_code.append(record.code)
+        return department_code
+
+    @api.multi
+    def _get_technical_user_id(self):
+        for item in self:
+            technic_user_id = 0
+            purchase_request = item.env['purchase.request'].search([('id','=',item._get_purchase_request_id())])
+            if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
+                technic_user_id = item._get_manager_requested_by()
+            elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+                technic_user_id = purchase_request._get_technic_ict()
+            elif purchase_request.type_functional == 'technic':
+                technic_user_id = purchase_request._get_technic_ie()
+            elif purchase_request.type_functional == 'agronomy':
+                technic_user_id = item._get_estate_manager()
+
+            return technic_user_id
 
     @api.multi
     def _get_manager_requested_by(self):
@@ -72,6 +140,14 @@ class InheritStockPicking(models.Model):
 
         return employee
 
+    @api.multi
+    def _get_purchase_request_id(self):
+        for item in self:
+
+            purchase_request = item.env['purchase.request']
+            purchase_request_id = purchase_request.search([('complete_name','like',item.pr_source)]).id
+
+            return purchase_request_id
 
     _inherit = 'stock.picking'
 
@@ -88,7 +164,7 @@ class InheritStockPicking(models.Model):
     pr_source = fields.Char("Purchase Request Source")
     companys_id = fields.Many2one('res.company','Company')
     code_sequence = fields.Char('Good Receipt Note Sequence')
-    purchase_id = fields.Many2one('purchase.order','Purchase Order')
+    purchase_id = fields.Many2one('purchase.order','Purchase Order',store=True)
     not_seed = fields.Boolean(compute='_change_not_seed')
     grn_no = fields.Char()
     delivery_number = fields.Char()
@@ -143,11 +219,12 @@ class InheritStockPicking(models.Model):
                     user = record.user_id.name
                 item.shipper_by = user
 
+
     @api.multi
     def action_validate_user(self):
         for item in self:
             for record in item.pack_operation_product_ids:
-                if record.qty_done < 0:
+                if record.qty_done == 0:
                     error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
                     raise exceptions.ValidationError(error_msg)
                 else:
@@ -170,10 +247,13 @@ class InheritStockPicking(models.Model):
                                     'target'    : 'new'
                                 }
                     elif record.qty_done == record.product_qty:
+                        item._get_technical_user_id()
                         item.write({
                             'validation_manager':True,
-                            'assigned_to':item._get_manager_requested_by()
+                            'assigned_to':item._get_technical_user_id()
                         })
+
+                    item.send_mail_template()
 
     @api.multi
     @api.depends('purchase_id')
@@ -283,12 +363,14 @@ class InheritStockPicking(models.Model):
                     'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'purchase_order_name':purchase_order.complete_name
                     }
             purchase_data = {
                     'pr_source' : purchase_order.request_id.complete_name,
                     'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'purchase_order_name':purchase_order.complete_name
                 }
 
             picking = item.env['stock.picking']
@@ -313,10 +395,11 @@ class InheritStockPicking(models.Model):
             po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
 
             #search Tender
+            list_tender = self.env['purchase.requisition']
+            search_tender = list_tender.search([('complete_name','like',po_list)])
+            tender_id = search_tender.id
 
-            tender = self.env['purchase.requisition'].search([('complete_name','like',po_list)]).id
-
-            purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender)])
+            purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id)])
 
             count_product =0
             count_action_cancel_status =0
@@ -324,6 +407,11 @@ class InheritStockPicking(models.Model):
                 error_msg = 'You cannot approve this \"%s\" , you are not requester of this PP '%(self.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
             else:
+                arrOutstanding = []
+                domain = [('qty_outstanding','>',0)]
+                for outstanding in purchase_requisition_line.search(domain):
+                    arrOutstanding.append(outstanding.id)
+
                 for record in purchase_requisition_line:
                     stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
                     stock_pack_operation_length = len(stock_pack_operation)
@@ -345,6 +433,9 @@ class InheritStockPicking(models.Model):
                             'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                             }
                         record.write(tender_line_data)
+                        search_tender.write({
+                            'state': 'open' if len(arrOutstanding) > 0 else 'done'
+                        })
 
                         if stock_pack_operation_length == 1 and sumitemmin < 0 :
                             count_action_cancel_status = count_action_cancel_status +1
@@ -353,21 +444,45 @@ class InheritStockPicking(models.Model):
 
                 if count_action_cancel_status == count_product :
                     po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
-                    po.button_cancel()
-                    for itemmin in self.pack_operation_product_ids:
-                        purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender),('product_id','=',itemmin.product_id.id)])
-                        if itemmin.qty_done < 0 :
-                            for recordoutstanding in purchase_requisition_linemin:
-                                outstanding_data = {
-                                            'qty_outstanding' : itemmin.qty_done * -1
-                                        }
-                                recordoutstanding.write(outstanding_data)
-                    self.action_cancel()
+                    if self.checking_picking_backorder() == False:
+                        po.button_cancel()
+                        for itemmin in self.pack_operation_product_ids:
+                            purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
+                            if itemmin.qty_done < 0 :
+                                for recordoutstanding in purchase_requisition_linemin:
+                                    outstanding_data = {
+                                                'qty_outstanding' : itemmin.qty_done * -1
+                                            }
+                                    recordoutstanding.write(outstanding_data)
+                        self.action_cancel()
+                        self.action_validate_manager()
+                        self.validation_manager = False
+                    else:
+                        for itemmin in self.pack_operation_product_ids:
+                            purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
+                            if itemmin.qty_done < 0 :
+                                for recordoutstanding in purchase_requisition_linemin:
+                                    outstanding_data = {
+                                                'qty_outstanding' : itemmin.qty_done * -1
+                                            }
+                                    recordoutstanding.write(outstanding_data)
+                        self.action_cancel()
+                        self.action_validate_manager()
+                        self.validation_manager = False
                 else:
                     self.do_transfer()
                     self.action_validate_manager()
 
                 super(InheritStockPicking,self).do_new_transfer()
+
+    @api.multi
+    def checking_picking_backorder(self):
+        for item in self:
+            if not item.backorder_id.id:
+                vals = False
+            else:
+                vals = True
+            return vals
 
     @api.multi
     def print_grn(self):
@@ -380,6 +495,45 @@ class InheritStockPicking(models.Model):
             if item._get_user().id != item.requested_by.id:
                 error_msg = 'You cannot Process this \"%s\" , you are not requester of this PP '%(item.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
+
+    #Email Template Code Starts Here
+
+    @api.one
+    def send_mail_template(self):
+
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_stock_picking')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            #search DB name
+
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            # Search Web URL
+
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            #search Model
+
+            model = item._name
+
+            return model
 
 
 class InheritStockPackOperation(models.Model):

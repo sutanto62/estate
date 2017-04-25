@@ -33,9 +33,10 @@ class InheritAccountInvoiceLine(models.Model):
 
     picking_id = fields.Many2one('stock.picking','Picking ID',related='invoice_id.picking_id')
     quantity = fields.Float(string='Quantity', digits=dp.get_precision('Product Unit of Measure'),
-        required=True, default=1,compute='_onchange_quantity_with_picking_id')
+        required=True, default=1,compute='_onchange_quantity_with_picking_id',store=True)
+
     @api.multi
-    @api.depends('picking_id')
+    @api.depends('picking_id','purchase_id')
     def _onchange_quantity_with_picking_id(self):
         for item in self:
             quantity_picking = 0
@@ -44,4 +45,9 @@ class InheritAccountInvoiceLine(models.Model):
                     quantity_picking = record.qty_done
 
                 item.quantity = quantity_picking
+            elif item.purchase_id and not item.picking_id:
 
+                for record in item.purchase_id.order_line:
+                    quantity_picking = record.product_qty
+
+                item.quantity = quantity_picking

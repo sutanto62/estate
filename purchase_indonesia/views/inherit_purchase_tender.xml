@@ -45,9 +45,13 @@
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
              <field name="arch" type="xml">
 
-                 <!--<xpath expr="//header/button[@name='sent_suppliers']" position="before">-->
-                     <!--<button name="print_purchase_request_tender" string="Print PR/PP" type="object"  groups="purchase_request.group_purchase_request_procstaff"/>-->
-                 <!--</xpath>-->
+                 <xpath expr="//header/button[@name='generate_po']" position="after">
+                     <button name="tender_state_closed" states="done" string="PP Close" type="object" class="oe_highlight"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='state']" position="replace">
+                     <field name="state" widget="statusbar" statusbar_visible="draft,in_progress" statusbar_colors='{"in_progress":"blue"}'/>
+                 </xpath>
 
                  <xpath expr="//h1/field[@name='name']" position="replace">
                            <field name="complete_name" class="oe_inline" invisible="0"
@@ -67,6 +71,10 @@
                   <xpath expr="//button[@name='open_rfq']" position="replace">
                      <button name="open_rfq" type="object" string="RFQs/Bids" class="oe_stat_button" icon="fa-list-alt"
                         invisible="1"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='generate_po']" position="replace">
+                     <button name="set_done" states="open" string="Done" type="object" class="oe_highlight"/>
                  </xpath>
 
 
@@ -91,10 +99,16 @@
                  <xpath expr="//field[@name='user_id']" position="after">
                      <field name="validation_button_correction" invisible="1"/>
                      <field name="validation_correction" invisible="1"/>
+                     <field name="validation_missing_product" invisible="1"/>
+                     <field name="comparison_id" invisible="1"/>
+                     <field name="check_missing_product" invisible="1"/>
                      <field name="validation_qcf" invisible="1"/>
+                     <field name="check_backorder" invisible="1"/>
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" invisible="1"/>
                      <field name="location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                     <field name="force_closing" string="Force Close Tender" attrs="{'readonly': [('state','not in',('done'))]}"/>
+                     <field name="validation_check_backorder" string="Back Order" invisible="1"/>
                  </xpath>
 
                  <xpath expr="//tree/field[@name='product_id']" position="after">
@@ -106,6 +120,9 @@
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
                            <field name="qty_outstanding" class="oe_inline" invisible="0"
+                               readonly="0"/>
+
+                            <field name="check_missing_product" class="oe_inline" invisible="1"
                                readonly="0"/>
                  </xpath>
                  <xpath expr="//tree/field[@name='schedule_date']" position="replace">
@@ -129,6 +146,22 @@
                          <button name="%(purchase_requisition.action_purchase_requisition_partner)d" type="action"
                         string="Request a Quotation" icon="fa-cogs"
                         attrs="{'invisible': [('validation_correction','=',False)]}"/>
+                 </xpath>
+
+                 <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="after">
+                        <button name="create_backorder_quotation_comparison_form" type="object"
+                                string="Back Order PO"
+                                icon ="fa-reply"
+                             attrs="{'invisible': [('check_backorder','=',True)]}"
+                             />
+                 </xpath>
+
+                 <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="after">
+                        <button name="create_missing_product_quotation_comparison_form" type="object"
+                                string="Order Outstanding Product"
+                                icon ="fa-reply"
+                             attrs="{'invisible': [('validation_missing_product','=',False)]}"
+                             />
                  </xpath>
 
                  <xpath expr="//field/tree[1]/field[@name='name']" position="before">

@@ -34,7 +34,12 @@ class InheritPurchaseTenders(models.Model):
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     type_location = fields.Char('Location')
-    state = fields.Selection(selection_add = [('rollback','Roll Back PP')])
+    state = fields.Selection(selection_add = [('rollback','Roll Back PP'),
+                                              ('closed','PP Closed'),
+                                              ('open', 'PP Outstanding'),
+                                              ('done', 'Shipment')])
+    validation_check_backorder = fields.Boolean('Confirm backorder')
+    validation_missing_product = fields.Boolean('Missing Product',compute='compute_validation_check_product')
     location = fields.Char('Location')
     companys_id = fields.Many2one('res.company','Company')
     request_id = fields.Many2one('purchase.request','Purchase Request')
@@ -44,6 +49,10 @@ class InheritPurchaseTenders(models.Model):
     validation_correction = fields.Boolean('Validation Correction',compute='_compute_validation_correction')
     validation_qcf = fields.Boolean('Validation QCF',compute='_compute_validation_qcf')
     validation_button_correction = fields.Boolean('Validation Button Correction',compute='_compute_button_correction')
+    check_missing_product = fields.Boolean('Check Missing Product')
+    force_closing = fields.Boolean('Force Closing Tender')
+    comparison_id = fields.Integer('Comparison ID')
+    check_backorder = fields.Boolean('Check Backorder',compute='compute_validation_check_backorder')
 
     @api.multi
     def _get_value_low(self):
@@ -74,6 +83,35 @@ class InheritPurchaseTenders(models.Model):
             return True
 
     @api.multi
+    def tender_open(self):
+        for item in self:
+            count_order = 0
+            order = item.env['purchase.order'].search([('requisition_id','=',item.id),('state','in',['draft'])])
+            for record in order:
+                if len(record) > 0 :
+                    count_order = count_order + 1
+            if (count_order == 0):
+                super(InheritPurchaseTenders,item).tender_open()
+            else:
+                msg_error = 'You Must Proceed Your Order'
+                raise exceptions.ValidationError(msg_error)
+
+    @api.multi
+    def tender_state_closed(self):
+        for item in self:
+            tracking = item.env['validate.tracking.purchase.order.invoice'].search([('requisition_id','=',item.id)])
+            for record in tracking:
+                if (record.sum_quantity_tender == record.sum_quantity_purchase) and (record.sum_quantity_tender == record.sum_quantity_picking) and (record.sum_quantity_tender == record.sum_quantity_invoice):
+                    return item.write({'state':'closed'})
+                elif item.force_closing == True and ((record.sum_quantity_tender == record.sum_quantity_purchase) and (record.sum_quantity_tender == record.sum_quantity_picking) and (record.sum_quantity_tender == record.sum_quantity_invoice)):
+                    return item.write({'state':'closed'})
+                elif item.force_closing == True:
+                    return item.write({'state':'closed'})
+                else:
+                    raise exceptions.ValidationError('You Must Complete Your Purchase Order')
+
+
+    @api.multi
     def _change_created_by_qcf(self):
         data = {
             'pic_id': self.user_id.id
@@ -85,10 +123,135 @@ class InheritPurchaseTenders(models.Model):
     def _compute_validation_correction(self):
 
         for item in self:
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','open','done']) :
+            arrOutstanding = []
+            domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+            for line in item.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed'] and item.validation_missing_product == False) :
                 item.validation_correction = True
+            elif (item.request_id.validation_correction_procurement == False and item.state in ['in_progress','done','open']) and item.validation_missing_product == True:
+                item.validation_correction = False
             else:
-                 item.validation_correction = False
+               if item.validation_check_backorder == True and len(arrOutstanding) > 0:
+                   item.validation_correction = True
+               elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed'] and item.check_missing_product == False:
+                   item.validation_correction = False
+               elif item.validation_missing_product == False and item.check_missing_product == True:
+                   item.validation_correction = True
+               else:
+                   item.validation_correction = False
+
+    @api.multi
+    @api.depends('validation_check_backorder')
+    def compute_validation_check_backorder(self):
+        for record in self:
+            arrOutstanding = []
+            arrMissing = []
+            domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+            domain2 = [('requisition_id','=',record.id),('check_missing_product','=',True)]
+
+            for line in record.line_ids.search(domain2):
+                arrMissing.append(line.id)
+            for line in record.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+
+            if record.state in ['draft','cancel','closed']:
+                record.check_backorder = True
+            else:
+                if record.validation_check_backorder == False and len(arrOutstanding) > 0 and len(arrMissing) > 0:
+                    record.check_backorder = True
+                elif record.validation_check_backorder == False and len(arrOutstanding) > 0 and len(arrMissing) == 0:
+                    record.check_backorder = False
+                else:
+                    record.check_backorder = True
+
+    @api.multi
+    @api.depends('purchase_ids')
+    def compute_validation_check_product(self):
+        for item in self:
+            #change Validation missing Product
+
+            if item.state in ['open']:
+                if len(item.purchase_ids.search([('requisition_id','=',item.id),('state','in',('purchase','received_all','received_force_done'))])) > 0:
+                    item.validation_missing_product = item.checking_validation_missing_and_backorder()
+                    if item.validation_missing_product == True:
+                        item.change_line_tender_missing()
+            elif item.state in ['in_progress']:
+
+                if len(item.purchase_ids.search([('requisition_id','=',item.id),('state','=','purchase')])) > 0:
+                    item.validation_missing_product = item.checking_validation_missing_and_backorder()
+                    if item.validation_missing_product == True:
+                        item.change_line_tender_missing()
+
+    @api.multi
+    def checking_validation_missing_and_backorder(self):
+        for item in self:
+
+                #search Missing Product or Outstanding product starts Here
+
+                arrOutstanding = []
+                arrMissing = []
+
+                domain = [('requisition_id','=',item.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+                domain2 = [('requisition_id','=',item.id),('check_missing_product','=',True)]
+
+                for line in item.line_ids.search(domain):
+                    arrOutstanding.append(line.id)
+
+                for line in item.line_ids.search(domain2):
+                    arrMissing.append(line.id)
+
+                if list(item.list_product()) != [] and item.check_missing_product == False:
+                    validation_missing_product = True
+                elif list(item.list_product()) != [] and item.check_missing_product == True:
+                    validation_missing_product = False
+                else:
+                    validation_missing_product = False
+
+                    if len(arrOutstanding) > 0 and len(arrMissing) == 0 :
+                        validation_missing_product = False
+                    elif len(arrOutstanding) > 0 and len(arrMissing) > 0 :
+                        validation_missing_product = True
+
+                return validation_missing_product
+
+    @api.multi
+    def list_product(self):
+        for item in self:
+            #to list product if check back order missing is True
+            arrProductLine = []
+            arrPurchase = []
+            arrPurchaseProduct = []
+            tender_line = item.env['purchase.requisition.line']
+            purchase = item.env['purchase.order']
+            purchase_line = item.env['purchase.order.line']
+
+            product_tender_line = tender_line.search([('requisition_id','=',item.id)])
+            for product in product_tender_line:
+                arrProductLine.append(product.product_id.id)
+
+            purchase_id = purchase.search([('requisition_id','=',item.id),('state','in',['purchase','done','received_all','received_force_done']),('validation_check_backorder','=',False)])
+            for purchase in purchase_id:
+                arrPurchase.append(purchase.id)
+            purchase_line_id = purchase_line.search([('order_id','in',arrPurchase)])
+
+            for product_purchase in purchase_line_id:
+                arrPurchaseProduct.append(product_purchase.product_id.id)
+
+            set_product = set(arrProductLine) - set(arrPurchaseProduct)
+
+            return set_product
+
+    @api.multi
+    def change_line_tender_missing(self):
+        for item in self:
+            #change Line tender Missing in Requisition line
+            tender_line = item.env['purchase.requisition.line']
+            line_tender_missing = tender_line.search([('requisition_id','=',item.id),('product_id','in',list(item.list_product()))])
+            line_tender_missing.write({'check_missing_product' : True})
 
     @api.multi
     @api.depends('purchase_ids')
@@ -100,7 +263,7 @@ class InheritPurchaseTenders(models.Model):
             for record in order:
                 if len(record) > 0 :
                     count_order = count_order + 1
-            if (count_order == 0):
+            if (count_order == 0) and item.state in('in_progress'):
                 item.validation_button_correction = True
             else:
                 item.validation_button_correction = False
@@ -119,22 +282,39 @@ class InheritPurchaseTenders(models.Model):
                         count_confirm = count_confirm + 1
                     if count_order == count_confirm:
                         item.validation_qcf = True
+                    elif (count_order == count_confirm) and (record.validation_check_backorder == True):
+                        item.validation_qcf = True
                     else:
-                        item.validation_qcf = False
+                        if item.state in ['draft','cancel','closed','done','rollback']:
+                            item.validation_qcf = False
 
 
     @api.multi
     @api.depends('quotation_state')
     def _compute_quotation_state(self):
         for item in self:
-            qcf = item.env['quotation.comparison.form'].search([('requisition_id','=',item.id)])
-            qcf_state = qcf.state
-            categ_state = dict(qcf._columns['state'].selection).get(qcf_state)
-
-            if qcf_state in [True,False]:
-                item.quotation_state = qcf_state
+            domain1 = [('requisition_id','=',item.id)]
+            qcf = item.env['quotation.comparison.form'].search(domain1)
+            count_qcf = len(qcf)
+            index_a = 0
+            if count_qcf > 1:
+                for record in qcf:
+                    if record.state == 'done':
+                        index_a = index_a + 1
+                if index_a == count_qcf:
+                    qcf_state = 'QCF Done'
+                    item.quotation_state = qcf_state
+                else :
+                    qcf_state = 'In Progress QCF'
+                    item.quotation_state = qcf_state
             else:
-                item.quotation_state = categ_state
+                qcf_state = qcf.state
+                categ_state = dict(qcf._columns['state'].selection).get(qcf_state)
+
+                if qcf_state in [True,False]:
+                    item.quotation_state = qcf_state
+                else:
+                    item.quotation_state = categ_state
 
     @api.multi
     def purchase_request_correction(self):
@@ -146,6 +326,81 @@ class InheritPurchaseTenders(models.Model):
                 'assigned_to' : purchase_request._get_budget_manager() if purchase_request._get_max_price() < purchase_request._get_price_low() else purchase_request._get_division_finance(),
                 'validation_correction_procurement' : True
             })
+
+    @api.multi
+    def create_backorder_quotation_comparison_form(self):
+        for record in self:
+            purchase_requisition = record.env['purchase.requisition'].search([('id','=',record.id)])
+            try:
+                company_code = record.env['res.company'].search([('id','=',record.companys_id.id)]).code
+            except:
+                raise exceptions.ValidationError('Company Code is Null')
+            sequence_name = 'quotation.comparison.form.'+record.request_id.code.lower()+'.'+company_code.lower()
+            purchase_data = {
+                    'name' : record.env['ir.sequence'].next_by_code(sequence_name),
+                    'company_id': purchase_requisition.companys_id.id,
+                    'date_pp': datetime.today(),
+                    'requisition_id': purchase_requisition.id,
+                    'origin' : purchase_requisition.origin,
+                    'type_location' : purchase_requisition.type_location,
+                    'location':purchase_requisition.location,
+                    'state':'draft',
+                    'pic_id': record.user_id.id,
+
+                    'validation_check_backorder':True
+                }
+            arrOutstanding = []
+            domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
+
+            for line in record.line_ids.search(domain):
+                arrOutstanding.append(line.id)
+
+            if len(arrOutstanding) > 0:
+                res = record.env['quotation.comparison.form'].create(purchase_data)
+                record.write({'validation_check_backorder' : True})
+                quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',record.id),('validation_check_backorder','=',True)])
+                arrQcfid = []
+                for item in quotation_comparison_form:
+                    arrQcfid.append(item.id)
+                data = {
+                    'comparison_id' : max(arrQcfid)
+                }
+                record.write(data)
+            else:
+                raise exceptions.ValidationError('You Cannot Run This Process, cause no product have Qty OutStanding')
+
+    @api.multi
+    def create_missing_product_quotation_comparison_form(self):
+        for record in self:
+            purchase_requisition = record.env['purchase.requisition'].search([('id','=',record.id)])
+            try:
+                company_code = record.env['res.company'].search([('id','=',record.companys_id.id)]).code
+            except:
+                raise exceptions.ValidationError('Company Code is Null')
+            sequence_name = 'quotation.comparison.form.'+record.request_id.code.lower()+'.'+company_code.lower()
+            purchase_data = {
+                    'name' : record.env['ir.sequence'].next_by_code(sequence_name),
+                    'company_id': purchase_requisition.companys_id.id,
+                    'date_pp': datetime.today(),
+                    'requisition_id': purchase_requisition.id,
+                    'origin' : purchase_requisition.origin,
+                    'type_location' : purchase_requisition.type_location,
+                    'location':purchase_requisition.location,
+                    'state':'draft',
+                    'pic_id': record.user_id.id,
+
+                    'validation_missing_product':True
+                }
+            record.check_missing_product = True
+            res = record.env['quotation.comparison.form'].create(purchase_data)
+            quotation_comparison_form = self.env['quotation.comparison.form'].search([('requisition_id','=',record.id),('validation_missing_product','=',True)])
+            arrQcfid = []
+            for item in quotation_comparison_form:
+                arrQcfid.append(item.id)
+            data = {
+                'comparison_id' : max(arrQcfid)
+            }
+            record.write(data)
 
     @api.multi
     def _compute_date(self):
@@ -291,7 +546,27 @@ class InheritPurchaseTenders(models.Model):
             'requisition_id': requisition.id,
             'request_id':requisition.request_id.id,
             'notes': requisition.description,
-            'picking_type_id': requisition.picking_type_id.id
+            'picking_type_id': requisition.picking_type_id.id,
+            'comparison_id' : requisition.comparison_id,
+            'validation_check_backorder':True
+        }
+
+    def _prepare_missing_purchase_backorder(self, cr, uid, requisition, supplier, context=None):
+        return {
+            'origin': requisition.complete_name,
+            'date_order': requisition.date_end or fields.datetime.now(),
+            'partner_id': supplier.id,
+            'type_location':requisition.type_location,
+            'location':requisition.location,
+            'currency_id': requisition.company_id and requisition.company_id.currency_id.id,
+            'companys_id': requisition.companys_id.id,
+            'fiscal_position_id': self.pool.get('account.fiscal.position').get_fiscal_position(cr, uid, supplier.id, context=context),
+            'requisition_id': requisition.id,
+            'request_id':requisition.request_id.id,
+            'notes': requisition.description,
+            'picking_type_id': requisition.picking_type_id.id,
+            'comparison_id' : requisition.comparison_id,
+            'validation_check_backorder':False
         }
 
     def _prepare_purchase_backorder_line(self, cr, uid, requisition, requisition_line, purchase_id, supplier, context=None):
@@ -342,7 +617,75 @@ class InheritPurchaseTenders(models.Model):
             'product_uom': default_uom_po_id,
             'price_unit': price_unit,
             'date_planned': date_planned,
+            'comparison_id' : requisition.comparison_id,
             'taxes_id': [(6, 0, taxes_id)],
+            'account_analytic_id': requisition_line.account_analytic_id.id,
+        }
+
+        return vals
+
+    def _prepare_missing_purchase_backorder_line(self, cr, uid, requisition, requisition_line, purchase_id, supplier, context=None):
+        if context is None:
+            context = {}
+        po_obj = self.pool.get('purchase.order')
+        po_line_obj = self.pool.get('purchase.order.line')
+        product_uom = self.pool.get('product.uom')
+        product = requisition_line.product_id
+        default_uom_po_id = product.uom_po_id.id
+        ctx = context.copy()
+        ctx['tz'] = requisition.user_id.tz
+        date_order = requisition.ordering_date  or fields.datetime.now()
+        qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.product_qty, default_uom_po_id)
+        qty1 = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.qty_outstanding, default_uom_po_id)
+
+        taxes = product.supplier_taxes_id
+        fpos = supplier.property_account_position_id
+        taxes_id = fpos.map_tax(taxes).ids if fpos else []
+
+        po = po_obj.browse(cr, uid, [purchase_id], context=context)
+        seller = requisition_line.product_id._select_seller(
+            requisition_line.product_id,
+            partner_id=supplier,
+            quantity=qty,
+            date=date_order and date_order[:10],
+            uom_id=product.uom_po_id)
+
+        seller2 = requisition_line.product_id._select_seller(
+            requisition_line.product_id,
+            partner_id=supplier,
+            quantity=qty1,
+            date=date_order and date_order[:10],
+            uom_id=product.uom_po_id)
+
+        price_unit = seller.price if seller else 0.0
+        if price_unit and seller and po.currency_id and seller.currency_id != po.currency_id:
+            price_unit = seller.currency_id.compute(price_unit, po.currency_id)
+
+        price_unit2 = seller2.price if seller2 else 0.0
+        if price_unit and seller2 and po.currency_id and seller2.currency_id != po.currency_id:
+            price_unit = seller2.currency_id.compute(price_unit2, po.currency_id)
+
+        date_planned = po_line_obj._get_date_planned(cr, uid, seller, po=po, context=context).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
+        product_lang = requisition_line.product_id.with_context({
+            'lang': supplier.lang,
+            'partner_id': supplier.id,
+        })
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+
+        vals = {
+            'name': name,
+            'order_id': purchase_id,
+            'product_qty': qty if requisition_line.qty_outstanding == 0 else qty1,
+            'qty_request':qty if requisition_line.qty_outstanding == 0 else qty1,
+            'product_id': product.id,
+            'product_uom': default_uom_po_id,
+            'price_unit': price_unit,
+            'date_planned': date_planned,
+            'taxes_id': [(6, 0, taxes_id)],
+            'comparison_id' : requisition.comparison_id,
             'account_analytic_id': requisition_line.account_analytic_id.id,
         }
 
@@ -361,24 +704,44 @@ class InheritPurchaseTenders(models.Model):
         supplier = res_partner.browse(cr, uid, partner_id, context=context)
         res = {}
         for requisition in self.browse(cr, uid, ids, context=context):
-            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [(rfq.state != 'cancel' or rfq.state  == 'received_force_done') and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
+            #todo use constraint for vendor.
+            if not requisition.multiple_rfq_per_supplier and supplier.id in filter(lambda x: x, [((rfq.validation_check_backorder == True and rfq.state  not in ('cancel')) or (rfq.validation_check_backorder == False and rfq.state in ('draft')))and rfq.partner_id.id or None for rfq in requisition.purchase_ids]):
                 error_msg = "You have already one  purchase order for this partner, you must cancel this purchase order to create a new quotation."
                 raise exceptions.ValidationError(error_msg)
             context.update({'mail_create_nolog': True})
-            purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            if requisition.validation_check_backorder == True:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            elif requisition.validation_check_backorder == True and requisition.validation_missing_product == True:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            elif requisition.validation_missing_product == True:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
+            else:
+                purchase_id = purchase_order.create(cr, uid, self._prepare_missing_purchase_backorder(cr, uid, requisition, supplier, context=context), context=context)
             purchase_order.message_post(cr, uid, [purchase_id], body=_("RFQ created"), context=context)
             res[requisition.id] = purchase_id
             for line in requisition.line_ids:
-                if line.qty_outstanding > 0 :
+                if line.qty_outstanding > 0 and line.check_missing_product == False:
                     purchase_order_line.create(cr, uid, self._prepare_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
+                elif line.check_missing_product == True :
+                    purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
+                elif line.check_missing_product == True and line.qty_outstanding > 0:
+                    purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
 
+    # @api.multi
+    # def generate_po(self):
+    #     for item in self:
+    #         super(InheritPurchaseTenders,item).generate_po()
+
+
     @api.multi
-    def generate_po(self):
-        pp_data={'state':'done'}
-        self.env['purchase.request'].search([('complete_name','like',self.origin)]).write(pp_data)
-        res=super(InheritPurchaseTenders,self).generate_po()
-        return res
+    def set_done(self):
+        for item in self:
+            # Set To Done Purchase Tender
+            pp_data={'state':'done'}
+            item.env['purchase.request'].search([('complete_name','like',item.origin)]).write(pp_data)
+            item.write({'state' : 'done'})
+
 
     @api.multi
     @api.constrains('purchase_ids')
@@ -411,6 +774,7 @@ class InheritPurchaseRequisitionLine(models.Model):
 
     qty_received = fields.Float('Quantity received',readonly=True)
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
+    check_missing_product = fields.Boolean('Checking Missing Product')
     est_price = fields.Float('Estimated Price',compute='_compute_est_price')
 
     @api.multi
@@ -421,6 +785,264 @@ class InheritPurchaseRequisitionLine(models.Model):
                 request_line  = item.env['purchase.request.line'].search([('request_id','=',item.requisition_id.request_id.id),
                                                                           ('product_id','=',item.product_id.id)]).price_per_product
                 item.est_price = request_line
+
+class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
+
+    _name = 'validate.tracking.purchase.order.invoice'
+    _description = 'Validation Tracking Purchase Order To Invoice'
+    _auto = False
+    _order = 'id'
+
+    id = fields.Char('ID')
+    requisition_id = fields.Many2one('purchase.requisition')
+    product_id = fields.Many2one('product.product')
+    sum_quantity_tender = fields.Float('Quantity Tender')
+    sum_quantity_purchase = fields.Float('Quantity Purchase')
+    sum_quantity_picking = fields.Float('Quantity Picking')
+    sum_quantity_invoice = fields.Float('Quantity Invoice')
+
+    def init(self, cr):
+        cr.execute("""create or replace view validate_tracking_purchase_order_invoice as
+                        select
+                            row_number() over() id,
+                            tender.requisition_id,
+                            tender.product_id,
+                            sum_quantity_tender,
+                            sum_quantity_purchase,
+                            sum_quantity_picking,
+                            sum_quantity_invoice
+                            from (
+                            select
+                                requisition_id,
+                                product_id,
+                                sum(product_qty) sum_quantity_tender
+                            from purchase_requisition_line prl group by requisition_id,product_id
+                            )tender
+                        left join(
+                        select requisition_id,product_id,sum(quantity) sum_quantity_invoice from (
+                            select
+                                po.id purchase_id,
+                                invoice_id,
+                                requisition_id,
+                                purchase_name,
+                                product_id,
+                                quantity from (
+                                    select
+                                        ai.id invoice_id,
+                                        ai.origin purchase_name,
+                                        product_id,
+                                        quantity
+                                        from account_invoice ai
+                                    inner join
+                                        account_invoice_line ail
+                                        on ai.id = ail.invoice_id
+                                        where state in ('draft','open','paid') and ai.picking_id is null
+                                        )invoice
+                                inner join
+                                    purchase_order po
+                                    on invoice.purchase_name = po.name
+                                )inv  group by requisition_id,product_id
+                        union all
+                        select requisition_id,product_id,sum(quantity) sum_quantity_invoice from (
+                            select
+                                po.id purchase_id,
+                                invoice_id,
+                                requisition_id,
+                                purchase_name,
+                                product_id,
+                                quantity from (
+                                    select
+                                        ai.id invoice_id,
+                                        ai.origin purchase_name,
+                                        product_id,
+                                        quantity
+                                        from account_invoice ai
+                                    inner join
+                                        account_invoice_line ail
+                                        on ai.id = ail.invoice_id
+                                        where state in ('draft','open','paid') and ai.picking_id is not null
+                                        )invoice
+                                inner join
+                                    purchase_order po
+                                    on invoice.purchase_name = po.name
+                                )inv  group by requisition_id,product_id)invoice
+                        on tender.requisition_id = invoice.requisition_id and tender.product_id = invoice.product_id
+                        left join (
+                        select requisition_id,product_id,sum(qty_done) sum_quantity_picking from (
+                            select po.group_id,picking_id,product_id,qty_done,requisition_id from (
+                                select group_id,picking_id,product_id,qty_done,state from stock_picking pick
+                            inner join
+                                stock_pack_operation spo on pick.id = spo.picking_id where qty_done > 0 and state in ('done')
+                            )picking
+                            inner join purchase_order po on picking.group_id = po.group_id
+                        )order_picking group by requisition_id,product_id)picking
+                        on tender.requisition_id = picking.requisition_id and tender.product_id = picking.product_id
+                        left join
+                        (
+                        select
+                            product_id,
+                            requisition_id,
+                            (CASE WHEN qty_request > 0 THEN sum(product_qty)  ELSE max(product_qty)  END) AS "sum_quantity_purchase"
+                            from purchase_order po
+                        inner join
+                            purchase_order_line pol
+                        on po.id = pol.order_id
+                        where state in ('purchase','done','received_partial','received_force_done')
+                        group by requisition_id,product_id,qty_request
+                        )porder
+                        on tender.requisition_id = porder.requisition_id and tender.product_id = porder.product_id
+                        """)
+
+class ViewRequisitionTracking(models.Model):
+
+    _name = 'view.requisition.tracking'
+    _description = 'Tracking Purchase Requisition'
+    _auto = False
+    _order = 'pr_id'
+
+    pr_id = fields.Many2one('purchase.request')
+    requisition_id = fields.Many2one('purchase.requisition')
+    complete_name = fields.Char('Complete Name')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_requisition_tracking as
+                        select pr.id pr_id , prq.id requisition_id,pr.complete_name complete_name
+                        from purchase_requisition prq
+                        inner join
+                        purchase_request pr
+                        on prq.request_id  = pr.id
+                        where pr.state in ('done','approved') group by pr.id,prq.id
+                        """)
+
+class ViewRequestRequisitionTracking(models.Model):
+
+    _name = 'view.request.requisition.tracking'
+    _description = 'Global Tracking Purchase Requisition'
+    _auto = False
+    _order = 'pr_id'
+    _inherit=['mail.thread']
+
+    id = fields.Char('ID')
+    pr_id = fields.Many2one('purchase.request')
+    requisition_id = fields.Many2one('purchase.requisition')
+    complete_name = fields.Char('Complete Name')
+    detail_ids = fields.One2many('view.detail.request.requisition.tracking','vrrt_id')
+    status_po = fields.Char(compute='status_tracking')
+    status_picking = fields.Char(compute='status_tracking')
+    status_invoice = fields.Char(compute='status_tracking')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_request_requisition_tracking as
+                        select row_number() over() id,* from (
+                            select pr_id,vqt.requisition_id,complete_name from validate_tracking_purchase_order_invoice vtpo
+                                inner join
+                                view_requisition_tracking vqt
+                                on vqt.requisition_id = vtpo.requisition_id
+                                group by pr_id,vqt.requisition_id,complete_name)parent_tracking
+                        """)
+
+    @api.multi
+    @api.depends('detail_ids')
+    def status_tracking(self):
+        for item in self:
+            if item.detail_ids :
+                initial = len(item.detail_ids)
+
+                item.env.cr.execute("select count(CASE WHEN progress_po = 'Done' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                po_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_po = 'in Progress' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                po_notdone = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_picking = 'Done' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                picking_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_picking = 'in Progress' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                picking_not_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_invoice = 'Done' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                invoice_done = item.env.cr.fetchone()[0]
+
+                item.env.cr.execute("select count(CASE WHEN progress_invoice = 'in Progress' THEN 1 END) from view_detail_request_requisition_tracking where vrrt_id = %d" %(item.id))
+                invoice_not_done = item.env.cr.fetchone()[0]
+
+
+                if po_notdone > 0 :
+                    item.status_po = 'In Progress'
+                elif po_done == initial:
+                    item.status_po = 'Done'
+                if picking_not_done > 0:
+                    item.status_picking = 'In Progress'
+                elif picking_done == initial:
+                    item.status_picking = 'Done'
+                if invoice_not_done > 0 :
+                    item.status_invoice = 'In Progress'
+                elif invoice_done == initial:
+                    item.status_invoice = 'Done'
+
+class ViewResultTrackingPurchaseOrderInvoice(models.Model):
+
+    _name = 'result.tracking.purchase.order'
+    _description = 'Result Tracking Purchase Order To Invoice'
+    _auto = False
+    _order = 'id'
+    _inherit=['mail.thread']
+
+    id = fields.Char('ID')
+    requisition_id = fields.Many2one('purchase.requisition')
+    date_report = fields.Datetime('Date',track_visibility='onchange')
+    product_id = fields.Many2one('product.product')
+    status_pp = fields.Char('Status PP',track_visibility='onchange')
+    progress_po = fields.Char('Status PO',track_visibility='onchange')
+    progress_picking = fields.Char('Status Picking',track_visibility='onchange')
+    progress_invoice = fields.Char('Status Invoice',track_visibility='onchange')
+    sum_quantity_tender = fields.Float('Quantity Tender')
+    sum_quantity_purchase = fields.Float('Quantity Purchase')
+    sum_quantity_picking = fields.Float('Quantity Picking')
+    sum_quantity_invoice = fields.Float('Quantity Invoice')
+
+    def init(self, cr):
+        cr.execute("""create or replace view result_tracking_purchase_order as
+                        select id,now() date_report,
+                            requisition_id ,
+                            product_id ,
+                            case
+                            when sum_quantity_tender = sum_quantity_purchase and sum_quantity_tender = sum_quantity_picking and sum_quantity_tender = sum_quantity_invoice then 'PP Closed' else 'PP Outstanding' end status_pp,
+                            case when sum_quantity_tender = sum_quantity_purchase then 'Done' else 'in Progress' end progress_po,
+                            case when sum_quantity_tender = sum_quantity_picking then 'Done' else 'in Progress' end progress_picking,
+                            case when sum_quantity_tender = sum_quantity_invoice then 'Done' else 'in Progress' end progress_invoice,
+                            sum_quantity_tender,sum_quantity_purchase,sum_quantity_picking,sum_quantity_invoice
+                            from validate_tracking_purchase_order_invoice
+                        """)
+
+class ViewDetailRequestRequisitionTracking(models.Model):
+
+    _name = 'view.detail.request.requisition.tracking'
+    _description = 'Tracking Detail Purchase Requisition'
+    _auto = False
+    _order = 'vrrt_id'
+
+    id = fields.Char('ID')
+    vrrt_id = fields.Many2one('view.request.requisition.tracking')
+    date_report = fields.Datetime('Date',track_visibility='onchange')
+    product_id = fields.Many2one('product.product')
+    requisition_id = fields.Many2one('purchase.requisition')
+    progress_po = fields.Char('Status PO',track_visibility='onchange')
+    progress_picking = fields.Char('Status Picking',track_visibility='onchange')
+    progress_invoice = fields.Char('Status Invoice',track_visibility='onchange')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_detail_request_requisition_tracking as
+                        select row_number() over() id,vrrt.id vrrt_id,
+                                now() date_report,
+                                vrrt.requisition_id , product_id,progress_po,progress_picking,progress_invoice
+                            from
+                            result_tracking_purchase_order rtpo
+                            inner join
+                            view_request_requisition_tracking vrrt on rtpo.requisition_id = vrrt.requisition_id
+                        """)
+
+
 
 
 

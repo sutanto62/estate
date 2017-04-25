@@ -1,0 +1,29 @@
+<openerp>
+    <data>
+        <record id="purchase_requisition.act_done" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_requisition.purchase_requisition_workflow"/>
+            <field name="name">done</field>
+            <field name="action">tender_done()</field>
+            <field name="kind">function</field>
+        </record>
+        <record id="act_closed" model="workflow.activity">
+            <field name="wkf_id" ref="purchase_requisition.purchase_requisition_workflow"/>
+            <field name="name">done</field>
+            <field name="action">tender_state_closed()</field>
+            <field name="kind">function</field>
+            <field name="flow_stop">True</field>
+        </record>
+
+         <record id="purchase_requisition.trans_open_done" model="workflow.transition">
+            <field name="act_from" ref="purchase_requisition.act_open"/>
+            <field name="act_to" ref="purchase_requisition.act_done"/>
+            <field name="signal">done</field>
+        </record>
+
+         <record id="trans_done_closed" model="workflow.transition">
+            <field name="act_from" ref="purchase_requisition.act_done"/>
+            <field name="act_to" ref="act_closed"/>
+            <field name="signal">closed</field>
+        </record>
+    </data>
+</openerp>

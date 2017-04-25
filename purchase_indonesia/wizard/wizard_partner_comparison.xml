@@ -1,0 +1,30 @@
+<openerp>
+    <data>
+        <record id="wizard_partner_comparison" model="ir.ui.view">
+            <field name="name">wizard partner comparison</field>
+            <field name="model">wizard.partner.comparison</field>
+            <field name="arch" type="xml">
+                <form string="Timesheet" version="9.0">
+                    <group>
+                        <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                    </group>
+                    <footer>
+                        <button name="save_partner_quotation" string="Save And Print" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_wizard_partner_comparison" model="ir.actions.act_window">
+            <field name="name">wizard partner comparison</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.partner.comparison</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

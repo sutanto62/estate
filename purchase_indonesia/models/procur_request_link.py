@@ -18,6 +18,11 @@ class InheritPurchaseRequisition(models.Model):
 
     owner_id = fields.Integer('owner id')
 
+class InheritPurchaseRequisitionLine(models.Model):
+    _inherit = 'purchase.requisition.line'
+
+    owner_id = fields.Integer('owner id')
+
 class InheritPurchaseRequest(models.Model):
 
     @api.multi
@@ -160,6 +165,7 @@ class InheritPurchaseRequest(models.Model):
     department_id = fields.Many2one('hr.department','Department')
     employee_id = fields.Many2one('hr.employee','Employee')
     purchase_ids = fields.One2many('purchase.order','request_id','Purchase Order Line',domain=[('state','!=','cancel')])
+    line_product_ids = fields.One2many('purchase.requisition.line','owner_id','Purchase Requisition Line')
     type_location = fields.Char('Location',default=_get_office_level_id,readonly = 1)
     code =  fields.Char('code location',default=_get_office_level_id_code,readonly = 1)
     type_product = fields.Selection([('consu','Capital'),
@@ -668,6 +674,7 @@ class InheritPurchaseRequest(models.Model):
         """ Confirms Good request.
         """
         self.write({'state': 'budget','assigned_to':self._get_budget_manager()})
+        self.send_mail_template()
 
     @api.multi
     def action_budget(self,):
@@ -693,6 +700,7 @@ class InheritPurchaseRequest(models.Model):
             except:
                 raise exceptions.ValidationError('Call Your Hr Admin to Fill Department Code')
             self.write(state_data)
+            self.send_mail_template()
 
     @api.multi
     def action_technic(self):
@@ -707,6 +715,7 @@ class InheritPurchaseRequest(models.Model):
         elif self._get_max_price() >= self._get_price_low() or self._get_compare_requester_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
+            self.send_mail_template()
         else:
             raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
 
@@ -741,6 +750,7 @@ class InheritPurchaseRequest(models.Model):
             raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
 
         self.write(state_data)
+        self.send_mail_template()
 
     @api.multi
     def action_ro_head_approval(self):
@@ -759,6 +769,7 @@ class InheritPurchaseRequest(models.Model):
             raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
         self.write(state_data)
+        self.send_mail_template()
 
     @api.multi
     def check_wkf_product_price(self):
@@ -776,6 +787,7 @@ class InheritPurchaseRequest(models.Model):
             raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
        self.write(state_data)
+       self.send_mail_template()
 
     @api.multi
     def tracking_approval(self):
@@ -812,7 +824,8 @@ class InheritPurchaseRequest(models.Model):
                 'est_price':purchaseline.price_per_product,
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
-                'requisition_id' : res.id
+                'requisition_id' : res.id,
+                'owner_id' :res.owner_id
             }
             self.env['purchase.requisition.line'].create(purchaseline_data)
 
@@ -1160,6 +1173,35 @@ class InheritPurchaseRequest(models.Model):
                 error_msg = "Please Fill Your Product"
                 raise exceptions.ValidationError(error_msg)
 
+    #Email Template Code Starts Here
+
+    @api.one
+    def send_mail_template(self):
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_purchase_request')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            model = item._name
+            return model
 
 class InheritPurchaseRequestLine(models.Model):
 

@@ -1,0 +1,87 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="view_validate_tracking_purchase_order_invoice_tree">
+             <field name="name">View Result Progress Purchase Order</field>
+             <field name="model">view.request.requisition.tracking</field>
+             <field name="priority" eval="1"/>
+             <field name="arch" type="xml">
+                <tree string="Tracking Purchase Order" decoration-danger="'status_invoice' ,'=', 'in Progress'">
+                    <field name="id" invisible="1"/>
+                    <field name="complete_name" string="Purchase Request/PP No"/>
+                    <field name="status_po" string="Status PO"/>
+                    <field name="status_picking" string="Status Picking" readonly="1"/>
+                    <field name="status_invoice" string="Status Invoice"/>
+                </tree>
+             </field>
+         </record>
+
+        <record id="view_validate_tracking_purchase_order_invoice_form" model="ir.ui.view">
+            <field name="name">View Result Progress Purchase Order</field>
+            <field name="model">view.request.requisition.tracking</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title" colors="blue">
+                             <h1>
+                                 <label string="Result Progress PP"/>
+                             </h1>
+                        </div>
+                        <group>
+                            <field name="complete_name" string="Purchase Request/PP No"/>
+                        </group>
+                        <separator string="Detail Progress"/>
+                        <field name="detail_ids">
+                            <tree>
+                                <field name="product_id" string="Product" readonly="1"/>
+                                <field name="progress_po" string="Status PO" readonly="1"/>
+                                <field name="progress_picking" string="Status Picking" readonly="1"/>
+                                <field name="progress_invoice" string="Status Invoice" readonly="1"/>
+                            </tree>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_validate_tracking_purchase_order_invoice_search" model="ir.ui.view">
+            <field name="name">View Result Progress Purchase Order</field>
+            <field name="model">view.request.requisition.tracking</field>
+            <field name="arch" type="xml">
+                <search string="Search Quotation Comparison Form">
+                    <field name="requisition_id" string="Tender No"/>
+                    <field name="complete_name" string="PP No"/>
+                    <separator/>
+                    <!--<filter name="status_pp" string="Status PP Outstanding"-->
+                            <!--domain="[('status_pp','=','PP Outstanding')]"-->
+                            <!--/>-->
+                    <!--<filter name="status_pp_close" string="Status PP Closed"-->
+                            <!--domain="[('status_pp','=','PP Closed')]"-->
+                            <!--/>-->
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_validate_tracking_purchase_order_invoice_action">
+            <field name="name">Action Result Progress PP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">view.request.requisition.tracking</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_validate_tracking_purchase_order_invoice_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new Result Progress Purchase Request.
+                </p>
+                <p>
+                A Result Progress Purchase Order is an report to show Progress Purchase Order
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_validate_tracking_purchase_order_invoice" name="Report Progress PP"
+            parent="purchase.menu_procurement_management"
+            action="view_validate_tracking_purchase_order_invoice_action" sequence="22"/>
+
+    </data>
+</openerp>

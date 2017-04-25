@@ -24,6 +24,32 @@ class InheritPurchaseOrder(models.Model):
 
     comparison_id = fields.Many2one('quotation.comparison.form','QCF')
 
+    def button_confirm(self, cr, uid, ids, context=None):
+        res = super(InheritPurchaseOrder, self).button_confirm(cr, uid, ids, context=context)
+        proc_obj = self.pool.get('procurement.order')
+        stock_move_obj = self.pool.get('stock.move')
+        for po in self.browse(cr, uid, ids, context=context):
+            if po.requisition_id and (po.requisition_id.exclusive == 'exclusive'):
+                for order in po.requisition_id.purchase_ids:
+                    if order.id != po.id:
+                        proc_ids = proc_obj.search(cr, uid, [('purchase_id', '=', order.id)])
+                        if proc_ids and po.state == 'confirmed':
+                            proc_obj.write(cr, uid, proc_ids, {'purchase_id': po.id})
+                        order.button_cancel()
+                    po.requisition_id.tender_done(context=context)
+            for element in po.order_line:
+                if element.product_id == po.requisition_id.procurement_id.product_id:
+                    stock_move_obj.write(cr, uid, element.move_ids.ids, {
+                        'procurement_id': po.requisition_id.procurement_id.id,
+                        'move_dest_id': po.requisition_id.procurement_id.move_dest_id.id,
+                        }, context=context)
+                if not element.quantity_tendered:
+                    if element.validation_check_backorder == True:
+                        element.write({'quantity_tendered': element.qty_request})
+                    else:
+                        element.write({'quantity_tendered': element.product_qty})
+        return res
+
 class InheritPurchaseOrderLine(models.Model):
 
     _inherit = 'purchase.order.line'
@@ -32,11 +58,28 @@ class InheritPurchaseOrderLine(models.Model):
     trigger_state = fields.Boolean('Trigger State')
     trigger_filter_cancel = fields.Boolean('Trigger Cancel',default=False,compute='_filter_cancel')
 
-    @api.multi
-    def button_confirm(self):
-        self.write({'trigger_state':True})
-        res = super(InheritPurchaseOrderLine,self).button_confirm()
-        return res
+    # @api.multi
+    # def button_confirm(self):
+    #     self.write({'trigger_state':True})
+    #     res = super(InheritPurchaseOrderLine,self).button_confirm()
+    #     return res
+
+    def button_confirm(self, cr, uid, ids, context=None):
+
+        for element in self.browse(cr, uid, ids, context=context):
+            if element.validation_check_backorder == False and element.qty_request == element.product_qty:
+                print'gagal1'
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
+            elif element.validation_check_backorder == False and not element.qty_request:
+                print'gagal4'
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
+            elif element.validation_check_backorder == False and element.qty_request :
+                print'gagal3'
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
+            else:
+                print'gagal2'
+                self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
+        return True
 
     @api.multi
     def button_cancel(self):
@@ -271,10 +314,15 @@ class QuotationComparisonForm(models.Model):
         ('reject', 'Rejected'),
         ('cancel', 'Canceled')], string="State",store=True,track_visibility='onchange')
     remarks = fields.Text('Remarks')
+    validation_missing_product = fields.Boolean('Missing Product')
+    validation_check_backorder = fields.Boolean('Confirm backorder')
     reject_reason = fields.Text('Reject Reason')
     line_remarks = fields.Integer(compute='_compute_line_remarks')
+    # line_remarks_backorder = fields.Integer(compute='_compute_line_remarks_backorder')
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line')
+    partner_ids = fields.Many2many('res.partner',string='Vendors')
+    backorder_purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line',domain=[('validation_check_backorder','=',True)])
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -286,6 +334,17 @@ class QuotationComparisonForm(models.Model):
     v_quotation_comparison_line_ids8 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids9 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids10 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+    #Back Order
+    # v_backorder_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids3 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids4 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids5 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids6 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids7 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids8 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids9 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
+    # v_backorder_quotation_comparison_line_ids10 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
 
 
     _defaults = {
@@ -294,8 +353,35 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def generated_po(self):
-        po_lines = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)])
-        po_lines.generate_po()
+        for item in self:
+            arrProductLine = []
+            arrPurchase = []
+            arrPurchaseProduct = []
+            tender_line = item.env['purchase.requisition.line']
+            purchase = item.env['purchase.order']
+            purchase_line = item.env['purchase.order.line']
+
+            product_tender_line = tender_line.search([('requisition_id','=',item.requisition_id.id)])
+            for product in product_tender_line:
+                arrProductLine.append(product.product_id.id)
+
+            purchase_id = purchase.search([('requisition_id','=',item.requisition_id.id),('state','=','purchase'),('validation_check_backorder','=',False)])
+            for purchase in purchase_id:
+                arrPurchase.append(purchase.id)
+            purchase_line_id = purchase_line.search([('order_id','in',arrPurchase)])
+            for product_purchase in purchase_line_id:
+                arrPurchaseProduct.append(product_purchase.product_id.id)
+
+            set_product = set(arrProductLine)- set(arrPurchaseProduct)
+
+            po_lines = item.env['purchase.requisition'].search([('id','=',item.requisition_id.id)])
+            line_tender_missing = tender_line.search([('requisition_id','=',item.requisition_id.id),('product_id','in',list(set_product)),('check_missing_product','=',True)])
+
+            if item.validation_missing_product == True:
+                po_lines.generate_po()
+                line_tender_missing.write({'check_missing_product' : False})
+            else:
+                po_lines.generate_po()
 
     @api.multi
     def _get_purchase_request(self):
@@ -305,9 +391,22 @@ class QuotationComparisonForm(models.Model):
     
     @api.multi
     def _get_max_price(self):
-        purchase_request_a = self.env['purchase.requisition'].search([('id','=',self.requisition_id.id)]).purchase_ids
-        price = max(purchase.amount_total for purchase in purchase_request_a)
-        return price
+        for item in self:
+            purchase_order = item.env['purchase.order']
+            purchase_ids = purchase_order.search([('validation_check_backorder','=',True),('requisition_id','=',item.requisition_id.id)])
+            # purchase_request_backorder = item.env['purchase.requisition'].search([('validation_check_backorder','=',True),('id','=',item.requisition_id.id)]).purchase_ids
+            purchase_request_normalorder = item.env['purchase.requisition'].search([('validation_check_backorder','=',False),('id','=',item.requisition_id.id)]).purchase_ids
+            arrBackorder = []
+
+            if item.validation_check_backorder:
+                for purchase in purchase_ids:
+                    arrBackorder.append(purchase.amount_total)
+                # price = max(purchase.amount_total for purchase in purchase_request_backorder)
+                price = max(arrBackorder)
+                return price
+            else:
+                price = max(purchase.amount_total for purchase in purchase_request_normalorder)
+                return price
 
     @api.multi
     def _get_price_low(self):
@@ -372,13 +471,71 @@ class QuotationComparisonForm(models.Model):
     @api.multi
     @api.depends('line_remarks')
     def _compute_line_remarks(self):
-        self.env.cr.execute('select count(partner_id) from(select partner_id from quotation_comparison_form_line where qcf_id = %d group by partner_id)a' %(self.id))
-        line = self.env.cr.fetchone()[0]
-        self.line_remarks = line
+        for item in self:
+            item.env.cr.execute('select count(partner_id) from(select partner_id from quotation_comparison_form_line where qcf_id = %d group by partner_id)a' %(item.id))
+            line = item.env.cr.fetchone()[0]
+            item.line_remarks = line
+
+    # @api.multi
+    # @api.depends('line_remarks_backorder')
+    # def _compute_line_remarks_backorder(self):
+    #     for item in self:
+    #         item.env.cr.execute('select count(partner_id) from(select partner_id from quotation_comparison_form_line where qcf_id = %d and (pol_po_backorder is not null or pol_po_backorder = True) group by partner_id)a' %(item.id))
+    #         back_order_line = item.env.cr.fetchone()[0]
+    #         item.line_remarks_backorder = back_order_line
+
 
     @api.multi
     def print_qcf(self):
-        return self.env['report'].get_action(self, 'purchase_indonesia.report_quotation_comparison_form_document')
+        for item in self:
+            arrPartner = []
+            purchase_tender = item.env['purchase.requisition'].search([('id','=',item.requisition_id.id)])
+            partner = item.env['purchase.order'].search([('requisition_id','=',purchase_tender.id)])
+            for record in partner:
+                arrPartner.append(record.partner_id.ids)
+            partner_list = list(arrPartner)
+            wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
+            view_id = item.env['wizard.partner.comparison']
+            vals = {
+                        'name'   : 'this is for set name',
+                        'qcf_id' : item.id,
+                        'partner_ids' : [(6, 0, partner_list)]
+                    }
+            new = view_id.create(vals)
+            if not item.partner_ids:
+                return {
+                            'name'      : _('Print Your Quotation Comparison'),
+                            'type'      : 'ir.actions.act_window',
+                            'res_model' : 'wizard.partner.comparison',
+                            'res_id'    : new.id,
+                            'view_id'   : wizard_form.id,
+                            'view_type' : 'form',
+                            'view_mode' : 'form',
+                            'target'    : 'new'
+                        }
+            else:
+                return {
+                        'name'      : _('Print Your Quotation Comparison'),
+                        'type'      : 'ir.actions.act_window',
+                        'res_model' : 'wizard.partner.comparison',
+                        'res_id'    : new.id,
+                        'view_id'   : wizard_form.id,
+                        'view_type' : 'form',
+                        'view_mode' : 'form',
+                        'target'    : 'new'
+                    }
+
+    # @api.multi
+    # def _create_wizard(self):
+    #     for item in self:
+    #         wizard_form = item.env.ref('purchase_indonesia.wizard_partner_comparison', False)
+    #         view_id = item.env['wizard.partner.comparison']
+    #         vals = {
+    #                     'name'   : 'this is for set name',
+    #                     'partner_ids' : [(6, 0, item.partner_ids.ids)]
+    #                 }
+    #         new = view_id.create(vals)
+
 
     @api.multi
     def action_send(self):
@@ -408,6 +565,8 @@ class QuotationComparisonForm(models.Model):
                                     item.write({'state' : 'approve','assign_to':item._get_procurement_finance()})
                                 elif item._get_employee_location() in ['KOKB','KPWK']:
                                     item.write({'state' : 'approve4','assign_to':item._get_user_ro_manager()})
+                self.send_mail_template()
+
         return True
 
     @api.multi
@@ -423,14 +582,16 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() > self._get_price_low():
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+            self.send_mail_template()
 
     @api.multi
     def action_approve1(self):
-        if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_mid():
+        if (self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_mid()) or (self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() < self._get_price_mid()):
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid():
+        elif (self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid()) or (self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid()):
             self.write({'state' : 'approve2','assign_to':self._get_director()})
+            self.send_mail_template()
 
     @api.multi
     def action_approve2(self):
@@ -439,6 +600,7 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_high():
             self.write({'state' : 'approve3','assign_to':self._get_president_director()})
+            self.send_mail_template()
 
     @api.multi
     def action_approve3(self):
@@ -453,6 +615,7 @@ class QuotationComparisonForm(models.Model):
             self.generated_po()
         elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() > self._get_price_low() :
             self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+            self.send_mail_template()
         return True
 
     def action_done(self, cr, uid, ids, context=None):
@@ -580,6 +743,145 @@ class QuotationComparisonForm(models.Model):
                             error_msg = 'Quantity tendered \"%s\" cannot more than Product Quantity \"%s\" in Tender Line'%(order.product_id.name,tender.product_id.name)
                             raise exceptions.ValidationError(error_msg)
 
+    #Email Template Code Starts Here
+
+    @api.one
+    def send_mail_template(self):
+
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            #search DB name
+
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            # Search Web URL
+
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            #search Model
+
+            model = item._name
+
+            return model
+
+
+class ViewPurchaseRequisition(models.Model):
+    _name = 'view.purchase.requisition'
+    _description = 'View Purchase Requisition'
+    _auto = False
+    _order = 'requisition_id'
+
+    id = fields.Integer()
+    qty_request = fields.Float('Quantity Request')
+    requisition_id = fields.Many2one('purchase.requisition')
+    product_id = fields.Many2one('product.product','Product')
+
+    def init(self, cr):
+        cr.execute("""create or replace view view_purchase_requisition as
+                        select row_number() over() id,
+                                product_id,product_qty as qty_request,requisition_id
+                                      from purchase_requisition pr
+                        inner join purchase_requisition_line prl on prl.requisition_id = pr.id""")
+
+class ViewComparisonLine(models.Model):
+
+    _name = 'view.comparison.line'
+    _description = 'Quotation Comparison Line'
+    _auto = False
+    _order = 'req_id'
+
+    id = fields.Integer()
+    rownum = fields.Integer()
+    cheapest = fields.Integer()
+    req_id = fields.Many2one('purchase.requisition')
+    qcf_id = fields.Many2one('quotation.comparison.form')
+    company_id = fields.Many2one('res.company','Company')
+    product_id = fields.Many2one('product.product','Product')
+    product_uom = fields.Many2one('product.uom','Unit Of Measurement')
+    partner_id = fields.Many2one('res.partner','Vendor')
+    price_unit = fields.Float('Price Unit')
+    price_subtotal = fields.Float('Price Subtotal')
+    amount_untaxed = fields.Float('Amount Untaxed')
+    price_tax = fields.Float('Price Tax')
+    amount_total = fields.Float('Amount Total')
+    payment_term_id = fields.Many2one('account.payment.term','Payment Term')
+    date_planned = fields.Datetime('Planned Date')
+    incoterm_id = fields.Many2one('stock.incoterms','Incoterms')
+    delivery_term = fields.Char('Delivery Term')
+    po_des_all_name = fields.Text('Description')
+    pol_po_backorder = fields.Boolean('Back Order')
+
+
+    def init(self, cr):
+
+        cr.execute("""create or replace view view_comparison_line as
+						select row_number() over() id,
+                                pol_po_backorder,
+                                qcf_id,
+                                com_id company_id,req_id,
+                                po_pol_all.product_id,
+                                row_number() over (partition by req_id,po_pol_all.product_id order by po_pol_all.product_id asc) rownum,
+                                product_uom,
+                                part_id partner_id,
+                                price_unit,
+                                price_subtotal,
+                                amount_untaxed,
+                                price_tax,
+                                amount_total,
+                                payment_term_id,date_planned,incoterm_id,delivery_term,
+                                po_pol_min.cheapest,po_des_all_name from
+                        (
+                        select
+                            pol_des_name po_des_all_name,
+                            qcf.id qcf_id,
+                            qcf.requisition_id req_id,
+                            po_backorder pol_po_backorder,*
+                        from quotation_comparison_form qcf
+                        inner join (
+                            select
+                                row_number() over() id,
+                                po.company_id com_id,
+                                po.partner_id part_id,
+                                po.validation_check_backorder po_backorder,
+                                pol.pol_name pol_des_name,*
+                                from purchase_order po inner join (
+                                    select name pol_name,* from purchase_order_line
+                                        )pol
+                                        on po.id = pol.order_id and po.requisition_id is not null
+                                        )qcf_po
+                                        on qcf.requisition_id = qcf_po.requisition_id
+                                )po_pol_all
+                            inner join
+                            (
+                                select requisition_id, product_id, min(price_subtotal) cheapest
+                                from (
+                                    select * from purchase_order po inner join (
+                                        select * from purchase_order_line
+                                    )pol on po.id = pol.order_id and po.requisition_id is not null
+                                )po_pol group by po_pol.requisition_id, product_id
+                            ) po_pol_min
+                            on
+                            po_pol_all.req_id = po_pol_min.requisition_id
+                            and
+                            po_pol_all.product_id = po_pol_min.product_id""")
 
 class QuotationComparisonFormLine(models.Model):
 
@@ -608,44 +910,108 @@ class QuotationComparisonFormLine(models.Model):
     incoterm_id = fields.Many2one('stock.incoterms','Incoterms')
     delivery_term = fields.Char('Delivery Term')
     po_des_all_name = fields.Text('Description')
+    pol_po_backorder = fields.Boolean('Back Order')
 
 
     def init(self, cr):
+
         cr.execute("""create or replace view quotation_comparison_form_line as
-                        select row_number() over() id,qcf_id,
-                            com_id company_id,req_id,
-                            po_pol_all.product_id,
-                            row_number() over (partition by req_id,po_pol_all.product_id order by po_pol_all.product_id asc) rownum,
-                            qty_request,
-                            product_uom,
-                            part_id partner_id,
-                            price_unit,
-                            price_subtotal,
-                            amount_untaxed,
-                            price_tax,
-                            amount_total,
-                            payment_term_id,date_planned,incoterm_id,delivery_term,
-                            po_pol_min.cheapest,po_des_all_name from
-                    (
-                    select pol_des_name po_des_all_name,qcf.id qcf_id,qcf.requisition_id req_id,* from quotation_comparison_form qcf
-                    inner join (
-                        select row_number() over() id,po.company_id com_id,po.partner_id part_id,pol.pol_name pol_des_name,*
-                            from purchase_order po inner join (
-                                select name pol_name,* from purchase_order_line
-                                    )pol on po.id = pol.order_id and po.requisition_id is not null
-                                    )qcf_po on qcf.requisition_id = qcf_po.requisition_id
-                            )po_pol_all
-                        inner join
-                        (
-                            select requisition_id, product_id, min(price_subtotal) cheapest
-                            from (
-                                select * from purchase_order po inner join (
-                                    select * from purchase_order_line
-                                )pol on po.id = pol.order_id and po.requisition_id is not null
-                            )po_pol group by po_pol.requisition_id, product_id
-                        ) po_pol_min
-                        on po_pol_all.req_id = po_pol_min.requisition_id and po_pol_all.product_id = po_pol_min.product_id
+			select row_number() over() id,
+                                pol_po_backorder,
+                                qcf_id,
+                                company_id,req_id,
+                                vpr.product_id,
+                                rownum,
+                                product_uom,
+                                partner_id,
+                                price_unit,
+                                price_subtotal,
+                                amount_untaxed,
+                                price_tax,
+                                amount_total,qty_request,
+                                payment_term_id,date_planned,incoterm_id,delivery_term,
+                                cheapest,po_des_all_name
+                                from view_comparison_line vcl
+                            inner join view_purchase_requisition vpr
+                        	on vcl.req_id = vpr.requisition_id and vpr.product_id = vcl.product_id
                         """)
+
+
+#Query Back Order
+# class BackOrderQuotationComparisonFormLine(models.Model):
+#
+#     _name = 'backorder.quotation.comparison.form.line'
+#     _description = 'Back Order Quotation Comparison Line'
+#     _auto = False
+#     _order = 'req_id'
+#
+#     id = fields.Integer()
+#     rownum = fields.Integer()
+#     cheapest = fields.Integer()
+#     req_id = fields.Many2one('purchase.requisition')
+#     qcf_id = fields.Many2one('quotation.comparison.form')
+#     company_id = fields.Many2one('res.company','Company')
+#     product_id = fields.Many2one('product.product','Product')
+#     qty_request = fields.Float('Quantity Request')
+#     product_uom = fields.Many2one('product.uom','Unit Of Measurement')
+#     partner_id = fields.Many2one('res.partner','Vendor')
+#     price_unit = fields.Float('Price Unit')
+#     price_subtotal = fields.Float('Price Subtotal')
+#     amount_untaxed = fields.Float('Amount Untaxed')
+#     price_tax = fields.Float('Price Tax')
+#     amount_total = fields.Float('Amount Total')
+#     payment_term_id = fields.Many2one('account.payment.term','Payment Term')
+#     date_planned = fields.Datetime('Planned Date')
+#     incoterm_id = fields.Many2one('stock.incoterms','Incoterms')
+#     delivery_term = fields.Char('Delivery Term')
+#     po_des_all_name = fields.Text('Description')
+#
+#
+#     def init(self, cr):
+#         cr.execute("""create or replace view backorder_quotation_comparison_form_line as
+#                     select row_number() over() id,qcf_id,
+#                             com_id company_id,req_id,
+#                             po_pol_all.product_id,
+#                             row_number() over (partition by req_id,po_pol_all.product_id order by po_pol_all.product_id asc) rownum,
+#                             qty_request,
+#                             product_uom,
+#                             part_id partner_id,
+#                             price_unit,
+#                             price_subtotal,
+#                             amount_untaxed,
+#                             price_tax,
+#                             amount_total,
+#                             payment_term_id,date_planned,incoterm_id,delivery_term,
+#                             po_pol_min.cheapest,po_des_all_name from
+#                     (
+#                     select
+#                     	pol_des_name po_des_all_name,
+#                     	qcf.id qcf_id,
+#                     	qcf.requisition_id req_id,*
+#                     from quotation_comparison_form qcf
+#                     inner join (
+#                         select
+#                         	row_number() over() id,
+#                         	po.company_id com_id,
+#                         	po.partner_id part_id,
+#                         	pol.pol_name pol_des_name,*
+#                             from purchase_order po inner join (
+#                                 select name pol_name,* from purchase_order_line
+#                                     )pol on po.id = pol.order_id and po.requisition_id is not null and po.validation_check_backorder = True
+#                                     )qcf_po on qcf.requisition_id = qcf_po.requisition_id
+#                                     where qcf.validation_check_backorder = True
+#                             )po_pol_all
+#                         inner join
+#                         (
+#                             select requisition_id, product_id, min(price_subtotal) cheapest
+#                             from (
+#                                 select * from purchase_order po inner join (
+#                                     select * from purchase_order_line
+#                                 )pol on po.id = pol.order_id and po.requisition_id is not null
+#                             )po_pol group by po_pol.requisition_id, product_id
+#                         ) po_pol_min
+#                         on po_pol_all.req_id = po_pol_min.requisition_id and po_pol_all.product_id = po_pol_min.product_id
+#                         """)
 
 
 class ViewQuotationComparison(models.Model):
@@ -679,6 +1045,7 @@ class ViewQuotationComparison(models.Model):
     vendor10 = fields.Char('Vendor')
     po_des_all_name = fields.Text('Description')
     hide = fields.Boolean()
+    validation_check_backorder=fields.Boolean('Back Order')
 
     def init(self, cr):
         cr.execute("""CREATE OR REPLACE FUNCTION monetary(input_value float)
@@ -696,7 +1063,7 @@ class ViewQuotationComparison(models.Model):
         		    $function$""")
 
         cr.execute("""create or replace view v_quotation_comparison_form_line as
-                        select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_char from (
+                        select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char from (
                         select row_number() over() id,vqcf.*,qcf.id qcf_id from (
                                                             select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,max(vendor6) vendor6,max(vendor7) vendor7,max(vendor8) vendor8,max(vendor9) vendor9,max(vendor10) vendor10,cast('' as varchar) po_des_all_name,2 isheader from (
@@ -725,26 +1092,51 @@ class ViewQuotationComparison(models.Model):
                                          union all
                                          select * from (
                                            SELECT r.req_id,r.product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast(qty_request as varchar) qty_request,product_uom,
-                                                 MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
-                                                 MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
-                                                 MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
-                                                 MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
-                                                 MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
-                                                 MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
-                                                 MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
-                                                 MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
-                                                 MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
-                                                 MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,3 isheader
-                                            FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
-                                              select qcfl_rn.id rownum,company_id,po_des_all_name,
-                                                qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
-                                                            select row_number() over(PARTITION BY req_id
-                                                                        ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
-                                                                        from  quotation_comparison_form_line
-                                                                        group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
-                                            )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
-                                        GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc )content
+								             MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
+								             MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
+								             MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
+								             MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
+								             MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
+								             MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
+								             MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
+								             MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
+								             MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
+								             MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",
+								             cast(max(po_des_all_name)as varchar) po_des_all_name,
+								             3 isheader
+								        FROM  (
+								        select
+								        	rownum,
+								        	name,
+								        	req_id,
+								        	product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name
+								        from (
+								          	select
+								          		qcfl_rn.id rownum,company_id,po_des_all_name,
+								            	qcfl_rn.req_id,qcfl_rn.partner_id,
+								            	product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term
+								            from (
+								            	select qcfl_all.* from
+								            	quotation_comparison_form_line qcfl_all inner join (
+								            		select
+														min(id) id,
+														req_id,
+														partner_id,
+														product_id
+													from
+														quotation_comparison_form_line
+													group by req_id, partner_id, product_id
+								            	) qcfl_last on qcfl_all.id = qcfl_last.id
+								            ) qcfl inner join (
+								            		select row_number() over(PARTITION BY req_id
+								                            ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+								                            from  quotation_comparison_form_line
+								                            group by partner_id,req_id order by req_id desc
+								         	)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+								        )con_qcfl_rn inner join (select id,name from res_partner)partner
+								        on con_qcfl_rn.partner_id = partner.id
+								        ) r
+								    GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc)content
                                         union all
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
@@ -767,7 +1159,21 @@ class ViewQuotationComparison(models.Model):
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,po_des_all_name,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    (
+										            	select qcfl_all.* from
+										            	quotation_comparison_form_line qcfl_all
+												            	inner join (
+										            		select
+																min(id) id,
+																req_id,
+																partner_id,
+																product_id
+															from
+																quotation_comparison_form_line
+															group by req_id, partner_id, product_id
+										            	) qcfl_last on qcfl_all.id = qcfl_last.id
+										            ) qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -798,7 +1204,20 @@ class ViewQuotationComparison(models.Model):
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    (
+										            	select qcfl_all.* from
+										            	quotation_comparison_form_line qcfl_all inner join (
+										            		select
+																min(id) id,
+																req_id,
+																partner_id,
+																product_id
+															from
+																quotation_comparison_form_line
+															group by req_id, partner_id, product_id
+										            	) qcfl_last on qcfl_all.id = qcfl_last.id
+										            ) qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -809,11 +1228,11 @@ class ViewQuotationComparison(models.Model):
                                         union all
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
-                                        cast(monetary(max(vendor1)) as varchar)  vendor1,cast(monetary(max(vendor2)) as varchar)  vendor2,
-                                        cast(monetary(max(vendor3)) as varchar)  vendor3,cast(monetary(max(vendor4)) as varchar)  vendor4,
-                                        cast(monetary(max(vendor5)) as varchar)  vendor5,cast(monetary(max(vendor6)) as varchar)  vendor6,
-                                        cast(monetary(max(vendor7)) as varchar)  vendor7,cast(monetary(max(vendor8)) as varchar)  vendor8,
-                                        cast(monetary(max(vendor9)) as varchar)  vendor9,cast(monetary(max(vendor10)) as varchar)  vendor10,
+                                        cast(monetary(sum(vendor1)) as varchar)  vendor1,cast(monetary(sum(vendor2)) as varchar)  vendor2,
+                                        cast(monetary(sum(vendor3)) as varchar)  vendor3,cast(monetary(sum(vendor4)) as varchar)  vendor4,
+                                        cast(monetary(sum(vendor5)) as varchar)  vendor5,cast(monetary(sum(vendor6)) as varchar)  vendor6,
+                                        cast(monetary(sum(vendor7)) as varchar)  vendor7,cast(monetary(sum(vendor8)) as varchar)  vendor8,
+                                        cast(monetary(sum(vendor9)) as varchar)  vendor9,cast(monetary(sum(vendor10)) as varchar)  vendor10,
                                         cast('' as varchar) po_des_all_name,6 isheader from (
                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
                                                      MAX(CASE WHEN r.rownum = 1 THEN r.amount_total ELSE NULL END) AS "vendor1",
@@ -826,10 +1245,24 @@ class ViewQuotationComparison(models.Model):
                                                      MAX(CASE WHEN r.rownum = 8 THEN r.amount_total ELSE NULL END) AS "vendor8",
                                                      MAX(CASE WHEN r.rownum = 9 THEN r.amount_total ELSE NULL END) AS "vendor9",
                                                      MAX(CASE WHEN r.rownum = 10 THEN r.amount_total ELSE NULL END) AS "vendor10"
-                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+                                                FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit, (price_subtotal+price_tax) amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    product_id,price_unit,qty_request,product_uom,amount_total,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
+                                                    (
+										            	select qcfl_all.* from
+										            	quotation_comparison_form_line qcfl_all inner join (
+										            		select
+																min(id) id,
+																req_id,
+																partner_id,
+																product_id
+															from
+																quotation_comparison_form_line
+															group by req_id, partner_id, product_id
+										            	) qcfl_last on qcfl_all.id = qcfl_last.id
+										            )
+                                                    qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -889,18 +1322,23 @@ class ViewQuotationComparison(models.Model):
                                                      MAX(CASE WHEN r.rownum = 9 THEN r.delivery_term ELSE NULL END) AS "vendor9",
                                                      MAX(CASE WHEN r.rownum = 10 THEN r.delivery_term ELSE NULL END) AS "vendor10"
                                                 FROM  (
-                                                select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,name_term,name_inco,delivery_term,po_des_all_name from (
+                                                select backorder,rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,name_term,name_inco,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
-                                                    qcfl_rn.req_id,qcfl_rn.partner_id,
-                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from quotation_comparison_form_line qcfl inner join (
+                                                    qcfl_rn.req_id,qcfl_rn.partner_id,qcfl.pol_po_backorder backorder,
+                                                    product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term
+                                                    from quotation_comparison_form_line qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
-                                                                            ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+                                                                            ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id,pol_po_backorder
                                                                             from  quotation_comparison_form_line
-                                                                            group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+                                                                            group by partner_id,req_id,pol_po_backorder order by req_id desc
+                                                                )qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
                                                 )con_qcfl_rn
-                                                			 inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
-                                                			 left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
-                                                			 left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                	inner join
+                                                		(select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+                                                	left join
+                                                		(select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+                                                	left join
+                                                		(select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
                                                 ) r
                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
                                         )h group by req_id)deliverydate
@@ -937,15 +1375,35 @@ class ViewQuotationComparison(models.Model):
                                                 			 ) r
                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
                                         )h group by req_id)franco
-                                        )vqcf inner join quotation_comparison_form qcf on vqcf.req_id = qcf.requisition_id)qcf_line
+                                        )vqcf inner join quotation_comparison_form qcf on vqcf.req_id = qcf.requisition_id
+                                        )qcf_line
                                         left join
-                                        (select rank_id,product_id,last_price,write_date from(
-        								select row_number() over(PARTITION BY po_id
-                                                                            ORDER BY write_date DESC NULLS LAST) rank_id,* from (
-        								select po.id po_id,order_id,product_id,price_unit last_price,state,write_date  from purchase_order po left join (
-        									select id,order_id,product_id,price_total,price_unit,product_qty from purchase_order_line)pol on po.id = pol.order_id
-        									where state = 'done' group by po.id,order_id,product_id,price_total,price_unit,product_qty )a )b where b.rank_id = 1
-        									)last_price on qcf_line.product_id = last_price.product_id""")
+                                        (
+                                            select rank_id,product_id,last_price,write_date,validation_check_backorder from(
+                                                        select row_number() over(PARTITION BY po_id
+                                                               ORDER BY write_date DESC NULLS LAST) rank_id,*
+                                                                                from (
+                                                                        select
+                                                                        po.id po_id,
+                                                                        po.validation_check_backorder,
+                                                                        order_id,product_id,
+                                                                        price_unit last_price,state,write_date
+                                                                        from purchase_order po
+                                                                        left join (
+                                                                        select id,
+                                                                            order_id,
+                                                                            product_id,
+                                                                            price_total,
+                                                                            price_unit,
+                                                                            product_qty
+                                                                            from purchase_order_line
+                                                                            )pol on po.id = pol.order_id
+                                                                        where state = 'done'
+                                                                            group by po.id,order_id,product_id,price_total,price_unit,product_qty )a )b
+                                                                        where b.rank_id = 1
+                                                    )last_price on qcf_line.product_id = last_price.product_id""")
+
+
 
 
     @api.multi
@@ -990,6 +1448,348 @@ class ViewQuotationComparison(models.Model):
                 rec.qty_request = 'Incoterm/FRANCO'
                 rec.po_des_all_name = ''
                 rec.write_date = ''
+
+# class ViewBackOrderQuotationComparison(models.Model):
+#
+#     _name = 'v.backorder.quotation.comparison.form.line'
+#     _description = 'Back Order Quotation Comparison Line'
+#     _auto = False
+#     _order = 'isheader asc'
+#
+#     id = fields.Integer()
+#     isheader = fields.Integer()
+#     grand_total_label = fields.Char(compute='_is_grand_total_label')
+#     qcf_id = fields.Many2one('quotation.comparison.form')
+#     req_id = fields.Many2one('purchase.requisition')
+#     product_id = fields.Many2one('product.product','Product')
+#     last_price = fields.Float('Last Price')
+#     last_price_char = fields.Char('Last Price')
+#     write_date = fields.Datetime('Last Date PO')
+#     qty_request = fields.Char('Quantity Request')
+#     product_uom = fields.Many2one('product.uom','Unit Of Measurement')
+#     vendor1 = fields.Char('Vendor')
+#     vendor2 = fields.Char('Vendor')
+#     vendor3 = fields.Char('Vendor')
+#     vendor4 = fields.Char('Vendor')
+#     vendor5 = fields.Char('Vendor')
+#     vendor6 = fields.Char('Vendor')
+#     vendor7 = fields.Char('Vendor')
+#     vendor8 = fields.Char('Vendor')
+#     vendor9 = fields.Char('Vendor')
+#     vendor10 = fields.Char('Vendor')
+#     po_des_all_name = fields.Text('Description')
+#     hide = fields.Boolean()
+#
+#     def init(self, cr):
+#         cr.execute("""CREATE OR REPLACE FUNCTION monetary(input_value float)
+#                     RETURNS varchar
+#                      LANGUAGE plpgsql
+#                      STRICT
+#                     AS $function$
+#                     DECLARE
+#                     BEGIN
+#                         return case when (input_value = 0)
+#                         then  '0'
+#                         else to_char(input_value,'FM999G999G999G999G999G999G999G999D00')
+#                         end;
+#                     END
+#         		    $function$""")
+#
+#         cr.execute("""create or replace view v_backorder_quotation_comparison_form_line as
+#                         select qcf_line.*, last_price.last_price, last_price.write_date, '' last_price_char from (
+#                         select row_number() over() id,vqcf.*,qcf.id qcf_id from (
+#                                                             select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,max(vendor6) vendor6,max(vendor7) vendor7,max(vendor8) vendor8,max(vendor9) vendor9,max(vendor10) vendor10,cast('' as varchar) po_des_all_name,2 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.name ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.name ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.name ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.name ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.name ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.name ELSE NULL END) AS "vendor6",
+#                                                      MAX(CASE WHEN r.rownum = 7 THEN r.name ELSE NULL END) AS "vendor7",
+#                                                      MAX(CASE WHEN r.rownum = 8 THEN r.name ELSE NULL END) AS "vendor8",
+#                                                      MAX(CASE WHEN r.rownum = 9 THEN r.name ELSE NULL END) AS "vendor9",
+#                                                      MAX(CASE WHEN r.rownum = 10 THEN r.name ELSE NULL END) AS "vendor10"
+#                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)header
+#                                          union all
+#                                          select * from (
+#                                            SELECT r.req_id,r.product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast(qty_request as varchar) qty_request,product_uom,
+#                                                  MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
+#                                                  MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
+#                                                  MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
+#                                                  MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
+#                                                  MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
+#                                                  MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
+#                                                  MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
+#                                                  MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
+#                                                  MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
+#                                                  MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",cast(max(po_des_all_name)as varchar) po_des_all_name,3 isheader
+#                                             FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+#                                               select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                 qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                 product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                             select row_number() over(PARTITION BY req_id
+#                                                                         ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                         from  backorder_quotation_comparison_form_line
+#                                                                         group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                             )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
+#                                         GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc )content
+#                                         union all
+#                                         select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+#                                         cast(monetary(sum(vendor1))  as varchar)  vendor1,cast(monetary(sum(vendor2)) as varchar) vendor2,
+#                                         cast(monetary(sum(vendor3)) as varchar)  vendor3,cast(monetary(sum(vendor4)) as varchar) vendor4,
+#                                         cast(monetary(sum(vendor5)) as varchar)  vendor5,cast(monetary(sum(vendor6)) as varchar) vendor6,
+#                                         cast(monetary(sum(vendor7)) as varchar)  vendor7,cast(monetary(sum(vendor8)) as varchar) vendor8,
+#                                         cast(monetary(sum(vendor9)) as varchar)  vendor9,cast(monetary(sum(vendor10)) as varchar) vendor10,cast('' as varchar) po_des_all_name,4 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_subtotal ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_subtotal ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.price_subtotal ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.price_subtotal ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.price_subtotal ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.price_subtotal ELSE NULL END) AS "vendor6",
+# 	                                                 MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
+# 	                                                 MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
+# 	                                                 MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
+# 	                                                 MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
+#                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,po_des_all_name,
+#                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)footer1
+#                                         union all
+#                                         select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+#                                         cast(monetary(sum(vendor1)) as varchar) vendor1,cast(monetary(sum(vendor2)) as varchar) vendor2,
+#                                         cast(monetary(sum(vendor3)) as varchar) vendor3,cast(monetary(sum(vendor4)) as varchar) vendor4,
+#                                         cast(monetary(sum(vendor5)) as varchar) vendor5,
+#                                         cast(monetary(sum(vendor6)) as varchar) vendor6,cast(monetary(sum(vendor7)) as varchar) vendor7,
+#                                         cast(monetary(sum(vendor8)) as varchar) vendor8,cast(monetary(sum(vendor9)) as varchar) vendor9,
+#                                         cast(monetary(sum(vendor10)) as varchar) vendor10,cast('' as varchar) po_des_all_name,5 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.price_tax ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.price_tax ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.price_tax ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.price_tax ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.price_tax ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.price_tax ELSE NULL END) AS "vendor6",
+#                                                      MAX(CASE WHEN r.rownum = 7 THEN r.price_tax ELSE NULL END) AS "vendor7",
+#                                                      MAX(CASE WHEN r.rownum = 8 THEN r.price_tax ELSE NULL END) AS "vendor8",
+#                                                      MAX(CASE WHEN r.rownum = 9 THEN r.price_tax ELSE NULL END) AS "vendor9",
+#                                                      MAX(CASE WHEN r.rownum = 10 THEN r.price_tax ELSE NULL END) AS "vendor10"
+#                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)footer2
+#                                         union all
+#                                         select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
+#                                         cast(monetary(max(vendor1)) as varchar)  vendor1,cast(monetary(max(vendor2)) as varchar)  vendor2,
+#                                         cast(monetary(max(vendor3)) as varchar)  vendor3,cast(monetary(max(vendor4)) as varchar)  vendor4,
+#                                         cast(monetary(max(vendor5)) as varchar)  vendor5,cast(monetary(max(vendor6)) as varchar)  vendor6,
+#                                         cast(monetary(max(vendor7)) as varchar)  vendor7,cast(monetary(max(vendor8)) as varchar)  vendor8,
+#                                         cast(monetary(max(vendor9)) as varchar)  vendor9,cast(monetary(max(vendor10)) as varchar)  vendor10,
+#                                         cast('' as varchar) po_des_all_name,6 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.amount_total ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.amount_total ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.amount_total ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.amount_total ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.amount_total ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.amount_total ELSE NULL END) AS "vendor6",
+#                                                      MAX(CASE WHEN r.rownum = 7 THEN r.amount_total ELSE NULL END) AS "vendor7",
+#                                                      MAX(CASE WHEN r.rownum = 8 THEN r.amount_total ELSE NULL END) AS "vendor8",
+#                                                      MAX(CASE WHEN r.rownum = 9 THEN r.amount_total ELSE NULL END) AS "vendor9",
+#                                                      MAX(CASE WHEN r.rownum = 10 THEN r.amount_total ELSE NULL END) AS "vendor10"
+#                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                     product_id,price_unit,qty_request,product_uom,amount_total,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)footer
+#                                         union all
+#                                         select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,
+#                                         max(vendor4) vendor4,max(vendor5) vendor5,
+#                                         max(vendor6) vendor6,max(vendor7) vendor7,
+#                                         max(vendor8) vendor8,max(vendor9) vendor9,
+#                                         max(vendor10) vendor10,cast('' as varchar) po_des_all_name,7 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.name_term ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.name_term ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.name_term ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.name_term ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.name_term ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.name_term ELSE NULL END) AS "vendor6",
+#                                                      MAX(CASE WHEN r.rownum = 7 THEN r.name_term ELSE NULL END) AS "vendor7",
+#                                                      MAX(CASE WHEN r.rownum = 8 THEN r.name_term ELSE NULL END) AS "vendor8",
+#                                                      MAX(CASE WHEN r.rownum = 9 THEN r.name_term ELSE NULL END) AS "vendor9",
+#                                                      MAX(CASE WHEN r.rownum = 10 THEN r.name_term ELSE NULL END) AS "vendor10"
+#                                                 FROM  (
+#                                                 select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,name_term,name_inco,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn
+#                                                 			 inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+#                                                 			 left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+#                                                 			 left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+#                                                 			 ) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)paymentterm
+#                                         union all
+#                                         select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,
+#                                         max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,  max(vendor6) vendor6,max(vendor7) vendor7,
+#                                         max(vendor8) vendor8,max(vendor9) vendor9,
+#                                         max(vendor10) vendor10,cast('' as varchar) po_des_all_name,8 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.delivery_term ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.delivery_term ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.delivery_term ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.delivery_term ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.delivery_term ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.delivery_term ELSE NULL END) AS "vendor6",
+#                                                      MAX(CASE WHEN r.rownum = 7 THEN r.delivery_term ELSE NULL END) AS "vendor7",
+#                                                      MAX(CASE WHEN r.rownum = 8 THEN r.delivery_term ELSE NULL END) AS "vendor8",
+#                                                      MAX(CASE WHEN r.rownum = 9 THEN r.delivery_term ELSE NULL END) AS "vendor9",
+#                                                      MAX(CASE WHEN r.rownum = 10 THEN r.delivery_term ELSE NULL END) AS "vendor10"
+#                                                 FROM  (
+#                                                 select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,name_term,name_inco,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn
+#                                                 			 inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+#                                                 			 left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+#                                                 			 left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+#                                                 ) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)deliverydate
+#                                         union all
+#                                         select * from (
+#                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,
+#                                         max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5, max(vendor6) vendor6,max(vendor7) vendor7,
+#                                         max(vendor8) vendor8,max(vendor9) vendor9,
+#                                         max(vendor10) vendor10,cast('' as varchar) po_des_all_name,9 isheader from (
+#                                             SELECT r.req_id,r.product_id,qty_request,product_uom,
+#                                                      MAX(CASE WHEN r.rownum = 1 THEN r.name_inco ELSE NULL END) AS "vendor1",
+#                                                      MAX(CASE WHEN r.rownum = 2 THEN r.name_inco ELSE NULL END) AS "vendor2",
+#                                                      MAX(CASE WHEN r.rownum = 3 THEN r.name_inco ELSE NULL END) AS "vendor3",
+#                                                      MAX(CASE WHEN r.rownum = 4 THEN r.name_inco ELSE NULL END) AS "vendor4",
+#                                                      MAX(CASE WHEN r.rownum = 5 THEN r.name_inco ELSE NULL END) AS "vendor5",
+#                                                      MAX(CASE WHEN r.rownum = 6 THEN r.name_inco ELSE NULL END) AS "vendor6",
+#                                                      MAX(CASE WHEN r.rownum = 7 THEN r.name_inco ELSE NULL END) AS "vendor7",
+#                                                      MAX(CASE WHEN r.rownum = 8 THEN r.name_inco ELSE NULL END) AS "vendor8",
+#                                                      MAX(CASE WHEN r.rownum = 9 THEN r.name_inco ELSE NULL END) AS "vendor9",
+#                                                      MAX(CASE WHEN r.rownum = 10 THEN r.name_inco ELSE NULL END) AS "vendor10"
+#                                                 FROM  (
+#                                                 select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,name_term,name_inco,delivery_term,po_des_all_name from (
+#                                                   select qcfl_rn.id rownum,company_id,po_des_all_name,
+#                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
+#                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from backorder_quotation_comparison_form_line qcfl inner join (
+#                                                                 select row_number() over(PARTITION BY req_id
+#                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+#                                                                             from  backorder_quotation_comparison_form_line
+#                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+#                                                 )con_qcfl_rn
+#                                                 			 inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+#                                                 			 left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+#                                                 			 left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+#                                                 			 ) r
+#                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
+#                                         )h group by req_id)franco
+#                                         )vqcf inner join quotation_comparison_form qcf on vqcf.req_id = qcf.requisition_id)qcf_line
+#                                         left join
+#                                         (select rank_id,product_id,last_price,write_date from(
+#         								select row_number() over(PARTITION BY po_id
+#                                                                             ORDER BY write_date DESC NULLS LAST) rank_id,* from (
+#         								select po.id po_id,order_id,product_id,price_unit last_price,state,write_date  from purchase_order po left join (
+#         									select id,order_id,product_id,price_total,price_unit,product_qty from purchase_order_line)pol on po.id = pol.order_id
+#         									where state = 'done' group by po.id,order_id,product_id,price_total,price_unit,product_qty )a )b where b.rank_id = 1
+#         									)last_price  on qcf_line.product_id = last_price.product_id""")
+
+    #
+    # @api.multi
+    # @api.depends('qty_request')
+    # def _is_grand_total_label(self):
+    #     for rec in self :
+    #         if rec.isheader == 1:
+    #             rec.po_des_all_name = ''
+    #             rec.last_price = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 2:
+    #             rec.qty_request = 'xxx'
+    #             rec.po_des_all_name = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 3:
+    #             rec.po_des_all_name = ''+rec.po_des_all_name
+    #             rec.grand_total_label = ''
+    #             rec.qty_request = str(rec.qty_request)
+    #             rec.last_price_char = str(rec.last_price)
+    #         elif rec.isheader == 4:
+    #             rec.qty_request = 'Sub Total'
+    #             rec.po_des_all_name = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 5:
+    #             rec.qty_request = 'Tax %'
+    #             rec.po_des_all_name = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 6:
+    #             rec.qty_request = 'Grand Total'
+    #             rec.po_des_all_name = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 7:
+    #             rec.qty_request = 'TOP'
+    #             rec.po_des_all_name = ''
+    #             rec.last_price = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 8:
+    #             rec.qty_request = 'Delivery'
+    #             rec.po_des_all_name = ''
+    #             rec.write_date = ''
+    #         elif rec.isheader == 9:
+    #             rec.qty_request = 'Incoterm/FRANCO'
+    #             rec.po_des_all_name = ''
+    #             rec.write_date = ''
 
 class StateProcurementProcess(models.Model):
 
