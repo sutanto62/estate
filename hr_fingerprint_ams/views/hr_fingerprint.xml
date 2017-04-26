@@ -198,6 +198,7 @@
 
 
         <!-- Operation Control -->
+        <!--
         <record id="labour_fingerprint_report_action" model="ir.actions.act_window">
             <field name="name">Labour Fingerprint Report</field>
             <field name="res_model">hr_fingerprint_ams.fingerprint</field>
@@ -214,6 +215,7 @@
         <menuitem id="labour_fingerprint_report_menu" name="Labour Fingerprint Report"
                   parent="estate.estate_operation_control_menu"
                   action="labour_fingerprint_report_action"/>
+                  -->
 
         <!-- Confirm All action -->
         <!-- single approval level

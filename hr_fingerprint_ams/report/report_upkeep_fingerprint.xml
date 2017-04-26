@@ -21,7 +21,7 @@
                         </p>
 
                         <!--table-->
-                        <p>Beri tanda pada kolom A s.d. E sebagai keterangan sidik jari</p>
+                        <p>Beri tanda pada kolom Alasan sebagai keterangan sidik jari.</p>
                         <table class="table table-condensed table-bordered" style="font-size: 65%">
                             <thead>
                                 <tr>
@@ -33,11 +33,11 @@
                                     <th class="col-md-1 text-center" colspan="5">Alasan</th>
                                 </tr>
                                 <tr>
-                                    <th class="col-md-1 text-center">A</th>
-                                    <th class="col-md-1 text-center">B</th>
-                                    <th class="col-md-1 text-center">C</th>
-                                    <th class="col-md-1 text-center">D</th>
-                                    <th class="col-md-1 text-center">E</th>
+                                    <th class="col-md-1 text-center" style="width:100px">Dinas Luar</th>
+                                    <th class="col-md-1 text-center" style="width:100px">Belum Terdaftar</th>
+                                    <th class="col-md-1 text-center" style="width:100px">Hujan</th>
+                                    <th class="col-md-1 text-center" style="width:100px">Sakit</th>
+                                    <th class="col-md-1 text-center" style="width:100px">Izin</th>
                                 </tr>
                             </thead>
                              <!--footer-->
@@ -45,7 +45,8 @@
                                 <tr>
                                     <td colspan="10">
                                         <p><strong>Keterangan</strong></p>
-                                        <p><cite>A: Kerusakan mesin, B: Tidak finger, C: xxx</cite></p>
+                                        <p><cite>Tulis keterangan tambahan di sini</cite></p>
+                                        <p></p>
                                     </td>
                                 </tr>
                             </tfoot>

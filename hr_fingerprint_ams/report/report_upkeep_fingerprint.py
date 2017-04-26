@@ -82,7 +82,7 @@ class UpkeepFingerprintReport(models.AbstractModel):
         report_obj = self.env['report']
         report = report_obj._get_report_from_name('hr_fingerprint_ams.report_upkeep_fingerprint')
 
-        if data['form']['company_id']:
+        if data and data['form']['company_id']:
             company = self.env['res.company'].browse(data['form']['company_id'][0])
 
         docargs = {
