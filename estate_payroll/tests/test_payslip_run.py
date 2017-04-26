@@ -96,7 +96,7 @@ class TestPayslipRun(TransactionCase):
             'slip_ids': [
                 (0, 0, {
                     'name': 'SLIP/001',
-                    'employee_id': self.env.ref('hr_employee.khl_1').id,
+                    'employee_id': self.khl_1.id,
                     'date_from': self.date_1,
                     'date_to': self.date_2,
                     'struct_id': self.env.ref('hr_payroll.structure_estate_pkwt_d').id,
@@ -104,7 +104,7 @@ class TestPayslipRun(TransactionCase):
                 }),
                 (0, 0, {
                     'name': 'SLIP/002',
-                    'employee_id': self.env.ref('hr_employee.khl_1').id,
+                    'employee_id': self.khl_1.id,
                     'date_from': self.date_1,
                     'date_to': self.date_2,
                     'struct_id': self.env.ref('hr_payroll.structure_estate_pkwt_d').id,
