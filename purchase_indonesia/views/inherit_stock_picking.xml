@@ -35,6 +35,7 @@
                  <xpath expr="//field[@name='origin']" position="after">
                      <field name="validation_check_approve" invisible="1"/>
                      <field name="validation_manager" invisible="1"/>
+                     <field name="validation_procurement" invisible="1"/>
                      <field name="validation_user" invisible="1"/>
                      <field name="shipper_by" string="Shipper By"/>
                      <field name="requested_by" string="Requester PP"/>
@@ -48,6 +49,11 @@
                  </xpath>
                  <xpath expr="//field/tree/field[@name='product_qty']" position="before">
                      <field name="initial_qty" string="Init QTY"/>
+
+                 </xpath>
+                 <xpath expr="//field/tree/field[@name='product_qty']" position="after">
+                     <field name="procurment_qty" string="Send QTY"/>
+
                  </xpath>
                  <xpath expr="//button[@name='do_new_transfer']" position="replace">
                      <button name="do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate Manager"  type="object" class="oe_highlight"/>
@@ -63,11 +69,16 @@
                  </xpath>
 
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
-                    <button name="action_validate_user"
-                            attrs="{'invisible': [('validation_user','!=',True)]}"
-                            groups="purchase_request.group_purchase_request_user"
-                            string="Requester Approve" type="object"
-                            class="oe_highlight"/>
+                        <button name="action_validate_user"
+                                attrs="{'invisible': [('validation_user','!=',True)]}"
+                                groups="purchase_request.group_purchase_request_user"
+                                string="Requester Approve" type="object"
+                                class="oe_highlight"/>
+                        <button name="action_validate_procurement"
+                                attrs="{'invisible': [('validation_procurement','=',True)]}"
+                                groups="purchase_request.group_purchase_request_procstaff"
+                                string="Shipper Approve" type="object"
+                                class="oe_highlight"/>
                  </xpath>
              </field>
          </record>
