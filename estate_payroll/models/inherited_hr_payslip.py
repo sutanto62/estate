@@ -208,12 +208,13 @@ class Payslip(models.Model):
 
     @api.multi
     def recompute_sheet(self):
-        """ Estate Worker employee has no contract when payslip processed."""
+        """ Resolve payslip calculation: upkeep weekly closing, employee without contract."""
         no_contract = []
         for record in self:
             if not record.contract_id:
                 no_contract.append(record.employee_id.name_related)
             record.onchange_employee()
+            record.compute_sheet()
 
     @api.model
     def create(self, vals):
