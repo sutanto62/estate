@@ -127,7 +127,6 @@
                         <filter string="Expected Date" icon="terp-go-month" domain="[]"  context="{'group_by':'min_date'}"/>
                         <filter string="Origin" domain="[]" context="{'group_by':'origin'}"/>
                         <filter string="Purchase Order No" domain="[]" context="{'group_by':'purchase_order_name'}"/>
-                        <filter string="PP No" domain="[]" context="{'group_by':'pr_source'}"/>
                         <filter string="Picking Type" domain="[]" context="{'group_by':'picking_type_id'}"/>
                         <filter string="Procurement Group" domain="[]" context="{'group_by':'group_id'}"/>
                     </group>
@@ -146,7 +145,7 @@
 
                     'contact_display': 'partner_address',
                     'search_default_available': 1,
-                    'search_default_group_pp_no':1
+                    
             }
             </field>
             <field name="search_view_id" ref="stock.view_picking_internal_search"/>
