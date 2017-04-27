@@ -9,6 +9,7 @@
                  <xpath expr="//field[@name='origin']" position="replace">
                         <field name="purchase_order_name" string="PO No"/>
                  </xpath>
+
              </field>
          </record>
 
@@ -91,6 +92,9 @@
                 <xpath expr="//field[@name='name']" position="before">
                     <field name="complete_name_picking" string="GRN/SRN No"/>
                 </xpath>
+                <xpath expr="//field[@name='complete_name_picking']" position="before">
+                        <field name="pr_source" string="PP No"/>
+                </xpath>
             </field>
         </record>
 
@@ -106,6 +110,7 @@
                     <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','in', ('confirmed', 'waiting', 'assigned'))]" help="Confirmed Moves"/>
                     <filter icon="terp-dialog-close" name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
                     <filter icon="terp-dialog-close" name="purchase_order_name" string="Purchase Order No"/>
+                    <filter name="group_pp_no" string="PP No" icon="terp-partner" context="{'group_by':'pr_source'}"/>
                     <separator/>
                     <filter name="late" string="Late" domain="[('min_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S'))]" help="Pickings that are late on scheduled time"/>
                     <separator/>
@@ -114,6 +119,7 @@
                     <field name="product_id"/>
                     <field name="picking_type_id"/>
                     <field name="group_id"/>
+                    <field name="pr_source" string="PP No"/>
                     <field name="purchase_order_name" string="Purchase Order No"/>
                     <group expand="0" string="Group By">
                         <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
@@ -121,6 +127,7 @@
                         <filter string="Expected Date" icon="terp-go-month" domain="[]"  context="{'group_by':'min_date'}"/>
                         <filter string="Origin" domain="[]" context="{'group_by':'origin'}"/>
                         <filter string="Purchase Order No" domain="[]" context="{'group_by':'purchase_order_name'}"/>
+                        <filter string="PP No" domain="[]" context="{'group_by':'pr_source'}"/>
                         <filter string="Picking Type" domain="[]" context="{'group_by':'picking_type_id'}"/>
                         <filter string="Procurement Group" domain="[]" context="{'group_by':'group_id'}"/>
                     </group>
@@ -139,6 +146,7 @@
 
                     'contact_display': 'partner_address',
                     'search_default_available': 1,
+                    'search_default_group_pp_no':1
             }
             </field>
             <field name="search_view_id" ref="stock.view_picking_internal_search"/>
