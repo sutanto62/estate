@@ -483,7 +483,7 @@ class InheritPurchaseRequest(models.Model):
         return price
 
     @api.multi
-    def _get_max_price_budget(self):
+    def _get_total_price_budget(self):
         #get total budget_available from purchase request
 
         price = float(sum(record.budget_available for record in self.line_ids))
@@ -598,52 +598,58 @@ class InheritPurchaseRequest(models.Model):
         """
         state_data = {'state':'approval4','assigned_to' : self._get_division_finance()}
         self.write(state_data)
+        self.send_mail_template()
 
     @api.multi
     def action_financial_approval1(self):
         """ Confirms department Head Financial Approval.
         """
-        if self._get_max_price() < self._get_price_low():
+        if self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self._get_max_price() >= self._get_price_low():
+        elif self._get_total_price_budget() >= self._get_price_low():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
+            self.send_mail_template()
 
     @api.multi
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
-        if self._get_type_product() == True:
+        # if self._get_type_product() == True:
             # product Capital
-            if self._get_max_price_budget() < self._get_price_mid():
-                    self.button_approved()
-            elif self._get_max_price_budget() >= self._get_price_mid():
-                state_data = {'state':'approval5','assigned_to' : self._get_director()}
-                self.write(state_data)
-        elif self._get_type_product() == False:
+        if self._get_total_price_budget() < self._get_price_mid():
+                self.button_approved()
+        elif self._get_total_price_budget() >= self._get_price_mid():
+            state_data = {'state':'approval5','assigned_to' : self._get_director()}
+            self.write(state_data)
+            self.send_mail_template()
+        # elif self._get_type_product() == False:
             #Product service and stockable
-            if self._get_max_price() < self._get_price_mid():
-                    self.button_approved()
-            elif self._get_max_price() >= self._get_price_mid():
-                state_data = {'state':'approval5','assigned_to' : self._get_director()}
-                self.write(state_data)
+            # if self._get_max_price() < self._get_price_mid():
+            #         self.button_approved()
+            # elif self._get_max_price() >= self._get_price_mid():
+            #     state_data = {'state':'approval5','assigned_to' : self._get_director()}
+            #     self.write(state_data)
+            #     self.send_mail_template()
 
     @api.multi
     def action_financial_approval3(self):
         """ Confirms Director  Financial Approval.
         """
-        if self._get_type_product() == True:
-            if self._get_max_price_budget() < self._get_price_high():
-                    self.button_approved()
-            elif self._get_max_price_budget() >= self._get_price_high():
-                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
-                self.write(state_data)
-        elif self._get_type_product() == False:
-            if self._get_max_price() < self._get_price_high():
-                    self.button_approved()
-            elif self._get_max_price() >= self._get_price_high():
-                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
-                self.write(state_data)
+        # if self._get_type_product() == True:
+        if self._get_total_price_budget() < self._get_price_high():
+                self.button_approved()
+        elif self._get_total_price_budget() >= self._get_price_high():
+            state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+            self.write(state_data)
+            self.send_mail_template()
+        # elif self._get_type_product() == False:
+        #     if self._get_max_price() < self._get_price_high():
+        #             self.button_approved()
+        #     elif self._get_max_price() >= self._get_price_high():
+        #         state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+        #         self.write(state_data)
+        #         self.send_mail_template()
 
     @api.multi
     def action_financial_approval4(self):
@@ -683,19 +689,19 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
         if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
-        elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
         else:
             try:
-               if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_max_price() >= self._get_price_low():
+               if self.type_functional == 'agronomy' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_total_price_budget() >= self._get_price_low():
                     state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
-               elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
+               elif self.type_functional == 'technic' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'technic' and self._get_total_price_budget() >= self._get_price_low():
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-               elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_max_price() >= self._get_price_low()) :
+               elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_total_price_budget() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low()) :
                     state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_max_price() < self._get_price_low():
+               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
                     state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
-               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code() and self._get_max_price() >= self._get_price_low() :
+               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low() :
                     state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             except:
                 raise exceptions.ValidationError('Call Your Hr Admin to Fill Department Code')
@@ -706,13 +712,13 @@ class InheritPurchaseRequest(models.Model):
     def action_technic(self):
         """ Confirms Technical request.
         """
-        if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low():
+        if self.type_functional == 'agronomy' and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'general' and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'technic' and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self._get_max_price() >= self._get_price_low() or self._get_compare_requester_non_hr():
+        elif self._get_total_price_budget() >= self._get_price_low() or self._get_compare_requester_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
             self.send_mail_template()
@@ -759,10 +765,13 @@ class InheritPurchaseRequest(models.Model):
 
         if self._get_max_price() >= self._get_price_low():
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         else:
@@ -963,7 +972,8 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     @api.depends('line_ids')
     def _compute_total_estimate_price(self):
-        self.total_estimate_price = sum(record.total_price for record in self.line_ids)
+        for item in self:
+            item.total_estimate_price = sum(record.total_price for record in item.line_ids)
 
     @api.multi
     @api.onchange('type_location')
@@ -1210,7 +1220,7 @@ class InheritPurchaseRequestLine(models.Model):
 
     @api.multi
     @api.depends('product_id', 'name', 'product_uom_id', 'product_qty',
-                 'analytic_account_id', 'date_required', 'specifications')
+                 'analytic_account_id', 'date_required', 'specifications','price_per_product_label')
     def _compute_is_editable(self):
         for rec in self:
             if rec.request_id.state in ['draft','approval4','approval5','approval6']:
@@ -1221,7 +1231,7 @@ class InheritPurchaseRequestLine(models.Model):
     price_per_product = fields.Float('Product Price')
     price_per_product_label = fields.Char('Product Price',readonly=True)
     total_price = fields.Float('Total Price',compute='_compute_total_price')
-    budget_available = fields.Float('Budget Available')
+    budget_available = fields.Float('Budget Price')
     control_unit =  fields.Float('Budget Control Unit')
     validation_budget = fields.Boolean('Validation Budget',store=False,compute='_compute_validation_budget')
 
@@ -1241,6 +1251,14 @@ class InheritPurchaseRequestLine(models.Model):
                 price.total_price = price.product_qty * price.price_per_product
 
     @api.multi
+    @api.onchange('price_per_product','control_unit')
+    def _compute_total_budget_price(self):
+        for price in self:
+            if price.price_per_product and price.control_unit:
+                price.budget_available = price.control_unit * price.price_per_product
+
+
+    @api.multi
     @api.onchange('product_id','request_state')
     def _compute_price_per_product(self):
         if self.product_id  :
@@ -1250,20 +1268,28 @@ class InheritPurchaseRequestLine(models.Model):
                 self.price_per_product = line
                 self.price_per_product_label = str(line)
             elif self.request_state != 'draft' :
-                self.price_per_product
-
+               self.price_per_product
 
     @api.multi
-    @api.onchange('analytic_account_id')
-    def _onchange_budget_available(self):
-        arrBudget = []
-        if self.analytic_account_id:
-            budget = self.env['crossovered.budget.lines'].search([('analytic_account_id','=',self.analytic_account_id.id)])
-            for budget in budget:
-                arrBudget.append(budget.planned_amount)
-            for amount in arrBudget:
-                amount = float(amount)
-                self.budget_available = amount
+    @api.constrains('budget_available')
+    def _constraint_budget_available(self):
+        for item in self:
+             if item.request_state == 'budget' and item.budget_available == 0:
+                error_msg = "Please Insert Budget Price"
+                raise exceptions.ValidationError(error_msg)
+
+
+    # @api.multi
+    # @api.onchange('analytic_account_id')
+    # def _onchange_budget_available(self):
+    #     arrBudget = []
+    #     if self.analytic_account_id:
+    #         budget = self.env['crossovered.budget.lines'].search([('analytic_account_id','=',self.analytic_account_id.id)])
+    #         for budget in budget:
+    #             arrBudget.append(budget.planned_amount)
+    #         for amount in arrBudget:
+    #             amount = float(amount)
+    #             self.budget_available = amount
 
     @api.multi
     @api.onchange('request_id','product_id')

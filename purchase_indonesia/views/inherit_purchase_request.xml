@@ -82,12 +82,12 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="before">
                      <field name="price_per_product" invisible="0" string="Est Price"/>
-                     <field name="total_price" invisible="0" string="Total Price"/>
+                     <field name="total_price" invisible="0" string="Total Price" sum="Total Price"/>
                  </xpath>
                  <xpath expr="//field[@name='line_ids']//tree//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
                      <field name="control_unit" string="Unit Control" attrs="{'readonly': [('validation_budget','!=',True)]}"/>
-                     <field name="budget_available" string="Budget Available"
+                     <field name="budget_available" string="Budget Price" sum="Budget Price"
                                  attrs="{'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
              </field>
@@ -115,7 +115,7 @@
                  <xpath expr="//field[@name='line_ids']//form//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
                      <field name="control_unit" string="Unit Control" attrs="{'readonly': [('validation_budget','!=',True)]}"/>
-                     <field name="budget_available" string="Budget Available"
+                     <field name="budget_available" string="Budget Price"
                                  attrs="{'readonly': [('validation_budget','!=',True)]}"/>
                  </xpath>
              </field>

@@ -43,6 +43,10 @@ class InheritStockPicking(models.Model):
         return self.env.ref('estate.group_manager', False).id
 
     @api.multi
+    def get_purchase_procurement_staff(self):
+        return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
+
+    @api.multi
     def _get_user(self):
         #find User
         user= self.env['res.users'].browse(self.env.uid)
@@ -79,6 +83,26 @@ class InheritStockPicking(models.Model):
             raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
 
         return manager_estate
+
+    @api.multi
+    def _get_user_procurement_staff(self):
+        #get List of Procurement Staff from user.groups
+        arrProcurement = []
+        arrUser = []
+
+        list_procurement = self.env['res.groups'].search([('id','=',self.get_purchase_procurement_staff())]).users
+
+        for procurement in list_procurement:
+                arrProcurement.append(procurement.id)
+        try:
+            staff = self.env['res.users'].search([('id','in',arrProcurement)])
+
+            for user in staff:
+                arrUser.append(user.id)
+        except:
+            raise exceptions.ValidationError('User get Role Procurement Staff Not Found in User Access')
+
+        return arrUser
 
     @api.multi
     def _get_requested_purchase_request(self):
@@ -129,6 +153,21 @@ class InheritStockPicking(models.Model):
 
         return assigned_manager
 
+    @api.multi
+    def _get_user_purchase_tender(self):
+        for item in self :
+            arrUser = []
+
+            pr = item.env['purchase.request']
+            pr_id = pr.search([('complete_name','like',item.pr_source)]).id
+            tender = item.env['purchase.requisition']
+            tender_id = tender.search([('request_id','=',pr_id)])
+
+            for record in tender_id:
+                arrUser.append(record.user_id.id)
+
+        return arrUser
+
 
     @api.multi
     def _get_office_level_id(self):
@@ -173,6 +212,7 @@ class InheritStockPicking(models.Model):
     validation_manager = fields.Boolean('Validation Manager')
     validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
     validation_check_approve = fields.Boolean('Validation checking approve',compute='_check_validation_manager')
+    validation_procurement = fields.Boolean('Validation Procurement')
     description = fields.Text('Description')
     pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
     purchase_order_name = fields.Char('Purchase Order Complete Name',related='purchase_id.complete_name',store=True)
@@ -194,10 +234,14 @@ class InheritStockPicking(models.Model):
     @api.depends('requested_by')
     def _check_validation_user(self):
         for item in self:
-            if item.validation_manager == False and item.state != 'done':
-                item.validation_user = True if item.requested_by.id == item._get_user().id else False
+            if item.validation_procurement ==  True:
+                if item.validation_manager == False and item.state != 'done':
+                    item.validation_user = True if item.requested_by.id == item._get_user().id else False
+                else:
+                    item.validation_user = False
             else:
                 item.validation_user = False
+
 
     @api.multi
     def action_validate_manager(self):
@@ -219,12 +263,70 @@ class InheritStockPicking(models.Model):
                     user = record.user_id.name
                 item.shipper_by = user
 
+    @api.multi
+    def set_qty_done_to_zero(self):
+        for item in self:
+            data = {
+                    'qty_done' : 0
+                   }
+            item.env['stock.pack.operation'].search([('picking_id','=',item.id)]).write(data)
+
+    @api.multi
+    def action_validate_procurement(self):
+        for item in self:
+            arrProduct = []
+
+            pack_operation = item.env['stock.pack.operation']
+
+            temp_qty_done= 0
+
+            for record in item.pack_operation_product_ids:
+                 if item._get_user().id not in list(item._get_user_procurement_staff()) and item._get_user().id not in item._get_user_purchase_tender() :
+                        error_msg = 'You cannot approve this \"%s\" , you are not PROCUREMENT STAFF '%(self.complete_name_picking)
+
+                        raise exceptions.ValidationError(error_msg)
+                 else:
+                     if record.qty_done > 0 or record.qty_done < 0 :
+                         temp_qty_done = temp_qty_done + 1
+
+                     if temp_qty_done == 0:
+                        error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
+                        raise exceptions.ValidationError(error_msg)
+
+                     else:
+                        pack_ids = pack_operation.search([('picking_id','=',item.id),('qty_done','>',0)])
+
+                        for pack in pack_ids:
+                            arrProduct.append(pack.product_id.id)
+
+                        picking_pack_ids = pack_operation.search([('picking_id','=',item.id),('product_id','in',arrProduct)])
+
+                        for product in picking_pack_ids:
+                            data = {
+                                'procurment_qty' : product.qty_done,
+                                }
+                            product.write(data)
+
+            item.set_qty_done_to_zero()
+
+            #set to Approval User
+            item.write({'validation_procurement' : True})
+
+            #send Mail to Approval User
+            item.send_mail_template_user()
+
 
     @api.multi
     def action_validate_user(self):
         for item in self:
+
+            temp_qty_done= 0
+
             for record in item.pack_operation_product_ids:
-                if record.qty_done == 0:
+                if record.qty_done > 0 or record.qty_done < 0:
+                         temp_qty_done = temp_qty_done + 1
+
+                if temp_qty_done == 0:
                     error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
                     raise exceptions.ValidationError(error_msg)
                 else:
@@ -363,6 +465,7 @@ class InheritStockPicking(models.Model):
                     'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'validation_procurement':False,
                     'purchase_order_name':purchase_order.complete_name
                     }
             purchase_data = {
@@ -370,6 +473,7 @@ class InheritStockPicking(models.Model):
                     'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'validation_procurement':False,
                     'purchase_order_name':purchase_order.complete_name
                 }
 
@@ -492,8 +596,8 @@ class InheritStockPicking(models.Model):
     @api.constrains('pack_operation_product_ids')
     def _constraint_pack_operation_product_ids(self):
         for item in self:
-            if item._get_user().id != item.requested_by.id:
-                error_msg = 'You cannot Process this \"%s\" , you are not requester of this PP '%(item.complete_name_picking)
+            if item._get_user().id != item.requested_by.id and item._get_user().id not in list(item._get_user_procurement_staff()):
+                error_msg = 'You cannot Process this \"%s\" , You are not requester of this PP or You are not Procurement Staff '%(item.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
 
     #Email Template Code Starts Here
@@ -507,6 +611,17 @@ class InheritStockPicking(models.Model):
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
             self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.one
+    def send_mail_template_user(self):
+        # Find the e-mail template
+        template = self.env.ref('purchase_indonesia.email_template_stock_picking_2')
+        # You can also find the e-mail template like this:
+        # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+        # Send out the e-mail template to the user
+        self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+
 
     @api.multi
     def database(self):
@@ -542,6 +657,7 @@ class InheritStockPackOperation(models.Model):
 
     checking_split = fields.Boolean('Checking Split',default=False)
     initial_qty = fields.Float('Initial Qty',readonly=1)
+    procurment_qty = fields.Float('Procurement Qty',readonly=1,help="Procurement Received QTY From Vendor")
 
     @api.multi
     def do_force_donce(self):

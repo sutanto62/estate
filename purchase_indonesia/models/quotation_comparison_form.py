@@ -68,16 +68,16 @@ class InheritPurchaseOrderLine(models.Model):
 
         for element in self.browse(cr, uid, ids, context=context):
             if element.validation_check_backorder == False and element.qty_request == element.product_qty:
-                print'gagal1'
+
                 self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
             elif element.validation_check_backorder == False and not element.qty_request:
-                print'gagal4'
+
                 self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.product_qty}, context=context)
             elif element.validation_check_backorder == False and element.qty_request :
-                print'gagal3'
+
                 self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
             else:
-                print'gagal2'
+
                 self.write(cr, uid, element.id, {'trigger_state':True,'quantity_tendered': element.qty_request}, context=context)
         return True
 
