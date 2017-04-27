@@ -483,7 +483,7 @@ class InheritPurchaseRequest(models.Model):
         return price
 
     @api.multi
-    def _get_max_price_budget(self):
+    def _get_total_price_budget(self):
         #get total budget_available from purchase request
 
         price = float(sum(record.budget_available for record in self.line_ids))
@@ -615,9 +615,9 @@ class InheritPurchaseRequest(models.Model):
         """
         if self._get_type_product() == True:
             # product Capital
-            if self._get_max_price_budget() < self._get_price_mid():
+            if self._get_total_price_budget() < self._get_price_mid():
                     self.button_approved()
-            elif self._get_max_price_budget() >= self._get_price_mid():
+            elif self._get_total_price_budget() >= self._get_price_mid():
                 state_data = {'state':'approval5','assigned_to' : self._get_director()}
                 self.write(state_data)
         elif self._get_type_product() == False:
@@ -633,9 +633,9 @@ class InheritPurchaseRequest(models.Model):
         """ Confirms Director  Financial Approval.
         """
         if self._get_type_product() == True:
-            if self._get_max_price_budget() < self._get_price_high():
+            if self._get_total_price_budget() < self._get_price_high():
                     self.button_approved()
-            elif self._get_max_price_budget() >= self._get_price_high():
+            elif self._get_total_price_budget() >= self._get_price_high():
                 state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
                 self.write(state_data)
         elif self._get_type_product() == False:
@@ -963,7 +963,8 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     @api.depends('line_ids')
     def _compute_total_estimate_price(self):
-        self.total_estimate_price = sum(record.total_price for record in self.line_ids)
+        for item in self:
+            item.total_estimate_price = sum(record.total_price for record in item.line_ids)
 
     @api.multi
     @api.onchange('type_location')
@@ -1210,7 +1211,7 @@ class InheritPurchaseRequestLine(models.Model):
 
     @api.multi
     @api.depends('product_id', 'name', 'product_uom_id', 'product_qty',
-                 'analytic_account_id', 'date_required', 'specifications')
+                 'analytic_account_id', 'date_required', 'specifications','price_per_product_label')
     def _compute_is_editable(self):
         for rec in self:
             if rec.request_id.state in ['draft','approval4','approval5','approval6']:
@@ -1221,7 +1222,7 @@ class InheritPurchaseRequestLine(models.Model):
     price_per_product = fields.Float('Product Price')
     price_per_product_label = fields.Char('Product Price',readonly=True)
     total_price = fields.Float('Total Price',compute='_compute_total_price')
-    budget_available = fields.Float('Budget Available')
+    budget_available = fields.Float('Budget Price')
     control_unit =  fields.Float('Budget Control Unit')
     validation_budget = fields.Boolean('Validation Budget',store=False,compute='_compute_validation_budget')
 
@@ -1241,6 +1242,14 @@ class InheritPurchaseRequestLine(models.Model):
                 price.total_price = price.product_qty * price.price_per_product
 
     @api.multi
+    @api.onchange('price_per_product','control_unit')
+    def _compute_total_budget_price(self):
+        for price in self:
+            if price.price_per_product and price.control_unit:
+                price.budget_available = price.control_unit * price.price_per_product
+
+
+    @api.multi
     @api.onchange('product_id','request_state')
     def _compute_price_per_product(self):
         if self.product_id  :
@@ -1250,20 +1259,20 @@ class InheritPurchaseRequestLine(models.Model):
                 self.price_per_product = line
                 self.price_per_product_label = str(line)
             elif self.request_state != 'draft' :
-                self.price_per_product
+               self.price_per_product
 
 
-    @api.multi
-    @api.onchange('analytic_account_id')
-    def _onchange_budget_available(self):
-        arrBudget = []
-        if self.analytic_account_id:
-            budget = self.env['crossovered.budget.lines'].search([('analytic_account_id','=',self.analytic_account_id.id)])
-            for budget in budget:
-                arrBudget.append(budget.planned_amount)
-            for amount in arrBudget:
-                amount = float(amount)
-                self.budget_available = amount
+    # @api.multi
+    # @api.onchange('analytic_account_id')
+    # def _onchange_budget_available(self):
+    #     arrBudget = []
+    #     if self.analytic_account_id:
+    #         budget = self.env['crossovered.budget.lines'].search([('analytic_account_id','=',self.analytic_account_id.id)])
+    #         for budget in budget:
+    #             arrBudget.append(budget.planned_amount)
+    #         for amount in arrBudget:
+    #             amount = float(amount)
+    #             self.budget_available = amount
 
     @api.multi
     @api.onchange('request_id','product_id')
