@@ -323,7 +323,7 @@ class InheritStockPicking(models.Model):
             temp_qty_done= 0
 
             for record in item.pack_operation_product_ids:
-                if record.qty_done > 0:
+                if record.qty_done > 0 or record.qty_done < 0:
                          temp_qty_done = temp_qty_done + 1
 
                 if temp_qty_done == 0:
