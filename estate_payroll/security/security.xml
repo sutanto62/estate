@@ -1,0 +1,16 @@
+<openerp>
+    <data noupdate="0">
+        
+        <record id="estate_payroll.estate_payroll_officer" model="res.groups">
+            <field name="name">Estate Payroll Officer</field>
+            <field name="category_id" ref="estate.module_category_estate"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_hr_user'))]"/>
+        </record>
+
+        <record id="estate_payroll.estate_payroll_assistant" model="res.groups">
+            <field name="name">Estate Payroll Assistant</field>
+            <field name="category_id" ref="estate.module_category_estate"/>
+            <field name="implied_ids" eval="[(4, ref('estate_payroll.estate_payroll_officer'))]"/>
+        </record>
+    </data>
+</openerp>
