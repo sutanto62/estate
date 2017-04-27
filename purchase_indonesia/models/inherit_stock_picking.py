@@ -465,6 +465,7 @@ class InheritStockPicking(models.Model):
                     'srn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'validation_procurement':False,
                     'purchase_order_name':purchase_order.complete_name
                     }
             purchase_data = {
@@ -472,6 +473,7 @@ class InheritStockPicking(models.Model):
                     'grn_no' : item.env['ir.sequence'].next_by_code(sequence_name),
                     'assigned_to' : None,
                     'validation_manager':False,
+                    'validation_procurement':False,
                     'purchase_order_name':purchase_order.complete_name
                 }
 
