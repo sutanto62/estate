@@ -286,7 +286,7 @@ class InheritStockPicking(models.Model):
 
                         raise exceptions.ValidationError(error_msg)
                  else:
-                     if record.qty_done > 0:
+                     if record.qty_done > 0 or record.qty_done < 0 :
                          temp_qty_done = temp_qty_done + 1
 
                      if temp_qty_done == 0:
