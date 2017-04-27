@@ -598,52 +598,58 @@ class InheritPurchaseRequest(models.Model):
         """
         state_data = {'state':'approval4','assigned_to' : self._get_division_finance()}
         self.write(state_data)
+        self.send_mail_template()
 
     @api.multi
     def action_financial_approval1(self):
         """ Confirms department Head Financial Approval.
         """
-        if self._get_max_price() < self._get_price_low():
+        if self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self._get_max_price() >= self._get_price_low():
+        elif self._get_total_price_budget() >= self._get_price_low():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
+            self.send_mail_template()
 
     @api.multi
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
-        if self._get_type_product() == True:
+        # if self._get_type_product() == True:
             # product Capital
-            if self._get_total_price_budget() < self._get_price_mid():
-                    self.button_approved()
-            elif self._get_total_price_budget() >= self._get_price_mid():
-                state_data = {'state':'approval5','assigned_to' : self._get_director()}
-                self.write(state_data)
-        elif self._get_type_product() == False:
+        if self._get_total_price_budget() < self._get_price_mid():
+                self.button_approved()
+        elif self._get_total_price_budget() >= self._get_price_mid():
+            state_data = {'state':'approval5','assigned_to' : self._get_director()}
+            self.write(state_data)
+            self.send_mail_template()
+        # elif self._get_type_product() == False:
             #Product service and stockable
-            if self._get_max_price() < self._get_price_mid():
-                    self.button_approved()
-            elif self._get_max_price() >= self._get_price_mid():
-                state_data = {'state':'approval5','assigned_to' : self._get_director()}
-                self.write(state_data)
+            # if self._get_max_price() < self._get_price_mid():
+            #         self.button_approved()
+            # elif self._get_max_price() >= self._get_price_mid():
+            #     state_data = {'state':'approval5','assigned_to' : self._get_director()}
+            #     self.write(state_data)
+            #     self.send_mail_template()
 
     @api.multi
     def action_financial_approval3(self):
         """ Confirms Director  Financial Approval.
         """
-        if self._get_type_product() == True:
-            if self._get_total_price_budget() < self._get_price_high():
-                    self.button_approved()
-            elif self._get_total_price_budget() >= self._get_price_high():
-                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
-                self.write(state_data)
-        elif self._get_type_product() == False:
-            if self._get_max_price() < self._get_price_high():
-                    self.button_approved()
-            elif self._get_max_price() >= self._get_price_high():
-                state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
-                self.write(state_data)
+        # if self._get_type_product() == True:
+        if self._get_total_price_budget() < self._get_price_high():
+                self.button_approved()
+        elif self._get_total_price_budget() >= self._get_price_high():
+            state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+            self.write(state_data)
+            self.send_mail_template()
+        # elif self._get_type_product() == False:
+        #     if self._get_max_price() < self._get_price_high():
+        #             self.button_approved()
+        #     elif self._get_max_price() >= self._get_price_high():
+        #         state_data = {'state':'approval6','assigned_to' : self._get_president_director()}
+        #         self.write(state_data)
+        #         self.send_mail_template()
 
     @api.multi
     def action_financial_approval4(self):
@@ -683,19 +689,19 @@ class InheritPurchaseRequest(models.Model):
         state_data = []
         if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
-        elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
         else:
             try:
-               if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_max_price() >= self._get_price_low():
+               if self.type_functional == 'agronomy' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_total_price_budget() >= self._get_price_low():
                     state_data = {'state':'technic4','assigned_to':self._get_technic_agronomy()}
-               elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low() or self.type_functional == 'technic' and self._get_max_price() >= self._get_price_low():
+               elif self.type_functional == 'technic' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'technic' and self._get_total_price_budget() >= self._get_price_low():
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
-               elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_max_price() >= self._get_price_low()) :
+               elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_total_price_budget() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low()) :
                     state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
-               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_max_price() < self._get_price_low():
+               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
                     state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
-               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code() and self._get_max_price() >= self._get_price_low() :
+               elif self.type_functional == 'general' and self.department_id.code in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low() :
                     state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             except:
                 raise exceptions.ValidationError('Call Your Hr Admin to Fill Department Code')
@@ -706,13 +712,13 @@ class InheritPurchaseRequest(models.Model):
     def action_technic(self):
         """ Confirms Technical request.
         """
-        if self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low():
+        if self.type_functional == 'agronomy' and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'general' and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
+        elif self.type_functional == 'technic' and self._get_total_price_budget() < self._get_price_low():
             self.button_approved()
-        elif self._get_max_price() >= self._get_price_low() or self._get_compare_requester_non_hr():
+        elif self._get_total_price_budget() >= self._get_price_low() or self._get_compare_requester_non_hr():
             state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
             self.write(state_data)
             self.send_mail_template()
@@ -759,10 +765,13 @@ class InheritPurchaseRequest(models.Model):
 
         if self._get_max_price() >= self._get_price_low():
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+
         elif self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low() :
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+
         elif self.type_functional == 'technic' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+
         elif self.type_functional == 'general' and self._get_max_price() < self._get_price_low():
             state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
         else:
@@ -1260,6 +1269,14 @@ class InheritPurchaseRequestLine(models.Model):
                 self.price_per_product_label = str(line)
             elif self.request_state != 'draft' :
                self.price_per_product
+
+    @api.multi
+    @api.constrains('budget_available')
+    def _constraint_budget_available(self):
+        for item in self:
+             if item.request_state == 'budget' and item.budget_available == 0:
+                error_msg = "Please Insert Budget Price"
+                raise exceptions.ValidationError(error_msg)
 
 
     # @api.multi
