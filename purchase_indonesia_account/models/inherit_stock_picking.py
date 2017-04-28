@@ -56,6 +56,7 @@ class InheritStockPicking(models.Model):
                 'default_partner_id': partner_id,
                 'default_purchase_id':purchase_id,
                 'default_origin' : purchase_name,
+                'default_type' : 'in_invoice'
             })
             res['domain'] = [('picking_id','=', ids[0])]
             return res
