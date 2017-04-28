@@ -1064,8 +1064,18 @@ class ViewQuotationComparison(models.Model):
 
         drop_view_if_exists(cr, 'v_quotation_comparison_form_line')
 
-        cr.execute("""create or replace view v_quotation_comparison_form_line as
-                        select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char from (
+        cr.execute("""DO
+                    $do$
+                    begin
+                    if exists(select 1 from information_schema.tables where table_name='idx_v_quotation_comparison_form_line')
+                    then drop table idx_v_quotation_comparison_form_line;
+                    end if;
+                    end
+                    $do$""")
+
+        cr.execute("""select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char
+                        into idx_v_quotation_comparison_form_line
+                        from (
                         select row_number() over() id,vqcf.*,qcf.id qcf_id from (
                                                             select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,max(vendor6) vendor6,max(vendor7) vendor7,max(vendor8) vendor8,max(vendor9) vendor9,max(vendor10) vendor10,cast('' as varchar) po_des_all_name,2 isheader from (
@@ -1404,6 +1414,15 @@ class ViewQuotationComparison(models.Model):
                                                                             group by po.id,order_id,product_id,price_total,price_unit,product_qty )a )b
                                                                         where b.rank_id = 1
                                                     )last_price on qcf_line.product_id = last_price.product_id""")
+
+        # cr.execute("""drop index ix_req_id""")
+        cr.execute("""create index ix_req_id on idx_v_quotation_comparison_form_line (req_id)""")
+
+        # cr.execute("""drop index ix_product_id""")
+        cr.execute("""create index ix_product_id on idx_v_quotation_comparison_form_line (product_id)""")
+
+        cr.execute("""create or replace view v_quotation_comparison_form_line as
+                        select * from idx_v_quotation_comparison_form_line""")
 
 
 
