@@ -8,6 +8,8 @@
                 <tree string="Tracking Purchase Order" decoration-danger="'status_invoice' ,'=', 'in Progress'">
                     <field name="id" invisible="1"/>
                     <field name="complete_name" string="Purchase Request/PP No"/>
+                    <field name="type_location" string="Location"/>
+                    <field name="company_id" string="Company"/>
                     <field name="status_po" string="Status PO"/>
                     <field name="status_picking" string="Status Picking" readonly="1"/>
                     <field name="status_invoice" string="Status Invoice"/>
@@ -29,6 +31,8 @@
                         </div>
                         <group>
                             <field name="complete_name" string="Purchase Request/PP No"/>
+                            <field name="type_location" string="Location"/>
+                            <field name="company_id" string="Company"/>
                         </group>
                         <separator string="Detail Progress"/>
                         <field name="detail_ids">
@@ -51,6 +55,8 @@
                 <search string="Search Quotation Comparison Form">
                     <field name="requisition_id" string="Tender No"/>
                     <field name="complete_name" string="PP No"/>
+                    <field name="type_location" string="Location"/>
+                    <field name="company_id" string="Company"/>
                     <separator/>
                     <!--<filter name="status_pp" string="Status PP Outstanding"-->
                             <!--domain="[('status_pp','=','PP Outstanding')]"-->

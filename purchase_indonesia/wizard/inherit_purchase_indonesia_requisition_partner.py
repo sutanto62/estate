@@ -127,6 +127,8 @@ class InheritRequisitionPartner(models.TransientModel):
             arrProduct = []
             arrOrder = []
             arrQcfid = []
+            arrPrice = []
+
             for item in quotation_comparison_form:
                 arrQcfid.append(item.id)
 
@@ -153,31 +155,39 @@ class InheritRequisitionPartner(models.TransientModel):
                     }
                     order_line.search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)
 
-            for po in order.search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',False)]):
+            for po in order.search([('requisition_id','=',self._context.get('active_id')),('state','=','cancel')]):
                 arrPartner.append(po.partner_id.id)
 
             #intersection partner_id in order line to partner id in wizard,
+
             intersection_partner = set(arrPartner).intersection(set(record.partner_ids.ids))
             list_partner = list(intersection_partner)
 
-            po_order = order.search([('requisition_id','=',record._context.get('active_id')),('partner_id','in',list_partner),('validation_check_backorder','=',False)])
-            for record in po_order:
-                arrOrder.append(record.id)
+            po_order = order.search([('requisition_id','=',record._context.get('active_id')),('partner_id','in',list_partner),('state','=','cancel'),('validation_check_backorder','=',False)])
+
+            order_new = order.search([('requisition_id','=',record._context.get('active_id')),('partner_id','in',list_partner),('state','!=','cancel'),('validation_check_backorder','=',True)])
+
             #Search Price Unit
 
             for product in tender_line_id:
                 arrProduct.append(product.product_id.id)
-            poline_order = order_line.search([('product_id','in',arrProduct),('partner_id','in',list_partner),('order_id','=',record.id)])
-            try:
-                price_unit = min(price.price_unit for price in poline_order)
-            except:
-                price_unit = 0
-            price_data = {'price_unit' :price_unit}
 
-            po = order.search([('requisition_id','=',record._context.get('active_id')),('partner_id','in',list_partner),('validation_check_backorder','=',True)])
-            for  purchase in po:
-                test = order_line.search([('order_id','=',purchase.id),('partner_id','in',list_partner),('product_id','=',arrProduct)]).write(price_data)
+                for po in po_order:
+                    arrOrder.append(po.id)
 
+                    poline_order = order_line.search([('product_id','=',product.product_id.id),('partner_id','=',po.partner_id.id),('order_id','=',po.id)])
+
+                    for price in poline_order:
+
+                        for purchase in order_new:
+                            # Search Purchase order line new
+                            order = order_line.search([('order_id','=',purchase.id),('partner_id','=',purchase.partner_id.id),('product_id','=',price.product_id.id)])
+
+                            # Update Price unit in order line
+                            for line in order:
+                                if line.product_id.id == price.product_id.id and price.partner_id.id == line.partner_id.id:
+                                    line.write({'price_unit' :price.price_unit})
+                                    arrPrice.append(price.price_unit)
 
     @api.multi
     @api.onchange('partner_ids')

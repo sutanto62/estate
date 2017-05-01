@@ -159,7 +159,7 @@ class InheritPurchaseRequest(models.Model):
     _order = 'complete_name desc'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
-    type_purchase = fields.Many2one('purchase.indonesia.type','Purchase Type')
+    type_purchase = fields.Many2one('purchase.indonesia.type','Purchase Type',required=True)
     type_functional = fields.Selection([('agronomy','Agronomy'),
                                      ('technic','Technic'),('general','General')],'Unit Functional')
     department_id = fields.Many2one('hr.department','Department')
@@ -169,7 +169,7 @@ class InheritPurchaseRequest(models.Model):
     type_location = fields.Char('Location',default=_get_office_level_id,readonly = 1)
     code =  fields.Char('code location',default=_get_office_level_id_code,readonly = 1)
     type_product = fields.Selection([('consu','Capital'),
-                                     ('service','Service'),('product','Stockable Product')],'Location Type')
+                                     ('service','Service'),('product','Stockable Product')],'Location Type',required=True)
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     state = fields.Selection(

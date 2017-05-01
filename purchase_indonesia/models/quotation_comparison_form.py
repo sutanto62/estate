@@ -56,13 +56,35 @@ class InheritPurchaseOrderLine(models.Model):
 
     comparison_id = fields.Many2one('quotation.comparison.form','QCF')
     trigger_state = fields.Boolean('Trigger State')
+    trigger_draft = fields.Boolean('Trigger Draft')
     trigger_filter_cancel = fields.Boolean('Trigger Cancel',default=False,compute='_filter_cancel')
+    price_subtotal_temp = fields.Float(string='Subtotal',compute='_amount_line_temp',digits_compute= dp.get_precision('Account'))
+    price_subtotal_label = fields.Char(string='Subtotal',compute='_amount_line_label')
 
-    # @api.multi
-    # def button_confirm(self):
-    #     self.write({'trigger_state':True})
-    #     res = super(InheritPurchaseOrderLine,self).button_confirm()
-    #     return res
+    @api.multi
+    @api.depends('price_subtotal_temp','price_subtotal')
+    def _amount_line_label(self):
+        for item in self:
+            if item.trigger_draft == True and item.quantity_tendered > 0:
+
+                item.price_subtotal_label = item.price_subtotal_temp
+
+            elif item.trigger_draft == False and item.quantity_tendered > 0:
+
+                item.price_subtotal_label = item.price_subtotal
+
+            else:
+                item.price_subtotal_label = item.price_subtotal
+
+    @api.multi
+    @api.depends('quantity_tendered')
+    def _amount_line_temp(self):
+        for item in self:
+
+            if item.quantity_tendered > 0 and item.trigger_draft == True and item.trigger_state == True:
+
+                item.price_subtotal_temp = item.quantity_tendered * item.price_unit
+
 
     def button_confirm(self, cr, uid, ids, context=None):
 
@@ -93,6 +115,7 @@ class InheritPurchaseOrderLine(models.Model):
         for item in self:
             if item.order_id.state == 'cancel':
                 item.trigger_filter_cancel = True
+
 
 
 class QuotationComparisonForm(models.Model):
@@ -833,7 +856,8 @@ class ViewComparisonLine(models.Model):
     def init(self, cr):
         drop_view_if_exists(cr, 'view_comparison_line')
         cr.execute("""create or replace view view_comparison_line as
-						select row_number() over() id,
+                        select
+                        		cast(po_pol_all.pol_id as bigint) id,
                                 pol_po_backorder,
                                 qcf_id,
                                 com_id company_id,req_id,
@@ -857,7 +881,7 @@ class ViewComparisonLine(models.Model):
                         from quotation_comparison_form qcf
                         inner join (
                             select
-                                row_number() over() id,
+                                pol.id pol_id,
                                 po.company_id com_id,
                                 po.partner_id part_id,
                                 po.validation_check_backorder po_backorder,
@@ -916,7 +940,8 @@ class QuotationComparisonFormLine(models.Model):
     def init(self, cr):
         drop_view_if_exists(cr, 'quotation_comparison_form_line')
         cr.execute("""create or replace view quotation_comparison_form_line as
-			select row_number() over() id,
+                            select
+                                vcl.id,
                                 pol_po_backorder,
                                 qcf_id,
                                 company_id,req_id,
@@ -933,7 +958,7 @@ class QuotationComparisonFormLine(models.Model):
                                 cheapest,po_des_all_name
                                 from view_comparison_line vcl
                             inner join view_purchase_requisition vpr
-                        	on vcl.req_id = vpr.requisition_id and vpr.product_id = vcl.product_id
+                            on vcl.req_id = vpr.requisition_id and vpr.product_id = vcl.product_id
                         """)
 
 
@@ -1064,18 +1089,10 @@ class ViewQuotationComparison(models.Model):
 
         drop_view_if_exists(cr, 'v_quotation_comparison_form_line')
 
-        cr.execute("""DO
-                    $do$
-                    begin
-                    if exists(select 1 from information_schema.tables where table_name='idx_v_quotation_comparison_form_line')
-                    then drop table idx_v_quotation_comparison_form_line;
-                    end if;
-                    end
-                    $do$""")
 
-        cr.execute("""select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char
-                        into idx_v_quotation_comparison_form_line
-                        from (
+        cr.execute("""
+                       create or replace view v_quotation_comparison_form_line as
+                        select validation_check_backorder,qcf_line.*,last_price.last_price, last_price.write_date, '' last_price_char from (
                         select row_number() over() id,vqcf.*,qcf.id qcf_id from (
                                                             select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,max(vendor1) vendor1,max(vendor2) vendor2,max(vendor3) vendor3,max(vendor4) vendor4,max(vendor5) vendor5,max(vendor6) vendor6,max(vendor7) vendor7,max(vendor8) vendor8,max(vendor9) vendor9,max(vendor10) vendor10,cast('' as varchar) po_des_all_name,2 isheader from (
@@ -1104,51 +1121,51 @@ class ViewQuotationComparison(models.Model):
                                          union all
                                          select * from (
                                            SELECT r.req_id,r.product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast(qty_request as varchar) qty_request,product_uom,
-								             MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
-								             MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
-								             MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
-								             MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
-								             MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
-								             MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
-								             MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
-								             MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
-								             MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
-								             MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",
-								             cast(max(po_des_all_name)as varchar) po_des_all_name,
-								             3 isheader
-								        FROM  (
-								        select
-								        	rownum,
-								        	name,
-								        	req_id,
-								        	product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name
-								        from (
-								          	select
-								          		qcfl_rn.id rownum,company_id,po_des_all_name,
-								            	qcfl_rn.req_id,qcfl_rn.partner_id,
-								            	product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term
-								            from (
-								            	select qcfl_all.* from
-								            	quotation_comparison_form_line qcfl_all inner join (
-								            		select
-														min(id) id,
-														req_id,
-														partner_id,
-														product_id
-													from
-														quotation_comparison_form_line
-													group by req_id, partner_id, product_id
-								            	) qcfl_last on qcfl_all.id = qcfl_last.id
-								            ) qcfl inner join (
-								            		select row_number() over(PARTITION BY req_id
-								                            ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
-								                            from  quotation_comparison_form_line
-								                            group by partner_id,req_id order by req_id desc
-								         	)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
-								        )con_qcfl_rn inner join (select id,name from res_partner)partner
-								        on con_qcfl_rn.partner_id = partner.id
-								        ) r
-								    GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc)content
+                                             MAX(CASE WHEN r.rownum = 1 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor1",
+                                             MAX(CASE WHEN r.rownum = 2 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor2",
+                                             MAX(CASE WHEN r.rownum = 3 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor3",
+                                             MAX(CASE WHEN r.rownum = 4 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor4",
+                                             MAX(CASE WHEN r.rownum = 5 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor5",
+                                             MAX(CASE WHEN r.rownum = 6 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor6",
+                                             MAX(CASE WHEN r.rownum = 7 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor7",
+                                             MAX(CASE WHEN r.rownum = 8 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor8",
+                                             MAX(CASE WHEN r.rownum = 9 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor9",
+                                             MAX(CASE WHEN r.rownum = 10 THEN CAST(monetary(r.price_unit) as varchar)  ELSE NULL END) AS "vendor10",
+                                             cast(max(po_des_all_name)as varchar) po_des_all_name,
+                                             3 isheader
+                                        FROM  (
+                                        select
+                                            rownum,
+                                            name,
+                                            req_id,
+                                            product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name
+                                        from (
+                                              select
+                                                  qcfl_rn.id rownum,company_id,po_des_all_name,
+                                                qcfl_rn.req_id,qcfl_rn.partner_id,
+                                                product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term
+                                            from (
+                                                select qcfl_all.* from
+                                                quotation_comparison_form_line qcfl_all inner join (
+                                                    select
+                                                        max(id) id,
+                                                        req_id,
+                                                        partner_id,
+                                                        product_id
+                                                    from
+                                                        quotation_comparison_form_line
+                                                    group by req_id, partner_id, product_id
+                                                ) qcfl_last on qcfl_all.id = qcfl_last.id
+                                            ) qcfl inner join (
+                                                    select row_number() over(PARTITION BY req_id
+                                                            ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
+                                                            from  quotation_comparison_form_line
+                                                            group by partner_id,req_id order by req_id desc
+                                             )qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
+                                        )con_qcfl_rn inner join (select id,name from res_partner)partner
+                                        on con_qcfl_rn.partner_id = partner.id
+                                        ) r
+                                    GROUP BY r.product_id,r.req_id,qty_request,product_uom,po_des_all_name  order by req_id asc)content
                                         union all
                                         select * from (
                                         select req_id,0 product_id,cast(0 as boolean) hide,cast('' as varchar) grand_total_label,cast('' as varchar) qty_request,0 product_uom,
@@ -1164,28 +1181,28 @@ class ViewQuotationComparison(models.Model):
                                                      MAX(CASE WHEN r.rownum = 4 THEN r.price_subtotal ELSE NULL END) AS "vendor4",
                                                      MAX(CASE WHEN r.rownum = 5 THEN r.price_subtotal ELSE NULL END) AS "vendor5",
                                                      MAX(CASE WHEN r.rownum = 6 THEN r.price_subtotal ELSE NULL END) AS "vendor6",
-	                                                 MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
-	                                                 MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
-	                                                 MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
-	                                                 MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
+                                                     MAX(CASE WHEN r.rownum = 7 THEN r.price_subtotal ELSE NULL END) AS "vendor7",
+                                                     MAX(CASE WHEN r.rownum = 8 THEN r.price_subtotal ELSE NULL END) AS "vendor8",
+                                                     MAX(CASE WHEN r.rownum = 9 THEN r.price_subtotal ELSE NULL END) AS "vendor9",
+                                                     MAX(CASE WHEN r.rownum = 10 THEN r.price_subtotal ELSE NULL END) AS "vendor10"
                                                 FROM  (select rownum,name,req_id,product_id,qty_request,product_uom,price_unit,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term,po_des_all_name from (
                                                   select qcfl_rn.id rownum,company_id,
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,po_des_all_name,
                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
                                                     (
-										            	select qcfl_all.* from
-										            	quotation_comparison_form_line qcfl_all
-												            	inner join (
-										            		select
-																min(id) id,
-																req_id,
-																partner_id,
-																product_id
-															from
-																quotation_comparison_form_line
-															group by req_id, partner_id, product_id
-										            	) qcfl_last on qcfl_all.id = qcfl_last.id
-										            ) qcfl inner join (
+                                                        select qcfl_all.* from
+                                                        quotation_comparison_form_line qcfl_all
+                                                                inner join (
+                                                            select
+                                                                max(id) id,
+                                                                req_id,
+                                                                partner_id,
+                                                                product_id
+                                                            from
+                                                                quotation_comparison_form_line
+                                                            group by req_id, partner_id, product_id
+                                                        ) qcfl_last on qcfl_all.id = qcfl_last.id
+                                                    ) qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -1218,18 +1235,18 @@ class ViewQuotationComparison(models.Model):
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
                                                     product_id,price_unit,qty_request,product_uom,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
                                                     (
-										            	select qcfl_all.* from
-										            	quotation_comparison_form_line qcfl_all inner join (
-										            		select
-																min(id) id,
-																req_id,
-																partner_id,
-																product_id
-															from
-																quotation_comparison_form_line
-															group by req_id, partner_id, product_id
-										            	) qcfl_last on qcfl_all.id = qcfl_last.id
-										            ) qcfl inner join (
+                                                        select qcfl_all.* from
+                                                        quotation_comparison_form_line qcfl_all inner join (
+                                                            select
+                                                                max(id) id,
+                                                                req_id,
+                                                                partner_id,
+                                                                product_id
+                                                            from
+                                                                quotation_comparison_form_line
+                                                            group by req_id, partner_id, product_id
+                                                        ) qcfl_last on qcfl_all.id = qcfl_last.id
+                                                    ) qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
                                                                             from  quotation_comparison_form_line
@@ -1262,18 +1279,18 @@ class ViewQuotationComparison(models.Model):
                                                     qcfl_rn.req_id,qcfl_rn.partner_id,
                                                     product_id,price_unit,qty_request,product_uom,amount_total,price_subtotal,price_tax,payment_term_id,incoterm_id,delivery_term from
                                                     (
-										            	select qcfl_all.* from
-										            	quotation_comparison_form_line qcfl_all inner join (
-										            		select
-																min(id) id,
-																req_id,
-																partner_id,
-																product_id
-															from
-																quotation_comparison_form_line
-															group by req_id, partner_id, product_id
-										            	) qcfl_last on qcfl_all.id = qcfl_last.id
-										            )
+                                                        select qcfl_all.* from
+                                                        quotation_comparison_form_line qcfl_all inner join (
+                                                            select
+                                                                max(id) id,
+                                                                req_id,
+                                                                partner_id,
+                                                                product_id
+                                                            from
+                                                                quotation_comparison_form_line
+                                                            group by req_id, partner_id, product_id
+                                                        ) qcfl_last on qcfl_all.id = qcfl_last.id
+                                                    )
                                                     qcfl inner join (
                                                                 select row_number() over(PARTITION BY req_id
                                                                             ORDER BY partner_id DESC NULLS LAST) id,partner_id,req_id
@@ -1310,10 +1327,10 @@ class ViewQuotationComparison(models.Model):
                                                                             from  quotation_comparison_form_line
                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
                                                 )con_qcfl_rn
-                                                			 inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
-                                                			 left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
-                                                			 left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
-                                                			 ) r
+                                                             inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+                                                             left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+                                                             left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                             ) r
                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
                                         )h group by req_id)paymentterm
                                         union all
@@ -1345,12 +1362,12 @@ class ViewQuotationComparison(models.Model):
                                                                             group by partner_id,req_id,pol_po_backorder order by req_id desc
                                                                 )qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
                                                 )con_qcfl_rn
-                                                	inner join
-                                                		(select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
-                                                	left join
-                                                		(select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
-                                                	left join
-                                                		(select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                    inner join
+                                                        (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+                                                    left join
+                                                        (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+                                                    left join
+                                                        (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
                                                 ) r
                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
                                         )h group by req_id)deliverydate
@@ -1381,10 +1398,10 @@ class ViewQuotationComparison(models.Model):
                                                                             from  quotation_comparison_form_line
                                                                             group by partner_id,req_id order by req_id desc)qcfl_rn on qcfl.partner_id = qcfl_rn.partner_id and qcfl.req_id = qcfl_rn.req_id
                                                 )con_qcfl_rn
-                                                			 inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
-                                                			 left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
-                                                			 left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
-                                                			 ) r
+                                                             inner join (select id,name from res_partner)partner on con_qcfl_rn.partner_id = partner.id
+                                                             left join (select apt.id apt_id,name name_term from account_payment_term apt)payterm on con_qcfl_rn.payment_term_id = payterm.apt_id
+                                                             left join (select id si_id , name name_inco from stock_incoterms si)incoterm on con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                             ) r
                                             GROUP BY r.product_id,r.req_id,qty_request,product_uom  order by req_id
                                         )h group by req_id)franco
                                         )vqcf inner join quotation_comparison_form qcf on vqcf.req_id = qcf.requisition_id
@@ -1414,17 +1431,6 @@ class ViewQuotationComparison(models.Model):
                                                                             group by po.id,order_id,product_id,price_total,price_unit,product_qty )a )b
                                                                         where b.rank_id = 1
                                                     )last_price on qcf_line.product_id = last_price.product_id""")
-
-        # cr.execute("""drop index ix_req_id""")
-        cr.execute("""create index ix_req_id on idx_v_quotation_comparison_form_line (req_id)""")
-
-        # cr.execute("""drop index ix_product_id""")
-        cr.execute("""create index ix_product_id on idx_v_quotation_comparison_form_line (product_id)""")
-
-        cr.execute("""create or replace view v_quotation_comparison_form_line as
-                        select * from idx_v_quotation_comparison_form_line""")
-
-
 
 
     @api.multi
