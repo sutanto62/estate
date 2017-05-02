@@ -23,18 +23,18 @@
                         <table class="table table-striped table-condensed table-bordered" style="font-size:65%">
                             <thead>
                                 <tr>
-                                    <th class="text-center" rowspan="2">Account</th>
-                                    <th class="text-center" rowspan="2">Activity</th>
+                                    <th class="text-center" rowspan="2">COA</th>
+                                    <th class="text-center" rowspan="2">Item</th>
                                     <th class="text-center" rowspan="2">UoM</th>
-                                    <th class="text-center" rowspan="2">Batch/Location</th>
-                                    <th class="text-center" rowspan="2">Planted Year</th>
-                                    <th class="text-center" colspan="2">Work Day(s)</th>
-                                    <th class="text-center" colspan="2">Overtime</th>
-                                    <th class="text-center" colspan="2">Piece Rate</th>
-                                    <th class="text-center" colspan="2">Output</th>
-                                    <th class="text-center" rowspan="2">Material</th>
-                                    <th class="text-center" colspan="3">Cost</th>
-                                    <th class="text-center" rowspan="2">Cost/UoM</th>
+                                    <th class="text-center" rowspan="2">Blok</th>
+                                    <th class="text-center" rowspan="2">TT</th>
+                                    <th class="text-center" colspan="2">HK</th>
+                                    <th class="text-center" colspan="2">Lbr.</th>
+                                    <th class="text-center" colspan="2">Pr.</th>
+                                    <th class="text-center" colspan="2">Produksi</th>
+                                    <th class="text-center" colspan="3">Bahan</th>
+                                    <th class="text-center" colspan="3">Biaya</th>
+                                    <th class="text-center" rowspan="2">Rp/UoM</th>
                                 </tr>
                                 <tr>
                                     <!-- DW -->
@@ -50,8 +50,17 @@
                                     <th class="text-center">TD</th>
                                     <th class="text-center">MTD</th>
                                     <!-- Cost -->
+                                    <th class="text-center" colspan="3" style="padding:0">
+                                        <table class="table-condensed" style="border: none">
+                                            <tr>
+                                                <th style="width: 50%; border: none">Bahan</th>
+                                                <th class="col-md-3" style="border: none">Dosis</th>
+                                                <th class="col-md-3" style="border: none">Jumlah</th>
+                                            </tr>
+                                        </table>
+                                    </th>
                                     <th class="text-center">Labour</th>
-                                    <th class="text-center">Material</th>
+                                    <th class="text-center">Bahan</th>
                                     <th class="text-center">Sub Total</th>
                                 </tr>
                             </thead>
@@ -67,7 +76,7 @@
                                         <!-- TODO add message when no upkeep found -->
                                         <t t-if="activity.type == 'view'">
                                             <td><strong><span t-field="activity.general_account_id.code"/></strong></td>
-                                            <td colspan="17"><strong><span t-field="activity.name"/></strong></td>
+                                            <td colspan="19"><strong><span t-field="activity.name"/></strong></td>
                                         </t>
 
                                         <t t-if="activity.type == 'normal'">
@@ -124,12 +133,26 @@
                                                     <td class="text-right"><span t-esc="location['quantity']"/></td>
                                                     <td class="text-right"><span t-esc="location['mtd_quantity']"/></td>
                                                     <!-- Material-->
-                                                    <td>
-                                                        <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
-                                                            <span t-esc="material['name']"/> <span t-esc="round(material['unit_amount'], 2)"/>
-                                                            <span t-esc="material['uom']"/><br/>
-                                                        </t>
+                                                    <td colspan="3" style="padding:0">
+                                                        <table class="table-condensed" style="border:none">
+                                                            <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
+                                                                <tr>
+                                                                    <td class="col-md-4" style="border:none; width: 50%">
+                                                                        <span t-esc="material['name']"/> (<span t-esc="material['uom']"/>)
+                                                                    </td>
+                                                                    <td class="col-md-4" style="border:none">
+                                                                        <t t-if="location['quantity']>0">
+                                                                            <t t-esc="round(material['unit_amount']/location['quantity'], 6)"/>
+                                                                        </t>
+                                                                    </td>
+                                                                    <td class="col-md-4" style="border:none">
+                                                                        <span t-esc="round(material['unit_amount'], 2)"/>
+                                                                    </td>
+                                                                </tr>
+                                                            </t>
+                                                        </table>
                                                     </td>
+                                                    <!--/Material-->
                                                     <!-- Cost -->
                                                         <t t-set="amount_wage" t-value="location['wage_number_of_day']+location['wage_overtime']+location['wage_piece_rate']"/>
                                                         <t t-set="amount_material" t-value="sum(material['amount'] for material in get_upkeep_activity_material(activity, location['quantity']))"/>
@@ -166,12 +189,26 @@
                                                         <td class="text-right"><span t-esc="location['quantity']"/></td>
                                                         <td class="text-right"><span t-esc="location['mtd_quantity']"/></td>
                                                         <!-- Material-->
-                                                        <td>
-                                                            <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
-                                                                <span t-esc="material['name']"/> <span t-esc="round(material['unit_amount'], 2)"/>
-                                                                <span t-esc="material['uom']"/><br/>
-                                                            </t>
+                                                        <td colspan="3" style="padding:0">
+                                                            <table class="table-condensed" style="border:none">
+                                                                <t t-foreach="get_upkeep_activity_material(activity, qty_location)" t-as="material">
+                                                                    <tr>
+                                                                        <td class="col-md-4" style="border:none; width: 50%">
+                                                                            <span t-esc="material['name']"/> (<span t-esc="material['uom']"/>)
+                                                                        </td>
+                                                                        <td class="col-md-4" style="border:none">
+                                                                            <t t-if="location['quantity']>0">
+                                                                                <t t-esc="round(material['unit_amount']/location['quantity'], 6)"/>
+                                                                            </t>
+                                                                        </td>
+                                                                        <td class="col-md-4" style="border:none">
+                                                                            <span t-esc="round(material['unit_amount'], 2)"/>
+                                                                        </td>
+                                                                    </tr>
+                                                                </t>
+                                                            </table>
                                                         </td>
+                                                        <!--/Material-->
                                                         <!-- Cost -->
                                                         <t t-set="amount_wage" t-value="location['wage_number_of_day']+location['wage_overtime']+location['wage_piece_rate']"/>
                                                         <t t-set="amount_material" t-value="sum(material['amount'] for material in get_upkeep_activity_material(activity, location['quantity']))"/>
@@ -202,7 +239,7 @@
                                 </t>
                                 <!-- /Estate Activity -->
                                 <tr>
-                                    <td colspan="14" class="text-right"><strong>Total Cost</strong></td>
+                                    <td colspan="16" class="text-right"><strong>Total Cost</strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost_labour)"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost_material)"/></strong></td>
                                     <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(total_cost)"/></strong></td>
