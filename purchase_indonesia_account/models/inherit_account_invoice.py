@@ -42,12 +42,12 @@ class InheritAccountInvoiceLine(models.Model):
             quantity_picking = 0
             if item.picking_id:
                 for record in item.picking_id.pack_operation_product_ids:
-                    quantity_picking = record.qty_done
-
-                item.quantity = quantity_picking
+                    quantity_picking = record.qty_done if record.qty_done > 0 else 0
+                    if item.product_id.id == record.product_id.id :
+                        item.quantity = quantity_picking
             elif item.purchase_id and not item.picking_id:
 
                 for record in item.purchase_id.order_line:
-                    quantity_picking = record.product_qty
-
-                item.quantity = quantity_picking
+                    quantity_picking = record.product_qty if record.product_qty > 0 else 0
+                    if item.product_id.id == record.product_id.id :
+                        item.quantity = quantity_picking
