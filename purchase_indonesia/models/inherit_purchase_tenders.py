@@ -129,18 +129,28 @@ class InheritPurchaseTenders(models.Model):
             for line in item.line_ids.search(domain):
                 arrOutstanding.append(line.id)
 
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed'] and item.validation_missing_product == False) :
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved'] and item.validation_missing_product == False) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed'] and item.validation_missing_product == False) :
+
                 item.validation_correction = True
             elif (item.request_id.validation_correction_procurement == False and item.state in ['in_progress','done','open']) and item.validation_missing_product == True:
+
                 item.validation_correction = False
+
             else:
                if item.validation_check_backorder == True and len(arrOutstanding) > 0:
+
                    item.validation_correction = True
+
                elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed'] and item.check_missing_product == False:
+
                    item.validation_correction = False
+
                elif item.validation_missing_product == False and item.check_missing_product == True:
+
                    item.validation_correction = True
+
                else:
+
                    item.validation_correction = False
 
     @api.multi
