@@ -659,14 +659,29 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def button_approved(self):
-        if self.validation_correction_procurement == True:
-            self.update_purchase_requisition()
-        else:
-            self.tracking_approval()
-            self.create_purchase_requisition()
-            self.create_quotation_comparison_form()
-        super(InheritPurchaseRequest, self).button_approved()
-        return True
+        for item in self:
+            arrRequisition = []
+            requisition = item.env['purchase.requisition']
+
+            requisition_id = requisition.search([('request_id','=',item.id)])
+            for id in requisition_id:
+                arrRequisition.append(id.request_id.id)
+
+            if item.validation_correction_procurement == True:
+                if item.id in arrRequisition:
+
+                    item.update_purchase_requisition()
+                else:
+
+                    item.tracking_approval()
+                    item.create_purchase_requisition()
+                    item.create_quotation_comparison_form()
+            else:
+                item.tracking_approval()
+                item.create_purchase_requisition()
+                item.create_quotation_comparison_form()
+            super(InheritPurchaseRequest, item).button_approved()
+            return True
 
     @api.multi
     def action_confirm1(self,):
@@ -854,7 +869,7 @@ class InheritPurchaseRequest(models.Model):
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
             }
-            self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id)]).write(purchaseline_data)
+            self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id),('product_id','=',purchaseline.product_id.id)]).write(purchaseline_data)
 
         return True
 
