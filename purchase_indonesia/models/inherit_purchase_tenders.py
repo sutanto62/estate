@@ -129,18 +129,28 @@ class InheritPurchaseTenders(models.Model):
             for line in item.line_ids.search(domain):
                 arrOutstanding.append(line.id)
 
-            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved']) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed'] and item.validation_missing_product == False) :
+            if (item.request_id.validation_correction_procurement == True and item.request_id.state in ['done','approved'] and item.validation_missing_product == False) or (item.request_id.validation_correction_procurement == False and item.state not in ['draft','done','open','closed'] and item.validation_missing_product == False) :
+
                 item.validation_correction = True
             elif (item.request_id.validation_correction_procurement == False and item.state in ['in_progress','done','open']) and item.validation_missing_product == True:
+
                 item.validation_correction = False
+
             else:
                if item.validation_check_backorder == True and len(arrOutstanding) > 0:
+
                    item.validation_correction = True
+
                elif item.validation_check_backorder == False and item.state in ['draft','open','done','closed'] and item.check_missing_product == False:
+
                    item.validation_correction = False
+
                elif item.validation_missing_product == False and item.check_missing_product == True:
+
                    item.validation_correction = True
+
                else:
+
                    item.validation_correction = False
 
     @api.multi
@@ -618,6 +628,7 @@ class InheritPurchaseTenders(models.Model):
             'price_unit': price_unit,
             'date_planned': date_planned,
             'comparison_id' : requisition.comparison_id,
+            'trigger_draft' : True,
             'taxes_id': [(6, 0, taxes_id)],
             'account_analytic_id': requisition_line.account_analytic_id.id,
         }
@@ -686,6 +697,7 @@ class InheritPurchaseTenders(models.Model):
             'date_planned': date_planned,
             'taxes_id': [(6, 0, taxes_id)],
             'comparison_id' : requisition.comparison_id,
+            'trigger_draft' : True,
             'account_analytic_id': requisition_line.account_analytic_id.id,
         }
 
@@ -727,6 +739,74 @@ class InheritPurchaseTenders(models.Model):
                 elif line.check_missing_product == True and line.qty_outstanding > 0:
                     purchase_order_line.create(cr, uid, self._prepare_missing_purchase_backorder_line(cr, uid, requisition, line, purchase_id, supplier, context=context), context=context)
         return res
+
+    def _prepare_purchase_order_line(self, cr, uid, requisition, requisition_line, purchase_id, supplier, context=None):
+        if context is None:
+            context = {}
+        po_obj = self.pool.get('purchase.order')
+        po_line_obj = self.pool.get('purchase.order.line')
+        product_uom = self.pool.get('product.uom')
+        product = requisition_line.product_id
+        default_uom_po_id = product.uom_po_id.id
+        ctx = context.copy()
+        ctx['tz'] = requisition.user_id.tz
+        date_order = requisition.ordering_date  or fields.datetime.now()
+        qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.product_qty, default_uom_po_id)
+
+        taxes = product.supplier_taxes_id
+        fpos = supplier.property_account_position_id
+        taxes_id = fpos.map_tax(taxes).ids if fpos else []
+
+        po = po_obj.browse(cr, uid, [purchase_id], context=context)
+        seller = requisition_line.product_id._select_seller(
+            requisition_line.product_id,
+            partner_id=supplier,
+            quantity=qty,
+            date=date_order and date_order[:10],
+            uom_id=product.uom_po_id)
+
+        price_unit = seller.price if seller else 0.0
+        if price_unit and seller and po.currency_id and seller.currency_id != po.currency_id:
+            price_unit = seller.currency_id.compute(price_unit, po.currency_id)
+
+        date_planned = po_line_obj._get_date_planned(cr, uid, seller, po=po, context=context).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+
+        product_lang = requisition_line.product_id.with_context({
+            'lang': supplier.lang,
+            'partner_id': supplier.id,
+        })
+        name = product_lang.display_name
+        if product_lang.description_purchase:
+            name += '\n' + product_lang.description_purchase
+
+        vals = {
+            'name': name,
+            'order_id': purchase_id,
+            'product_qty': qty,
+            'product_id': product.id,
+            'product_uom': default_uom_po_id,
+            'price_unit': price_unit,
+            'date_planned': date_planned,
+            'taxes_id': [(6, 0, taxes_id)],
+            'trigger_draft' : True,
+            'account_analytic_id': requisition_line.account_analytic_id.id,
+        }
+
+        return vals
+
+    def _prepare_po_line_from_tender(self, cr, uid, tender, line, purchase_id, context=None):
+        """ Prepare the values to write in the purchase order line
+        created from a line of the tender.
+
+        :param tender: the source tender from which we generate a purchase order
+        :param line: the source tender's line from which we generate a line
+        :param purchase_id: the id of the new purchase
+        """
+        return {
+                'trigger_draft' : False,
+                'product_qty': line.quantity_tendered,
+                'order_id': purchase_id
+               }
 
     # @api.multi
     # def generate_po(self):
@@ -880,16 +960,11 @@ class ViewValidateTrackingPurchaseOrderInvoice(models.Model):
                         on tender.requisition_id = picking.requisition_id and tender.product_id = picking.product_id
                         left join
                         (
-                        select
-                            product_id,
-                            requisition_id,
-                            (CASE WHEN qty_request > 0 THEN sum(product_qty)  ELSE max(product_qty)  END) AS "sum_quantity_purchase"
-                            from purchase_order po
-                        inner join
-                            purchase_order_line pol
-                        on po.id = pol.order_id
-                        where state in ('purchase','done','received_partial','received_force_done')
-                        group by requisition_id,product_id,qty_request
+                         select
+					        requisition_id,
+					        product_id,
+					        sum(qty_received) sum_quantity_purchase
+					    from purchase_requisition_line prl group by requisition_id,product_id
                         )porder
                         on tender.requisition_id = porder.requisition_id and tender.product_id = porder.product_id
                         """)
@@ -932,16 +1007,21 @@ class ViewRequestRequisitionTracking(models.Model):
     status_po = fields.Char(compute='status_tracking')
     status_picking = fields.Char(compute='status_tracking')
     status_invoice = fields.Char(compute='status_tracking')
+    type_location = fields.Char('Location')
+    company_id = fields.Many2one('res.company','Company')
 
     def init(self, cr):
         drop_view_if_exists(cr, 'view_request_requisition_tracking')
         cr.execute("""create or replace view view_request_requisition_tracking as
-                        select row_number() over() id,* from (
-                            select pr_id,vqt.requisition_id,complete_name from validate_tracking_purchase_order_invoice vtpo
-                                inner join
-                                view_requisition_tracking vqt
-                                on vqt.requisition_id = vtpo.requisition_id
-                                group by pr_id,vqt.requisition_id,complete_name)parent_tracking
+                        select row_number() over() id,pr_id,requisition_id,parent_tracking.complete_name,type_location,company_id
+                            from (
+                                select pr_id,vqt.requisition_id,complete_name from validate_tracking_purchase_order_invoice vtpo
+                                    inner join
+                                    view_requisition_tracking vqt
+                                    on vqt.requisition_id = vtpo.requisition_id
+                                    group by pr_id,vqt.requisition_id,complete_name
+                                )parent_tracking
+                                inner join purchase_request pr on parent_tracking.pr_id = pr.id
                         """)
 
     @api.multi

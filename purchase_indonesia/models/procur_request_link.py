@@ -159,7 +159,7 @@ class InheritPurchaseRequest(models.Model):
     _order = 'complete_name desc'
 
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
-    type_purchase = fields.Many2one('purchase.indonesia.type','Purchase Type')
+    type_purchase = fields.Many2one('purchase.indonesia.type','Purchase Type',required=True)
     type_functional = fields.Selection([('agronomy','Agronomy'),
                                      ('technic','Technic'),('general','General')],'Unit Functional')
     department_id = fields.Many2one('hr.department','Department')
@@ -169,7 +169,7 @@ class InheritPurchaseRequest(models.Model):
     type_location = fields.Char('Location',default=_get_office_level_id,readonly = 1)
     code =  fields.Char('code location',default=_get_office_level_id_code,readonly = 1)
     type_product = fields.Selection([('consu','Capital'),
-                                     ('service','Service'),('product','Stockable Product')],'Location Type')
+                                     ('service','Service'),('product','Stockable Product')],'Location Type',required=True)
     type_budget = fields.Selection([('available','Budget Available'),('not','Budget Not Available')])
     tracking_approval_ids = fields.One2many('tracking.approval','owner_id','Tracking Approval List')
     state = fields.Selection(
@@ -659,14 +659,29 @@ class InheritPurchaseRequest(models.Model):
 
     @api.multi
     def button_approved(self):
-        if self.validation_correction_procurement == True:
-            self.update_purchase_requisition()
-        else:
-            self.tracking_approval()
-            self.create_purchase_requisition()
-            self.create_quotation_comparison_form()
-        super(InheritPurchaseRequest, self).button_approved()
-        return True
+        for item in self:
+            arrRequisition = []
+            requisition = item.env['purchase.requisition']
+
+            requisition_id = requisition.search([('request_id','=',item.id)])
+            for id in requisition_id:
+                arrRequisition.append(id.request_id.id)
+
+            if item.validation_correction_procurement == True:
+                if item.id in arrRequisition:
+
+                    item.update_purchase_requisition()
+                else:
+
+                    item.tracking_approval()
+                    item.create_purchase_requisition()
+                    item.create_quotation_comparison_form()
+            else:
+                item.tracking_approval()
+                item.create_purchase_requisition()
+                item.create_quotation_comparison_form()
+            super(InheritPurchaseRequest, item).button_approved()
+            return True
 
     @api.multi
     def action_confirm1(self,):
@@ -854,7 +869,7 @@ class InheritPurchaseRequest(models.Model):
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
             }
-            self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id)]).write(purchaseline_data)
+            self.env['purchase.requisition.line'].search([('requisition_id','=',requisition_id),('product_id','=',purchaseline.product_id.id)]).write(purchaseline_data)
 
         return True
 

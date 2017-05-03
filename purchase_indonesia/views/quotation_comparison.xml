@@ -9,6 +9,12 @@
                  <xpath expr="//field[@name='name']" position="before">
                           <field name="trigger_state" string="Picked" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
                           <field name="trigger_filter_cancel" string="Filter Cancel" invisible="1"/>
+                          <field name="trigger_draft" string="Trigger Draft" invisible="1"/>
+                          <field name="price_subtotal_temp" invisible="1"/>
+                 </xpath>
+
+                 <xpath expr="//field[@name='product_uom']" position="after">
+                          <field name="price_subtotal_label" string="Subtotal" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
                  </xpath>
 
                  <xpath expr="//field[@name='name']" position="replace">
@@ -40,7 +46,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='price_subtotal']" position="replace">
-                          <field name="price_subtotal" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
+                          <field name="price_subtotal" invisible="1"/>
                  </xpath>
 
                  <xpath expr="//field[@name='order_id']" position="replace">
@@ -278,7 +284,7 @@
                                     </div>
                                     <field name="purchase_line_ids" track_visibility="onchange" invisible="0"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')]}"
-                                                context="{'tree_view_ref' : 'purchase_requisition.purchase_order_line_tree_tender',
+                                                context="{'tree_view_ref' : 'purchase_requisition.inherit_qcf_purchase_order_line',
                                                       'search_default_groupby_product':True,'search_default_hide_cancelled':True}"/>
 
                                 </page>
@@ -294,7 +300,8 @@
                                         string="Generate Remarks"
                                         class="oe_stat_button" icon="fa-list" groups="purchase_request.group_purchase_request_procstaff"/>
                                     </div>
-                                    <field name="backorder_purchase_line_ids" track_visibility="onchange" invisible="0" context="{'tree_view_ref' : 'purchase_requisition.purchase_order_line_tree_tender',
+                                    <field name="backorder_purchase_line_ids" track_visibility="onchange" invisible="0"
+                                           context="{'tree_view_ref' : 'purchase_requisition.inherit_qcf_purchase_order_line',
                                                       'search_default_groupby_product':True,'search_default_hide_cancelled':True}">
 
                                     </field>

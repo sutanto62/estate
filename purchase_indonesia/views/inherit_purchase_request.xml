@@ -40,7 +40,7 @@
                           <field name="validation_correction" invisible="1"/>
                           <field name="validation_technic" invisible="1"/>
                           <field name="validation_state_budget" invisible="1"/>
-                          <field name="type_purchase" string="Purchase Type" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
+                          <field name="type_purchase" string="Purchase Type" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
                  </xpath>
              </field>
          </record>

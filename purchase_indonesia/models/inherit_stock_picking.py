@@ -495,15 +495,21 @@ class InheritStockPicking(models.Model):
 
     @api.multi
     def do_new_transfer(self):
+            arrOutstanding = []
+
             #update Quantity Received in Purchase Tender after shipping
             po_list = self.env['purchase.order'].search([('id','=',self.purchase_id.id)]).origin
 
             #search Tender
             list_tender = self.env['purchase.requisition']
-            search_tender = list_tender.search([('complete_name','like',po_list)])
+            search_tender = list_tender.search([('complete_name','=',po_list)])
             tender_id = search_tender.id
 
             purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id)])
+
+            requisition_line = self.env['purchase.requisition.line']
+
+            domain = [('requisition_id','=',tender_id),('qty_outstanding','>',0)]
 
             count_product =0
             count_action_cancel_status =0
@@ -511,10 +517,8 @@ class InheritStockPicking(models.Model):
                 error_msg = 'You cannot approve this \"%s\" , you are not requester of this PP '%(self.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
             else:
-                arrOutstanding = []
-                domain = [('qty_outstanding','>',0)]
-                for outstanding in purchase_requisition_line.search(domain):
-                    arrOutstanding.append(outstanding.id)
+
+
 
                 for record in purchase_requisition_line:
                     stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
@@ -537,9 +541,6 @@ class InheritStockPicking(models.Model):
                             'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                             }
                         record.write(tender_line_data)
-                        search_tender.write({
-                            'state': 'open' if len(arrOutstanding) > 0 else 'done'
-                        })
 
                         if stock_pack_operation_length == 1 and sumitemmin < 0 :
                             count_action_cancel_status = count_action_cancel_status +1
@@ -558,6 +559,8 @@ class InheritStockPicking(models.Model):
                                                 'qty_outstanding' : itemmin.qty_done * -1
                                             }
                                     recordoutstanding.write(outstanding_data)
+
+
                         self.action_cancel()
                         self.action_validate_manager()
                         self.validation_manager = False
@@ -570,14 +573,26 @@ class InheritStockPicking(models.Model):
                                                 'qty_outstanding' : itemmin.qty_done * -1
                                             }
                                     recordoutstanding.write(outstanding_data)
+
                         self.action_cancel()
                         self.action_validate_manager()
                         self.validation_manager = False
                 else:
+
                     self.do_transfer()
                     self.action_validate_manager()
 
+
+
                 super(InheritStockPicking,self).do_new_transfer()
+
+                for outstanding in requisition_line.search(domain):
+                    arrOutstanding.append(outstanding.id)
+
+                search_tender.write({
+                                'state': 'open' if len(arrOutstanding) > 0 else 'done'
+                            })
+
 
     @api.multi
     def checking_picking_backorder(self):
