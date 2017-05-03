@@ -15,7 +15,7 @@
                             <field name="date_end"/>
                         </group>
                         <group>
-                            <field name="company_id"/>
+                            <field name="company_id" required="1"/>
                             <field name="estate_id"/>
                             <field name="assistant_id"/>
                         </group>
