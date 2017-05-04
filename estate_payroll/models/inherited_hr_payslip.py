@@ -21,35 +21,37 @@ class Payslip(models.Model):
     @api.multi
     @api.depends('employee_id')
     def _get_team(self):
-        """Estate worker's payslip disbursed per team.
+        """Estate worker's payslip disbursed per team after estate assistant confirmed
         """
         for payslip in self:
             upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', payslip.employee_id.id),
                                                                          ('upkeep_date', '>=', payslip.date_from),
                                                                          ('upkeep_date', '<=', payslip.date_to),
-                                                                         ('state', 'in', ['approved', 'payslip'])])
+                                                                         ('state', 'in', ['confirmed', 'approved', 'payslip'])])
 
             team_ids = []
             for upkeep_labour in upkeep_labour_ids:
                 team_ids.append(upkeep_labour.upkeep_id.team_id.id)
             team_ids = list(set(team_ids))
 
+
             # Avoid error when KHL registered more than 1 team.
-            if payslip.contract_type_id == 'Estate Worker': # Other employee need no team_id
+            if team_ids and payslip.contract_type_id.name == 'Estate Worker': # Other employee need no team_id
                 payslip.team_id = team_ids[0]
+                print '_get_team team ... %s' % payslip.team_id
             return True
 
     @api.multi
     def _get_upkeep_labour(self):
         """
-        Get upkeep approved/payslip labour with fingerprint or contract labour
+        Get upkeep approved/payslip labour with fingerprint or contract labour after estate assistant confirmed
         Returns: list of ids
         """
         labour_ids = []
         upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
                                                                      ('upkeep_date', '>=', self.date_from),
                                                                      ('upkeep_date', '<=', self.date_to),
-                                                                     ('state', 'in', ['approved', 'payslip'])])
+                                                                     ('state', 'in', ['confirmed', 'approved', 'payslip'])])
         for item in upkeep_labour_ids:
             # Fingerprint checked at get_inputs and get_worked_day_lines?
             # if item['is_fingerprint'] == 'Yes':
@@ -65,7 +67,7 @@ class Payslip(models.Model):
     @api.model
     def get_worked_day_lines(self, contract_ids, date_from, date_to):
         """Contract type Estate Worker use upkeep labour number of days.
-        Get worked days from upkeep labour with number_of_day > 0
+        Get worked days from upkeep labour with number_of_day > 0 after estate assistant confirmed
         @param contract_ids: list of contract id
         @return: returns a list of dict containing the input that should be applied for the given contract between date_from and date_to
         """
@@ -82,7 +84,7 @@ class Payslip(models.Model):
                 upkeep_labour_ids = upkeep_labour_obj.search([('employee_id', '=', contract.employee_id.id),
                                                               ('upkeep_date', '>=', date_from),
                                                               ('upkeep_date', '<=', date_to),
-                                                              ('state', '=', 'approved')]).ids
+                                                              ('state', 'in', ['confirmed', 'approved'])]).ids
 
                 # Get worked days
                 att_number_of_days = upkeep_labour_obj.get_worked_days(upkeep_labour_ids)
@@ -118,7 +120,7 @@ class Payslip(models.Model):
 
     @api.model
     def get_inputs(self, contract_ids, date_from, date_to):
-        """Contract type Estate Worker use upkeep labour overtime and piece rate.
+        """Contract type Estate Worker use upkeep labour overtime and piece rate. after estate assistant confirmed
         @param contract_ids: list of contract id
         @return: returns a list of dict containing the input that should be applied for the given contract between date_from and date_to
         """
@@ -141,7 +143,7 @@ class Payslip(models.Model):
                 upkeep_labour_ids = upkeep_labour_obj.search([('employee_id', '=', contract.employee_id.id),
                                                               ('upkeep_date', '>=', date_from),
                                                               ('upkeep_date', '<=', date_to),
-                                                              ('state', '=', 'approved')]).ids
+                                                              ('state', 'in', ['confirmed', 'approved'])]).ids
 
                 # Get Overtime
                 overtime_amount = upkeep_labour_obj.get_wage_overtime(upkeep_labour_ids)
@@ -213,6 +215,10 @@ class Payslip(models.Model):
         for record in self:
             if not record.contract_id:
                 no_contract.append(record.employee_id.name_related)
+
+            # recompute did not trigger compute field
+            record._get_team()
+
             record.onchange_employee()
             record.compute_sheet()
 
