@@ -1,0 +1,16 @@
+<openerp>
+    <data>
+
+        <record model="ir.ui.view" id="inherit_purchase_request_product_category">
+             <field name="name">Inherit purchase request</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_indonesia.inherit_purchase_request_location"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='department_id']" position="after">
+                      <field name="product_category_id" string="Product Category" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
+                 </xpath>
+             </field>
+         </record>
+
+    </data>
+</openerp>
