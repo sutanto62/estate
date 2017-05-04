@@ -419,16 +419,16 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def _get_compare_hr(self):
         #comparing HR Jobs
-        arrJobs = []
+        for item in self:
+            arrJobs = []
 
-        jobs = self.env['hr.job'].search([('id','=',self._get_employee().job_id.id)]).id
-        jobs_compare_hr = self.env['hr.job'].search([('name','in',['HR','hr','HR & GA Head Assistant',
-                                                                   'hr & GA  Head Assistant',
-                                                                   'Administration Assistant','KTU','ktu'])])
-        for record_job in jobs_compare_hr:
-            arrJobs.append(record_job.id)
+            dept_code = item._get_employee().job_id.department_id.id
+            jobs_compare_hr = item.env['hr.department'].search([('code','in',['HR','GA'])])
 
-        return jobs in arrJobs
+            for record_job in jobs_compare_hr:
+                arrJobs.append(record_job.id)
+
+            return dept_code in arrJobs
 
     @api.multi
     def _get_compare_non_hr(self):
@@ -437,7 +437,7 @@ class InheritPurchaseRequest(models.Model):
 
         jobs = self.env['hr.job'].search([('id','=',self._get_employee().job_id.id)]).id
         jobs_non_hr = self.env['hr.job'].search([('name','not in',['HR','hr','HR & GA Head Assistant','hr & GA  Head Assistant',
-                                                                   'Administration Assistant','KTU','ktu'])])
+                                                                   ])])
 
         for item in jobs_non_hr:
             arrJobs2.append(item.id)
@@ -758,20 +758,23 @@ class InheritPurchaseRequest(models.Model):
     @api.multi
     def check_wkf_requester(self):
         #checking Approval Requester
-        state_data = []
-        if self._get_compare_hr():
-            self.write({'state':'confirm'})
-            state_data = {'state':'approval7','assigned_to':self._get_user_ro_manager()}
+        for item in self:
+            state_data = []
+            if item._get_compare_hr() and item.code in ['KOKB']:
+                item.write({'state':'confirm'})
+                state_data = {'state':'approval7','assigned_to':item._get_user_ro_manager()}
+            elif item._get_compare_hr() and item.code in ['KPST']:
+                item.write({'state':'confirm'})
+                state_data = {'state':'approval1','assigned_to':item._get_user_manager()}
+            elif (item._get_compare_non_hr() and item.code in ['KOKB']) or (item._get_compare_non_hr()and item.code in ['KPST']):
+                item.write({'state':'confirm'})
+                state_data = {'state':'approval1','assigned_to':item._get_user_manager()}
 
-        elif self._get_compare_non_hr():
-            self.write({'state':'confirm'})
-            state_data = {'state':'approval1','assigned_to':self._get_user_manager()}
+            else:
+                raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
 
-        else:
-            raise exceptions.ValidationError('Call Your Hr Admin to fill Your Jobs')
-
-        self.write(state_data)
-        self.send_mail_template()
+            item.write(state_data)
+            item.send_mail_template()
 
     @api.multi
     def action_ro_head_approval(self):
@@ -799,16 +802,19 @@ class InheritPurchaseRequest(models.Model):
     def check_wkf_product_price(self):
        #check total product price in purchase request
        state_data = []
-
-       if self._get_max_price() >= self._get_price_low() and self._get_employee_request().parent_id.id:
-           if self._get_employee().parent_id.user_id.id == self._get_division_finance():
-               state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
-           else:
-               state_data = {'state':'approval2','assigned_to':self._get_employee_request().parent_id.user_id.id}
-       elif (self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id) or (self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'technic' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self._get_max_price() < self._get_price_low()) :
-            state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+       if self.code in ['KOKB']:
+          self.write({'state':'confirm'})
+          state_data = {'state':'approval7','assigned_to':self._get_user_ro_manager()}
        else:
-            raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
+           if self._get_max_price() >= self._get_price_low() and self._get_employee_request().parent_id.id:
+               if self._get_employee().parent_id.user_id.id == self._get_division_finance():
+                   state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+               else:
+                   state_data = {'state':'approval2','assigned_to':self._get_employee_request().parent_id.user_id.id}
+           elif (self._get_max_price() >= self._get_price_low() and not self._get_employee().parent_id.id) or (self.type_functional == 'agronomy' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'technic' and self._get_max_price() < self._get_price_low()) or (self.type_functional == 'general' and self._get_max_price() < self._get_price_low()) :
+                state_data = {'state':'budget','assigned_to':self._get_budget_manager()}
+           else:
+              raise exceptions.ValidationError('Call Your Procurement Admin To Set Rule of Price')
 
        self.write(state_data)
        self.send_mail_template()
