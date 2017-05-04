@@ -85,6 +85,9 @@ class InheritPurchaseRequest(models.Model):
     def purchase_request_finance(self):
         return self.env.ref('purchase_request.group_purchase_request_finance_procurement', False).id
 
+    @api.multi
+    def purchase_request_estate_manager(self):
+        return self.env.ref('estate.group_manager', False).id
 
     #Method Get user
     @api.multi
@@ -333,14 +336,24 @@ class InheritPurchaseRequest(models.Model):
         #technical Agronomy in user groups same Like Technic4
 
         arrTechnic4 = []
+        arrEstateManager = []
+
+        estate_manager = self.env['res.groups'].search([('id','=',self.purchase_request_estate_manager())]).users
 
         technic4 = self.env['res.groups'].search([('id','=',self.purchase_request_technical4())]).users
 
         for technic4 in technic4:
-               arrTechnic4.append(technic4.id)
+            arrTechnic4.append(technic4.id)
+
+        for estate in estate_manager:
+            arrEstateManager.append(estate.id)
+
+        equals_temp_parent = set(arrTechnic4)-set(arrEstateManager)
+
+        technic_agronomy = list(equals_temp_parent)
 
         try:
-            technical_agronomy = self.env['res.users'].search([('id','=',arrTechnic4[0])]).id
+            technical_agronomy = self.env['res.users'].search([('id','in',technic_agronomy)]).id
         except:
             raise exceptions.ValidationError('User Role Technic Agronomy Not Found in User Access')
 
@@ -374,11 +387,11 @@ class InheritPurchaseRequest(models.Model):
                arrTechnic5.append(technic5.id)
 
          try:
-            technical_agronomy = self.env['res.users'].search([('id','=',arrTechnic5[0])]).id
+            technical_ie = self.env['res.users'].search([('id','=',arrTechnic5[0])]).id
          except:
              raise exceptions.ValidationError('User Role Technic IE Not Found in User Access')
 
-         return technical_agronomy
+         return technical_ie
 
     @api.multi
     def _get_user_agronomy(self):
