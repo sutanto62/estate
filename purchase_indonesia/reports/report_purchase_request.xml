@@ -2,13 +2,6 @@
 <!--Custom report.-->
 <openerp>
     <data>
-        <!-- 
-      	<template id="minimal_layout_inherit" inherit_id="report.minimal_layout">
-			<xpath expr="//head" position="inside">
-		      	<link rel='stylesheet' href="/purchase_indonesia/static/src/css/report_purchase_request.css"/>
-		 	</xpath>
-		</template>
-		 -->
         <template id="report_purchase_request">
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
@@ -87,83 +80,86 @@
 		           			
 		              		<!-- Detail Header -->
 		           			<div class="row" style="text-align:left;font-size:14pt;">
-		              			<table width="100%">
-		                            <tr class="label_table_header">
-									    <td>
-									      No
-									    </td>
-									    <td>
-									      Stock Code
-									    </td>
-									    <td>
-									      Nama Barang/Jasa (Part Name)
-									    </td>
-									    <td>
-									      Jumlah
-									    </td>
-									    <td>
-									      Satuan
-									    </td>
-									    <td>
-									      Harga Perkiraan per Satuan
-									    </td>
-									    <td>
-									      Total Perkiraan Harga
-									    </td>
-									    <td>
-									      Budget Tersedia
-									    </td>
-										<td>
-									      Description
-									    </td>
-									</tr>
-								
-									<t t-foreach="o.line_ids" t-as="l">
-									 	<t t-set="idx" t-value="idx+1"/>   	
+		              			<table class="table table-striped table-condensed table-bordered" width="100%">
+		                            <thead>
+			                            <tr class="label_table_header">
+										    <th>
+										      No
+										    </th>
+										    <th>
+										      Stock Code
+										    </th>
+										    <th>
+										      Nama Barang/Jasa (Part Name)
+										    </th>
+										    <th>
+										      Jumlah
+										    </th>
+										    <th>
+										      Satuan
+										    </th>
+										    <th>
+										      Harga Perkiraan per Satuan
+										    </th>
+										    <th>
+										      Total Perkiraan Harga
+										    </th>
+										    <th>
+										      Budget Tersedia
+										    </th>
+											<th>
+										      Description
+										    </th>
+										</tr>
+									</thead>
+									<tbody>
+										<t t-foreach="o.line_ids" t-as="l">
+										 	<t t-set="idx" t-value="idx+1"/>   	
+											<tr>
+											    <td>
+											      	<span t-esc="idx"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.product_id.default_code"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.product_id.name"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.product_qty"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.product_uom_id"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.price_per_product"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.total_price"/>
+											    </td>
+											    <td>
+											      	<span t-field="l.budget_available"/>
+											    </td>
+												<td>
+											      	<span t-field="l.specifications"/>
+											    </td>
+											</tr>
+										</t>
 										<tr>
-										    <td>
-										      	<span t-esc="idx"/>
+										    <td colspan="6">
+										      Total
 										    </td>
 										    <td>
-										      	<span t-field="l.product_id.default_code"/>
+										      <span t-field="o.total_estimate_price"/>
 										    </td>
 										    <td>
-										      	<span t-field="l.product_id.name"/>
-										    </td>
-										    <td>
-										      	<span t-field="l.product_qty"/>
-										    </td>
-										    <td>
-										      	<span t-field="l.product_uom_id"/>
-										    </td>
-										    <td>
-										      	<span t-field="l.price_per_product"/>
-										    </td>
-										    <td>
-										      	<span t-field="l.total_price"/>
-										    </td>
-										    <td>
-										      	<span t-field="l.budget_available"/>
+										      &#160;
 										    </td>
 											<td>
-										      	<span t-field="l.specifications"/>
+										      &#160;
 										    </td>
 										</tr>
-									</t>
-									<tr>
-									    <td colspan="6">
-									      Total
-									    </td>
-									    <td>
-									      <span t-field="o.total_estimate_price"/>
-									    </td>
-									    <td>
-									      &#160;
-									    </td>
-										<td>
-									      &#160;
-									    </td>
-									</tr>
+									</tbody>	
 								</table>
 							</div>
 							<div class="row" style="text-align:left;font-size:14pt;">
