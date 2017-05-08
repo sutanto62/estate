@@ -518,6 +518,13 @@ class InheritMroOrder(models.Model):
         if self.asset_id == True:
             self.type_service = self.asset_id.type_asset
 
+    # @api.multi
+    def process_scheduler_workshop(self, cr, uid, context=None):
+        #execute generate MO preventive scheduler
+        cr.execute('select create_mo_preventive();')
+        line = cr.fetchone()[0]
+
+
 
 
 
