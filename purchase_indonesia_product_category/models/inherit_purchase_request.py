@@ -27,6 +27,8 @@ class InheritPurchaseRequest(models.Model):
         for item in self:
             mapping_department = item.env['mapping.department.product']
             arrMapping = []
+            arrParent = []
+
             if item.department_id and item.type_functional:
 
                 category_mapping = mapping_department.search([('department_id','=',item.department_id.id),
@@ -34,10 +36,16 @@ class InheritPurchaseRequest(models.Model):
 
                 for category in category_mapping:
                     arrMapping.append(category.product_category_id.id)
+                    category_product = item.env['product.category'].search([('parent_id','in',arrMapping)])
+                    if len(category_product) > 0:
+                        for categ_id in category_product:
+                            arrParent.append(categ_id.id)
+                    else:
+                        arrParent.append(category.product_category_id.id)
 
                 return  {
                         'domain':{
-                            'product_category_id':[('id','in',arrMapping)]
+                            'product_category_id':[('id','in',arrParent)]
                              }
                         }
 
@@ -87,6 +95,16 @@ class InheritPurchaseRequestLine(models.Model):
                                                                           '&',('type_tools','=',False),
                                                                           '&',('type_other','=',False),
                                                                           ('type_computing','=',False)]
+                             }
+                        }
+                else:
+                    return  {
+                        'domain':{
+                            'product_id':['&',('categ_id','in',arrCategory),('type','=','product'),
+                                                                        '&',('type_machine','=',True),
+                                                                          '&',('type_tools','=',True),
+                                                                          '&',('type_other','=',True),
+                                                                          ('type_computing','=',True)]
                              }
                         }
             else:
