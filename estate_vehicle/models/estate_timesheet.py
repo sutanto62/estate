@@ -324,7 +324,7 @@ class FormulaPremiActivityVehicle(models.Model):
     basis = fields.Integer('Basis(Trip)')
     premi_base = fields.Float('Basis Premi',digits=(2,2))
     category_unit_id = fields.Many2one('master.category.unit',domain=([('type','=','1')]))
-    job_id = fields.Many2one('hr.job',domain=([('department_id','=',11)]))
+    job_id = fields.Many2one('hr.job',domain=([('name','in',['Sopir','SOPIR','Driver','DRIVER'])]))
     use_start = fields.Date('Use Start')
     use_end = fields.Date('Use End')
 
