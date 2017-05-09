@@ -88,7 +88,49 @@ class TestUpkeep(TransactionCase):
             ]
         }
 
-    def test_00_check_date_00_today(self):
+        # User
+        User = self.env['res.users'].with_context({'no_reset_password': True})
+        group_user = self.ref('estate.group_user')
+        group_assistant = self.ref('estate.group_assistant')
+        group_manager = self.ref('estate.group_manager')
+        group_agronomy = self.ref('estate.group_agronomi')
+
+        self.estate_user = User.create({
+            'name': 'Irma', 'login': 'irma', 'alias_name': 'irma', 'email': 'irma@irma.com',
+            'groups_id': [(6, 0, [group_user])]})
+        self.estate_assistant = User.create({
+            'name': 'Intan', 'login': 'intan', 'alias_name': 'intan', 'email': 'intan@intan.com',
+            'groups_id': [(6, 0, [group_assistant])]})
+        self.estate_manager = User.create({
+            'name': 'Agus', 'login': 'agus', 'alias_name': 'agus', 'email': 'agus@agus.com',
+            'groups_id': [(6, 0, [group_manager])]})
+        self.estate_agronomy = User.create({
+            'name': 'Cahyo', 'login': 'cahyo', 'alias_name': 'cahyo', 'email': 'cayho@cahyo.com',
+            'groups_id': [(6, 0, [group_agronomy])]})
+
+    def test_00_create_upkeep(self):
+        """ User created upkeep"""
+        val = {
+            'date': datetime.today().strftime(DF),
+            'team_id': self.env.ref('estate.team_syukur').id,
+            'assistant_id': self.env.ref('hr.employee_al').id,
+            'division_id': self.env.ref('stock.stock_nursery').id,
+            'activity_line_ids': [
+                (0, 0, {
+                    'activity_id': self.env.ref('estate.activity_135').id,
+                    'unit_amount': 20,
+                }),
+                (0, 0, {
+                    'activity_id': self.env.ref('estate.activity_136').id,
+                    'unit_amount': 10,
+                }),
+            ]
+        }
+
+        upkeep = self.Upkeep.sudo(self.estate_user).create(val)
+        self.assertTrue(upkeep, 'Estate user could not create upkeep')
+
+    def test_01_check_date_00_today(self):
         assistant_id = self.env.ref('hr.employee_al')
         team_id = self.env.ref('estate.team_syukur')
         estate_id = self.env.ref('stock.stock_main_estate')
@@ -114,7 +156,7 @@ class TestUpkeep(TransactionCase):
         upkeep_today = self.Upkeep.create(self.upkeep_val)
         self.assertTrue(upkeep_today, 'Estate: failed to create upkeep record for today.')
 
-    def test_00_check_date_01_week_late(self):
+    def test_01_check_date_01_week_late(self):
         """ Check upkeep date should not less than 3 days """
         config = self.env['estate.config.settings'].search([], limit=1)
 
@@ -128,7 +170,7 @@ class TestUpkeep(TransactionCase):
             self.upkeep_val['date'] = (datetime.today() + relativedelta.relativedelta(weeks=-1)).strftime(DF)
             self.Upkeep.create(self.upkeep_val)
 
-    def test_00_check_date_01_week_earlier(self):
+    def test_01_check_date_01_week_earlier(self):
         """ Check upkeep date should not greater than 3 days """
         config = self.env['estate.config.settings'].search([], limit=1)
 
@@ -142,7 +184,7 @@ class TestUpkeep(TransactionCase):
             self.upkeep_val['date'] = (datetime.today() + relativedelta.relativedelta(weeks=1)).strftime(DF)
             self.Upkeep.create(self.upkeep_val)
 
-    def test_01_check_activity_line(self):
+    def test_02_check_activity_line(self):
         val = {
             'date': datetime.today().strftime(DF),
             'team_id': self.env.ref('estate.team_syukur').id,
@@ -193,7 +235,7 @@ class TestUpkeep(TransactionCase):
         with self.assertRaises(ValidationError):
             upkeep.write(val_labour)
 
-    def test_02_check_labour_line(self):
+    def test_03_check_labour_line(self):
         """ Check total quantity work result did  not exceed targeted quantity for single activity """
         val = {
             'date': datetime.today().strftime(DF),
@@ -229,7 +271,7 @@ class TestUpkeep(TransactionCase):
         with self.assertRaises(ValidationError):
             upkeep.write(val_labour)
 
-    def test_02_compute_activity_contract(self):
+    def test_03_compute_activity_contract(self):
         # Imitate master data activity contract is True
         self.env.ref('estate.activity_135').write({'contract': True})
 
@@ -262,37 +304,14 @@ class TestUpkeep(TransactionCase):
         upkeep = self.Upkeep.create(val)
 
         self.assertTrue(upkeep)
-        # self.assertTrue(upkeep.labour_line_ids[0].activity_contract, 'Estate: _compute_activity_contract failed')
 
-    # Define division by team instead of assistant.
-    # def test_00_onchange_assistant_division(self):
-    #     self.env.ref('estate.block_1').write({'assistant_id': self.env.ref('hr.employee_al').id})
-    #     val = {
-    #         'date': datetime.today().strftime(DF),
-    #         'team_id': self.env.ref('estate.team_syukur').id,
-    #         'assistant_id': self.env.ref('hr.employee_al').id,
-    #         'division_id': self.env.ref('stock.stock_nursery').id,
-    #     }
-    #     upkeep = self.Upkeep.create(val)
-    #
-    #     # Imitate onchange assistant event
-    #     # upkeep._onchange_assistant_id()
-    #     # self.assertEqual(upkeep['division_id']['name'], 'Division 1', 'Estate: _onchange_assistant_id is failed')
-    #
-    #     # Imitate onchange division event
-    #     upkeep._onchange_division_id()
-    #     self.assertEqual(upkeep['estate_id']['name'], 'LYD', 'Estate: _onchange_division_id is failed')
-
-    def test_03_compute_total_labour(self):
+    def test_04_compute_total_labour(self):
         """ Compute total labour in single upkeep."""
 
         # I created upkeep with single activity and two labours
         upkeep = self.Upkeep.create(self.upkeep)
         for labour in upkeep.labour_line_ids:
             labour._compute_number_of_day()
-            # print 'Labour: %s, Activity: %s (%s), Qty Base %s, HK %s' % \
-            #       (labour.employee_id.name, labour.activity_id.name, labour.activity_id.wage_method,
-            #        labour.activity_id.qty_base, labour.number_of_day)
         upkeep._compute_total_labour_line()
 
         self.assertEqual(upkeep.total_labour, 2, 'Upkeep: total labour was not 2.')
@@ -326,8 +345,9 @@ class TestUpkeep(TransactionCase):
         upkeep._compute_total_labour_line()
         self.assertEqual(upkeep.total_labour, 2, 'Total labour returned value is not 2')
 
-    def test_04_confirm_approve_draft_upkeep(self):
+    def test_05_confirm_approve_draft_upkeep(self):
         """ Test confirm, approve and draft button and action on single/multiple upkeeps"""
+
         val = {
             'name': 'BKM',
             'assistant_id': self.team_id.id,
