@@ -784,7 +784,7 @@ class UpkeepLabour(models.Model):
     general_account_id = fields.Many2one(related='activity_id.general_account_id', store="True")
     location_id = fields.Many2one('estate.block.template', 'Location',
                                   domain="[('inherit_location_id.location_id', '=', division_id)]")
-    planted_year_id = fields.Many2one(related='location_id.planted_year_id')
+    planted_year_id = fields.Many2one(related='location_id.planted_year_id', store=True)
     activity_location_ids = fields.Many2one('estate.block.template', 'Activity Location', store=False,
                                             compute="_compute_activity_location_ids")
     company_id = fields.Many2one(related='location_id.company_id', store=True, help='Company of location')
