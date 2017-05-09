@@ -42,8 +42,9 @@ class WizardPartnerComparison(models.TransientModel):
 
                 return {
                     'type': 'ir.actions.report.xml',
-                    'report_name': 'purchase_indonesia.report_quotation_comparison_form_document',
-                    'context': context
+                    'report_name': 'purchase_indonesia.report_quotation_comparison_form_document_1',
+                    'context': context,
+                    'report_type':"qweb-pdf"
                 }
 
 

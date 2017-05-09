@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','asset','mro','estate_vehicle'],
+    'depends': ['base','asset','mro','estate_vehicle','scheduler_demo'],
 
     #to create sql in odoo
     # 'update_xml': ["query.sql","query_hke.sql","job_scheduling.sql"],
@@ -46,7 +46,8 @@
         'views/view_summary_vehicle_status.xml',
         'views/inherit_fleet_vehicle.xml',
         'views/Inherit_view_summary_cost_vehicle.xml',
-        'views/view_wwa_vehicle.xml'
+        'views/view_wwa_vehicle.xml',
+        'data/scheduler_workshop.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
