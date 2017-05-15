@@ -90,10 +90,68 @@
             </field>
         </record>
 
+        <record id="timesheet_vehicle_view_search" model="ir.ui.view">
+            <field name="name">Vehicle Timesheet Search</field>
+            <field name="model">estate.timesheet.activity.transport</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date_activity_transport" string="Date Activity"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="employee_id" string="Driver/Helper" />
+                    <field name="activity_id" string="Activity" />
+                    <field name="uom_id" string="UOM" />
+                    <field name="unit" string="Qty"/>
+                    <field name="type_transport" string="Type"/>
+                    <field name="start_location" string="Start Location" />
+                    <field name="end_location" string="End Location" />
+                    <field name="distance_location"  string="Distance Location "/>
+                    <field name="start_km" string="Start KM"/>
+                    <field name="end_km" string="End KM"/>
+                    <field name="total_distance" string="&#916; KM"/>
+                    <field name="start_time" string="Start Time"/>
+                    <field name="end_time" string="End Time"/>
+                    <field name="total_time" string="&#916; Time " />
+                    <field name="state" string="State" />
+                    <filter name="filter_new" string="Draft/Confirmed"
+                            domain="[('state', 'in', ('draft','confirmed'))]"/>
+                    <filter name="filter_approved" string="Approved"
+                            domain="[('state', '=', 'approved')]"/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_activity_transport','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_activity_transport','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_activity_transport','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_activity_transport','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_activity_transport','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_activity_transport','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_activity_transport','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_activity_transport','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <group string="Group By">
+                        <filter name="by_vehicle" string="Vehicle"
+                                context="{'group_by': 'vehicle_id'}"/>
+                        <filter name="by_activity" string="Activity"
+                                context="{'group_by': 'activity_id'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_activity_transport:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_activity_transport:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_activity_transport:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
          <record model="ir.actions.act_window" id="action_estate_timesheet_activity_transport">
-            <field name="name">Vehicle Timesheet</field>
-            <field name="res_model">estate.timesheet.activity.transport</field>
-            <field name="view_mode">tree</field>
+             <field name="name">Vehicle Timesheet</field>
+             <field name="res_model">estate.timesheet.activity.transport</field>
+             <field name="view_mode">tree</field>
+             <field name="search_view_id" ref="timesheet_vehicle_view_search"/>
          </record>
 
          <menuitem id="estate_vehicle_timesheet_menu"
