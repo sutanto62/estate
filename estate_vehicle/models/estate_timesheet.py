@@ -129,8 +129,15 @@ class TimesheetActivityTransport(models.Model):
     def _onchange_driver(self):
         arrDriver = []
         if self:
-            hrjob = self.env['hr.job'].search([('name','=','sopir')],limit = 1).id
-            driver = self.env['hr.employee'].search([('job_id.id','=',hrjob)])
+            arrDepartment = []
+            arrJob = []
+            department = self.env['hr.job'].search([('code','in',['IE','Ie','ie'])])
+            for department in department:
+                arrDepartment.append(department.id)
+            hrjob = self.env['hr.job'].search([('department_id','in',arrDepartment)])
+            for item in hrjob:
+                arrJob.append(item.id)
+            driver = self.env['hr.employee'].search([('job_id','in',arrJob)])
             for d in driver:
                 arrDriver.append(d.id)
         return {
@@ -324,7 +331,7 @@ class FormulaPremiActivityVehicle(models.Model):
     basis = fields.Integer('Basis(Trip)')
     premi_base = fields.Float('Basis Premi',digits=(2,2))
     category_unit_id = fields.Many2one('master.category.unit',domain=([('type','=','1')]))
-    job_id = fields.Many2one('hr.job',domain=([('department_id','=',11)]))
+    job_id = fields.Many2one('hr.job',domain=([('name','in',['Sopir','SOPIR','Driver','DRIVER'])]))
     use_start = fields.Date('Use Start')
     use_end = fields.Date('Use End')
 

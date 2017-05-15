@@ -9,7 +9,7 @@
                         <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
                     </group>
                     <footer>
-                        <button name="save_partner_quotation" string="Save And Print" type="object" class="oe_highlight"/>
+                        <button name="save_partner_quotation" string="Print" type="object" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>

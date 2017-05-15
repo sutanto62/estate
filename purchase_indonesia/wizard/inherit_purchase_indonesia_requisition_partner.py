@@ -234,7 +234,7 @@ class InheritRequisitionPartner(models.TransientModel):
         for item in self:
             arrPartner=[]
 
-            partner= item.env['res.partner'].search([('state','=','done')])
+            partner= item.env['res.partner'].search([('state','=','done'),('supplier','=',True)])
 
             for record in partner:
                 arrPartner.append(record.id)

@@ -46,7 +46,8 @@
         'views/view_summary_vehicle_status.xml',
         'views/inherit_fleet_vehicle.xml',
         'views/Inherit_view_summary_cost_vehicle.xml',
-        'views/view_wwa_vehicle.xml'
+        'views/view_wwa_vehicle.xml',
+        'data/scheduler_workshop.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

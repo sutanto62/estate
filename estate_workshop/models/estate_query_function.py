@@ -114,10 +114,12 @@ class CreateFunctionMoPreventive(models.Model):
     _description = "Function to create MO preventive"
     _auto = False
 
+
     def init(self, cr):
-        cr.execute("""CREATE OR REPLACE FUNCTION create_mo_preventive()
-                      RETURNS boolean AS
-                    $BODY$
+        cr.execute("""CREATE OR REPLACE FUNCTION public.create_mo_preventive()
+                     RETURNS boolean
+                     LANGUAGE plpgsql
+                    AS $function$
                     declare
                         v_seq_id integer;
                         v_name_mro text;
@@ -125,18 +127,35 @@ class CreateFunctionMoPreventive(models.Model):
                     begin
 
                         FOR v_vpo IN
-                            select
-                                fleet_id,
-                                asset_id,
-                                odometer,
-                                odometer_current,
-                                count_multiply,
-                                odometer_remain,
-                                odometer_threshold
-                            from
-                                vehicle_preventive_odometer
-                            where
-                                odometer_remain < odometer_threshold
+                        	select
+								fleet_id,
+							    asset_id,
+							    odometer,
+							    odometer_current,
+							    count_multiply,
+							    odometer_remain,
+							    odometer_threshold,
+							    (fleet_id ||'-'|| odometer ||'-'||count_multiply) origin
+							from vehicle_preventive_odometer
+							except
+							select vpo.* from
+							(
+								select origin from mro_order order by id desc
+							)mro_order
+							inner join
+							(
+								select
+									fleet_id,
+								    asset_id,
+								    odometer,
+								    odometer_current,
+								    count_multiply,
+								    odometer_remain,
+								    odometer_threshold,
+								    (fleet_id ||'-'|| odometer ||'-'||count_multiply) origin
+								from vehicle_preventive_odometer
+							)vpo
+							on vpo.origin = mro_order.origin
                         LOOP
                             select nextval('mro_order_id_seq') into v_seq_id;
                             select substring('MRO00000' from 0 for char_length('MRO00000')-char_length(v_seq_id::text)+1)||v_seq_id into v_name_mro;
@@ -163,7 +182,7 @@ class CreateFunctionMoPreventive(models.Model):
                             VALUES
                                 (
                                     v_seq_id,
-                                    v_vpo.odometer||'-'|| v_vpo.odometer_threshold,
+                                    v_vpo.fleet_id ||'-'|| v_vpo.odometer||'-'|| v_vpo.count_multiply,
                                     now(),
                                     1,
                                     v_vpo.asset_id,
@@ -171,7 +190,7 @@ class CreateFunctionMoPreventive(models.Model):
                                     1,
                                     'draft',
                                     'pm',
-                                    v_vpo.odometer||'-'|| v_vpo.odometer_threshold,
+                                    v_vpo.odometer||' km PM for '|| v_vpo.odometer_current ||' km',
                                     now(),
                                     v_name_mro,
                                     now(),
@@ -184,10 +203,10 @@ class CreateFunctionMoPreventive(models.Model):
 
                         return true;
                     end;
-                    $BODY$
-                      LANGUAGE plpgsql VOLATILE
-                      COST 100;
+                    $function$
                    """)
+
+
 
 
 
