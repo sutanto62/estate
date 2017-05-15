@@ -131,7 +131,7 @@ class TimesheetActivityTransport(models.Model):
         if self:
             arrDepartment = []
             arrJob = []
-            department = self.env['hr.job'].search([('code','in',['IE','Ie','ie'])])
+            department = self.env['hr.department'].search([('code','in',['IE','Ie','ie'])])
             for department in department:
                 arrDepartment.append(department.id)
             hrjob = self.env['hr.job'].search([('department_id','in',arrDepartment)])
