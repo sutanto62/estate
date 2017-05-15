@@ -2,20 +2,49 @@
 <openerp>
     <data noupdate="0">
 
-        <!--Estate Payroll Officer-->
         <!--
-        Limit Estate Payroll Officer to see PKWT Daily salary only.
+        Estate Payroll Officer
+        1. Create Payslip Run for PKWT Daily/Monthly with Contract type Estate Worker
+        2. Create Payslip for PKWT Daily/Monthly with Contract type Estate Worker
+        3. Create Contract for PKWT Daily/Monthly with Contract type Estate Worker
         -->
         <record id="estate_payroll_officer_estate_worker" model="ir.rule">
-            <field name="name">Estate Payroll Officer</field>
+            <field name="name">Payslip Estate Payroll Officer</field>
             <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
-            <field name="domain_force">[('employee_id.contract_type','=', '2'),('employee_id.contract_period', '=', '2')]</field>
+            <field name="domain_force">[('employee_id.contract_type','=', '2'),('contract_id.type_id','=','Estate Worker')]</field>
             <field name="perm_create" eval="True"/>
             <field name="perm_read" eval="True"/>
             <field name="perm_write" eval="True"/>
             <field name="perm_unlink" eval="True"/>
             <field name="groups" eval="[(4, ref('estate_payroll.estate_payroll_officer'))]"/>
         </record>
-        <!--/Estate Payroll Officer-->
+        <record id="hr_contract_rule_estate_payroll_officer" model="ir.rule">
+            <field name="name">Contract Rule Estate Payroll Officer</field>
+            <field name="model_id" ref="hr_payroll.model_hr_contract"/>
+            <field name="domain_force">[('employee_id.contract_type','=', '2'),('type_id','=','Estate Worker')]</field>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="groups" eval="[(4, ref('estate_payroll.estate_payroll_officer'))]"/>
+        </record>
+
+        <!--
+        Estate User
+        1. Read Payslip Run
+        2. Read Payslip
+        -->
+        <!--estate user-->
+        <record id="hr_payslip_rule_estate_user" model="ir.rule">
+            <field name="name">Payslip Estate User</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="domain_force">[('employee_id.contract_type','=', '2'),('contract_id.type_id','=','Estate Worker')]</field>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+            <field name="groups" eval="[(4, ref('estate.group_user'))]"/>
+        </record>
+        <!--/estate user-->
     </data>
 </openerp>
