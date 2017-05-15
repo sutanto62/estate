@@ -184,13 +184,13 @@
                   sequence="40"
                   name="Labour"
                   parent="estate_config_menu"
-                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
+                  groups="base.group_configuration,estate.group_assistant,base.group_hr_manager"/>
 
         <menuitem id="estate_estate_team_menu" name="Estate Team"
                   sequence="10"
                   parent="estate_labour_menu"
                   action="action_list_estate_team"
-                  groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
+                  groups="base.group_configuration,estate.group_assistant,base.group_hr_manager"/>
 
         <menuitem id="hr_member_menu" name="Team Member"
                   sequence="20"
