@@ -35,7 +35,7 @@ There are three salary components.
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','hr_payroll'],
+    'depends': ['base','hr_payroll', 'hr_indonesia'],
 
     # always loaded
     'data': [
@@ -43,7 +43,6 @@ There are three salary components.
         'security/security.xml',
         'security/ir.model.access.csv',
         'security/menu_items.xml',
-        'security/record_rules.xml',
         'security/record_rules.xml',
         'views/inherited_hr_payroll_view.xml',
         'views/inherited_estate_hr_view.xml',

@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr_attendance', 'hr_contract'],
+    'depends': ['base', 'hr_attendance', 'hr_contract', 'base_indonesia'],
 
     # always loaded
     'data': [

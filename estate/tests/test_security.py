@@ -61,6 +61,6 @@ class TestSecurity(TransactionCase):
         activity_id = self.Activity.sudo(self.estate_agronomy).create(val)
         self.assertTrue(activity_id, 'Agronomy should be able to create estate activity.')
 
-        # User updated estate activity
-        with self.assertRaises(AccessError):
-            activity_id.sudo(self.estate_user).update({'qty_base': 2})
+        # User updated estate activity - upkeep require user has write access
+        # with self.assertRaises(AccessError):
+        #     activity_id.sudo(self.estate_user).update({'qty_base': 2})
