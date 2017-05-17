@@ -6,6 +6,7 @@ import calendar
 import time
 import datetime
 from openerp import tools
+import math
 
 
 class VehicleOilLog(models.Model):
@@ -540,8 +541,15 @@ class FleetVehicleTimesheetInherits(models.Model):
     def _onchange_driver(self):
         arrDriver = []
         if self:
-            hrjob = self.env['hr.job'].search([('name','in',['sopir','Sopir','Driver','driver'])],limit = 1).id
-            driver = self.env['hr.employee'].search([('job_id.id','=',hrjob)])
+            arrDepartment = []
+            arrJob = []
+            department = self.env['hr.department'].search([('code','in',['IE','Ie','ie'])])
+            for department in department:
+                arrDepartment.append(department.id)
+            hrjob = self.env['hr.job'].search([('department_id','in',arrDepartment)])
+            for item in hrjob:
+                arrJob.append(item.id)
+            driver = self.env['hr.employee'].search([('job_id','in',arrJob)])
             for d in driver:
                 arrDriver.append(d.id)
         return {
@@ -598,16 +606,14 @@ class FleetVehicleTimesheetInherits(models.Model):
     @api.multi
     @api.depends('start_time','end_time','total_time')
     def _compute_total_time(self):
-        self.ensure_one()
+        for item in self:
         #to compute total_time
-        if self:
-            if self.start_time and self.end_time:
-                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
-                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
-                self.total_time =calculate_endtime-calculate_starttime
-                if self.total_time < 0 :
-                    self.total_time = 0
-        return True
+
+            if item.start_time and item.end_time:
+
+                item.total_time = math.floor((item.end_time - item.start_time)) + round((item.end_time - item.start_time)%1*0.6,2)
+
+
 
     @api.multi
     @api.depends('start_km','end_km')

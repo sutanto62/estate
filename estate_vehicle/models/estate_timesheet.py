@@ -7,6 +7,7 @@ import calendar
 import decimal
 import time
 import re
+import math
 
 # class MasterTimesheet(models.Model):
 #
@@ -21,24 +22,24 @@ class TimesheetActivityTransport(models.Model):
     id = fields.Integer()
     name=fields.Char("Timesheet Activity Tranport")
     date_activity_transport = fields.Date("Date activity Transport")
-    owner_id = fields.Integer()
-    employee_id = fields.Many2one('hr.employee','Employee ID',store=True)
+    owner_id = fields.Integer('Parent')
+    employee_id = fields.Many2one('hr.employee','Employee',store=True)
     dc_type = fields.Char()
-    uom_id = fields.Many2one('product.uom',store=True)
+    uom_id = fields.Many2one('product.uom',string='UOM',store=True)
     unit = fields.Float('unit per activity',digits=(2,2),store=True)
-    vehicle_id = fields.Many2one('fleet.vehicle',store=True)
-    activity_id = fields.Many2one('estate.activity',store=True,domain=[('activity_type','=','vehicle'),('type','=','normal')])
-    partner_id=fields.Many2one('res.partner')
-    timesheet_activity_code = fields.Char()
-    start_km = fields.Float(digits=(2,2),store=True)
-    end_km = fields.Float(digits=(2,2),store=True)
-    total_distance = fields.Float(digits=(2,2),compute='_compute_total_distance',store=True)
-    start_location = fields.Many2one('estate.block.template',store=True)
-    end_location = fields.Many2one('estate.block.template',store=True)
+    vehicle_id = fields.Many2one('fleet.vehicle',string='Vehicle',store=True)
+    activity_id = fields.Many2one('estate.activity',string='Activity',store=True,domain=[('activity_type','=','vehicle'),('type','=','normal')])
+    partner_id=fields.Many2one('res.partner','Partner')
+    timesheet_activity_code = fields.Char('Timesheet Code')
+    start_km = fields.Float(digits=(2,2),string='Start KM',store=True)
+    end_km = fields.Float(digits=(2,2),string='End KM',store=True)
+    total_distance = fields.Float(digits=(2,2),string='Total Distance',compute='_compute_total_distance',store=True)
+    start_location = fields.Many2one('estate.block.template',string='Start Location',store=True)
+    end_location = fields.Many2one('estate.block.template',string='End Location',store=True)
     distance_location = fields.Float('Distance Location',store=True,compute='_onchange_distance_location')
-    start_time = fields.Float(digits=(2,2))
-    end_time = fields.Float(digits=(2,2))
-    total_time = fields.Float(digits=(2,2),compute='_compute_total_time')
+    start_time = fields.Float(digits=(2,2),string='Start Time')
+    end_time = fields.Float(digits=(2,2),string='End Time')
+    total_time = fields.Float(digits=(2,2),string='Total Time',compute='_compute_total_time')
     comment = fields.Text()
     type_transport = fields.Selection([
         ('ntrip', 'Non Trip'),
@@ -131,7 +132,7 @@ class TimesheetActivityTransport(models.Model):
         if self:
             arrDepartment = []
             arrJob = []
-            department = self.env['hr.job'].search([('code','in',['IE','Ie','ie'])])
+            department = self.env['hr.department'].search([('code','in',['IE','Ie','ie'])])
             for department in department:
                 arrDepartment.append(department.id)
             hrjob = self.env['hr.job'].search([('department_id','in',arrDepartment)])
@@ -179,16 +180,12 @@ class TimesheetActivityTransport(models.Model):
     @api.multi
     @api.depends('start_time','end_time','total_time')
     def _compute_total_time(self):
-        self.ensure_one()
+        for item in self:
         #to compute total_time
-        if self:
-            if self.start_time and self.end_time:
-                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
-                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
-                self.total_time =calculate_endtime-calculate_starttime
-                if self.total_time < 0 :
-                    self.total_time = 0
-        return True
+
+            if item.start_time and item.end_time:
+
+                item.total_time = math.floor((item.end_time - item.start_time)) + round((item.end_time - item.start_time)%1*0.6,2)
 
     @api.multi
     @api.depends('start_km','end_km')
