@@ -11,5 +11,32 @@
                 </xpath>
             </field>
         </record>
+
+        <!-- make sure payroll required fields has value -->
+        <record id="inherited_hr_indonesia_employee" model="ir.ui.view">
+            <field name="name">HR Indonesia Employee</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr_indonesia.hr_indonesia_employee"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='employee_type']//field[@name='company_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_type']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='contract_period']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='joindate']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='tax_marital_id']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='tax_dependent']" position="attributes">
+                    <attribute name="required">1</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </openerp>

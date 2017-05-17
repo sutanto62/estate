@@ -48,26 +48,59 @@ class Employee(models.Model):
         for record in self:
             record.age = 1
 
+    def _check_nik(self, employee):
+        """
+        Daily employee's NIK has sequences related to company
+        Args:
+            employee:
+
+        Returns:
+            True if employee was not daily or employee company is equal to nik_number company
+            False if employee was daily and employee company is not equal to nik_number company
+        """
+        # Only employee that contract period is daily
+        if not employee.contract_period == '2':
+            return True
+
+        seq_obj = self.env['ir.sequence']
+        nik_prefix = employee.nik_number[0:3]
+        print 'nik_prefix %s' % nik_prefix
+
+        # make sure return singleton
+        sequence_id = seq_obj.search([('prefix', 'like', '%' + nik_prefix),
+                                      ('company_id', '=', employee.company_id.id)], limit=1)
+
+        if employee.company_id == sequence_id.company_id:
+            return True
+        else:
+            return False
+
     @api.multi
     @api.constrains('nik_number', 'identification_id')
     def _check_employee(self):
         """
-        Required to check duplicate NIK or ID
+        Required to check duplicate NIK (and format) or ID
         Returns: True if no duplicate found
         """
 
         for record in self:
 
             if record.nik_number:
+                # find duplicate nik
                 employee_ids = self.search([('id', 'not in', self.ids), ('nik_number', '=', record.nik_number)])
                 if employee_ids:
-                    error_msg = "There is duplicate of Employee Identity Number."
+                    error_msg = _("There is duplicate of Employee Identity Number.")
+                    raise ValidationError(error_msg)
+
+                # check nik format. it required base_indonesia
+                if not record._check_nik(record):
+                    error_msg = _("NIK did not match with Company Code.")
                     raise ValidationError(error_msg)
 
             if record.identification_id:
                 employee_ids = self.search([('id', 'not in', self.ids), ('identification_id', '=', record.identification_id)])
                 if employee_ids:
-                    error_msg = "There is duplicate of Identification Number."
+                    error_msg = _("There is duplicate of Identification Number.")
                     raise ValidationError(error_msg)
 
             return True

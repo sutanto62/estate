@@ -179,5 +179,26 @@
             </field>
         </record>
 
+        <!-- inherited salary rule tree-->
+
+        <record id="inherited_hr_salary_rule_list" model="ir.ui.view">
+            <field name="name">hr.salary.rule.list.inherit</field>
+            <field name="model">hr.salary.rule</field>
+            <field name="inherit_id" ref="hr_payroll.hr_salary_rule_list"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="default_order">sequence asc, name asc</attribute>
+                </xpath>
+                <xpath expr="//field[@name='sequence']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!--contract menu only open for hr manager-->
+        <record id="hr_contract.hr_menu_contract" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_hr_manager'),ref('estate_payroll.estate_payroll_officer')])]"/>
+        </record>
+
     </data>
 </openerp>

@@ -92,22 +92,26 @@
                         <!--
                         Please retain filter order
                         -->
-                        <filter name="by_employee_company" string="Employee Company"
+                        <filter name="by_employee_company" string="Company (Employee)"
                                 context="{'group_by': 'employee_company_id'}"/>
-                        <filter name="by_company" string="Location Company"
+                        <filter name="by_company" string="Company (Location)"
                                 context="{'group_by': 'company_id'}"/>
                         <filter name="by_estate" string="Estate"
                                 context="{'group_by': 'estate_id'}"/>
                         <filter name="by_division" string="Division"
                                 context="{'group_by': 'division_id'}"/>
-                        <filter name="by_upkeep" string="Upkeep"
-                                context="{'group_by': 'upkeep_id'}"/>
+                        <filter name="by_team" string="Team"
+                                context="{'group_by': 'upkeep_team_id'}"/>
                         <filter name="by_employee" string="Employee"
                                 context="{'group_by': 'employee_id'}"/>
-                        <filter name="by_general_account" string="General Account"
-                                context="{'group_by': 'general_account_id'}"/>
                         <filter name="by_activity" string="Activity"
                                 context="{'group_by': 'activity_id'}"/>
+                        <filter name="by_upkeep" string="Upkeep"
+                                context="{'group_by': 'upkeep_id'}"/>
+                        <filter name="by_general_account" string="General Account"
+                                context="{'group_by': 'general_account_id'}"/>
+                        <filter name="by_planted_year" string="Planted Year"
+                                context="{'group_by': 'planted_year_id'}"/>
                         <filter name="by_attendance_code" string="Attendance"
                                 context="{'group_by': 'attendance_code_id'}"/>
                         <filter name="by_activity_contract" string="Contract"
@@ -118,8 +122,7 @@
                                 context="{'group_by': 'upkeep_date:week'}"/>
                         <filter name="by_date" string="Date"
                                 context="{'group_by': 'upkeep_date:day'}"/>
-                        <filter name="by_team" string="Team"
-                                context="{'group_by': 'upkeep_team_id'}"/>
+
                         <!-- Hold cross team implementation
                         <filter name="by_cross_team" string="Team (Cross Team)"
                                 context="{'group_by': 'number_of_day_team_id'}"/>
@@ -494,6 +497,7 @@
                             </group>
                             <group name="top_right">
                                 <field name="employee_company_id" readonly="True"/>
+                                <field name="employee_nik" readonly="True"/>
                                 <field name="contract_type" readonly="True"/>
                                 <field name="contract_period" readonly="True"/>
                             </group>

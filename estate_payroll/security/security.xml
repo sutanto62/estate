@@ -1,6 +1,7 @@
 <openerp>
     <data noupdate="0">
-        
+
+        <!--groups-->
         <record id="estate_payroll.estate_payroll_officer" model="res.groups">
             <field name="name">Estate Payroll Officer</field>
             <field name="category_id" ref="estate.module_category_estate"/>
@@ -12,5 +13,8 @@
             <field name="category_id" ref="estate.module_category_estate"/>
             <field name="implied_ids" eval="[(4, ref('estate_payroll.estate_payroll_officer'))]"/>
         </record>
+        <!--/groups-->
+
+
     </data>
 </openerp>

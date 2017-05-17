@@ -6,6 +6,17 @@
                 <t t-foreach="docs" t-as="batch">
                     <t t-call="report.internal_layout">
                         <div class="page">
+                            <!-- !important override bootstrap td's -->
+                            <style>
+                                table.table-condensed td {
+                                    padding: 2px 4px !important;
+                                }
+
+                                table.bordered{
+                                    border: 1px solid black !important;
+                                }
+                            </style>
+
                             <!--internal layout header on top of title-->
                             <br/><br/>
 
@@ -39,13 +50,13 @@
                                 <tr>
                                     <td width="20%"><strong>Perusahaan</strong></td>
                                     <td width="50%">: <t t-if="batch.company_id"><t t-esc="batch.company_id.name"/></t></td>
-                                    <td width="15%" class="text-right"><strong>HK/Bulan</strong></td>
+                                    <td width="15%" class="text-right"></td>
                                     <td width="15%"></td>
                                 </tr>
                                 <tr>
                                     <td width="20%"><strong>Kebun</strong></td>
                                     <td width="50%">: <t t-if="batch.estate_id"><t t-esc="batch.estate_id.name"/></t></td>
-                                    <td width="15%" class="text-right"><strong>HK/Hari</strong></td>
+                                    <td width="15%" class="text-right"></td>
                                     <td width="15%"></td>
                                 </tr>
                                 <tr>
@@ -64,16 +75,16 @@
                             </table>
                             <!-- /Cover Slip Header -->
 
-                            <table class="table table-striped table-condensed table-bordered" style="font-size:65%">
+                            <table class="table table-condensed table-bordered" style="font-size:65%;padding:0px;">
                                 <thead>
                                     <tr>
                                         <th rowspan="2" colspan="4">Kemandoran</th>
                                         <th colspan="6" class="text-center">Upah</th>
                                         <th rowspan="2">Tunjangan</th>
-                                        <th rowspan="2">Jumlah Penghasilan</th>
+                                        <th rowspan="2">Gaji Brutto</th>
                                         <th rowspan="2">Potongan</th>
                                         <th rowspan="2">≈</th>
-                                        <th rowspan="2">Penghasilan Bersih</th>
+                                        <th rowspan="2">Gaji Netto</th>
                                         <th colspan="3" class="text-center">Lain-Lain</th>
                                         <th rowspan="2">Total Lain-Lain</th>
                                         <!--<th rowspan="2" colspan="2">Signature</th>-->
@@ -251,7 +262,7 @@
                             </table>
 
                             <!-- Signature #1 -->
-                            <table class="borderless" width="100%" style="page-break-inside: avoid;">
+                            <table class="table-condensed borderless" width="100%" style="page-break-inside: avoid;">
                                 <tr>
                                     <td style="vertical-align: bottom">
                                         <table class="table table-bordered" style="font-size:65%; width: auto">
@@ -261,14 +272,14 @@
                                                 <td style="width: 120px">Disetujui oleh,</td>
                                             </tr>
                                             <tr style="height: 80px">
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td><![CDATA[&nbsp;]]></td>
+                                                <td><![CDATA[&nbsp;]]></td>
+                                                <td><![CDATA[&nbsp;]]></td>
                                             </tr>
                                             <tr>
-                                                <td></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td><![CDATA[&nbsp;]]></td>
+                                                <td><![CDATA[&nbsp;]]></td>
+                                                <td><![CDATA[&nbsp;]]></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -338,7 +349,7 @@
                                         <h4>Non Kemandoran</h4>
                                     </t>
                                     <h4><t t-esc="team.name"/> <t t-if="team.name">(Leader <t t-esc="team.employee_id.name"/>)</t></h4>
-                                    <table class="table table-striped table-condensed table-bordered" style="font-size:65%">
+                                    <table class="table table-condensed table-bordered" style="font-size:65%;">
                                         <thead>
                                             <tr>
                                                 <th rowspan="2">No.</th>
@@ -347,11 +358,11 @@
                                                 <th rowspan="2">Type</th>
                                                 <th colspan="6" class="text-center">Upah</th>
                                                 <th rowspan="2">Tunjangan</th>
-                                                <th rowspan="2">Jumlah Penghasilan</th>
+                                                <th rowspan="2">Gaji Brutto</th>
                                                 <th rowspan="2">Potongan</th>
                                                 <th rowspan="2">Pajak</th>
                                                 <th rowspan="2">≈</th>
-                                                <th rowspan="2">Penghasilan Bersih</th>
+                                                <th rowspan="2">Gaji Netto</th>
                                                 <th rowspan="2" colspan="2">Tanda Tangan</th>
                                             </tr>
                                             <tr>
@@ -439,11 +450,11 @@
                                                     <!-- Signature column layout side-by-side or span for two columns -->
                                                     <t t-if="no%2!=0"> <!-- modulus to check even row -->
                                                         <t t-if="no==last_row">
-                                                            <td colspan="2" style="width:20%"><t t-esc="no"/></td>
+                                                            <td colspan="2" width="140px"><t t-esc="no"/></td>
                                                         </t>
                                                         <t t-if="no!=last_row">
-                                                            <td rowspan="2" style="width:10%"><t t-esc="no"/></td>
-                                                            <td rowspan="2" style="width:10%"><t t-esc="no+1"/></td>
+                                                            <td rowspan="2" width="70px"><t t-esc="no"/></td>
+                                                            <td rowspan="2" width="70px"><t t-esc="no+1"/></td>
                                                         </t>
                                                     </t>
                                                 </tr>
@@ -463,13 +474,13 @@
                                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_tax_team)"/></strong></td>
                                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_rounding_team)"/></strong></td>
                                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_netto_team)"/></strong></td>
-                                                <td colspan="2" style="width:20%"></td>
+                                                <td colspan="2"></td>
                                             </tr>
                                         </tbody>
                                     </table>
 
                                     <!-- Signature #2 -->
-                                    <table class="borderless" width="100%" style="page-break-inside: avoid;">
+                                    <table class="table-condensed borderless" width="100%" style="page-break-inside: avoid;">
                                         <tr>
                                             <td style="vertical-align: bottom">
                                                 <table class="table table-bordered" style="font-size:65%; width: auto">

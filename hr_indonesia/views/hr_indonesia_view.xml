@@ -85,7 +85,33 @@
             <field name="inherit_id" ref="hr.view_employee_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="after">
+                    <field name="contract_type" str=""/>
+                    <field name="contract_period" str=""/>
                     <field name="nik_number"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </xpath>
+                <!-- remove unused info -->
+                <xpath expr="//field[@name='work_phone']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='work_email']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Require to view NIK -->
+        <record id="inherited_hr_view_employee_view_kanban" model="ir.ui.view">
+            <field name="name">Employee Kanban</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.hr_kanban_view_employees"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@class='oe_kanban_details']//ul" position="inside">
+                    <t t-if="record.contract_type.raw_value and record.contract_period.raw_value">
+                        <li>Status <field name="contract_type"/> <field name="contract_period"/></li>
+                    </t>
+                    <li t-if="record.nik_number.raw_value">NIK <field name="nik_number"/></li>
+                    <li t-if="record.company_id.raw_value"><field name="company_id"/></li>
                 </xpath>
             </field>
         </record>
