@@ -168,3 +168,10 @@
 "view_requisition_tracking_dept_head","view_requisition_tracking","purchase_indonesia.model_view_requisition_tracking","purchase_request.group_purchase_request_dept_head","True","False","False","False"
 "view_requisition_tracking_manager","view_requisition_tracking","purchase_indonesia.model_view_requisition_tracking","purchase_request.group_purchase_request_manager","True","False","False","False"
 "view_requisition_tracking_procurement_staff","view_requisition_tracking","purchase_indonesia.model_view_requisition_tracking","purchase_request.group_purchase_request_procstaff","True","False","False","False"
+
+
+
+"access_base_indonesia_taxes_finance_procurement","taxes_finance_procurement","base_indonesia.model_base_indonesia_taxes","purchase_indonesia.group_purchase_request_finance_procurement","TRUE","True","True","True"
+"access_base_indonesia_taxes_procurement_staff","taxes_procurement_staff","base_indonesia.model_base_indonesia_taxes","purchase_request.group_purchase_request_procstaff","TRUE","True","True","True"
+"access_base_indonesia_business_permit_finance_procurement","business_permit_finance_procurement","base_indonesia.model_base_indonesia_vendor_business_permit","purchase_indonesia.group_purchase_request_finance_procurement","TRUE","True","True","True"
+"access_base_indonesia_business_permit_procurement_staff","business_permit_procurement_staff","base_indonesia.model_base_indonesia_vendor_business_permit","purchase_request.group_purchase_request_procstaff","TRUE","True","True","True"
