@@ -6,6 +6,7 @@ import calendar
 import time
 import datetime
 from openerp import tools
+import math
 
 
 class VehicleOilLog(models.Model):
@@ -605,16 +606,14 @@ class FleetVehicleTimesheetInherits(models.Model):
     @api.multi
     @api.depends('start_time','end_time','total_time')
     def _compute_total_time(self):
-        self.ensure_one()
+        for item in self:
         #to compute total_time
-        if self:
-            if self.start_time and self.end_time:
-                calculate_endtime = round(self.end_time%1*0.6,2)+(self.end_time-self.end_time%1)
-                calculate_starttime = round(self.start_time%1*0.6,2)+(self.start_time-self.start_time%1)
-                self.total_time =calculate_endtime-calculate_starttime
-                if self.total_time < 0 :
-                    self.total_time = 0
-        return True
+
+            if item.start_time and item.end_time:
+
+                item.total_time = math.floor((item.end_time - item.start_time)) + round((item.end_time - item.start_time)%1*0.6,2)
+
+
 
     @api.multi
     @api.depends('start_km','end_km')
