@@ -121,7 +121,29 @@
                     <field name="group_id"/>
                     <field name="pr_source" string="PP No"/>
                     <field name="purchase_order_name" string="Purchase Order No"/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
                     <group expand="0" string="Group By">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date:day'}"/>
                         <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}"/>
                         <filter string="Order Date" icon="terp-go-month" domain="[]"  context="{'group_by':'date'}"/>
                         <filter string="Expected Date" icon="terp-go-month" domain="[]"  context="{'group_by':'min_date'}"/>
