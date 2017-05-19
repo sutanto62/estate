@@ -3,10 +3,10 @@
     'name': "Estate Account",
 
     'summary': """
-        Account (Labour, Material, Other), Journal""",
+        Payroll, Estate, Account Move""",
 
     'description': """
-        Account
+        Create Account Move based on Payroll and Estate Upkeep
     """,
 
     'author': "Cayadi Sutanto <cayadi.sutanto@palmagroup.co.id>",
@@ -19,14 +19,19 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'estate'],
+    'depends': ['base', 'estate', 'estate_payroll', 'account'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'templates.xml',
+        'security/ir.model.access.csv',
+        # 'templates.xml',
+        'data/account_data.xml',
+        'data/labour_account.xml',
         'views/inherited_estate_activity_view.xml',
         'views/inherited_estate_upkeep.xml',
+        'views/inherited_hr_payroll_view.xml',
+        'views/inherited_account_view.xml',
+        'views/estate_account_view.xml' # error menu and action did not appear,
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--view-->
+
+        <!--/view-->
+
+        <!--action-->
+        <record id="payroll_cost_category_action" model="ir.actions.act_window">
+            <field name="name">Accrued Category</field>
+            <field name="res_model">estate_account.payroll_cost_category</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="payroll_cost_action" model="ir.actions.act_window">
+            <field name="name">Accrued Labour Account</field>
+            <field name="res_model">estate_account.payroll_cost</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="payroll_company_account_action" model="ir.actions.act_window">
+            <field name="name">Payroll Bank Account</field>
+            <field name="res_model">estate_account.company_account</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+        <!--/action-->
+
+        <!--menu-->
+        <menuitem id="estate_account_menu" name="Estate Account"
+                  sequence="10"
+                  parent="account.menu_finance_configuration"/>
+        <menuitem id="payroll_cost_category" name="Accrued Category"
+                  sequence="1"
+                  action="payroll_cost_category_action"
+                  parent="estate_account_menu"/>
+        <menuitem id="payroll_cost_menu" name="Accrued Labour Account"
+                  sequence="2"
+                  action="payroll_cost_action"
+                  parent="estate_account_menu"/>
+        <menuitem id="company_account_menu" name="Payroll Bank Account"
+                  sequence="3"
+                  action="payroll_company_account_action"
+                  parent="estate_account_menu"/>
+        <!--/menu-->
+
+    </data>
+</openerp>

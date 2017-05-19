@@ -1,1 +1,4 @@
+import estate_account
 import inherited_estate
+import inherited_hr_payslip_run
+import inherited_account_move

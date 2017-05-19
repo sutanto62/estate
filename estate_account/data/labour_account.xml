@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--
+        Payroll cost created
+        1. By company.
+        2. By Contract Type and Period (as required).
+        3. By payroll cost category
+        -->
+
+        <!--accrued category-->
+        <record id="estate_account.payroll_cost_category_gtt" model="estate_account.payroll_cost_category">
+            <field name="name">Gaji dan Tunjangan Tetap</field>
+            <field name="code">GTT</field>
+            <field name="aggregation">sum(wage_number_of_day)</field>
+        </record>
+        <record id="estate_account.payroll_cost_category_op" model="estate_account.payroll_cost_category">
+            <field name="name">Overtime/Premi</field>
+            <field name="code">OPR</field>
+            <field name="aggregation">sum(wage_overtime+wage_piece_rate)</field>
+        </record>
+        <!--/accrued category-->
+
+        <!--labour account-->
+        <record id="estate_account.payroll_cost_gtt_khl_hja" model="estate_account.payroll_cost">
+            <field name="name">Gaji dan Tunjangan Tetap KHL</field>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_gtt"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="account_id" ref=".coa_hja_51101"/>
+        </record>
+        <record id="estate_account.payroll_cost_gtt_khl_apk" model="estate_account.payroll_cost">
+            <field name="name">Gaji dan Tunjangan Tetap KHL</field>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_gtt"/>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="account_id" ref=".coa_apk_51101"/>
+        </record>
+        <record id="estate_account.payroll_cost_gtt_khl_tpn" model="estate_account.payroll_cost">
+            <field name="name">Gaji dan Tunjangan Tetap KHL</field>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_gtt"/>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="account_id" ref=".coa_tpn_51101"/>
+        </record>
+
+        <record id="estate_account.payroll_cost_gtt_kht_hja" model="estate_account.payroll_cost">
+            <field name="name">Gaji dan Tunjangan Tetap KHT</field>
+            <field name="contract_type">1</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_gtt"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="account_id" ref=".coa_hja_51101"/>
+        </record>
+        <record id="estate_account.payroll_cost_gtt_kht_apk" model="estate_account.payroll_cost">
+            <field name="name">Gaji dan Tunjangan Tetap KHT</field>
+            <field name="contract_type">1</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_gtt"/>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="account_id" ref=".coa_apk_51101"/>
+        </record>
+        <record id="estate_account.payroll_cost_gtt_kht_tpn" model="estate_account.payroll_cost">
+            <field name="name">Gaji dan Tunjangan Tetap KHT</field>
+            <field name="contract_type">1</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_gtt"/>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="account_id" ref=".coa_tpn_51101"/>
+        </record>
+        
+        <record id="estate_account.payroll_cost_op_khl_hja" model="estate_account.payroll_cost">
+            <field name="name">Overtime/Premi KHL</field>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_op"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="account_id" ref=".coa_hja_51102"/>
+        </record>
+        <record id="estate_account.payroll_cost_op_khl_apk" model="estate_account.payroll_cost">
+            <field name="name">Overtime/Premi KHL</field>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_op"/>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="account_id" ref=".coa_apk_51102"/>
+        </record>
+        <record id="estate_account.payroll_cost_op_khl_tpn" model="estate_account.payroll_cost">
+            <field name="name">Overtime/Premi KHL</field>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_op"/>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="account_id" ref=".coa_tpn_51102"/>
+        </record>
+
+        <record id="estate_account.payroll_cost_op_kht_hja" model="estate_account.payroll_cost">
+            <field name="name">Overtime/Premi KHT</field>
+            <field name="contract_type">1</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_op"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="account_id" ref=".coa_hja_51102"/>
+        </record>
+        <record id="estate_account.payroll_cost_op_kht_apk" model="estate_account.payroll_cost">
+            <field name="name">Overtime/Premi KHT</field>
+            <field name="contract_type">1</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_op"/>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="account_id" ref=".coa_apk_51102"/>
+        </record>
+        <record id="estate_account.payroll_cost_op_kht_tpn" model="estate_account.payroll_cost">
+            <field name="name">Overtime/Premi KHT</field>
+            <field name="contract_type">1</field>
+            <field name="contract_period">2</field>
+            <field name="category_id" ref="estate_account.payroll_cost_category_op"/>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="account_id" ref=".coa_tpn_51102"/>
+        </record>
+        <!--/labour account-->
+
+    </data>
+</openerp>

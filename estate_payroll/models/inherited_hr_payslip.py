@@ -38,7 +38,6 @@ class Payslip(models.Model):
             # Avoid error when KHL registered more than 1 team.
             if team_ids and payslip.contract_type_id.name == 'Estate Worker': # Other employee need no team_id
                 payslip.team_id = team_ids[0]
-                print '_get_team team ... %s' % payslip.team_id
             return True
 
     @api.multi
@@ -213,14 +212,25 @@ class Payslip(models.Model):
         """ Resolve payslip calculation: upkeep weekly closing, employee without contract."""
         no_contract = []
         for record in self:
+
+            # prevent recompute for non draft
+            if record.state != 'draft':
+                pass
+
+            # notify user if there was employee without contract
             if not record.contract_id:
                 no_contract.append(record.employee_id.name_related)
 
-            # recompute did not trigger compute field
+            # trigger computed field
             record._get_team()
-
             record.onchange_employee()
             record.compute_sheet()
+
+        # notify at the end of process
+        if no_contract:
+            err_msg = _('You have %s employee(s) without contract. Name: %s' % (len(set(no_contract)),
+                                                                                ", ".join(set(no_contract))))
+            raise ValidationError(err_msg)
 
     @api.model
     def create(self, vals):

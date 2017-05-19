@@ -188,6 +188,7 @@ class PlantedYear(models.Model):
     _name = 'estate.planted.year'
 
     name = fields.Char("Planted Year")
+    analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account ')
 
 class StandPerHectare(models.Model):
     """Stand per hectare by regional. Parameter value constrains to topography parameter (hard coded).

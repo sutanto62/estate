@@ -201,6 +201,13 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record model="ir.actions.act_window" id="action_list_planted_year_config">
+            <field name="name">Planted Year</field>
+            <field name="res_model">estate.planted.year</field>
+            <field name="priority">2</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <record id="action_list_analytic" model="ir.actions.act_window" >
             <field name="name">Analytic Estate Journal Items</field>
             <field name="res_model">account.analytic.line</field>
@@ -249,6 +256,11 @@
         <menuitem id="estate_parameter_menu" name="Block Parameter"
                   parent="estate_blocking_menu"
                   action="action_list_parameter_config"
+                  groups="base.group_configuration,estate.group_agronomi"/>
+
+        <menuitem id="estate_planted_year_menu" name="Planted Year"
+                  parent="estate_blocking_menu"
+                  action="action_list_planted_year_config"
                   groups="base.group_configuration,estate.group_agronomi"/>
 
         <!-- Estate Reporting -->
