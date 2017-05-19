@@ -86,8 +86,9 @@
         </record>
 
         <menuitem id="menu_validate_tracking_purchase_order_invoice" name="Report Progress PP"
-            parent="purchase.menu_procurement_management"
+            parent="base.purchase_report"
             action="view_validate_tracking_purchase_order_invoice_action" sequence="22"/>
+
 
     </data>
 </openerp>
