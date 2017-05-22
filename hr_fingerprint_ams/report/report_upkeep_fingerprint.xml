@@ -6,6 +6,17 @@
             <t t-call="report.html_container">
                 <t t-call="report.internal_layout">
                     <div class="page">
+                        <!-- !important override bootstrap td's -->
+                        <style>
+                            table.table-condensed td {
+                                padding: 2px 4px !important;
+                            }
+
+                            table.bordered{
+                                border: 1px solid black !important;
+                            }
+                        </style>
+
                         <h2>Laporan Kontrol HK dan Sidik jari</h2>
                         <p>
                             <strong>Perusahaan</strong>:
@@ -26,6 +37,7 @@
                             <thead>
                                 <tr>
                                     <th class="col-md-auto text-center" rowspan="2">KHL</th>
+                                    <th class="col-md-auto text-center" rowspan="2">NIK</th>
                                     <th class="col-md-1 text-center" rowspan="2">Tanggal</th>
                                     <th class="col-md-1 text-center" rowspan="2">Sidik Jari Masuk</th>
                                     <th class="col-md-1 text-center" rowspan="2">Sidik Jari Pulang</th>
@@ -33,20 +45,20 @@
                                     <th class="col-md-1 text-center" colspan="5">Alasan</th>
                                 </tr>
                                 <tr>
-                                    <th class="col-md-1 text-center" style="width:100px">Dinas Luar</th>
-                                    <th class="col-md-1 text-center" style="width:100px">Belum Terdaftar</th>
-                                    <th class="col-md-1 text-center" style="width:100px">Hujan</th>
-                                    <th class="col-md-1 text-center" style="width:100px">Sakit</th>
-                                    <th class="col-md-1 text-center" style="width:100px">Izin</th>
+                                    <th class="col-md-1 text-center" style="width:50px">Dinas Luar</th>
+                                    <th class="col-md-1 text-center" style="width:50px">Belum Terdaftar</th>
+                                    <th class="col-md-1 text-center" style="width:50px">Hujan</th>
+                                    <th class="col-md-1 text-center" style="width:50px">Sakit</th>
+                                    <th class="col-md-1 text-center" style="width:50px">Izin</th>
                                 </tr>
                             </thead>
                              <!--footer-->
                             <tfoot>
                                 <tr>
-                                    <td colspan="10">
+                                    <td colspan="11">
                                         <p><strong>Keterangan</strong></p>
                                         <p><cite>Tulis keterangan tambahan di sini</cite></p>
-                                        <p></p>
+                                        <p><![CDATA[&nbsp;]]></p>
                                     </td>
                                 </tr>
                             </tfoot>
@@ -59,7 +71,7 @@
 
                             <t t-foreach="set(assistant)" t-as="a">
                                 <tr>
-                                    <td colspan="10"><strong>Asisten <span t-esc="a['name']"/></strong></td>
+                                    <td colspan="11"><strong>Asisten <span t-esc="a['name']"/></strong></td>
                                 </tr>
 
                                 <!--team-->
@@ -71,7 +83,7 @@
                                 <t t-foreach="set(team)" t-as="t">
                                     <t t-if="a['id']==t['assistant_id']['id']">
                                         <tr>
-                                            <td colspan="10">
+                                            <td colspan="11">
                                                 <strong>Kemandoran <span t-esc="t['name']"/></strong>
                                             </td>
                                         </tr>
@@ -81,6 +93,9 @@
                                                 <tr>
                                                     <td>
                                                         <span t-esc="ff['employee_id']['name']"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="ff['employee_id']['nik_number']"/>
                                                     </td>
                                                     <td>
                                                         <span t-esc="format_date(ff['date'],'%Y-%m-%d')"/>
