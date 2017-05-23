@@ -36,7 +36,11 @@
 "quotation_comparison_form_president_budget","quotation_comparison_form_budget","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
 "quotation_comparison_form_finance_procurement","comparison_form_finance_procurement","purchase_indonesia.model_quotation_comparison_form","purchase_indonesia.group_purchase_request_finance_procurement","TRUE","True","True","True"
 "quotation_comparison_form_technical4","quotation_comparison_form_technical4","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_technical4","TRUE","True","True","True"
-
+"quotation_comparison_form_technical1","comparison_form_technical1","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_technical1","TRUE","True","True","True"
+"quotation_comparison_form_technical2","comparison_form_technical2","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_technical2","TRUE","True","True","True"
+"quotation_comparison_form_technical3","comparison_form_technical3","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_technical3","TRUE","True","True","True"
+"quotation_comparison_form_technical5","comparison_form_technical5","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_technical5","TRUE","True","True","True"
+"quotation_comparison_form_technical6","comparison_form_technical6","purchase_indonesia.model_quotation_comparison_form","purchase_request.group_purchase_request_technical6","TRUE","True","True","True"
 
 ,,,,,,,
 
@@ -50,6 +54,11 @@
 "quotation_comparison_form_line_budget","quotation_comparison_form_line_budget","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_budget","TRUE","True","True","True"
 "quotation_comparison_form_line_finance_procurement","comparison_form_line_finance_procurement","purchase_indonesia.model_quotation_comparison_form_line","purchase_indonesia.group_purchase_request_finance_procurement","TRUE","True","True","True"
 "quotation_comparison_form_line_technical4","comparison_form_line_technical4","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_technical4","TRUE","True","True","True"
+"quotation_comparison_form_line_technical1","comparison_form_line_technical1","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_technical1","TRUE","True","True","True"
+"quotation_comparison_form_line_technical2","comparison_form_line_technical2","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_technical2","TRUE","True","True","True"
+"quotation_comparison_form_line_technical3","comparison_form_line_technical3","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_technical3","TRUE","True","True","True"
+"quotation_comparison_form_line_technical5","comparison_form_line_technical5","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_technical5","TRUE","True","True","True"
+"quotation_comparison_form_line_technical6","comparison_form_line_technical6","purchase_indonesia.model_quotation_comparison_form_line","purchase_request.group_purchase_request_technical6","TRUE","True","True","True"
 
 ,,,,,,,
 "v_quotation_comparison_form_line_user","v_quotation_comparison_form_line","purchase_indonesia.model_v_quotation_comparison_form_line","purchase_request.group_purchase_request_user","True","False","False","False"
