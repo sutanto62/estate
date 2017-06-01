@@ -69,7 +69,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         payslip_obj = self.pool.get('hr.payslip')
         division_obj = self.pool.get('stock.location')
 
-        domain = [('state', 'in', ('draft', 'verify')),
+        domain = [('state', 'in', ('draft', 'verify', 'done')),
                   ('date_from', '>=', obj.date_start),
                   ('date_to', '<=', obj.date_end),
                   ('payslip_run_id', '=', obj.id),
@@ -105,7 +105,7 @@ class estate_payslip_run_report(report_sxw.rml_parse):
         team_obj = self.pool.get('estate.hr.team')
 
         # Get team
-        domain = [('state', 'in', ('draft','verify')),
+        domain = [('state', 'in', ('draft','verify','done')),
                   ('date_from', '>=', obj.date_start),
                   ('date_to', '<=', obj.date_end),
                   ('payslip_run_id', '=', obj.id),

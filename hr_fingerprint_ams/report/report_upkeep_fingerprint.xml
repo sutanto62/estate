@@ -38,7 +38,7 @@
                                 <tr>
                                     <th class="col-md-auto text-center" rowspan="2">KHL</th>
                                     <th class="col-md-auto text-center" rowspan="2">NIK</th>
-                                    <th class="col-md-1 text-center" rowspan="2">Tanggal</th>
+                                    <th class="col-md-1 text-center" rowspan="2" style="width:100px">Tanggal</th>
                                     <th class="col-md-1 text-center" rowspan="2">Sidik Jari Masuk</th>
                                     <th class="col-md-1 text-center" rowspan="2">Sidik Jari Pulang</th>
                                     <th class="col-md-1 text-center" rowspan="2">HK BKM</th>

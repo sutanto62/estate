@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!-- Inherit view -->
+        <record id="inherited_estate_account_hr_payslip_run_form" model="ir.ui.view">
+            <field name="name">estate.account.hr.payslip.run.form.inherit</field>
+            <field name="model">hr.payslip.run</field>
+            <field name="inherit_id" ref="hr_payroll.hr_payslip_run_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header//button" position="after">
+                    <button name="journal_to_close" type="object"
+                            groups="base.group_no_one" help="Set payroll batches and its descendants to draft position."
+                            string="Reset to Close" states="journaled"/>
+                </xpath>
+                <xpath expr="//field[@name='credit_note']" position="after">
+                    <!--<field name="accrued_journal_id"/>-->
+                    <!--<field name="allocation_journal_id"/>-->
+                    <!--<field name="receivable_journal_id"/>-->
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</openerp>
