@@ -328,13 +328,29 @@ class FleetVehicleTimesheet(models.Model):
         """ Confirms Timesheet request.
         @return: timesheet all.
         """
-        name = self.name
-        self.write({'name':"Vehicle Timesheet %s " %(name)})
-        self.write({'state': 'done'})
-        self.do_create_vehicle_odometer_log()
-        self.do_create_vehicle_log_fuel()
-        self.env['estate.timesheet.activity.transport'].search([('owner_id','=',self.id)]).write({'state': 'done'})
-        return True
+        for item in self:
+            name = item.name
+            timesheet = item.env['estate.timesheet.activity.transport']
+            domain_owner = [('owner_id','=',item.id)]
+            data = {
+                'name':"Vehicle Timesheet %s " %(name),
+                'state': 'done'
+            }
+            item.write(data)
+            timesheet_vehicle = timesheet.search(domain_owner)
+
+            sum_total_time = sum(timesheet.total_time for timesheet in timesheet_vehicle)
+            sum_total_distance = sum(timesheet.total_distance for timesheet in timesheet_vehicle)
+
+            if sum_total_distance == 0 or sum_total_distance < 0 :
+                raise exceptions.ValidationError('Total Distance Cannot Lower Than Zero')
+            elif sum_total_time == 0 or sum_total_time < 0 :
+                raise exceptions.ValidationError('Total Time Cannot Lower Than Zero')
+            else:
+                item.do_create_vehicle_odometer_log()
+                item.do_create_vehicle_log_fuel()
+                timesheet_vehicle.write({'state': 'done'})
+                return True
 
     def action_done(self, cr, uid, ids, context=None):
         self.write(cr, uid, ids, {'state': 'done', 'date_timesheet': time.strftime('%Y-%m-%d %H:%M:%S')})
