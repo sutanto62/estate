@@ -1,2 +1,7 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_../estate-9.0/estate_account_../estate-9.0/estate_account,../estate-9.0/estate_account.../estate-9.0/estate_account,model_../estate-9.0/estate_account_../estate-9.0/estate_account,,1,0,0,0
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"estate_account_payroll_cost_category_administrator","Estate Account Payroll Cost Category Administrator","model_estate_account_payroll_cost_category","base.group_no_one",1,1,1,1
+"estate_account_payroll_cost_account_administrator","Estate Account Payroll Cost Account Administrator","model_estate_account_payroll_cost","base.group_no_one",1,1,1,1
+"estate_account_company_account_administrator","Estate Account Company Account  Administrator","model_estate_account_company_account","base.group_no_one",1,1,1,1
+"estate_account_payroll_cost_category_account_manager","Estate Account Payroll Cost Category Account Manager","model_estate_account_payroll_cost_category","account.group_account_manager",1,1,1,0
+"estate_account_payroll_cost_account_manager","Estate Account Payroll Cost Account Manager","model_estate_account_payroll_cost","account.group_account_manager",1,1,1,0
+"estate_account_company_account_account_manager","Estate Account Company Account  Account Manager","model_estate_account_company_account","account.group_account_manager",1,1,1,0

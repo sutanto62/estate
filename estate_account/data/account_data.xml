@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <!--sequence-->
+        <record id="estate_account.ir_sequence_journal_accrued_hja" model="ir.sequence">
+            <field name="name">Nomor Jurnal Accrued Gaji HJA</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GAJI/HJA/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_accrued_apk" model="ir.sequence">
+            <field name="name">Nomor Jurnal Accrued Gaji APK</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GAJI/APK/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.apk_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_accrued_tpn" model="ir.sequence">
+            <field name="name">Nomor Jurnal Accrued Gaji TPN</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GAJI/TPN/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.tpn_company"/>
+        </record>
+
+        <record id="estate_account.ir_sequence_journal_bank_hja" model="ir.sequence">
+            <field name="name">Nomor Jurnal Penarikan Bank HJA</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GBNK/HJA/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_bank_apk" model="ir.sequence">
+            <field name="name">Nomor Jurnal Penarikan Bank APK</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GBNK/APK/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.apk_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_bank_tpn" model="ir.sequence">
+            <field name="name">Nomor Jurnal Penarikan Bank TPN</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GBNK/TPN/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.tpn_company"/>
+        </record>
+
+        <record id="estate_account.ir_sequence_journal_allocation_hja" model="ir.sequence">
+            <field name="name">Nomor Jurnal Alokasi Transit Gaji HJA</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GTRN/HJA/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_allocation_apk" model="ir.sequence">
+            <field name="name">Nomor Jurnal Alokasi Transit Gaji APK</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GTRN/APK/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.apk_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_allocation_tpn" model="ir.sequence">
+            <field name="name">Nomor Jurnal Alokasi Transit Gaji TPN</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GTRN/TPN/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.tpn_company"/>
+        </record>
+
+        <record id="estate_account.ir_sequence_journal_receivable_hja" model="ir.sequence">
+            <field name="name">Nomor Jurnal Piutang Antar Perusahaan</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GPAP/HJA/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_receivable_apk" model="ir.sequence">
+            <field name="name">Nomor Jurnal Piutang Antar Perusahaan</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GPAP/APK/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.apk_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_receivable_tpn" model="ir.sequence">
+            <field name="name">Nomor Jurnal Piutang Antar Perusahaan</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GPAP/TPN/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.tpn_company"/>
+        </record>
+
+        <record id="estate_account.ir_sequence_journal_payable_hja" model="ir.sequence">
+            <field name="name">Nomor Jurnal Hutang Antar Perusahaan</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GTRA/HJA/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_payable_apk" model="ir.sequence">
+            <field name="name">Nomor Jurnal Hutang Antar Perusahaan</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GTRA/APK/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.apk_company"/>
+        </record>
+        <record id="estate_account.ir_sequence_journal_payable_tpn" model="ir.sequence">
+            <field name="name">Nomor Jurnal Hutang Antar Perusahaan</field>
+            <field name="code">account.journal</field>
+            <field name="implementation">no_gap</field>
+            <field name="prefix">GTRA/TPN/%(range_year)s/%(month)s/</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="use_date_range" eval="True"/>
+            <field name="next_number">1</field>
+            <field name="company_id" ref="base.tpn_company"/>
+        </record>
+        <!--/sequence-->
+
+        <!--accrued-->
+        <record id="account_payroll_journal_accrued_hja" model="account.journal">
+            <field name="name">Jurnal Accrued Gaji</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="code">GAJI</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_accrued_hja"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_hja_32001"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_accrued_apk" model="account.journal">
+            <field name="name">Jurnal Accrued Gaji</field>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="code">GAJI</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_accrued_apk"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_apk_32001"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_accrued_tpn" model="account.journal">
+            <field name="name">Jurnal Accrued Gaji</field>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="code">GAJI</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_accrued_tpn"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_tpn_32001"/>
+            <field name="type">general</field>
+        </record>
+        <!--/accrued-->
+
+        <!--bank-->
+        <record id="account_payroll_journal_bank_hja" model="account.journal">
+            <field name="name">Jurnal Gaji Bank</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="code">GBNK</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_bank_hja"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_debit_account_id" ref=".coa_hja_32001"/>
+            <field name="default_credit_account_id" ref=".coa_hja_10201"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_bank_apk" model="account.journal">
+            <field name="name">Jurnal Gaji Bank</field>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="code">GBNK</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_bank_apk"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_debit_account_id" ref=".coa_apk_32001"/>
+            <field name="default_credit_account_id" ref=".coa_apk_10201"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_bank_tpn" model="account.journal">
+            <field name="name">Jurnal Gaji Bank</field>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="code">GBNK</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_bank_tpn"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_debit_account_id" ref=".coa_tpn_32001"/>
+            <field name="default_credit_account_id" ref=".coa_tpn_10201"/>
+            <field name="type">general</field>
+        </record>
+        <!--/bank-->
+
+        <!--allocation-->
+        <record id="account_payroll_journal_allocation_hja" model="account.journal">
+            <field name="name">Jurnal Alokasi Transit Gaji</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="code">GTRN</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_allocation_hja"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_hja_51199"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_allocation_apk" model="account.journal">
+            <field name="name">Jurnal Alokasi Transit Gaji</field>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="code">GTRN</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_allocation_apk"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_apk_51199"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_allocation_tpn" model="account.journal">
+            <field name="name">Jurnal Alokasi Transit Gaji</field>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="code">GTRN</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_allocation_tpn"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_tpn_51199"/>
+            <field name="type">general</field>
+        </record>
+        <!--/allocation-->
+
+        <!--receivable-->
+        <record id="account_payroll_journal_receivable_hja" model="account.journal">
+            <field name="name">Jurnal Piutang Antar Perusahaan</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="code">GPAP</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_receivable_hja"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_debit_account_id" ref=".coa_hja_12300"/>
+            <field name="default_credit_account_id" ref=".coa_hja_51199"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_receivable_apk" model="account.journal">
+            <field name="name">Jurnal Piutang Antar Perusahaan</field>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="code">GPAP</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_receivable_apk"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_debit_account_id" ref=".coa_apk_12300"/>
+            <field name="default_credit_account_id" ref=".coa_apk_51199"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_receivable_tpn" model="account.journal">
+            <field name="name">Jurnal Piutang Antar Perusahaan</field>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="code">GPAP</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_receivable_tpn"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_debit_account_id" ref=".coa_tpn_12300"/>
+            <field name="default_credit_account_id" ref=".coa_tpn_51199"/>
+            <field name="type">general</field>
+        </record>
+        <!--/receivable-->
+
+        <!--payable-->
+        <record id="account_payroll_journal_payable_hja" model="account.journal">
+            <field name="name">Jurnal Hutang Alokasi Transit Gaji</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="code">GTRA</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_payable_hja"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_hja_31500"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_payable_apk" model="account.journal">
+            <field name="name">Jurnal Hutang Alokasi Transit Gaji</field>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="code">GTRA</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_payable_apk"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_apk_31500"/>
+            <field name="type">general</field>
+        </record>
+        <record id="account_payroll_journal_payable_tpn" model="account.journal">
+            <field name="name">Jurnal Hutang Alokasi Transit Gaji</field>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="code">GTRA</field>
+            <field name="sequence_id" ref="estate_account.ir_sequence_journal_payable_tpn"/>
+            <field name="update_posted" eval="True"/>
+            <field name="show_on_dashboard" eval="False"/>
+            <field name="default_credit_account_id" ref=".coa_tpn_31500"/>
+            <field name="type">general</field>
+        </record>
+        <!--/payable-->
+
+        <!--bank account-->
+        <record id="account_bank_payroll_account_hja" model="estate_account.company_account">
+            <field name="name">Payroll Bank Account HJA</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="debit_id" ref=".coa_hja_10201"/>
+            <field name="credit_id" ref=".coa_hja_10201"/>
+        </record>
+        <record id="account_bank_payroll_account_apk" model="estate_account.company_account">
+            <field name="name">Payroll Bank Account APK</field>
+            <field name="company_id" ref="base.apk_company"/>
+            <field name="debit_id" ref=".coa_apk_10201"/>
+            <field name="credit_id" ref=".coa_apk_10201"/>
+        </record>
+        <record id="account_bank_payroll_account_tpn" model="estate_account.company_account">
+            <field name="name">Payroll Bank Account TPN</field>
+            <field name="company_id" ref="base.tpn_company"/>
+            <field name="debit_id" ref=".coa_tpn_10201"/>
+            <field name="credit_id" ref=".coa_tpn_10201"/>
+        </record>
+        <!--/bank account-->
+
+    </data>
+</openerp>

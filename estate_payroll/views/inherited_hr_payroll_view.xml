@@ -125,7 +125,7 @@
                 <xpath expr="//header//button" position="after">
                     <button string="Recompute" name="recompute_sheet"
                             type="object" states="draft" class="oe_highlight"
-                            help="Update worked days or inputs."/>
+                            help="Update worked days or inputs. Erase all inputs."/>
                 </xpath>
             </field>
         </record>
@@ -151,6 +151,44 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="inherited_view_hr_payslip_run_filter" model="ir.ui.view">
+            <field name="name">hr.payslip.run.filter.inherit</field>
+            <field name="model">hr.payslip.run</field>
+            <field name="inherit_id" ref="hr_payroll.hr_payslip_run_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='done_filter']" position="after">
+                    <filter name="draft_filter" string="Draft" domain="[('state','=','draft')]"
+                            help="Draft filter for action's context" invisible="True"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!--filter draft-->
+        <record id="inherited_hr_payslip_run_search" model="ir.ui.view">
+            <field name="name">hr.payslip.run.search.inherit</field>
+            <field name="model">hr.payslip.run</field>
+            <field name="inherit_id" ref="hr_payroll.hr_payslip_run_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"
+                            help="Draft filter for action's context" invisible="True"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherited_hr_payslip_search" model="ir.ui.view">
+            <field name="name">hr.payslip.search.inherit</field>
+            <field name="model">hr.payslip</field>
+            <field name="inherit_id" ref="hr_payroll.view_hr_payslip_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"
+                            help="Draft filter for action's context" invisible="True"/>
+                </xpath>
+            </field>
+        </record>
+        <!--/filter draft-->
 
         <record id="inherited_view_hr_payslip_filter" model="ir.ui.view">
             <field name="name">hr.payslip.select.inherit</field>

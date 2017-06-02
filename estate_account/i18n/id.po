@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c-20160712\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-06 07:20+0000\n"
-"PO-Revision-Date: 2017-01-06 14:28+0700\n"
+"POT-Creation-Date: 2017-05-30 05:03+0000\n"
+"PO-Revision-Date: 2017-05-30 12:12+0700\n"
 "Last-Translator: Odoo <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: palma group\n"
 "Language: id\n"
@@ -16,6 +16,66 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Virtaal 0.7.1\n"
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:32
+#, python-format
+msgid "%s %s "
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:34
+#, python-format
+msgid "%s %s for %s"
+msgstr "%s %s pada %s"
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:470
+#, python-format
+msgid "%s has no payable account."
+msgstr "%s tidak memiliki akun hutang."
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_contract_period
+msgid "* Monthly, Karyawan Bulanan, * Daily, Karyawan Harian."
+msgstr "* Bulanan, Karyawan Bulanan, * Harian, Karyawan Harian."
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_contract_type
+msgid "* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja Waktu Tertentu."
+msgstr ""
+"* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja "
+"Waktu Tertentu."
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_account_move
+msgid "Account Entry"
+msgstr "Input Akun"
+
+#. module: estate_account
+#: model:ir.actions.act_window,name:estate_account.payroll_cost_category_action
+#: model:ir.ui.menu,name:estate_account.payroll_cost_category
+msgid "Accrued Category"
+msgstr "Kategori Jurnal Akrual"
+
+#. module: estate_account
+#: model:ir.actions.act_window,name:estate_account.payroll_cost_action
+#: model:ir.ui.menu,name:estate_account.payroll_cost_menu
+msgid "Accrued Labour Account"
+msgstr "Akun Jurnal Akrual Gaji"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_needaction
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_active
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_active
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_active
+msgid "Active"
+msgstr ""
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
@@ -29,6 +89,11 @@ msgid "Activity Allocation"
 msgstr "Alokasi Biaya Kegiatan"
 
 #. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_comment
+msgid "Additional Information"
+msgstr "Keterangan"
+
+#. module: estate_account
 #: model:ir.ui.menu,name:estate_account.estate_costing_payroll_report_menu
 msgid "Allocation Report"
 msgstr "Laporan Alokasi Biaya"
@@ -39,9 +104,65 @@ msgid "Approved"
 msgstr "Setuju"
 
 #. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:335
+#, python-format
+msgid "Cannot create journal entries for %s - account not defined yet.activity"
+msgstr "Tidak dapat membuat input jurnal untuk %s - akun belum didefinisikan"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_code
+msgid "Code"
+msgstr "Kode"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_company_id
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_company_id
+msgid "Company"
+msgstr "Perusahaan"
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_debit_id
+msgid "Company received account."
+msgstr "Akun piutang perusahaan."
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_credit_id
+msgid "Company transfer account."
+msgstr "Akun transit perusahaan."
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_contract_period
+msgid "Contract Period"
+msgstr "Periode Kontrak"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_contract_type
+msgid "Contract Type"
+msgstr "Tipe Kontrak"
+
+#. module: estate_account
 #: model:ir.actions.act_window,name:estate_account.labour_costing_menu_action
 msgid "Cost Allocation"
 msgstr "Alokasi Biaya"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_id_10221
+msgid "Cost Category"
+msgstr "Kelompok Biaya"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_create_uid
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_create_uid
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_create_date
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_create_date
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_create_date
+msgid "Created on"
+msgstr ""
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
@@ -54,9 +175,20 @@ msgid "D Wage"
 msgstr "Rp. HK"
 
 #. module: estate_account
+#: selection:estate_account.payroll_cost,contract_period:0
+msgid "Daily"
+msgstr "Harian"
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "Date"
 msgstr "Tanggal"
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_message_last_post
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_message_last_post
+msgid "Date of the last message posted on the record."
+msgstr "Tanggal pesan terakhir yang diposting."
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
@@ -64,14 +196,26 @@ msgid "Day(s)"
 msgstr "HK"
 
 #. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_default
+msgid "Default"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_default
+msgid "Default Bank Account for all payroll."
+msgstr "Akun default penarikan gaji untuk penggajian."
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_display_name
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_display_name
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "Draft/Confirmed"
 msgstr "Draft/Konfirm"
-
-#. module: estate_account
-#: model:ir.model,name:estate_account.model_estate_activity
-msgid "Email Thread"
-msgstr "Email"
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
@@ -85,6 +229,40 @@ msgid "Employee Company"
 msgstr "Perusahaan Karyawan"
 
 #. module: estate_account
+#: model:ir.ui.menu,name:estate_account.estate_account_menu
+msgid "Estate Account"
+msgstr "Akun Kebun"
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_estate_account_payroll_cost
+msgid "Estate Payroll Cost"
+msgstr "Biaya Gaji"
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_estate_account_payroll_cost_category
+msgid "Estate Payroll Cost Category"
+msgstr "Kategori Biaya Gaji"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_follower_ids
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_channel_ids
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_channel_ids
+msgid "Followers (Channels)"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_partner_ids
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_account_id
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "General Account"
 msgstr "COA"
@@ -93,6 +271,36 @@ msgstr "COA"
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "Group By"
 msgstr "Kelompokkan"
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_category_id_10221
+msgid "Help to collect amount of wage."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_id
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_id
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_id
+msgid "ID"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_message_unread
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_message_unread
+msgid "If checked new messages require your attention."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_message_needaction
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_is_follower
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_is_follower
+msgid "Is Follower"
+msgstr ""
 
 #. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_activity_labour_account_id
@@ -104,6 +312,33 @@ msgstr "COA Tenaga Kerja"
 #: model:ir.ui.menu,name:estate_account.estate_payroll_report_menu
 msgid "Labour Allocation"
 msgstr "Alokasi Biaya Tenaga Kerja"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_last_post
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_last_post
+msgid "Last Message Date"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account___last_update
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost___last_update
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category___last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_write_uid
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_write_uid
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_write_date
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_write_date
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_write_date
+msgid "Last Updated on"
+msgstr ""
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
@@ -121,9 +356,56 @@ msgid "Material Account"
 msgstr "COA Bahan"
 
 #. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_ids
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "Month"
 msgstr "Bulan"
+
+#. module: estate_account
+#: selection:estate_account.payroll_cost,contract_period:0
+msgid "Monthly"
+msgstr "Bulanan"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_name
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_name
+msgid "Name"
+msgstr "Nama"
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:239
+#, python-format
+msgid "No Payroll Bank Account defined."
+msgstr "Akun transit gaji belim didefinisikan."
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:312
+#, python-format
+msgid "No accrued allocation will be created."
+msgstr "Tidak ada jurnal alokasi akun transit gaji yang dibuat."
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_needaction_counter
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_message_needaction_counter
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_company_account_message_unread_counter
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_message_unread_counter
+msgid "Number of unread messages"
+msgstr ""
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
@@ -141,6 +423,16 @@ msgid "Other Account"
 msgstr "COA Lainnya"
 
 #. module: estate_account
+#: selection:estate_account.payroll_cost,contract_type:0
+msgid "PKWT"
+msgstr ""
+
+#. module: estate_account
+#: selection:estate_account.payroll_cost,contract_type:0
+msgid "PKWTT"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "PR"
 msgstr "Pr."
@@ -156,9 +448,66 @@ msgid "PY"
 msgstr "TT"
 
 #. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:40
+#, python-format
+msgid "Payroll %s"
+msgstr "Gaji %s"
+
+#. module: estate_account
+#: model:ir.actions.act_window,name:estate_account.payroll_company_account_action
+#: model:ir.ui.menu,name:estate_account.company_account_menu
+msgid "Payroll Bank Account"
+msgstr "Akun Bank Gaji"
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_estate_account_company_account
+msgid "Payroll Company Account"
+msgstr "Akun Bank Gaji"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_name
+msgid "Payroll Cost Name"
+msgstr "Nama Biaya Gaji"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_credit_id
+msgid "Payroll Credit Account"
+msgstr "Akun Kredit"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_debit_id
+msgid "Payroll Debit Account"
+msgstr "Akun Debit"
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_hr_payslip_run
+msgid "Payslip Batches"
+msgstr "Daftar Gaji"
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_amount_python_compute
+msgid "Python Code"
+msgstr "Kode Python"
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "Qty."
 msgstr "Prod."
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_receivable_id
+msgid "Receivable Account"
+msgstr "Akun Piutang"
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
+msgid "Reset to Close"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_aggregation
+msgid "SQL Syntax"
+msgstr ""
 
 #. module: estate_account
 #: model:ir.model.fields,help:estate_account.field_estate_activity_other_account_id
@@ -176,21 +525,59 @@ msgid "Set as material account."
 msgstr "COA untuk bahan"
 
 #. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
+msgid "Set payroll batches and its descendants to draft position."
+msgstr "Rubah status Daftar Gaji dan seluruh transaksi menjadi draft."
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "This Month"
-msgstr ""
+msgstr "Bulan Ini"
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "This Year"
+msgstr "Sampai Bulan Ini"
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:142
+#, python-format
+msgid "Unable to close payslips batches. No payroll cost setup available."
+msgstr ""
+"Tidak dapat melakukan penutupan Daftar Gaji. Belum ada setup biaya gaji."
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_unread
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_unread
+msgid "Unread Messages"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_message_unread_counter
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_message_unread_counter
+msgid "Unread Messages Counter"
 msgstr ""
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "UoM"
-msgstr ""
+msgstr "Sat"
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "Wage"
 msgstr "Total Upah"
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:60
+#, python-format
+msgid "You have not defined Accrued Category and Labour Account."
+msgstr "Belum ada setup Kelompok Biaya Akrual dan Akun Gaji."
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_estate_activity
+msgid "estate.activity"
+msgstr ""
+
+#~ msgid "Email Thread"
+#~ msgstr "Email"
