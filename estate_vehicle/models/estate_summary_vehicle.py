@@ -107,46 +107,50 @@ class ViewSummaryCostVehicle(models.Model):
 
     def init(self, cr):
         cr.execute("""create or replace view v_summary_cost_vehicle as
-        select e.parent_id as id,
-            e.year_log_text,
-            e.month_log_text,
-            e.vehicle_id,
-            create_date,
-            Total_time as total_time,
-            Total_amount_per_Month as total_amount_per_month,
-            case when Total_time is null then  Total_amount_per_Month
-            	else (total_amount_per_month / total_time) end amount_per_hour
-            from (
-                    select
-                        (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
-                        to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
-                        year_log::text as year_log_text,to_date(to_char(create_date,'MM-DD-YYYY'),'MM-DD-YYYY') create_date,
-                        vehicle_id,
-                        sum(time_per_activity) as Total_time from (
-                            select create_date,
-                            vehicle_id,
-                            date_part('month', ts.create_date) month_log,
-                            date_part('year', ts.create_date) year_log,
-                            ts.end_time,
-                            ts.start_time,
-                            (ts.end_time - ts.start_time) as time_per_activity
-                            from estate_timesheet_activity_transport ts)a group by vehicle_id ,month_log, year_log,create_date
-                )d right join (
-                        select
-                            parent_id,
-                            vehicle_id,
-                            year_log_text,
-                            month_log_text,
-                            sum(amount) as Total_amount_per_Month from (
+                   select e.parent_id as id,
+                        e.year_log_text,
+                        e.month_log_text,
+                        e.vehicle_id,
+                        create_date,
+                        Total_time as total_time,
+                        Total_amount_per_Month as total_amount_per_month,
+                        case when Total_time is null or Total_time =
+                        CAST (0 AS numeric) then  Total_amount_per_Month
+                            else (total_amount_per_month / total_time) end amount_per_hour
+                        from (
                             select
-                                parent_id,
-                                type_log,
-                                month_log_text,
-                                year_log_text,
-                                vehicle_id,
-                                amount
-                            from v_summary_cost_vehicle_detail)b
-                            group by parent_id,vehicle_id , year_log_text,month_log_text )e on d.parent_id = e.parent_id""")
+                                    (month_log::text||year_log::text||vehicle_id::text)::Integer parent_id,
+                                    to_char(to_timestamp (month_log::text, 'MM'), 'Month') as month_log_text,
+                                    year_log::text as year_log_text,
+                                    to_date(to_char(create_date,'MM-DD-YYYY'),'MM-DD-YYYY') create_date,
+                                    vehicle_id,
+                                    sum(time_per_activity) as Total_time
+                                from (
+                                    select create_date,
+                                        vehicle_id,
+                                        date_part('month', ts.create_date) month_log,
+                                        date_part('year', ts.create_date) year_log,
+                                        ts.end_time,
+                                        ts.start_time,
+                                        (ts.end_time - ts.start_time) as time_per_activity
+                                    from estate_timesheet_activity_transport ts)a group by vehicle_id ,month_log, year_log,create_date
+                                    )d right join (
+                                select
+                                    parent_id,
+                                    vehicle_id,
+                                    year_log_text,
+                                    month_log_text,
+                                    sum(amount) as Total_amount_per_Month from (
+                                        select
+                                            parent_id,
+                                            type_log,
+                                            month_log_text,
+                                            year_log_text,
+                                            vehicle_id,
+                                            amount
+                                        from v_summary_cost_vehicle_detail)b
+                                    group by parent_id,vehicle_id , year_log_text,month_log_text )e on d.parent_id = e.parent_id
+""")
 
 class ViewFuelSummaryVehicle(models.Model):
 
