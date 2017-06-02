@@ -402,17 +402,17 @@ class FleetVehicleTimesheet(models.Model):
         return True
 
 
-    @api.multi
-    @api.constrains('date_timesheet')
-    def _constraint_date_timesheet(self):
-        tempdate = []
-        for item in self:
-            date = item.env['fleet.vehicle.timesheet'].search([('state','=','done')])
-            for date in date:
-                tempdate.append(date.date_timesheet)
-            if item.date_timesheet in tempdate:
-                error_msg = "Date Timesheet %s Not Use More Than One" %item.date_timesheet
-                raise exceptions.ValidationError(error_msg)
+    # @api.multi
+    # @api.constrains('date_timesheet')
+    # def _constraint_date_timesheet(self):
+    #     tempdate = []
+    #     for item in self:
+    #         date = item.env['fleet.vehicle.timesheet'].search([('state','=','done')])
+    #         for date in date:
+    #             tempdate.append(date.date_timesheet)
+    #         if item.date_timesheet in tempdate:
+    #             error_msg = "Date Timesheet %s Not Use More Than One" %item.date_timesheet
+    #             raise exceptions.ValidationError(error_msg)
 
     @api.multi
     @api.constrains('timesheet_ids','fuel_ids')

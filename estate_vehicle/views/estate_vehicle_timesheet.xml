@@ -21,10 +21,10 @@
                     <field name="distance_location" readonly="1" string="Distance Location ">{‘readonly_by_pass’: True}</field>
                     <field name="start_km" string="Start KM"/>
                     <field name="end_km" string="End KM"/>
-                    <field name="total_distance" string="&#916; KM"/>
+                    <field name="total_distance" sum="&#916; Time" string="&#916; KM"/>
                     <field name="start_time" class="input-start-time" widget="float_time" string="Start Time"/>
                     <field name="end_time" class="input-end-time" widget="float_time" string="End Time"/>
-                    <field name="total_time" string="&#916; Time " readonly="1">{‘readonly_by_pass’: True}</field>
+                    <field name="total_time" sum="&#916; Time" string="&#916; Time " readonly="1">{‘readonly_by_pass’: True}</field>
                     <field name="state" string="State" readonly="1"/>
                 </tree>
             </field>
