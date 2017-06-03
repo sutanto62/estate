@@ -97,33 +97,33 @@ class InheritMroOrder(models.Model):
                 temp[part.id] = part_value_name
             return temp
 
-    @api.multi
-    @api.constrains('plannedtools_ids')
-    def _constrains_plannedtools_id(self):
-        self.ensure_one()
-        if self.plannedtools_ids:
-            temp={}
-            for tools in self.plannedtools_ids:
-                tools_value_name = tools.asset_id.name
-                if tools_value_name in temp.values():
-                    error_msg = "Tools or Equipment \"%s\" is set more than once " % tools_value_name
-                    raise exceptions.ValidationError(error_msg)
-                temp[tools.id] = tools_value_name
-            return temp
-
-    @api.multi
-    @api.constrains('actualtools_ids')
-    def _constrains_actualtools_id(self):
-        self.ensure_one()
-        if self.actualtools_ids:
-            temp={}
-            for tools in self.actualtools_ids:
-                tools_value_name = tools.asset_id.name
-                if tools_value_name in temp.values():
-                    error_msg = "Tools or Equipment \"%s\" is set more than once " % tools_value_name
-                    raise exceptions.ValidationError(error_msg)
-                temp[tools.id] = tools_value_name
-            return temp
+    # @api.multi
+    # @api.constrains('plannedtools_ids')
+    # def _constrains_plannedtools_id(self):
+    #     self.ensure_one()
+    #     if self.plannedtools_ids:
+    #         temp={}
+    #         for tools in self.plannedtools_ids:
+    #             tools_value_name = tools.asset_id.name
+    #             if tools_value_name in temp.values():
+    #                 error_msg = "Tools or Equipment \"%s\" is set more than once " % tools_value_name
+    #                 raise exceptions.ValidationError(error_msg)
+    #             temp[tools.id] = tools_value_name
+    #         return temp
+    #
+    # @api.multi
+    # @api.constrains('actualtools_ids')
+    # def _constrains_actualtools_id(self):
+    #     self.ensure_one()
+    #     if self.actualtools_ids:
+    #         temp={}
+    #         for tools in self.actualtools_ids:
+    #             tools_value_name = tools.asset_id.name
+    #             if tools_value_name in temp.values():
+    #                 error_msg = "Tools or Equipment \"%s\" is set more than once " % tools_value_name
+    #                 raise exceptions.ValidationError(error_msg)
+    #             temp[tools.id] = tools_value_name
+    #         return temp
 
     @api.multi
     @api.constrains('employeeline_ids')
@@ -163,9 +163,9 @@ class InheritMroOrder(models.Model):
             if len(self.employeeline_ids) > temp:
                 error_msg = "Employee is set not more than Planned Manpower"
                 raise exceptions.ValidationError(error_msg)
-            elif len(self.employeeline_ids) < temp:
-                error_msg = "Employee is set not more less than Planned Manpower"
-                raise exceptions.ValidationError(error_msg)
+            # elif len(self.employeeline_ids) < temp:
+            #     error_msg = "Employee is set not more less than Planned Manpower"
+            #     raise exceptions.ValidationError(error_msg)
 
 
 
@@ -199,12 +199,14 @@ class InheritMroOrder(models.Model):
                 if countLineEmployee == 0:
                     error_msg = "Tab Planned Labor's in Tab Planning Must be Filled"
                     raise exceptions.ValidationError(error_msg)
-                if countLinePlannedpart == 0:
-                    error_msg = "Tab Planned Sparepart in Tab Planning Must be Filled"
-                    raise exceptions.ValidationError(error_msg)
-                if countLinePlannedtools == 0:
-                    error_msg = "Tab Planned Tools in Tab Planning Must be Filled"
-                    raise exceptions.ValidationError(error_msg)
+
+                # if countLinePlannedpart == 0:
+                #     error_msg = "Tab Planned Sparepart in Tab Planning Must be Filled"
+                #     raise exceptions.ValidationError(error_msg)
+                # if countLinePlannedtools == 0:
+                #     error_msg = "Tab Planned Tools in Tab Planning Must be Filled"
+                #     raise exceptions.ValidationError(error_msg)
+
                 if self.code_id.name == 'High' or self.code_id.name == 'high' or self.code_id.name == 'Tinggi' or self.code_id.name == 'tinggi':
                     #change state in fleet_vehicle to breakdown
                     vehicle_id = self.env['asset.asset'].search([('id','=',self.asset_id.id)]).fleet_id.id
