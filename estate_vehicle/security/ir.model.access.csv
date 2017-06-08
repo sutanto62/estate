@@ -81,11 +81,11 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 "inherits_fleet_vehicle_timesheet_assistant","inherits_fleet_vehicle_timesheet","estate_vehicle.model_inherits_fleet_vehicle_timesheet","estate_vehicle.group_timesheet_admin","True","True","True","False"
 
 "hr_job_user","hr_job","hr.model_hr_job","fleet.group_fleet_user","True","False","False","False"
-"hr_job_manager","hr_job","hr.model_hr_job","fleet.group_fleet_manager","True","True","True","False"
-"hr_job_assistant","hr_job","hr.model_hr_job","estate_vehicle.group_timesheet_admin","True","False","True","False"
+"hr_job_manager","hr_job","hr.model_hr_job","fleet.group_fleet_manager","True","False","False","False"
+"hr_job_assistant","hr_job","hr.model_hr_job","estate_vehicle.group_timesheet_admin","True","False","False","False"
 
 "hr_employee_user","hr_employee","hr.model_hr_employee","fleet.group_fleet_user","True","False","False","False"
-"hr_employee_manager","hr_employee","hr.model_hr_employee","fleet.group_fleet_manager","True","True","True","False"
+"hr_employee_manager","hr_employee","hr.model_hr_employee","fleet.group_fleet_manager","True","False","False","False"
 "hr_employee_assistant","hr_employee","hr.model_hr_employee","estate_vehicle.group_timesheet_admin","True","False","False","False"
 
 "asset_state_user","asset_state","asset.model_asset_state","fleet.group_fleet_user","True","True","True","False"
