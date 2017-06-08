@@ -1,0 +1,20 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="inherit_purchase_request_stock_line">
+             <field name="name">Inherit purchase request</field>
+             <field name="model">purchase.request</field>
+             <field name="inherit_id" ref="purchase_request.view_purchase_request_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='line_ids']//tree//field[@name='origin']" position="replace">
+                     <field name="product_stock" string="Stock"/>
+
+                 </xpath>
+
+                  <xpath expr="//field[@name='line_ids']//form//field[@name='origin']" position="replace">
+                     <field name="product_stock" string="Stock" readonly="1"/>
+
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>
