@@ -49,12 +49,12 @@ class InheritResPartner(models.Model):
     partner_running_number = fields.Char('Partner Running Number',compute='_generate_running_number_vendor')
     businesspermit_ids = fields.One2many('base.indonesia.vendor.business.permit','partner_id')
     businessteaxes_ids = fields.One2many('base.indonesia.taxes','partner_id')
-    street = fields.Char('Street',required=True)
-    street2 = fields.Char('Street2',required=True)
-    zip = fields.Char('Zip',required=True,size=24, change_default=True)
-    city =fields.Char('City',required=True)
-    state_id =fields.Many2one("res.country.state", 'State',required=True,ondelete='restrict')
-    country_id = fields.Many2one('res.country', 'Country',required=True, ondelete='restrict')
+    street = fields.Char('Street')
+    street2 = fields.Char('Street2')
+    zip = fields.Char('Zip',size=24, change_default=True)
+    city =fields.Char('City')
+    state_id =fields.Many2one("res.country.state", 'State',ondelete='restrict')
+    country_id = fields.Many2one('res.country', 'Country', ondelete='restrict')
     email = fields.Char('Email',required=True)
     phone = fields.Char('Phone',required=True)
     mobile = fields.Char('Mobile',required=True)
@@ -141,6 +141,36 @@ class InheritResPartner(models.Model):
     def action_nonactive(self):
         for item in self:
             item.write({'active':False})
+
+    #Email Template Code Starts Here
+
+    # @api.one
+    # def send_mail_template(self):
+    #         # Find the e-mail template
+    #         template = self.env.ref('base_indonesia.email_template_partner_vendor')
+    #         # You can also find the e-mail template like this:
+    #         # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+    #         # Send out the e-mail template to the user
+    #         self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+    #
+    # @api.multi
+    # def database(self):
+    #     for item in self:
+    #         db = item.env.cr.dbname
+    #
+    #         return db
+    #
+    # @api.multi
+    # def web_url(self):
+    #     for item in self:
+    #         web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #         return web
+    #
+    # @api.multi
+    # def email_model(self):
+    #     for item in self:
+    #         model = item._name
+    #         return model
 
 class ResPartnerVendorBusinessPermit(models.Model):
 
