@@ -37,6 +37,34 @@ class ProcurGoodReturns(models.Model):
 
         return assigned_manager
 
+    @api.multi
+    def _get_location_id(self):
+         for item in self:
+            arrViewLocation = []
+            arrIdLocation = []
+            arrIdViewLocation = []
+
+            warehouse = item.env['stock.warehouse']
+            location  = item.env['stock.location']
+
+            for view_location in warehouse.search([]):
+                arrViewLocation.append(view_location.view_location_id.id)
+
+
+            #search location where view location in arr view location
+            location_id = location.search([('id','in',arrViewLocation)])
+
+            for location in location_id:
+                arrIdLocation.append(location.id)
+
+
+            view_location_id = location.search([('location_id','in',arrIdLocation),('active','=','True')])
+
+            for id in view_location_id:
+                arrIdViewLocation.append(id.id)
+
+            return arrIdViewLocation
+
     _name = 'procur.good.return'
     _description = 'Return good from user to warehouse'
     _rec_name = 'complete_name'
@@ -100,6 +128,17 @@ class ProcurGoodReturns(models.Model):
                 arrRequestlist.append(request.request_id.id)
             return {
                 'domain': {'request_id': [('id','not in',arrRequestlist)]}
+            }
+
+    @api.multi
+    @api.onchange('warehouse_id')
+    def _onchange_warehouse_id(self):
+
+        for item in self:
+            return {
+                'domain' : {
+                    'warehouse_id' : [('id','in',item._get_location_id())]
+                }
             }
 
     #sequence
