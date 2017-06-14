@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         # 'wizard/reject.xml',
         'views/view_purchase_indonesia_good_request.xml',
         'views/view_purchase_indonesia_management_good.xml',
