@@ -142,6 +142,7 @@ class ManagementGoodRequest(models.Model):
                     'location_dest_id': self.destination_id.id,
                     'general_account_id':record.general_account_id.id,
                     'description':record.description,
+                    'company_id' : self.company_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -170,6 +171,7 @@ class ManagementGoodRequest(models.Model):
                     'location_dest_id': self.warehouse_id.id,
                     'general_account_id':record.general_account_id.id,
                     'description':record.description,
+                    'company_id' : self.company_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 

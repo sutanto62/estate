@@ -1,77 +1,69 @@
 <openerp>
     <data>
-         <record model="ir.ui.view" id="view_form_view_goods_report_in_tree">
-             <field name="name">Goods Report In Tree</field>
-             <field name="model">view.goods.in.report</field>
+         <record model="ir.ui.view" id="view_summary_stock_tree">
+             <field name="name">Summary Stock Tree</field>
+             <field name="model">summary.stock</field>
              <field name="priority" eval="1"/>
              <field name="arch" type="xml">
                 <tree>
                     <field name="id" string="ID" invisible="1"/>
-                    <field name="location_dest_id" string="Warehouse Location"/>
+                    <field name="categ_id" string="Category"/>
                     <field name="date_stock" string="Date"/>
-                    <field name="product_id" string="Product" invisible="1"/>
-                    <field name="default_code" string="Product No" readonly="1"/>
-                    <field name="name_template" string="Product" readonly="1"/>
-                    <field name="picking_id" string="Picking" invisible="1"/>
-                    <field name="product_uom" string="UOM"/>
-                    <field name="product_qty" string="QTY"/>
-                    <field name="price_unit" string="Price Unit"/>
-                    <field name="total_price" string="Total"/>
-                    <field name="purchase_order_name" string="PO No" readonly="1"/>
-                    <field name="pr_source" string="PP No" readonly="1"/>
-                    <field name="general_account_id" string="COA" readonly="1"/>
+                    <field name="product_id" string="Product" />
+                    <field name="cost" string="Cost" sum="Cost"/>
+                    <field name="goods_in_qty" string="In Qty" sum="In Qty" readonly="1"/>
+                    <field name="goods_in_price" string="In Price" sum="In Price" readonly="1"/>
+                    <field name="goods_out_qty" string="Ot Qty" sum="Out Qty" />
+                    <field name="goods_out_price" string="Ot Price" sum="Out Price"/>
+                    <field name="goods_result_qty" string="Rslt Qty" sum="Result Qty"/>
+                    <field name="goods_result_price" string="Rslt Price" sum="Result Price"/>
                 </tree>
             </field>
          </record>
 
-         <record id="view_form_view_goods_report_in_form" model="ir.ui.view">
-            <field name="name">Goods Report In Form</field>
-            <field name="model">view.goods.in.report</field>
+         <record id="view_summary_stock_form" model="ir.ui.view">
+            <field name="name">Summary Stock Form</field>
+            <field name="model">summary.stock</field>
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
                      <sheet>
                          <group>
                             <field name="id" string="ID" invisible="1"/>
-                            <field name="location_dest_id" string="Warehouse Location"/>
+                            <field name="categ_id" string="Category"/>
                             <field name="date_stock" string="Date"/>
-                            <field name="product_id" string="Product" invisible="1"/>
-                            <field name="default_code" string="Product No" readonly="1"/>
-                            <field name="name_template" string="Product" readonly="1"/>
-                            <field name="picking_id" string="Picking" invisible="1"/>
+
                          </group>
                          <group>
-                            <field name="product_uom" string="UOM"/>
-                            <field name="product_qty" string="QTY"/>
-                            <field name="price_unit" string="Price Unit"/>
-                            <field name="total_price" string="Total"/>
-                            <field name="purchase_order_name" string="PO No" readonly="1"/>
-                            <field name="pr_source" string="PP No" readonly="1"/>
-                            <field name="general_account_id" string="COA" readonly="1"/>
+                             <field name="product_id" string="Product" />
+                             <field name="cost" string="Cost" sum="Cost"/>
+                             <field name="goods_in_qty" string="In Qty" sum="In Qty" readonly="1"/>
+                             <field name="goods_in_price" string="In Price" sum="In Price" readonly="1"/>
+                             <field name="goods_out_qty" string="Ot Qty" sum="Out Qty" />
+                             <field name="goods_out_price" string="Ot Price" sum="Out Price"/>
+                             <field name="goods_result_qty" string="Rslt Qty" sum="Result Qty"/>
+                             <field name="goods_result_price" string="Rslt Price" sum="Result Price"/>
                          </group>
                      </sheet>
                 </form>
             </field>
         </record>
 
-        <record id="view_goods_reportin_search" model="ir.ui.view">
-            <field name="name">view.goods.in.report.search</field>
-            <field name="model">view.goods.in.report</field>
+        <record id="view_summary_stock_search" model="ir.ui.view">
+            <field name="name">summary stock search</field>
+            <field name="model">summary.stock</field>
             <field name="arch" type="xml">
-                <search string="Search Goods in Report">
-                    <field name="location_dest_id" string="Warehouse Location"/>
+                <search string="Search Summary Stock Report">
+                    <field name="categ_id" string="Category"/>
                     <field name="date_stock" string="Date"/>
                     <field name="product_id" string="Product" />
-                    <field name="default_code" string="Product No" />
-                    <field name="name_template" string="Product" />
-                    <field name="picking_id" string="Picking" />
-                    <field name="product_uom" string="UOM"/>
-                    <field name="product_qty" string="QTY"/>
-                    <field name="price_unit" string="Price Unit"/>
-                    <field name="total_price" string="Total"/>
-                    <field name="purchase_order_name" string="PO No" />
-                    <field name="pr_source" string="PP No" />
-                    <field name="general_account_id" string="COA" />
+                    <field name="cost" string="Cost" sum="Cost"/>
+                    <field name="goods_in_qty" string="In Qty" sum="In Qty" readonly="1"/>
+                    <field name="goods_in_price" string="In Price" sum="In Price" readonly="1"/>
+                    <field name="goods_out_qty" string="Ot Qty" sum="Out Qty" />
+                    <field name="goods_out_price" string="Ot Price" sum="Out Price"/>
+                    <field name="goods_result_qty" string="Rslt Qty" sum="Result Qty"/>
+                    <field name="goods_result_price" string="Rslt Price" sum="Result Price"/>
                     <separator/>
                     <separator/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
@@ -96,7 +88,7 @@
                                 context="{'group_by': 'date_stock:week'}"/>
                         <filter name="by_date" string="Date"
                                 context="{'group_by': 'date_stock:day'}"/>
-                        <filter string="Warehouse" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'location_dest_id'}"/>
+                        <filter string="Category" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'categ_id'}"/>
                         <filter string="Product" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'product_id'}"/>
                         <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_stock'}"/>
                     </group>
@@ -104,13 +96,13 @@
             </field>
         </record>
 
-        <record model="ir.actions.act_window" id="goods_report_in_action">
-            <field name="name">Goods In Reports</field>
+        <record model="ir.actions.act_window" id="view_summary_stock_action">
+            <field name="name">Summary Stock</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">view.goods.in.report</field>
+            <field name="res_model">summary.stock</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="view_goods_reportin_search"/>
+            <field name="search_view_id" ref="view_summary_stock_search"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to start a new report.
@@ -121,10 +113,10 @@
         </record>
 
         <menuitem
-            id="menu_goods_report_in_act"
-            sequence="4"
+            id="view_summary_stock_act"
+            sequence="6"
             parent="stock.menu_warehouse_report"
-            action="goods_report_in_action"
+            action="view_summary_stock_action"
             />
 
     </data>
