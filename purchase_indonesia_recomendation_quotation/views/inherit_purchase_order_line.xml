@@ -1,0 +1,27 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="inherit_purchase_order_line_recomendation">
+             <field name="name">Inherit purchase order line</field>
+             <field name="model">purchase.order.line</field>
+             <field name="inherit_id" ref="purchase_indonesia.inherit_qcf_purchase_order_line"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='trigger_state']" position="after">
+                          <field name="cheaper_code" string="Code"/>
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_purchase_request_tree_recomendation">
+             <field name="name">Inherit purchase request Tree</field>
+             <field name="model">purchase.order.line</field>
+             <field name="inherit_id" ref="purchase_indonesia.inherit_qcf_purchase_order_line"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//tree" position="attributes">
+                      <attribute name='decoration-success'>cheaper_code in ('cheap')</attribute>
+                      <attribute name='decoration-danger'>cheaper_code in ('expensive')</attribute>
+                      <attribute name='decoration-warning'>cheaper_code in ('medium')</attribute>
+                 </xpath>
+             </field>
+         </record>
+    </data>
+</openerp>
