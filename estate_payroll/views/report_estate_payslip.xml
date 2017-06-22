@@ -363,6 +363,7 @@
                                                 <th rowspan="2">Pajak</th>
                                                 <th rowspan="2">≈</th>
                                                 <th rowspan="2">Gaji Netto</th>
+												<th rowspan="2">No.</th>
                                                 <th rowspan="2" colspan="2">Tanda Tangan</th>
                                             </tr>
                                             <tr>
@@ -446,7 +447,7 @@
                                                     <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_tax)"/></td>
                                                     <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_rounding)"/></td>
                                                     <td class="text-right"><t t-esc="'{0:,.0f}'.format(amount_netto)"/></td>
-
+						    						<td><t t-esc="no"/></td>	
                                                     <!-- Signature column layout side-by-side or span for two columns -->
                                                     <t t-if="no%2!=0"> <!-- modulus to check even row -->
                                                         <t t-if="no==last_row">
@@ -474,7 +475,7 @@
                                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_tax_team)"/></strong></td>
                                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_rounding_team)"/></strong></td>
                                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(total_netto_team)"/></strong></td>
-                                                <td colspan="2"></td>
+                                                <td colspan="3"></td>
                                             </tr>
                                         </tbody>
                                     </table>
