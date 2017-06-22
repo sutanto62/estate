@@ -44,42 +44,48 @@ class LabourFingerprint(models.Model):
             """
             CREATE or REPLACE VIEW hr_fingerprint_ams_fingerprint
             as
-            SELECT row_number() OVER (ORDER BY concat(a.employee_id, '/', a.upkeep_date)) AS id,
-            concat(a.employee_id, '/', a.upkeep_date) AS name,
-            a.employee_id,
-            a.upkeep_date AS date,
-            c.name AS sign_in,
-            d.name AS sign_out,
-            a.upkeep_team_id AS team_id,
-            b.assistant_id,
-            a.estate_id,
-            a.division_id,
-            a.company_id,
-            date_part('hour'::text, d.name - c.name) + (date_part('minute'::text, d.name - c.name) / 60::double precision)::numeric(4,2)::double precision AS worked_hours,
-            f.number_of_day,
+            SELECT 
+                row_number() OVER (ORDER BY concat(a.employee_id, '/', a.upkeep_date)) AS id,
+                concat(a.employee_id, '/', a.upkeep_date) AS name,
+                a.employee_id,
+                a.upkeep_date AS date,
+                c.name AS sign_in,
+                d.name AS sign_out,
+                a.upkeep_team_id AS team_id,
+                b.assistant_id,
+                a.estate_id,
+                a.division_id,
+                a.company_id,
+                (date_part('hour'::text, (d.name - c.name)) + (((date_part('minute'::text, (d.name - c.name)) / (60)::double precision))::numeric(4,2))::double precision) AS worked_hours,
+                f.number_of_day,
                     CASE
-                        WHEN c.state IS NULL THEN 'attendance'::character varying
-                        ELSE c.state
+                        WHEN (((c.name IS NULL) AND (d.name IS NULL)) AND (g.name IS NULL)) THEN 'attendance'::character varying
+                        ELSE 'approved'::character varying
                     END AS state
-               FROM estate_upkeep_labour a
-                 JOIN estate_hr_team b ON a.upkeep_team_id = b.id
-                 LEFT JOIN ( SELECT concat(cc.employee_id, '/', cc.name::date) AS concat,
+               FROM (((((estate_upkeep_labour a
+                 JOIN estate_hr_team b ON ((a.upkeep_team_id = b.id)))
+                 LEFT JOIN ( SELECT concat(cc.employee_id, '/', (cc.name)::date) AS concat,
                         cc.employee_id,
                         cc.name,
                         cc.state
                        FROM hr_attendance cc
-                      WHERE cc.action::text = 'sign_in'::text) c ON concat(a.employee_id, '/', timezone('UTC'::text, a.upkeep_date::timestamp with time zone)::date) = concat(c.employee_id, '/', c.name::date)
+                      WHERE ((cc.action)::text = 'sign_in'::text)) c ON ((concat(a.employee_id, '/', a.upkeep_date) = concat(c.employee_id, '/', ((c.name + '07:00:00'::interval))::date))))
                  LEFT JOIN ( SELECT dd.employee_id,
-                        dd.name
+                        dd.name,
+                        dd.state
                        FROM hr_attendance dd
-                      WHERE dd.action::text = 'sign_out'::text) d ON concat(a.employee_id, '/', a.upkeep_date) = concat(d.employee_id, '/', d.name::date)
+                      WHERE ((dd.action)::text = 'sign_out'::text)) d ON ((concat(a.employee_id, '/', a.upkeep_date) = concat(d.employee_id, '/', ((d.name + '07:00:00'::interval))::date))))
                  LEFT JOIN ( SELECT ff.employee_id,
                         ff.upkeep_date,
                         sum(ff.number_of_day) AS number_of_day
                        FROM estate_upkeep_labour ff
-                      GROUP BY ff.employee_id, ff.upkeep_date) f ON f.employee_id = a.employee_id AND f.upkeep_date = a.upkeep_date
-              GROUP BY a.employee_id, a.upkeep_date, c.name, d.name, a.upkeep_team_id, b.assistant_id,
-                a.estate_id, a.company_id, a.division_id, f.number_of_day, c.state
+                      GROUP BY ff.employee_id, ff.upkeep_date) f ON (((f.employee_id = a.employee_id) AND (f.upkeep_date = a.upkeep_date))))
+                 LEFT JOIN ( SELECT gg.employee_id,
+                        gg.name,
+                        gg.state
+                       FROM hr_attendance gg
+                      WHERE ((gg.action)::text = 'action'::text)) g ON ((concat(a.employee_id, '/', a.upkeep_date) = concat(g.employee_id, '/', ((g.name + '07:00:00'::interval))::date))))
+              GROUP BY a.employee_id, a.upkeep_date, c.name, d.name, g.name, a.upkeep_team_id, b.assistant_id, a.estate_id, a.company_id, a.division_id, f.number_of_day, c.state
               ORDER BY concat(a.employee_id, '/', a.upkeep_date);
             """
         )
