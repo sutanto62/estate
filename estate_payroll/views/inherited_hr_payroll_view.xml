@@ -59,6 +59,13 @@
                     <attribute name="confirm">Are you sure to reopen this payslip run?</attribute>
                     <attribute name="groups">base.group_hr_manager</attribute>
                 </xpath>
+                <xpath expr="//label[@for='name']" position="before">
+                    <div class="oe_button_box" name="button_box" groups="base.group_hr_user">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                        </button>
+                    </div>
+                </xpath>
             </field>
         </record>
 
@@ -85,7 +92,7 @@
 
         <!--Recompute Action-->
         <record model="ir.actions.server" id="action_hr_payslip_recompute_sheet">
-            <field name="name">Recompute Sheet</field>
+            <field name="name">Recompute</field>
             <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
             <field name="groups_id" ref="base.group_hr_user"/>
             <field name="code">
@@ -104,6 +111,27 @@
         </record>
         <!--/Recompute Action-->
 
+        <!--Compute Sheet-->
+        <record model="ir.actions.server" id="action_hr_payslip_compute_sheet_all">
+            <field name="name">Compute Sheet</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="groups_id" ref="base.group_hr_user"/>
+            <field name="code">
+                if context.get('active_model') == 'hr.payslip' and context.get('active_ids'):
+                    action = self.compute_sheet_all(cr, uid, context['active_ids'], context=context)
+            </field>
+        </record>
+
+        <record model="ir.values" id="hr_payslip_compute_sheet_all_menu">
+            <field name="model_id" ref="hr_payroll.model_hr_payslip" />
+            <field name="name">Compute Sheet All</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.server,' +str(ref('action_hr_payslip_compute_sheet_all'))" />
+            <field name="key">action</field>
+            <field name="model">hr.payslip</field>
+        </record>
+        <!--/Compute Sheet-->
+
         <record id="inherited_hr_payslip_form" model="ir.ui.view">
             <field name="name">hr.payslip.form.inherit</field>
             <field name="model">hr.payslip</field>
@@ -113,13 +141,16 @@
                     <field name="contract_type_id" invisible="True"/>
                 </xpath>
                 <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                        <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                    </button>
                     <!-- todo use xml id for Estate Worker instead of 4 -->
                     <button name="action_open_labour"
                         class="oe_stat_button"
                         icon="fa-wrench"
                         type="object"
                         attrs="{'invisible': [('contract_type_id', '!=', 4)]}">
-                        <field name="upkeep_labour_count" widget="statinfo" string="Upkeep Labour" help="Payslip Upkeep Labour Details"/>
+                        <field name="upkeep_labour_count" widget="statinfo" string="Upkeep" help="Payslip Upkeep Labour Details"/>
                     </button>
                 </xpath>
                 <xpath expr="//header//button" position="after">
@@ -127,6 +158,13 @@
                             type="object" states="draft" class="oe_highlight"
                             help="Update worked days or inputs. Erase all inputs."/>
                 </xpath>
+                <!--<xpath expr="//sheet" position="inside">-->
+                     <!--<div class="oe_button_box" name="button_box" groups="base.group_hr_user">-->
+                        <!--<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">-->
+                            <!--<field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                <!--</xpath>-->
             </field>
         </record>
 
@@ -233,7 +271,7 @@
             </field>
         </record>
 
-        <!--contract menu only open for hr manager-->
+        <!--contract menu only open for hr manager & hr payroll officer-->
         <record id="hr_contract.hr_menu_contract" model="ir.ui.menu">
             <field name="groups_id" eval="[(6, 0, [ref('base.group_hr_manager'),ref('estate_payroll.estate_payroll_officer')])]"/>
         </record>

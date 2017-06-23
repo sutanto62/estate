@@ -17,6 +17,7 @@ class Payslip(models.Model):
                                           store=True, readonly=True)
     contract_type_id = fields.Many2one(related='contract_id.type_id', readonly=True)
     upkeep_labour_count = fields.Integer(compute='_compute_upkeep_labour', string='Payslip Upkeep Labour Details')
+    active = fields.Boolean('Active', default=True)
 
     @api.multi
     @api.depends('employee_id')
@@ -215,7 +216,7 @@ class Payslip(models.Model):
 
             # prevent recompute for non draft
             if record.state != 'draft':
-                pass
+                continue
 
             # notify user if there was employee without contract
             if not record.contract_id:
@@ -223,7 +224,7 @@ class Payslip(models.Model):
 
             # trigger computed field
             record._get_team()
-            record.onchange_employee()
+            record.onchange_employee()  # reset worked days and inputs line.
             record.compute_sheet()
 
         # notify at the end of process
@@ -231,6 +232,14 @@ class Payslip(models.Model):
             err_msg = _('You have %s employee(s) without contract. Name: %s' % (len(set(no_contract)),
                                                                                 ", ".join(set(no_contract))))
             raise ValidationError(err_msg)
+
+    @api.multi
+    def compute_sheet_all(self):
+        """ Resolve compute sheet of payslips from tree view."""
+        for record in self:
+            record.compute_sheet()
+        print 'finish compute sheet all'
+        return
 
     @api.model
     def create(self, vals):
