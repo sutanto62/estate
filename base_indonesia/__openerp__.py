@@ -31,6 +31,6 @@
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo.xml',
+        # 'demo.xml',
     ],
 }

@@ -53,11 +53,11 @@ class InheritResPartner(models.Model):
     street2 = fields.Char('Street2')
     zip = fields.Char('Zip',size=24, change_default=True)
     city =fields.Char('City')
-    state_id =fields.Many2one("res.country.state", 'State',ondelete='restrict')
-    country_id = fields.Many2one('res.country', 'Country', ondelete='restrict')
-    email = fields.Char('Email',required=True)
-    phone = fields.Char('Phone',required=True)
-    mobile = fields.Char('Mobile',required=True)
+    state_id =fields.Many2one("res.country.state", 'State')
+    country_id = fields.Many2one('res.country', 'Country')
+    email = fields.Char('Email')
+    phone = fields.Char('Phone')
+    mobile = fields.Char('Mobile')
 
 
     @api.multi
