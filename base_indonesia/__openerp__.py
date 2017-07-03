@@ -24,7 +24,7 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'templates.xml',
+        # 'templates.xml',
         'views/inherit_res_company.xml',
         'views/inherit_res_partner.xml',
         'views/sequence_res_partner.xml'
