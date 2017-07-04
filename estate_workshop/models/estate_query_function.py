@@ -114,7 +114,7 @@ class CreateFunctionMoPreventive(models.Model):
     _description = "Function to create MO preventive"
     _auto = False
 
-
+    #todo refactor query format
     def init(self, cr):
         cr.execute("""CREATE OR REPLACE FUNCTION public.create_mo_preventive()
                      RETURNS boolean

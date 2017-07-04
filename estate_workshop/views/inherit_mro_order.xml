@@ -193,5 +193,157 @@
                  </xpath>
              </field>
          </record>
+
+        <record id="mro.mro_request_search" model="ir.ui.view">
+            <field name="name">mro.request.search</field>
+            <field name="model">mro.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Maintenance Notification">
+                    <field name="name"/>
+                    <field name="asset_id" />
+                    <field name="location_id" />
+                    <field name="requester_id"/>
+
+                    <separator/>
+
+                    <filter name="request_state_draft" string="Draft"
+                            domain="[('state','=','draft')]"
+                            help="Request is to be Claim"/>
+
+                    <filter name="request_state_to_claim" string="To Claim"
+                            domain="[('state','=','claim')]"
+                            help="Request is to be Run"/>
+
+                    <filter name="request_state_run" string="Execution"
+                            domain="[('state','=','run')]"
+                            help="Request is done"/>
+
+                    <filter name="request_state_done" string="Done"
+                            domain="[('state','=','done')]"
+                            help="Request is done"/>
+
+                    <filter name="request_state_cancel" string="Cancel"
+                            domain="[('state','=','cancel')]"
+                            help="Request is Cancel"/>
+
+                    <filter name="filter_name" context="{'filters' : 'name'}" string="Reference"/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('requested_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('requested_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('requested_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('requested_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+
+                    <separator/>
+
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('requested_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('requested_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('requested_date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('requested_date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+
+                    <separator/>
+
+                    <group expand="0" string="Group By">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'requested_date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'requested_date:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'requested_date:day'}"/>
+                        <filter string="Vehicle"
+                                domain="[]" context="{'group_by' : 'asset_id'}" />
+                        <filter string="Cause Failure"
+                                domain="[]" context="{'group_by' : 'code_id'}" />
+                        <filter name="groupby_name" context="{'group_by' : 'name'}" string="Reference"/>
+                        <filter name="groupby_asset" context="{'group_by' : 'asset_id'}" string="Asset"/>
+                        <filter name="groupby_location" context="{'group_by' : 'location_id'}" string="Accident Location"/>
+                        <filter name="groupby_requester" context="{'group_by' : 'requester_id'}" string="Requester"/>
+                    </group>
+
+
+
+                </search>
+            </field>
+        </record>
+
+        <record id="mro.action_requests" model="ir.actions.act_window">
+            <field name="name">Maintenance Requests</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mro.request</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_filter_month': 1}</field>
+        </record>
+
+         <record id="mro.mro_order_search" model="ir.ui.view">
+            <field name="name">mro.order.search</field>
+            <field name="model">mro.order</field>
+            <field name="arch" type="xml">
+                <search string="Search Maintenance Order">
+                    <field name="location_id" string="Accident Location"/>
+
+                    <filter icon="terp-mail-message-new" string="Unread Messages" name="message_unread" domain="[('message_unread','=',True)]"/>
+                    <separator/>
+                    <filter name="order_state_draft" string="Draft"
+                            domain="[('state','=','draft')]"
+                            help="Order is to be Released"/>
+
+                    <filter name="order_state_to_released" string="To Released"
+                            domain="[('state','=','released')]"
+                            help="Order is to be Ready"/>
+
+                    <filter name="order_state_ready" string="Ready"
+                            domain="[('state','=','ready')]"
+                            help="Order is approved"/>
+
+                    <filter name="order_state_done" string="Done"
+                            domain="[('state','=','done')]"
+                            help="Order is done"/>
+
+                    <filter name="order_state_cancel" string="Cancel"
+                            domain="[('state','=','cancel')]"
+                            help="Order is Cancel"/>
+
+
+
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_scheduled','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_scheduled','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_scheduled','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_scheduled','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_scheduled','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_scheduled','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_scheduled','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_scheduled','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_scheduled:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_scheduled:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_scheduled:day'}"/>
+                        <filter string="Vehicle"
+                                domain="[]" context="{'group_by' : 'asset_id'}" />
+                        <filter string="Cause Failure"
+                                domain="[]" context="{'group_by' : 'code_id'}" />
+                        <filter string="Accident Location"
+                                domain="[]" context="{'group_by' : 'location_id'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
     </data>
 </openerp>
