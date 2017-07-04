@@ -9,10 +9,10 @@
                     <field name="id" invisible="1"/>
                     <field name="company_name" string="Company"/>
                     <field name="type_name" string="Category"/>
-                    <field name="estate" string="Estate"/>
-                    <field name="ho" string="HO"/>
-                    <field name="done" string="Done" />
-                    <field name="undone" string="Undone"/>
+                    <field name="estate" sum="Estate" string="Estate"/>
+                    <field name="ho" sum="HO" string="HO"/>
+                    <field name="done" sum="Done" string="Done" />
+                    <field name="undone" sum="Undone" string="Undone"/>
                 </tree>
              </field>
          </record>
@@ -25,15 +25,40 @@
                     <field name="company_name" string="Tender No"/>
                     <field name="type_name" string="PP No"/>
                     <separator/>
-                    <!--<filter name="status_pp" string="Status PP Outstanding"-->
-                            <!--domain="[('status_pp','=','PP Outstanding')]"-->
-                            <!--/>-->
-                    <!--<filter name="status_pp_close" string="Status PP Closed"-->
-                            <!--domain="[('status_pp','=','PP Closed')]"-->
-                            <!--/>-->
+                    <group expand="0" string="Group By...">
+                        <filter string="Company"
+                                name="group_company"
+                                domain="[]" context="{'group_by' : 'company_id'}" />
+                        <filter string="Purchase Type"
+                                name="group_purchase_type"
+                                domain="[]"
+                                context="{'group_by':'type_purchase'}"/>
+                    </group>
                 </search>
             </field>
         </record>
+
+        <record model="ir.actions.act_window" id="view_dashboard_progress_pp_action">
+            <field name="name">Action View Dashboard Progress  Purchase Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dashboard.progress.pp.and.po</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_dashboard_progress_pp_search"/>
+            <field name="context">{"search_default_group_company":1}</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new Result Progress Purchase Request.
+                </p>
+                <p>
+                A Result Progress Purchase Order is an report to show Progress Purchase Order
+              </p>
+            </field>
+        </record>
+
+        <menuitem id="menu_view_dashboard_progress_pp_po" name="Dashboard Progress PP"
+            parent="base.purchase_report"
+            action="view_dashboard_progress_pp_action" sequence="23"/>
 
         <!--<record id="dashboard_progress_pp_kanban_view" model="ir.ui.view">-->
         <!--<field name="name">dashboard.progress.pp.and.po</field>-->
@@ -338,25 +363,6 @@
         <!--</field>-->
     <!--</record>-->
 
-        <record model="ir.actions.act_window" id="view_dashboard_progress_pp_action">
-            <field name="name">Action View Dashboard Progress  Purchase Order</field>
-            <field name="type">ir.actions.act_window</field>
-            <field name="res_model">dashboard.progress.pp.and.po</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree</field>
-            <field name="search_view_id" ref="view_dashboard_progress_pp_search"/>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click to start a new Result Progress Purchase Request.
-                </p>
-                <p>
-                A Result Progress Purchase Order is an report to show Progress Purchase Order
-              </p>
-            </field>
-        </record>
 
-        <menuitem id="menu_view_dashboard_progress_pp_po" name="Dashboard Progress PP"
-            parent="base.purchase_report"
-            action="view_dashboard_progress_pp_action" sequence="23"/>
     </odoo>
 </openerp>

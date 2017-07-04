@@ -42,7 +42,7 @@
                  </xpath>
                  <xpath expr="//field[@name='category_id']" position="after">
                       <field name="partner_product" string="Partner Product"/>
-                      <field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>
+                      <!--<field name="product_category_ids" placeholder="Product Category ..." string="Product Category" widget="many2many_tags"/>-->
                  </xpath>
                  <xpath expr="//button[@name='toggle_active']" position="replace">
                     <button name="toggle_active" type="object" groups="purchase_indonesia.group_purchase_request_finance_procurement" class="oe_stat_button" icon="fa-archive">

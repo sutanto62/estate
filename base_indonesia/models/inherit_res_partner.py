@@ -15,6 +15,7 @@ import re
 
 
 class InheritResPartner(models.Model):
+
     @api.multi
     def purchase_procurement_staff(self):
         return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
@@ -38,7 +39,7 @@ class InheritResPartner(models.Model):
 
     _description = 'Inherit Res Partner'
 
-    product_category_ids = fields.Many2many('product.category','supplier_product_category_rel','partner_id','categ_id',string='Category Product')
+    # product_category_ids = fields.Many2many('product.category',string='Category Product')
     partner_product = fields.Char('Partner Product')
     state = fields.Selection([('draft','Draft'),('done','Done'),('confirm','Confirm'),
                        ('reject','Reject')],default='draft')

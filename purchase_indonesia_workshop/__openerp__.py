@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/inherit_mro_order.xml',
     ],
     # only loaded in demonstration mode
