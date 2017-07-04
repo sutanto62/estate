@@ -19,17 +19,18 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','purchase_indonesia'],
+    'depends': ['base','purchase_indonesia','purchase_indonesia_account'],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
         'views/view_inherit_purchase_request_line.xml',
-        'views/view_purchase_indonesia_dashboard_pp.xml'
+        'views/view_purchase_indonesia_dashboard_pp.xml',
+        'views/view_purchase_indonesia_dashboard_tender.xml'
 
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo.xml',
+        # 'demo.xml',
     ],
 }
