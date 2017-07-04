@@ -92,7 +92,7 @@
             <field name="context">{"search_default_groupby_category" : True}</field>
         </record>
 
-        <menuitem id="estate_master_part_catalog" name="Master Part Catalog"
+        <menuitem id="estate_master_part_catalog" name="Part Catalog"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_catalog"
                  groups="fleet.group_fleet_manager"/>

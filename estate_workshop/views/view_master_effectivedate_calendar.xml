@@ -79,7 +79,7 @@
             <field name="view_mode">calendar,tree,form</field>
         </record>
 
-        <menuitem id="estate_master_calendar" name="Master Calendar"
+        <menuitem id="estate_master_calendar" name="Calendar"
                   parent="asset.menu_maintenance_config"
                   action="action_master_calendar"
                   groups="fleet.group_fleet_manager"/>

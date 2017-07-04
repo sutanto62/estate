@@ -87,7 +87,7 @@
             <field name="context">{"search_default_groupby_asset" : True}</field>
         </record>
 
-        <menuitem id="estate_master_shedule_workshop" name="Master Schedule Plan"
+        <menuitem id="estate_master_shedule_workshop" name="Schedule Plan"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_shedule_workshop"
                  groups="fleet.group_fleet_manager"/>
