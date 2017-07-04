@@ -125,3 +125,9 @@ v_p_request_order_join_technical6,v_p_request_order_join_technical6,purchase_ind
 "view_requisition_tracking_dept_head","view_requisition_tracking","purchase_indonesia.model_view_requisition_tracking","purchase_request.group_purchase_request_dept_head","True","False","False","False"
 "view_requisition_tracking_manager","view_requisition_tracking","purchase_indonesia.model_view_requisition_tracking","purchase_request.group_purchase_request_manager","True","False","False","False"
 "view_requisition_tracking_procurement_staff","view_requisition_tracking","purchase_indonesia.model_view_requisition_tracking","purchase_request.group_purchase_request_procstaff","True","False","False","False"
+
+"v_report_tracking_pp_user","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_user","True","False","False","False"
+"v_report_tracking_pp_div_head","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_div_head","True","False","False","False"
+"v_report_tracking_pp_dept_head","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_dept_head","True","False","False","False"
+"v_report_tracking_pp_manager","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_manager","True","True","True","False"
+"v_report_tracking_pp_procurement_staff","report_tracking_pp","purchase_indonesia.model_validate_tracking_purchase_order_invoice","purchase_request.group_purchase_request_procstaff","True","True","True","False"

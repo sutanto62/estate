@@ -96,6 +96,6 @@
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
-        'demo/partner_demo.xml'
+        # 'demo/partner_demo.xml'
     ],
 }
