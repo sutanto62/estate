@@ -148,27 +148,46 @@ class ViewRequestRequisitionTracking(models.Model):
 
     id = fields.Char('ID')
     pr_id = fields.Many2one('purchase.request')
+    date_start = fields.Date('Date Start')
     requisition_id = fields.Many2one('purchase.requisition')
     complete_name = fields.Char('Complete Name')
     detail_ids = fields.One2many('view.detail.request.requisition.tracking','vrrt_id')
-    status_po = fields.Char(compute='status_tracking')
-    status_picking = fields.Char(compute='status_tracking')
-    status_invoice = fields.Char(compute='status_tracking')
+    status_po = fields.Char(compute='status_tracking', translate=True)
+    status_picking = fields.Char(compute='status_tracking', translate=True)
+    status_invoice = fields.Char(compute='status_tracking', translate=True)
     type_location = fields.Char('Location')
     company_id = fields.Many2one('res.company','Company')
 
     def init(self, cr):
         drop_view_if_exists(cr, 'view_request_requisition_tracking')
         cr.execute("""create or replace view view_request_requisition_tracking as
-                        select row_number() over() id,pr_id,requisition_id,parent_tracking.complete_name,type_location,company_id
-                            from (
-                                select pr_id,vqt.requisition_id,complete_name from validate_tracking_purchase_order_invoice vtpo
-                                    inner join
-                                    view_requisition_tracking vqt
-                                    on vqt.requisition_id = vtpo.requisition_id
-                                    group by pr_id,vqt.requisition_id,complete_name
-                                )parent_tracking
-                                inner join purchase_request pr on parent_tracking.pr_id = pr.id
+                        select
+                            row_number() over() id,
+                            pr.date_start date_start,
+                            pr_id,
+                            requisition_id,
+                            vrrt.complete_name,
+                            vrrt.type_location,
+                            vrrt.company_id
+                        from (
+                            select
+                                row_number() over() id,
+                                pr_id,
+                                requisition_id,
+                                parent_tracking.complete_name complete_name,
+                                type_location,
+                                company_id
+                                from (
+                                    select pr_id,vqt.requisition_id,complete_name
+                                        from validate_tracking_purchase_order_invoice vtpo
+                                            inner join
+                                            view_requisition_tracking vqt
+                                            on vqt.requisition_id = vtpo.requisition_id
+                                            group by pr_id,vqt.requisition_id,complete_name
+                                    )parent_tracking
+                                    inner join purchase_request pr on parent_tracking.pr_id = pr.id
+                                )vrrt inner join purchase_request pr on vrrt.pr_id = pr.id
+                                order by pr_id asc
                         """)
 
     @api.multi
