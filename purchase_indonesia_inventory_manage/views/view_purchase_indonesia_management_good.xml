@@ -152,6 +152,50 @@
             </field>
         </record>
 
+         <record id="view_management_goods_search" model="ir.ui.view">
+            <field name="name">management.good.request.search</field>
+            <field name="model">management.good.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Goods in Report">
+                    <field name="date_schedule" string="Date"/>
+                    <field name="complete_name" string="Source Document"/>
+                    <field name="company_id" string="Company"/>
+                    <field name="location_id" string="Source Location"/>
+                    <field name="destination_id" string="Destionation Location"/>
+                    <field name="state" string="State"/>
+                    <separator/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_schedule','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_schedule','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_schedule','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_schedule','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_schedule','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_schedule','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_schedule','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_schedule','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_schedule:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_schedule:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_schedule:day'}"/>
+                        <filter string="Company" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'company_id'}"/>
+                        <filter string="Destination" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'destination_id'}"/>
+                        <filter string="Source Location" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'location_id'}"/>
+                        <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_schedule'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <record model="ir.actions.act_window" id="management_good_request_action">
             <field name="name">Procurement Goods Management </field>
             <field name="type">ir.actions.act_window</field>
@@ -159,7 +203,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{"search_default_requested_by":uid}</field>
-            <!--<field name="search_view_id" ref="view_purchase_request_search"/>-->
+            <field name="search_view_id" ref="view_management_goods_search"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to start a new management good request process.

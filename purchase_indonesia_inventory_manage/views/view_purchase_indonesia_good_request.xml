@@ -104,6 +104,46 @@
                 </tree>
             </field>
         </record>
+        
+        <record id="view_procur_goods_request_search" model="ir.ui.view">
+            <field name="name">procur.good.request.search</field>
+            <field name="model">procur.good.request</field>
+            <field name="arch" type="xml">
+                <search string="Search Goods in Report">
+                    <field name="date_request" string="Date"/>
+                    <field name="company_id" string="Company"/>
+                    <field name="division_id" string="Division"/>
+                    <field name="state" string="State"/>
+                    <separator/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_request','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_request','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_request','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_request','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_request','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_request','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_request','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_request','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_request:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_request:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_request:day'}"/>
+                        <filter string="Company" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'company_id'}"/>
+                        <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_request'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 
 
 
@@ -114,7 +154,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="context">{"search_default_requested_by":uid}</field>
-            <!--<field name="search_view_id" ref="view_purchase_request_search"/>-->
+            <field name="search_view_id" ref="view_procur_goods_request_search"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to start a new procurement good request process.
