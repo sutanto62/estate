@@ -20,6 +20,7 @@ class InheritMaintenanceVehicle(models.Model):
         ('ro', 'RO'),
         ('estate', 'Estate'),
         ('ho', 'HO')], string="Type Location Vehicle",store=True)
+    initial_odometer = fields.Float('Initial Odometer',help="Start odometer")
 
     @api.multi
     def write(self,context):

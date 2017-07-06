@@ -101,7 +101,9 @@ class ViewVehiclePreventiveOdometer(models.Model):
                     mul_odo.count_multiply,
                     mul_odo.odometer_remain,
                     mul_odo.odometer_threshold
-                   FROM ( SELECT row_number() OVER (PARTITION BY b.fleet_id ORDER BY b.multiple_odo, b.count_multiply) AS idx,
+                   FROM (
+                        SELECT
+                            row_number() OVER (PARTITION BY b.fleet_id ORDER BY b.multiple_odo, b.count_multiply) AS idx,
                             b.fleet_id,
                             b.asset_id,
                             b.odometer,
@@ -110,7 +112,8 @@ class ViewVehiclePreventiveOdometer(models.Model):
                             b.count_multiply,
                             b.odometer_remain,
                             b.odometer_threshold
-                           FROM ( SELECT a.fleet_id,
+                           FROM (
+                                SELECT a.fleet_id,
                                     a.asset_id,
                                     a.odometer,
                                     a.odometer_current,
@@ -118,26 +121,43 @@ class ViewVehiclePreventiveOdometer(models.Model):
                                     a.count_multiply,
                                     a.odometer_remain,
                                     a.odometer_threshold
-                                   FROM ( SELECT a_1.fleet_id,
-                                            a_1.asset_id,
-                                            a_1.odometer,
-                                            b_1.odometer_current,
-                                            count_multiply_odometer((a_1.odometer)::integer, (b_1.odometer_current)::integer) AS count_multiply,
-                                            ((count_multiply_odometer((a_1.odometer)::integer, (b_1.odometer_current)::integer) * (a_1.odometer)::integer) % (b_1.odometer_current)::integer) AS odometer_remain,
-                                            (a_1.odometer * (0.01)::double precision) AS odometer_threshold
-                                           FROM (( SELECT m.id,
-                                                    a_1_1.fleet_id,
-                                                    m.odometer,
-                                                    m.asset_id
-                                                   FROM (estate_master_workshop_shedule_plan m
-                                                     JOIN asset_asset a_1_1 ON ((m.asset_id = a_1_1.id)))
-                                                  WHERE ((m.type)::text <> 'view'::text)) a_1
-                                             LEFT JOIN ( SELECT fleet_vehicle_odometer.vehicle_id,
+                                   FROM (
+                                        SELECT
+                                        a_1.fleet_id,
+                                        a_1.asset_id,
+                                        a_1.odometer,
+                                        b_1.odometer_current,
+                                        count_multiply_odometer((a_1.odometer)::integer, (b_1.odometer_current)::integer) AS count_multiply,
+                                        ((count_multiply_odometer((a_1.odometer)::integer, (b_1.odometer_current)::integer) * (a_1.odometer)::integer) % (b_1.odometer_current)::integer) AS odometer_remain,
+                                        (a_1.odometer * (0.01)::double precision) AS odometer_threshold
+                                       FROM (
+                                            (
+                                            SELECT
+                                                m.id,
+                                                a_1_1.fleet_id,
+                                                (case when m.initial_odometer > 0 then m.initial_odometer + m.odometer else m.odometer end) as odometer,
+                                                m.asset_id
+                                            FROM (
+                                                    estate_master_workshop_shedule_plan m
+                                                    JOIN
+                                                    asset_asset a_1_1
+                                                    ON ((m.asset_id = a_1_1.id)))
+                                                    WHERE ((m.type)::text <> 'view'::text)
+                                                    ) a_1
+                                       LEFT JOIN (
+                                                SELECT
+                                                    fleet_vehicle_odometer.vehicle_id,
                                                     max(fleet_vehicle_odometer.value) AS odometer_current
-                                                   FROM fleet_vehicle_odometer
-                                                  GROUP BY fleet_vehicle_odometer.vehicle_id) b_1 ON ((a_1.fleet_id = b_1.vehicle_id)))) a
-                                  WHERE ((a.odometer_remain)::double precision <= a.odometer_threshold)) b) mul_odo
-                  WHERE (mul_odo.idx = 1);
+                                                FROM
+                                                    fleet_vehicle_odometer
+                                                GROUP BY
+                                                    fleet_vehicle_odometer.vehicle_id
+                                                    ) b_1
+                                            ON ((a_1.fleet_id = b_1.vehicle_id)))
+                                            ) a
+                                            WHERE ((a.odometer_remain)::double precision <= a.odometer_threshold))
+                                            b) mul_odo
+                                    WHERE (mul_odo.idx = 1);
                    """)
 
         cr.execute("""CREATE OR REPLACE FUNCTION public.create_mo_preventive()

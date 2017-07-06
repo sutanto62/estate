@@ -34,6 +34,7 @@
                             <group>
                             <group name="detail">
                                 <!--<field name="category_id" options="{'no_create_edit': True}" invisible="1"/>-->
+                                <field name="initial_odometer" string="Initial Odometer"/>
                                 <field name="odometer"/>
                                 <field name="type_service"/>
                             </group>
