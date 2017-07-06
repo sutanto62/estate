@@ -208,7 +208,7 @@
         </record>
 
         <record model='ir.actions.act_window' id='master_task_type_act'>
-            <field name="name">Master Task Type</field>
+            <field name="name">Task Type</field>
             <field name="res_model">estate.master.type.task</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -249,8 +249,23 @@
             </field>
         </record>
 
-        <menuitem action="estate_workshop.master_task_act" parent="mro.menu_maintenance_tasks" id="master_task_menu"
+        <menuitem name="Maintenance Tasks"
+            id="mro.menu_maintenance_tasks"
+            sequence="9"/>
+
+        <menuitem name="Maintenance Tasks"
+            action="mro.action_tasks"
+            id="mro.menu_maintenance_tasks_tasks"
+            parent="estate_workshop.estate_master_maintenance_task_config"
+            sequence="100"/>
+
+         <menuitem id="estate_master_maintenance_task_config" name="Maintenance Task"
+                  parent="asset.menu_maintenance_config"
+                 />
+
+        <menuitem action="estate_workshop.master_task_act" parent="estate_master_maintenance_task_config" id="master_task_menu"
                   groups="asset.group_mro_planner" sequence="99"/>
+
         <menuitem action="estate_workshop.master_task_type_act" parent="asset.menu_maintenance_config"
                   id="master_task_type_menu" groups="asset.group_mro_planner" sequence="99"/>
     </data>
