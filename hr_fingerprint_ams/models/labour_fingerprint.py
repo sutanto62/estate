@@ -55,7 +55,7 @@ class LabourFingerprint(models.Model):
                 b.assistant_id,
                 a.estate_id,
                 a.division_id,
-                a.employee_company_id,
+                a.employee_company_id company_id,
                 (date_part('hour'::text, (d.name - c.name)) + (((date_part('minute'::text, (d.name - c.name)) / (60)::double precision))::numeric(4,2))::double precision) AS worked_hours,
                 f.number_of_day,
                     CASE
