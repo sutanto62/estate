@@ -26,6 +26,7 @@ class PayslipRun(models.Model):
     division_id = fields.Many2one('stock.location', "Division",
                                   domain=[('estate_location', '=', True), ('estate_location_level', '=', '2')])
     team_ids = fields.Many2one('estate.hr.team')
+    active = fields.Boolean('Active', default=True)
 
     @api.multi
     @api.onchange('date_start')
@@ -151,3 +152,17 @@ class PayslipRun(models.Model):
         # Return value to report
         return '%s;%s;%s;%s' % (print_datetime, current_user.name, report_name, self.name)
 
+    @api.multi
+    def toggle_active(self):
+        """ Make sure its payslip and payslip line follow payslip batch's state"""
+
+        super(PayslipRun, self).toggle_active()
+
+        # Toggling false to active required domain with active param
+        payslip_ids = self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids),
+                                                     ('active', '=', not self.active)])
+        payslip_ids.write({'active': self.active})
+
+        payslip_line_ids = self.env['hr.payslip.line'].search([('slip_id', 'in', payslip_ids.ids),
+                                                               ('active', '=', not self.active)])
+        payslip_line_ids.write({'active': self.active})
