@@ -336,6 +336,8 @@ class InheritPurchaseTenders(models.Model):
                 'assigned_to' : purchase_request._get_budget_manager() if purchase_request._get_max_price() < purchase_request._get_price_low() else purchase_request._get_division_finance(),
                 'validation_correction_procurement' : True
             })
+            item.send_mail_template()
+
 
     @api.multi
     def create_backorder_quotation_comparison_form(self):
@@ -847,6 +849,36 @@ class InheritPurchaseTenders(models.Model):
                         elif order.product_qty > tender.product_qty:
                             error_msg = 'Product Quantity \"%s\" cannot greater than Product Quantity \"%s\" in Tender Line Vendor \"%s\"'%(order.product_id.name,tender.product_id.name,order.partner_id.name)
                             raise exceptions.ValidationError(error_msg)
+
+    #Email Template Code Starts Here
+
+    @api.one
+    def send_mail_template(self):
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_correction_purchase_request')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            model = item._name
+            return model
 
 class InheritPurchaseRequisitionLine(models.Model):
 
