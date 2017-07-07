@@ -157,6 +157,16 @@ class InheritPurchaseRequest(models.Model):
                     department_code.append(record.code)
         return department_code
 
+    @api.multi
+    def _get_department_not_finance_code(self):
+        department_code = []
+        for item in self:
+            department = item.env['hr.department'].search([])
+            for record in department:
+                if record.code not in ['PRC','GA','FIN','ACC','BGT']:
+                    department_code.append(record.code)
+        return department_code
+
     _inherit = ['purchase.request']
     _rec_name = 'complete_name'
     _order = 'complete_name desc'
@@ -628,14 +638,20 @@ class InheritPurchaseRequest(models.Model):
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
-        # if self._get_type_product() == True:
-            # product Capital
-        if self._get_total_price_budget() < self._get_price_mid():
-                self.button_approved()
-        elif self._get_total_price_budget() >= self._get_price_mid():
-            state_data = {'state':'approval5','assigned_to' : self._get_director()}
-            self.write(state_data)
-            self.send_mail_template()
+        for item in self:
+            if item.code in ['KPST'] and item._get_total_price_budget() < item._get_price_mid():
+                item.button_approved()
+            elif item.code in ['KOKB'] and item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
+                item.button_approved()
+            elif (item.code in ['KOKB']
+                and item.department_id.code in item._get_department_not_finance_code()
+                and (item._get_total_price_budget() >= item._get_price_mid()
+                or item._get_total_price_budget() < item._get_price_mid())) \
+                or (item.code in ['KPST'] and item._get_total_price_budget() >= item._get_price_mid()):
+                state_data = {'state':'approval5','assigned_to' : item._get_director()}
+                item.write(state_data)
+                item.send_mail_template()
+
         # elif self._get_type_product() == False:
             #Product service and stockable
             # if self._get_max_price() < self._get_price_mid():
