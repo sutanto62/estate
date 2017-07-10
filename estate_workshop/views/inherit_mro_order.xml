@@ -22,7 +22,7 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='cause']" position="after">
                      <field name="typetask_id" options="{'no_create_edit': True}" string="Maintenance Type" readonly="1"/>
-                     <field name="image" string="Accident Image" attrs="{'invisible': [('state', '!=', 'ready'),('state','!=','done')]}"/>
+                     <field name="image" widget='image' string="Accident Image"/>
                  </xpath>
              </field>
          </record>

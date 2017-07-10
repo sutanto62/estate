@@ -19,7 +19,8 @@
              <field name="inherit_id" ref="mro.mro_request_form_view"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='location_id']" position="after">
-                    <field name="image" string="Accident Image" widget="image"/>
+                     <field name="image" string="Accident Image" height="64" widget="image" filename="image_filename"/>
+                     <field name="image_filename" string="file name" invisible="1"/>
                  </xpath>
              </field>
         </record>
