@@ -992,11 +992,15 @@ class InheritPurchaseRequest(models.Model):
             month = result
 
             departement_code = ''
-            type_location = ''
-            if self.type_location == 'HO':
-                type_location = 'KPST'
-            elif self.type_location == 'RO' or self.type_location == 'Estate':
-                type_location = 'KOKB'
+            employee_code = ''
+
+            #get Employee Code
+            try:
+                employee_code = self._get_employee_request().office_level_id.code
+            except:
+                raise exceptions.ValidationError('Employee Code is Null')
+           
+            type_location = employee_code
 
             try :
                 departement_code = self.department_id.code
