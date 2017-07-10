@@ -776,8 +776,15 @@ class InheritPurchaseRequest(models.Model):
         except:
             raise exceptions.ValidationError('Company Code is Null')
 
-        sequence_name = 'purchase.request.seq.'+self._get_office_level_id_code().lower()+'.'+company_code.lower()
-        vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
+
+        location_code = self._get_employee().office_level_id.code
+
+        try:
+            sequence_name = 'purchase.request.seq.'+location_code.lower()+'.'+company_code.lower()
+            vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
+        except:
+            error_msg = "Employee Offive Level Code is Null for %s" %(self._get_employee().name)
+            raise exceptions.ValidationError(error_msg)
 
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
@@ -996,9 +1003,10 @@ class InheritPurchaseRequest(models.Model):
 
             #get Employee Code
             try:
-                employee_code = self._get_employee_request().office_level_id.code
+                employee_code = self._get_employee().office_level_id.code
             except:
-                raise exceptions.ValidationError('Employee Code is Null')
+                error_msg = "Employee Offive Level Code is Null for %s" %(self._get_employee().name)
+                raise exceptions.ValidationError(error_msg)
            
             type_location = employee_code
 
@@ -1008,7 +1016,8 @@ class InheritPurchaseRequest(models.Model):
                 departement_code = self.department_id.name
 
             if self.department_id.code == False:
-                raise exceptions.ValidationError('Department Code is Null')
+                error_msg = "Employee Department Code is Null for %s" %(self._get_employee().name)
+                raise exceptions.ValidationError(error_msg)
             else:
                 self.complete_name = self.name + '/' \
                                          + self.company_id.code+'-'\
