@@ -49,9 +49,6 @@
         'views/procurement_process.xml',
         'views/mapping_department_to_product.xml',
         'views/inherit_product_template.xml',
-        'workflow/workflow_procur_good_request.xml',
-        'workflow/workflow_procur_good_return.xml',
-        'workflow/workflow_management_good_request.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',

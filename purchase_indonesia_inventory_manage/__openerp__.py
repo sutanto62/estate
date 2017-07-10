@@ -31,7 +31,12 @@
         'views/purchase_indonesia_sequence.xml',
         'views/view_purchase_indonesia_goods_report_in.xml',
         'views/view_purchase_indonesia_goods_report_out.xml',
-        'views/view_purchase_indonesia_goods_summary.xml'
+        'views/view_purchase_indonesia_goods_summary.xml',
+
+        #workflow
+        'workflow/workflow_procur_good_request.xml',
+        'workflow/workflow_procur_good_return.xml',
+        'workflow/workflow_management_good_request.xml'
     ],
     # only loaded in demonstration mode
     'demo': [
