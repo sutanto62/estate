@@ -1,0 +1,82 @@
+<odoo>
+    <data noupdate="0">
+        <record id="email_template_res_partner_vendor" model="mail.template">
+            <field name="name">Email Template Vendor Form</field>
+            <field name="email_from">admin@palmagroup.co.id</field>
+            <field name="subject">[SYS] Approval Vendor ${object.name}</field>
+            <field name="email_to">${object.assign_to.partner_id.email}</field>
+            <field name="lang">${object.lang}</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="body_html">
+              <![CDATA[
+              <style>
+                 input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+	         		box-sizing: border-box;
+	         		font-size: 14px;
+	         		text-decoration: none;
+	         		color: #FFF;
+	         		line-height: 2;
+	         		font-weight: bold;
+	         		text-align: center;
+	         		cursor: pointer;
+	         		display: inline-block;
+	         		border-radius: 5px;
+	         		text-transform: capitalize;
+	         		background-color: #348eda;
+	         		margin: 0;
+	         		padding: 0;
+	         		border-color: #348eda;
+	         		border-style: solid;
+	         		border-width: 10px 20px;
+	         	}
+              </style>
+              <p>Dear ${(object.assign_to.name)},<br/>
+              <br/>
+              You have one approval Vendor,  ${(object.name)}<br/>
+
+              <br/>
+
+
+              <p>Approve Vendor,<a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Approve"></a></p>
+              <br/>
+              <br/>
+              </p>
+
+                <div class="container">
+                  <p> If you have not signed in odoo , then follow the step below</p>
+                  <p>
+                    Step to Approval Vendor.
+                  </p>
+
+                  <p>
+                    <ul>
+                      <li>Login To ERP Palma Group
+                         <ul>
+                            <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
+                            <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
+                            <li>Input Your Password ERP Palma Group in Field Password.
+                                <ul style="list-style-type:circle">
+                                  <li>If You cannot Login Please Contact Department ICT</li>
+                                </ul>
+                            </li>
+                            <li>Click Button Login </li>
+                        </ul>
+                      </li>
+                      <li>Check Your Vendor Inside ERP Palma Group</li>
+                      <li>Click Button Approve Inside Vendor Form in ERP Palma Group</li>
+                    </ul>
+                  </p>
+
+                </div>
+
+                  Regards,
+                  <br/>
+                  ${(object.company_id.name)}
+                  <br/>
+            ]]>
+          </field>
+       </record>
+    </data>
+</odoo>
