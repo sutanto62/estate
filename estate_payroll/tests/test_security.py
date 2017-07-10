@@ -26,6 +26,7 @@ class TestSecurity(TransactionCase):
 
         self.date_1 = (datetime.datetime.today() + relativedelta.relativedelta(months=-1, day=1)).strftime('%Y-%m-%d')
         self.date_2 = (datetime.datetime.today() + relativedelta.relativedelta(day=1, months=0, days=-1)).strftime('%Y-%m-%d')
+        self.max_day = 1000
         self.demo = self.env.ref('estate.estate_upkeep_2')
         self.assistant_id = self.env.ref('hr.employee_al')
         self.team_id = self.env.ref('estate.team_syukur')
@@ -68,6 +69,7 @@ class TestSecurity(TransactionCase):
             'date': self.date_1,
             'estate_id': self.estate_id.id,
             'division_id': self.division_id.id,
+            'max_day': self.max_day
         }
         self.upkeep = self.Upkeep.create(upkeep_val)
 

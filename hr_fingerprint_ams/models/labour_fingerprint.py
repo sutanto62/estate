@@ -55,7 +55,7 @@ class LabourFingerprint(models.Model):
                 b.assistant_id,
                 a.estate_id,
                 a.division_id,
-                a.company_id,
+                a.employee_company_id company_id,
                 (date_part('hour'::text, (d.name - c.name)) + (((date_part('minute'::text, (d.name - c.name)) / (60)::double precision))::numeric(4,2))::double precision) AS worked_hours,
                 f.number_of_day,
                     CASE
@@ -85,7 +85,7 @@ class LabourFingerprint(models.Model):
                         gg.state
                        FROM hr_attendance gg
                       WHERE ((gg.action)::text = 'action'::text)) g ON ((concat(a.employee_id, '/', a.upkeep_date) = concat(g.employee_id, '/', ((g.name + '07:00:00'::interval))::date))))
-              GROUP BY a.employee_id, a.upkeep_date, c.name, d.name, g.name, a.upkeep_team_id, b.assistant_id, a.estate_id, a.company_id, a.division_id, f.number_of_day, c.state
+              GROUP BY a.employee_id, a.upkeep_date, c.name, d.name, g.name, a.upkeep_team_id, b.assistant_id, a.estate_id, a.employee_company_id, a.division_id, f.number_of_day, c.state
               ORDER BY concat(a.employee_id, '/', a.upkeep_date);
             """
         )
