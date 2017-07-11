@@ -254,13 +254,7 @@
             id="mro.menu_maintenance_tasks"
             sequence="9"/>
 
-        <menuitem name="Maintenance Tasks"
-            action="mro.action_tasks"
-            id="mro.menu_maintenance_tasks_tasks"
-            parent="estate_workshop.estate_master_maintenance_task_config"
-            sequence="100"/>
-
-         <menuitem id="estate_master_maintenance_task_config" name="Maintenance Task"
+        <menuitem id="estate_master_maintenance_task_config" name="Maintenance Task"
                   parent="asset.menu_maintenance_config"
                  />
 
@@ -269,5 +263,11 @@
 
         <menuitem action="estate_workshop.master_task_type_act" parent="asset.menu_maintenance_config"
                   id="master_task_type_menu" groups="asset.group_mro_planner" sequence="99"/>
+
+        <menuitem name="Maintenance Tasks"
+            action="mro.action_tasks"
+            id="mro.menu_maintenance_tasks_tasks"
+            parent="estate_workshop.estate_master_maintenance_task_config"
+            sequence="100"/>
     </data>
 </openerp>
