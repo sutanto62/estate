@@ -104,6 +104,9 @@
 										    <th>
 										      Total Perkiraan Harga
 										    </th>
+											<th>
+												Unit Control
+											</th>
 										    <th>
 										      Budget Tersedia
 										    </th>
@@ -137,6 +140,9 @@
 											    <td>
 											      	<span t-field="l.total_price"/>
 											    </td>
+												<td>
+													<span t-field="l.control_unit"/>
+												</td>
 											    <td>
 											      	<span t-field="l.budget_available"/>
 											    </td>
@@ -158,6 +164,9 @@
 											<td>
 										      &#160;
 										    </td>
+											<td>
+												&#160;
+											</td>
 										</tr>
 									</tbody>	
 								</table>
