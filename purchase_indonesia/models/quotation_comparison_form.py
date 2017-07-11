@@ -609,6 +609,7 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve1(self):
+        #approval Gm finance
         if (self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_mid()) or (self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() < self._get_price_mid()):
             self.write({'state' : 'done'})
             self.generated_po()
@@ -618,6 +619,7 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve2(self):
+        #approval Director
         if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() and self._get_max_price() < self._get_price_high():
             self.write({'state' : 'done'})
             self.generated_po()
@@ -627,18 +629,28 @@ class QuotationComparisonForm(models.Model):
 
     @api.multi
     def action_approve3(self):
+        #approval President Director
         self.write({'state': 'done'})
         self.generated_po()
         return True
 
     @api.multi
     def action_approve4(self):
+        #approval Ro Head
         if self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() < self._get_price_low():
+            #action Done
             self.write({'state' : 'done'})
             self.generated_po()
-        elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() > self._get_price_low() :
-            self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+        elif self._get_purchase_request().code in ['KOKB','KPWK'] and (self._get_max_price() > self._get_price_low()):
+            #action to send Procurement Finance
+            self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
+            print self._get_procurement_finance()
             self.send_mail_template()
+
+        # elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() > self._get_price_low() :
+        #     #action to send Division Head Finance
+        #     self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+        #     self.send_mail_template()
         return True
 
     def action_done(self, cr, uid, ids, context=None):
