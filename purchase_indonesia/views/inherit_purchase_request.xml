@@ -65,6 +65,7 @@
                  <xpath expr="//field[@name='name']" position="replace">
                            <field name="complete_name" class="oe_inline" invisible="0"
                                readonly="1" string="Request Reference"/>
+                           <field name="type_product" string="Product Type"/>
                  </xpath>
                  <xpath expr="//field[@name='state']" position="after">
                      <field name="count_po_done" string="PO Dn"/>
@@ -369,6 +370,9 @@
                                 name="group_assigned_to"
                                 domain="[]"
                                 context="{'group_by':'assigned_to'}"/>
+                        <filter name="by_product_type" string="Product Type"
+                                context="{'group_by': 'type_product'}"/>
+
                         <filter string="Source" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'origin'}"/>
                         <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_start'}"/>
                     </group>
