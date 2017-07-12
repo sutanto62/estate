@@ -1322,6 +1322,14 @@ class InheritPurchaseRequestLine(models.Model):
 
 
     @api.multi
+    @api.onchange('product_qty')
+    def _onchange_control_unit(self):
+        for price in self:
+            if price.product_qty:
+                price.control_unit = price.product_qty
+
+
+    @api.multi
     @api.onchange('product_id','request_state')
     def _compute_price_per_product(self):
         if self.product_id  :

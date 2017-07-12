@@ -115,9 +115,14 @@
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='line_ids']//form//field[@name='analytic_account_id']" position="after">
                      <field name="validation_budget" invisible="1"/>
-                     <field name="control_unit" string="Unit Control" attrs="{'readonly': [('validation_budget','!=',True)]}"/>
-                     <field name="budget_available" string="Budget Price"
-                                 attrs="{'readonly': [('validation_budget','!=',True)]}"/>
+                     <label for="control_unit"/>
+                     <div attrs="{'invisible': [('validation_budget','!=',True)]}">
+                        <field name="control_unit" class="oe_inline" string="Unit Control"/>
+                     </div>
+                     <label for="budget_available"/>
+                     <div attrs="{'invisible': [('validation_budget','!=',True)]}">
+                        <field name="budget_available" class="oe_inline" string="Budget Price"/>
+                     </div>
                  </xpath>
              </field>
          </record>
