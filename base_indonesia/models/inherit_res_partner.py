@@ -15,6 +15,7 @@ import re
 
 
 class InheritResPartner(models.Model):
+
     @api.multi
     def purchase_procurement_staff(self):
         return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
@@ -38,10 +39,10 @@ class InheritResPartner(models.Model):
 
     _description = 'Inherit Res Partner'
 
-    product_category_ids = fields.Many2many('product.category','supplier_product_category_rel','partner_id','categ_id',string='Category Product')
+    # product_category_ids = fields.Many2many('product.category',string='Category Product')
     partner_product = fields.Char('Partner Product')
     state = fields.Selection([('draft','Draft'),('done','Done'),('confirm','Confirm'),
-                       ('reject','Reject')],default='draft')
+                       ('reject','Reject')],string='Status',default='draft')
     confirmed_by = fields.Many2one('res.users','Confirmed By')
     approved_by = fields.Many2one('res.users','Approved By')
     assign_to = fields.Many2one('res.users','Assign To')
@@ -53,8 +54,8 @@ class InheritResPartner(models.Model):
     street2 = fields.Char('Street2')
     zip = fields.Char('Zip',size=24, change_default=True)
     city =fields.Char('City')
-    state_id =fields.Many2one("res.country.state", 'State',ondelete='restrict')
-    country_id = fields.Many2one('res.country', 'Country', ondelete='restrict')
+    state_id =fields.Many2one("res.country.state", 'State')
+    country_id = fields.Many2one('res.country', 'Country')
     email = fields.Char('Email')
     phone = fields.Char('Phone')
     mobile = fields.Char('Mobile')
@@ -111,6 +112,7 @@ class InheritResPartner(models.Model):
                  'assign_to':item._get_requestedby_manager().id if check_employee > 0 else item._get_user().id ,
                  'state':'confirm'}
             )
+            item.send_mail_template()
 
     @api.multi
     def action_approved(self):
@@ -141,6 +143,36 @@ class InheritResPartner(models.Model):
     def action_nonactive(self):
         for item in self:
             item.write({'active':False})
+
+    #Email Template Code Starts Here
+
+    @api.one
+    def send_mail_template(self):
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_res_partner_vendor')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+
+    @api.multi
+    def database(self):
+        for item in self:
+            db = item.env.cr.dbname
+
+            return db
+
+    @api.multi
+    def web_url(self):
+        for item in self:
+            web = item.env['ir.config_parameter'].sudo().get_param('web.base.url')
+            return web
+
+    @api.multi
+    def email_model(self):
+        for item in self:
+            model = item._name
+            return model
 
 class ResPartnerVendorBusinessPermit(models.Model):
 

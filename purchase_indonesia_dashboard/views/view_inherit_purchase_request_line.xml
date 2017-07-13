@@ -1,0 +1,115 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="inherit_purchase_request_line_tree_dashboard">
+             <field name="name">Inherit purchase request line</field>
+             <field name="model">purchase.request.line</field>
+             <field name="inherit_id" ref="purchase_request.purchase_request_line_tree"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='request_id']" position="after">
+                      <field name="company_id" string="Company" />
+                      <field name="location" string="Location" />
+                      <field name="type_purchase" string="Purchase type" />
+
+                 </xpath>
+             </field>
+         </record>
+
+        <record model="ir.ui.view" id="inherit_purchase_request_line_form_dashboard">
+             <field name="name">Inherit purchase request line</field>
+             <field name="model">purchase.request.line</field>
+             <field name="inherit_id" ref="purchase_request.purchase_request_line_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//field[@name='request_id']" position="after">
+                      <field name="company_id" string="Company" />
+                      <field name="location" string="Location" />
+                      <field name="type_purchase" string="Purchase type" />
+
+                 </xpath>
+             </field>
+         </record>
+
+        <record id="purchase_request.purchase_request_line_search" model="ir.ui.view">
+            <field name="name">purchase.request.line.search</field>
+            <field name="model">purchase.request.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Request">
+                    <field name="request_id"/>
+                    <field name="product_id"/>
+                    <field name="requested_by"/>
+                    <field name="assigned_to"/>
+                    <field name="date_start"/>
+                    <field name="date_required"/>
+                    <field name="analytic_account_id"/>
+                    <field name="procurement_id"/>
+                    <field name="company_id" string="Company" />
+                    <field name="location" string="Location"/>
+                    <field name="type_purchase" string="Purchase type"/>
+                    <filter name="request_state_draft" string="Draft"
+                            domain="[('request_state','=','draft')]"
+                            help="Request is to be approved"/>
+                    <filter name="request_state_to_approve" string="To Approve"
+                            domain="[('request_state','=','to_approve')]"
+                            help="Request is to be approved"/>
+                    <filter name="request_state_approved" string="Approved"
+                            domain="[('request_state','=','approved')]"
+                            help="Request is approved"/>
+                    <filter name="request_state_rejected" string="Rejected"
+                            domain="[('request_state','=','rejected')]"
+                            help="Request is rejected"/>
+                    <filter domain="[('assigned_to','=', uid)]"
+                            help="Assigned to me"/>
+                    <filter domain="[('requested_by','=', uid)]"
+                            help="My requests"/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_required','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_required','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_required','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_required','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_required','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_required','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_required','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_required','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_required:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_required:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_required:day'}"/>
+                        <filter string="Product"
+                                domain="[]" context="{'group_by' : 'product_id'}" />
+                        <filter string="Requested by"
+                                domain="[]"
+                                context="{'group_by':'requested_by'}"/>
+                        <filter string="Assigned to"
+                                domain="[]"
+                                context="{'group_by':'assigned_to'}"/>
+                        <filter string="Request status"
+                                domain="[]"
+                                context="{'group_by':'request_state'}"/>
+                        <filter string="Analytic Account"
+                                domain="[]"
+                                context="{'group_by':'analytic_account_id'}"/>
+                        <filter string="Purchase Type"
+                                domain="[]"
+                                context="{'group_by':'type_purchase'}"/>
+                        <filter string="Company"
+                                domain="[]"
+                                context="{'group_by':'company_id'}"/>
+                        <filter string="Location"
+                                domain="[]"
+                                context="{'group_by':'location'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+    </data>
+</openerp>

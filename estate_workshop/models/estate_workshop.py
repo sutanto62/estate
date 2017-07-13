@@ -407,6 +407,7 @@ class MasterWorkshopShedulePlan(models.Model):
                              ('normal', "Normal")], "Type",
                             required=True,
                             help="Select View to create group of activities.")
+    initial_odometer = fields.Float('Initial Odometer',compute='compute_initial_odometer_field',store=1)
     odometer = fields.Float('KM Plan')
     asset_id = fields.Many2one('asset.asset')
     mastersheduletask_ids = fields.One2many('estate.master.workshop.shedule.planline','owner_id')
@@ -424,6 +425,14 @@ class MasterWorkshopShedulePlan(models.Model):
             self.complete_name = self.name
 
         return True
+
+    @api.multi
+    @api.depends('asset_id')
+    def compute_initial_odometer_field(self):
+        for item in self:
+            init_odometer = item.asset_id.fleet_id.initial_odometer if item.asset_id else 0
+            item.initial_odometer = init_odometer
+
 
     # @api.multi
     # @api.onchange('asset_id','category_id')

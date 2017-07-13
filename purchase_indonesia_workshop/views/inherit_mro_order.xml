@@ -29,7 +29,7 @@
              <field name="inherit_id" ref="estate_workshop.view_form_inherit_field_type_service_template"/>
              <field name="arch" type="xml">
                  <xpath expr="//field[@name='location_id']" position="after">
-                     <button name="%(purchase_workshop.purchase_request_workshop)d" string="Part Request"
+                     <button name="%(purchase_request_workshop)d" string="Part Request"
                      target="new" type="action" icon="fa-shopping-cart" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                  </xpath>
              </field>

@@ -34,6 +34,7 @@
                             <group>
                             <group name="detail">
                                 <!--<field name="category_id" options="{'no_create_edit': True}" invisible="1"/>-->
+                                <field name="initial_odometer" string="Initial Odometer"/>
                                 <field name="odometer"/>
                                 <field name="type_service"/>
                             </group>
@@ -87,7 +88,7 @@
             <field name="context">{"search_default_groupby_asset" : True}</field>
         </record>
 
-        <menuitem id="estate_master_shedule_workshop" name="Master Schedule Plan"
+        <menuitem id="estate_master_shedule_workshop" name="Schedule Plan"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_shedule_workshop"
                  groups="fleet.group_fleet_manager"/>

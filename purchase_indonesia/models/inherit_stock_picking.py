@@ -47,6 +47,10 @@ class InheritStockPicking(models.Model):
         return self.env.ref('purchase_request.group_purchase_request_procstaff', False).id
 
     @api.multi
+    def get_stock_manager(self):
+        return self.env.ref('stock.group_stock_manager',False).id
+
+    @api.multi
     def _get_user(self):
         #find User
         user= self.env['res.users'].browse(self.env.uid)
@@ -83,6 +87,26 @@ class InheritStockPicking(models.Model):
             raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
 
         return manager_estate
+
+    @api.multi
+    def _get_stock_manager(self):
+        #get List of Stock Manager from user.groups
+        #Stock Manager
+
+        arrStockManager = []
+
+        stock_manager = self.env['res.groups'].search([('id','=',self.get_stock_manager())]).users
+
+
+        for stock in stock_manager:
+            arrStockManager.append(stock.id)
+
+        try:
+            manager_stock = self.env['res.users'].search([('id','in',arrStockManager)],limit = 1).id
+        except:
+            raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
+
+        return manager_stock
 
     @api.multi
     def _get_user_procurement_staff(self):
@@ -126,16 +150,38 @@ class InheritStockPicking(models.Model):
     @api.multi
     def _get_technical_user_id(self):
         for item in self:
+            """
+                Get Technical user by code company.
+
+                Code :
+                    KOKB : Kantor KEBUN
+                    KPST : Kantor PUSAT
+            """
+
             technic_user_id = 0
             purchase_request = item.env['purchase.request'].search([('id','=',item._get_purchase_request_id())])
-            if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
-                technic_user_id = item._get_manager_requested_by()
-            elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
-                technic_user_id = purchase_request._get_technic_ict()
-            elif purchase_request.type_functional == 'technic':
-                technic_user_id = purchase_request._get_technic_ie()
-            elif purchase_request.type_functional == 'agronomy':
-                technic_user_id = item._get_estate_manager()
+
+            if purchase_request.code == 'KOKB' :
+
+                if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
+                    technic_user_id = item._get_manager_requested_by()
+                elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+                    technic_user_id = purchase_request._get_technic_ict()
+                elif purchase_request.type_functional == 'technic':
+                    technic_user_id = item._get_stock_manager()
+                elif purchase_request.type_functional == 'agronomy':
+                    technic_user_id = item._get_stock_manager()
+
+            elif purchase_request.code == 'KPST' :
+
+                if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
+                    technic_user_id = item._get_manager_requested_by()
+                elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+                    technic_user_id = purchase_request._get_technic_ict()
+                elif purchase_request.type_functional == 'technic':
+                    technic_user_id = purchase_request._get_technic_ie()
+                elif purchase_request.type_functional == 'agronomy':
+                    technic_user_id = item._get_estate_manager()
 
             return technic_user_id
 
@@ -166,8 +212,7 @@ class InheritStockPicking(models.Model):
             for record in tender_id:
                 arrUser.append(record.user_id.id)
 
-        return arrUser
-
+            return arrUser
 
     @api.multi
     def _get_office_level_id(self):

@@ -7,16 +7,19 @@
              <field name="arch" type="xml">
                 <tree>
                     <field name="id" string="ID" invisible="1"/>
-                    <field name="complete_name_picking" string="Picking No"/>
-                    <field name="backorder_id" string="Back Order" readonly="1"/>
-                    <field name="purchase_order_name" string="PO No" readonly="1"/>
-                    <field name="move_date" string="Date"/>
-                    <field name="product_id" string="Product"/>
+                    <field name="location_dest_id" string="Warehouse Location"/>
+                    <field name="date_stock" string="Date"/>
+                    <field name="product_id" string="Product" invisible="1"/>
+                    <field name="default_code" string="Product No" readonly="1"/>
+                    <field name="name_template" string="Product" readonly="1"/>
                     <field name="picking_id" string="Picking" invisible="1"/>
                     <field name="product_uom" string="UOM"/>
-                    <field name="product_uom_qty" string="QTY"/>
+                    <field name="product_qty" string="QTY"/>
                     <field name="price_unit" string="Price Unit"/>
-                    <field name="total" string="Total"/>
+                    <field name="total_price" string="Total"/>
+                    <field name="purchase_order_name" string="PO No" readonly="1"/>
+                    <field name="pr_source" string="PP No" readonly="1"/>
+                    <field name="general_account_id" string="COA" readonly="1"/>
                 </tree>
             </field>
          </record>
@@ -30,21 +33,74 @@
                      <sheet>
                          <group>
                             <field name="id" string="ID" invisible="1"/>
-                            <field name="complete_name_picking" string="Picking No" readonly="1"/>
-                            <field name="backorder_id" string="Back Order" readonly="0"/>
-                            <field name="purchase_order_name" string="PO No" readonly="1"/>
-                            <field name="move_date" string="Date"/>
+                            <field name="location_dest_id" string="Warehouse Location"/>
+                            <field name="date_stock" string="Date"/>
+                            <field name="product_id" string="Product" invisible="1"/>
+                            <field name="default_code" string="Product No" readonly="1"/>
+                            <field name="name_template" string="Product" readonly="1"/>
+                            <field name="picking_id" string="Picking" invisible="1"/>
                          </group>
                          <group>
-                            <field name="product_id" string="Product" readonly="1"/>
-                            <field name="picking_id" string="Picking" invisible="0" readonly="1"/>
-                            <field name="product_uom" string="UOM" readonly="1"/>
-                            <field name="product_uom_qty" string="QTY" readonly="1"/>
-                            <field name="price_unit" string="Price Unit" readonly="1"/>
-                            <field name="total" string="Total" readonly="1"/>
+                            <field name="product_uom" string="UOM"/>
+                            <field name="product_qty" string="QTY"/>
+                            <field name="price_unit" string="Price Unit"/>
+                            <field name="total_price" string="Total"/>
+                            <field name="purchase_order_name" string="PO No" readonly="1"/>
+                            <field name="pr_source" string="PP No" readonly="1"/>
+                            <field name="general_account_id" string="COA" readonly="1"/>
                          </group>
                      </sheet>
                 </form>
+            </field>
+        </record>
+
+        <record id="view_goods_reportin_search" model="ir.ui.view">
+            <field name="name">view.goods.in.report.search</field>
+            <field name="model">view.goods.in.report</field>
+            <field name="arch" type="xml">
+                <search string="Search Goods in Report">
+                    <field name="location_dest_id" string="Warehouse Location"/>
+                    <field name="date_stock" string="Date"/>
+                    <field name="product_id" string="Product" />
+                    <field name="default_code" string="Product No" />
+                    <field name="name_template" string="Product" />
+                    <field name="picking_id" string="Picking" />
+                    <field name="product_uom" string="UOM"/>
+                    <field name="product_qty" string="QTY"/>
+                    <field name="price_unit" string="Price Unit"/>
+                    <field name="total_price" string="Total"/>
+                    <field name="purchase_order_name" string="PO No" />
+                    <field name="pr_source" string="PP No" />
+                    <field name="general_account_id" string="COA" />
+                    <separator/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_stock','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_stock','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_stock','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_stock','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_stock:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_stock:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_stock:day'}"/>
+                        <filter string="Warehouse" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'location_dest_id'}"/>
+                        <filter string="Product" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_stock'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
@@ -54,7 +110,7 @@
             <field name="res_model">view.goods.in.report</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <!--<field name="search_view_id" ref="view_quotation_comparison_search"/>-->
+            <field name="search_view_id" ref="view_goods_reportin_search"/>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to start a new report.

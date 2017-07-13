@@ -66,7 +66,7 @@
             <field name="context">{"search_default_groupby_category" : True}</field>
         </record>
 
-        <menuitem id="estate_master_mapping_asset" name="Master Mapping Asset"
+        <menuitem id="estate_master_mapping_asset" name="Mapping Asset"
                   parent="asset.menu_maintenance_config"
                   action="action_list_master_mapping_asset"
                   groups="fleet.group_fleet_manager"/>

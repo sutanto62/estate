@@ -1,0 +1,123 @@
+<openerp>
+    <data>
+         <record model="ir.ui.view" id="view_summary_stock_tree">
+             <field name="name">Summary Stock Tree</field>
+             <field name="model">summary.stock</field>
+             <field name="priority" eval="1"/>
+             <field name="arch" type="xml">
+                <tree>
+                    <field name="id" string="ID" invisible="1"/>
+                    <field name="categ_id" string="Category"/>
+                    <field name="date_stock" string="Date"/>
+                    <field name="product_id" string="Product" />
+                    <field name="cost" string="Cost" sum="Cost"/>
+                    <field name="goods_in_qty" string="In Qty" sum="In Qty" readonly="1"/>
+                    <field name="goods_in_price" string="In Price" sum="In Price" readonly="1"/>
+                    <field name="goods_out_qty" string="Ot Qty" sum="Out Qty" />
+                    <field name="goods_out_price" string="Ot Price" sum="Out Price"/>
+                    <field name="goods_result_qty" string="Rslt Qty" sum="Result Qty"/>
+                    <field name="goods_result_price" string="Rslt Price" sum="Result Price"/>
+                </tree>
+            </field>
+         </record>
+
+         <record id="view_summary_stock_form" model="ir.ui.view">
+            <field name="name">Summary Stock Form</field>
+            <field name="model">summary.stock</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form>
+                     <sheet>
+                         <group>
+                            <field name="id" string="ID" invisible="1"/>
+                            <field name="categ_id" string="Category"/>
+                            <field name="date_stock" string="Date"/>
+
+                         </group>
+                         <group>
+                             <field name="product_id" string="Product" />
+                             <field name="cost" string="Cost" sum="Cost"/>
+                             <field name="goods_in_qty" string="In Qty" sum="In Qty" readonly="1"/>
+                             <field name="goods_in_price" string="In Price" sum="In Price" readonly="1"/>
+                             <field name="goods_out_qty" string="Ot Qty" sum="Out Qty" />
+                             <field name="goods_out_price" string="Ot Price" sum="Out Price"/>
+                             <field name="goods_result_qty" string="Rslt Qty" sum="Result Qty"/>
+                             <field name="goods_result_price" string="Rslt Price" sum="Result Price"/>
+                         </group>
+                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_summary_stock_search" model="ir.ui.view">
+            <field name="name">summary stock search</field>
+            <field name="model">summary.stock</field>
+            <field name="arch" type="xml">
+                <search string="Search Summary Stock Report">
+                    <field name="categ_id" string="Category"/>
+                    <field name="date_stock" string="Date"/>
+                    <field name="product_id" string="Product" />
+                    <field name="cost" string="Cost" sum="Cost"/>
+                    <field name="goods_in_qty" string="In Qty" sum="In Qty" readonly="1"/>
+                    <field name="goods_in_price" string="In Price" sum="In Price" readonly="1"/>
+                    <field name="goods_out_qty" string="Ot Qty" sum="Out Qty" />
+                    <field name="goods_out_price" string="Ot Price" sum="Out Price"/>
+                    <field name="goods_result_qty" string="Rslt Qty" sum="Result Qty"/>
+                    <field name="goods_result_price" string="Rslt Price" sum="Result Price"/>
+                    <separator/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_stock','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_stock','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_stock','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_stock','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_stock','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_stock:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_stock:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_stock:day'}"/>
+                        <filter string="Category" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'categ_id'}"/>
+                        <filter string="Product" icon="terp-gtk-jump-to-rtl" domain="[]" context="{'group_by':'product_id'}"/>
+                        <filter string="Start Date" icon="terp-go-month" domain="[]" context="{'group_by':'date_stock'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="view_summary_stock_action">
+            <field name="name">Summary Stock</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">summary.stock</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_summary_stock_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new report.
+              </p><p>
+
+              </p>
+            </field>
+        </record>
+
+        <menuitem
+            id="view_summary_stock_act"
+            sequence="6"
+            parent="stock.menu_warehouse_report"
+            action="view_summary_stock_action"
+            />
+
+    </data>
+</openerp>

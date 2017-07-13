@@ -3,107 +3,272 @@
         <record id="email_template_purchase_request" model="mail.template">
           <field name="name">Email Template Purchase Request</field>
           <field name="email_from">admin@palmagroup.co.id</field>
-          <field name="subject">Approval Purchase Request For ${object.assigned_to.name}</field>
+          <field name="subject">[SYS] PR Approval ${object.complete_name}</field>
           <field name="email_to">${object.assigned_to.partner_id.email}</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="purchase_request.model_purchase_request"/>
           <field name="auto_delete" eval="True"/>
 	  <field name="body_html">
             <![CDATA[
-            <style>
-             input[type="submit"]{background:#f5f5f7; color:#ACCC6C}
-            </style>
-	      <p>Dear ${(object.assigned_to.name)},<br/>
-	      <br/>
-	      You have one approval Purchase Request , ${(object.complete_name)}<br/>
+       	<style>
+         	input[type="submit"]{
+         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; 
+         		box-sizing: border-box; 
+         		font-size: 14px; 
+         		text-decoration: none; 
+         		color: #FFF; 
+         		line-height: 2; 
+         		font-weight: bold; 
+         		text-align: center; 
+         		cursor: pointer; 
+         		display: inline-block; 
+         		border-radius: 5px; 
+         		text-transform: capitalize; 
+         		background-color: #348eda; 
+         		margin: 0; 
+         		padding: 0; 
+         		border-color: #348eda; 
+         		border-style: solid; 
+         		border-width: 10px 20px;
+         	}
+       	</style>
+	  	<p>Dear ${(object.assigned_to.name)},<br/>
+		  	<br/>
+			 	<h1 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 22px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">
+			  		Purchase Request Approval
+			  	</h1>
+		   	<br/>
+				<h2 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 18px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">	      		
+		      		No : ${(object.complete_name)}
+		    	</h2>	  
+		  	<br/>
+	      	<br/>
+	
+	   		<p>
+	       		<br/>
+	      			<label style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;">
+	            		Requested By ${(object.requested_by.name)}
+	            	</label>
+	            <br/>
+				
+				<table class="invoice-items" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; margin: 0; padding: 0;">&#13;
+					<thead style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">&#13;
+						<th style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+							Barang/Jasa
+						</th>&#13;
+						<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+							Jumlah
+						</th>&#13;
+						<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+							Harga Perkiraan per Satuan
+						</th>&#13;
+						<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+							Sub Total
+						</th>&#13;
+					</thead>&#13;
+					% for item in object.line_ids:
+	                <tr>
+	                    <td style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">
+	                        <span>${item.product_id.name}</span>
+	                    </td>&#13;
+	                    <td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+	                        <span>${item.product_qty}</span>
+	                    </td>&#13;
+	                    <td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+	                        <span>${item.price_per_product}</span>
+	                    </td>&#13;
+	                 	<td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+	                        <span>${item.total_price}</span>
+	                    </td>&#13;
+	                </tr>&#13;
+	                % endfor
+	                <tr class="total" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">&#13;
+						<td class="alignright" colspan="3" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" align="right" valign="top">
+							Total
+						</td>&#13;
+						<td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" align="right" valign="top">
+							${(object.total_estimate_price)}
+						</td>&#13;
+					</tr>&#13;
+					<tr class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">&#13;
+						<td colspan="4" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">&#13;
+							<a style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-decoration: none; color: #FFF; line-height: 2; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; padding: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;" 
+								href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login
+							</a>
+						</td>&#13;
+					</tr>&#13;
+				</table>
+	          	<br/>
+		      	<br/>
+	      	</p>
+	 	</p>
 
-          <br/>
+		<div class="container">
+	  		<p>
+	         	Below is the instruction to approve Purchase Request :
+	       	</p>
+	
+	       	<p>
+	         	<ul>
+	           		<li>Login To ERP Palma Group : 
+	                   	<ul>
+	                       <li>Click Login button or click this link <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login</a></li>
+	                       <li>Input your username</li>
+	                       <li>Input your password</li>
+	                       <li>Click Button Login 
+	                       	<ul style="list-style-type:circle">
+	                             	<li>If You cannot login please contact ICT Department</li>
+	                           </ul>
+	                       </li>
+	                   	</ul>
+               		</li>
+	           		<li>Check Purchase Request Inside ERP Palma Group</li>
+	           		<li>Click Button Approve Inside Purchase Request in ERP Palma Group</li>
+	         	</ul>
+	      	</p>
+	  	</div>
 
-          <p>
-	        With Detail And Summary:
-            <br/>
-            Requested By , ${(object.requested_by.name)}
+		Regards,
+		<br/>
+		${(object.company_id.name)}
+		<br/>
 
-            <br/>
+	    ]]>
+	  </field>
+       </record>
+    </data>
 
-            <table class="table table-striped table-condensed table-bordered">
-                <tr class="label_table_header">
-                    <th>
-                      Barang/Jasa
-                    </th>
-                    <th>
-                      Jumlah
-                    </th>
-                    <th>
-                      Harga Perkiraan per Satuan
-                    </th>
-                    <th>
-                      Total Perkiraan Harga
-                    </th>
-                </tr>
-                % for item in object.line_ids:
-                <tr>
-                    <td>
-                        <span>${item.product_id.name}</span>
-                    </td>
-                    <td>
-                        <span>${item.product_qty}</span>
-                    </td>
-                    <td>
-                        <span>${item.price_per_product}</span>
-                    </td>
-
-                   <td>
-                        <span>${item.total_price}</span>
-                    </td>
-                </tr>
-                % endfor
-            </table>
-          <br/>
-
-          <p>Total Estimated Price, ${(object.total_estimate_price)}</p>
-
-	      <br/>
-	      </p>
-
-          <p>
-	      Please Follow This Step To Approve Purchase Request:
-	      </p>
-
-	      <br/>
-
-	      </p>
+    <data noupdate="0">
+        <record id="email_template_correction_purchase_request" model="mail.template">
+          <field name="name">Email Template Correction Purchase Request</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] PR Correction ${object.request_id.complete_name}</field>
+          <field name="email_to">${object.request_id.assigned_to.partner_id.email}</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_requisition.model_purchase_requisition"/>
+          <field name="auto_delete" eval="True"/>
+	  <field name="body_html">
+            <![CDATA[
+	       	<style>
+	        	input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; 
+	         		box-sizing: border-box; 
+	         		font-size: 14px; 
+	         		text-decoration: none; 
+	         		color: #FFF; 
+	         		line-height: 2; 
+	         		font-weight: bold; 
+	         		text-align: center; 
+	         		cursor: pointer; 
+	         		display: inline-block; 
+	         		border-radius: 5px; 
+	         		text-transform: capitalize; 
+	         		background-color: #348eda; 
+	         		margin: 0; 
+	         		padding: 0; 
+	         		border-color: #348eda; 
+	         		border-style: solid; 
+	         		border-width: 10px 20px;
+	         	}
+	       	</style>
+		  	<p>Dear ${(object.request_id.assigned_to.name)},<br/>
+			  	<br/>
+				 	<h1 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 22px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">
+				  		Purchase Request Correction Approval
+				  	</h1>
+			   	<br/>
+					<h2 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 18px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">	      		
+			      		No : ${(object.request_id.complete_name)}
+			    	</h2>	  
+			  	<br/>
+		      	<br/>
+			
+			   	<p>
+		       		<br/>
+		      			<label style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;">
+		            		Requested By ${(object.user_id.name)}
+		            	</label>
+		            <br/>
+					
+					<table class="invoice-items" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; margin: 0; padding: 0;">&#13;
+						<thead style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">&#13;
+							<th style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+								Barang/Jasa
+							</th>&#13;
+							<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+								Jumlah
+							</th>&#13;
+							<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+								Harga Perkiraan per Satuan
+							</th>&#13;
+							<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+								Sub Total
+							</th>&#13;
+						</thead>&#13;
+						% for item in object.request_id.line_ids:
+		                <tr>
+		                    <td style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">
+		                        <span>${item.product_id.name}</span>
+		                    </td>&#13;
+		                    <td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+		                        <span>${item.product_qty}</span>
+		                    </td>&#13;
+		                    <td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+		                        <span>${item.price_per_product}</span>
+		                    </td>&#13;
+		                 	<td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+		                        <span>${item.total_price}</span>
+		                    </td>&#13;
+		                </tr>&#13;
+		                % endfor
+		                <tr class="total" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">&#13;
+							<td class="alignright" colspan="3" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" align="right" valign="top">
+								Total
+							</td>&#13;
+							<td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" align="right" valign="top">
+								${(object.request_id.total_estimate_price)}
+							</td>&#13;
+						</tr>&#13;
+						<tr class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">&#13;
+							<td colspan="4" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">&#13;
+								<a style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-decoration: none; color: #FFF; line-height: 2; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #348eda; margin: 0; padding: 0; border-color: #348eda; border-style: solid; border-width: 10px 20px;" 
+									href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login
+								</a>
+							</td>&#13;
+						</tr>&#13;
+					</table>
+	      		</p>
+          	<p>
 
             <div class="container">
-              <p>
-                Step to Approval Purchase Request.
-              </p>
+         		<p>
+                	Step to approve Purchase Request Correction.
+              	</p>
 
-              <p>
-                <ul>
-                  <li>Login To ERP Palma Group
-                     <ul>
-                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
-                        <li>Input Your Password ERP Palma Group in Field Password.
-                            <ul style="list-style-type:circle">
-                              <li>If You cannot Login Please Contact Department ICT</li>
-                            </ul>
-                        </li>
-                        <li>Click Button Login </li>
-                     </ul>
-                  </li>
-                  <li>Check Purchase Request Inside ERP Palma Group</li>
-                  <li>Click Button Approve Inside Purchase Request in ERP Palma Group</li>
-                </ul>
-              </p>
+              	<p>
+                	<ul>
+                  		<li>Login To ERP Palma Group : 
+	                     	<ul>
+		                        <li>Click Login button or click this link <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login</a></li>
+		                        <li>Input your username</li>
+		                        <li>Input your password</li>
+		                        <li>Click Button Login 
+		                        	<ul style="list-style-type:circle">
+		                              	<li>If You cannot login please contact ICT Department</li>
+		                            </ul>
+		                        </li>
+	                     	</ul>
+                  		</li>
+                  		<li>Check Correction Purchase Request Inside ERP Palma Group</li>
+                  		<li>Click Button Approve Inside Correction Purchase Request in ERP Palma Group</li>
+                	</ul>
+             	</p>
+           	 </div>
 
-            </div>
-
-              Regards,
-              <br/>
-              ${(object.company_id.name)}
-              <br/>
+			Regards,
+			<br/>
+			${(object.company_id.name)}
+			<br/>
 
 	    ]]>
 	  </field>
@@ -225,16 +390,36 @@
         <record id="email_template_purchase_quotation_comparison" model="mail.template">
           <field name="name">Email Template Quotation Comparison Form</field>
           <field name="email_from">admin@palmagroup.co.id</field>
-          <field name="subject">Approval Quotation Comparison Form To ${object.assign_to.name}</field>
+          <field name="subject">[SYS] QCF Approval ${object.complete_name}</field>
           <field name="email_to">${object.assign_to.partner_id.email}</field>
+		  <field name="email_cc">procurement.ho@palmagroup.co.id</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="purchase_indonesia.model_quotation_comparison_form"/>
           <field name="auto_delete" eval="True"/>
 	  <field name="body_html">
             <![CDATA[
-	      <style>
-             input[type="submit"]{border:none; background:#f5f5f7; color:#ACCC6C}
-            </style>
+	      	<style>
+             input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; 
+	         		box-sizing: border-box; 
+	         		font-size: 14px; 
+	         		text-decoration: none; 
+	         		color: #FFF; 
+	         		line-height: 2; 
+	         		font-weight: bold; 
+	         		text-align: center; 
+	         		cursor: pointer; 
+	         		display: inline-block; 
+	         		border-radius: 5px; 
+	         		text-transform: capitalize; 
+	         		background-color: #348eda; 
+	         		margin: 0; 
+	         		padding: 0; 
+	         		border-color: #348eda; 
+	         		border-style: solid; 
+	         		border-width: 10px 20px;
+	         	}
+    		</style>
 	      <p>Dear ${(object.assign_to.name)},<br/>
 	      <br/>
 	      You have one approval Quotation Comparison Form ,  ${(object.complete_name)}<br/>
@@ -266,23 +451,23 @@
                 Step to Approval Quotation Comparison Form.
               </p>
 
-              <p>
-                <ul>
-                  <li>Login To ERP Palma Group
-                     <ul>
-                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
-                        <li>Input Your Password ERP Palma Group in Field Password.
-                            <ul style="list-style-type:circle">
-                              <li>If You cannot Login Please Contact Department ICT</li>
-                            </ul>
-                        </li>
-                        <li>Click Button Login </li>
-                    </ul>
-                  </li>
-                  <li>Check Your Quotation Comparison Form Inside ERP Palma Group</li>
-                  <li>Click Button Approve Inside Quotation Comparison Form in ERP Palma Group</li>
-                </ul>
+   				<p>
+                	<ul>
+                  		<li>Login To ERP Palma Group : 
+               				<ul>
+                   				<li>Click Login button or click this link <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login</a></li>
+                   				<li>Input your username</li>
+			                   	<li>Input your password</li>
+			                   	<li>Click Button Login 
+		                   			<ul style="list-style-type:circle">
+		                         		<li>If You cannot login please contact ICT Department</li>
+		                       		</ul>
+                   				</li>
+               				</ul>
+           				</li>
+                  		<li>Check Your Quotation Comparison Form Inside ERP Palma Group</li>
+                  		<li>Click Button Approve Inside Quotation Comparison Form in ERP Palma Group</li>
+                	</ul>
               </p>
 
             </div>
@@ -300,7 +485,7 @@
         <record id="email_template_stock_picking" model="mail.template">
           <field name="name">Email Template Stock Picking</field>
           <field name="email_from">admin@palmagroup.co.id</field>
-          <field name="subject">Approval GRN / SRN  To ${object.assigned_to.name}</field>
+          <field name="subject">[SYS] GRN / SRN Approval ${object.complete_name_picking}</field>
           <field name="email_to">${object.assigned_to.partner_id.email}</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="stock.model_stock_picking"/>
@@ -308,7 +493,26 @@
 	  <field name="body_html">
             <![CDATA[
 	      <style>
-             input[type="submit"]{border:none; background:#f5f5f7; color:#ACCC6C}
+             input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; 
+	         		box-sizing: border-box; 
+	         		font-size: 14px; 
+	         		text-decoration: none; 
+	         		color: #FFF; 
+	         		line-height: 2; 
+	         		font-weight: bold; 
+	         		text-align: center; 
+	         		cursor: pointer; 
+	         		display: inline-block; 
+	         		border-radius: 5px; 
+	         		text-transform: capitalize; 
+	         		background-color: #348eda; 
+	         		margin: 0; 
+	         		padding: 0; 
+	         		border-color: #348eda; 
+	         		border-style: solid; 
+	         		border-width: 10px 20px;
+	         	}
           </style>
 	      <p>Dear ${(object.assigned_to.name)},<br/>
 	      <br/>
@@ -347,22 +551,22 @@
               </p>
 
               <p>
-                <ul>
-                  <li>Login To ERP Palma Group
-                     <ul>
-                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
-                        <li>Input Your Password ERP Palma Group in Field Password.
-                            <ul style="list-style-type:circle">
-                              <li>If You cannot Login Please Contact Department ICT</li>
-                            </ul>
-                        </li>
-                        <li>Click Button Login </li>
-                     </ul>
-                  </li>
-                  <li>Check Your GRN / SRN  Inside ERP Palma Group</li>
-                  <li>Click Button Approve Inside GRN / SRN in ERP Palma Group</li>
-                </ul>
+                	<ul>
+                  		<li>Login To ERP Palma Group : 
+               				<ul>
+                   				<li>Click Login button or click this link <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login</a></li>
+                   				<li>Input your username</li>
+			                   	<li>Input your password</li>
+			                   	<li>Click Button Login 
+		                   			<ul style="list-style-type:circle">
+		                         		<li>If You cannot login please contact ICT Department</li>
+		                       		</ul>
+                   				</li>
+               				</ul>
+           				</li>
+                  		<li>Check Your GRN / SRN  Inside ERP Palma Group</li>
+                  		<li>Click Button Approve Inside GRN / SRN in ERP Palma Group</li>
+                	</ul>
               </p>
 
             </div>
@@ -382,7 +586,7 @@
         <record id="email_template_stock_picking_2" model="mail.template">
           <field name="name">Email Template Stock Picking User</field>
           <field name="email_from">admin@palmagroup.co.id</field>
-          <field name="subject">Approval GRN / SRN  To ${object.requested_by.name}</field>
+          <field name="subject">[SYS] GRN / SRN Approval ${object.complete_name_picking}</field>
           <field name="email_to">${object.requested_by.partner_id.email}</field>
           <field name="lang">${object.lang}</field>
           <field name="model_id" ref="stock.model_stock_picking"/>
@@ -390,7 +594,26 @@
 	  <field name="body_html">
             <![CDATA[
 	      <style>
-             input[type="submit"]{border:none; background:#f5f5f7; color:#ACCC6C}
+             input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; 
+	         		box-sizing: border-box; 
+	         		font-size: 14px; 
+	         		text-decoration: none; 
+	         		color: #FFF; 
+	         		line-height: 2; 
+	         		font-weight: bold; 
+	         		text-align: center; 
+	         		cursor: pointer; 
+	         		display: inline-block; 
+	         		border-radius: 5px; 
+	         		text-transform: capitalize; 
+	         		background-color: #348eda; 
+	         		margin: 0; 
+	         		padding: 0; 
+	         		border-color: #348eda; 
+	         		border-style: solid; 
+	         		border-width: 10px 20px;
+	         	}
           </style>
 	      <p>Dear ${(object.requested_by.name)},<br/>
 	      <br/>
@@ -428,22 +651,22 @@
               </p>
 
               <p>
-                <ul>
-                  <li>Login To ERP Palma Group
-                     <ul>
-                        <li>Click This Button to <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self"><input type="submit" Value="Login"></a></li>
-                        <li>Input Your Username Palma Group in Field Username. i.e: Baac123</li>
-                        <li>Input Your Password ERP Palma Group in Field Password.
-                            <ul style="list-style-type:circle">
-                              <li>If You cannot Login Please Contact Department ICT</li>
-                            </ul>
-                        </li>
-                        <li>Click Button Login </li>
-                     </ul>
-                  </li>
-                  <li>Check Your GRN / SRN  Inside ERP Palma Group</li>
-                  <li>Click Button Approve Inside GRN / SRN in ERP Palma Group</li>
-                </ul>
+                	<ul>
+                  		<li>Login To ERP Palma Group : 
+               				<ul>
+                   				<li>Click Login button or click this link <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login</a></li>
+                   				<li>Input your username</li>
+			                   	<li>Input your password</li>
+			                   	<li>Click Button Login 
+		                   			<ul style="list-style-type:circle">
+		                         		<li>If You cannot login please contact ICT Department</li>
+		                       		</ul>
+                   				</li>
+               				</ul>
+           				</li>
+                  		<li>Check Your GRN / SRN  Inside ERP Palma Group</li>
+                  		<li>Click Button Approve Inside GRN / SRN in ERP Palma Group</li>
+                	</ul>
               </p>
 
             </div>

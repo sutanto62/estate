@@ -101,7 +101,7 @@
                   action="action_mecanic_timesheet"
                   groups="fleet.group_fleet_manager"/>
 
-        <menuitem id="estate_failure_code" name="Master Failure And Priority Code"
+        <menuitem id="estate_failure_code" name="Failure And Priority Code"
                   parent="asset.menu_maintenance_config"
                   action="action_estate_failure_code"
                   groups="fleet.group_fleet_manager"/>

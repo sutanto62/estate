@@ -19,6 +19,34 @@ class InheritStockMove(models.Model):
 
 class ManagementGoodRequest(models.Model):
 
+    @api.multi
+    def _get_location_id(self):
+         for item in self:
+            arrViewLocation = []
+            arrIdLocation = []
+            arrIdViewLocation = []
+
+            warehouse = item.env['stock.warehouse']
+            location  = item.env['stock.location']
+
+            for view_location in warehouse.search([]):
+                arrViewLocation.append(view_location.view_location_id.id)
+
+
+            #search location where view location in arr view location
+            location_id = location.search([('id','in',arrViewLocation)])
+
+            for location in location_id:
+                arrIdLocation.append(location.id)
+
+
+            view_location_id = location.search([('location_id','in',arrIdLocation),('active','=','True')])
+
+            for id in view_location_id:
+                arrIdViewLocation.append(id.id)
+
+            return arrIdViewLocation
+
     _name = 'management.good.request'
     _description = 'Management Good Request'
 
@@ -114,6 +142,7 @@ class ManagementGoodRequest(models.Model):
                     'location_dest_id': self.destination_id.id,
                     'general_account_id':record.general_account_id.id,
                     'description':record.description,
+                    'company_id' : self.company_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -142,6 +171,7 @@ class ManagementGoodRequest(models.Model):
                     'location_dest_id': self.warehouse_id.id,
                     'general_account_id':record.general_account_id.id,
                     'description':record.description,
+                    'company_id' : self.company_id.id,
                     'state': 'confirmed', # set to done if no approval required
                 }
 
@@ -221,6 +251,17 @@ class ManagementGoodRequest(models.Model):
             return {
                 'domain':{
                     'picking_type_id' :[('code','in',['incoming'])]
+                }
+            }
+
+    @api.multi
+    @api.onchange('warehouse_id')
+    def _onchange_warehouse_id(self):
+
+        for item in self:
+            return {
+                'domain' : {
+                    'warehouse_id' : [('id','in',item._get_location_id())]
                 }
             }
 

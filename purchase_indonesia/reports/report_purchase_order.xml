@@ -49,14 +49,17 @@
 		                       		        </td>
 		                       		    </tr>
 		                       		    <tr style="height:30px;">
-		                       		        <td class="noborder" width="20%">
+		                       		        <td class="noborder" width="20%" valign="top">
 		                       		            <b>Address</b>
 		                       		        </td>
 		                       		        <td class="noborder">
 		                       		            : <b>
 		                       		            	<span t-field="o.partner_id.street"/>
+		                       		            	<br/>
 		                       		            	<span t-field="o.partner_id.street2"/>
+		                       		            	<br/>
 		                       		            	<span t-field="o.partner_id.zip"/>
+		                       		            	<br/>
 		                       		            	<span t-field="o.partner_id.city"/>
 		                       		          	</b>
 		                       		        </td>
@@ -259,13 +262,16 @@
 		                          		</td>
 		                          	</tr>
 		                          	<tr>
-		                          		<td class="noborder" width="25%">
+		                          		<td class="noborder" width="25%" valign="top">
 		                          		    3. File
 		                          		</td>
 		                          		<td class="noborder" style="text-align: center;">
 		                          		    <t t-foreach="o.message_ids" t-as="mids">
 												<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
 												    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Purchase Order'">
+													    <br/>
+													    <br/>
+													    <br/>
 													    <u>
 													        <span t-field="mids.author_id"/>&#160;
 														</u>

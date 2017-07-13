@@ -157,6 +157,16 @@ class InheritPurchaseRequest(models.Model):
                     department_code.append(record.code)
         return department_code
 
+    @api.multi
+    def _get_department_not_finance_code(self):
+        department_code = []
+        for item in self:
+            department = item.env['hr.department'].search([])
+            for record in department:
+                if record.code not in ['PRC','GA','FIN','ACC','BGT']:
+                    department_code.append(record.code)
+        return department_code
+
     _inherit = ['purchase.request']
     _rec_name = 'complete_name'
     _order = 'complete_name desc'
@@ -628,14 +638,20 @@ class InheritPurchaseRequest(models.Model):
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
-        # if self._get_type_product() == True:
-            # product Capital
-        if self._get_total_price_budget() < self._get_price_mid():
-                self.button_approved()
-        elif self._get_total_price_budget() >= self._get_price_mid():
-            state_data = {'state':'approval5','assigned_to' : self._get_director()}
-            self.write(state_data)
-            self.send_mail_template()
+        for item in self:
+            if item.code in ['KPST'] and item._get_total_price_budget() < item._get_price_mid():
+                item.button_approved()
+            elif item.code in ['KOKB'] and item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
+                item.button_approved()
+            elif (item.code in ['KOKB']
+                and item.department_id.code in item._get_department_not_finance_code()
+                and (item._get_total_price_budget() >= item._get_price_mid()
+                or item._get_total_price_budget() < item._get_price_mid())) \
+                or (item.code in ['KPST'] and item._get_total_price_budget() >= item._get_price_mid()):
+                state_data = {'state':'approval5','assigned_to' : item._get_director()}
+                item.write(state_data)
+                item.send_mail_template()
+
         # elif self._get_type_product() == False:
             #Product service and stockable
             # if self._get_max_price() < self._get_price_mid():
@@ -760,8 +776,15 @@ class InheritPurchaseRequest(models.Model):
         except:
             raise exceptions.ValidationError('Company Code is Null')
 
-        sequence_name = 'purchase.request.seq.'+self._get_office_level_id_code().lower()+'.'+company_code.lower()
-        vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
+
+        location_code = self._get_employee().office_level_id.code
+
+        try:
+            sequence_name = 'purchase.request.seq.'+location_code.lower()+'.'+company_code.lower()
+            vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
+        except:
+            error_msg = "Employee Offive Level Code is Null for %s" %(self._get_employee().name)
+            raise exceptions.ValidationError(error_msg)
 
         request = super(InheritPurchaseRequest, self).create(vals)
         return request
@@ -976,11 +999,16 @@ class InheritPurchaseRequest(models.Model):
             month = result
 
             departement_code = ''
-            type_location = ''
-            if self.type_location == 'HO':
-                type_location = 'KPST'
-            elif self.type_location == 'RO' or self.type_location == 'Estate':
-                type_location = 'KOKB'
+            employee_code = ''
+
+            #get Employee Code
+            try:
+                employee_code = self._get_employee().office_level_id.code
+            except:
+                error_msg = "Employee Offive Level Code is Null for %s" %(self._get_employee().name)
+                raise exceptions.ValidationError(error_msg)
+           
+            type_location = employee_code
 
             try :
                 departement_code = self.department_id.code
@@ -988,7 +1016,8 @@ class InheritPurchaseRequest(models.Model):
                 departement_code = self.department_id.name
 
             if self.department_id.code == False:
-                raise exceptions.ValidationError('Department Code is Null')
+                error_msg = "Employee Department Code is Null for %s" %(self._get_employee().name)
+                raise exceptions.ValidationError(error_msg)
             else:
                 self.complete_name = self.name + '/' \
                                          + self.company_id.code+'-'\
@@ -1290,6 +1319,14 @@ class InheritPurchaseRequestLine(models.Model):
         for price in self:
             if price.price_per_product and price.control_unit:
                 price.budget_available = price.control_unit * price.price_per_product
+
+
+    @api.multi
+    @api.onchange('product_qty')
+    def _onchange_control_unit(self):
+        for price in self:
+            if price.product_qty:
+                price.control_unit = price.product_qty
 
 
     @api.multi

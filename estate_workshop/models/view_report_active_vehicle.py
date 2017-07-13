@@ -796,9 +796,62 @@ class ViewSummaryVehicleStatus(models.Model):
 
     def init(self,cr):
         cr.execute("""create or replace view view_summary_vehicle_available as
-                        select
-                        row_number() over()id,bb.month_log_text,bb.year_log_text,bb.month,bb.parent_id,bb.date_id,aa.fleet_id as vehicle_id,bb.hke_ho,bb.hke_non_ho,bb.date1,bb.date2,bb.date3,bb.date4,bb.date5,bb.date6,bb.date7,bb.date8,bb.date9,bb.date10,bb.date11,bb.date12,bb.date13,bb.date14,bb.date15,bb.date16,bb.date17,bb.date18,bb.date19,bb.date20,bb.date21,bb.date22,bb.date23,bb.date24,bb.date25,bb.date26,bb.date27,bb.date28,bb.date29,bb.date30,bb.date31,bb.total_day_breakdown,bb.total_day_available,bb.total_day_standby,bb.total_downtime,bb.sbi_total_day_breakdown,bb.sbi_total_day_available,bb.sbi_total_day_standby,bb.sbi_total_day_hke
-                        from (select * from asset_asset where fleet_id is not null) aa left join
+					select
+                        row_number() over()id,
+                        bb.month_log_text,
+                        bb.year_log_text,
+                        bb.month,
+                        bb.parent_id,
+                        bb.date_id,
+                        aa.fleet_id as vehicle_id,
+                        bb.hke_ho,
+                        bb.hke_non_ho,
+                        bb.date1,
+                        bb.date2,
+                        bb.date3,
+                        bb.date4,
+                        bb.date5,
+                        bb.date6,
+                        bb.date7,
+                        bb.date8,
+                        bb.date9,
+                        bb.date10,
+                        bb.date11,
+                        bb.date12,
+                        bb.date13,
+                        bb.date14,
+                        bb.date15,
+                        bb.date16,
+                        bb.date17,
+                        bb.date18,
+                        bb.date19,
+                        bb.date20,
+                        bb.date21,
+                        bb.date22,
+                        bb.date23,
+                        bb.date24,
+                        bb.date25,
+                        bb.date26,
+                        bb.date27,
+                        bb.date28,
+                        bb.date29,
+                        bb.date30,
+                        bb.date31,
+                        bb.total_day_breakdown,
+                        bb.total_day_available,
+                        bb.total_day_standby,
+                        bb.total_downtime,
+                        bb.sbi_total_day_breakdown,
+                        bb.sbi_total_day_available,
+                        bb.sbi_total_day_standby,
+                        bb.sbi_total_day_hke
+                        from
+                        (
+                        	select
+                        		fleet_id
+                        	from asset_asset
+                        	where fleet_id is not null
+                        ) aa inner join
                         (
                         select
                                 k.id,
@@ -848,50 +901,3 @@ class ViewSummaryVehicleStatus(models.Model):
                         ) bb on aa.fleet_id = bb.vehicle_id
                                 """)
 
-    # def init(self, cr):
-    #     cr.execute("""create or replace view view_summary_vehicle_available as
-    #             select
-    #                 k.id,
-    #                 (to_char(to_timestamp (k.month_log_text::text, 'MM'), 'Month')) as month_log_text,
-    #                 k.year_log_text ,
-    #                 k.month_log_text::integer as month,
-    #                 k.parent_id,
-    #                 k.date_id,
-    #                 vehicle_id,hke_ho,hke_non_ho,
-    #                 date1,
-    #                 date2,
-    #                 date3,
-    #                 date4,
-    #                 date5,
-    #                 date6,
-    #                 date7,
-    #                 date8,
-    #                 date9,
-    #                 date10,
-    #                 date11,
-    #                 date12,
-    #                 date13,
-    #                 date14,
-    #                 date15,
-    #                 date16,
-    #                 date17,
-    #                 date18,
-    #                 date19,
-    #                 date20,
-    #                 date21,
-    #                 date22,
-    #                 date23,
-    #                 date24,
-    #                 date25,
-    #                 date26,
-    #                 date27,
-    #                 date28,
-    #                 date29,
-    #                 date30,
-    #                 date31,
-    #                 total_day_breakdown,total_day_available,total_day_standby,total_downtime,
-    #                 function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,1) sbi_total_day_breakdown,
-    #                 function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,2) sbi_total_day_available,
-    #                 function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::integer,k.vehicle_id,3) sbi_total_day_standby,
-    #                 function_get_totalday_breakdown(k.month_log_text::integer,k.year_log_text::Integer,k.vehicle_id,4) sbi_total_day_hke
-    #             from view_summary_vehicle_status_detail	k	order by month asc""")

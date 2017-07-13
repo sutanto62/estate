@@ -36,6 +36,7 @@
         'config_report/config_purchase_request.xml',
 
         'views/mail_template_purchase.xml',
+        'views/mail_template_vendor.xml',
         'views/inherit_purchase_requisition_workflow.xml',
         'views/inherit_purchase_request.xml',
         'views/procur_request_sequence.xml',
@@ -47,10 +48,7 @@
         'views/inherit_purchase_tender.xml',
         'views/procurement_process.xml',
         'views/mapping_department_to_product.xml',
-        'views/view_validate_tracking_purchase_order_invoice.xml',
-        'workflow/workflow_procur_good_request.xml',
-        'workflow/workflow_procur_good_return.xml',
-        'workflow/workflow_management_good_request.xml',
+        'views/inherit_product_template.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',

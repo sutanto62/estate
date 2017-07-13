@@ -28,6 +28,15 @@
                           <field name="complete_name" string="Name" invisible="0"/>
                           <field name="hide" string="hide" invisible="1"/>
                  </xpath>
+                 <xpath expr="//field[@name='date_order']" position="replace">
+                          <field name="date_order" widget='date' string="Order Date" invisible="0"/>
+                 </xpath>
+                 <xpath expr="//field[@name='date_order']" position="replace">
+                          <field name="date_order" widget='date' string="Order Date" invisible="0"/>
+                 </xpath>
+                 <xpath expr="//field[@name='date_planned']" position="replace">
+                          <field name="date_planned" widget='date' string="Scheduled Date" invisible="0"/>
+                 </xpath>
                  <xpath expr="//field[@name='partner_id']" position="before">
                           <field name="po_no" string="Name" invisible="1"/>
                           <field name="count_grn_done" invisible="1"/>
@@ -84,6 +93,12 @@
                  <xpath expr="//field[@name='name']" position="after">
                           <field name="complete_name" string="Reference" invisible="0"/>
                  </xpath>
+                 <xpath expr="//field[@name='date_order']" position="replace">
+                          <field name="date_order" widget='date' string="Order Date" invisible="0"/>
+                 </xpath>
+                 <xpath expr="//field[@name='date_planned']" position="replace">
+                          <field name="date_planned" widget='date' string="Scheduled Date" invisible="0"/>
+                 </xpath>
                  <xpath expr="//field[@name='state']" position="after">
                         <field name="count_grn_done" string="GRN/SRN Dn" />
                         <field name="picking_count" string="GRN/SRN All"/>
@@ -121,12 +136,33 @@
                     <filter name="approved" string="Purchase Orders" domain="[('state','in',('purchase', 'done',))]"/>
                     <filter name="approved_received" string="Purchase Orders Receive" domain="[('state','in',('purchase', 'done','received_all','received_force_done'))]"/>
                     <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_order','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_order','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_order','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_order','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_order','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_order','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_order','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_order','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
                     <filter name="not_invoiced" string="Not Invoiced" domain="[('invoice_status','=', 'to invoice')]" help="Purchase orders that include lines not invoiced."/>
                     <filter name="invoiced" string="Invoiced" domain="[('invoice_status','=', 'invoiced')]" help="Purchase orders that include lines not invoiced."/>
                     <filter string="New Mail" name="message_unread" domain="[('message_unread','=',True)]"/>
                     <group expand="0" string="Group By">
                         <filter string="Vendor" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="Order Date" domain="[]" context="{'group_by':'date_order'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_order:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_order:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_order:day'}"/>
                         <!-- FORWARDPORT UP TO SAAS-10 -->
                     </group>
                 </search>

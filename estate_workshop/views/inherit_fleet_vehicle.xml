@@ -10,6 +10,11 @@
                             <field name="type_location_vehicle" string="Type Location Vehicle"/>
                             <field name="maintenance_state_id" string="Status" options="{'no_create_edit': True}"/>
                             <field name="maintenance_state_color" readonly="1" string="Color"/>
+                            <label for="initial_odometer"/>
+                            <div>
+                                <field name="initial_odometer"  class="oe_inline"/>
+                                <field name="odometer_unit" class="oe_inline"/>
+                            </div>
                     </group>
                  </xpath>
             </field>

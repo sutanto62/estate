@@ -5,8 +5,9 @@
              <field name="model">view.request.requisition.tracking</field>
              <field name="priority" eval="1"/>
              <field name="arch" type="xml">
-                <tree string="Tracking Purchase Order" decoration-danger="'status_invoice' ,'=', 'in Progress'">
+                <tree string="Tracking Purchase Order">
                     <field name="id" invisible="1"/>
+                    <field name="date_start" string="Date PP"/>
                     <field name="complete_name" string="Purchase Request/PP No"/>
                     <field name="type_location" string="Location"/>
                     <field name="company_id" string="Company"/>
@@ -57,13 +58,45 @@
                     <field name="complete_name" string="PP No"/>
                     <field name="type_location" string="Location"/>
                     <field name="company_id" string="Company"/>
+                    <field name="status_po" string="status"/>
+
                     <separator/>
-                    <!--<filter name="status_pp" string="Status PP Outstanding"-->
-                            <!--domain="[('status_pp','=','PP Outstanding')]"-->
-                            <!--/>-->
-                    <!--<filter name="status_pp_close" string="Status PP Closed"-->
-                            <!--domain="[('status_pp','=','PP Closed')]"-->
-                            <!--/>-->
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_start','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_start','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_start','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date_start','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_start','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date_start','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date_start','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date_start','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+
+
+                    <separator/>
+                    <group expand="0" string="Group By...">
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date_start:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date_start:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date_start:day'}"/>
+                        <filter string="Company" name="group_company"
+                                domain="[]" context="{'group_by' : 'company_id'}" />
+                        <filter string="No PP" name="no_pp"
+                                domain="[]" context="{'group_by' : 'complete_name'}" />
+                        <filter string="Location" name="group_location"
+                                domain="[]" context="{'group_by' : 'type_location'}" />
+                        <!--<filter string="Status PO Done" name="group_po"-->
+                                <!--domain="[('status_po','=','Done')]" context="{'group_by' : 'status_po'}" />-->
+                        <!--<filter string="Status PO InProgress" name="group_po_prog"-->
+                                <!--domain="[('status_po','=','in Progress')]" context="{'group_by' : 'status_po'}" />-->
+                    </group>
                 </search>
             </field>
         </record>
@@ -75,6 +108,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_validate_tracking_purchase_order_invoice_search"/>
+            <field name="context">{"search_default_filter_month":1 , "search_default_group_company":1 , "search_default_group_location":1}</field>
             <field name="help" type="html">
               <p class="oe_view_nocontent_create">
                 Click to start a new Result Progress Purchase Request.
@@ -86,8 +120,9 @@
         </record>
 
         <menuitem id="menu_validate_tracking_purchase_order_invoice" name="Report Progress PP"
-            parent="purchase.menu_procurement_management"
+            parent="base.purchase_report"
             action="view_validate_tracking_purchase_order_invoice_action" sequence="22"/>
+
 
     </data>
 </openerp>
