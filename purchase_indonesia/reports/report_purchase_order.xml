@@ -303,13 +303,8 @@
 													    <u>
 													        <span t-field="mids.author_id"/>&#160;
 														</u>
-														<!--<br/>-->
-														    <!--<span t-field="mids.date"/>&#160;-->
-														<!--<br/>-->
-														<!--[-->
-													        <!--<span t-field="mids_tracking.old_value_char"/>&#160;to-->
-													        <!--<span t-field="mids_tracking.new_value_char"/>-->
-														<!--]-->
+														<br/>
+														<span t-esc="o.get_employee_job(mids.author_id.id)"/>
 												    </t>
 												</t>
 											</t>

@@ -209,6 +209,11 @@ class InheritPurchaseOrder(models.Model):
             'delivery_term' : 'ready' if len(idx_ready) >= 1 and len(idx_indent) < 1 or len(idx_ready) >= 1 and len(idx_indent) >= 1 else 'indent'
         }
         self.env['purchase.order'].search([('id','=',self.id)]).write(delivery_data)
+        
+    def get_employee_job(self,partner_id):
+        user = self.env['res.users'].search([('partner_id','=',partner_id)])
+        employee = self.env['hr.employee'].search([('user_id','=',user.id)])
+        return employee.job_id.name
 
 class InheritPurchaseOrderLine(models.Model):
 
