@@ -91,12 +91,14 @@
                     <field name="company_id" groups="base.group_multi_company"/>
                 </xpath>
                 <!-- remove unused info -->
+                <!-- 
                 <xpath expr="//field[@name='work_phone']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
                 <xpath expr="//field[@name='work_email']" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
+                 -->
             </field>
         </record>
 
