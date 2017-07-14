@@ -597,14 +597,12 @@ class QuotationComparisonForm(models.Model):
         for rec in self:
             rec.state = 'draft'
         return True
-
+    
     @api.multi
     def action_approve(self):
-        if self._get_purchase_request().code in ['KPST','KOKB','KPWK']  and self._get_max_price() < self._get_price_low():
-            self.write({'state' : 'done'})
-            self.generated_po()
-        elif self._get_purchase_request().code in ['KPST','KOKB','KPWK'] and self._get_max_price() > self._get_price_low():
-            self.write({'state' : 'approve1','assign_to':self._get_division_finance()})
+        #approval finance head procurement
+        if self._get_purchase_request().code in ['KPST','KOKB','KPWK'] :
+            self.write({'state': 'approve1', 'assign_to': self._get_division_finance()})
             self.send_mail_template()
 
     @api.multi
