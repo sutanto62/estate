@@ -883,6 +883,7 @@ class InheritPurchaseRequest(models.Model):
                 'owner_id' : purchase.id
             }
             res = self.env['purchase.requisition'].create(purchase_data)
+            res.send_mail_template_new_tender()
 
         for purchaseline in self.env['purchase.request.line'].search([('request_id.id','=',self.id)]):
             purchaseline_data = {

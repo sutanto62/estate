@@ -860,6 +860,15 @@ class InheritPurchaseTenders(models.Model):
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
             self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+    
+    @api.one
+    def send_mail_template_new_tender(self):
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_new_purchase_tender')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
 
     @api.multi
     def database(self):

@@ -274,6 +274,138 @@
 	  </field>
        </record>
     </data>
+    
+    <data noupdate="0">
+        <record id="email_template_new_purchase_tender" model="mail.template">
+          <field name="name">Email Template New Purchase Tender</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] PR Full Approve ${object.request_id.complete_name}</field>
+          <field name="email_to">procurement.ho@palmagroup.co.id</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_requisition.model_purchase_requisition"/>
+          <field name="auto_delete" eval="True"/>
+	  <field name="body_html">
+            <![CDATA[
+	       	<style>
+	        	input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; 
+	         		box-sizing: border-box; 
+	         		font-size: 14px; 
+	         		text-decoration: none; 
+	         		color: #FFF; 
+	         		line-height: 2; 
+	         		font-weight: bold; 
+	         		text-align: center; 
+	         		cursor: pointer; 
+	         		display: inline-block; 
+	         		border-radius: 5px; 
+	         		text-transform: capitalize; 
+	         		background-color: #348eda; 
+	         		margin: 0; 
+	         		padding: 0; 
+	         		border-color: #348eda; 
+	         		border-style: solid; 
+	         		border-width: 10px 20px;
+	         	}
+	       	</style>
+		  	<p>Dear Procurement,<br/>
+			  	<br/>
+				 	<h1 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 22px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">
+				  		Purchase Request Full Approve
+				  	</h1>
+			   	<br/>
+					<h2 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 18px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">	      		
+			      		PR No : ${(object.request_id.complete_name)}
+			    	</h2>	  
+			  	<br/>
+			  		<h2 style="font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif; box-sizing: border-box; font-size: 18px !important; color: #000; line-height: 1.2; font-weight: 600 !important; margin: 20px 0 5px; padding: 0; text-align:center;">	      		
+			      		Tender No : ${(object.complete_name)}
+			    	</h2>	  
+			  	<br/>
+		      	<br/>
+			
+			   	<p>
+		       		<br/>
+		      			<label style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; margin: 0; padding: 5px 0;">
+		            		Requested By ${(object.user_id.name)}
+		            	</label>
+		            <br/>
+					
+					<table class="invoice-items" cellpadding="0" cellspacing="0" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; width: 100%; margin: 0; padding: 0;">&#13;
+						<thead style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">&#13;
+							<th style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">
+								Barang/Jasa
+							</th>&#13;
+							<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+								Jumlah
+							</th>&#13;
+							<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+								Harga Perkiraan per Satuan
+							</th>&#13;
+							<th class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; text-align: right; margin: 0; padding: 0;" align="right">
+								Sub Total
+							</th>&#13;
+						</thead>&#13;
+						% for item in object.request_id.line_ids:
+		                <tr>
+		                    <td style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" valign="top">
+		                        <span>${item.product_id.name}</span>
+		                    </td>&#13;
+		                    <td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+		                        <span>${item.product_qty}</span>
+		                    </td>&#13;
+		                    <td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+		                        <span>${item.price_per_product}</span>
+		                    </td>&#13;
+		                 	<td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 1px; border-top-color: #eee; border-top-style: solid; margin: 0; padding: 5px 0;" align="right" valign="top">
+		                        <span>${item.total_price}</span>
+		                    </td>&#13;
+		                </tr>&#13;
+		                % endfor
+		                <tr class="total" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; margin: 0; padding: 0;">&#13;
+							<td class="alignright" colspan="3" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" align="right" valign="top">
+								Total
+							</td>&#13;
+							<td class="alignright" style="font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; box-sizing: border-box; font-size: 14px; vertical-align: top; text-align: right; border-top-width: 2px; border-top-color: #333; border-top-style: solid; border-bottom-color: #333; border-bottom-width: 2px; border-bottom-style: solid; font-weight: 700; margin: 0; padding: 5px 0;" align="right" valign="top">
+								${(object.request_id.total_estimate_price)}
+							</td>&#13;
+						</tr>&#13;
+					</table>
+	      		</p>
+          	<p>
+          	
+          	<div class="container">
+         		<p>
+                	Step to access Purchase Tender.
+              	</p>
+
+              	<p>
+                	<ul>
+                  		<li>Login To ERP Palma Group : 
+	                     	<ul>
+		                        <li>Click this link <a href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">Login</a></li>
+		                        <li>Input your username</li>
+		                        <li>Input your password</li>
+		                        <li>Click Button Login 
+		                        	<ul style="list-style-type:circle">
+		                              	<li>If You cannot login please contact ICT Department</li>
+		                            </ul>
+		                        </li>
+	                     	</ul>
+                  		</li>
+                	</ul>
+             	</p>
+           	 </div>
+
+			Regards,
+			<br/>
+			${(object.company_id.name)}
+			<br/>
+
+	    ]]>
+	  </field>
+       </record>
+    </data>
 
     <data noupdate="0">
         <record id="email_template_purchase_quotation_comparison" model="mail.template">
