@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
         <!--sequence-->
         <record id="estate_account.ir_sequence_journal_accrued_hja" model="ir.sequence">
             <field name="name">Nomor Jurnal Accrued Gaji HJA</field>
@@ -365,6 +364,7 @@
             <field name="credit_id" ref=".coa_tpn_10201"/>
         </record>
         <!--/bank account-->
+
 
     </data>
 </openerp>

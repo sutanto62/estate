@@ -38,7 +38,7 @@
                         <field name="attendance_ids">
                             <tree colors="red:state=='draft'" default_order="name">
                                 <field name="employee_id"/>
-                                <field name="name"/>
+                                <field name="date_utc"/>
                                 <field name="action"/>
                                 <field name="state" invisible="True"/>
                             </tree>
@@ -69,7 +69,7 @@
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
                     <separator/>
                     <filter icon="terp-go-month" string="Previous Month"
-                            domain="[('date','&lt;=',(context_today()+relativedelta(months=0,days=-1)).strftime('%Y-%m-%d')), ('date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                            domain="[('date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')), ('date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
                     <!-- Relativedelta required weeks, days and weekday -->
                     <filter icon="terp-go-month" string="Previous Week"
                             domain="[('date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
@@ -191,12 +191,6 @@
                 'search_default_filter_month': 1}</field>
         </record>
 
-        <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
-                  parent="hr_attendance.menu_hr_attendance_root"
-                  action="fingerprint_attendance_action"
-                  groups="estate.group_user,base.group_hr_user"/>
-
-
         <!-- Operation Control -->
         <!--
         <record id="labour_fingerprint_report_action" model="ir.actions.act_window">
@@ -239,7 +233,7 @@
         </record>
         -->
 
-        <!-- Approve All action -->
+        <!--approve all action-->
         <record model="ir.actions.server" id="action_hr_fingerprint_approve">
             <field name="name">Approve All</field>
             <field name="model_id" ref="hr_fingerprint_ams.model_hr_fingerprint_ams_attendance"/>
@@ -258,5 +252,178 @@
             <field name="key">action</field>
             <field name="model">hr_fingerprint_ams.attendance</field>
         </record>
+        <!--/approve all action-->
+
+        <menuitem id="fingerprint_attendance" name="Fingerprint Attendance"
+                  parent="hr_attendance.menu_hr_attendance_root"
+                  action="fingerprint_attendance_action"
+                  groups="estate.group_user,base.group_hr_user"/>
+
+        <!--upfingerprint-->
+        <record id="upfingerprint_view_tree" model="ir.ui.view">
+            <field name="name">Upkeep To Fingeprint Tree</field>
+            <field name="model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree colors="red:number_of_day_fingerprint==0">
+                    <field name="employee_id"/>
+                    <field name="nik_number" string="NIK"/>
+                    <field name="upkeep_date"/>
+                    <field name="fingerprint"/>
+                    <field name="attendance_time"
+                           attrs="{'invisible': [('fingerprint', '=','action')]}"/>
+                    <field name="number_of_day"
+                           attrs="{'invisible': [('contract_period','!=','2')]}"/>
+                    <field name="number_of_day_fingerprint"
+                           string="Fingerprint"/>
+                    <!--do not delete-->
+                    <field name="contract_period" invisible="True"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="upfingerprint_view_form" model="ir.ui.view">
+            <field name="name">Upkeep To Fingeprint Form</field>
+            <field name="model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="upkeep" string="Employee">
+                                <field name="employee_company_id"/>
+                                <field name="assistant_id"/>
+                                <field name="team_id"/>
+                                <field name="employee_id"/>
+                                <field name="nik_number"/>
+                            </group>
+                            <group name="fingerprint" string="Fingerprint">
+                                <field name="attendance_date"/>
+                                <field name="fingerprint"/>
+                                <field name="action_reason_id"/>
+                                <field name="attendance_time"/>
+                                <field name="number_of_day_fingerprint"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+
+                            </group>
+                            <group name="upkeep" string="Upkeep">
+                                <field name="upkeep_date"/>
+                                <field name="number_of_day"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="upfingerprint_view_graph" model="ir.ui.view">
+            <field name="name">Upkeep To Fingerprint Graph</field>
+            <field name="model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="priority" eval="1"/>
+            <field name="context">{'search_default_by_reason': 1}</field>
+            <field name="arch" type="xml">
+                <graph string="Worked Days with Action Reason">
+                    <field name="action_reason_id" type="row"/>
+                    <field name="number_of_day" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="upfingerprint_view_pivot" model="ir.ui.view">
+            <field name="name">Upkeep To Fingerprint Pivot</field>
+            <field name="model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <pivot string="Upkeep To Fingerprint">
+                    <field name="employee_company_id" type="row"/>
+                    <field name="employee_id" type="row"/>
+                    <field name="upkeep_date" interval="day" type="row"/>
+                    <field name="number_of_day" type="measure"/>
+                    <field name="number_of_day_fingerprint" type="measure"/>
+                    <field name="delta" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="upfingerprint_view_search" model="ir.ui.view">
+            <field name="name">Upkeep To Fingerprint Search</field>
+            <field name="model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_id"/>
+                    <field name="nik_number"/>
+                    <separator/>
+                    <filter name="filter_no_fingerprint" string="Without Fingerprint"
+                            domain="[('number_of_day', '>', '0'),('number_of_day_fingerprint', '=', '0')]"/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter name="filter_previous_month" icon="terp-go-month" string="Previous Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter name="filter_previous_week" icon="terp-go-month" string="Previous Week"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+
+                    <group expand="1" string="Group By">
+                        <filter name="by_structure" string="Estate Structure"
+                                context="{'group_by': ('employee_company_id','division_id','team_id','employee_id')}"/>
+                        <filter name="by_company" string="Company"
+                                context="{'group_by': 'employee_company_id'}"/>
+                        <filter name="by_division" string="Division"
+                                context="{'group_by': 'division_id'}"/>
+                        <filter name="by_assistant" string="Assistant"
+                                context="{'group_by': 'assistant_id'}"/>
+                        <filter name="by_team" string="Team"
+                                context="{'group_by': 'team_id'}"/>
+                        <filter name="by_employee" string="Employee"
+                                context="{'group_by': 'employee_id'}"/>
+                        <filter name="by_reason" string="Action Reason"
+                                domain="[('fingerprint', '=', 'action')]"
+                                context="{'group_by': 'action_reason_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="upfingerprint_action">
+            <field name="name">Upkeep To Fingerprint</field>
+            <field name="res_model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="view_mode">tree,form,pivot,graph</field>
+            <field name="context">{'search_default_filter_no_fingerprint': 1,
+                'search_default_filter_month': 1}</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="upfingerprint_reason_action">
+            <field name="name">Fingerprint Reason</field>
+            <field name="res_model">hr_fingerprint_ams.upfingerprint</field>
+            <field name="view_mode">graph</field>
+            <field name="context">{'search_default_filter_previous_month': 1,
+                'search_default_by_reason': 1}</field>
+        </record>
+
+        <menuitem id="upfingerprint_menu" name="Upkeep To Fingerprint"
+                  parent="hr_fingerprint_ams.attendance_report_menu"
+                  action="upfingerprint_action"
+                  groups="estate.group_user,base.group_hr_user"/>
+
+        <menuitem id="upfingerprint_reason_menu" name="Fingerprint Reason"
+                  parent="hr_fingerprint_ams.attendance_report_menu"
+                  action="upfingerprint_reason_action"
+                  groups="estate.group_user,base.group_hr_user"/>
+        <!--/upfingerprint-->
+
+
     </data>
 </openerp>

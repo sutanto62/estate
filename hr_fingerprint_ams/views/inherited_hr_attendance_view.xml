@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
+        <record id="inherited_view_attendance_who" model="ir.ui.view">
+            <field name="name">inherited.hr.attendance.tree</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.view_attendance_who"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="date_utc"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
         <record id="inherited_attendance_view_form" model="ir.ui.view">
             <field name="name">hr.attendance.view_form.inherit</field>
             <field name="model">hr.attendance</field>
@@ -11,6 +26,12 @@
                         <field name="state" widget="statusbar"
                                statusbar_visible="draft,payslip"/>
                     </header>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="date_utc"/>
+                </xpath>
+                <xpath expr="//field[@name='name']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
             </field>
         </record>
@@ -45,65 +66,5 @@
             </field>
         </record>
 
-        <!-- move to hr_fingerprint.xml
-        <record id="hr_attendance_ams_attendance_view_search" model="ir.ui.view">
-            <field name="name">AMS Attendance Search</field>
-            <field name="model">hr_fingerprint_ams.attendance</field>
-            <field name="priority" eval="1"/>
-            <field name="arch" type="xml">
-                <search>
-                    <filter name="filter_draft" string="Draft/Confirmed"
-                            domain="[('state','in',('draft','confirmed'))]"/>
-                    <separator/>
-                    <filter name="filter_month" icon="terp-go-month" string="This Month"
-                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
-                    <filter name="filter_year" icon="terp-go-year" string="This Year"
-                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
-
-                    <group string="Group By">
-                        <filter name="by_department" string="Department"
-                                context="{'group_by': 'department'}"/>
-                        <filter name="by_employee" string="Employee"
-                                context="{'group_by': 'employee_name'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <record id="hr_attendance_ams_fingerprint_view_pivot" model="ir.ui.view">
-            <field name="name">AMS Fingerprint Consolidation</field>
-            <field name="model">hr_fingerprint_ams.attendance</field>
-            <field name="arch" type="xml">
-                <pivot>
-                    <field name="department"/>
-                    <field name="employee_name"/>
-                    <field name="date" type="col" interval="year"/>
-                    <field name="date" type="col" interval="month"/>
-                    <field name="date" type="col" interval="day"/>
-                    <field name="day_finger" string="" type="measure"/>
-                </pivot>
-            </field>
-        </record>
-
-        <record id="hr_fingerprint_ams_attendance_menu_action" model="ir.actions.act_window">
-            <field name="name">Fingerprint Summary</field>
-            <field name="res_model">hr_fingerprint_ams.attendance</field>
-            <field name="priority">1</field>
-            <field name="view_mode">pivot,graph</field>
-            <field name="context">{
-                'search_default_by_department': 1,
-                'search_default_by_employee': 1}</field>
-        </record>
-
-        <menuitem id="hr_fingerprint_ams_attendance_report" name="Attendance Report"
-                  parent="hr_attendance.menu_hr_attendance_root"
-                  groups="base.group_hr_user"/>
-
-        <menuitem id="hr_fingerprint_ams_attendance" name="AMS Fingerprint Summary"
-                  parent="hr_fingerprint_ams_attendance_report"
-                  action="hr_fingerprint_ams_attendance_menu_action"
-                  groups="base.group_hr_user"/>
-
-         -->
     </data>
 </openerp>

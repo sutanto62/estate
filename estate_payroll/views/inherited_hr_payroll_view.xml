@@ -44,9 +44,6 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='credit_note']" position="after">
                     <field name="type"/>
-                    <!--
-                    <field name="location_id" attrs="{'invisible': [('type', 'not in',('estate','division'))]}"/>
-                    -->
                     <field name="company_id" required="True"/>
                     <field name="estate_id" attrs="{'invisible': [('type', 'not in', ('estate', 'division'))], 'required': [('type', '=', 'estate')]}"/>
                     <field name="division_id" attrs="{'invisible': [('type', '!=', 'division')], 'required': [('type', '=', 'division')]}"/>
@@ -198,6 +195,17 @@
                 <xpath expr="//filter[@name='done_filter']" position="after">
                     <filter name="draft_filter" string="Draft" domain="[('state','=','draft')]"
                             help="Draft filter for action's context" invisible="True"/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_end','&lt;=',(context_today()+relativedelta(day=31)).strftime('%Y-%m-%d')), ('date_start','&gt;=',(context_today()-relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_end','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%Y-%m-%d')), ('date_start','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_end','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')), ('date_start','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter name="filter_archived" string="Archived" domain="[('active','=',False)]"
+                            help="Show archived recordset"/>
                 </xpath>
             </field>
         </record>
@@ -223,6 +231,17 @@
                 <xpath expr="//search" position="inside">
                     <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"
                             help="Draft filter for action's context" invisible="True"/>
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date_to','&lt;=',(context_today()+relativedelta(day=31)).strftime('%Y-%m-%d')), ('date_from','&gt;=',(context_today()-relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date_to','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%Y-%m-%d')), ('date_from','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date_to','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')), ('date_from','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <separator/>
+                    <filter name="filter_archived" string="Archived" domain="[('active','=',False)]"
+                            help="Show archived recordset"/>
                 </xpath>
             </field>
         </record>
@@ -275,6 +294,22 @@
         <record id="hr_contract.hr_menu_contract" model="ir.ui.menu">
             <field name="groups_id" eval="[(6, 0, [ref('base.group_hr_manager'),ref('estate_payroll.estate_payroll_officer')])]"/>
         </record>
+
+        <!--payslips batches-->
+        <record id="hr_payroll.action_hr_payslip_run_tree" model="ir.actions.act_window">
+            <field name="context">{"search_default_draft_filter":1}</field>
+        </record>
+        <record id="hr_payroll.menu_hr_payslip_run" model="ir.ui.menu">
+                <field name="sequence">5</field>
+        </record>
+        <!--/payslips batches-->
+
+        <!--payslip-->
+        <record id="hr_payroll.action_view_hr_payslip_form" model="ir.actions.act_window">
+            <field name="context">{"search_default_filter_draft":1}</field>
+        </record>
+
+        <!--/payslip-->
 
     </data>
 </openerp>

@@ -13,10 +13,13 @@ from rule_attendance import *
 
 _logger = logging.getLogger(__name__)
 
+
 class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
     _description = 'Fingerprint Attendance Line'
+    _rec_name = 'date_utc'
 
+    date_utc = fields.Datetime('Date UTC', compute='_compute_date_utc')
     finger_attendance_id = fields.Many2one('hr_fingerprint_ams.attendance', ondelete='cascade')
     state = fields.Selection(related='finger_attendance_id.state', store=True)
 
@@ -59,6 +62,19 @@ class HrAttendance(models.Model):
 
         return res
 
+    @api.multi
+    def _compute_date_utc(self):
+        """ Odoo display datetime based on user preferences.
+        Force Odoo to display datetime as saved in database."""
+
+        for record in self:
+            user_tz = pytz.timezone(self.env.user.tz)
+            db_dt = datetime.strptime(record.name, DT)
+            td = user_tz.utcoffset(db_dt)
+            display_dt = db_dt - td
+            record.date_utc = display_dt
+
+        return True
 
 class ActionReason(models.Model):
     """Some fingerprint has action reason that replace sign-in/out. Such as Sakit/Cuti/Dinas Luar"""
