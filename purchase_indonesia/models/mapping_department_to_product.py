@@ -30,10 +30,11 @@ class MappingDepartmentToProduct(models.Model):
     @api.onchange('type_functional')
     def _onchange_department(self):
         arrDepartment = []
+        arr_agronomy = ['AGR','PRL']
+        arr_technic = ['IE']
+        arr_agronomy_technic = ['AGR','PRL','IE']
         if self.type_functional == 'agronomy':
-            department = self.env['hr.department'].search([('name','in',['agronomi','Agronomi',
-                                                                         'Agronomy','agronomy','PR & LA','Pr & La',
-                                                                         'PR&LA','pr & la','pr&la'])])
+            department = self.env['hr.department'].search([('code','in',arr_agronomy)])
             for department in department:
                 arrDepartment.append(department.id)
             return {
@@ -42,7 +43,7 @@ class MappingDepartmentToProduct(models.Model):
                 }
             }
         if self.type_functional == 'technic':
-            department = self.env['hr.department'].search([('name','in',['IE','transport & workshop','Transport & Workshop'])])
+            department = self.env['hr.department'].search([('code','in',arr_technic)])
             for department in department:
                 arrDepartment.append(department.id)
             return {
@@ -51,8 +52,7 @@ class MappingDepartmentToProduct(models.Model):
                 }
             }
         if self.type_functional == 'general':
-            department = self.env['hr.department'].search([('name','in',['HR & GA','HR','GA',
-                                                                         'ICT','Finance','Legal','Procurement','GIS','RO'])])
+            department = self.env['hr.department'].search([('code','not in',arr_agronomy_technic),('code','!=','False')])
             for department in department:
                 arrDepartment.append(department.id)
             return {

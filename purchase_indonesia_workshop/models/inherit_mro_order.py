@@ -44,7 +44,7 @@ class PurchaseInheritMroOrder(models.Model):
             if item.mro_order_id.id:
                 item.type_functional = 'technic'
 
-                department = self.env['hr.department'].search([('name','in',['IE','transport & workshop','Transport & Workshop'])])
+                department = self.env['hr.department'].search([('code','in',['IE'])])
 
                 for department in department:
                     arrDepartment.append(department.id)
