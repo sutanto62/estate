@@ -114,6 +114,7 @@
 		           			<t t-set="idx_row" t-value="0"/>
 		           			<t t-set="max_row" t-value="[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]"/>
 							<t t-set="idx_max_row" t-value="0"/>
+							<t t-set="is_get_user_sign_false" t-value="0"/>
 		           			
 		              		<!-- Detail Header -->
 		           			<div class="row" style="text-align:left;font-size:10pt;">
@@ -294,18 +295,32 @@
 		                          		    3. File
 		                          		</td>
 		                          		<td style="text-align: center;">
-		                          		    <t t-foreach="o.message_ids" t-as="mids">
-												<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-												    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Purchase Order'">
-													    <br/>
-													    <br/>
-													    <br/>
-													    <u>
-													        <span t-field="mids.author_id"/>&#160;
-														</u>
-														<br/>
-														<span t-esc="o.get_employee_job(mids.author_id.id)"/>
-												    </t>
+		                          		    <t t-set="get_user_sign" t-value="o.get_user_sign()"/>
+		                          		    <t t-if="get_user_sign != False">
+		                          		   		<t t-set="is_get_user_sign_false" t-value="1"/>
+		                          		   		<br/>
+											    <br/>
+											    <br/>
+											    <u>
+											        <span t-esc="get_user_sign.name"/>&#160;
+												</u>
+												<br/>
+												<span t-esc="o.get_employee_job(get_user_sign.id)"/>     
+		                          		    </t>
+		                          		    <t t-if="is_get_user_sign_false == 0">
+			                          		    <t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Purchase Order'">
+														    <br/>
+														    <br/>
+														    <br/>
+														    <u>
+														        <span t-field="mids.author_id"/>&#160;
+															</u>
+															<br/>
+															<span t-esc="o.get_employee_job(mids.author_id.id)"/>
+													    </t>
+													</t>
 												</t>
 											</t>
 		                          		</td>

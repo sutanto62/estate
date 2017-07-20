@@ -214,7 +214,22 @@ class InheritPurchaseOrder(models.Model):
         user = self.env['res.users'].search([('partner_id','=',partner_id)])
         employee = self.env['hr.employee'].search([('user_id','=',user.id)])
         return employee.job_id.name
-
+    
+    def get_user_sign(self):
+        partner_id = None
+        is_under_1_mill = False
+        po_pr = self.env['purchase.request'].search([('id','=',self.request_id.id)])
+        for mids in po_pr.message_ids:
+            for mids_tracking in mids.tracking_value_ids:
+                if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'RO Head Approval':
+                    partner_id = mids.author_id
+                if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Budget Approval' and mids_tracking.new_value_char == 'PP Full Approve':
+                    is_under_1_mill = True
+        if is_under_1_mill:
+            return partner_id
+        else:
+            return False
+        
 class InheritPurchaseOrderLine(models.Model):
 
     _inherit = 'purchase.order.line'
