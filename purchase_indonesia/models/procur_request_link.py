@@ -783,7 +783,7 @@ class InheritPurchaseRequest(models.Model):
             sequence_name = 'purchase.request.seq.'+location_code.lower()+'.'+company_code.lower()
             vals['name']=self.env['ir.sequence'].next_by_code(sequence_name)
         except:
-            error_msg = "Employee Offive Level Code is Null for %s" %(self._get_employee().name)
+            error_msg = "Employee Office Level Code is Null for %s" %(self._get_employee().name)
             raise exceptions.ValidationError(error_msg)
 
         request = super(InheritPurchaseRequest, self).create(vals)
@@ -1006,7 +1006,7 @@ class InheritPurchaseRequest(models.Model):
             try:
                 employee_code = self._get_employee().office_level_id.code
             except:
-                error_msg = "Employee Offive Level Code is Null for %s" %(self._get_employee().name)
+                error_msg = "Employee Office Level Code is Null for %s" %(self._get_employee().name)
                 raise exceptions.ValidationError(error_msg)
            
             type_location = employee_code
