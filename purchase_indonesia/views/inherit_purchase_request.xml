@@ -68,6 +68,7 @@
                            <field name="type_product" string="Product Type"/>
                  </xpath>
                  <xpath expr="//field[@name='state']" position="after">
+                     <field name="description" string="Description"/>
                      <field name="count_po_done" string="PO Dn"/>
                      <field name="count_po_partial" string="PO Partial"/>
                      <field name="count_grn_done" string="GRN/SRN Dn"/>
