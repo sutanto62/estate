@@ -82,19 +82,19 @@
 											      	<span t-field="l.product_id.name"/>
 											    </td>
 											    <td>
-											      	<span t-field="l.product_qty"/>
+											        <span t-field="l.product_qty" />
 											    </td>
 											    <td>
 											      	<span t-field="l.product_uom"/>
 											    </td>
 											    <td>
-											      	&#160;
+											      	<span t-field="l.price_unit"/>
 											    </td>
 											    <td>
-											      	&#160;
+											      	<span t-field="l.price_subtotal"/>
 											    </td>
 											    <td>
-											      	&#160;
+											      	<span t-field="l.term_of_goods"/>
 											    </td>
 											</tr>
 										</t>
@@ -103,7 +103,7 @@
 										      	Sub Total
 										    </td>
 										    <td colspan="2">
-										      	&#160;
+										      	<span t-field="o.amount_untaxed"/>
 										    </td>
 										    <td>
 										     	&#160; 	
@@ -125,7 +125,7 @@
 										      	Tax
 										    </td>
 										    <td colspan="2">
-										      	&#160;
+										      	<span t-field="o.amount_tax"/>
 										    </td>
 										    <td>
 										     	&#160; 	
@@ -136,7 +136,7 @@
 										      	GRAN TOTAL
 										    </td>
 										    <td colspan="2">
-										      	&#160;
+										      	<span t-field="o.amount_total"/>
 										    </td>
 										    <td>
 										     	&#160; 	
@@ -147,7 +147,7 @@
 										      	Pembayaran&#160;:
 										    </td>
 										    <td class="noborder" colspan="2">
-										      	Cash&#160;/&#160;Kredit&#160;____&#160;hari
+										      	<span t-field="o.payment_term_id"/>
 										    </td>
 										    <td class="noborder">
 										     	&#160; 	
@@ -169,13 +169,13 @@
 								<table width="100%">
 		                            <tr>
 		                          		<td class="noborder">
-		                          		    Confirmed By&#160;:
+		                          		    Confirmed By&#160;:&#160;<span t-field="o.confirmed_by_person"/>
 		                          		</td>
                                         <td class="noborder">
-                                        	Fax&#160;/&#160;Email&#160;/&#160;Phone&#160;/&#160;Other
+                                        	<span t-field="o.confirmed_by"/>
                                         </td>
                                         <td class="noborder">
-                                        	&#160;
+                                        	<span t-field="o.confirmed_by_value"/>
                                         </td>
                                         <td class="noborder">
                                         	&#160;
