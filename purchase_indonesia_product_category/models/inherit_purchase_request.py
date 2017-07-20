@@ -37,12 +37,11 @@ class InheritPurchaseRequest(models.Model):
                 for category in category_mapping:
                     arrMapping.append(category.product_category_id.id)
                     category_product = item.env['product.category'].search([('parent_id','in',arrMapping)])
+                    arrParent.append(category.product_category_id.id)
                     if len(category_product) > 0:
                         for categ_id in category_product:
                             arrParent.append(categ_id.id)
-                    else:
-                        arrParent.append(category.product_category_id.id)
-
+                
                 return  {
                         'domain':{
                             'product_category_id':[('id','in',arrParent)]
@@ -60,12 +59,13 @@ class InheritPurchaseRequestLine(models.Model):
         #use to onchange domain product same as product_category
         for item in self:
             arrCategory = []
-            arrParent = []
 
             prod_category = item.env['product.category']
 
-            request_category = prod_category.search([('id','=',item.request_id.product_category_id.id)])
-
+            request_category = prod_category.search([('parent_id','=',item.request_id.product_category_id.id)])
+            
+            if len(request_category) == 0:
+                request_category = prod_category.search([('id','=',item.request_id.product_category_id.id)])
 
             for category in request_category:
                 arrCategory.append(category.id)
