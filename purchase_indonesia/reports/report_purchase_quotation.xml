@@ -10,7 +10,7 @@
 		              		<!-- Header -->
 		              		<div class="row" style="text-align:left;">
 		              			<div class="col-xs-12" >
-		                       		<b>PT 	: <span t-field="o.company_id.name"/> </b>
+		                       		<b>PT 	: <span t-field="o.companys_id.name"/> </b>
 								</div>
 							</div>
 							<div class="row" style="text-align:right;">
