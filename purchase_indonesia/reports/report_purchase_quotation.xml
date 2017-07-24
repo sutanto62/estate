@@ -160,7 +160,7 @@
 										      	Alamat Pengiriman&#160;:
 										    </td>
 										    <td class="noborder" colspan="2" style="border-right:1px solid;border-bottom:2px solid;height:25px;font-size:10pt;" align="center" valign="center">
-										      	Kantor Palma Group&#160;/&#160;Site Gorontalo
+										      	<span t-field="o.incoterm_id"/>
 										    </td>
 										    <td class="noborder" style="border-right:1px solid;border-bottom:2px solid;height:25px;font-size:10pt;" align="center" valign="center">
 										     	&#160; 	
