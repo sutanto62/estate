@@ -4,15 +4,15 @@
             <field name="name">Config Report Purchase Quotation</field>
             <field name="default" eval="True"/>
             <field name="format">custom</field>
-            <field name="page_height">600</field><!--tinggi height papernya -->
-            <field name="page_width">297</field><!--tinggi widht papernya -->
+            <field name="page_height">297</field><!--tinggi height papernya -->
+            <field name="page_width">210</field><!--tinggi widht papernya -->
             <field name="orientation">Portrait</field>
-            <field name="margin_top">60</field><!--margin content dengan top papernya -->
-            <field name="margin_bottom">23</field><!--margin content dengan bawah papernya -->
-            <field name="margin_left">7</field><!--margin content dengan samping kiri papernya -->
-            <field name="margin_right">7</field><!--margin content dengan samping kanan papernya -->
+            <field name="margin_top">30</field><!--margin content dengan top papernya -->
+            <field name="margin_bottom">5</field><!--margin content dengan bawah papernya -->
+            <field name="margin_left">5</field><!--margin content dengan samping kiri papernya -->
+            <field name="margin_right">5</field><!--margin content dengan samping kanan papernya -->
             <field name="header_line" eval="False"/><!-- garis di heading -->
-            <field name="header_spacing">60</field><!-- jarak header dengan isi content -->
+            <field name="header_spacing">25</field><!-- jarak header dengan isi content -->
             <field name="dpi">90</field>
         </record>
 
