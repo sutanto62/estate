@@ -6,247 +6,258 @@
             <t t-call="report.html_container">
                 <t t-foreach="docs" t-as="o">
             		<t t-call="report.internal_layout">
-						<div class="page" style="font-family: times; background-color:white; color:black;">
-		              		<!-- Header -->
-		              		<div class="row" style="text-align:left;font-size:10pt;">
-		              			<div class="col-xs-6" >
-		                       		<table class="noborder">
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <b>PT</b>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.companys_id.name"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <b>Lokasi</b>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.location"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		</table>
-		                      	</div>
-		                      	<div style="text-align:left;font-size:10pt;" class="col-xs-6" >
-		                       		<table class="noborder">
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <t t-if="o.purchase_id.request_id.type_product == 'service' ">
-													<b>SRN No.</b>
-												</t>
-												<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
-													<b>GRN No.</b>
-												</t>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.complete_name_picking"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <b>Tanggal</b>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.create_date" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		</table>
-		                      	</div>
-		                  	</div>
-		                  	<br></br>
-							<div class="row" style="text-align:center; font-size:16pt;">
-		              			<div style ="border-top:2px solid;border-bottom:2px solid;" class="col-xs-12" >
-		                       		<t t-if="o.purchase_id.request_id.type_product == 'service' ">
-										<b>SERVICES RECEIVED NOTE (SRN)</b>
-									</t>
-									<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
-										<b>GOODS RECEIVED NOTE (GRN)</b>
-									</t>
+            		    <t t-if="o.state != 'done'">
+            		        <div class="page" style="font-family: times; background-color:white; color:black;">
+			              		<div class="row" style="text-align:center; font-size:16pt;">
+			              			<div style ="border-top:2px solid;border-bottom:2px solid;" class="col-xs-12" >
+			                       		You can not print GRN / SRN before status is Done
+			                      	</div>
+			                   	</div>
+			              	</div>   	
+            		    </t>
+            		    <t t-if="o.state == 'done'">
+							<div class="page" style="font-family: times; background-color:white; color:black;">
+			              		<!-- Header -->
+			              		<div class="row" style="text-align:left;font-size:10pt;">
+			              			<div class="col-xs-6" >
+			                       		<table class="noborder">
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <b>PT</b>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.companys_id.name"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <b>Lokasi</b>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.location"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		</table>
+			                      	</div>
+			                      	<div style="text-align:left;font-size:10pt;" class="col-xs-6" >
+			                       		<table class="noborder">
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <t t-if="o.purchase_id.request_id.type_product == 'service' ">
+														<b>SRN No.</b>
+													</t>
+													<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
+														<b>GRN No.</b>
+													</t>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.complete_name_picking"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <b>Tanggal</b>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.create_date" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		</table>
+			                      	</div>
+			                  	</div>
+			                  	<br></br>
+								<div class="row" style="text-align:center; font-size:16pt;">
+			              			<div style ="border-top:2px solid;border-bottom:2px solid;" class="col-xs-12" >
+			                       		<t t-if="o.purchase_id.request_id.type_product == 'service' ">
+											<b>SERVICES RECEIVED NOTE (SRN)</b>
+										</t>
+										<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
+											<b>GOODS RECEIVED NOTE (GRN)</b>
+										</t>
+									</div>
 								</div>
-							</div>
-							<br></br>
-							<div class="row" style="text-align:left;font-size:10pt;">
-		              			<div class="col-xs-6" >
-		                       		<table class="noborder">
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <b>Penerimaan dari </b>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.partner_id.name"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		</table>
-		                      	</div>
-		                      	<div class="col-xs-6" >
-		                       		<table class="noborder">
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <b>PP No.</b>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.pr_source"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <t t-if="o.purchase_id.request_id.type_product == 'service' ">
-													<b>SPO No.</b>
-												</t>
-												<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
-													<b>PO No.</b>
-												</t>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.purchase_id.complete_name"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		    <tr>
-		                       		        <td class="noborder" width="25%">
-		                       		            <b>DO No.</b>
-		                       		        </td>
-		                       		        <td class="noborder">
-		                       		            <b>: <span t-field="o.delivery_number"/></b>
-		                       		        </td>
-		                       		    </tr>
-		                       		</table>
-		                      	</div>
-		                  	</div>
-							<br></br>
-							
-							<!-- Variabel -->
-							<t t-set="idx" t-value="0"/>
-							<t t-set="delta" t-value="0"/>
-		           			
-		              		<!-- Detail Header -->
-		              		<div class="row" style="text-align:left;font-size:10pt;">
-		              			<table style="border: 1px solid;padding:10px;" width="100%">
-		              			    <thead>
-			                            <tr class="label_table_header">
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      No
-										    </th>
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      Kode Barang/Jasa
-										    </th>
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      Nama Barang/Jasa
-										    </th>
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      Dikirim
-										    </th>
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      Diterima
-										    </th>
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      Satuan
-										    </th>
-										    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
-										      Selisih/Catatan
-										    </th>
-										</tr>
-									</thead>
-									<tbody>
-										<t t-foreach="o.pack_operation_product_ids" t-as="l">
-											<t t-set="idx" t-value="idx+1"/>
-											<t t-set="delta" t-value="l.product_qty-l.qty_done"/>
-											<tr>
-											   	<td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
-													<span t-esc="idx"/>
-												</td> 	
-											    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" valign="center">
-											      	<span t-field="l.product_id.default_code"/>
-											    </td>
-											    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" valign="center">
-											      	<span t-field="l.product_id.name"/>
-											    </td>
-											    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
-											      	<span t-field="l.product_qty"/>
-											    </td>
-											    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
-											      	<span t-field="l.qty_done"/>
-											    </td>
-											    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
-											      	<span t-field="l.product_id.uom_id"/>	    
-											    </td>
-											    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
-											      	<span t-esc="delta"/>
+								<br></br>
+								<div class="row" style="text-align:left;font-size:10pt;">
+			              			<div class="col-xs-6" >
+			                       		<table class="noborder">
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <b>Penerimaan dari </b>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.partner_id.name"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		</table>
+			                      	</div>
+			                      	<div class="col-xs-6" >
+			                       		<table class="noborder">
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <b>PP No.</b>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.pr_source"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <t t-if="o.purchase_id.request_id.type_product == 'service' ">
+														<b>SPO No.</b>
+													</t>
+													<t t-if="o.purchase_id.request_id.type_product in ['consu','product'] ">
+														<b>PO No.</b>
+													</t>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.purchase_id.complete_name"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		    <tr>
+			                       		        <td class="noborder" width="25%">
+			                       		            <b>DO No.</b>
+			                       		        </td>
+			                       		        <td class="noborder">
+			                       		            <b>: <span t-field="o.delivery_number"/></b>
+			                       		        </td>
+			                       		    </tr>
+			                       		</table>
+			                      	</div>
+			                  	</div>
+								<br></br>
+								
+								<!-- Variabel -->
+								<t t-set="idx" t-value="0"/>
+								<t t-set="delta" t-value="0"/>
+			           			
+			              		<!-- Detail Header -->
+			              		<div class="row" style="text-align:left;font-size:10pt;">
+			              			<table style="border: 1px solid;padding:10px;" width="100%">
+			              			    <thead>
+				                            <tr class="label_table_header">
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      No
+											    </th>
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      Kode Barang/Jasa
+											    </th>
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      Nama Barang/Jasa
+											    </th>
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      Dikirim
+											    </th>
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      Diterima
+											    </th>
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      Satuan
+											    </th>
+											    <th style="border:1px solid;border-bottom:2px solid;height:30px;text-align:center;font-size:10pt;" valign="center">
+											      Selisih/Catatan
+											    </th>
+											</tr>
+										</thead>
+										<tbody>
+											<t t-foreach="o.pack_operation_product_ids" t-as="l">
+												<t t-set="idx" t-value="idx+1"/>
+												<t t-set="delta" t-value="l.product_qty-l.qty_done"/>
+												<tr>
+												   	<td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
+														<span t-esc="idx"/>
+													</td> 	
+												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" valign="center">
+												      	<span t-field="l.product_id.default_code"/>
+												    </td>
+												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" valign="center">
+												      	<span t-field="l.product_id.name"/>
+												    </td>
+												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
+												      	<span t-field="l.product_qty"/>
+												    </td>
+												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
+												      	<span t-field="l.qty_done"/>
+												    </td>
+												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
+												      	<span t-field="l.product_id.uom_id"/>	    
+												    </td>
+												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
+												      	<span t-esc="delta"/>
+												    </td>
+												</tr>
+											</t>
+										</tbody>
+									</table>
+								</div>
+								
+			              		<br></br>
+								<br></br>
+			              		
+			              		<div class="row" style="font-size:10pt;">
+			                        <div class="col-xs-12">
+			                            <table width="100%" class="noborder">
+				                        	<tr>
+											    <td colspan="5" class="noborder">
+											      	Penjelasan :
+											    	<br></br>
+											      	<span t-field="o.description"/>
 											    </td>
 											</tr>
-										</t>
-									</tbody>
-								</table>
-							</div>
-							
-		              		<br></br>
-							<br></br>
-		              		
-		              		<div class="row" style="font-size:10pt;">
-		                        <div class="col-xs-12">
-		                            <table width="100%" class="noborder">
-			                        	<tr>
-										    <td colspan="5" class="noborder">
-										      	Penjelasan :
-										    	<br></br>
-										      	<span t-field="o.description"/>
-										    </td>
-										</tr>
-									</table>    	
-		                      	</div>
-		                  	</div>      
-		              		
-		              		<br></br>
-							<br></br>
-		              		
-							<!-- Tanda Tangan -->
-		                    <div class="row" style="font-size:10pt;">
-		                        <div class="col-xs-12">	
-			                        <table width="100%" class="noborder">
-			                            <tr>
-			                                <td class="noborder" style="font-size:10pt;">
-			                                    Dikirim Oleh,
-			                                    <br></br>
-												<u><span t-field="o.shipper_by"/></u>
-												<br></br>
-			                                    <span t-field="o.create_date"/>
-			                                </td>
-			                                <td class="noborder" style="font-size:10pt;">
-			                                    Diterima Oleh,
-			                                    <br></br>
-			                                    <t t-foreach="o.message_ids" t-as="mids">
-													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-														<t t-if="mids_tracking.field == 'assigned_to'">
-															<u>
-																<span t-field="mids.author_id"/>&#160;
-															</u>
-															<br/>
-															<span t-field="mids.date"/>&#160;
+										</table>    	
+			                      	</div>
+			                  	</div>      
+			              		
+			              		<br></br>
+								<br></br>
+			              		
+								<!-- Tanda Tangan -->
+			                    <div class="row" style="font-size:10pt;">
+			                        <div class="col-xs-12">	
+				                        <table width="100%" class="noborder">
+				                            <tr>
+				                                <td class="noborder" style="font-size:10pt;">
+				                                    Dikirim Oleh,
+				                                    <br></br>
+													<u><span t-field="o.shipper_by"/></u>
+													<br></br>
+				                                    <span t-field="o.create_date"/>
+				                                </td>
+				                                <td class="noborder" style="font-size:10pt;">
+				                                    Diterima Oleh,
+				                                    <br></br>
+				                                    <t t-foreach="o.message_ids" t-as="mids">
+														<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+															<t t-if="mids_tracking.field == 'assigned_to'">
+																<u>
+																	<span t-field="mids.author_id"/>&#160;
+																</u>
+																<br/>
+																<span t-field="mids.date"/>&#160;
+															</t>
 														</t>
 													</t>
-												</t>
-			                                </td>
-			                                <td class="noborder" style="font-size:10pt;">
-			                                    Disetujui Oleh,
-			                                    <br></br>
-			                                    <t t-foreach="o.message_ids" t-as="mids">
-													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-														<t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
-															<u>
-																<span t-field="mids.author_id"/>&#160;
-															</u>
-															<br/>
-															<span t-field="mids.date"/>&#160;
+				                                </td>
+				                                <td class="noborder" style="font-size:10pt;">
+				                                    Disetujui Oleh,
+				                                    <br></br>
+				                                    <t t-foreach="o.message_ids" t-as="mids">
+														<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+															<t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
+																<u>
+																	<span t-field="mids.author_id"/>&#160;
+																</u>
+																<br/>
+																<span t-field="mids.date"/>&#160;
+															</t>
 														</t>
 													</t>
-												</t>
-			                                </td>
-			                            </tr>
-			                     	</table>
-			                  	</div>
-			               	</div>	
-		             	</div>
+				                                </td>
+				                            </tr>
+				                     	</table>
+				                  	</div>
+				               	</div>	
+			             	</div>
+		             	</t>
                     </t>
                 </t>
             </t>

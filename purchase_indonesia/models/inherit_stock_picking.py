@@ -650,6 +650,9 @@ class InheritStockPicking(models.Model):
 
     @api.multi
     def print_grn(self):
+        if self.state != 'done':
+            error_msg = 'You can not print GRN / SRN before status is Done'
+            raise exceptions.ValidationError(error_msg)
         return self.env['report'].get_action(self, 'purchase_indonesia.report_goods_receipet_notes_document')
 
     @api.multi
