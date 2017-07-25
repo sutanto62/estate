@@ -222,7 +222,7 @@
 										</tr>
 										<tr>
 										    <td colspan="2" style="border-right: 1px solid black;">
-										      	<span t-field="o.picking_type_id.warehouse_id.name"/>
+										      	<span t-field="o.incoterm_id"/>
 										    </td>
 										    <td colspan="3" class="noborder">
 										      	TOP			: <span t-field="o.payment_term_id"/>
@@ -246,10 +246,7 @@
 										</tr>
 										<tr>
 										    <td colspan="2"  style="border-right: 1px solid black;">
-										      	<span t-field="o.picking_type_id.warehouse_id.partner_id.street"/>
-	                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>
-	                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.zip"/>
-	                       		            	<span t-field="o.picking_type_id.warehouse_id.partner_id.city"/>
+										      	&#160;
 										    </td>
 										    <td colspan="3" class="noborder">
 										      	Currency	: <span t-field="o.currency_id"/>

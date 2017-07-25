@@ -217,7 +217,7 @@
 			                                    <br></br>
 			                                    <t t-foreach="o.message_ids" t-as="mids">
 													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-														<t t-if="mids_tracking.field == 'assign_to' and not mids_tracking.new_value_char">
+														<t t-if="mids_tracking.field == 'assigned_to'">
 															<u>
 																<span t-field="mids.author_id"/>&#160;
 															</u>
