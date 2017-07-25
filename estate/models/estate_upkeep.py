@@ -960,6 +960,10 @@ class UpkeepLabour(models.Model):
         else:
             unit_price = self.activity_id.standard_price
 
+        # Piece rate as borongan
+        if self.quantity_piece_rate and self.attendance_code_id.contract:
+            self.wage_piece_rate = self.quantity_piece_rate * unit_price
+
         # Piece rate as bonus after standard quantity achieved
         if self.quantity_piece_rate and self.quantity > self.activity_id.qty_base:
             self.wage_piece_rate = self.quantity_piece_rate * unit_price
@@ -1163,8 +1167,10 @@ class UpkeepLabour(models.Model):
     @api.constrains('quantity_piece_rate')
     def _onchange_piece_rate(self):
         """Piece rate should be:
-        1. Not excedd variance of daily standard and activity quantity.
-        2. Used to calculate PKWT Daily Target achievement (condition: no attendance, unclosed block)
+        1. Labor should achieved standard work result/day.
+        2. Piece rate is given if standard work result/day achieved.
+        3. Not excedd variance of daily standard and activity quantity.
+        4. Used to calculate PKWT Daily Target achievement (condition: no attendance, unclosed block)
         """
         self.ensure_one()
 
@@ -1174,16 +1180,20 @@ class UpkeepLabour(models.Model):
         employee = self.employee_id.name
         activity = self.activity_id.name
 
+        # validate labour quantity and piece rate to standard activity
         if self.quantity_piece_rate:
-            # Validate labour quantity and piece rate to standard activity
-            result = quantity - (base * att_ratio)
-            if result < 0:
+            standard_work_result = quantity - (base * att_ratio)
+
+            if self.attendance_code_id.contract:
+                return
+
+            if standard_work_result < 0:
                 error_msg = _("%s not allowed to have piece rate due to under achievement of %s" % (employee, activity))
                 raise ValidationError(error_msg)
-            elif self.quantity_piece_rate > result:
+            elif self.quantity_piece_rate > standard_work_result:
                 if self.activity_contract:
                     return
-                error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, result))
+                error_msg = _("%s work at %s piece rate quantity should not exceed %s" % (employee, activity, standard_work_result))
                 raise ValidationError(error_msg)
 
     @api.multi
