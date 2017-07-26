@@ -217,15 +217,20 @@ class InheritPurchaseOrder(models.Model):
     
     def get_user_sign(self):
         partner_id = None
-        is_under_1_mill = False
         po_pr = self.env['purchase.request'].search([('id','=',self.request_id.id)])
+        po_preq = self.env['purchase.requisition'].search([('origin','=',po_pr.complete_name)])
+        office_level_code_procurement = None
+        
+        if(po_preq):
+            employee = self.env['hr.employee'].search([('user_id','=',po_preq.user_id.id)])
+            office_level_code_procurement = employee.office_level_id.code
+            
         for mids in po_pr.message_ids:
             for mids_tracking in mids.tracking_value_ids:
                 if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'RO Head Approval':
                     partner_id = mids.author_id
-                if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Budget Approval' and mids_tracking.new_value_char == 'PP Full Approve':
-                    is_under_1_mill = True
-        if is_under_1_mill:
+        
+        if office_level_code_procurement == 'KOKB':
             return partner_id
         else:
             return False
