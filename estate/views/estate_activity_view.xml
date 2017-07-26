@@ -45,12 +45,6 @@
                         </group>
                     </group>
 
-                    <!-- move to estate_account module
-                    <group name="account" string="Account">
-                        <field name="activity_income_id"/>
-                        <field name="activity_expense_id"/>
-                    </group>-->
-
                     <!-- # todo field masih lompat pakai context belum bisa - tanya oza -->
                     <notebook>
                         <page string="Accounting">
@@ -61,8 +55,10 @@
                                     <field name="wage_method"/>
                                 </group>
                                 <group name="accounting_account" string="Account">
-                                    <field name="general_account_id"/>
+                                    <field name="general_account_id" domain="[('company_id', '=', user_company_id)]"/>
                                     <field name="account_id"/>
+                                    <!--do not delete-->
+                                    <field name="user_company_id" invisible="True"/>
                                 </group>
                             </group>
                         </page>

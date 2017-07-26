@@ -24,6 +24,7 @@
 
     # always loaded
     'data': [
+        'data/hr_fingerprint_ams_data.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
         'templates.xml',

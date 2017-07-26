@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <record forcecreate="True" id="decimal_fingerprint" model="decimal.precision">
+            <field name="name">Fingerprint</field>
+            <field name="digits">1</field>
+        </record>
+        <record forcecreate="True" id="decimal_fingerprint_time" model="decimal.precision">
+            <field name="name">Fingerprint Time</field>
+            <field name="digits">2</field>
+        </record>
+    </data>
+</openerp>

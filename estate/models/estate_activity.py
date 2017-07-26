@@ -12,6 +12,11 @@ class Activity(models.Model):
     _rec_name = 'code_name'  # complete_name too long for upkeep entry
     _inherit = 'mail.thread'
 
+    # Default methods
+    def _default_user_company_id(self):
+        ''' general account/analytic account required to limit based on users company_id or company_ids'''
+        return self.env.user.company_id
+
     name = fields.Char("Name", required=True, help="Create unique activity name.")
     code = fields.Char("Activity Code", help='Choose your transaction code')
     complete_name = fields.Char("Complete Name", compute="_complete_name", store=True)
@@ -36,7 +41,8 @@ class Activity(models.Model):
                                  domain=[('use_estate', '=', True), ('account_type', '=', 'normal')], # v9 use account_type
                                  help='Set as default analytic account at Upkeep.', track_visibility="onchange")
     general_account_id = fields.Many2one('account.account', 'General Account',
-                                         help='Set as default general account.', track_visibility="onchange")
+                                         help='Set as default general account. \n'\
+                                              'Use company general account of current user.', track_visibility="onchange")
     qty_base = fields.Float(string="Standard Work Result/Day", digits=dp.get_precision('Estate'),
                             help="Set as default work's result.", track_visibility="onchange")
     qty_base_min = fields.Float(string="Minimum Work Result/Day", digits=dp.get_precision('Estate'),
@@ -69,6 +75,8 @@ class Activity(models.Model):
                                         '* Time Based, wage calculated by attendance code.')
     contract = fields.Boolean('Contract', default=False, track_visibility="onchange",
                               help='Contract based activity allows upkeep record without number of day')
+    user_company_id = fields.Many2one('res.company', 'Login User', help='Help to domain account based on user',
+                                      default=_default_user_company_id)
 
     @api.one
     @api.depends('name', 'parent_id')

@@ -263,10 +263,11 @@ class FingerAttendance(models.Model):
                                       + str(minute) + ':' + second, DT)
 
         # Odoo used UTC (timestamp without timezone).
-        local = pytz.timezone(self._context['tz'])  # user timezone should match import time
-        local_dt = local.localize(import_dt, is_dst=None)
-        res = local_dt.astimezone(pytz.utc)
-        return res
+        # local = pytz.timezone(self._context['tz'])  # user timezone should match import time
+        # local_dt = local.localize(import_dt, is_dst=None)
+        # res = local_dt.astimezone(pytz.utc)
+
+        return import_dt
 
     @api.one
     def button_confirmed(self):

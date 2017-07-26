@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 9.0c-20160712\n"
+"Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-02 04:41+0000\n"
-"PO-Revision-Date: 2017-05-02 04:41+0000\n"
+"POT-Creation-Date: 2017-07-25 05:20+0000\n"
+"PO-Revision-Date: 2017-07-25 05:20+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,21 +16,26 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:327
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:328
 #, python-format
 msgid "%s approved fingerprint data at %s (server time)"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:348
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:349
 #, python-format
 msgid "%s approved imported AMS fingerprint at %s (server time)"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:304
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:305
 #, python-format
 msgid "%s confirmed imported AMS fingerprint at %s (server time)"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.report_upkeep_fingerprint
+msgid "&amp;nbsp;"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -41,11 +46,13 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_action_reason_contract_period
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_contract_period
 msgid "* Monthly, Karyawan Bulanan, * Daily, Karyawan Harian."
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_action_reason_contract_type
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_contract_type
 msgid "* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja Waktu Tertentu."
 msgstr ""
 
@@ -84,6 +91,7 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model,name:hr_fingerprint_ams.model_hr_action_reason
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_action_reason
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Action Reason"
 msgstr ""
 
@@ -120,7 +128,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_assistant_id
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_print_assistant_id
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Assistant"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_assistant_id
+msgid "Assistant of team."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -166,6 +180,8 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_company_id
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_print_company_id
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_employee_company_id
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Company"
 msgstr ""
 
@@ -185,11 +201,13 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_contract_period
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_contract_period
 msgid "Contract Period"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_action_reason_contract_type
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_contract_type
 msgid "Contract Type"
 msgstr ""
 
@@ -225,6 +243,11 @@ msgid "Date"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_attendance_date_utc
+msgid "Date UTC"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_department
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 msgid "Department"
@@ -239,13 +262,21 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_display_name
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_display_name
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_print_display_name
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_display_name
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_report_hr_fingerprint_ams_report_upkeep_fingerprint_display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_division_id
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_division_id
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Division"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_division_id
+msgid "Division of team."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -263,14 +294,22 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_employee_id
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_employee_id
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_form
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Employee"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_name
 msgid "Employee ID and Upkeep Date"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_nik_number
+msgid "Employee Identity Number"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -306,6 +345,16 @@ msgid "Estate Manager"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
+msgid "Estate Structure"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_team_id
+msgid "Estate team."
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_day_finger
 msgid "Finger Day"
 msgstr ""
@@ -317,7 +366,15 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_estate_upkeep_labour_is_fingerprint
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_number_of_day_fingerprint
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_form
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_tree
 msgid "Fingerprint"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_fingerprint
+msgid "Fingerprint Action"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -333,8 +390,29 @@ msgid "Fingerprint Data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_attendance_date
+msgid "Fingerprint Date"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.actions.act_window,name:hr_fingerprint_ams.upfingerprint_reason_action
+#: model:ir.ui.menu,name:hr_fingerprint_ams.upfingerprint_reason_menu
+msgid "Fingerprint Reason"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_estate_hr_attendance_fingerprint
 msgid "Fingerprint Requirement"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_attendance_time
+msgid "Fingerprint Time"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_worked_hours
+msgid "Fingerprint Worked Hours"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -351,6 +429,7 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Group By"
 msgstr ""
 
@@ -388,6 +467,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_id
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_id
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_print_id
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_id
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_report_hr_fingerprint_ams_report_upkeep_fingerprint_id
 msgid "ID"
 msgstr ""
@@ -434,12 +514,6 @@ msgid "Labour Fingerprint"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: model:ir.actions.act_window,name:hr_fingerprint_ams.labour_fingerprint_report_action
-#: model:ir.ui.menu,name:hr_fingerprint_ams.labour_fingerprint_report_menu
-msgid "Labour Fingerprint Report"
-msgstr ""
-
-#. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.report_upkeep_fingerprint
 msgid "Laporan Kontrol HK dan Sidik jari"
 msgstr ""
@@ -448,6 +522,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance___last_update
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint___last_update
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_print___last_update
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint___last_update
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_report_hr_fingerprint_ams_report_upkeep_fingerprint___last_update
 msgid "Last Modified on"
 msgstr ""
@@ -492,7 +567,14 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_nik
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.report_upkeep_fingerprint
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_tree
 msgid "NIK"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_name
+msgid "Name"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -515,6 +597,11 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_day_normal
 msgid "Normal Day"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_number_of_day
+msgid "Number Of Day"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -568,6 +655,7 @@ msgstr ""
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Previous Month"
 msgstr ""
 
@@ -575,12 +663,23 @@ msgstr ""
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.inherited_hr_attendance_filter_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Previous Week"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.upkeep_fingerprint_wizard
 msgid "Print"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_action_reason_id
+msgid "Reason"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,help:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_employee_company_id
+msgid "Registered employee company."
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -614,14 +713,14 @@ msgid "Select period of activities to be displayed at report."
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:340
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:341
 #, python-format
 msgid "Selected records is not a confirmed data."
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:296
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:316
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:297
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:317
 #, python-format
 msgid "Selected records is not a draft data."
 msgstr ""
@@ -674,8 +773,15 @@ msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_fingerprint_team_id
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_team_id
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "Team"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_assistant_id
+msgid "Team Assistant"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -686,12 +792,14 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "This Month"
 msgstr ""
 
 #. module: hr_fingerprint_ams
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.fingerprint_attendance_view_search
 #: model:ir.ui.view,arch_db:hr_fingerprint_ams.labour_fingerprint_view_search
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
 msgid "This Year"
 msgstr ""
 
@@ -717,6 +825,21 @@ msgid "Today"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_form
+msgid "Upkeep"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_upkeep_date
+msgid "Upkeep Date"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.model,name:hr_fingerprint_ams.model_hr_fingerprint_ams_upfingerprint
+msgid "Upkeep Fingerprint"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.actions.report.xml,name:hr_fingerprint_ams.upkeep_fingerprint_report_action
 #: model:ir.ui.menu,name:hr_fingerprint_ams.estate_upkeep_fingerprint_report_menu
 #: model:ir.ui.menu,name:hr_fingerprint_ams.upkeep_fingerprint_report_menu
@@ -732,6 +855,13 @@ msgstr ""
 #. module: hr_fingerprint_ams
 #: model:ir.model,name:hr_fingerprint_ams.model_estate_upkeep_labour
 msgid "Upkeep Labour"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.actions.act_window,name:hr_fingerprint_ams.upfingerprint_action
+#: model:ir.ui.menu,name:hr_fingerprint_ams.upfingerprint_menu
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_pivot
+msgid "Upkeep To Fingerprint"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -755,8 +885,19 @@ msgid "Weekly"
 msgstr ""
 
 #. module: hr_fingerprint_ams
+#: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_upfingerprint_delta
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_search
+msgid "Without Fingerprint"
+msgstr ""
+
+#. module: hr_fingerprint_ams
 #: model:ir.model.fields,field_description:hr_fingerprint_ams.field_hr_fingerprint_ams_attendance_hour_work
 msgid "Work Hour"
+msgstr ""
+
+#. module: hr_fingerprint_ams
+#: model:ir.ui.view,arch_db:hr_fingerprint_ams.upfingerprint_view_graph
+msgid "Worked Days with Action Reason"
 msgstr ""
 
 #. module: hr_fingerprint_ams
@@ -791,19 +932,19 @@ msgid "Yes"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:311
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:312
 #, python-format
 msgid "You are not authorized to approve all fingerprint data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:335
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:336
 #, python-format
 msgid "You are not authorized to approve all fingerprint imported data"
 msgstr ""
 
 #. module: hr_fingerprint_ams
-#: code:addons/hr_fingerprint_ams/models/fingerprint.py:291
+#: code:addons/hr_fingerprint_ams/models/fingerprint.py:292
 #, python-format
 msgid "You are not authorized to confirm all fingerprint imported data"
 msgstr ""
