@@ -992,8 +992,6 @@ class StockPicking(models.Model):
 
         self.ensure_one()
 
-        print 'Packaging %d' % len(product.packaging_ids)
-
         if len(product.packaging_ids) > 0:
             pak = product.packaging_ids[0] # Always get first packaging
             pak_row = pak.rows

@@ -25,8 +25,6 @@ class InheritUpkeepLabour(models.Model):
         if start:
             end = (start + relativedelta(months=+1, days=-1))
 
-        print '_check_attendance_code start:%s, end:%s' % (start,end)
-
         upkeep_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
                                                               ('upkeep_date', '>=', start),
                                                               ('upkeep_date', '<=', end),
@@ -35,8 +33,6 @@ class InheritUpkeepLabour(models.Model):
         # Validate only attendance code withouth piece rate day
         if self.attendance_code_id.piece_rate is False:
             monthly_worked_days = sum(item.number_of_day for item in upkeep_ids) + self.number_of_day
-
-        print '_check_attendance_code %s' % monthly_worked_days
 
         if monthly_worked_days > monthly_limit:
             error_msg = _("%s has been work for more than %s days." % (self.employee_id.name, monthly_limit))

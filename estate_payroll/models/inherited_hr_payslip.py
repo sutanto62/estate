@@ -238,7 +238,6 @@ class Payslip(models.Model):
         """ Resolve compute sheet of payslips from tree view."""
         for record in self:
             record.compute_sheet()
-        print 'finish compute sheet all'
         return
 
     @api.model

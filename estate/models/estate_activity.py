@@ -71,10 +71,11 @@ class Activity(models.Model):
     wage_method = fields.Selection([('standard', 'Quantity Based'),
                                     ('attendance', 'Time Based')], 'Wage Method',
                                    default='standard', track_visibility="onchange",
-                                   help='* Quantity Based, wage calculated by quantity.\n'
+                                   help='* Quantity Based, wage calculated by quantity and standard productivity/day.\n'
                                         '* Time Based, wage calculated by attendance code.')
-    contract = fields.Boolean('Contract', default=False, track_visibility="onchange",
-                              help='Contract based activity allows upkeep record without number of day')
+    contract = fields.Boolean('Ignore standard productivity/day', default=False, track_visibility="onchange",
+                              help='Calculate wage based on piece rate productivity.\n'
+                                   'Use only if wage method set to Quantity Based.')
     user_company_id = fields.Many2one('res.company', 'Login User', help='Help to domain account based on user',
                                       default=_default_user_company_id)
 

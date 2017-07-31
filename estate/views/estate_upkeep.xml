@@ -156,6 +156,7 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <search default_order="date desc">
+                    <field name="name" string="BKM"/>
                     <field name="team_id"/>
                     <field name="division_id"/>
                     <field name="estate_id"/>
@@ -576,10 +577,10 @@
                     <field name="planted_year_id" string="PY"/>
                     <field name="number_of_day" string="Day(s)" sum="Day(s)"/>
                     <field name="quantity_overtime" digits="(8,2)" string="OT" sum="OT"/>
-                    <field name="quantity_piece_rate" digits="(8,2)" string="PR"/>
-                    <field name="wage_number_of_day" string="D Wage"/>
-                    <field name="wage_overtime" string="OT Wage"/>
-                    <field name="wage_piece_rate" string="PR Wage"/>
+                    <field name="quantity_piece_rate" digits="(8,2)" string="PR" sum="PR"/>
+                    <field name="wage_number_of_day" string="D Wage" sum="D Wage"/>
+                    <field name="wage_overtime" string="OT Wage" sum="OT Wage"/>
+                    <field name="wage_piece_rate" string="PR Wage" sum="PR Wage"/>
                     <field name="amount" string="Wage" sum="Wage"/>
                     <field name="prod_quantity_day" string="Prod (%)" avg="Productivity"/>
                     <field name="activity_contract" string="Ctr."/>

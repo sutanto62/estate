@@ -849,7 +849,7 @@ class UpkeepLabour(models.Model):
         for record in self:
             if record.attendance_code_id.contract:
                 record.activity_contract = True
-                return
+        return
 
     @api.one
     @api.depends('attendance_code_ratio', 'activity_standard_base', 'quantity')

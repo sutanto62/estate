@@ -38,6 +38,31 @@ class TestUpkeep(TransactionCase):
 
         self.Wage.create(wage_val)
 
+        self.attendance_code_contract = {
+            'name': 'Attendance Code With Contract',
+            'code': 'B',
+            'qty_ratio': 0,
+            'unit_amount': 8
+        }
+
+        self.val_upkeep = {
+            'date': datetime.today().strftime(DF),
+            'team_id': self.env.ref('estate.team_syukur').id,
+            'assistant_id': self.env.ref('hr.employee_al').id,
+            'division_id': self.env.ref('stock.stock_nursery').id,
+            'estate_id': self.env.ref('stock.stock_main_estate').id
+        }
+
+        self.val_activity = {
+            'name': 'Activity',
+            'type': 'normal',
+            'qty_base': 200,
+            'standard_price': 10,
+            'piece_rate_price': 8,
+            'activity_type': 'estate',
+            'wage_method': 'standard',
+        }
+
         val = {
             'date': datetime.today().strftime(DF),
             'team_id': self.env.ref('estate.team_syukur').id,
@@ -83,6 +108,56 @@ class TestUpkeep(TransactionCase):
 
         self.assertEqual(self.upkeep.labour_line_ids[0].number_of_day, 0.5)
         self.assertEqual(self.upkeep.labour_line_ids[1].number_of_day, 1.0)
+
+    def test_01_compute_activity_contract(self):
+        """ Check activity contract"""
+
+        # attendance code
+        att_contract = self.env['estate.hr.attendance'].create(self.attendance_code_contract)
+        self.assertTrue(att_contract)
+
+        # activity
+        val_activity_contract = self.val_activity
+        val_activity_contract['contract'] = True
+
+        activity_contract = self.env['estate.activity'].create(val_activity_contract)
+        self.assertTrue(activity_contract)
+
+        # upkeep
+        val = {
+            'date': datetime.today().strftime(DF),
+            'team_id': self.env.ref('estate.team_syukur').id,
+            'assistant_id': self.env.ref('hr.employee_al').id,
+            'division_id': self.env.ref('stock.stock_nursery').id,
+            'estate_id': self.env.ref('stock.stock_main_estate').id,
+            'activity_line_ids': [
+                (0, 0, {
+                    'activity_id': activity_contract.id,
+                    'unit_amount': 400,
+                }),
+            ],
+            'labour_line_ids': [
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_5').id,
+                    'activity_id': activity_contract.id,
+                    'attendance_code_id': att_contract.id,
+                    'quantity': 300
+                }),
+                (0, 0, {
+                    'employee_id': self.env.ref('estate.khl_4').id,
+                    'activity_id': activity_contract.id,
+                    'attendance_code_id': att_contract.id,
+                    'quantity': 100
+                }),
+            ]
+        }
+
+        upkeep_id = self.env['estate.upkeep'].create(val)
+        self.assertTrue(upkeep_id)
+
+        # check first labour has activity_contract true
+        for labor in upkeep_id['labour_line_ids']:
+            self.assertTrue(labor.activity_contract)
 
     def test_01_compute_number_of_day(self):
         """ Compute number of day for attendance, standard (and contract) based activity """

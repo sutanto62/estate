@@ -12,7 +12,7 @@
                     <field name="code"/>
                     <field name="complete_name"/>
                     <field name="uom_id" string="UoM"/>
-                    <field name="qty_base" string="Std. Qty."/>
+                    <field name="qty_base" string="Std. Qty./Day"/>
                     <field name="standard_price" digits="[16,2]"/>
                     <field name="wage_method"/>
                     <field name="contract"/>
@@ -41,7 +41,6 @@
                         <group name="type" string="Activity">
                             <field name="code"/>
                             <field name="activity_type"/>
-                            <field name="contract"/>
                         </group>
                     </group>
 
@@ -53,6 +52,7 @@
                                     <field name="standard_price"/>
                                     <field name="piece_rate_price"/>
                                     <field name="wage_method"/>
+                                    <field name="contract"/>
                                 </group>
                                 <group name="accounting_account" string="Account">
                                     <field name="general_account_id" domain="[('company_id', '=', user_company_id)]"/>
