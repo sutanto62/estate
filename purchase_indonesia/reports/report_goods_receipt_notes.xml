@@ -129,6 +129,7 @@
 								<!-- Variabel -->
 								<t t-set="idx" t-value="0"/>
 								<t t-set="delta" t-value="0"/>
+								<t t-set="is_warehouse" t-value="0"/>
 			           			
 			              		<!-- Detail Header -->
 			              		<div class="row" style="text-align:left;font-size:10pt;">
@@ -215,44 +216,93 @@
 			                        <div class="col-xs-12">	
 				                        <table width="100%" class="noborder">
 				                            <tr>
-				                                <td class="noborder" style="font-size:10pt;">
-				                                    Dikirim Oleh,
-				                                    <br></br>
-													<u><span t-field="o.shipper_by"/></u>
-													<br></br>
-				                                    <span t-field="o.create_date"/>
+				                                <td width="20%" class="noborder" style="font-size:10pt;">
+				                                    Dikirim Oleh
 				                                </td>
+				                                <td>
+													:&#160;<u><span t-field="o.shipper_by"/></u>
+													<br/>
+				                                    &#160;<span t-field="o.create_date"/>
+				                                </td>
+				                          	</tr>
+				                          	<tr>
 				                                <td class="noborder" style="font-size:10pt;">
-				                                    Diterima Oleh,
-				                                    <br></br>
+				                                    Diterima Oleh
+				                              	</td>
+				                              	<td>
 				                                    <t t-foreach="o.message_ids" t-as="mids">
 														<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-															<t t-if="mids_tracking.field == 'assigned_to'">
+															<t t-if="mids_tracking.field == 'assigned_to' and mids_tracking.old_value_integer == 0">
 																<u>
-																	<span t-field="mids.author_id"/>&#160;
+																:&#160;<span t-field="mids.author_id"/>&#160;
 																</u>
 																<br/>
-																<span t-field="mids.date"/>&#160;
+																&#160;<span t-field="mids.date"/>&#160;
 															</t>
 														</t>
 													</t>
 				                                </td>
+				                         	</tr>
+				                          	<tr>
 				                                <td class="noborder" style="font-size:10pt;">
-				                                    Disetujui Oleh,
-				                                    <br></br>
-				                                    <t t-foreach="o.message_ids" t-as="mids">
-														<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-															<t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
-																<u>
-																	<span t-field="mids.author_id"/>&#160;
-																</u>
-																<br/>
-																<span t-field="mids.date"/>&#160;
+				                                    Disetujui Oleh
+				                              	</td>
+				                              	<td>
+				                              	    <t t-foreach="o.message_ids" t-as="mids">	
+					                              	    <t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+															<t t-if="mids_tracking.field == 'validation_warehouse' and mids_tracking.new_value_integer == 1">
+																<t t-set="is_warehouse" t-value="1"/>
+															</t>
+														</t>
+													</t>
+													<t t-if="is_warehouse == 1">
+													    <t t-foreach="o.message_ids" t-as="mids">
+															<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+																<t t-if="mids_tracking.field == 'validation_warehouse' and mids_tracking.old_value_integer == 1">
+																	<u>
+																	:&#160;<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																	&#160;<span t-field="mids.date"/>&#160;
+																</t>
+															</t>
+														</t>
+													</t>
+													<t t-if="is_warehouse == 0">	    
+					                                    <t t-foreach="o.message_ids" t-as="mids">
+															<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+																<t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
+																	<u>
+																	:&#160;<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																	&#160;<span t-field="mids.date"/>&#160;
+																</t>
 															</t>
 														</t>
 													</t>
 				                                </td>
 				                            </tr>
+				                            <t t-if="is_warehouse == 1">
+					                            <tr>
+				                                    <t t-foreach="o.message_ids" t-as="mids">
+														<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+															<t t-if="mids_tracking.field == 'state' and (mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai')">
+																<td class="noborder" style="font-size:10pt;">
+								                                    Warehouse Administrator
+								                              	</td>
+								                              	<td>
+																	<u>
+																	:&#160;<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																	&#160;<span t-field="mids.date"/>&#160;
+																</td>
+															</t>
+														</t>
+													</t>
+					                            </tr>
+				                            </t>
 				                     	</table>
 				                  	</div>
 				               	</div>	

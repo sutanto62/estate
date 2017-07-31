@@ -34,6 +34,7 @@
                      <field name="description" string="Description"/>
                  </xpath>
                  <xpath expr="//field[@name='origin']" position="after">
+                     <field name="validation_warehouse" string="Validation Warehouse" invisible="1"/>
                      <field name="validation_check_approve" invisible="1"/>
                      <field name="validation_manager" invisible="1"/>
                      <field name="validation_procurement" invisible="1"/>
@@ -57,7 +58,7 @@
 
                  </xpath>
                  <xpath expr="//button[@name='do_new_transfer']" position="replace">
-                     <button name="do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate Manager"  type="object" class="oe_highlight"/>
+                     <button name="do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate"  type="object" class="oe_highlight"/>
                  </xpath>
                  <xpath expr="//button[@name='show_details']" position="before">
                      <field name="checking_split" invisible="1"/>

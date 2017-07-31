@@ -48,7 +48,7 @@ class InheritStockPicking(models.Model):
 
     @api.multi
     def get_stock_manager(self):
-        return self.env.ref('stock.group_stock_manager',False).id
+        return self.env.ref('purchase_request.group_purchase_request_warehouse',False).id
 
     @api.multi
     def _get_user(self):
@@ -104,7 +104,7 @@ class InheritStockPicking(models.Model):
         try:
             manager_stock = self.env['res.users'].search([('id','in',arrStockManager)],limit = 1).id
         except:
-            raise exceptions.ValidationError('User Role Estate Manager Not Found in User Access')
+            raise exceptions.ValidationError('Purchase Request Warehouse Administrator not found, please assign one user in Purchase Request module')
 
         return manager_stock
 
@@ -161,27 +161,36 @@ class InheritStockPicking(models.Model):
             technic_user_id = 0
             purchase_request = item.env['purchase.request'].search([('id','=',item._get_purchase_request_id())])
 
-            if purchase_request.code == 'KOKB' :
-
-                if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
-                    technic_user_id = item._get_manager_requested_by()
-                elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
-                    technic_user_id = purchase_request._get_technic_ict()
-                elif purchase_request.type_functional == 'technic':
-                    technic_user_id = item._get_stock_manager()
-                elif purchase_request.type_functional == 'agronomy':
-                    technic_user_id = item._get_stock_manager()
-
-            elif purchase_request.code == 'KPST' :
-
-                if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
-                    technic_user_id = item._get_manager_requested_by()
-                elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
-                    technic_user_id = purchase_request._get_technic_ict()
-                elif purchase_request.type_functional == 'technic':
-                    technic_user_id = purchase_request._get_technic_ie()
-                elif purchase_request.type_functional == 'agronomy':
-                    technic_user_id = item._get_estate_manager()
+#             if purchase_request.code == 'KOKB' :
+# 
+#                 if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
+#                     technic_user_id = item._get_manager_requested_by()
+#                 elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+#                     technic_user_id = purchase_request._get_technic_ict()
+#                 elif purchase_request.type_functional == 'technic':
+#                     technic_user_id = item._get_stock_manager()
+#                 elif purchase_request.type_functional == 'agronomy':
+#                     technic_user_id = item._get_stock_manager()
+# 
+#             elif purchase_request.code == 'KPST' :
+# 
+#                 if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
+#                     technic_user_id = item._get_manager_requested_by()
+#                 elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+#                     technic_user_id = purchase_request._get_technic_ict()
+#                 elif purchase_request.type_functional == 'technic':
+#                     technic_user_id = purchase_request._get_technic_ie()
+#                 elif purchase_request.type_functional == 'agronomy':
+#                     technic_user_id = item._get_estate_manager()
+            
+            if purchase_request.type_functional == 'general' and purchase_request.department_id.code in item._get_department_code():
+                technic_user_id = item._get_manager_requested_by()
+            elif purchase_request.type_functional == 'general' and purchase_request.department_id.code == 'ICT':
+                technic_user_id = purchase_request._get_technic_ict()
+            elif purchase_request.type_functional == 'technic':
+                technic_user_id = purchase_request._get_technic_ie()
+            elif purchase_request.type_functional == 'agronomy':
+                technic_user_id = item._get_estate_manager()
 
             return technic_user_id
 
@@ -258,6 +267,7 @@ class InheritStockPicking(models.Model):
     validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
     validation_check_approve = fields.Boolean('Validation checking approve',compute='_check_validation_manager')
     validation_procurement = fields.Boolean('Validation Procurement')
+    validation_warehouse = fields.Boolean('Validation Warehouse',track_visibility='onchange',default=False)
     description = fields.Text('Description')
     pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
     purchase_order_name = fields.Char('Purchase Order Complete Name',related='purchase_id.complete_name',store=True)
@@ -395,10 +405,18 @@ class InheritStockPicking(models.Model):
                                 }
                     elif record.qty_done == record.product_qty:
                         item._get_technical_user_id()
-                        item.write({
-                            'validation_manager':True,
-                            'assigned_to':item._get_technical_user_id()
-                        })
+                        purchase_request = item.env['purchase.request'].search([('id','=',self._get_purchase_request_id())])
+                        if purchase_request.code == 'KOKB' and purchase_request.type_product == 'product' :
+                            item.write({
+                                'validation_manager':True,
+                                'assigned_to':item._get_technical_user_id(),
+                                'validation_warehouse':True
+                            })
+                        else:
+                            item.write({
+                                'validation_manager':True,
+                                'assigned_to':item._get_technical_user_id()
+                            })
 
                     item.send_mail_template()
 
@@ -540,6 +558,14 @@ class InheritStockPicking(models.Model):
 
     @api.multi
     def do_new_transfer(self):
+#         validation warehouse is check variable if this GRN need to be checked by warehouse
+        if self.validation_warehouse == True :
+            self.write({
+                'assigned_to':self._get_stock_manager(),
+                'validation_warehouse': False
+            })
+            self.send_mail_template()
+        else:
             arrOutstanding = []
 
             #update Quantity Received in Purchase Tender after shipping
