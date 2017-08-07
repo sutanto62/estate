@@ -265,10 +265,14 @@
             <field name="model">hr_fingerprint_ams.upfingerprint</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
-                <tree colors="red:number_of_day_fingerprint==0">
+                <tree colors="red:number_of_day_fingerprint==0" default_order="division_id,team_id,employee_id,upkeep_date">
+                    <field name="division_id"/>
+                    <field name="assistant_id"/>
+                    <field name="team_id"/>
                     <field name="employee_id"/>
                     <field name="nik_number" string="NIK"/>
                     <field name="upkeep_date"/>
+                    <field name="attendance_code"/>
                     <field name="fingerprint"/>
                     <field name="attendance_time"
                            attrs="{'invisible': [('fingerprint', '=','action')]}"/>
@@ -316,6 +320,7 @@
                             </group>
                             <group name="upkeep" string="Upkeep">
                                 <field name="upkeep_date"/>
+                                <field name="attendance_code"/>
                                 <field name="number_of_day"/>
                             </group>
                         </group>

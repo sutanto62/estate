@@ -64,7 +64,6 @@ class Employee(models.Model):
 
         seq_obj = self.env['ir.sequence']
         nik_prefix = employee.nik_number[0:3]
-        print 'nik_prefix %s' % nik_prefix
 
         # make sure return singleton
         sequence_id = seq_obj.search([('prefix', 'like', '%' + nik_prefix),

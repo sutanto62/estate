@@ -105,11 +105,11 @@ class UpkeepFingerprint(models.Model):
     name = fields.Char('Name', compute='_compute_name')
     employee_company_id = fields.Many2one('res.company', 'Company',
                                           help='Registered employee company.')
-    assistant_id = fields.Many2one('hr.employee', 'Team Assistant',
+    assistant_id = fields.Many2one('hr.employee', 'Assistant',
                                    help='Assistant of team.')
     team_id = fields.Many2one('estate.hr.team', 'Team',
                               help='Estate team.')
-    division_id = fields.Many2one(related='team_id.division_id', store=True,
+    division_id = fields.Many2one(related='team_id.division_id', string="Team Division", store=True,
                                   help='Division of team.')
     employee_id = fields.Many2one('hr.employee', 'Employee')
     nik_number = fields.Char('Employee Identity Number')
@@ -126,115 +126,94 @@ class UpkeepFingerprint(models.Model):
     number_of_day_fingerprint = fields.Integer('Fingerprint')
     delta = fields.Float('Without Fingerprint', digits=dp.get_precision('Fingerprint'))
     # work_schedules = fields.Char(related='finger_attendance_id.work_schedules')
+    attendance_code = fields.Char('Attendance Code', help="Multiple attendance code separated by coma.")
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'public.hr_fingerprint_ams_upfingerprint')
         cr.execute(
             """
-            CREATE or REPLACE VIEW public.hr_fingerprint_ams_upfingerprint
-            as
-            select
-                row_number() OVER (ORDER BY concat(a.employee_id, '/', a.upkeep_date)) AS id,
-                a.employee_company_id "employee_company_id",
-                e.assistant_id "assistant_id",
-                a.upkeep_team_id "team_id",  -- salah (kemandoran khl)
-                e.division_id "division_id",
-                a.employee_id "employee_id",
-                b.nik_number "nik_number",
-                b.contract_type "contract_type",
-                b.contract_period "contract_period",
-                a.upkeep_date "upkeep_date",
-                max( a.number_of_day ) "number_of_day",
-                c.attendance_date "attendance_date",
-                c.attendance_time "attendance_time",
-                c.fingerprint,
-                c.action_reason "action_reason_id",
-                c.worked_hours,
-                case
-                    when c.worked_hours > 0 then 1
-                    else 0
-                end "number_of_day_fingerprint",
-                (
-                    abs( sum( a.number_of_day )- case when c.worked_hours > 0 then 1 else 0 end )+(
-                        sum( a.number_of_day )- case
-                            when c.worked_hours > 0 then 1
-                            else 0
-                        end
-                    )
-                )/ 2 "delta"
-            from
-                estate_upkeep_labour a 
-                inner join hr_employee b on b.id = a.employee_id 
-                left join(
-                    select
-                        employee_id,
-                        name::date "attendance_date",
-                        string_agg(
-                            (
-                                name::time
-                            )::text,
-                            ','
-                        order by
-                            name
-                        ) "attendance_time",
-                        string_agg(
-                            action::text,
-                            ','
-                        order by
-                            action
-                        ) "fingerprint",
-                        action_desc "action_reason",
-                        sum( worked_hours ) "worked_hours"
-                    from
-                        hr_attendance
-                    where
-                        employee_id in(
-                            select
-                                id
-                            from
-                                hr_employee
-                            where
-                                contract_period = '2'
-                        )
-                    group by
-                        1,
-                        2,
-                        5
-                    order by
-                        1,
-                        2,
-                        3
-                ) c on c.employee_id = a.employee_id
-                and(
-                    c.attendance_date = a.upkeep_date
-                )
-                left join estate_hr_team e on e.id = a.upkeep_team_id
-            where
-                b.contract_period = '2'
-            group by
+            CREATE OR REPLACE VIEW public.hr_fingerprint_ams_upfingerprint AS
+             SELECT row_number() OVER (ORDER BY (concat(a.employee_id, '/', a.upkeep_date))) AS id,
                 a.employee_company_id,
                 e.assistant_id,
-                a.upkeep_team_id,
+                a.upkeep_team_id AS team_id,
                 e.division_id,
                 a.employee_id,
                 b.nik_number,
                 b.contract_type,
                 b.contract_period,
                 a.upkeep_date,
+                sum(a.number_of_day) AS number_of_day,
                 c.attendance_date,
                 c.attendance_time,
                 c.fingerprint,
-                c.action_reason,
-                c.worked_hours
-            order by
-                1,
-                2,
-                3,
-                4,
-                5,
-                9;
+                c.action_reason AS action_reason_id,
+                c.worked_hours,
+                    CASE
+                        WHEN c.worked_hours > 0::numeric THEN 1
+                        ELSE 0
+                    END AS number_of_day_fingerprint,
+                (abs(sum(a.number_of_day) -
+                    CASE
+                        WHEN c.worked_hours > 0::numeric THEN 1
+                        ELSE 0
+                    END::double precision) + (sum(a.number_of_day) -
+                    CASE
+                        WHEN c.worked_hours > 0::numeric THEN 1
+                        ELSE 0
+                    END::double precision)) / 2::double precision AS delta,
+                string_agg(f.code::text, ','::text) AS attendance_code
+               FROM estate_upkeep_labour a
+                 JOIN hr_employee b ON b.id = a.employee_id
+                 LEFT JOIN ( SELECT hr_attendance.employee_id,
+                        hr_attendance.name::date AS attendance_date,
+                        string_agg(hr_attendance.name::time without time zone::text, ','::text ORDER BY hr_attendance.name) AS attendance_time,
+                        string_agg(hr_attendance.action::text, ','::text ORDER BY hr_attendance.action) AS fingerprint,
+                        hr_attendance.action_desc AS action_reason,
+                        sum(hr_attendance.worked_hours) AS worked_hours
+                       FROM hr_attendance
+                      WHERE (hr_attendance.employee_id IN ( SELECT hr_employee.id
+                               FROM hr_employee
+                              WHERE hr_employee.contract_period::text = '2'::text))
+                      GROUP BY hr_attendance.employee_id, (hr_attendance.name::date), hr_attendance.action_desc
+                      ORDER BY hr_attendance.employee_id, (hr_attendance.name::date), (string_agg(hr_attendance.name::time without time zone::text, ','::text ORDER BY hr_attendance.name))) c ON c.employee_id = a.employee_id AND c.attendance_date = a.upkeep_date
+                 LEFT JOIN estate_hr_team e ON e.id = a.upkeep_team_id
+                 LEFT JOIN estate_hr_attendance f ON f.id = a.attendance_code_id
+              WHERE b.contract_period::text = '2'::text AND a.activity_contract = false
+              GROUP BY a.employee_company_id, e.assistant_id, a.upkeep_team_id, e.division_id, a.employee_id, b.nik_number, b.contract_type, b.contract_period, a.upkeep_date, c.attendance_date, c.attendance_time, c.fingerprint, c.action_reason, c.worked_hours
+              ORDER BY (row_number() OVER (ORDER BY (concat(a.employee_id, '/', a.upkeep_date)))), a.employee_company_id, e.assistant_id, a.upkeep_team_id, e.division_id, b.contract_period;
             """
         )
+
+        # Error update hr team due to postgres updateable views
+        cr.execute(
+            """
+            CREATE OR REPLACE FUNCTION hr_fingerprint_ams_upfingerprint_dml()
+            RETURNS TRIGGER
+            LANGUAGE plpgsql
+            AS $function$
+               BEGIN
+                  IF TG_OP = 'UPDATE' THEN
+                    UPDATE estate_hr_team 
+                        SET id=NEW.id, division_id=NEW.division_id WHERE id=OLD.id;
+                    UPDATE estate_upkeep_labour 
+                        SET id=NEW.id, division_id=NEW.division_id WHERE id=OLD.id;
+                    RETURN NEW;
+                  END IF;
+                  RETURN NEW;
+                END;
+            $function$;
+            """
+        )
+
+        cr.execute(
+            """
+            CREATE TRIGGER hr_fingerprint_ams_upfingerprint_trigger
+                INSTEAD OF UPDATE ON
+                    hr_fingerprint_ams_upfingerprint FOR EACH ROW EXECUTE PROCEDURE hr_fingerprint_ams_upfingerprint_dml();
+            """
+        )
+
 
     @api.multi
     def _compute_name(self):
