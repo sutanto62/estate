@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_fingerprint">
+            <t t-call="report.html_container">
+                <div class="page">
+                    <!-- !important override bootstrap td's -->
+                    <style>
+                        table.table-condensed td {
+                            padding: 2px 4px !important;
+                        }
+
+                        table.bordered {
+                            border: 1px solid black !important;
+                        }
+
+                    </style>
+
+                    <!--header-->
+                    <h2 class="text-center">Laporan Presensi CST</h2>
+                    <table class="table-condensed table-borderless" width="100%">
+                        <tr>
+                            <td class="align-top col-md-6">
+                                <table>
+                                    <tr>
+                                        <td>Tanggal</td>
+                                        <td>
+                                            <t t-esc="datetime.datetime.strptime(str(data['form']['date_start']), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
+                                            - <t t-esc="datetime.datetime.strptime(str(data['form']['date_end']), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Perusahaan</td>
+                                        <td><t t-if="data['form']['company_id']"><t t-esc="str(data['form']['company_id'][1])"/></t></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Departemen</td>
+                                        <td><t t-if="data['form']['department_id']"><t t-esc="str(data['form']['department_id'][1])"/></t></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Karyawan</td>
+                                        <td>
+                                            <t t-if="data['form']['contract_type']">
+                                                <t t-if="data['form']['contract_type']=='1'">PKWTT</t><t t-if="data['form']['contract_type']=='2'">PKWT</t>
+                                            </t>
+                                            <t t-if="data['form']['contract_period']">
+                                                - <t t-if="data['form']['contract_period']=='1'">Bulanan</t><t t-if="data['form']['contract_period']=='2'">Harian</t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="align-top text-right col-md-6">
+                                <table>
+                                    <t t-foreach="remarks" t-as="r">
+                                        <tr>
+                                            <td><t t-esc="r['reason']"/></td>
+                                            <td class="text-right"><t t-esc="r['person']"/> orang</td>
+                                            <td class="text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--/header-->
+
+                    <!--attendance-->
+                    <table class="table table-condensed table-bordered" style="font-size:65%;padding:0px;">
+
+                        <!--sum variable-->
+                        <t t-set="p_day_normal" t-value="0"/>
+                        <t t-set="p_leave" t-value="0"/>
+                        <t t-set="p_sick" t-value="0"/>
+                        <t t-set="p_permit" t-value="0"/>
+                        <t t-set="p_business_trip" t-value="0"/>
+                        <t t-set="p_out_office" t-value="0"/>
+                        <t t-set="p_no_reason" t-value="0"/>
+                        <t t-set="p_day_finger" t-value="0"/>
+                        <t t-set="p_piece_rate_day" t-value="0"/>
+                        <t t-set="p_hour_late_office" t-value="0"/>
+                        <t t-set="p_late_amount_office" t-value="0"/>
+                        <t t-set="p_estate_late" t-value="0"/>
+                        <t t-set="p_estate_late_amount" t-value="0"/>
+                        <t t-set="p_labor_late_circle" t-value="0"/>
+                        <t t-set="p_labor_late_circle_amount" t-value="0"/>
+                        <t t-set="p_labor_late" t-value="0"/>
+                        <t t-set="p_labor_late_amount" t-value="0"/>
+                        <t t-set="p_hour_early_leave" t-value="0"/>
+                        <t t-set="p_labor_early_leave" t-value="0"/>
+                        <t t-set="p_sign_percent" t-value="0"/>
+                        <t t-set="p_sign_percent_divide" t-value="0"/>
+                        <t t-set="p_hour_work_float" t-value="0"/>
+                        <t t-set="p_average_day_work" t-value="0"/>
+                        <t t-set="p_average_day_work_divide" t-value="0"/>
+                        <!--/sum variable-->
+                        
+                        <!--attendance header-->
+                        <thead>
+                            <tr>
+                                <td>NIK</td>
+                                <td>Karyawan</td>
+                                <td>Normal Hari Kerja</td>
+                                <td>Cuti</td>
+                                <td>Sakit</td>
+                                <td>Ijin</td>
+                                <td>Dinas Luar</td>
+                                <td>Keluar Kantor</td>
+                                <td>Mangkir</td>
+                                <td>Riil Hari Kerja</td>
+                                <td>Premi HK2</td>
+                                <td>Terlambat (Menit) Kary Kantor</td>
+                                <td>Terlambat (X) Kary Kantor</td>
+                                <td>Terlambat (Menit) Kebun</td>
+                                <td>Terlambat (X) Kebun</td>
+                                <td>Terlambat (Menit) KHL Apel</td>
+                                <td>Terlambat (X) KHL Apel</td>
+                                <td>Terlambat (Menit) KHL Kerja</td>
+                                <td>Terlambat (X) KHL Kerja</td>
+                                <td>Pulang Cepat (Menit) All</td>
+                                <td>CPLG</td>
+                                <td>Avg Persen Scan</td>
+                                <td>Jumlah Jam Kerja (Jam)</td>
+                                <td>Avg Rata-Rata</td>
+                            </tr>
+                        </thead>
+                        <!--/attendance header-->
+
+                        <!--attendance body-->
+                        <tbody>
+                            <!--initial department-->
+                            <t t-foreach="departments" t-as="department">
+                                <tr>
+                                    <td colspan="24" style="font-size: 120% !important;"><strong><t t-esc="department"/></strong></td>
+                                </tr>
+
+                                <t t-foreach="attendances" t-as="a">
+                                    <t t-if="department == a['department']">
+                                        <tr>
+                                            <td><t t-esc="a['nik']"/></td>
+                                            <td><t t-esc="a['employee_name']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_day_normal']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_leave']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_sick']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_permit']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_business_trip']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_out_office']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_no_reason']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_day_finger']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_piece_rate_day']"/></td>
+                                            <td class="text-right" t-att-style="get_color('p_hour_late_office',a['p_hour_late_office'])"><t t-esc="a['p_hour_late_office']"/></td>
+                                            <td class="text-right" t-att-style="get_color('p_late_amount_office',a['p_late_amount_office'])"><t t-esc="a['p_late_amount_office']"/></td>
+                                            <td class="text-right" t-att-style="get_color('p_estate_late',a['p_estate_late'])"><t t-esc="a['p_estate_late']"/></td>
+                                            <td class="text-right" t-att-style="get_color('p_estate_late_amount',a['p_estate_late_amount'])"><t t-esc="a['p_estate_late_amount']"/></td>
+                                            <td class="text-right" t-att-style="get_color('p_labor_late_circle',a['p_labor_late_circle'])"><t t-esc="a['p_labor_late_circle']"/></td>
+                                            <td class="text-right" t-att-style="get_color('p_labor_late_circle_amount',a['p_labor_late_circle_amount'])"><t t-esc="a['p_labor_late_circle_amount']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_labor_late']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_labor_late_amount']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_hour_early_leave']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_labor_early_leave']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_sign_percent']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_hour_work_float']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_average_day_work']"/></td>
+                                        </tr>
+
+                                        <!--calculate-->
+                                        <t t-set="p_day_normal" t-value="p_day_normal+a['p_day_normal']"/>
+                                        <t t-set="p_leave" t-value="p_leave+a['p_leave']"/>
+                                        <t t-set="p_sick" t-value="p_sick+a['p_sick']"/>
+                                        <t t-set="p_permit" t-value="p_permit+a['p_permit']"/>
+                                        <t t-set="p_business_trip" t-value="p_business_trip+a['p_business_trip']"/>
+                                        <t t-set="p_out_office" t-value="p_out_office+a['p_out_office']"/>
+                                        <t t-set="p_no_reason" t-value="p_no_reason+a['p_no_reason']"/>
+                                        <t t-set="p_day_finger" t-value="p_day_finger+a['p_day_finger']"/>
+                                        <t t-set="p_piece_rate_day" t-value="p_piece_rate_day+a['p_piece_rate_day']"/>
+                                        <t t-set="p_hour_late_office" t-value="p_hour_late_office+a['p_hour_late_office']"/>
+                                        <t t-set="p_late_amount_office" t-value="p_late_amount_office+a['p_late_amount_office']"/>
+                                        <t t-set="p_estate_late" t-value="p_estate_late+a['p_estate_late']"/>
+                                        <t t-set="p_estate_late_amount" t-value="p_estate_late_amount+a['p_estate_late_amount']"/>
+                                        <t t-set="p_labor_late_circle" t-value="p_labor_late_circle+a['p_labor_late_circle']"/>
+                                        <t t-set="p_labor_late_circle_amount" t-value="p_labor_late_circle_amount+a['p_labor_late_circle_amount']"/>
+                                        <t t-set="p_labor_late" t-value="p_labor_late+a['p_labor_late']"/>
+                                        <t t-set="p_labor_late_amount" t-value="p_labor_late_amount+a['p_labor_late_amount']"/>
+                                        <t t-set="p_hour_early_leave" t-value="p_hour_early_leave+a['p_hour_early_leave']"/>
+                                        <t t-set="p_labor_early_leave" t-value="p_labor_early_leave+a['p_labor_early_leave']"/>
+                                        <t t-set="p_sign_percent" t-value="p_sign_percent+a['p_sign_percent']"/>
+                                        <t t-set="p_sign_percent_divide" t-value="p_sign_percent_divide+1"/>
+                                        <t t-set="p_hour_work_float" t-value="p_hour_work_float+a['p_hour_work_float']"/>
+                                        <t t-set="p_average_day_work" t-value="p_average_day_work+a['p_average_day_work']"/>
+                                        <t t-set="p_average_day_work_divide" t-value="p_average_day_work_divide+1"/>
+                                        <!--/calculate-->
+                                    </t>
+                                </t>
+                            </t>
+
+                        </tbody>
+                        <!--/attendance body-->
+
+                        <!--attendance footer-->
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total</td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_day_normal)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_leave)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_sick)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_permit)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_business_trip)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_out_office)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_no_reason)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_day_finger)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_piece_rate_day)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_late_office)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_late_amount_office)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_estate_late)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_estate_late_amount)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_circle)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_circle_amount)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_amount)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_early_leave)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_early_leave)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_sign_percent/p_sign_percent_divide)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_work_float)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_average_day_work/p_average_day_work_divide)"/></strong></td>
+                            </tr>
+                        </tfoot>
+                        <!--/attendance footer-->
+                    </table>
+                    <!--/attendance-->
+
+                     <cite>Data perusahaan, departemen, status PKWT/PKWTT harian/bulanan sesuai data karyawan pada saat sinkronisasi
+                    sidik jari dari AMS ke Odoo dilakukan. Perubahan data setelah proses sinkronisasi tidak merupah laporan presensi.</cite>
+                </div>
+            </t>
+        </template>
+    </data>
+</openerp>

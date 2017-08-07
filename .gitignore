@@ -43,3 +43,6 @@ var/
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Exclude oerpscenario
+oerpscenario

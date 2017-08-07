@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, tools, api
+from openerp.tools.translate import _
 from openerp.exceptions import MissingError
 import openerp.addons.decimal_precision as dp
 
@@ -127,6 +128,8 @@ class UpkeepFingerprint(models.Model):
     delta = fields.Float('Without Fingerprint', digits=dp.get_precision('Fingerprint'))
     # work_schedules = fields.Char(related='finger_attendance_id.work_schedules')
     attendance_code = fields.Char('Attendance Code', help="Multiple attendance code separated by coma.")
+    # additional fields for UI
+    upkeep_labour_count = fields.Integer('Upkeep Labour', compute='_compute_upkeep_labour_count')
 
     def init(self, cr):
         tools.drop_view_if_exists(cr, 'public.hr_fingerprint_ams_upfingerprint')
@@ -214,10 +217,63 @@ class UpkeepFingerprint(models.Model):
             """
         )
 
+    @api.multi
+    def _compute_upkeep_labour_count(self):
+        """
+        Display number of upkeep represented by a single fingerprint
+        :return: integer
+        """
+        res = len(self._get_upkeep_labour())
+        self.upkeep_labour_count = res
+        return res
 
     @api.multi
     def _compute_name(self):
         self.ensure_one()
         res = self.employee_id.name_related + ' ' + self.upkeep_date
         self.name = res
+        return res
+
+    @api.multi
+    def _get_upkeep_labour(self):
+        """
+        Use by several function
+        :return: integer
+        """
+        upkeep_labour_ids = self.env['estate.upkeep.labour'].search([('employee_id', '=', self.employee_id.id),
+                                                                     ('upkeep_date', '=', self.upkeep_date),
+                                                                     ('state', 'in',
+                                                                      ['confirmed', 'approved', 'payslip'])])
+        res = upkeep_labour_ids.ids
+        return res
+
+    @api.multi
+    def action_open_labour(self):
+        """
+        User required to view upkeep labour from fingerprint data
+        :return: view
+        """
+        context = self._context.copy()
+        # turn off default filter
+        context.update({'search_default_filter_month': 0})
+
+        view_id = self.env.ref('estate_payroll.payslip_upkeep_labour_view_tree').id
+
+        # Payslip only processed approved upkeep labour of selected employee within payslip period
+        upkeep_labour_filter = [('id', 'in', self._get_upkeep_labour())]
+
+        res = {
+            'name': _('Upkeep Labour Records %s' % self.employee_id.name),
+            'view_type': 'form',
+            'view_mode': 'tree',
+            'views': [(view_id, 'tree')],
+            'res_model': 'estate.upkeep.labour',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'domain': upkeep_labour_filter,
+        }
+
+        print 'action_open_labour %s' % res
+
         return res

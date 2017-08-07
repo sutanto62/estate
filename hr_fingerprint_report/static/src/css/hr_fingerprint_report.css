@@ -1,0 +1,23 @@
+table.table-condensed td {
+    padding: 2px 4px !important;
+}
+
+table.bordered{
+    border: 1px solid black !important;
+}
+@media print {
+  *,
+  *:before,
+  *:after {
+    color: green !important;
+    text-shadow: none !important;
+    background: transparent !important;
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+  }
+
+@media print {
+    td.redbanget {
+        color: red !important;
+    }
+}

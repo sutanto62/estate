@@ -23,35 +23,35 @@ class FingerAttendance(models.Model):
     _description = 'Fingerprint Attendance'
     _rec_name = 'employee_name'
 
-    db_id = fields.Integer('ID MDB')
+    db_id = fields.Integer('DB ID')
     terminal_id = fields.Integer('Terminal ID')
     nik = fields.Char('NIK')
     employee_name = fields.Char('Employee Name')
-    auto_assign = fields.Boolean('Auto Assign')
+    auto_assign = fields.Boolean('Auto-Assign')
     date = fields.Date('Date')
-    work_schedules = fields.Char('Working Schedule', help='Used to look up resource calendar.')
+    work_schedules = fields.Char('Work Schedules', help='Used to look up resource calendar.')
     time_start = fields.Float('Working Time Start', help='Time format in hh:mm')
     time_end = fields.Float('Working Time End', help='Time format in hh:mm')
     sign_in = fields.Float('Sign In', help='Time format in hh:mm')
     sign_out = fields.Float('Sign Out', help='Time format in hh:mm')
-    day_normal = fields.Integer('Normal Day')
-    day_finger = fields.Integer('Finger Day')
-    hour_late = fields.Float('Late In', help='Time format in hh:mm')
-    hour_early_leave = fields.Float('Early Out', help='Time format in hh:mm')
+    day_normal = fields.Integer('Day Normal')
+    day_finger = fields.Integer('Day Finger')
+    hour_late = fields.Float('Hour Late', help='Time format in hh:mm')
+    hour_early_leave = fields.Float('Hour Early Leave', help='Time format in hh:mm')
     absent = fields.Boolean('Absent')
-    hour_overtime = fields.Float('Overtime', help='Time format in hh:mm')
-    hour_work = fields.Float('Work Hour', help='Time format in hh:mm')
+    hour_overtime = fields.Float('Hour Overtime', help='Time format in hh:mm')
+    hour_work = fields.Float('Hour Work', help='Time format in hh:mm')
     action_reason = fields.Char('Action Reason', help='Attendance Action Desc')
-    required_in = fields.Boolean('Required Sign In')
-    required_out = fields.Boolean('Required Sign Out')
-    department = fields.Char('Department')
-    day_normal = fields.Integer('Normal Day')
-    day_weekend = fields.Integer('Weekend Day')
+    required_in = fields.Boolean('Required In')
+    required_out = fields.Boolean('Required Out')
+    department = fields.Char('Departemen')
+    day_weekday = fields.Integer('Weekday')
+    day_weekend = fields.Integer('Weekend')
     day_holiday = fields.Integer('Holiday')
-    hour_attendance = fields.Float('Attendance Hour', help='Time format in hh:mm')
-    hour_ot_normal = fields.Float('Overtime Hour', help='Time format in hh:mm')
-    hour_ot_weekend = fields.Float('Weekend Work Hour', help='Time format in hh:mm')
-    hour_ot_holiday = fields.Float('Holiday Work Hour', help='Time format in hh:mm')
+    hour_attendance = fields.Float('Hour Attendance', help='Time format in hh:mm')
+    hour_ot_normal = fields.Float('Hour OT Normal', help='Time format in hh:mm')
+    hour_ot_weekend = fields.Float('Hour OT Weekend', help='Time format in hh:mm')
+    hour_ot_holiday = fields.Float('Hour OT Holiday', help='Time format in hh:mm')
     attendance_ids = fields.One2many('hr.attendance', 'finger_attendance_id', 'HR Attendance')
     state = fields.Selection([('draft', 'Draft'),
                               ('confirmed', 'Confirmed'),
@@ -101,13 +101,9 @@ class FingerAttendance(models.Model):
 
         if att_rule.is_satisfied_by(attendance):
             if current:
-                # Only update fingerprint attendance with draft status
+                # update draft only
                 if current.state == 'draft':
-                    update_vals = {
-                        'sign_in': vals['sign_in'],
-                        'sign_out': vals['sign_out']
-                    }
-                    current.write(update_vals)
+                    current.write(vals)
                     res = current
                     self._create_attendance(res, vals, 'sign_in', True)
                     self._create_attendance(res, vals, 'sign_out', True)
@@ -117,7 +113,6 @@ class FingerAttendance(models.Model):
                 self._create_attendance(res, vals, 'sign_out')
         else:
             # Applied when there is no attendance code with single fingerprint requirements
-
             # Prevent create fingerprint attendance if employee not found
             try:
                 self._get_employee(vals['employee_name'], vals['nik']).id
@@ -134,6 +129,8 @@ class FingerAttendance(models.Model):
             item = []
             for action_reason in action_reason_ids:
                 item.append(action_reason['name'])
+
+            print 'Date: %s and action reason: %s' % (vals['date'], vals['action_reason'])
             if vals['action_reason'] in item:
                 if current:
                     # Only update fingerprint attendance with draft status

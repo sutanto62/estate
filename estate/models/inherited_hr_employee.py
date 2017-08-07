@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, _
+from openerp.exceptions import ValidationError
+from datetime import datetime, timedelta
+from dateutil import relativedelta
 
 
 class Employee(models.Model):
@@ -44,3 +47,39 @@ class Employee(models.Model):
         else:
             return super(Employee, self).generate_nik(vals)
 
+    @api.multi
+    def toggle_active(self):
+        """ Employee should be active when payslip calculated."""
+
+        upkeep_labour_obj = self.env['estate.upkeep.labour']
+
+        for record in self:
+
+            # ignore non daily contract period
+            if record.contract_period != '2':
+                return
+
+            # todo change to config
+            months = 0
+
+            # Monthly ASAP, Daily 3 months
+            if record.contract_period == '2':
+                months = 3
+
+            start = datetime.today() + relativedelta.relativedelta(months=-months, day=1,)
+            end = datetime.today() + relativedelta.relativedelta(months=1, day=1, days=-1)
+
+            upkeep_labour_ids = upkeep_labour_obj.search([('employee_id', '=', record.id),
+                                                          ('upkeep_date', '>=', start.strftime('%Y-%m-%d')),
+                                                          ('upkeep_date', '<=', end.strftime('%Y-%m-%d'))],
+                                                         order='upkeep_date desc')
+
+            if record.active and upkeep_labour_ids:
+                err_msg = _('Do not archived %s employee data.\n'\
+                            'There was upkeep labor transaction at %s.') % (record.name_related,
+                                                                           upkeep_labour_ids[0].upkeep_date)
+                raise ValidationError(err_msg)
+            else:
+                super(Employee, self).toggle_active()
+
+        return

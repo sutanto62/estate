@@ -148,7 +148,7 @@ class PayslipRun(models.Model):
                 left join hr_employee b on b.id = a.employee_id
                 where
                     a.upkeep_date between '%s' and '%s'
-                    and a.state = 'approved'
+                    and a.state in ('approved', 'correction', 'payslip')
                     and a.employee_id in (%s)
                 group by b.contract_type, contract_period, c.id, a.employee_company_id, a.company_id
                 order by b.contract_type, b.contract_period, c.id, a.employee_company_id, a.company_id
@@ -333,7 +333,7 @@ class PayslipRun(models.Model):
                 where
                     a.upkeep_date between '%s' and '%s'
                     and a.company_id = %d
-                    and a.state = 'approved'
+                    and a.state in ('approved', 'correction', 'payslip')
                     and a.employee_id in (%s)
                 group by a.company_id, e.name, a.general_account_id, b.name, d.analytic_account_id
                 order by a.company_id, e.name, a.general_account_id, b.name, d.analytic_account_id
@@ -425,7 +425,7 @@ class PayslipRun(models.Model):
                 where
                     a.upkeep_date between '%s' and '%s'
                     and a.company_id != %d
-                    and a.state = 'approved'
+                    and a.state in ('approved', 'correction', 'payslip')
                     and a.employee_id in (%s)
                 """ % (batch.date_start,
                        batch.date_end,
@@ -478,7 +478,7 @@ class PayslipRun(models.Model):
                     where
                         a.upkeep_date between '%s' and '%s'
                         and a.company_id = %d
-                        and a.state = 'approved'
+                        and a.state in ('approved', 'correction', 'payslip')
                         and a.employee_id in (%s)
                     group by a.company_id,  a.general_account_id, b.name, d.analytic_account_id
                     order by a.company_id,  a.general_account_id, b.name, d.analytic_account_id
@@ -582,7 +582,7 @@ class PayslipRun(models.Model):
                 where
                     a.upkeep_date between '%s' and '%s'
                     and a.company_id != %d
-                    and a.state = 'approved'
+                    and a.state in ('approved', 'correction', 'payslip')
                     and a.employee_id in (%s)
                 group by a.company_id
                 order by a.company_id
