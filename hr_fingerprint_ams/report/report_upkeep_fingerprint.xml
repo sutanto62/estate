@@ -89,7 +89,7 @@
                                         </tr>
                                         <!--fingerprint-->
                                         <t t-foreach="Fingerprint" t-as="ff">
-                                            <t t-if="t['id']==ff['team_id']['id']">
+                                            <t t-if="t['id']==ff['team_id']['id'] and ff['number_of_day'] > 0">
                                                 <tr>
                                                     <td>
                                                         <span t-esc="ff['employee_id']['name']"/>
