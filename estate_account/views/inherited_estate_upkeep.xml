@@ -37,7 +37,7 @@
         <record id="accountant_upkeep_labour_view_search" model="ir.ui.view">
             <field name="name">Upkeep Labour Search</field>
             <field name="model">estate.upkeep.labour</field>
-            <field name="priority" eval="1"/>
+            <field name="priority" eval="2"/>
             <field name="arch" type="xml">
                 <search>
                     <field name="employee_id"/>
