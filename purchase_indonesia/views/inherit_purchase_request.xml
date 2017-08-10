@@ -41,6 +41,7 @@
                           <field name="validation_technic" invisible="1"/>
                           <field name="validation_state_budget" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
+                          <field name="validation_requester" invisible="1"/>
                  </xpath>
              </field>
          </record>
@@ -186,10 +187,11 @@
                  </xpath>
 
                  <xpath expr="//button[@name='button_draft']" position="after">
-                     <button name="check_wkf_requester" states="draft"
+                     <button name="check_wkf_requester"
                             string="Confirm Purchase" type="object"
+                            attrs="{'invisible': [('validation_requester','!=',True)]}"
                             class="oe_highlight"
-                             groups="purchase_request.group_purchase_request_user"/>
+                             />
                      <button name="action_confirm1"
                             string="Approve" type="object"
                              attrs="{'invisible': [('validation_user','!=',True)]}"

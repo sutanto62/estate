@@ -406,7 +406,7 @@ class InheritStockPicking(models.Model):
                     elif record.qty_done == record.product_qty:
                         item._get_technical_user_id()
                         purchase_request = item.env['purchase.request'].search([('id','=',self._get_purchase_request_id())])
-                        if purchase_request.code == 'KOKB' and purchase_request.type_product == 'product' :
+                        if purchase_request.code == 'KOKB' and purchase_request.type_product == 'product' and (purchase_request.type_functional == 'technic' or purchase_request.type_functional == 'agronomy'):
                             item.write({
                                 'validation_manager':True,
                                 'assigned_to':item._get_technical_user_id(),
@@ -418,7 +418,7 @@ class InheritStockPicking(models.Model):
                                 'assigned_to':item._get_technical_user_id()
                             })
 
-                    item.send_mail_template()
+            item.send_mail_template()
 
     @api.multi
     @api.depends('purchase_id')

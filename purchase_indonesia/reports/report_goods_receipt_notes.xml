@@ -271,7 +271,7 @@
 													<t t-if="is_warehouse == 0">	    
 					                                    <t t-foreach="o.message_ids" t-as="mids">
 															<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-																<t t-if="mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Done'">
+																<t t-if="mids_tracking.field == 'state' and (mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai')">
 																	<u>
 																	:&#160;<span t-field="mids.author_id"/>&#160;
 																	</u>

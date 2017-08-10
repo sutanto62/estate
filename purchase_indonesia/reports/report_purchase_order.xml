@@ -330,6 +330,18 @@
 		                          		    
 		                          		</td>
 		                          	</tr>
+		                          	<t t-if="o.notes != False">
+			                          	<tr>
+			                          		<td colspan="2" style="border-top: 1px solid;text-align: left;">
+			                          		    Catatan&#160;:
+			                          		</td>
+			                          	</tr>
+			                          	<tr>
+			                          		<td colspan="2" style="text-align: left;">
+			                          		     <span t-field="o.notes"/>
+			                          		</td>
+			                          	</tr>
+		                          	</t>
 								</table>
 							</div>
 						</div>	

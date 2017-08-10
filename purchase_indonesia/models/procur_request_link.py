@@ -219,6 +219,7 @@ class InheritPurchaseRequest(models.Model):
     count_po_partial = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
     count_po_done = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
+    validation_requester = fields.Boolean("Validation Requester",compute='_change_validation_requester')
 
     @api.multi
     def _get_type_product(self):
@@ -935,7 +936,12 @@ class InheritPurchaseRequest(models.Model):
                 'state':'draft'
             }
         res = self.env['quotation.comparison.form'].create(purchase_data)
-
+    
+    def _change_validation_requester(self):
+        self.validation_requester = False
+        if self.requested_by.id == self._get_user().id and self.state == 'draft' :
+            self.validation_requester = True
+        
     @api.multi
     @api.depends('assigned_to')
     def _change_validation_user(self):
