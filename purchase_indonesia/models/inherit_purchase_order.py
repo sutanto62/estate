@@ -215,8 +215,20 @@ class InheritPurchaseOrder(models.Model):
         employee = self.env['hr.employee'].search([('user_id','=',user.id)])
         return employee.job_id.name
     
+    def _get_price_mid(self):
+        #get middle price from purchase params for Purchase Request
+        arrMid = []
+        try:
+            price_standard = self.env['purchase.params.setting'].search([('name','=','purchase.request')])
+        except:
+            raise exceptions.ValidationError('Call Your Procurement Admin To set up the Price')
+        for price in price_standard:
+            arrMid.append(price.value_params)
+        price = arrMid[1]
+        return float(price)
+    
     def get_user_sign(self):
-        partner_id = None
+        partner_id = False
         po_pr = self.env['purchase.request'].search([('id','=',self.request_id.id)])
         po_preq = self.env['purchase.requisition'].search([('origin','=',po_pr.complete_name)])
         office_level_code_procurement = None
@@ -225,15 +237,24 @@ class InheritPurchaseOrder(models.Model):
             employee = self.env['hr.employee'].search([('user_id','=',po_preq.user_id.id)])
             office_level_code_procurement = employee.office_level_id.code
             
-        for mids in po_pr.message_ids:
-            for mids_tracking in mids.tracking_value_ids:
-                if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'RO Head Approval':
-                    partner_id = mids.author_id
-        
         if office_level_code_procurement == 'KOKB':
-            return partner_id
-        else:
-            return False
+            for mids in po_pr.message_ids:
+                for mids_tracking in mids.tracking_value_ids:
+                    if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'RO Head Approval':
+                        partner_id = mids.author_id
+        elif office_level_code_procurement == 'KPST':
+            if self.amount_total < self._get_price_mid():
+                for mids in po_pr.message_ids:
+                    for mids_tracking in mids.tracking_value_ids:
+                        if mids_tracking.field == 'state' and mids_tracking.new_value_char == 'Director Financial Approval':
+                            partner_id = mids.author_id
+            else :
+                for mids in po_pr.message_ids:
+                    for mids_tracking in mids.tracking_value_ids:
+                        if mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Director Financial Approval':
+                            partner_id = mids.author_id
+        
+        return partner_id
         
 class InheritPurchaseOrderLine(models.Model):
 
