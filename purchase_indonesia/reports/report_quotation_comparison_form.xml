@@ -878,7 +878,7 @@
 											<t t-set="is_director_approval" t-value="0"/>
 											<t t-foreach="o.message_ids" t-as="mids">
 												<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-												    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval President Director'">
+												    <t t-if="mids_tracking.field == 'state' and (mids_tracking.old_value_char == 'Approval President Director' or mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai')">
 													    <t t-set="is_director_approval" t-value="1"/>
 												    </t>
 												</t>
