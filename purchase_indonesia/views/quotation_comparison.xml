@@ -166,6 +166,20 @@
                                 </group>
                             </group>
                             <separator string="Quotation Comparison"/>
+                            
+                            <field name="v_quotation_comparison_line_ids5" track_visibility="onchange"
+                                                       attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],
+                                                       'invisible':[('line_remarks','&gt;',5)]}"
+                                                    context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line5',
+                                                           }"/>
+                            
+                            <field name="v_quotation_comparison_line_ids10" track_visibility="onchange"
+                                                       attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],
+                                                       'invisible':[('line_remarks','&lt;=',5)]}"
+                                                    context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',
+                                                           }"/>
+                            
+                            <!--  
                             <field name="v_quotation_comparison_line_ids" track_visibility="onchange"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],
                                                    'invisible':[('line_remarks','!=',1)]}"
@@ -216,6 +230,8 @@
                                                        'invisible':[('line_remarks','!=',10)]}"
                                                     context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',
                                                            }"/>
+							-->
+							                                                           
                             <!--Back Order -->
                             <!--<field name="v_backorder_quotation_comparison_line_ids" track_visibility="onchange"-->
                                                    <!--attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],-->
@@ -365,6 +381,7 @@
             </field>
         </record>
 
+<!--         
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line1">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -454,7 +471,7 @@
                 </tree>
             </field>
         </record>
-
+ -->
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line5">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -479,7 +496,7 @@
                 </tree>
             </field>
         </record>
-
+<!-- 
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line6">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -589,7 +606,7 @@
                 </tree>
             </field>
         </record>
-
+ -->
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line10">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -619,7 +636,7 @@
                 </tree>
             </field>
         </record>
-
+<!-- 
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line7">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -646,7 +663,7 @@
                 </tree>
             </field>
         </record>
-
+ -->
         <record id="view_quotation_comparison_search" model="ir.ui.view">
             <field name="name">Search Quotation Comparison Form</field>
             <field name="model">quotation.comparison.form</field>
