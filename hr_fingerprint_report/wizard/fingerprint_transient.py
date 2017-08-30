@@ -98,7 +98,6 @@ class Fingerprint(models.TransientModel):
         result['contract_period'] = data['form']['contract_period'] or False
         result['office_level_id'] = data['form']['office_level_id'] or False
 
-        print '_built_contexts %s' % result
         return result
 
     def _print_report(self, data):

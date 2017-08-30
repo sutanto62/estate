@@ -28,7 +28,7 @@ class FingerprintReport(models.AbstractModel):
         if data['form']['office_level_id']:
             domain.append(('office_level_id', '=', data['form']['office_level_id'][0]))
 
-        print 'Wizard %s' % domain
+        # print 'Wizard %s' % domain
         return domain
 
     @api.multi
@@ -72,8 +72,8 @@ class FingerprintReport(models.AbstractModel):
 
         # remark on action reason
         attendance_obj = self.env['hr_fingerprint_ams.attendance']
-        action_reason_ids = attendance_obj.search(domain)
-        for reason in set(action_reason_ids.mapped('action_reason')):
+        action_reason_ids = self.env['hr.action.reason'].search([], order='name asc')
+        for reason in action_reason_ids.mapped('name'):
             if reason:
                 person = set(attendance_obj.search(domain + [('action_reason', '=', reason)]).mapped('employee_name'))
                 res = {
@@ -103,7 +103,7 @@ class FingerprintReport(models.AbstractModel):
         #     }
         #     print '  Remark %s: %s, res %s' % (other, domain, res)
         #     list.append(res)
-        print '  Attendance Remark %s' % sorted(list, key=lambda res: res['reason'])
+        # print '  Attendance Remark %s' % sorted(list, key=lambda res: res['reason'])
         return sorted(list, key=lambda res: res['reason'])
 
     @api.multi
@@ -184,7 +184,7 @@ class FingerprintReport(models.AbstractModel):
     @api.multi
     def get_color(self, type, late):
         """
-        Define table's cell background color stylesheet. Make sure param type registered at var a
+        Define font awesome class. Make sure XML has fontawesome CSS class. Make sure param type registered at var a
         :param type: fingerprint attendance field
         :type: string
         :param late: number
@@ -193,7 +193,16 @@ class FingerprintReport(models.AbstractModel):
         :rtype: string
         """
         # potong poin = p_hour_late_office, p_late_amount_office, p_estate_late_amount
-        a = ['p_hour_late_office', 'p_late_amount_office', 'p_estate_late', 'p_estate_late_amount', 'p_labor_late_circle', 'p_labor_late_circle_amount']
+        a = [
+            'p_hour_late_office', # Terlambat (MNT) Kary Kantor
+            'p_late_amount_office', # Terlambat (X) Kary Kantor
+            'p_estate_late', # Terlambat Menit Kebun
+            'p_estate_late_amount', # Terlambat X Kebun
+            'p_labor_late_circle', # Terlambat Menit KHL (Apel)
+            'p_labor_late_circle_amount', # Terlambat X KHL Apel
+            'p_labor_late', # Terlambat Menit KHL Kerja
+            'p_labor_late_amount' # Terlambat X KHL Kerja
+        ]
 
         # non-registered type got white background
         color = 'white'
@@ -201,23 +210,25 @@ class FingerprintReport(models.AbstractModel):
         # p_hour_late_office
         if type == a[0]:
             if 6 <= late <= 30:
-                color = 'yellow'
+                color = 'gold'
             if 31 <= late <= 90:
                 color = 'red'
             if late >= 91:
-                color = 'gray'
+                color = 'black'
 
         # p_late_amount_office
         if type == a[1]:
-            if 1 <= late <= 3:
-                color = 'yellow'
-            if late >= 4:
+            if 4 <= late <= 6:
+                color = 'gold'
+            if 7 <= late <= 12:
                 color = 'red'
+            if late >= 13:
+                color = 'black'
 
         # p_estate_late
         if type == a[2]:
             if late >= 1:
-                color = 'yellow'
+                color = 'goldenrod'
 
         # p_estate_late_amount
         if type == a[3]:
@@ -226,24 +237,30 @@ class FingerprintReport(models.AbstractModel):
 
         # p_labor_late_circle
         if type == a[4]:
-            if 5 <= late <= 30:
-                color = 'yellow'
-            if late >= 31:
-                color = 'red'
+            if late >= 1:
+                color = 'goldenrod'
 
         # p_labor_late_circle_amount
         if type == a[5]:
-            if 1 <= late <= 3:
-                color = 'yellow'
-            if late >= 4:
-                color = 'red'
+            if late >= 1:
+                color = 'goldenrod'
 
-        res = 'background-color: %s !important;' % color
+        # p_labor_late
+        if type == a[6]:
+            if late >= 1:
+                color = 'goldenrod'
+
+        # p_labor_late_amount
+        if type == a[7]:
+            if late >= 1:
+                color = 'goldenrod'
+
+        res = 'fa fa-circle-%s' % color
         return res
 
     @api.multi
     def render_html(self, data):
-        print 'print_fingerprint_reports ... started %s' % data
+        # print 'print_fingerprint_reports ... started %s' % data
         report_obj = self.env['report']
         report = report_obj._get_report_from_name('hr_fingerprint_report.report_fingerprint')
         docargs = {

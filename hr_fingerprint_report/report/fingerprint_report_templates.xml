@@ -3,6 +3,25 @@
     <data>
         <template id="report_fingerprint">
             <t t-call="report.html_container">
+                <!--global variable-->
+                <t t-set="avg_day_work" t-value="0"/>
+                <t t-set="avg_day_work_divide" t-value="0"/>
+                
+                <t t-set="sum_hour_late_office" t-value="0"/>
+                <t t-set="sum_late_amount_office" t-value="0"/>
+                <t t-set="sum_labor_late_circle_amount" t-value="0"/>
+                <t t-set="sum_labor_late_circle_amount" t-value="0"/>
+                <t t-set="sum_labor_late" t-value="0"/>
+                <t t-set="sum_labor_late_amount" t-value="0"/>
+                
+                <t t-set="sum_hour_late_office_person" t-value="0"/>
+                <t t-set="sum_late_amount_office_person" t-value="0"/>
+                <t t-set="sum_estate_late_amount_person" t-value="0"/>
+                <t t-set="sum_labor_late_circle_amount_person" t-value="0"/>
+                <t t-set="sum_labor_late_amount_person" t-value="0"/>
+                <!--/global variable-->
+
+                <!--page 1-->
                 <div class="page">
                     <!-- !important override bootstrap td's -->
                     <style>
@@ -10,35 +29,56 @@
                             padding: 2px 4px !important;
                         }
 
-                        table.bordered {
-                            border: 1px solid black !important;
+                        .fa-circle-white:before {
+                            content: "";
+                        }
+
+                        .fa-circle-red:before {
+                            content: "\f111";
+                            color: red !important;
+                        }
+
+                        .fa-circle-gold:before {
+                            content: "\f111";
+                            color: gold !important;
+                        }
+
+                        .fa-circle-black:before {
+                            content: "\f111";
+                            color: black !important;
+                        }
+
+                        .fa-circle-goldenrod:before {
+                            content: "\f111";
+                            color: goldenrod !important;
                         }
 
                     </style>
 
+                    <h2 class="text-center">Laporan Presensi</h2>
                     <!--header-->
-                    <h2 class="text-center">Laporan Presensi CST</h2>
-                    <table class="table-condensed table-borderless" width="100%">
+                    <table class="table table-condensed table-borderless">
                         <tr>
-                            <td class="align-top col-md-6">
-                                <table>
+                            <td width="40%">
+                                <!--periode-->
+                                <table class="table-condensed table-borderless table-responsive" width="auto">
                                     <tr>
-                                        <td>Tanggal</td>
+                                        <td><strong>Tanggal</strong></td>
                                         <td>
                                             <t t-esc="datetime.datetime.strptime(str(data['form']['date_start']), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
                                             - <t t-esc="datetime.datetime.strptime(str(data['form']['date_end']), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>Perusahaan</td>
+                                        <td><strong>Perusahaan</strong></td>
                                         <td><t t-if="data['form']['company_id']"><t t-esc="str(data['form']['company_id'][1])"/></t></td>
                                     </tr>
                                     <tr>
-                                        <td>Departemen</td>
+                                        <td><strong>Departemen</strong></td>
                                         <td><t t-if="data['form']['department_id']"><t t-esc="str(data['form']['department_id'][1])"/></t></td>
                                     </tr>
                                     <tr>
-                                        <td>Karyawan</td>
+                                        <td><strong>Status Karyawan</strong></td>
                                         <td>
                                             <t t-if="data['form']['contract_type']">
                                                 <t t-if="data['form']['contract_type']=='1'">PKWTT</t><t t-if="data['form']['contract_type']=='2'">PKWT</t>
@@ -49,17 +89,51 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <!--periode-->
                             </td>
-                            <td class="align-top text-right col-md-6">
-                                <table>
-                                    <t t-foreach="remarks" t-as="r">
-                                        <tr>
-                                            <td><t t-esc="r['reason']"/></td>
-                                            <td class="text-right"><t t-esc="r['person']"/> orang</td>
-                                            <td class="text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
-                                        </tr>
-                                    </t>
+                            <td width="30%">
+                                <!--keterangan potong poin-->
+                                <strong>Keterangan Potong Poin</strong>
+                                <table class="table-condensed table-borderless table-responsive" width="auto">
+                                    <tr>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
+                                        <td width="10"><strong>0</strong></td>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
+                                        <td width="10"><strong>0</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
+                                        <td width="10"><strong>-2</strong></td>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
+                                        <td width="10"><strong>-1</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
+                                        <td width="10"><strong>-3</strong></td>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
+                                        <td width="10"><strong>-2</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
+                                        <td width="10"><strong>-4</strong></td>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
+                                        <td width="10"><strong>-3</strong></td>
+                                    </tr>
                                 </table>
+                                <!--/keterangan potong poin-->
+                            </td>
+                            <td width="30%">
+                                <!--keterangan terlambat-->
+                                <strong>Keterangan Terlambat</strong>
+                                <table class="table-condensed table-borderless table-responsive" width="auto">
+                                    <tr>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
+                                        <td width="10"><strong>0</strong></td>
+                                        <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
+                                        <td width="10"><strong>0</strong></td>
+                                    </tr>
+                                </table>
+                                <!--/keterangan terlambat-->
                             </td>
                         </tr>
                     </table>
@@ -93,47 +167,60 @@
                         <t t-set="p_hour_work_float" t-value="0"/>
                         <t t-set="p_average_day_work" t-value="0"/>
                         <t t-set="p_average_day_work_divide" t-value="0"/>
+
                         <!--/sum variable-->
-                        
+
                         <!--attendance header-->
-                        <thead>
+                        <thead style="display: table-header-group !important;">
                             <tr>
-                                <td>NIK</td>
-                                <td>Karyawan</td>
-                                <td>Normal Hari Kerja</td>
-                                <td>Cuti</td>
-                                <td>Sakit</td>
-                                <td>Ijin</td>
-                                <td>Dinas Luar</td>
-                                <td>Keluar Kantor</td>
-                                <td>Mangkir</td>
-                                <td>Riil Hari Kerja</td>
-                                <td>Premi HK2</td>
-                                <td>Terlambat (Menit) Kary Kantor</td>
-                                <td>Terlambat (X) Kary Kantor</td>
-                                <td>Terlambat (Menit) Kebun</td>
-                                <td>Terlambat (X) Kebun</td>
-                                <td>Terlambat (Menit) KHL Apel</td>
-                                <td>Terlambat (X) KHL Apel</td>
-                                <td>Terlambat (Menit) KHL Kerja</td>
-                                <td>Terlambat (X) KHL Kerja</td>
-                                <td>Pulang Cepat (Menit) All</td>
-                                <td>CPLG</td>
-                                <td>Avg Persen Scan</td>
-                                <td>Jumlah Jam Kerja (Jam)</td>
-                                <td>Avg Rata-Rata</td>
+                                <th class="align-middle" rowspan="2" width="75">NIK</th>
+                                <th class="align-middle" rowspan="2" width="200">Karyawan</th>
+                                <th class="text-right" rowspan="2">Normal Hari Kerja</th>
+                                <th class="text-center" colspan="6">Pengecualian</th>
+                                <th class="text-right" rowspan="2">Riil Hari Kerja</th>
+                                <th class="text-right" rowspan="2">Premi HK2</th>
+                                <th class="text-center" colspan="2">Terlambat Kary Kantor</th>
+                                <th class="text-center" colspan="2">Terlambat Kebun</th>
+                                <th class="text-center" colspan="2">Terlambat KHL Apel</th>
+                                <th class="text-center" colspan="2">Terlambat KHL Kerja</th>
+                                <th class="text-right align-middle" rowspan="2">Pulang Cepat (Menit) All</th>
+                                <th class="text-right align-middle" rowspan="2">CPLG</th>
+                                <th class="text-right align-middle" rowspan="2">Avg Persen Scan</th>
+                                <th class="text-right align-middle" rowspan="2">Jumlah Jam Kerja (Jam)</th>
+                                <th class="text-right align-middle" rowspan="2">Avg Rata-Rata</th>
+                            </tr>
+                            <tr>
+                                <!--pengecualian-->
+                                <th class="text-right">Cuti</th>
+                                <th class="text-right">Sakit</th>
+                                <th class="text-right">Ijin</th>
+                                <th class="text-right">Dinas Luar</th>
+                                <th class="text-right">Keluar Kantor</th>
+                                <th class="text-right">Mangkir</th>
+                                <!--pengecualian-->
+                                <!--terlambat-->
+                                <th class="text-right">Menit</th>
+                                <th class="text-right">X</th>
+                                <th class="text-right">Menit</th>
+                                <th class="text-right">X</th>
+                                <th class="text-right">Menit</th>
+                                <th class="text-right">X</th>
+                                <th class="text-right">Menit</th>
+                                <th class="text-right">X</th>
+                                <!--/terlambat-->
                             </tr>
                         </thead>
                         <!--/attendance header-->
 
                         <!--attendance body-->
-                        <tbody>
+                        <tbody style="display: table-row-group !important;">
                             <!--initial department-->
                             <t t-foreach="departments" t-as="department">
                                 <tr>
                                     <td colspan="24" style="font-size: 120% !important;"><strong><t t-esc="department"/></strong></td>
                                 </tr>
 
+                                <!--single attendance-->
                                 <t t-foreach="attendances" t-as="a">
                                     <t t-if="department == a['department']">
                                         <tr>
@@ -148,14 +235,25 @@
                                             <td class="text-right"><t t-esc="a['p_no_reason']"/></td>
                                             <td class="text-right"><t t-esc="a['p_day_finger']"/></td>
                                             <td class="text-right"><t t-esc="a['p_piece_rate_day']"/></td>
+
+                                            <!--different color based on value-->
+                                            <!--
                                             <td class="text-right" t-att-style="get_color('p_hour_late_office',a['p_hour_late_office'])"><t t-esc="a['p_hour_late_office']"/></td>
                                             <td class="text-right" t-att-style="get_color('p_late_amount_office',a['p_late_amount_office'])"><t t-esc="a['p_late_amount_office']"/></td>
                                             <td class="text-right" t-att-style="get_color('p_estate_late',a['p_estate_late'])"><t t-esc="a['p_estate_late']"/></td>
                                             <td class="text-right" t-att-style="get_color('p_estate_late_amount',a['p_estate_late_amount'])"><t t-esc="a['p_estate_late_amount']"/></td>
-                                            <td class="text-right" t-att-style="get_color('p_labor_late_circle',a['p_labor_late_circle'])"><t t-esc="a['p_labor_late_circle']"/></td>
-                                            <td class="text-right" t-att-style="get_color('p_labor_late_circle_amount',a['p_labor_late_circle_amount'])"><t t-esc="a['p_labor_late_circle_amount']"/></td>
-                                            <td class="text-right"><t t-esc="a['p_labor_late']"/></td>
-                                            <td class="text-right"><t t-esc="a['p_labor_late_amount']"/></td>
+                                            -->
+                                            <td class="text-right"><span t-att-class="get_color('p_hour_late_office',a['p_hour_late_office'])"/> <t t-esc="a['p_hour_late_office']"/></td>
+                                            <td class="text-right"><span t-att-class="get_color('p_late_amount_office',a['p_late_amount_office'])"/> <t t-esc="a['p_late_amount_office']"/></td>
+                                            <td class="text-right"><span t-att-class="get_color('p_estate_late',a['p_estate_late'])"/> <t t-esc="a['p_estate_late']"/></td>
+                                            <td class="text-right"><span t-att-class="get_color('p_estate_late_amount',a['p_estate_late_amount'])"/> <t t-esc="a['p_estate_late_amount']"/></td>
+
+                                            <!--same color if value > 0-->
+                                            <td class="text-right"><t t-if="a['p_labor_late_circle'] >= 1"><span class="fa fa-circle-goldenrod"/></t> <t t-esc="a['p_labor_late_circle']"/></td>
+                                            <td class="text-right"><t t-if="a['p_labor_late_circle_amount'] >= 1"><span class="fa fa-circle-goldenrod"/></t> <t t-esc="a['p_labor_late_circle_amount']"/></td>
+                                            <td class="text-right"><t t-if="a['p_labor_late'] >= 1"><span class="fa fa-circle-goldenrod"/></t> <t t-esc="a['p_labor_late']"/></td>
+                                            <td class="text-right"><t t-if="a['p_labor_late_amount'] >= 1"><span class="fa fa-circle-goldenrod"/></t> <t t-esc="a['p_labor_late_amount']"/></td>
+
                                             <td class="text-right"><t t-esc="a['p_hour_early_leave']"/></td>
                                             <td class="text-right"><t t-esc="a['p_labor_early_leave']"/></td>
                                             <td class="text-right"><t t-esc="a['p_sign_percent']"/></td>
@@ -164,6 +262,27 @@
                                         </tr>
 
                                         <!--calculate-->
+                                        <t t-if="a['p_hour_late_office'] >= 6">
+                                            <t t-set="sum_hour_late_office_person"
+                                               t-value="sum_hour_late_office_person+1"/>
+                                        </t>
+                                        <t t-if="a['p_late_amount_office'] >= 4">
+                                            <t t-set="sum_late_amount_office_person"
+                                               t-value="sum_late_amount_office_person+1"/>
+                                        </t>
+                                        <t t-if="a['p_estate_late_amount'] >= 4">
+                                            <t t-set="sum_estate_late_amount_person"
+                                               t-value="sum_estate_late_amount_person+1"/>
+                                        </t>
+                                        <t t-if="a['p_labor_late_circle_amount'] >= 1">
+                                            <t t-set="sum_labor_late_circle_amount_person"
+                                               t-value="sum_labor_late_circle_amount_person+1"/>
+                                        </t>
+                                        <t t-if="a['p_labor_late_amount'] >= 1">
+                                            <t t-set="sum_labor_late_amount_person"
+                                               t-value="sum_labor_late_amount_person+1"/>
+                                        </t>
+
                                         <t t-set="p_day_normal" t-value="p_day_normal+a['p_day_normal']"/>
                                         <t t-set="p_leave" t-value="p_leave+a['p_leave']"/>
                                         <t t-set="p_sick" t-value="p_sick+a['p_sick']"/>
@@ -191,6 +310,7 @@
                                         <!--/calculate-->
                                     </t>
                                 </t>
+                                <!--/single attendance-->
                             </t>
 
                         </tbody>
@@ -219,18 +339,163 @@
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_amount)"/></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_early_leave)"/></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_early_leave)"/></strong></td>
-                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_sign_percent/p_sign_percent_divide)"/></strong></td>
+                                <td class="text-right"><strong><t t-if="p_sign_percent_divide != 0"><t t-esc="'{0:,.2f}'.format(p_sign_percent/p_sign_percent_divide)"/></t></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_work_float)"/></strong></td>
-                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_average_day_work/p_average_day_work_divide)"/></strong></td>
+                                <td class="text-right"><strong><t t-if="p_average_day_work_divide != 0"><t t-esc="'{0:,.2f}'.format(p_average_day_work/p_average_day_work_divide)"/></t></strong></td>
                             </tr>
+
+                            <!--summary-->
+                            <t t-set="avg_day_work" t-value="'{0:,.2f}'.format(p_sign_percent/p_sign_percent_divide)"/>
+                            <t t-set="avg_day_work_divide" t-value="'{0:,.2f}'.format(p_average_day_work/p_average_day_work_divide)"/>
+
+                            <t t-set="sum_hour_late_office" t-value="'{0:,.0f}'.format(p_hour_late_office)"/>
+                            <t t-set="sum_late_amount_office" t-value="'{0:,.0f}'.format(p_late_amount_office)"/>
+                            <t t-set="sum_labor_late_circle" t-value="'{0:,.0f}'.format(p_labor_late_circle)"/>
+                            <t t-set="sum_labor_late_circle_amount" t-value="'{0:,.0f}'.format(p_labor_late_circle_amount)"/>
+                            <t t-set="sum_labor_late" t-value="'{0:,.0f}'.format(p_labor_late)"/>
+                            <t t-set="sum_labor_late_amount" t-value="'{0:,.0f}'.format(p_labor_late_amount)"/>
+
+                            <t t-set="sum_hour_late_office_person" t-value="sum_hour_late_office_person"/>
+                            <!--/summary-->
                         </tfoot>
                         <!--/attendance footer-->
                     </table>
                     <!--/attendance-->
 
-                     <cite>Data perusahaan, departemen, status PKWT/PKWTT harian/bulanan sesuai data karyawan pada saat sinkronisasi
-                    sidik jari dari AMS ke Odoo dilakukan. Perubahan data setelah proses sinkronisasi tidak merupah laporan presensi.</cite>
+                    <small>Data perusahaan, departemen, status PKWT/PKWTT harian/bulanan sesuai data karyawan pada saat sinkronisasi
+                    sidik jari dari AMS ke Odoo dilakukan. Perubahan data setelah proses sinkronisasi tidak merubah laporan presensi.</small>
+
+                    <small>Tanggal cetak: <t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
                 </div>
+                <!--/page 1-->
+
+                <!--page 2-->
+                <div class="page">
+                    <!-- !important override bootstrap td's -->
+                    <style>
+                        table.table-condensed td {
+                            padding: 2px 4px !important;
+                        }
+                    </style>
+
+                    <!--header-->
+                    <h2 class="text-center">Laporan Presensi</h2>
+                    <!--periode-->
+                    <table class="table-condensed table-borderless table-responsive" width="auto">
+                        <tr>
+                            <td><strong>Tanggal</strong></td>
+                            <td>
+                                <t t-esc="datetime.datetime.strptime(str(data['form']['date_start']), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
+                                - <t t-esc="datetime.datetime.strptime(str(data['form']['date_end']), '%Y-%m-%d').strftime('%d-%b-%Y')"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Perusahaan</strong></td>
+                            <td><t t-if="data['form']['company_id']"><t t-esc="str(data['form']['company_id'][1])"/></t></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Departemen</strong></td>
+                            <td><t t-if="data['form']['department_id']"><t t-esc="str(data['form']['department_id'][1])"/></t></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Status Karyawan</strong></td>
+                            <td>
+                                <t t-if="data['form']['contract_type']">
+                                    <t t-if="data['form']['contract_type']=='1'">PKWTT</t><t t-if="data['form']['contract_type']=='2'">PKWT</t>
+                                </t>
+                                <t t-if="data['form']['contract_period']">
+                                    - <t t-if="data['form']['contract_period']=='1'">Bulanan</t><t t-if="data['form']['contract_period']=='2'">Harian</t>
+                                </t>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--periode-->
+                    <!--/header-->
+
+                    <p/>
+
+                    <!--remark-->
+                    <table class="table table-borderless table-condensed">
+                        <tr>
+                            <td width="50%">
+                                <!--pengecualian-->
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <th>Alasan Ketidakhadiran</th>
+                                        <th class="text-right">Orang</th>
+                                        <th class="text-right">Keterangan</th>
+                                    </thead>
+                                    <t t-foreach="remarks" t-as="r">
+                                        <tr>
+                                            <td class="col-md-1"><t t-esc="r['reason']"/></td>
+                                            <td class="col-md-1 text-right"><t t-esc="r['person']"/> orang</td>
+                                            <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
+                                        </tr>
+                                    </t>
+                                </table>
+                                <!--/pengecualian-->
+                            </td>
+                            <td width="50%">
+                                <!--persentase-->
+                                <table class="table table-condensed col-md-6">
+                                    <thead>
+                                        <th colspan="2">Kehadiran</th>
+                                    </thead>
+                                    <tr>
+                                        <td>Sidik Jari</td>
+                                        <td><t t-esc="avg_day_work"/> %</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kehadiran</td>
+                                        <td><t t-esc="avg_day_work_divide"/> %</td>
+                                    </tr>
+                                </table>
+                                <!--/persentase-->
+                                <p/>
+                                <!--terlambat-->
+                                <table class="table table-condensed">
+                                    <thead>
+                                        <th>Keterangan Terlambat</th>
+                                        <th class="text-right">Menit/X</th>
+                                        <th class="text-right">Keterangan</th>
+                                    </thead>
+                                    <tr>
+                                        <td rowspan="2">Kantor</td>
+                                        <td class="text-right"><t t-esc="sum_hour_late_office"/> menit</td>
+                                        <td class="text-right"><t t-esc="sum_hour_late_office_person"/> orang</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right"><t t-esc="sum_late_amount_office"/> kali</td>
+                                        <td class="text-right"><t t-esc="sum_late_amount_office_person"/> orang</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Kebun</td>
+                                        <td class="text-right"><t t-esc="sum_estate_late_amount"/> kali</td>
+                                        <td class="text-right"><t t-esc="sum_estate_late_amount_person"/> orang</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Apel Pagi</td>
+                                        <td class="text-right"><t t-esc="sum_labor_late_circle_amount"/> kali</td>
+                                        <td class="text-right"><t t-esc="sum_labor_late_circle_amount_person"/> orang</td>
+                                    </tr>
+                                    <tr>
+                                        <td>KHL Kerja</td>
+                                        <td class="text-right"><t t-esc="sum_labor_late_amount"/> kali</td>
+                                        <td class="text-right"><t t-esc="sum_labor_late_amount_person"/> orang</td>
+                                    </tr>
+                                </table>
+                                <!--/terlambat-->
+                            </td>
+                        </tr>
+                    </table>
+                    <!--/remark-->
+
+                    <small>Alasan ketidakhadiran sesuai master data ketidakhadiran. Data sesuai dengan hasil sinkronisasi
+                    sidik jari dari AMS ke Odoo. Perubahan data setelah proses sinkronisasi membutuhkan proses cetak ulang laporan.</small>
+
+                    <small>Tanggal cetak: <t t-esc="datetime.datetime.today().strftime('%d-%b-%Y')"/></small>
+                </div>
+                <!--/page 2-->
             </t>
         </template>
     </data>
