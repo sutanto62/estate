@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--paper format-->
+        <record id="hr_paperformat_a4" model="report.paperformat">
+            <field name="name">HR A4 Landscape</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">10</field>
+            <field name="margin_right">10</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">10</field>
+            <field name="dpi">90</field>
+        </record>
+        <!--/paper format-->
+
+        <!--report action-->
+        <report
+            id="fingerprint"
+            model="hr_fingerprint_ams.attendance"
+            string="Fingerprint Attendance Report"
+            report_type="qweb-pdf"
+            name="hr_fingerprint_report.report_fingerprint"
+            file="hr_fingerprint_report.report_fingerprint"
+        />
+        <!--/report action-->
+
+        <!--paper format-->
+        <record id="fingerprint" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="hr_paperformat_a4"/>
+        </record>
+        <!--/paper format-->
+
+    </data>
+</openerp>

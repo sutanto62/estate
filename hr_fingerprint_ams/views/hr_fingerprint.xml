@@ -35,6 +35,7 @@
                                 <field name="hour_overtime" widget="float_time"/>
                             </group>
                         </group>
+                        <separator string="Fingerprint Lines"/>
                         <field name="attendance_ids">
                             <tree colors="red:state=='draft'" default_order="name">
                                 <field name="employee_id"/>
@@ -293,6 +294,14 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
+                        <div class="oe_button_box" name="button_box" groups="base.group_hr_user">
+                            <button name="action_open_labour"
+                                class="oe_stat_button"
+                                icon="fa-wrench"
+                                type="object">
+                                <field name="upkeep_labour_count" widget="statinfo" string="Upkeep" help="Display upkeep labour."/>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <h1>
                                 <field name="name" readonly="1"/>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="inherited_fingerprint_attendance_view_form" model="ir.ui.view">
+            <field name="name">Fingerprint Form</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="inherit_id" ref="hr_fingerprint_ams.fingerprint_attendance_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='hour_overtime']" position="after">
+                    <!--temporer-->
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="company_id"/>
+                    <field name="contract_id"/>
+                    <field name="contract_type"/>
+                    <field name="contract_period"/>
+                    <field name="schedule_id"/>
+                    <field name="time_start_t"/>
+                    <field name="time_end_t"/>
+                    <field name="sign_in_t"/>
+                    <field name="sign_out_t"/>
+                    <field name="hour_late_t"/>
+                    <field name="hour_early_leave_t"/>
+                    <field name="hour_overtime_t"/>
+                    <field name="hour_work_t"/>
+                    <field name="hour_attendance_t"/>
+                    <field name="hour_ot_normal_t"/>
+                    <field name="hour_ot_weekend_t"/>
+                    <field name="hour_ot_holiday_t"/>
+                    <field name="day_weekday"/>
+                    <field name="day_weekend"/>
+                    <field name="day_holiday"/>
+                    <field name="p_year"/>
+                    <field name="p_month"/>
+                    <field name="p_week"/>
+                    <field name="p_date"/>
+                    <field name="p_day_normal"/>
+                    <field name="p_day_finger"/>
+                    <field name="p_hour_late"/>
+                    <field name="p_hour_late_office"/>
+                    <field name="p_late_amount"/>
+                    <field name="p_late_amount_office"/>
+                    <field name="p_hour_early_leave"/>
+                    <field name="p_early_leave"/>
+                    <field name="p_days"/>
+                    
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="inherited_fingerprint_attendance_view_tree" model="ir.ui.view">
+            <field name="name">Fingerprint Form</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="inherit_id" ref="hr_fingerprint_ams.fingerprint_attendance_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="before">
+                    <field name="p_hour_late_office"/>
+                    <field name="p_late_amount_office"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</openerp>
