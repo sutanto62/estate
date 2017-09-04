@@ -54,8 +54,7 @@
                  </xpath>
 
                  <xpath expr="//h1/field[@name='name']" position="replace">
-                           <field name="complete_name" class="oe_inline" invisible="0"
-                               attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                    	<field name="request_id" class="oe_inline" invisible="0" readonly="1"/>
                  </xpath>
 
                  <xpath expr="//field[@name='origin']" position="replace">
@@ -84,7 +83,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='origin']" position="after">
-                     <field name="request_id" readonly="1" string="No PP"/>
+                     <field name="complete_name" readonly="1" string="Purchase Tender"/>
                  </xpath>
 
                  <xpath expr="//field[@name='schedule_date']" position="replace">
@@ -107,7 +106,7 @@
                      <field name="companys_id" string="Company" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="type_location" string="Location" invisible="1"/>
                      <field name="location" string="Location" attrs="{'readonly': [('state','not in',('draft'))]}"/>
-                     <field name="force_closing" string="Force Close Tender" attrs="{'readonly': [('state','not in',('done'))]}"/>
+                     <field name="force_closing" string="Force Close Tender" attrs="{'readonly': [('state','not in',('done'))]}" invisible="1"/>
                      <field name="validation_check_backorder" string="Back Order" invisible="1"/>
                  </xpath>
 
@@ -167,6 +166,10 @@
                  <xpath expr="//field/tree[1]/field[@name='name']" position="before">
                      <field name="validation_check_confirm_vendor" string="QR"/>
                  </xpath>
+                 
+                 <xpath expr="//field[@name='multiple_rfq_per_supplier']" position="replace">
+                     <field name="multiple_rfq_per_supplier" invisible="1"/>
+                 </xpath>
 
              </field>
          </record>
@@ -181,8 +184,11 @@
                  </xpath>
 
                  <xpath expr="//field[@name='state']" position="after">
-                     <field name="quotation_state" string="Status QCF"
-                            invisible="0"/>
+                     <field name="quotation_state" string="Status QCF" invisible="1"/>
+                     <field name="is_qcf_done" string="Quotation"/>
+                     <field name="is_po_done" string="PO"/>
+                     <field name="is_grn_done" string="GRN/SRN"/>
+                     <field name="is_inv_done" string="Invoice"/>
                  </xpath>
              </field>
          </record>
@@ -192,8 +198,14 @@
              <field name="model">purchase.requisition</field>
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_tree"/>
              <field name="arch" type="xml">
+                 <xpath expr="//field[@name='origin']" position="replace">
+                     <field name="origin" invisible="1"/>
+                 </xpath>
+                  <xpath expr="//field[@name='date_end']" position="replace">
+                     <field name="date_end" invisible="1"/>
+                 </xpath>
                  <xpath expr="//field[@name='name']" position="replace">
-                     <field name="complete_name" invisible="0"/>
+                     <field name="origin" invisible="0" string="Request Reference"/>
                  </xpath>
                  <xpath expr="//field[@name='ordering_date']" position="after">
                      <field name="due_date" string="Due Date"/>
@@ -208,14 +220,19 @@
             <field name="model">purchase.requisition</field>
             <field name="arch" type="xml">
                 <search string="Search Call for Tenders">
-                    <field name="name" string="Call for Tenders"/>
-                    <field name="exclusive" />
+                    <!--  field name="name" string="Call for Tenders"/-->
+                    <!--  field name="exclusive" /-->
                     <field name="request_id" string="No PP"/>
                     <filter string="New" domain="[('state','=','draft')]" help="New Call for Tenders"/>
                     <filter string="Confirmed" domain="[('state','=','in_progress')]" help="Call for Tenders in negotiation"/>
-                    <filter string="Closed Tenders" domain="[('state','=','open')]" help="Call for Tenders where tenders are closed"/>
+                    <filter string="Closed Tenders" domain="[('state','=','closed')]" help="Call for Tenders where tenders are closed"/>
+                    <filter string="Quotation Yet" domain="['|',('is_qcf_done','!=','True'),('is_qcf_done','=',False)]" help="Call for Tenders where all product have not been quoted"/>
+                    <filter string="PO Yet" domain="['|',('is_po_done','!=','True'),('is_po_done','=',False)]" help="Call for Tenders where all product have not been PO'ed"/>
+                    <filter string="GRN/SRN Yet" domain="['|',('is_grn_done','!=','True'),('is_grn_done','=',False)]" help="Call for Tenders where all product have not been received"/>
+                    <filter string="Invoice Yet" domain="['|',('is_inv_done','!=','True'),('is_inv_done','=',False)]" help="Call for Tenders where all product have not been invoiced -validate"/>
+                    <filter string="PP Done" domain="[('is_qcf_done','=','True'),('is_po_done','=','True'),('is_grn_done','=','True'),('is_inv_done','=','True')]" help="Call for Tenders where all product have been invoiced -validate"/>
                     <separator/>
-                    <filter string="Unassigned"  domain="[('user_id','=', False)]" help="Unassigned  Requisition"/>
+                    <filter string="Unassigned"  domain="[('state','=','draft')]" help="Unassigned  Requisition"/>
                     <!--<filter name="due_date" string="Due Date" domain="[('state','!=','done'),('schedule_date','&lt;',ordering_date)]"/>-->
                     <field name="user_id" />
                     <separator/>

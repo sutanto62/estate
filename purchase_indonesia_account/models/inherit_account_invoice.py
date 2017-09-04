@@ -26,6 +26,14 @@ class InheritAccountInvoice(models.Model):
 
     picking_id = fields.Many2one('stock.picking','Picking ID')
     grn_srn_no = fields.Char('Goods or Service Receipt Note Number',related='picking_id.complete_name_picking')
+    purchase_id_bill = fields.Many2one('purchase.order','Purchase Order',compute='_set_purchase_id_bill')
+    purchase_request_id = fields.Many2one('purchase.request','Picking Order',compute='_set_purchase_id_bill')
+    
+    @api.multi
+    def _set_purchase_id_bill(self):
+        for item in self:
+            item.purchase_id_bill = item.invoice_line_ids[0].purchase_line_id.order_id
+            item.purchase_request_id = item.invoice_line_ids[0].purchase_line_id.order_id.request_id
 
 class InheritAccountInvoiceLine(models.Model):
 

@@ -53,7 +53,120 @@ class InheritPurchaseTenders(models.Model):
     force_closing = fields.Boolean('Force Closing Tender')
     comparison_id = fields.Integer('Comparison ID')
     check_backorder = fields.Boolean('Check Backorder',compute='compute_validation_check_backorder')
-
+    #Please check class TriggerPurchaseTender below to know detail triggers that update is_po_done, is_grn_done and is_inv_done
+    is_qcf_done = fields.Boolean('Quotation', store=True)
+    is_po_done = fields.Boolean('PO', store=True)
+    is_grn_done = fields.Boolean('GRN/SRN', store=True)
+    is_inv_done = fields.Boolean('Invoice', store=True)
+    
+    # todo compute is_qcf_done, is_po_done, is_inv_done store = true
+#     @api.model
+#     def set_status_po_grn_inv(self):
+#         print 'set_status_po_grn_inv'
+#         for item in self:
+#             purch_req = item.env['purchase.request.line']
+#             purch_req_lines = purch_req.search([('request_id','=',item.request_id.id)])
+#              
+#             state_purch_order = ['done','purchase']
+#             purch_order = item.env['purchase.order']
+#             purch_orders = purch_order.search([('request_id','=',item.request_id.id),('state','in',state_purch_order)])
+#             purch_order_lines = item.env['purchase.order.line'].search([('order_id','in',purch_orders.ids)])
+#              
+#             stock_picking = item.env['stock.picking']
+#             stock_pickings = stock_picking.search([('purchase_id','in',purch_orders.ids),('state','=','done')])
+#             stock_pack_operations = item.env['stock.pack.operation'].search([('picking_id','in',stock_pickings.ids)])
+#              
+#             state_acc_inv = ['open','paid']
+#             acc_inv = item.env['account.invoice']
+#             acc_invs = acc_inv.search([('picking_id','in',stock_pickings.ids),('state','in',state_acc_inv)])
+#              
+#             #if acc_invs null it means invoice is created per po not per grn.
+#             if not acc_invs:
+#                 acc_inv_lines = item.env['account.invoice.line'].search([('purchase_line_id.order_id.id','in',purch_orders.ids)])
+#             else:
+#                 acc_inv_lines = item.env['account.invoice.line'].search([('invoice_id','in',acc_invs.ids)])
+#                  
+#             l_purch_req_lines = []
+#             str_product_qty = ''
+#             for i in purch_req_lines:
+#                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
+#                 l_purch_req_lines.extend(str_product_qty)
+#                  
+#             l_purch_order_lines = []
+#             str_product_qty = ''
+#             for i in purch_order_lines:
+#                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
+#                 l_purch_order_lines.extend(str_product_qty)
+#                  
+#             l_stock_pack_operations = []
+#             str_product_qty = ''
+#             for i in stock_pack_operations:
+#                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
+#                 l_stock_pack_operations.extend(str_product_qty)
+#              
+#             l_acc_inv_lines = []
+#             str_product_qty = ''
+#             for i in acc_inv_lines:
+#                 str_product_qty = str(i.product_id.id) + '-' + str(i.quantity)
+#                 l_acc_inv_lines.extend(str_product_qty)
+#              
+#             item.is_po_done = set(l_purch_req_lines) == set(l_purch_order_lines)
+#             item.is_grn_done = set(l_purch_req_lines) == set(l_stock_pack_operations)
+#             item.is_inv_done = set(l_purch_req_lines) == set(l_acc_inv_lines)
+    
+    @api.multi
+    def update_status_po_grn_inv(self):
+        for item in self:
+            purch_req = item.env['purchase.request.line']
+            purch_req_lines = purch_req.search([('request_id','=',item.request_id.id)])
+            
+            state_purch_order = ['done','purchase']
+            purch_order = item.env['purchase.order']
+            purch_orders = purch_order.search([('request_id','=',item.request_id.id),('state','in',state_purch_order)])
+            purch_order_lines = item.env['purchase.order.line'].search([('order_id','in',purch_orders.ids)])
+            
+            stock_picking = item.env['stock.picking']
+            stock_pickings = stock_picking.search([('purchase_id','in',purch_orders.ids),('state','=','done')])
+            stock_pack_operations = item.env['stock.pack.operation'].search([('picking_id','in',stock_pickings.ids)])
+            
+            state_acc_inv = ['open','paid']
+            acc_inv = item.env['account.invoice']
+            acc_invs = acc_inv.search([('picking_id','in',stock_pickings.ids),('state','in',state_acc_inv)])
+            
+            #if acc_invs null it means invoice is created per po not per grn.
+            if not acc_invs:
+                acc_inv_lines = item.env['account.invoice.line'].search([('purchase_line_id.order_id.id','in',purch_orders.ids)])
+            else:
+                acc_inv_lines = item.env['account.invoice.line'].search([('invoice_id','in',acc_invs.ids)])
+                
+            l_purch_req_lines = []
+            str_product_qty = ''
+            for i in purch_req_lines:
+                str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
+                l_purch_req_lines.extend(str_product_qty)
+                
+            l_purch_order_lines = []
+            str_product_qty = ''
+            for i in purch_order_lines:
+                str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
+                l_purch_order_lines.extend(str_product_qty)
+                
+            l_stock_pack_operations = []
+            str_product_qty = ''
+            for i in stock_pack_operations:
+                str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
+                l_stock_pack_operations.extend(str_product_qty)
+            
+            l_acc_inv_lines = []
+            str_product_qty = ''
+            for i in acc_inv_lines:
+                str_product_qty = str(i.product_id.id) + '-' + str(i.quantity)
+                l_acc_inv_lines.extend(str_product_qty)
+            
+            item.is_po_done = set(l_purch_req_lines) == set(l_purch_order_lines)
+            item.is_grn_done = set(l_purch_req_lines) == set(l_stock_pack_operations)
+            item.is_inv_done = set(l_purch_req_lines) == set(l_acc_inv_lines)
+            
     @api.multi
     def _get_value_low(self):
         #get Minimal value from purchase params for Purchase Request
@@ -907,22 +1020,225 @@ class InheritPurchaseRequisitionLine(models.Model):
                                                                           ('product_id','=',item.product_id.id)]).price_per_product
                 item.est_price = request_line
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+class TriggerPurchaseTender(models.Model):
+    _name = "purchase.requisition.trigger"
+    _description = "trigger to change status PO, GRN and Invoice on tender"
+    _auto = False
+    
+    def init(self, cr):
+        cr.execute("""
+            create or replace function public.t_quotation_tender() returns trigger 
+            LANGUAGE plpgsql
+            as $function$
+                declare
+                    v_is_qcf_done boolean;
+                begin 
+                    select case when count(*) = cast(0 as bigint) then true else false end delta from (
+                        select request_id, product_id, control_unit product_qty from purchase_request_line where request_id = NEW.request_id 
+                        except
+                        select 
+                            po.request_id, pol.product_id,pol.product_qty from (
+                            select 
+                                * 
+                            from 
+                                purchase_order 
+                            where 
+                                request_id = NEW.request_id 
+                                and state not in ('purchase','done','received_all','received_force_done')
+                            )po inner join purchase_order_line pol on po.id = pol.order_id
+                    )po_tender into v_is_qcf_done;
+                    
+                    update purchase_requisition 
+                        set is_qcf_done = v_is_qcf_done
+                    where request_id = NEW.request_id; 
+                    
+                    RETURN NEW;
+                end; 
+            $function$
+        """)
+        
+        cr.execute("""
+            create or replace function public.t_purchase_order_tender() returns trigger 
+            LANGUAGE plpgsql
+            as $function$
+                declare
+                    v_is_po_done boolean;
+                begin 
+                    select case when count(*) = cast(0 as bigint) then true else false end delta from (
+                        select request_id, product_id, control_unit product_qty from purchase_request_line where request_id = NEW.request_id 
+                        except
+                        select 
+                            po.request_id, pol.product_id,sum(pol.product_qty) product_qty from (
+                            select 
+                                * 
+                            from 
+                                purchase_order 
+                            where 
+                                request_id = NEW.request_id 
+                                and state in ('purchase','done','received_all','received_force_done')
+                            )po inner join purchase_order_line pol on po.id = pol.order_id
+                            group by
+                                po.request_id, pol.product_id
+                    )po_tender into v_is_po_done;
+                    
+                    update purchase_requisition 
+                        set is_po_done = v_is_po_done
+                    where request_id = NEW.request_id; 
+                    
+                    RETURN NEW;
+                end; 
+            $function$
+        """)
+        
+        cr.execute("""
+            create or replace function public.t_grn_tender() returns trigger 
+            LANGUAGE plpgsql
+            as $function$
+                declare
+                    v_is_grn_done boolean;
+                begin 
+                    select case when count(*) = cast(0 as bigint) then true else false end delta from (            
+                        select 
+                            request_id, product_id, control_unit product_qty from purchase_request_line 
+                        where 
+                            request_id in (select request_id from purchase_order where name = NEW.origin) 
+                        except
+                        select 
+                            po.request_id, spo.product_id,sum(spo.product_qty) product_qty from (
+                            select 
+                                * 
+                            from 
+                                purchase_order 
+                            where 
+                                request_id in (select request_id from purchase_order where name = NEW.origin) 
+                                and state in ('purchase','done')
+                            )po inner join stock_picking sp on po.name = sp.origin 
+                            inner join stock_pack_operation spo on sp.id = spo.picking_id
+                            where 
+                                sp.state = 'done' and spo.checking_split != true
+                            group by
+                                po.request_id, spo.product_id
+                    )po_tender into v_is_grn_done;
+                    
+                    update purchase_requisition 
+                        set is_grn_done = v_is_grn_done
+                    where request_id in (select request_id from purchase_order where name = NEW.origin); 
+                    
+                    RETURN NEW;
+                end; 
+            $function$
+        """)
+        
+        cr.execute("""
+            create or replace function public.t_inv_tender() returns trigger 
+            LANGUAGE plpgsql
+            as $function$
+                declare
+                    v_is_inv_done boolean;
+                begin 
+                    select case when count(*) = cast(0 as bigint) then true else false end delta from (
+                        select 
+                            request_id, product_id, control_unit product_qty 
+                        from 
+                            purchase_request_line 
+                        where 
+                            request_id in (select request_id from purchase_order where name = NEW.origin) 
+                        except
+                        select 
+                            po.request_id, ail.product_id,sum(ail.quantity) product_qty from (
+                            select 
+                                * 
+                            from 
+                                purchase_order 
+                            where 
+                                request_id in (select request_id from purchase_order where name = NEW.origin) 
+                                and state in ('purchase','done')
+                            )po 
+                            inner join account_invoice ai on ai.origin = po.name
+                            inner join account_invoice_line ail on ai.id = ail.invoice_id
+                            where ai.state in ('open','paid')
+                            group by 
+                                po.request_id, ail.product_id
+                    )po_tender into v_is_inv_done;
+                    
+                    update purchase_requisition 
+                        set is_inv_done = v_is_inv_done
+                    where request_id in (select request_id from purchase_order where name = NEW.origin); 
+                    
+                    RETURN NEW;
+                end; 
+            $function$
+        """)
+        
+        try:
+            cr.execute("""
+                CREATE TRIGGER t_quotation_tender_ins 
+                    AFTER INSERT ON 
+                        purchase_order FOR EACH ROW EXECUTE PROCEDURE t_quotation_tender();
+                COMMIT;
+            """)
+        except:
+            print "Please check trigger in database : t_quotation_tender_ins on purchase_order" 
+             
+        try:
+            cr.execute("""
+                CREATE TRIGGER t_quotation_tender_upd
+                    AFTER UPDATE OF validation_check_confirm_vendor ON 
+                        purchase_order FOR EACH ROW EXECUTE PROCEDURE t_quotation_tender();
+                COMMIT;
+            """)
+        except:
+            print "Please check trigger in database : t_quotation_tender_upd on purchase_order" 
+          
+        try:
+            cr.execute("""
+                CREATE TRIGGER t_purchase_order_tender_ins 
+                    AFTER INSERT ON 
+                        purchase_order FOR EACH ROW EXECUTE PROCEDURE t_purchase_order_tender();
+                COMMIT;
+            """)
+        except:
+            print "Please check trigger in database : t_purchase_order_tender_ins on purchase_order" 
+              
+        try:    
+            cr.execute("""
+                CREATE TRIGGER t_purchase_order_tender_upd 
+                    AFTER UPDATE OF state ON 
+                        purchase_order FOR EACH ROW EXECUTE PROCEDURE t_purchase_order_tender();
+                COMMIT;
+            """)
+        except:
+            print "Please check trigger in database : t_purchase_order_tender_upd on purchase_order" 
+              
+        try:    
+            cr.execute("""
+                CREATE TRIGGER t_grn_tender_upd 
+                    AFTER UPDATE ON 
+                        stock_picking FOR EACH ROW EXECUTE PROCEDURE t_grn_tender();
+                COMMIT;
+            """)
+        except:
+            print "Please check trigger in database : t_grn_tender_upd on stock_picking" 
+              
+        try:    
+            cr.execute("""
+                CREATE TRIGGER t_inv_tender_upd 
+                    AFTER UPDATE OF state ON 
+                        account_invoice FOR EACH ROW EXECUTE PROCEDURE t_inv_tender();
+                COMMIT;
+            """)
+        except:
+            print "Please check trigger in database : t_inv_tender_upd on account_invoice"
+            
+# class InheritPurchaseOrderTender(models.Model):
+# 
+#     _inherit = 'purchase.order'
+#     
+#     @api.multi
+#     @api.onchange('validation_check_confirm_vendor')
+#     def _onchange_validation_check_confirm_vendor(self):
+#         print '_onchange_validation_check_confirm_vendor'
+#         for item in self:
+#             prs = item.env['purchase.requisition'].search([('request_id','=',item.request_id.id)])
+#             for pr in prs:
+#                 pr.set_status_po_grn_inv()

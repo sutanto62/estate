@@ -70,10 +70,12 @@
                  </xpath>
                  <xpath expr="//field[@name='state']" position="after">
                      <field name="description" string="Description"/>
+                     <field name="count_po" string="PO"/>
                      <field name="count_po_done" string="PO Dn"/>
                      <field name="count_po_partial" string="PO Partial"/>
-                     <field name="count_grn_done" string="GRN/SRN Dn"/>
+                     <field name="count_grn" string="GRN/SRN"/>
                      <field name="count_grn_assigned" string="GRN/SRN Av"/>
+                     <field name="count_grn_done" string="GRN/SRN Dn"/>
                  </xpath>
              </field>
          </record>

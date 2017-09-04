@@ -214,13 +214,15 @@ class InheritPurchaseRequest(models.Model):
     validation_technic = fields.Boolean("Validation Technic",compute='_change_validation_technic')
     validation_state_budget = fields.Boolean("Validation Budget",compute='_change_validation_budget')
     validation_correction_procurement = fields.Boolean("Validation Correction Procurement",default=False)
-    count_grn_done = fields.Integer('Count GRN Done', compute='_compute_grn_or_srn')
-    count_grn_assigned = fields.Integer('Count GRN Assigned', compute='_compute_grn_or_srn')
-    count_po_partial = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
-    count_po_done = fields.Integer('Count GRN Assigned', compute='_compute_po_line')
+    count_grn_done = fields.Integer('GRN/SRN Done', compute='_compute_grn_or_srn')
+    count_grn_assigned = fields.Integer('GRN/SRN Assigned', compute='_compute_grn_or_srn')
+    count_po_partial = fields.Integer('PO Partial', compute='_compute_po_line')
+    count_po_done = fields.Integer('PO Done', compute='_compute_po_line')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
     validation_requester = fields.Boolean("Validation Requester",compute='_change_validation_requester')
-
+    count_po = fields.Integer('PO', compute='_compute_po_line')
+    count_grn = fields.Integer('GRN/SRN', compute='_compute_grn_or_srn')
+    
     @api.multi
     def _get_type_product(self):
         for item in self:
@@ -639,16 +641,26 @@ class InheritPurchaseRequest(models.Model):
     def action_financial_approval2(self):
         """ Confirms Division Head Financial Approval.
         """
+#         for item in self:
+#             if item.code in ['KPST'] and item._get_total_price_budget() < item._get_price_mid():
+#                 item.button_approved()
+#             elif item.code in ['KOKB'] and item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
+#                 item.button_approved()
+#             elif (item.code in ['KOKB']
+#                 and item.department_id.code in item._get_department_not_finance_code()
+#                 and (item._get_total_price_budget() >= item._get_price_mid()
+#                 or item._get_total_price_budget() < item._get_price_mid())) \
+#                 or (item.code in ['KPST'] and item._get_total_price_budget() >= item._get_price_mid()):
+#                 state_data = {'state':'approval5','assigned_to' : item._get_director()}
+#                 item.write(state_data)
+#                 item.send_mail_template()
+        
         for item in self:
             if item.code in ['KPST'] and item._get_total_price_budget() < item._get_price_mid():
                 item.button_approved()
             elif item.code in ['KOKB'] and item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
                 item.button_approved()
-            elif (item.code in ['KOKB']
-                and item.department_id.code in item._get_department_not_finance_code()
-                and (item._get_total_price_budget() >= item._get_price_mid()
-                or item._get_total_price_budget() < item._get_price_mid())) \
-                or (item.code in ['KPST'] and item._get_total_price_budget() >= item._get_price_mid()):
+            else :
                 state_data = {'state':'approval5','assigned_to' : item._get_director()}
                 item.write(state_data)
                 item.send_mail_template()
@@ -1210,9 +1222,8 @@ class InheritPurchaseRequest(models.Model):
             picking_assigned = len(assign_picking_assigned)
 
             item.count_grn_done = picking_done
-
-
             item.count_grn_assigned = picking_assigned
+            item.count_grn = picking_assigned + picking_done
 
     @api.multi
     @api.depends('purchase_ids')
@@ -1221,14 +1232,15 @@ class InheritPurchaseRequest(models.Model):
             purchase = item.env['purchase.order']
             purchase_done = purchase.search([('request_id','=',item.id),('state','=','done')])
             purchase_partial = purchase.search([('request_id','=',item.id),('state','=','received_force_done')])
+            purchase_all = purchase.search([('request_id','=',item.id),('state','=','purchase')])
+            
             done = len(purchase_done)
             partial = len(purchase_partial)
-
-
+            po_purchase = len(purchase_all)
+            
             item.count_po_partial = partial
-
-
             item.count_po_done = done
+            item.count_po = po_purchase + done + partial
 
     @api.multi
     @api.constrains('line_ids')
