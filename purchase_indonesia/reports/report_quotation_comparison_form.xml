@@ -22,14 +22,14 @@
 									<b>No. <span t-field="o.complete_name"/> </b>
 								</div>
 								<div class="col-xs-12" >
-									<b>Date : <span t-field="o.create_date" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/> </b>
+									<b>Date : <span t-field="o.date_pp" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/> </b>
 								</div>
 							</div>
 							
 							<!-- Sub Header -->
 							<div class="row" style="text-align:left;font-size:10pt;">
 								<div class="col-xs-12" >
-									<b>PP No. &amp; Date : <span t-field="o.origin"/> <span t-field="o.date_pp" t-field-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/> </b>
+									<b>PP No. &amp; Date : <span t-field="o.origin"/> <span t-field="o.requisition_id.request_id.create_date" t-field-options="{&quot;format&quot;: &quot;dd/MM/yyyy&quot;}"/> </b>
 								</div>
 							</div>
 							
