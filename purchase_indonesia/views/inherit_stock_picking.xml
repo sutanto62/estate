@@ -18,6 +18,9 @@
              <field name="model">stock.picking</field>
              <field name="inherit_id" ref="stock.view_picking_form"/>
              <field name="arch" type="xml">
+                 <xpath expr="//field[@name='min_date']" position="after">
+                      <field name="completion_date"/>
+                 </xpath>
                  <xpath expr="//field[@name='name']" position="replace">
                       <field name="complete_name_picking" readonly="1"/>
                  </xpath>
