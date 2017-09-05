@@ -278,7 +278,7 @@ class FingerAttendance(models.Model):
 
             record.p_late_all = 1 if record.p_estate_late_amount or record.p_labor_late_amount or record.p_late_amount_office else 0
             record.p_no_reason_all = 1 if record.p_action_reason == 'Mangkir' else 0
-            record.p_piece_rate_day = 0 if record.p_action_reason in ('Cuti', 'Ijin') else record.p_day_finger
+            record.p_piece_rate_day = 0 if record.p_action_reason in ('Cuti', 'Ijin', 'Sakit', 'Dinas Luar','Mangkir') else record.p_day_finger
             record.p_scan_hour = record.sign_out - record.sign_in if record.sign_in and record.sign_out else 0
             record.p_scan_day_finger = record.p_scan_hour/record.p_hour_work_float if record.p_hour_work_float else 0
 
