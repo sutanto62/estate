@@ -271,11 +271,20 @@ class InheritStockPicking(models.Model):
     description = fields.Text('Description')
     pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
     purchase_order_name = fields.Char('Purchase Order Complete Name',related='purchase_id.complete_name',store=True)
+    completion_date = fields.Date('Completion Date',compute='_compute_completion_date')
 
     _defaults = {
         'not_seed':True,
     }
-
+    
+    @api.multi
+    def _compute_completion_date(self):
+        for item in self:
+            for mids in item.message_ids:
+                for mids_tracking in mids.tracking_value_ids:
+                    if mids_tracking.field == 'state' and (mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai'):
+                        item.completion_date = mids.date
+    
     @api.multi
     @api.depends('assigned_to')
     def _check_validation_manager(self):
