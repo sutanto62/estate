@@ -847,7 +847,39 @@
 
                     </group>
                     <footer>
-                        <button name="check_report" string="Print" type="object" default_focus="1" class="oe_highlight"/>
+                        <button name="check_report" string="Print Division Report" type="object" default_focus="1" class="oe_highlight"/>
+
+                        <button name="check_report_2" string="Print Assistant Daily Report" type="object" default_focus="1" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="assistant_daily_report_view_form" model="ir.ui.view">
+            <field name="name">Assistant Daily Report View Form</field>
+            <field name="model">estate.division.report</field>
+            <field name="arch" type="xml">
+                <form string="Assistant Daily Report Options">
+                    <group colspan="4">
+                        <field name="period"/>
+                        <field name="date_start"/>
+                        <field name="date_end"/>
+                        <!-- todo fix wrapper to print estate or division report -->
+                        <!--
+                        <field name="type"/>
+                        <field name="estate_id" attrs="{'invisible': [('type', 'not in', ('estate', 'division'))], 'required': [('type', '=', 'estate')]}"/>
+                        <field name="division_id" attrs="{'invisible': [('type', '!=', 'division')], 'required': [('type', '=', 'division')]}"/>
+                        -->
+                        <field name="type" invisible="True"/>
+                        <field name="company_id"/>
+                        <field name="estate_id" required="True"/>
+                        <field name="division_id" required="True"/>
+
+                    </group>
+                    <footer>
+                        <button name="check_report" string="Print Assistant Daily Report" type="object" default_focus="1" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>
@@ -894,6 +926,7 @@
                   action="action_list_upkeep_material"
                   groups="estate.group_user"/>
 
+        <!--Estate Division Report-->
         <record id="estate_division_report_menu_action" model="ir.actions.act_window" >
             <field name="name">Estate Division Report</field>
             <field name="res_model">estate.division.report</field>
@@ -909,6 +942,24 @@
                   parent="menu_estate_reporting"
                   action="estate_division_report_menu_action"
                   sequence="50"
+                  groups="estate.group_user"/>
+
+        <!--Assistant Daily Report-->
+        <record id="assistant_daily_report_menu_action" model="ir.actions.act_window" >
+            <field name="name">Assistant Daily Report</field>
+            <field name="res_model">estate.daily.report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="assistant_daily_report_view_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="assistant_daily_report_menu"
+                  name="Assistant Daily Report"
+                  parent="menu_estate_reporting"
+                  action="assistant_daily_report_menu_action"
+                  sequence="60"
                   groups="estate.group_user"/>
 
 

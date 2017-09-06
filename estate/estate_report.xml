@@ -28,10 +28,24 @@
             menu="False"
             auto="False"
         />
+
+        <report
+            id="assistant_daily_report_action"
+            model="estate.division.report"
+            string="Assistant Report (Bahan)"
+            report_type="qweb-pdf"
+            name="estate.report_assistant_daily"
+            file="estate.report_assistant_daily"
+            menu="False"
+            auto="False"
+        />
         <!--/report action-->
 
         <!--paper format-->
         <record id="estate_division_report_action" model="ir.actions.report.xml">
+            <field name="paperformat_id" ref="estate_paperformat_a4"/>
+        </record>
+        <record id="assistant_daily_report_action" model="ir.actions.report.xml">
             <field name="paperformat_id" ref="estate_paperformat_a4"/>
         </record>
         <!--/paper format-->

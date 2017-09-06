@@ -6,7 +6,7 @@
                 <t t-call="report.internal_layout">
                     <div class="page">
                         <h2>
-                            Estate Division Report
+                            Assistant Daily Report
                         </h2>
                         <p>
                             Start Date: <span t-esc="formatLang(data['form']['date_start'], date=True)"/><br/>

@@ -13,3 +13,12 @@ class EstateDivisionReport(models.TransientModel):
 
     def _print_report(self, data):
         return self.env['report'].with_context(landscape=True).get_action(self, 'estate.report_estate_division', data=data)
+
+class AssistantDailyReport(models.TransientModel):
+    _name = 'assistant.daily.report'
+    _inherit = "estate.common.report"
+    _description =  "Assistant Daily Report"
+
+    def _print_report(self, data):
+        return self.env['report'].with_context(landscape=True).get_action(self, 'estate.report_assistant_daily',
+                                                                          data=data)

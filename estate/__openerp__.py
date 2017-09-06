@@ -38,6 +38,7 @@
         'data/estate_uom_data.xml',
         'data/hr_data.xml',
         'views/report_estate_division.xml',
+        'views/report_assistant_daily.xml',
         'estate_report.xml',
         'data/ir_sequence_data.xml',
     ],
