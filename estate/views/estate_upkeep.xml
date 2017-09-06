@@ -848,8 +848,6 @@
                     </group>
                     <footer>
                         <button name="check_report" string="Print Division Report" type="object" default_focus="1" class="oe_highlight"/>
-
-                        <button name="check_report_2" string="Print Assistant Daily Report" type="object" default_focus="1" class="oe_highlight"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer>
