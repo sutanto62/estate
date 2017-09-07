@@ -33,7 +33,7 @@ class FingerAttendance(models.Model):
     schedule_id = fields.Many2one(related='contract_id.working_hours',
                                   help='Help to get time start and time end.', store=True)
     contract_id = fields.Many2one('hr.contract', 'Contract', compute='_compute_employee',
-                                  help='Working schedule might be updated based on contract.')
+                                  help='Working schedule might be updated based on contract.', store=True)
 
     # surrogate
     db_id_c = fields.Char('Emp No.', compute='_compute_pivot')
