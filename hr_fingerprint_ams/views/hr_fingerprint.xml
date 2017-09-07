@@ -23,6 +23,7 @@
                                 <field name="db_id"/>
                                 <field name="terminal_id"/>
                                 <field name="employee_name"/>
+                                <field name="department"/>
                                 <field name="date"/>
                                 <field name="sign_in" widget="float_time"/>
                                 <field name="sign_out" widget="float_time"/>
@@ -94,11 +95,13 @@
                 <tree colors="red:state in('draft')">
                     <field name="employee_name"/>
                     <field name="date"/>
-                    <field name="time_start" widget="float_time"/>
-                    <field name="time_end" widget="float_time"/>
+                    <field name="time_start" string="Time In" widget="float_time"/>
+                    <field name="time_end" string="Time Out" widget="float_time"/>
                     <field name="sign_in" widget="float_time"/>
                     <field name="sign_out" widget="float_time"/>
-                    <field name="action_reason"/>
+                    <field name="action_reason" sum="Action Reason"/>
+                    <field name="day_normal" sum="Day Normal"/>
+                    <field name="day_finger" sum="Day Finger"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -267,21 +270,21 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree colors="red:number_of_day_fingerprint==0" default_order="division_id,team_id,employee_id,upkeep_date">
-                    <field name="division_id"/>
-                    <field name="assistant_id"/>
-                    <field name="team_id"/>
                     <field name="employee_id"/>
                     <field name="nik_number" string="NIK"/>
                     <field name="upkeep_date"/>
                     <field name="attendance_code"/>
                     <field name="fingerprint"/>
                     <field name="attendance_time"
-                           attrs="{'invisible': [('fingerprint', '=','action')]}"/>
+                        attrs="{'invisible': [('fingerprint', '=','action')]}"/>
                     <field name="number_of_day"
-                           attrs="{'invisible': [('contract_period','!=','2')]}"/>
+                        attrs="{'invisible': [('contract_period','!=','2')]}"/>
                     <field name="number_of_day_fingerprint"
-                           string="Fingerprint"/>
+                        string="Fingerprint"/>
                     <!--do not delete-->
+                    <field name="division_id" invisible="True"/>
+                    <field name="assistant_id" invisible="True"/>
+                    <field name="team_id" invisible="True"/>
                     <field name="contract_period" invisible="True"/>
                 </tree>
             </field>

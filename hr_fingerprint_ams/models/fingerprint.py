@@ -62,34 +62,73 @@ class FingerAttendance(models.Model):
                              default='draft',
                              help='Import will update fingerprint attendance with draft state only.')
 
+    # @api.multi
+    # @api.constrains('day_normal', 'day_finger')
+    # def _check_day_normal_finger(self):
+    #     """ Import problem: day normal/finger not imported."""
+    #     for record in self:
+    #         print 'day_normal %s %s' % (record.day_normal, record.day_finger)
+    #         if record.day_normal == 0:
+    #             err_msg = _('You have day normal or day finger zero value.\n')
+    #             raise ValidationError(err_msg)
+
+
+    @api.multi
+    @api.constrains('sign_in', 'sign_out')
+    def _check_sign_in_out(self):
+        """ overlap work time creates sign-in and sign-out when employee had fingered multiple times"""
+        for record in self:
+            print '_check_sign_in_out %s %s' % (record.sign_in, record.sign_out)
+            # overlap work time creates double sign-in/sign-out
+            if record.sign_in == record.sign_out:
+                err_msg = _('%s NIK %s at %s has exact sign-in and sign-out. '
+                            'Delete one of them.' % (record.employee_name, record.nik, record.date))
+                raise ValidationError(err_msg)
+
+    @api.multi
+    @api.constrains('day_normal', 'day_finger')
+    def _check_day_normal_finger(self):
+        for record in self:
+            print '_check_day_normal_finger %s %s' % (record.day_normal, record.day_finger)
+            if record.day_normal == 0:
+                err_msg = _('%s NIK %s at %s has 0 day normal/finger. '
+                            'Day normal should be 1.' % (record.employee_name, record.nik, record.date))
+                raise ValidationError(err_msg)
+
+            if record.day_normal > 1:
+                err_msg = _('%s NIK %s at %s has day normal/finger more than 1. '
+                            'Maximum value is 1.' % (record.employee_name, record.nik, record.date))
+                raise ValidationError(err_msg)
+
     @api.model
     def create(self, vals):
         """Create and update using same CSV format of fingerprint.
         Must meet attendance rule:
         1. It must be registered employee (name and employee identification number).
         2. It has sign-in/out OR has registered action reason.
-        3. OR if there is attendance code's fingerprint requirement single allow fingerprint without action reason.
+        3. OR It has sign-in/out if upkeep attendance code's requirement is single.
         """
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
 
-        # Update only when state is in draft
+        # update purposes
         current = f_attendance_obj.search([('db_id', '=', vals['db_id']),
                                            ('terminal_id', '=', vals['terminal_id']),
                                            ('employee_name', '=', vals['employee_name']),
                                            ('nik', '=', vals['nik']),
                                            ('date', '=', vals['date'])])
 
-        # Override create should return a recordset
+        # inherited method create should return a recordset
         res = self
 
+        # rule #1 - must be an employee with nik
         attendance = Attendance(self._get_employee(vals['employee_name'], vals['nik']),
                                 vals['sign_in'],
                                 vals['sign_out'])
-
-        # Attendance code's fingerprint requirement allow single sign-in/out.
         attendance_code_ids = self.env['estate.hr.attendance'].search([('fingerprint', '=', 'single')])
+
+        # rule #2 - must have (sign-in OR sign-out) or (sign-in AND sign-out)
         if len(attendance_code_ids) > 0:
-            # This condition override sign-in and sign-out.
+            # rule #3 - OR It has sign-in/out if upkeep attendance code's requirement is single.
             att_rule = AttendanceSpecification().\
                 and_specification(EmployeeSpecification()).\
                 and_specification(SignInOutSpecification())
@@ -101,19 +140,21 @@ class FingerAttendance(models.Model):
 
         if att_rule.is_satisfied_by(attendance):
             if current:
-                # update draft only
+                # update record
                 if current.state == 'draft':
                     current.write(vals)
                     res = current
                     self._create_attendance(res, vals, 'sign_in', True)
                     self._create_attendance(res, vals, 'sign_out', True)
             else:
+                # create new record
                 res = super(FingerAttendance, self).create(vals)
                 self._create_attendance(res, vals)
                 self._create_attendance(res, vals, 'sign_out')
         else:
-            # Applied when there is no attendance code with single fingerprint requirements
-            # Prevent create fingerprint attendance if employee not found
+            # rule #2 - applied when there is no attendance code with single fingerprint requirements
+
+            # do not create fingerprint attendance if employee not found
             try:
                 self._get_employee(vals['employee_name'], vals['nik']).id
             except AttributeError:
@@ -122,28 +163,18 @@ class FingerAttendance(models.Model):
                 _logger.info(err_msg)
                 return self
 
-            # Create only fingerprint attendance with action reason
+            # create only fingerprint attendance with action reason
             action_reason_ids = self.env['hr.action.reason'].search([('active', '=', True),
                                                                      ('action_type', '=', 'action')])
-
             item = []
             for action_reason in action_reason_ids:
                 item.append(action_reason['name'])
-
-            print 'Date: %s and action reason: %s' % (vals['date'], vals['action_reason'])
             if vals['action_reason'] in item:
                 if current:
                     # Only update fingerprint attendance with draft status
                     if current.state == 'draft':
-                        # Changes did not always have sign-in and out
                         current.attendance_ids.unlink()
-
-                        update_vals = {
-                            'sign_in': vals['sign_in'],
-                            'sign_out': vals['sign_out'],
-                            'action_reason': vals['action_reason']
-                        }
-                        current.write(update_vals)
+                        current.write(vals)
                         res = current
                         self._create_attendance(res, vals, 'action')
                 else:

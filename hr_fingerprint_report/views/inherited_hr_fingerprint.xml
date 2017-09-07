@@ -7,6 +7,19 @@
             <field name="model">hr_fingerprint_ams.attendance</field>
             <field name="inherit_id" ref="hr_fingerprint_ams.fingerprint_attendance_view_form"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='sign_out']" position="after">
+                    <field name="day_normal"/>
+                    <field name="day_finger"/>
+                    <field name="p_hour_late_office"/>
+                    <field name="p_late_amount_office"/>
+                    <field name="p_estate_late"/>
+                    <field name="p_estate_late_amount"/>
+                    <field name="p_labor_late_circle"/>
+                    <field name="p_labor_late_circle_amount"/>
+                    <field name="p_labor_late"/>
+                    <field name="p_labor_late_amount"/>
+                    <field name="p_sign_percent" string="Persen Scan"/>
+                </xpath>
                 <xpath expr="//field[@name='hour_overtime']" position="after">
                     <!--temporer-->
                     <field name="employee_id"/>
@@ -16,10 +29,6 @@
                     <field name="contract_type"/>
                     <field name="contract_period"/>
                     <field name="schedule_id"/>
-                    <field name="time_start_t"/>
-                    <field name="time_end_t"/>
-                    <field name="sign_in_t"/>
-                    <field name="sign_out_t"/>
                     <field name="hour_late_t"/>
                     <field name="hour_early_leave_t"/>
                     <field name="hour_overtime_t"/>
@@ -31,20 +40,8 @@
                     <field name="day_weekday"/>
                     <field name="day_weekend"/>
                     <field name="day_holiday"/>
-                    <field name="p_year"/>
-                    <field name="p_month"/>
-                    <field name="p_week"/>
-                    <field name="p_date"/>
-                    <field name="p_day_normal"/>
-                    <field name="p_day_finger"/>
-                    <field name="p_hour_late"/>
-                    <field name="p_hour_late_office"/>
-                    <field name="p_late_amount"/>
-                    <field name="p_late_amount_office"/>
-                    <field name="p_hour_early_leave"/>
-                    <field name="p_early_leave"/>
-                    <field name="p_days"/>
-                    
+                    <field name="p_days" string="Days"/>
+
                 </xpath>
             </field>
         </record>
@@ -56,8 +53,16 @@
             <field name="inherit_id" ref="hr_fingerprint_ams.fingerprint_attendance_view_tree"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='state']" position="before">
-                    <field name="p_hour_late_office"/>
-                    <field name="p_late_amount_office"/>
+                    <!--computed field cannot be aggregated when using group by-->
+                    <field name="p_hour_late_office" sum="A"/>
+                    <field name="p_late_amount_office" sum="B"/>
+                    <field name="p_estate_late" sum="C"/>
+                    <field name="p_estate_late_amount" sum="D"/>
+                    <field name="p_labor_late_circle" sum="E"/>
+                    <field name="p_labor_late_circle_amount" sum="F"/>
+                    <field name="p_labor_late" sum="G"/>
+                    <field name="p_labor_late_amount" sum="H"/>
+                    <field name="p_sign_percent" string="Persen Scan" avg="I"/>
                 </xpath>
             </field>
         </record>
