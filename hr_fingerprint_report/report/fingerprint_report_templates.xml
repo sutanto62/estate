@@ -53,6 +53,10 @@
                             color: goldenrod !important;
                         }
 
+                        @media print {
+                            tr.page-break  { page-break-inside: avoid; }
+                        }
+
                     </style>
 
                     <h2 class="text-center">Laporan Presensi</h2>
@@ -184,7 +188,7 @@
                                 <th class="text-center" colspan="2">Terlambat KHL Apel</th>
                                 <th class="text-center" colspan="2">Terlambat KHL Kerja</th>
                                 <th class="text-right align-middle" rowspan="2">Pulang Cepat (Menit) All</th>
-                                <th class="text-right align-middle" rowspan="2">CPLG</th>
+                                <th class="text-right align-middle" rowspan="2">Pulang Cepat (X) All</th>
                                 <th class="text-right align-middle" rowspan="2">Avg Persen Scan</th>
                                 <th class="text-right align-middle" rowspan="2">Jumlah Jam Kerja (Jam)</th>
                                 <th class="text-right align-middle" rowspan="2">Avg Rata-Rata</th>
@@ -223,7 +227,7 @@
                                 <!--single attendance-->
                                 <t t-foreach="attendances" t-as="a">
                                     <t t-if="department == a['department']">
-                                        <tr>
+                                        <tr class="page-break">
                                             <td><t t-esc="a['nik']"/></td>
                                             <td><t t-esc="a['employee_name']"/></td>
                                             <td class="text-right"><t t-esc="a['p_day_normal']"/></td>
@@ -317,6 +321,7 @@
                         <!--/attendance body-->
 
                         <!--attendance footer-->
+                        <!--put tfoot after tbody for calculation-->
                         <tfoot>
                             <tr>
                                 <td colspan="2">Total</td>

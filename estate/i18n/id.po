@@ -18,8 +18,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0-20160525\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-03 08:41+0000\n"
-"PO-Revision-Date: 2017-08-03 15:42+0700\n"
+"POT-Creation-Date: 2017-09-06 10:25+0000\n"
+"PO-Revision-Date: 2017-09-06 17:29+0700\n"
 "Last-Translator: Cayadi <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: Palma Group\n"
 "Language: id\n"
@@ -76,7 +76,9 @@ msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr "Jumlah premi %s untuk kegiatan %s tidak boleh melebihi %s"
 
 #. module: estate
+#: model:ir.model.fields,help:estate.field_assistant_daily_report_type
 #: model:ir.model.fields,help:estate.field_estate_common_report_type
+#: model:ir.model.fields,help:estate.field_estate_daily_report_type
 #: model:ir.model.fields,help:estate.field_estate_division_report_type
 msgid "* By Estate, shows all activities.* By Division, group activities by Division."
 msgstr ""
@@ -140,6 +142,7 @@ msgid "<br/>\n"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>\n"
 "                            End Date:"
@@ -156,6 +159,16 @@ msgstr ""
 "                            Kebun:"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "<br/><strong>Estate Assistant</strong>"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "<br/><strong>Estate Manager</strong>"
+msgstr ""
+
+#. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>Asisten"
 msgstr ""
@@ -164,6 +177,11 @@ msgstr ""
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>Kasie"
 msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "<strong>Total Cost</strong>"
+msgstr "<strong>Total Biaya</strong>"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
@@ -416,6 +434,11 @@ msgid "Approved"
 msgstr "Setuju"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Approved By"
+msgstr "Disetujui Oleh"
+
+#. module: estate
 #: model:product.uom.categ,name:estate.product_uom_categ_area
 msgid "Area"
 msgstr "Area"
@@ -475,6 +498,25 @@ msgid "Assistant"
 msgstr "Asisten Divisi"
 
 #. module: estate
+#: model:ir.actions.act_window,name:estate.assistant_daily_report_menu_action
+#: model:ir.model,name:estate.model_assistant_daily_report
+#: model:ir.model,name:estate.model_estate_daily_report
+#: model:ir.ui.menu,name:estate.assistant_daily_report_menu
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Assistant Daily Report"
+msgstr "Laporan Harian Asisten"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
+msgid "Assistant Daily Report Options"
+msgstr "Pilihan Laporan Harian Asisten"
+
+#. module: estate
+#: model:ir.actions.report.xml,name:estate.assistant_daily_report_action
+msgid "Assistant Report (Bahan)"
+msgstr "Laporan Asisten"
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_name
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_attendance_code_id
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
@@ -514,6 +556,11 @@ msgid "BKM"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Bahan"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_barcode
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_barcode
 msgid "Barcode"
@@ -535,6 +582,11 @@ msgstr "Berdasar Ijin Lokasi."
 #: model:ir.model.fields,field_description:estate.field_estate_activity_uom_id
 msgid "Basic Unit of Measurements"
 msgstr "Satuan Dasar"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Biaya"
+msgstr ""
 
 #. module: estate
 #: selection:estate.parameter,level:0
@@ -568,13 +620,22 @@ msgid "Block Variants"
 msgstr "Varian Blok"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Blok"
+msgstr ""
+
+#. module: estate
+#: selection:assistant.daily.report,type:0
 #: selection:estate.common.report,type:0
+#: selection:estate.daily.report,type:0
 #: selection:estate.division.report,type:0
 msgid "By Division"
 msgstr "Per Divisi"
 
 #. module: estate
+#: selection:assistant.daily.report,type:0
 #: selection:estate.common.report,type:0
+#: selection:estate.daily.report,type:0
 #: selection:estate.division.report,type:0
 msgid "By Estate"
 msgstr "Per Kebun"
@@ -588,6 +649,7 @@ msgstr ""
 "Non aktif lokasi tanpa harus menghapus."
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "COA"
@@ -618,6 +680,7 @@ msgstr ""
 "Pergunakan untuk metode hitung upah berdasar satuan waktu."
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Cancel"
@@ -701,9 +764,11 @@ msgid "Comment"
 msgstr "Keterangan"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_company_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_company_id
@@ -734,6 +799,11 @@ msgstr "Perusahaan karyawan"
 #: model:ir.model.fields,help:estate.field_estate_upkeep_material_company_id
 msgid "Company of location"
 msgstr "Perusahaan lokasi"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Company:"
+msgstr "Perusahaan:"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_complete_name
@@ -866,6 +936,12 @@ msgid "Create unique activity name."
 msgstr "Tulis nama kegiatan (harus unik)."
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Created By"
+msgstr "Dibuat oleh"
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_block_create_uid
@@ -873,6 +949,7 @@ msgstr "Tulis nama kegiatan (harus unik)."
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_create_uid
@@ -896,6 +973,7 @@ msgid "Created by"
 msgstr "Dibuat oleh"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_block_create_date
@@ -903,6 +981,7 @@ msgstr "Dibuat oleh"
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_create_date
@@ -1133,6 +1212,7 @@ msgid "Disetujui oleh,"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_activity_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_block_display_name
@@ -1140,6 +1220,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_display_name
@@ -1159,13 +1240,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_wage_display_name
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_assistant_daily_display_name
 #: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division_display_name
 msgid "Display Name"
 msgstr "Nama Yang Ditampilkan"
 
 #. module: estate
 #: selection:estate.parameter,level:0
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_division_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_hr_team_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_division_id
@@ -1180,14 +1264,10 @@ msgstr "Divisi"
 
 #. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_upkeep_lha
+#: model:ir.actions.report.xml,name:estate.estate_division_report_action
 #: model:ir.model,name:estate.model_estate_division_report
 msgid "Division Report"
 msgstr "Laporan Divisi"
-
-#. module: estate
-#: model:ir.actions.report.xml,name:estate.estate_division_report_action
-msgid "Division Report (New)"
-msgstr ""
 
 #. module: estate
 #: model:ir.ui.menu,name:estate.estate_division_lha_report
@@ -1198,6 +1278,23 @@ msgstr "Laporan Asisten"
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_division_id
 msgid "Division id"
 msgstr "ID Divisi"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Division:"
+msgstr "Divisi:"
+
+#. module: estate
+#: code:addons/estate/models/inherited_hr_employee.py:78
+#, python-format
+msgid "Do not archived %s employee data.\n"
+"There was upkeep labor transaction at %s."
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Dosis"
+msgstr ""
 
 #. module: estate
 #: selection:estate.hr.team,state:0
@@ -1271,7 +1368,9 @@ msgid "Empty value use standard price instead"
 msgstr "Kosongkan untuk menggunakan harga standar."
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_date_end
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_date_end
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_date_end
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_date_end
 msgid "End Date"
 msgstr "Tanggal Akhir"
@@ -1291,7 +1390,9 @@ msgstr "Error!"
 #. module: estate
 #: selection:estate.parameter,level:0
 #: model:ir.model.fields,field_description:estate.field_account_analytic_account_use_estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_estate_id
@@ -1419,6 +1520,11 @@ msgid "Estate User"
 msgstr "User Kebun"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Estate:"
+msgstr "Kebun:"
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_account_expense_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_account_expense_id
 msgid "Expense Account"
@@ -1495,7 +1601,9 @@ msgid "General Affair Activity"
 msgstr "Kegiatan Umum"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_type
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_type
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_type
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_type
 #: model:ir.ui.view,arch_db:estate.block_template_view_search
 #: model:ir.ui.view,arch_db:estate.estate_hr_member_view_search
@@ -1510,6 +1618,11 @@ msgstr "Kelompokkan"
 #: model:ir.ui.view,arch_db:estate.search_view_estate_parameter
 msgid "Group by..."
 msgstr "Kelompokkan ..."
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "HK"
+msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_posz
@@ -1538,6 +1651,7 @@ msgid "Hour"
 msgstr "Jam"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_activity_id
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_id
@@ -1545,6 +1659,7 @@ msgstr "Jam"
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_id
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_id
@@ -1564,6 +1679,7 @@ msgstr "Jam"
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_id
 #: model:ir.model.fields,field_description:estate.field_estate_wage_id
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_assistant_daily_id
 #: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division_id
 msgid "ID"
 msgstr ""
@@ -1668,8 +1784,14 @@ msgstr ""
 "Digunakan saat norma kegiatan dibuat. Isi dengan nilai minimum hasil kerja."
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Item"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Jumlah"
 msgstr ""
 
 #. module: estate
@@ -1680,6 +1802,7 @@ msgstr "Digunakan untuk mengurutkan kegiatan sesuai dengan urutan kerja."
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_employee_id
 #: model:ir.ui.menu,name:estate.estate_labour_menu
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
@@ -1722,6 +1845,7 @@ msgid "Last Message Date"
 msgstr "Tanggal Pesan Terakhir"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_activity___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_block___last_update
@@ -1729,6 +1853,7 @@ msgstr "Tanggal Pesan Terakhir"
 #: model:ir.model.fields,field_description:estate.field_estate_block_template___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_common_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_division_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member___last_update
@@ -1748,11 +1873,13 @@ msgstr "Tanggal Pesan Terakhir"
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_wage___last_update
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_assistant_daily___last_update
 #: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division___last_update
 msgid "Last Modified on"
 msgstr "Dimodifikasi pada"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_block_parameter_write_uid
@@ -1760,6 +1887,7 @@ msgstr "Dimodifikasi pada"
 #: model:ir.model.fields,field_description:estate.field_estate_block_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_write_uid
@@ -1783,6 +1911,7 @@ msgid "Last Updated by"
 msgstr "Dimodifikasi oleh"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_block_parameter_write_date
@@ -1790,6 +1919,7 @@ msgstr "Dimodifikasi oleh"
 #: model:ir.model.fields,field_description:estate.field_estate_block_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_write_date
@@ -1811,6 +1941,11 @@ msgstr "Dimodifikasi oleh"
 #: model:ir.model.fields,field_description:estate.field_estate_wage_write_date
 msgid "Last Updated on"
 msgstr "Update terakhir pada"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Lbr."
+msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_leaf_analysis
@@ -1855,6 +1990,11 @@ msgstr "Tipe Lokasi"
 #: model:ir.model.fields,field_description:estate.field_estate_activity_user_company_id
 msgid "Login User"
 msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "MTD"
+msgstr "sd HI"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_parameter_mandatory
@@ -1991,7 +2131,9 @@ msgid "Month"
 msgstr "Bulan"
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Monthly"
 msgstr "Bulanan"
@@ -2335,7 +2477,9 @@ msgid "Payslip Processed"
 msgstr "Payslip Selesai"
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_period
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_period
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_period
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_period
 msgid "Period"
 msgstr "Periode"
@@ -2396,6 +2540,7 @@ msgid "Planted Year"
 msgstr "Tahun Tanam"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Pr."
 msgstr ""
@@ -2417,9 +2562,15 @@ msgid "Previous Week"
 msgstr "Minggu Lalu"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
-msgid "Print"
-msgstr "Cetak"
+msgid "Print Assistant Daily Report"
+msgstr "Cetak Laporan Harian Asisten"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
+msgid "Print Division Report"
+msgstr "Cetak Laporan Divisi"
 
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
@@ -2456,6 +2607,13 @@ msgstr "Produktifitas/HK (%)"
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
 msgid "Productivity is less than 100%"
 msgstr "Produktifitas kurang dari 100%"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Produksi"
+msgstr ""
+"\n"
+"\n"
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_putaway_strategy_id
@@ -2603,12 +2761,19 @@ msgid "Right Parent"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Rp/UoM"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_module_estate_nursery
 msgid "Seed Management"
 msgstr "Manajemen Bibit"
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Select Dates"
 msgstr "Pilih tanggal"
@@ -2624,7 +2789,9 @@ msgid "Select analytic account for costing by seed batch or planted year"
 msgstr "Pilih akun analisa untuk pembebanan (batch/tahun tanam)"
 
 #. module: estate
+#: model:ir.model.fields,help:estate.field_assistant_daily_report_period
 #: model:ir.model.fields,help:estate.field_estate_common_report_period
+#: model:ir.model.fields,help:estate.field_estate_daily_report_period
 #: model:ir.model.fields,help:estate.field_estate_division_report_period
 msgid "Select period of activities to be displayed at report."
 msgstr "Pilih periode BKM untuk ditampilkan pada laporan."
@@ -2810,13 +2977,16 @@ msgid "Standard work result applied."
 msgstr "Hasil kerja standar berlaku."
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_date_start
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_date_start
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_date_start
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_date_start
 #: model:ir.model.fields,field_description:estate.field_estate_wage_date_start
 msgid "Start Date"
 msgstr "Tanggal Mulai"
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Start Date:"
 msgstr "Tanggal Mulai:"
@@ -2841,6 +3011,11 @@ msgstr ""
 #: selection:stock.location,estate_location_level:0
 msgid "Sub Block"
 msgstr "Sub Blok"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Sub Total"
+msgstr "Sub Total"
 
 #. module: estate
 #: model:ir.model.fields,help:estate.field_estate_upkeep_activity_labour_number_of_day
@@ -2899,6 +3074,11 @@ msgid "System print-out division report: %s;%s;%s;%s"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "TD"
+msgstr "HI"
+
+#. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_tree
 msgid "TL"
 msgstr "TK"
@@ -2917,6 +3097,11 @@ msgstr "L"
 #: model:ir.ui.view,arch_db:estate.upkeep_view_tree
 msgid "TPR"
 msgstr "P"
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "TT"
+msgstr ""
 
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_team_id
@@ -2973,7 +3158,9 @@ msgid "Time Based"
 msgstr "Satuan Waktu"
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Today"
 msgstr "Hari Ini"
@@ -3148,6 +3335,7 @@ msgid "Unread Messages Counter"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
@@ -3343,7 +3531,9 @@ msgid "Week"
 msgstr "Minggu"
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Weekly"
 msgstr "Mingguan"
@@ -3561,6 +3751,7 @@ msgid "lbg"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "or"
@@ -3569,6 +3760,11 @@ msgstr ""
 #. module: estate
 #: model:product.uom,name:estate.product_uom_pokok
 msgid "pkk (hapus)"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_report_estate_report_assistant_daily
+msgid "report.estate.report_assistant_daily"
 msgstr ""
 
 #. module: estate
@@ -3586,47 +3782,23 @@ msgstr ""
 msgid "unit/day"
 msgstr "satuan/HK"
 
+#~ msgid "Print"
+#~ msgstr "Cetak"
+
 #~ msgid "* Quantity Based, wage calculated by quantity.\n"
 #~ "* Time Based, wage calculated by attendance code."
 #~ msgstr ""
 #~ "* Satuan Hasil, upah dihitung berdasar hasil kerja.\n"
 #~ "* Satuan Waktu, upah dihitung berdasar kehadiran (kode absen)."
 
-#~ msgid "<strong>Total Cost</strong>"
-#~ msgstr "<strong>Total Biaya</strong>"
-
-#~ msgid "Approved By"
-#~ msgstr "Disetujui Oleh"
-
-#~ msgid "Company:"
-#~ msgstr "Perusahaan:"
-
 #~ msgid "Contract based activity allows upkeep record without number of day"
 #~ msgstr "Kegiatan borongan dapat dicatat tanpa HK"
-
-#~ msgid "Created By"
-#~ msgstr "Dibuat oleh"
-
-#~ msgid "Division:"
-#~ msgstr "Divisi:"
-
-#~ msgid "Estate:"
-#~ msgstr "Kebun:"
-
-#~ msgid "MTD"
-#~ msgstr "sd HI"
 
 #~ msgid "Set as default general account."
 #~ msgstr "Tentukan akun umum."
 
 #~ msgid "Std. Qty."
 #~ msgstr "Prod. Std."
-
-#~ msgid "Sub Total"
-#~ msgstr "Sub Total"
-
-#~ msgid "TD"
-#~ msgstr "HI"
 
 #~ msgid "Location Company"
 #~ msgstr "Perusahaan (Lokasi)"

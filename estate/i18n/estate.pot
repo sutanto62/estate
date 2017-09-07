@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-03 08:41+0000\n"
-"PO-Revision-Date: 2017-08-03 08:41+0000\n"
+"POT-Creation-Date: 2017-09-06 10:25+0000\n"
+"PO-Revision-Date: 2017-09-06 10:25+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,7 +60,9 @@ msgid "%s work at %s piece rate quantity should not exceed %s"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,help:estate.field_assistant_daily_report_type
 #: model:ir.model.fields,help:estate.field_estate_common_report_type
+#: model:ir.model.fields,help:estate.field_estate_daily_report_type
 #: model:ir.model.fields,help:estate.field_estate_division_report_type
 msgid "* By Estate, shows all activities.* By Division, group activities by Division."
 msgstr ""
@@ -117,6 +119,7 @@ msgid "<br/>\n"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>\n"
 "                            End Date:"
@@ -129,6 +132,16 @@ msgid "<br/>\n"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "<br/><strong>Estate Assistant</strong>"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "<br/><strong>Estate Manager</strong>"
+msgstr ""
+
+#. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>Asisten"
 msgstr ""
@@ -136,6 +149,11 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "<br/>Kasie"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "<strong>Total Cost</strong>"
 msgstr ""
 
 #. module: estate
@@ -389,6 +407,11 @@ msgid "Approved"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Approved By"
+msgstr ""
+
+#. module: estate
 #: model:product.uom.categ,name:estate.product_uom_categ_area
 msgid "Area"
 msgstr ""
@@ -448,6 +471,25 @@ msgid "Assistant"
 msgstr ""
 
 #. module: estate
+#: model:ir.actions.act_window,name:estate.assistant_daily_report_menu_action
+#: model:ir.model,name:estate.model_assistant_daily_report
+#: model:ir.model,name:estate.model_estate_daily_report
+#: model:ir.ui.menu,name:estate.assistant_daily_report_menu
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Assistant Daily Report"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
+msgid "Assistant Daily Report Options"
+msgstr ""
+
+#. module: estate
+#: model:ir.actions.report.xml,name:estate.assistant_daily_report_action
+msgid "Assistant Report (Bahan)"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_name
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_attendance_code_id
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_search
@@ -487,6 +529,11 @@ msgid "BKM"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Bahan"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_barcode
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_barcode
 msgid "Barcode"
@@ -507,6 +554,11 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_uom_id
 msgid "Basic Unit of Measurements"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Biaya"
 msgstr ""
 
 #. module: estate
@@ -541,13 +593,22 @@ msgid "Block Variants"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Blok"
+msgstr ""
+
+#. module: estate
+#: selection:assistant.daily.report,type:0
 #: selection:estate.common.report,type:0
+#: selection:estate.daily.report,type:0
 #: selection:estate.division.report,type:0
 msgid "By Division"
 msgstr ""
 
 #. module: estate
+#: selection:assistant.daily.report,type:0
 #: selection:estate.common.report,type:0
+#: selection:estate.daily.report,type:0
 #: selection:estate.division.report,type:0
 msgid "By Estate"
 msgstr ""
@@ -559,6 +620,7 @@ msgid "By unchecking the active field, you may hide a location without deleting 
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 msgid "COA"
@@ -587,6 +649,7 @@ msgid "Calculate wage based on piece rate productivity.\n"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "Cancel"
@@ -669,9 +732,11 @@ msgid "Comment"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_company_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_company_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_company_id
@@ -701,6 +766,11 @@ msgstr ""
 #: model:ir.model.fields,help:estate.field_estate_upkeep_labour_company_id
 #: model:ir.model.fields,help:estate.field_estate_upkeep_material_company_id
 msgid "Company of location"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Company:"
 msgstr ""
 
 #. module: estate
@@ -830,6 +900,12 @@ msgid "Create unique activity name."
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Created By"
+msgstr ""
+
+#. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_block_create_uid
@@ -837,6 +913,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_create_uid
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_create_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_create_uid
@@ -860,6 +937,7 @@ msgid "Created by"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_block_create_date
@@ -867,6 +945,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_create_date
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_create_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_create_date
@@ -1097,6 +1176,7 @@ msgid "Disetujui oleh,"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_activity_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_block_display_name
@@ -1104,6 +1184,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_display_name
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_display_name
@@ -1123,13 +1204,16 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_display_name
 #: model:ir.model.fields,field_description:estate.field_estate_wage_display_name
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_assistant_daily_display_name
 #: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division_display_name
 msgid "Display Name"
 msgstr ""
 
 #. module: estate
 #: selection:estate.parameter,level:0
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_division_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_hr_team_division_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_division_id
@@ -1144,13 +1228,9 @@ msgstr ""
 
 #. module: estate
 #: model:ir.actions.act_window,name:estate.action_list_upkeep_lha
+#: model:ir.actions.report.xml,name:estate.estate_division_report_action
 #: model:ir.model,name:estate.model_estate_division_report
 msgid "Division Report"
-msgstr ""
-
-#. module: estate
-#: model:ir.actions.report.xml,name:estate.estate_division_report_action
-msgid "Division Report (New)"
 msgstr ""
 
 #. module: estate
@@ -1161,6 +1241,23 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_activity_division_id
 msgid "Division id"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Division:"
+msgstr ""
+
+#. module: estate
+#: code:addons/estate/models/inherited_hr_employee.py:78
+#, python-format
+msgid "Do not archived %s employee data.\n"
+"There was upkeep labor transaction at %s."
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Dosis"
 msgstr ""
 
 #. module: estate
@@ -1235,7 +1332,9 @@ msgid "Empty value use standard price instead"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_date_end
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_date_end
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_date_end
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_date_end
 msgid "End Date"
 msgstr ""
@@ -1255,7 +1354,9 @@ msgstr ""
 #. module: estate
 #: selection:estate.parameter,level:0
 #: model:ir.model.fields,field_description:estate.field_account_analytic_account_use_estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_estate_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_estate_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_estate_id
@@ -1383,6 +1484,11 @@ msgid "Estate User"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Estate:"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_block_account_expense_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_account_expense_id
 msgid "Expense Account"
@@ -1459,7 +1565,9 @@ msgid "General Affair Activity"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_type
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_type
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_type
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_type
 #: model:ir.ui.view,arch_db:estate.block_template_view_search
 #: model:ir.ui.view,arch_db:estate.estate_hr_member_view_search
@@ -1473,6 +1581,11 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.search_view_estate_parameter
 msgid "Group by..."
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "HK"
 msgstr ""
 
 #. module: estate
@@ -1502,6 +1615,7 @@ msgid "Hour"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_activity_id
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_id
 #: model:ir.model.fields,field_description:estate.field_estate_block_id
@@ -1509,6 +1623,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_template_id
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_id
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_id
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_id
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_id
@@ -1528,6 +1643,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour_id
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material_id
 #: model:ir.model.fields,field_description:estate.field_estate_wage_id
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_assistant_daily_id
 #: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division_id
 msgid "ID"
 msgstr ""
@@ -1630,8 +1746,14 @@ msgid "It will be used when Activity Norm defined. Set as minimum work's result.
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Item"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Jumlah"
 msgstr ""
 
 #. module: estate
@@ -1642,6 +1764,7 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_employee_id
 #: model:ir.ui.menu,name:estate.estate_labour_menu
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.upkeep_activity_view_form
 #: model:ir.ui.view,arch_db:estate.upkeep_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
@@ -1684,6 +1807,7 @@ msgid "Last Message Date"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_activity___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_block___last_update
@@ -1691,6 +1815,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_template___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_common_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings___last_update
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_division_report___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member___last_update
@@ -1710,11 +1835,13 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_labour___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_material___last_update
 #: model:ir.model.fields,field_description:estate.field_estate_wage___last_update
+#: model:ir.model.fields,field_description:estate.field_report_estate_report_assistant_daily___last_update
 #: model:ir.model.fields,field_description:estate.field_report_estate_report_estate_division___last_update
 msgid "Last Modified on"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_activity_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_block_parameter_write_uid
@@ -1722,6 +1849,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_write_uid
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_write_uid
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_write_uid
@@ -1745,6 +1873,7 @@ msgid "Last Updated by"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_norm_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_activity_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_block_parameter_write_date
@@ -1752,6 +1881,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_block_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_write_date
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_attendance_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_hr_member_write_date
@@ -1772,6 +1902,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate.field_estate_upkeep_write_date
 #: model:ir.model.fields,field_description:estate.field_estate_wage_write_date
 msgid "Last Updated on"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Lbr."
 msgstr ""
 
 #. module: estate
@@ -1816,6 +1951,11 @@ msgstr ""
 #. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_activity_user_company_id
 msgid "Login User"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "MTD"
 msgstr ""
 
 #. module: estate
@@ -1953,7 +2093,9 @@ msgid "Month"
 msgstr ""
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Monthly"
 msgstr ""
@@ -2295,7 +2437,9 @@ msgid "Payslip Processed"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_period
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_period
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_period
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_period
 msgid "Period"
 msgstr ""
@@ -2356,6 +2500,7 @@ msgid "Planted Year"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Pr."
 msgstr ""
@@ -2377,8 +2522,14 @@ msgid "Previous Week"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
-msgid "Print"
+msgid "Print Assistant Daily Report"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
+msgid "Print Division Report"
 msgstr ""
 
 #. module: estate
@@ -2413,6 +2564,11 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_form
 msgid "Productivity is less than 100%"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Produksi"
 msgstr ""
 
 #. module: estate
@@ -2560,12 +2716,19 @@ msgid "Right Parent"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Rp/UoM"
+msgstr ""
+
+#. module: estate
 #: model:ir.model.fields,field_description:estate.field_estate_config_settings_module_estate_nursery
 msgid "Seed Management"
 msgstr ""
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Select Dates"
 msgstr ""
@@ -2581,7 +2744,9 @@ msgid "Select analytic account for costing by seed batch or planted year"
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,help:estate.field_assistant_daily_report_period
 #: model:ir.model.fields,help:estate.field_estate_common_report_period
+#: model:ir.model.fields,help:estate.field_estate_daily_report_period
 #: model:ir.model.fields,help:estate.field_estate_division_report_period
 msgid "Select period of activities to be displayed at report."
 msgstr ""
@@ -2762,13 +2927,16 @@ msgid "Standard work result applied."
 msgstr ""
 
 #. module: estate
+#: model:ir.model.fields,field_description:estate.field_assistant_daily_report_date_start
 #: model:ir.model.fields,field_description:estate.field_estate_common_report_date_start
+#: model:ir.model.fields,field_description:estate.field_estate_daily_report_date_start
 #: model:ir.model.fields,field_description:estate.field_estate_division_report_date_start
 #: model:ir.model.fields,field_description:estate.field_estate_wage_date_start
 msgid "Start Date"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 msgid "Start Date:"
 msgstr ""
@@ -2792,6 +2960,11 @@ msgstr ""
 #: selection:estate.parameter,level:0
 #: selection:stock.location,estate_location_level:0
 msgid "Sub Block"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "Sub Total"
 msgstr ""
 
 #. module: estate
@@ -2851,6 +3024,11 @@ msgid "System print-out division report: %s;%s;%s;%s"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "TD"
+msgstr ""
+
+#. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_tree
 msgid "TL"
 msgstr ""
@@ -2868,6 +3046,11 @@ msgstr ""
 #. module: estate
 #: model:ir.ui.view,arch_db:estate.upkeep_view_tree
 msgid "TPR"
+msgstr ""
+
+#. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
+msgid "TT"
 msgstr ""
 
 #. module: estate
@@ -2925,7 +3108,9 @@ msgid "Time Based"
 msgstr ""
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Today"
 msgstr ""
@@ -3099,6 +3284,7 @@ msgid "Unread Messages Counter"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.report_assistant_daily
 #: model:ir.ui.view,arch_db:estate.report_estate_division
 #: model:ir.ui.view,arch_db:estate.upkeep_labour_view_tree
 #: model:ir.ui.view,arch_db:estate.upkeep_material_view_tree
@@ -3294,7 +3480,9 @@ msgid "Week"
 msgstr ""
 
 #. module: estate
+#: selection:assistant.daily.report,period:0
 #: selection:estate.common.report,period:0
+#: selection:estate.daily.report,period:0
 #: selection:estate.division.report,period:0
 msgid "Weekly"
 msgstr ""
@@ -3510,6 +3698,7 @@ msgid "lbg"
 msgstr ""
 
 #. module: estate
+#: model:ir.ui.view,arch_db:estate.assistant_daily_report_view_form
 #: model:ir.ui.view,arch_db:estate.estate_division_report_view_form
 #: model:ir.ui.view,arch_db:estate.view_estate_configuration
 msgid "or"
@@ -3518,6 +3707,11 @@ msgstr ""
 #. module: estate
 #: model:product.uom,name:estate.product_uom_pokok
 msgid "pkk (hapus)"
+msgstr ""
+
+#. module: estate
+#: model:ir.model,name:estate.model_report_estate_report_assistant_daily
+msgid "report.estate.report_assistant_daily"
 msgstr ""
 
 #. module: estate

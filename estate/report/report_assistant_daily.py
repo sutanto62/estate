@@ -35,9 +35,9 @@ import time
 _logger = logging.getLogger(__name__)
 STATE = ('draft', 'confirmed', 'approved', 'correction', 'payslip')
 
-class estate_division_report(report_sxw.rml_parse):
+class report_assistant_daily(report_sxw.rml_parse):
     """
-    Estate Division Report shows all approved/correction/payslip activities by company. It shows
+    Assistant Daily Report shows all approved/correction/payslip activities by company. It shows
     1. Activity.
     2. Location.
     3. Labour work days, overtime and piece rate.
@@ -49,7 +49,7 @@ class estate_division_report(report_sxw.rml_parse):
     """
 
     def __init__(self, cr, uid, name, context):
-        super(estate_division_report, self).__init__(cr, uid, name, context)
+        super(report_assistant_daily, self).__init__(cr, uid, name, context)
         self.localcontext.update({
             'get_upkeep': self._get_upkeep,
             'get_upkeep_activity': self._get_upkeep_activity,
@@ -73,7 +73,7 @@ class estate_division_report(report_sxw.rml_parse):
         self.estate_id = data['form'].get('estate_id')
         self.division_id = data['form'].get('division_id')
 
-        return super(estate_division_report, self).set_context(objects, data, ids, report_type=report_type)
+        return super(report_assistant_daily, self).set_context(objects, data, ids, report_type=report_type)
 
     def _get_upkeep(self, data):
         """
@@ -382,10 +382,10 @@ class estate_division_report(report_sxw.rml_parse):
         return '%s;%s;%s;%s' % (print_datetime, user.name, report_name, self.name)
 
 
-class wrapped_report_estate_division(osv.AbstractModel):
-    _name = 'report.estate.report_estate_division'
+class wrapped_report_assistant_daily(osv.AbstractModel):
+    _name = 'report.estate.report_assistant_daily'
     _inherit = 'report.abstract_report'
-    _template = 'estate.report_estate_division'
-    _wrapped_report_class = estate_division_report
+    _template = 'estate.report_assistant_daily'
+    _wrapped_report_class = report_assistant_daily
 
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:
