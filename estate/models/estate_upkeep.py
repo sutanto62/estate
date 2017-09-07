@@ -453,7 +453,7 @@ class Upkeep(models.Model):
     def draft_selected(self):
         """ User asked to reopen approved or confirmed
         """
-        if not self.user_has_groups('base.group_erp_manager'):
+        if not self.user_has_groups('estate.group_agronomi'):
             err_msg = _('You are not authorized to redraft data')
             raise ValidationError(err_msg)
 
