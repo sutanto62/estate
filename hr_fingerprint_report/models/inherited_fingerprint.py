@@ -231,7 +231,14 @@ class FingerAttendance(models.Model):
             record.p_sign_in_amount = 1 if record.sign_in or record.action_reason in ('Cuti', 'Sakit', 'Ijin', 'Dinas Luar') else 0
             record.p_sign_out_amount = 1 if record.sign_out or record.action_reason in ('Cuti', 'Sakit', 'Ijin', 'Dinas Luar') else 0
             record.p_sign_amount = record.p_sign_in_amount + record.p_sign_out_amount
-            record.p_sign_percent = (record.p_sign_in_amount*50) + (record.p_sign_out_amount*50)
+            if record.nik[:1] in ('1', '2'):
+                avgpercent = (record.p_sign_in_amount*50) + (record.p_sign_out_amount*50)
+            elif record.nik[:1] == '3':
+                if record.p_sign_in_amount and record.p_sign_in_amount:
+                    avgpercent = 100
+                else:
+                    avgpercent = 0
+            record.p_sign_percent = avgpercent
             record.p_hour_work = record.timevalue(record.hour_work_t)
             record.p_hour_attendance = record.timevalue(record.hour_attendance_t) if record.hour_attendance_t else 0
             record.p_hour_work_float = round(Decimal(record.p_hour_work)*Decimal(24), 2)
@@ -245,10 +252,9 @@ class FingerAttendance(models.Model):
             labor_late = Decimal(record.p_hour_late)*Decimal(24)*Decimal(60)
             record.p_labor_late_circle = labor_late if record.nik[:1] == '3' and record.work_schedules in ('Opr Kebun SenSab', 'Opr Kebun Jumat') else 0
             record.p_labor_late_circle_amount = 1 if record.p_labor_late_circle >= 1 else 0
-            record.p_estate_late = labor_late if record.nik[:1] in ('1', '2') and record.work_schedules in ('Opr Kebun SenSab', 'Opr Kebun Jumat') else 0
+            record.p_estate_late = labor_late if record.nik[:1] in ('1', '2') and record.work_schedules in ('Opr Kebun SenSab', 'Opr Kebun Jumat', 'Waker Pagi', 'Waker Malam') else 0
             record.p_estate_late_amount = 1 if record.p_estate_late >= 1 else 0
-            record.p_labor_late = record.p_labor_late_circle - 30 if record.p_labor_late_circle > 30 else (
-                Decimal(record.hour_late)*Decimal(24)*Decimal(60) if record.work_schedules in ('Waker Pagi', 'Waker Malam') else 0)
+            record.p_labor_late = record.p_labor_late_circle - 30 if record.p_labor_late_circle > 30 else 0
             record.p_labor_late_amount = 1 if record.p_labor_late > 1 else 0
 
             reason = ''

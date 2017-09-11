@@ -65,7 +65,12 @@
                         <tr>
                             <td width="40%">
                                 <!--periode-->
-                                <table class="table-condensed table-borderless table-responsive" width="auto">
+                                <table class="table table-condensed" width="auto">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th colspan="3"><strong>Periode Laporan</strong></th>
+                                        </tr>
+                                    </thead>
                                     <tr>
                                         <td><strong>Tanggal</strong></td>
                                         <td>
@@ -97,8 +102,10 @@
                             </td>
                             <td width="30%">
                                 <!--keterangan potong poin-->
-                                <strong>Keterangan Potong Poin</strong>
-                                <table class="table-condensed table-borderless table-responsive" width="auto">
+                                <table class="table table-condensed" width="auto">
+                                    <thead>
+                                        <tr><th colspan="4"><strong>Keterangan Potong Poin</strong></th></tr>
+                                    </thead>
                                     <tr>
                                         <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
                                         <td width="10"><strong>0</strong></td>
@@ -128,8 +135,12 @@
                             </td>
                             <td width="30%">
                                 <!--keterangan terlambat-->
-                                <strong>Keterangan Terlambat</strong>
-                                <table class="table-condensed table-borderless table-responsive" width="auto">
+                                <table class="table table-condensed" width="auto">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="4"><strong>Keterangan Terlambat</strong></th>
+                                        </tr>
+                                    </thead>
                                     <tr>
                                         <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
                                         <td width="10"><strong>0</strong></td>
@@ -144,7 +155,7 @@
                     <!--/header-->
 
                     <!--attendance-->
-                    <table class="table table-condensed table-bordered" style="font-size:65%;padding:0px;">
+                    <table class="table table-condensed" style="font-size:65%;padding:0px;">
 
                         <!--sum variable-->
                         <t t-set="p_day_normal" t-value="0"/>
@@ -175,7 +186,7 @@
                         <!--/sum variable-->
 
                         <!--attendance header-->
-                        <thead style="display: table-header-group !important;">
+                        <thead class="thead-inverse" style="display: table-header-group !important;">
                             <tr>
                                 <th class="align-middle" rowspan="2" width="75">NIK</th>
                                 <th class="align-middle" rowspan="2" width="200">Karyawan</th>
@@ -324,7 +335,7 @@
                         <!--put tfoot after tbody for calculation-->
                         <tfoot>
                             <tr>
-                                <td colspan="2">Total</td>
+                                <td colspan="2" class="text-right"><strong>Total</strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_day_normal)"/></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_leave)"/></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_sick)"/></strong></td>
@@ -386,7 +397,7 @@
                     <!--header-->
                     <h2 class="text-center">Laporan Presensi</h2>
                     <!--periode-->
-                    <table class="table-condensed table-borderless table-responsive" width="auto">
+                    <table class="table table-condensed" width="auto">
                         <tr>
                             <td><strong>Tanggal</strong></td>
                             <td>
@@ -420,7 +431,7 @@
                     <p/>
 
                     <!--remark-->
-                    <table class="table table-borderless table-condensed">
+                    <table class="table table-condensed">
                         <tr>
                             <td width="50%">
                                 <!--pengecualian-->

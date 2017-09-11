@@ -128,15 +128,17 @@ class FingerprintReport(models.AbstractModel):
 
         # build dict
         for employee in employee_ids:
-            domain_employee = [('employee_name', '=',str(employee))]
+            # unique employee param: name and nik.
+            domain_employee = [('employee_name', '=', employee.name_related), ('nik', '=', employee.nik_number)]
             domain = domain_form + domain_employee
+
             attendance_ids = attendance_obj.search(domain)
 
             res = {
-                'employee_name': str(employee),
+                'employee_name': employee.name_related,
+                'nik': employee.nik_number,
 
                 # get first index - do not loop
-                'nik': str(attendance_ids[0].nik),
                 'department': str(attendance_ids[0].department),
                 'company': str(attendance_ids[0].company_id.name),
 
@@ -166,20 +168,21 @@ class FingerprintReport(models.AbstractModel):
             }
             dict.append(res)
 
-            # print 'employee attendance: %s' % (res)
-        return sorted(dict, key=operator.itemgetter('department','employee_name'))
+        return sorted(dict, key=operator.itemgetter('department','nik','employee_name'))
 
     @api.multi
     def get_employee(self, data=None):
         """
-        Employee name, sorted by department and employee name
+        Get unique employee by name and nik, sorted by department and employee name
         :param data: form filter
-        :return: employee name
-        :rtype: set
+        :return: employee recordset
+        :rtype: object
         """
+        # nik must unique
         attendance_obj = self.env['hr_fingerprint_ams.attendance']
-        list = attendance_obj.search(self.get_domain(data)).mapped('employee_name')
-        return sorted(set(list))
+        attendance_nik_ids = set(attendance_obj.search(self.get_domain(data), order='nik asc').mapped('nik'))
+        employee_ids = self.env['hr.employee'].search([('nik_number', 'in', list(attendance_nik_ids))], order='name_related asc')
+        return employee_ids
 
     @api.multi
     def get_color(self, type, late):

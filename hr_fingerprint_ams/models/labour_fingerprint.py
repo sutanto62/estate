@@ -274,6 +274,4 @@ class UpkeepFingerprint(models.Model):
             'domain': upkeep_labour_filter,
         }
 
-        print 'action_open_labour %s' % res
-
         return res
