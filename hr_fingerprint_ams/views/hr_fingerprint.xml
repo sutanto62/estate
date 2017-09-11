@@ -278,9 +278,9 @@
                     <field name="attendance_time"
                         attrs="{'invisible': [('fingerprint', '=','action')]}"/>
                     <field name="number_of_day"
-                        attrs="{'invisible': [('contract_period','!=','2')]}"/>
+                        attrs="{'invisible': [('contract_period','!=','2')]}" sum="Number of Day"/>
                     <field name="number_of_day_fingerprint"
-                        string="Fingerprint"/>
+                        string="Fingerprint" sum="Fingerprint"/>
                     <!--do not delete-->
                     <field name="division_id" invisible="True"/>
                     <field name="assistant_id" invisible="True"/>
