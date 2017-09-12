@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Inherit view -->
+        <record id="inherited_product_category_form" model="ir.ui.view">
+            <field name="name">product.category.form.inherit</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="product.product_category_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//group[@name='first']" position="inside">
+                    <group name="procurement_technical_checker" string="Procurement Technical Checker" colspan="2">
+                        <field name="technical_checker"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

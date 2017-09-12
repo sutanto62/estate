@@ -1,5 +1,6 @@
 __author__ = 'odoo'
 
+import inherit_product_category
 import procur_request_link
 import inherit_purchase_order
 import purchase_setting

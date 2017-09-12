@@ -49,6 +49,7 @@
         'views/procurement_process.xml',
         'views/mapping_department_to_product.xml',
         'views/inherit_product_template.xml',
+        'views/inherit_product_category.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',

@@ -738,7 +738,7 @@ class InheritPurchaseRequest(models.Model):
         """
         self.write({'state': 'budget','assigned_to':self._get_budget_manager()})
         self.send_mail_template()
-
+        
     @api.multi
     def action_budget(self,):
         """ Confirms Budget request.
@@ -747,7 +747,12 @@ class InheritPurchaseRequest(models.Model):
         if self.type_budget== 'not' and not self.pta_code:
             raise exceptions.ValidationError('Input Your PTA Number')
         elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
-            self.button_approved()
+            if self.product_category_id.get_technical_checker():
+                state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker().id}
+                self.write(state_data)
+                self.send_mail_template()
+            else:
+                self.button_approved()
         else:
             try:
                if self.type_functional == 'agronomy' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'agronomy' and self._get_total_price_budget() >= self._get_price_low():
@@ -755,12 +760,18 @@ class InheritPurchaseRequest(models.Model):
                elif self.type_functional == 'technic' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'technic' and self._get_total_price_budget() >= self._get_price_low():
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
                elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_total_price_budget() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low()) :
-                    state_data = {'state':'technic3','assigned_to':self._get_technic_ict()}
+                    state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker()}
                elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
-                    state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
+                    if self.product_category_id.get_technical_checker():
+                        state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker().id}
+                    else:
+                        state_data = {'state':'technic6','assigned_to':self._get_technic_ga()}
                elif self.type_functional == 'general' and self.department_id.code in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low() :
-                    state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
-            except:
+                    if self.product_category_id.get_technical_checker():
+                        state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker().id}
+                    else:
+                        state_data = {'state':'approval4','assigned_to':self._get_division_finance()}
+            except: 
                 raise exceptions.ValidationError('Call Your Hr Admin to Fill Department Code')
             self.write(state_data)
             self.send_mail_template()
@@ -1304,11 +1315,16 @@ class InheritPurchaseRequestLine(models.Model):
     @api.depends('product_id', 'name', 'product_uom_id', 'product_qty',
                  'analytic_account_id', 'date_required', 'specifications','price_per_product_label')
     def _compute_is_editable(self):
+#         for rec in self:
+#             if rec.request_id.state in ['draft','approval4','approval5','approval6']:
+#                 rec.is_editable = True
+#             else:
+#                 rec.is_editable = False
         for rec in self:
-            if rec.request_id.state in ['draft','approval4','approval5','approval6']:
-                rec.is_editable = True
-            else:
-                rec.is_editable = False
+            rec.is_editable = False
+            if rec.request_id.state:
+                if rec.request_id.state not in ['technic1','technic2','technic3','technic4','technic5','technic6','done','approved','rejected']:
+                    rec.is_editable = True
 
     price_per_product = fields.Float('Product Price')
     price_per_product_label = fields.Char('Product Price',readonly=True)
@@ -1351,14 +1367,16 @@ class InheritPurchaseRequestLine(models.Model):
     @api.multi
     @api.onchange('product_id','request_state')
     def _compute_price_per_product(self):
-        if self.product_id  :
-            product_temp = self.env.cr.execute('select cost from product_price_history where product_id = %d order by id desc limit 1' %(self.product_id.id))
-            line = self.env.cr.fetchone()[0]
-            if self.request_state == 'draft':
+        user= self.env['res.users'].browse(self.env.uid)
+        if self.product_id:
+            if user.id == self.request_id.assigned_to.id and self.request_id.state not in ['done','approved','rejected']:
+                product_temp = self.env.cr.execute('select cost from product_price_history where product_id = %d order by id desc limit 1' %(self.product_id.id))
+                line = self.env.cr.fetchone()[0]
                 self.price_per_product = line
                 self.price_per_product_label = str(line)
-            elif self.request_state != 'draft' :
-               self.price_per_product
+            else:
+                error_msg = "Only approver can change the detail of product and status is not in either Done, PP Full Approve or Rejected"
+                raise exceptions.ValidationError(error_msg)
 
     @api.multi
     @api.constrains('budget_available')
