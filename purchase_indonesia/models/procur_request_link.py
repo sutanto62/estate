@@ -760,7 +760,7 @@ class InheritPurchaseRequest(models.Model):
                elif self.type_functional == 'technic' and self._get_total_price_budget() < self._get_price_low() or self.type_functional == 'technic' and self._get_total_price_budget() >= self._get_price_low():
                     state_data = {'state':'technic5','assigned_to':self._get_technic_ie()}
                elif (self.type_functional == 'general' and self.department_id.code not in self._get_department_code()and self._get_total_price_budget() < self._get_price_low()) or (self.type_functional == 'general' and self.department_id.code not in self._get_department_code() and self._get_total_price_budget() >= self._get_price_low()) :
-                    state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker()}
+                    state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker().id}
                elif self.type_functional == 'general' and self.department_id.code in self._get_department_code()and self._get_total_price_budget() < self._get_price_low():
                     if self.product_category_id.get_technical_checker():
                         state_data = {'state':'technic3','assigned_to':self.product_category_id.get_technical_checker().id}
