@@ -90,6 +90,10 @@
 							</t>	
 							
 							<div class="row" style="text-align:left;font-size:10pt;">
+							    <style>
+		           			    	table thead { display: table-header-group; }
+									table tr { page-break-inside: avoid; }
+		           			    </style>
 								<table style="border: 1px solid;padding:10px;font-size:10pt;" width="100%">
 									<thead>        
 										<tr class="label_table_header">
