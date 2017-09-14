@@ -361,8 +361,13 @@
                             </tr>
 
                             <!--summary-->
-                            <t t-set="avg_day_work" t-value="'{0:,.2f}'.format(p_sign_percent/p_sign_percent_divide)"/>
-                            <t t-set="avg_day_work_divide" t-value="'{0:,.2f}'.format(p_average_day_work/p_average_day_work_divide)"/>
+                            <t t-if="p_sign_percent_divide != 0">
+                                <t t-set="avg_day_work" t-value="'{0:,.2f}'.format(p_sign_percent/p_sign_percent_divide)"/>
+                            </t>
+
+                            <t t-if="p_average_day_work_divide != 0">
+                                <t t-set="avg_day_work_divide" t-value="'{0:,.2f}'.format(p_average_day_work/p_average_day_work_divide)"/>
+                            </t>
 
                             <t t-set="sum_hour_late_office" t-value="'{0:,.0f}'.format(p_hour_late_office)"/>
                             <t t-set="sum_late_amount_office" t-value="'{0:,.0f}'.format(p_late_amount_office)"/>
