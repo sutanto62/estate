@@ -223,6 +223,7 @@ class InheritPurchaseRequest(models.Model):
     count_po = fields.Integer('PO', compute='_compute_po_line')
     count_grn = fields.Integer('GRN/SRN', compute='_compute_grn_or_srn')
     is_confirmation = fields.Boolean('PP Confirmation', default=False)
+    active = fields.Boolean('Active', default=True)
     
     @api.multi
     def set_is_confirmation(self,value):
