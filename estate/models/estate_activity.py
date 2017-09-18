@@ -78,6 +78,7 @@ class Activity(models.Model):
                                    'Use only if wage method set to Quantity Based.')
     user_company_id = fields.Many2one('res.company', 'Login User', help='Help to domain account based on user',
                                       default=_default_user_company_id)
+    active = fields.Boolean('Active', default=True, track_visibility="onchange")
 
     @api.one
     @api.depends('name', 'parent_id')

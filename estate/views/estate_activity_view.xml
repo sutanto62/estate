@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
+        <!--Search: Activity-->
+        <record id="activity_view_search" model="ir.ui.view">
+            <field name="name">Acvitity Search</field>
+            <field name="model">estate.activity</field>
+            <field name="arch" type="xml">
+                    <search>
+                        <field name="name"/>
+                        <field name="general_account_id"/>
+                        <separator/>
+                        <filter name="filter_archived" string="Archived" domain="[('active','=',False)]"
+                            help="Show archived activity"/>
+                    </search>
+            </field>
+        </record>
+
+        <!--/Search: Activity-->
         <!-- View Tree: Activity List -->
         <record id="view_activity_list_tree" model="ir.ui.view" >
             <field name="name">Activity List Tree</field>
@@ -29,81 +46,89 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form>
-                    <group name="name">
-                        <field name="name"/>
-                        <field name="parent_id"/>
-                    </group>
-                    <group>
-                        <group name="detail" string="Detail">
-                            <field name="type"/>
-                            <field name="uom_id"/>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box" groups="base.group_configuration,estate.group_agronomi">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
+                        <group name="name">
+                            <field name="name"/>
+                            <field name="parent_id"/>
                         </group>
-                        <group name="type" string="Activity">
-                            <field name="code"/>
-                            <field name="activity_type"/>
+                        <group>
+                            <group name="detail" string="Detail">
+                                <field name="type"/>
+                                <field name="uom_id"/>
+                            </group>
+                            <group name="type" string="Activity">
+                                <field name="code"/>
+                                <field name="activity_type"/>
+                            </group>
                         </group>
-                    </group>
 
-                    <!-- # todo field masih lompat pakai context belum bisa - tanya oza -->
-                    <notebook>
-                        <page string="Accounting">
-                            <group>
-                                <group name="accounting_price" string="Standard Price">
-                                    <field name="standard_price"/>
-                                    <field name="piece_rate_price"/>
-                                    <field name="wage_method"/>
-                                    <field name="contract"/>
-                                </group>
-                                <group name="accounting_account" string="Account">
-                                    <field name="general_account_id" domain="[('company_id', '=', user_company_id)]"/>
-                                    <field name="account_id"/>
-                                    <!--do not delete-->
-                                    <field name="user_company_id" invisible="True"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Work Result Norm">
-                            <group name="ratio" string="Standard Work Result and Ratio"
-                                attrs="{'invisible': [('type', '=', 'view')]}">
-                                <!--
-                                #todo add remark: change on these field have impact on activity parameter value's norm on save
-                                -->
+                        <!-- # todo field masih lompat pakai context belum bisa - tanya oza -->
+                        <notebook>
+                            <page string="Accounting">
                                 <group>
-                                    <field name="qty_base" />
-                                    <field name="qty_base_min" />
-                                    <field name="qty_base_max"/>
+                                    <group name="accounting_price" string="Standard Price">
+                                        <field name="standard_price"/>
+                                        <field name="piece_rate_price"/>
+                                        <field name="wage_method"/>
+                                        <field name="contract"/>
+                                    </group>
+                                    <group name="accounting_account" string="Account">
+                                        <field name="general_account_id" domain="[('company_id', '=', user_company_id)]"/>
+                                        <field name="account_id"/>
+                                        <!--do not delete-->
+                                        <field name="user_company_id" invisible="True"/>
+                                    </group>
                                 </group>
-                                <group>
-                                    <field name="ratio_min" readonly="True"/>
-                                    <field name="ratio_max" readonly="True"/>
+                            </page>
+                            <page string="Work Result Norm">
+                                <group name="ratio" string="Standard Work Result and Ratio"
+                                    attrs="{'invisible': [('type', '=', 'view')]}">
+                                    <!--
+                                    #todo add remark: change on these field have impact on activity parameter value's norm on save
+                                    -->
+                                    <group>
+                                        <field name="qty_base" />
+                                        <field name="qty_base_min" />
+                                        <field name="qty_base_max"/>
+                                    </group>
+                                    <group>
+                                        <field name="ratio_min" readonly="True"/>
+                                        <field name="ratio_max" readonly="True"/>
+                                    </group>
                                 </group>
-                            </group>
-                            <separator string="Parameter"/>
-                            <field name="parameter_weight_ids"/>
-                            <separator string="Activity Standard"/>
-                            <field name="activity_norm_ids"/>
-                        </page>
-                        <page string="Material Norm">
-                            <separator string="Material"/>
-                            <field name="material_norm_ids">
-                                <tree editable="True" colors="red:qty_available==0">
-                                    <field name="option"/>
-                                    <field name="product_id"/>
-                                    <field name="product_uom_id" string="UoM"/>
-                                    <field name="unit_amount"/>
-                                    <field name="standard_price"/>
-                                    <field name="comment" string="Note"/>
-                                    <field name="qty_available" invisible="False"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                    <separator string="Additional Information"/>
-                    <field name="comment"/>
+                                <separator string="Parameter"/>
+                                <field name="parameter_weight_ids"/>
+                                <separator string="Activity Standard"/>
+                                <field name="activity_norm_ids"/>
+                            </page>
+                            <page string="Material Norm">
+                                <separator string="Material"/>
+                                <field name="material_norm_ids">
+                                    <tree editable="True" colors="red:qty_available==0">
+                                        <field name="option"/>
+                                        <field name="product_id"/>
+                                        <field name="product_uom_id" string="UoM"/>
+                                        <field name="unit_amount"/>
+                                        <field name="standard_price"/>
+                                        <field name="comment" string="Note"/>
+                                        <field name="qty_available" invisible="False"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                        <separator string="Additional Information"/>
+                        <field name="comment"/>
+                    </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers" groups="estate.group_user"/>
                         <field name="message_ids" widget="mail_thread" groups="estate.group_user"/>
                     </div>
+
                 </form>
             </field>
         </record>
