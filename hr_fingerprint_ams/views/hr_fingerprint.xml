@@ -430,6 +430,10 @@
                 'search_default_by_reason': 1}</field>
         </record>
 
+        <menuitem id="attendance_report_menu" name="Attendance Reports"
+                  parent="hr_attendance.menu_hr_attendance_root"
+                    sequence="100"/>
+
         <menuitem id="upfingerprint_menu" name="Upkeep To Fingerprint"
                   parent="hr_fingerprint_ams.attendance_report_menu"
                   action="upfingerprint_action"

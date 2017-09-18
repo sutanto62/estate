@@ -1,0 +1,12 @@
+db_id,terminal_id,nik,employee_name,auto_assign,date,work_schedules,time_start,time_end,sign_in,sign_out,day_normal,day_finger,hour_late,hour_early_leave,absent,hour_overtime,hour_work,action_reason,required_in,required_out,department,day_normal,day_weekend,day_holiday,hour_attendance,hour_ot_normal,hour_ot_weekend,hour_ot_holiday
+188,301100001,3011000002,Sari Gusasi,True,2017-09-04,Opr Kebun SenSab,5.5,14,5.18,14.3,1,1,,,,0,8.5,,True,True,Liyodu,1,,,9.12,,,
+188,301100001,3011000002,Sari Gusasi,True,2017-09-05,Opr Kebun SenSab,5.5,14,5.13,15.15,1,1,,,,1.15,8.5,,True,True,Liyodu,1,,,10,1.15,,
+188,301100001,3011000002,Sari Gusasi,True,2017-09-06,Opr Kebun SenSab,5.5,14,5.1,14.73,1,1,,,,0,8.5,,True,True,Liyodu,1,,,9.63,,,
+188,301100001,3011000002,Sari Gusasi,True,2017-09-07,Opr Kebun SenSab,5.5,14,5.15,14.77,1,1,,,,0,8.5,,True,True,Liyodu,1,,,9.6,,,
+188,301100001,3011000002,Sari Gusasi,True,2017-09-08,Opr Kebun SenSab,5.5,14,5.13,10.2,1,1,,,,,8.5,,True,True,Liyodu,1,,,4.67,,,
+188,301100001,3011000002,Sari Gusasi,True,2017-09-09,Opr Kebun SenSab,5.5,14,5.17,13.5,1,1,,,,3.13,8.5,,True,True,Liyodu,1,,,11.97,3.14,,
+188,301100001,3011000002,Sari Gusasi,True,2017-09-15,Opr Kebun SenSab,5.5,14,5.13,10.5,1,1,,,,,8.5,,True,True,Liyodu,1,,,4.37,,,
+189,301100003,3011000003,Yusup Abdullah,True,2017-09-13,RO SenJum,8,16,7.5,16.5,1,1,,,,,8.5,,True,True,Liyodu,1,,,9,,,
+189,301100003,3011000003,Yusup Abdullah,True,2017-09-14,RO SenJum,8,16,7.5,16.5,1,1,,,,,8.5,,True,True,Liyodu,1,,,9,,,
+189,301100003,3011000003,Yusup Abdullah,True,2017-09-15,RO SenJum,8,16,7.5,12.5,1,1,,,,,8.5,,True,True,Liyodu,1,,,4.5,,,
+189,301100003,3011000003,Yusup Abdullah,True,2017-09-16,RO SenJum,8,16,7.5,12.5,1,1,,,,,8.5,,True,True,Liyodu,1,,,5,,,

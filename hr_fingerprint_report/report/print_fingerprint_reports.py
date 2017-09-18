@@ -160,7 +160,7 @@ class FingerprintReport(models.AbstractModel):
                 'p_labor_late': sum(att.p_labor_late for att in attendance_ids),
                 'p_labor_late_amount': sum(att.p_labor_late_amount for att in attendance_ids),
                 'p_hour_early_leave': sum(att.p_hour_early_leave for att in attendance_ids),
-                'p_labor_early_leave': sum(att.p_labor_early_leave for att in attendance_ids),
+                'p_early_leave_amount': sum(att.p_early_leave_amount for att in attendance_ids),
                 'p_sign_percent': sum(att.p_sign_percent for att in attendance_ids)/len(attendance_ids) if len(attendance_ids) > 0 else 0,
                 'p_hour_work_float': sum(att.p_hour_work_float for att in attendance_ids),
                 'p_average_day_work': sum(att.p_average_day_work for att in attendance_ids)/len(attendance_ids) if len(attendance_ids) > 0 else 0,

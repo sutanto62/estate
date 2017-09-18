@@ -78,7 +78,6 @@ class FingerAttendance(models.Model):
     def _check_sign_in_out(self):
         """ overlap work time creates sign-in and sign-out when employee had fingered multiple times"""
         for record in self:
-            print '_check_sign_in_out %s %s' % (record.sign_in, record.sign_out)
             # overlap work time creates double sign-in/sign-out
             if record.sign_in == record.sign_out:
                 err_msg = _('%s NIK %s at %s has exact sign-in and sign-out. '
@@ -89,7 +88,6 @@ class FingerAttendance(models.Model):
     @api.constrains('day_normal', 'day_finger')
     def _check_day_normal_finger(self):
         for record in self:
-            print '_check_day_normal_finger %s %s' % (record.day_normal, record.day_finger)
             if record.day_normal == 0:
                 err_msg = _('%s NIK %s at %s has 0 day normal/finger. '
                             'Day normal should be 1.' % (record.employee_name, record.nik, record.date))
