@@ -222,6 +222,15 @@ class InheritPurchaseRequest(models.Model):
     validation_requester = fields.Boolean("Validation Requester",compute='_change_validation_requester')
     count_po = fields.Integer('PO', compute='_compute_po_line')
     count_grn = fields.Integer('GRN/SRN', compute='_compute_grn_or_srn')
+    is_confirmation = fields.Boolean('PP Confirmation', default=False)
+    
+    @api.multi
+    def set_is_confirmation(self,value):
+        """ make pp as pp confirmation
+        """
+        for item in self:
+            state_data = {'is_confirmation':value}
+            item.write(state_data)
     
     @api.multi
     def _get_type_product(self):

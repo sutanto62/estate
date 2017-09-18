@@ -62,6 +62,17 @@
 			                       		            <b>: <span t-field="o.create_date" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/></b>
 			                       		        </td>
 			                       		    </tr>
+			                       		    <t t-if="o.purchase_id.requisition_id.request_id.is_confirmation">
+				                       		    <tr>
+				                       		        <td colspan="2">
+				                       		            <div class="row">
+									              			<div class="col-xs-12" style="text-align:center;font-size:20pt;color:red;">
+									              				<b>CONFIRMED</b>
+									              			</div>
+									              		</div>
+				                       		        </td>
+				                       		    </tr>
+			                       		    </t>
 			                       		</table>
 			                      	</div>
 			                  	</div>

@@ -6,7 +6,23 @@
              <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
              <field name="arch" type="xml">
                  <xpath expr="//div[@class='oe_button_box']" position="inside">
-                      <button name="return_action_to_open"
+                 	<button name="set_is_confirmation_true"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Conf. PP"
+                                icon="fa-list-alt"
+                                attrs="{'invisible': [('is_pp_confirmation', '=', True)]}"
+                                >
+                  	</button>
+                  	<button name="set_is_confirmation_false"
+                                type="object"
+                                class="oe_stat_button"
+                                string="Unconfirmed Conf. PP"
+                                icon="fa-list-alt"
+                                attrs="{'invisible': [('is_pp_confirmation', '!=', True)]}"
+                                >
+                  	</button>    
+                   	<button name="return_action_to_open"
                                 type="object"
                                 class="oe_stat_button"
                                 string="QCF"
@@ -21,7 +37,6 @@
                                 icon ="fa-reply"
                              attrs="{'invisible': [('validation_button_correction','=',False)]}"
                              >
-
                      </button>
                  </xpath>
 
@@ -96,6 +111,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='user_id']" position="after">
+                     <field name="is_pp_confirmation" invisible="0"/>
                      <field name="validation_button_correction" invisible="1"/>
                      <field name="validation_correction" invisible="1"/>
                      <field name="validation_missing_product" invisible="1"/>

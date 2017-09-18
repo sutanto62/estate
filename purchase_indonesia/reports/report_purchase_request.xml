@@ -56,21 +56,36 @@
 							<br></br>
 							<br></br>
 							
-							<div class="row" style="text-align:left;font-size:10pt;">
-		              			<div class="col-xs-12" >
-		              				KATEGORI PP :
-		              			</div>
-		              		</div>
-		              		<div class="row" style="text-align:left;font-size:10pt;">
-		              			<div class="col-xs-12" >
-		              				<span t-field="o.type_product"/>
-		              			</div>
-		              		</div>
-		              		<div class="row" style="text-align:left;font-size:10pt;">
-		              			<div class="col-xs-12" >
-		              				<span t-field="o.type_purchase"/>, Tanggal Kebutuhan <span t-field="o.date_start"/>  
-		              			</div>
-		              		</div>
+							<table width="100%">
+							 	<tr>
+							 	 	<td>   	   	
+										<div class="row">
+					              			<div class="col-xs-12" style="text-align:left;font-size:10pt;">
+					              				KATEGORI PP :
+					              			</div>
+					              		</div>
+					              		<div class="row" style="text-align:left;font-size:10pt;">
+					              			<div class="col-xs-12" >
+					              				<span t-field="o.type_product"/>
+					              			</div>
+					              		</div>
+					              		<div class="row" style="text-align:left;font-size:10pt;">
+					              			<div class="col-xs-12" >
+					              				<span t-field="o.type_purchase"/>, Tanggal Kebutuhan <span t-field="o.date_start"/>  
+					              			</div>
+					              		</div>
+				              		</td>
+				              		<td>
+				              		    <div class="row">
+					              			<div class="col-xs-12" style="text-align:center;font-size:20pt;color:red;">
+					              				<t t-if="o.is_confirmation">
+					              					<b>CONFIRMED</b>
+					              				</t>
+					              			</div>
+					              		</div>
+				              		</td>
+			              		</tr>
+		              		</table>
 		              		
 		              		<br></br>
 		              		

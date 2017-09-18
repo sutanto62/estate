@@ -85,15 +85,23 @@
 		                       		        <td width="20%">
 		                       		            <b>Confirmed By</b>
 		                       		        </td>
-		                       		        <td class="noborder" colspan="2">
+		                       		        <td class="noborder">
 		                       		         	: <b><span t-field="o.confirmed_by"/> (<span t-field="o.confirmed_by_value"/>)</b>
 		                       		        </td>
+		                       		        <td>
+						              		    <div class="row">
+							              			<div class="col-xs-12" style="text-align:center;font-size:20pt;color:red;">
+							              				<t t-if="o.requisition_id.request_id.is_confirmation">
+							              					<b>CONFIRMED</b>
+							              				</t>
+							              			</div>
+							              		</div>
+						              		</td>
 		                       		    </tr>
 		                       		</table>
 								</div>
 							</div>
 							
-							<br></br>
 							<br></br>
 							
 							<div class="row" style="text-align:center; font-size:16pt;">

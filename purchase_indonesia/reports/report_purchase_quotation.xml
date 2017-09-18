@@ -25,16 +25,33 @@
 								</div>
 							</div>
 							<br/>
-							<div class="row" style="text-align:left;font-size:10pt;">
-		              			<div class="col-xs-12" >
-		                       		<b>Nama Vendor	: <span t-field="o.partner_id.name"/></b>
-								</div>
-							</div>
-							<div class="row" style="text-align:right;font-size:10pt;">
-		              			<div class="col-xs-12" >
-		                       		<b>Date	: <span t-field="o.date_order" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/> </b>
-								</div>
-							</div>
+							<table width="100%">
+							 	<tr>
+							 	 	<td>   	   	
+										<div class="row" style="text-align:left;font-size:10pt;">
+					              			<div class="col-xs-12" >
+					                       		<b>Nama Vendor	: <span t-field="o.partner_id.name"/></b>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="row" style="text-align:right;font-size:10pt;">
+					              			<div class="col-xs-12" >
+					                       		<b>Date	: <span t-field="o.date_order" t-field-options="{&quot;format&quot;: &quot;dd MMMM yyyy&quot;}"/> </b>
+											</div>
+										</div>
+									</td>
+									<td>
+				              		    <div class="row">
+					              			<div class="col-xs-12" style="text-align:center;font-size:20pt;color:red;">
+					              				<t t-if="o.requisition_id.request_id.is_confirmation">
+					              					<b>CONFIRMED</b>
+					              				</t>
+					              			</div>
+					              		</div>
+				              		</td>
+			              		</tr>
+		              		</table>
 							
 							<!-- Variabel -->
 		           			<t t-set="idx" t-value="0"/>

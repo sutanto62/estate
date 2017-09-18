@@ -42,6 +42,7 @@
                           <field name="validation_state_budget" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
                           <field name="validation_requester" invisible="1"/>
+                          <field name="is_confirmation" string="PP Confirmation"/>
                  </xpath>
              </field>
          </record>

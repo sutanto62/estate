@@ -58,6 +58,12 @@ class InheritPurchaseTenders(models.Model):
     is_po_done = fields.Boolean('PO', store=True)
     is_grn_done = fields.Boolean('GRN/SRN', store=True)
     is_inv_done = fields.Boolean('Invoice', store=True)
+    is_pp_confirmation = fields.Boolean('PP Confirmation',compute='_compute_is_confirmation')
+    
+    @api.multi
+    def _compute_is_confirmation(self):
+        for item in self:
+            item.is_pp_confirmation = item.request_id.is_confirmation
     
     # todo compute is_qcf_done, is_po_done, is_inv_done store = true
 #     @api.model
@@ -114,6 +120,16 @@ class InheritPurchaseTenders(models.Model):
 #             item.is_grn_done = set(l_purch_req_lines) == set(l_stock_pack_operations)
 #             item.is_inv_done = set(l_purch_req_lines) == set(l_acc_inv_lines)
     
+    @api.multi
+    def set_is_confirmation_true(self):
+        for item in self:
+            item.request_id.set_is_confirmation(True)
+            
+    @api.multi
+    def set_is_confirmation_false(self):
+        for item in self:
+            item.request_id.set_is_confirmation(False)
+        
     @api.multi
     def update_status_po_grn_inv(self):
         for item in self:
