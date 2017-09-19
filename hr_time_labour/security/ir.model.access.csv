@@ -1,9 +1,13 @@
-"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
-"access_hr_time_labour_schedule_hr_user","hr_time_labour.schedule hr user","model_hr_time_labour_schedule","base.group_hr_user",1,1,1,0
-"access_hr_time_labour_shift_hr_user","hr_time_labour.shift hr user","model_hr_time_labour_shift","base.group_hr_user",1,1,1,0
-"access_hr_time_labour_shift_time_hr_user","hr_time_labour.shift_time hr user","model_hr_time_labour_shift_time","base.group_hr_user",1,1,1,0
-"access_hr_time_labour_workday_hr_user","hr_time_labour.workday hr user","model_hr_time_labour_workday","base.group_hr_user",1,1,1,0
-"access_hr_time_labour_schedule_hr_manager","hr_time_labour.schedule hr user","model_hr_time_labour_schedule","base.group_hr_manager",1,1,1,1
-"access_hr_time_labour_shift_hr_manager","hr_time_labour.shift hr user","model_hr_time_labour_shift","base.group_hr_manager",1,1,1,1
-"access_hr_time_labour_shift_time_hr_manager","hr_time_labour.shift_time hr user","model_hr_time_labour_shift_time","base.group_hr_manager",1,1,1,1
-"access_hr_time_labour_workday_hr_manager","hr_time_labour.workday hr user","model_hr_time_labour_workday","base.group_hr_manager",1,1,1,1
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_time_labour_schedule_hr_user,hr_time_labour.schedule hr user,model_hr_time_labour_schedule,base.group_hr_user,1,1,1,0
+access_hr_time_labour_schedule_hr_manager,hr_time_labour.schedule hr user,model_hr_time_labour_schedule,base.group_hr_manager,1,1,1,1
+access_hr_time_labour_schedule_shift_hr_user,hr_time_labour.schedule_shift hr user,model_hr_time_labour_schedule_shift,base.group_hr_user,1,1,1,0
+access_hr_time_labour_schedule_shift_hr_manager,hr_time_labour.schedule_shift hr user,model_hr_time_labour_schedule_shift,base.group_hr_manager,1,1,1,1
+access_hr_time_labour_time_restriction_hr_user,hr_time_labour.time_restriction hr user,model_hr_time_labour_time_restriction,base.group_hr_user,1,1,1,0
+access_hr_time_labour_time_restriction_hr_manager,hr_time_labour.time_restriction hr user,model_hr_time_labour_time_restriction,base.group_hr_manager,1,1,1,1
+access_hr_time_labour_shift_hr_user,hr_time_labour.shift hr user,model_hr_time_labour_shift,base.group_hr_user,1,1,1,0
+access_hr_time_labour_shift_hr_manager,hr_time_labour.shift hr user,model_hr_time_labour_shift,base.group_hr_manager,1,1,1,1
+access_hr_time_labour_shift_time_hr_user,hr_time_labour.shift_time hr user,model_hr_time_labour_shift_time,base.group_hr_user,1,1,1,0
+access_hr_time_labour_shift_time_hr_manager,hr_time_labour.shift_time hr user,model_hr_time_labour_shift_time,base.group_hr_manager,1,1,1,1
+access_hr_time_labour_workday_hr_user,hr_time_labour.workday hr user,model_hr_time_labour_workday,base.group_hr_user,1,1,1,0
+access_hr_time_labour_workday_hr_manager,hr_time_labour.workday hr user,model_hr_time_labour_workday,base.group_hr_manager,1,1,1,1

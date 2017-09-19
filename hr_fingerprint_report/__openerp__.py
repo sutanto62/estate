@@ -38,5 +38,8 @@
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
+        'demo/hr_employee_demo.xml',
+        # error when loaded
+        # 'demo/attendance_demo.csv',
     ],
 }

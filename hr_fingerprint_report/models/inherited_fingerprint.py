@@ -178,6 +178,7 @@ class FingerAttendance(models.Model):
         getcontext().prec = 8
         for record in self:
             date = datetime.strptime(record.date, DF)
+            date_day = date.strftime('%A')
 
             # Convert to char
             record.db_id_c = str(record.db_id)
@@ -209,11 +210,10 @@ class FingerAttendance(models.Model):
             record.p_early_leave_leave = record.timevalue(record.hour_early_leave_t)
             c = Decimal(record.p_early_leave_leave) * Decimal(24) * Decimal(60)
             record.p_early_leave = round(c,0)
-            # record.p_hour_early_leave = record.get_early_leave(record.sign_out)
-            record.p_hour_early_leave = record.p_early_leave if record.nik[:1] != '3' and record.p_days not in ('Friday', 'Saturday') else 0
-            record.p_early_leave_amount = 1 if (record.action_reason == 'Pulang Cepat') or (record.hour_early_leave) else 0
-            # p_early_leave amount applied to NIK 1 and 2 and days unless Friday and Saturday
-            record.p_labor_early_leave = record.p_early_leave_amount if record.nik[:1] != '3' and record.p_days not in ('Friday', 'Saturday') else 0
+            record.p_hour_early_leave = record.get_early_leave(record.sign_out)
+            record.p_early_leave_amount = 1 if (record.action_reason == 'Pulang Cepat') or (record.p_hour_early_leave > 0) else 0
+            # p_labor_early_leave not required
+            # record.p_labor_early_leave = record.p_early_leave_amount if record.nik[:1] != '3' and record.p_days not in ('Friday', 'Saturday') else 0
             absent = record.day_normal - record.day_finger
             record.p_absent = absent if absent > 0 else 0
             record.p_leave = 1 if record.action_reason == 'Cuti' else 0
@@ -248,7 +248,7 @@ class FingerAttendance(models.Model):
             except ZeroDivisionError:
                 avgdaywork = 0
             record.p_average_day_work = 100 if record.nik[:1] == '3' else avgdaywork
-            record.p_days = date.strftime('%A')
+            record.p_days = date_day
             labor_late = Decimal(record.p_hour_late)*Decimal(24)*Decimal(60)
             record.p_labor_late_circle = labor_late if record.nik[:1] == '3' and record.work_schedules in ('Opr Kebun SenSab', 'Opr Kebun Jumat') else 0
             record.p_labor_late_circle_amount = 1 if record.p_labor_late_circle >= 1 else 0
@@ -348,20 +348,33 @@ class FingerAttendance(models.Model):
     @api.multi
     def get_early_leave(self, sign_out):
         """
-        Get minutes of early leave
+        Return integer of early leave
         :param sign_out: sign out datetime
-        :type sign_out: datetime
+        :type sign_out: float
         :return: minutes of early leave
         :rtype: integer
         """
         for record in self:
+            finger_date = datetime.strptime(record.date, DF)
+            finger_day = finger_date.strftime('%A')
+            is_pkwt_daily = True if record.nik[:1] == '3' else False
+            schedule = record.work_schedules
+
+            # todo should switch to res_calendar
+            time_end = {
+                'Friday': 11.0,
+                'Saturday': 13.0
+            }
+
             res = 0
-            date = datetime.strptime(record.date, DF)
-            hour_to = record.schedule_id.get_day_work_to(date)
-            if sign_out < hour_to:
-                delta = hour_to - sign_out
-                res = delta * 60
-            return res
+            if is_pkwt_daily and finger_day == 'Friday' and schedule == 'Opr Kebun SenSab':
+                res = time_end['Friday'] - record.sign_out
+            elif is_pkwt_daily and finger_day == 'Saturday' and schedule == 'RO SenJum':
+                res = time_end['Saturday'] - record.sign_out
+            else:
+                res = record.time_end - record.sign_out
+
+            return int(round(res, 2)*60) if res > 0 else 0
 
     def _search_hour_late(self, operator, value):
         if operator == 'like':

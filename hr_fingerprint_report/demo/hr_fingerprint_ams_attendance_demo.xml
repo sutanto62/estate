@@ -1,0 +1,34 @@
+<openerp>
+    <data>
+        <record id="ams_att_sg_01" model="hr_fingerprint_ams.attendance">
+            <field name="db_id">188</field>
+            <field name="terminal_id">3011000002</field>
+            <field name="nik">30110000002</field>
+            <field name="employee_name">Sari Gusasi</field>
+            <field name="date" eval="(DateTime.now().replace(day=1)).strftime('%Y-%m-%d')"/>
+            <field name="work_schedules">Opr Kebun SenSab</field>
+            <field name="time_start">5.5</field>
+            <field name="time_end">14</field>
+            <field name="sign_in">5.18</field>
+            <field name="sign_out">14.5</field>
+            <field name="day_normal">1</field>
+            <field name="day_finger">1</field>
+            <field name="hour_late">0</field>
+            <field name="hour_early_leave">0</field>
+            <field name="absent">0</field>
+            <field name="hour_overtime">0</field>
+            <field name="hour_work">8.5</field>
+            <field name="action_reason">''</field>
+            <field name="required_in">True</field>
+            <field name="required_out">True</field>
+            <field name="department">Liyodu</field>
+            <field name="day_weekday">1</field>
+            <field name="day_weekend">0</field>
+            <field name="hour_attendance">9.116667</field>
+            <field name="hour_ot_normal">0</field>
+            <field name="hour_ot_weekend">0</field>
+            <field name="hour_ot_holiday">0</field>
+            <field name="state">draft</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,24 @@
+<openerp>
+    <data>
+        <!--sari gusasi was pkwtt daily labor-->
+        <record id="hr_employee_sari_gusasi" model="hr.employee">
+            <field name="name">Sari Gusasi</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="joindate" eval="(DateTime.now().replace(month=1, day=1)).strftime('%Y-%m-%d')"/>
+            <field name="estate_id" ref="estate.estate"/>
+            <field name="nik_number">3011000002</field>
+        </record>
+
+        <record id="hr_employee_yusup_abdullah" model="hr.employee">
+            <field name="name">Yusup Abdullah</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="contract_type">2</field>
+            <field name="contract_period">2</field>
+            <field name="joindate" eval="(DateTime.now().replace(month=1, day=1)).strftime('%Y-%m-%d')"/>
+            <field name="estate_id" ref="estate.estate"/>
+            <field name="nik_number">3011000003</field>
+        </record>
+    </data>
+</openerp>

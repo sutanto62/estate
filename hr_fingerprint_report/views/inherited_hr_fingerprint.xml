@@ -7,7 +7,15 @@
             <field name="model">hr_fingerprint_ams.attendance</field>
             <field name="inherit_id" ref="hr_fingerprint_ams.fingerprint_attendance_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='sign_out']" position="after">
+                <xpath expr="//field[@name='sign_in']" position="before">
+                    <field name="nik"/>
+                    <field name="work_schedules" string="Working Schedules"/>
+                    <field name="time_start" widget="float_time"/>
+                    <field name="time_end" widget="float_time"/>
+                </xpath>
+                <xpath expr="//field[@name='action_reason']" position="after">
+                    <field name="p_hour_early_leave"/>
+                    <field name="p_early_leave_amount"/>
                     <field name="day_normal"/>
                     <field name="day_finger"/>
                     <field name="p_hour_late_office"/>
@@ -28,9 +36,11 @@
                     <field name="contract_id"/>
                     <field name="contract_type"/>
                     <field name="contract_period"/>
-                    <field name="schedule_id"/>
                     <field name="hour_late_t"/>
-                    <field name="hour_early_leave_t"/>
+                    <!--
+                    use work_schedules - cross check AMS
+                    <field name="schedule_id"/>
+                    -->
                     <field name="hour_overtime_t"/>
                     <field name="hour_work_t"/>
                     <field name="hour_attendance_t"/>

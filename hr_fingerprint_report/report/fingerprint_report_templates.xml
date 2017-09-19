@@ -13,12 +13,15 @@
                 <t t-set="sum_labor_late_circle_amount" t-value="0"/>
                 <t t-set="sum_labor_late" t-value="0"/>
                 <t t-set="sum_labor_late_amount" t-value="0"/>
-                
+
                 <t t-set="sum_hour_late_office_person" t-value="0"/>
                 <t t-set="sum_late_amount_office_person" t-value="0"/>
                 <t t-set="sum_estate_late_amount_person" t-value="0"/>
                 <t t-set="sum_labor_late_circle_amount_person" t-value="0"/>
                 <t t-set="sum_labor_late_amount_person" t-value="0"/>
+
+                <t t-set="sum_p_hour_early_leave" t-value="0"/>
+                <t t-set="sum_p_early_leave_amount" t-value="0"/>
                 <!--/global variable-->
 
                 <!--page 1-->
@@ -176,7 +179,7 @@
                         <t t-set="p_labor_late" t-value="0"/>
                         <t t-set="p_labor_late_amount" t-value="0"/>
                         <t t-set="p_hour_early_leave" t-value="0"/>
-                        <t t-set="p_labor_early_leave" t-value="0"/>
+                        <t t-set="p_early_leave_amount" t-value="0"/>
                         <t t-set="p_sign_percent" t-value="0"/>
                         <t t-set="p_sign_percent_divide" t-value="0"/>
                         <t t-set="p_hour_work_float" t-value="0"/>
@@ -270,7 +273,7 @@
                                             <td class="text-right"><t t-if="a['p_labor_late_amount'] >= 1"><span class="fa fa-circle-goldenrod"/></t> <t t-esc="a['p_labor_late_amount']"/></td>
 
                                             <td class="text-right"><t t-esc="a['p_hour_early_leave']"/></td>
-                                            <td class="text-right"><t t-esc="a['p_labor_early_leave']"/></td>
+                                            <td class="text-right"><t t-esc="a['p_early_leave_amount']"/></td>
                                             <td class="text-right"><t t-esc="a['p_sign_percent']"/></td>
                                             <td class="text-right"><t t-esc="a['p_hour_work_float']"/></td>
                                             <td class="text-right"><t t-esc="a['p_average_day_work']"/></td>
@@ -316,7 +319,7 @@
                                         <t t-set="p_labor_late" t-value="p_labor_late+a['p_labor_late']"/>
                                         <t t-set="p_labor_late_amount" t-value="p_labor_late_amount+a['p_labor_late_amount']"/>
                                         <t t-set="p_hour_early_leave" t-value="p_hour_early_leave+a['p_hour_early_leave']"/>
-                                        <t t-set="p_labor_early_leave" t-value="p_labor_early_leave+a['p_labor_early_leave']"/>
+                                        <t t-set="p_early_leave_amount" t-value="p_early_leave_amount+a['p_early_leave_amount']"/>
                                         <t t-set="p_sign_percent" t-value="p_sign_percent+a['p_sign_percent']"/>
                                         <t t-set="p_sign_percent_divide" t-value="p_sign_percent_divide+1"/>
                                         <t t-set="p_hour_work_float" t-value="p_hour_work_float+a['p_hour_work_float']"/>
@@ -354,9 +357,9 @@
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late)"/></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_amount)"/></strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_early_leave)"/></strong></td>
-                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_early_leave)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_early_leave_amount)"/></strong></td>
                                 <td class="text-right"><strong><t t-if="p_sign_percent_divide != 0"><t t-esc="'{0:,.2f}'.format(p_sign_percent/p_sign_percent_divide)"/></t></strong></td>
-                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_work_float)"/></strong></td>
+                                <td class="text-right"><strong><t t-esc="'{0:,.2f}'.format(p_hour_work_float)"/></strong></td>
                                 <td class="text-right"><strong><t t-if="p_average_day_work_divide != 0"><t t-esc="'{0:,.2f}'.format(p_average_day_work/p_average_day_work_divide)"/></t></strong></td>
                             </tr>
 
@@ -377,6 +380,9 @@
                             <t t-set="sum_labor_late_amount" t-value="'{0:,.0f}'.format(p_labor_late_amount)"/>
 
                             <t t-set="sum_hour_late_office_person" t-value="sum_hour_late_office_person"/>
+
+                            <t t-set="sum_p_hour_early_leave" t-value="'{0:,.0f}'.format(p_hour_early_leave)"/>
+                            <t t-set="sum_p_early_leave_amount" t-value="'{0:,.0f}'.format(p_early_leave_amount)"/>
                             <!--/summary-->
                         </tfoot>
                         <!--/attendance footer-->
@@ -442,7 +448,7 @@
                                 <!--pengecualian-->
                                 <table class="table table-condensed">
                                     <thead>
-                                        <th>Alasan Ketidakhadiran</th>
+                                        <th>Alasan Pengecualian</th>
                                         <th class="text-right">Orang</th>
                                         <th class="text-right">Keterangan</th>
                                     </thead>
@@ -503,6 +509,11 @@
                                         <td>KHL Kerja</td>
                                         <td class="text-right"><t t-esc="sum_labor_late_amount"/> kali</td>
                                         <td class="text-right"><t t-esc="sum_labor_late_amount_person"/> orang</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pulang Cepat</td>
+                                        <td class="text-right"><t t-esc="sum_p_hour_early_leave"/> menit</td>
+                                        <td class="text-right"><t t-esc="sum_p_early_leave_amount"/> kali</td>
                                     </tr>
                                 </table>
                                 <!--/terlambat-->
