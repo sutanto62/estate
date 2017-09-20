@@ -30,6 +30,35 @@
         </record>
 
         <!--
+        Estate Payroll Assistant
+        1. Create Payslip Run for PKWT/PKWTT with Contract type Site Office
+        2. Create Payslip for PKWT/PKWTT with Contract type Site Office
+        3. Create Contract for PKWT/PKWTT with Contract type Site Office
+
+        Use employee_id.estate_id to limit access in the future.
+        -->
+        <record id="estate_payroll_assistant_site_office" model="ir.rule">
+            <field name="name">Payslip Estate Payroll Assistant</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="domain_force">[('employee_id.contract_type','in', ['1','2']),('contract_id.type_id','=','Site Office')]</field>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="groups" eval="[(4, ref('estate_payroll.estate_payroll_assistant'))]"/>
+        </record>
+        <record id="hr_contract_rule_estate_payroll_assistant" model="ir.rule">
+            <field name="name">Contract Rule Estate Payroll Assistant</field>
+            <field name="model_id" ref="hr_payroll.model_hr_contract"/>
+            <field name="domain_force">[('employee_id.contract_type','in', ['1','2']),('type_id','=','Site Office')]</field>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+            <field name="groups" eval="[(4, ref('estate_payroll.estate_payroll_assistant'))]"/>
+        </record>
+
+        <!--
         Estate User
         1. Read Payslip Run
         2. Read Payslip
