@@ -79,7 +79,7 @@ class FingerAttendance(models.Model):
         """ overlap work time creates sign-in and sign-out when employee had fingered multiple times"""
         for record in self:
             # overlap work time creates double sign-in/sign-out
-            if record.sign_in == record.sign_out:
+            if (record.sign_in == record.sign_out) and not record.action_reason:
                 err_msg = _('%s NIK %s at %s has exact sign-in and sign-out. '
                             'Delete one of them.' % (record.employee_name, record.nik, record.date))
                 raise ValidationError(err_msg)
