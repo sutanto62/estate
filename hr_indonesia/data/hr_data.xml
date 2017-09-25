@@ -5,6 +5,11 @@
             <field name="name">Estate Worker</field>
         </record>
 
+        <!--define record rule, payroll assistant - PKWT/PKWTT and Site Office Worker. Multi location use employee_id.estate_id -->
+        <record id="hr_contract_type_site_office" model="hr.contract.type">
+            <field name="name">Site Office</field>
+        </record>
+
         <record id="ir_sequence_nik" model="ir.sequence">
             <field name="active" eval="True"/>
             <field name="name">Nomor Induk Karyawan</field>

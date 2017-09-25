@@ -6,6 +6,7 @@ import openerp.addons.decimal_precision as dp
 
 class Activity(models.Model):
     _name = 'estate.activity'
+    _description = 'Estate Activity'
     _parent_store = True
     _parent_name = 'parent_id'
     _order = 'complete_name'
@@ -222,6 +223,7 @@ class ParameterWeight(models.Model):
     """Provide weighted prorate for multi activity parameter
     """
     _name = 'estate.parameter.weight'
+    _description = 'Estate Parameter Weight'
     _order = 'parameter_id'
 
     activity_id = fields.Many2one('estate.activity')
@@ -241,6 +243,7 @@ class ActivityNorm(models.Model):
     """Set work's result based on estate parameter value
     """
     _name = 'estate.activity.norm'
+    _description = 'Estate Activity Norm'
     _order = 'parameter_id, parameter_value_id'
 
     activity_id = fields.Many2one('estate.activity', string='Activity')
@@ -324,7 +327,7 @@ class ActivityNorm(models.Model):
 
 class MaterialNorm(models.Model):
     _name = 'estate.material.norm'
-    _description = 'Standard required material of an activity'
+    _description = 'Estate Material Norm'
     _order = 'option asc'
 
     activity_id = fields.Many2one('estate.activity', 'Activity')

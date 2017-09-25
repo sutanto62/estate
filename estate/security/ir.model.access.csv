@@ -6,7 +6,7 @@
 "access_estate_res_company","res.company estate user","base.model_res_company","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_account_analytic","account.analytic.account estate","estate.model_account_analytic_account","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_hr_contract","hr.contract estate","hr_contract.model_hr_contract","estate.group_user","TRUE","FALSE","FALSE","FALSE"
-"access_estate_activity","estate.activity","model_estate_activity","estate.group_user","TRUE","TRUE","FALSE","FALSE"
+"access_estate_activity","estate.activity","model_estate_activity","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_activity_agronomi","estate.activity agronomi","model_estate_activity","estate.group_agronomi","TRUE","TRUE","TRUE","FALSE"
 "access_estate_activity_norm","estate.activity.norm","model_estate_activity_norm","estate.group_user","TRUE","FALSE","FALSE","FALSE"
 "access_estate_activity_norm_agronomi","estate.activity.norm agronomi","model_estate_activity_norm","estate.group_agronomi","TRUE","TRUE","TRUE","TRUE"
