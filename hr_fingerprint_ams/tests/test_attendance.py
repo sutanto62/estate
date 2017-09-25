@@ -110,19 +110,40 @@ class TestAttendance(TransactionCase):
         """ Create fingerprint with an action reason"""
         vals = self.finger_in_out
 
-        vals['sign_in'] = 0
+        # sign-in and sign-out null with action reason
+        vals['sign_in'] = ''
+        vals['sign_out'] = ''
         vals['action_reason'] = 'Leave'
-
-        # I created action reason for first time sign-in/out
         fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
-        self.assertTrue(fingerprint)
+        self.assertTrue(fingerprint, 'Cannot create attendance with sign_in and sign_out null.')
 
-        # I checked attendance
-        for attendance in fingerprint.attendance_ids:
-            self.assertTrue(attendance)
-            self.assertTrue(attendance.action in ('sign_in', 'sign_out', 'action'),
-                            'Action did not belong to in/out/action.')
-        self.assertEqual(len(fingerprint.attendance_ids), 1, 'Fingerprint did not create in and out attendance.')
+        # sign-in and sign-out zero value with action reason
+        vals['sign_in'] = 0.0
+        vals['sign_out'] = 0.0
+        vals['action_reason'] = 'Leave'
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint, 'Cannot create attendance with zero value sign_in and sign_out.')
+
+        # sign-in only with action reason
+        vals['sign_in'] = 5.5
+        vals['sign_out'] = ''
+        vals['action_reason'] = 'Leave'
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint, 'Cannot create attendance with sign-in only.')
+
+        # sign-out only with action reason
+        vals['sign_in'] = ''
+        vals['sign_out'] = 14.5
+        vals['action_reason'] = 'Leave'
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertTrue(fingerprint, 'Cannot create attendance with sign_out only.')
+
+        # wrong action reason
+        vals['sign_in'] = 0.0
+        vals['sign_out'] = 0.0
+        vals['action_reason'] = 'XXXX'
+        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'}).create(vals)
+        self.assertFalse(fingerprint, 'Atendance created with non registered action_reason.')
 
     def test_04_create_action_fingerprint_no_employee_found(self):
         """ No employee no fingerprint"""
@@ -190,9 +211,9 @@ class TestAttendance(TransactionCase):
 
         for attendance in fingerprint.attendance_ids:
             if attendance.action == 'sign_in':
-                self.assertEqual(attendance.name, '2015-12-31 22:00:00')
+                self.assertEqual(attendance.name, '2016-01-01 05:00:00')
             elif attendance.action == 'sign_out':
-                self.assertEqual(attendance.name, '2016-01-01 08:00:00')
+                self.assertEqual(attendance.name, '2016-01-01 15:00:00')
 
     def test_06_update_not_complete_fingerprint(self):
         """ Update existing fingerprint's sign_in to 0."""
@@ -251,18 +272,19 @@ class TestAttendance(TransactionCase):
         employee_id = self.FingerprintAttendance._get_employee('Abas Akumali', 3011000230)
         self.assertFalse(employee_id, 'It should not return employee.')
 
-    def test_00_get_name(self):
-        att_date = '2016-01-01'
-        att_time = 6.2
-        utc_datetime = datetime(2015, 12, 31, 23, 12, 0, 0, pytz.utc)
-
-        fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'})
-
-        # I checked UTC date
-        self.assertEqual(fingerprint._get_name(att_date, att_time), utc_datetime)
-
-        # I checked empty date
-        self.assertEqual(fingerprint._get_name('', att_time), None)
+    # attendance datetime did not used timezone anymore
+    # def test_00_get_name(self):
+    #     att_date = '2016-01-01'
+    #     att_time = 6.2
+    #     utc_datetime = datetime(2015, 12, 31, 23, 12, 0, 0, pytz.utc)
+    #
+    #     fingerprint = self.FingerprintAttendance.with_context({'tz': 'Asia/Jakarta'})
+    #
+    #     # I checked UTC date
+    #     self.assertEqual(fingerprint._get_name(att_date, att_time), utc_datetime)
+    #
+    #     # I checked empty date
+    #     self.assertEqual(fingerprint._get_name('', att_time), None)
 
     def test_08_approve_all(self):
         """ Test single level approval by hr officer group"""
