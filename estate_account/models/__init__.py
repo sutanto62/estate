@@ -2,3 +2,5 @@ import estate_account
 import inherited_estate
 import inherited_hr_payslip_run
 import inherited_account_move
+# import estate_account_productivity
+import inherited_estate_upkeep

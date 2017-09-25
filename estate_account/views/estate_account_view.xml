@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
-        <!--view-->
-
-        <!--/view-->
-
         <!--action-->
         <record id="payroll_cost_category_action" model="ir.actions.act_window">
             <field name="name">Accrued Category</field>
@@ -43,6 +38,69 @@
                   action="payroll_company_account_action"
                   parent="estate_account_menu"/>
         <!--/menu-->
+
+        <!--account productivity-->
+        <record id="estate_account_productivity_view_search" model="ir.ui.view">
+            <field name="name">Account Productivity Search</field>
+            <field name="model">estate_account.productivity</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="company_id" string="Company"/>
+                    <field name="analytic_account_id" string="Planted Year"/>
+                    <field name="general_account_id" string="General Account"/>
+                    <group string="Group By">
+                        <filter name="by_company" string="Company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter name="by_analytic_account" string="Analytic"
+                                context="{'group_by': 'analytic_account_id'}"/>
+                        <filter name="by_general_account" string="General Account"
+                                context="{'group_by': 'general_account_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="estate_account_productivity_view_tree" model="ir.ui.view">
+            <field name="name">Account Productivity</field>
+            <field name="model">estate_account.productivity</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <tree string="Account Productivity"
+                      default_order="general_account_id">
+                    <field name="company_id" invisible="True"/>
+                    <field name="analytic_account_id" string="TT" invisible="True"/>
+                    <field name="general_account_id" string="COA" invisible="True"/>
+                    <field name="quantity" string="Prod"/>
+                    <field name="amount_number_of_day" string="HK"/>
+                    <field name="amount_overtime" string="OT"/>
+                    <field name="amount_piece_rate" string="PR"/>
+                    <field name="amount_material" string="MT"/>
+                    <field name="sub_total" string="Sub"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_estate_account_productivity" model="ir.actions.act_window" >
+            <field name="name">Account Productivity</field>
+            <field name="res_model">estate_account.productivity.report</field>
+            <!--<field name="context">{'search_default_by_company': 1,-->
+                <!--'search_default_by_analytic_account': 1, 'search_default_by_general_account': 1}</field>-->
+            <!--<field name="view_mode">tree,form</field>-->
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="account_productivity_report_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <menuitem id="menu_estate_account_productivity"
+                  name="Account Productivity"
+                  parent="estate.menu_estate_reporting"
+                  action="action_estate_account_productivity"
+                  sequence="90"/>
+        <!--/account productivity-->
+
 
     </data>
 </openerp>

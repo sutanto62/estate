@@ -18,3 +18,14 @@ class AccountMove(models.Model):
         else:
             return super(AccountMove, self)._post_validate()
 
+    def account_productivity(self, vals):
+        """
+        Help to complete quantity of journal items
+        :return:
+        """
+        account_prod = self.env['estate.upkeep.labour'].get_quantity(vals)
+        res = {
+            'quantity': account_prod['quantity'],
+            'product_uom_id': account_prod['productivity_uom_id']
+        }
+        return res

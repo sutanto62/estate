@@ -15,6 +15,7 @@ class PayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
     state = fields.Selection(selection_add=[('journaled', 'Journaled')])
+
     # accrued_journal_id = fields.Many2one('account.journal', 'Payroll Accrued Journal', required=True,
     #                              domain="[('type','=','general'),('company_id', '=', company_id)]")
     # allocation_journal_id = fields.Many2one('account.journal', 'Payroll Allocation', required=True,
@@ -46,7 +47,7 @@ class PayslipRun(models.Model):
     def get_line_name(self, line, number_of_day=False, line_date=False):
         """ User required to view number of day and month year"""
         self.ensure_one()
-        lang = self.env['res.lang'].search([('code','=', self.env.user.lang)])
+        lang = self.env['res.lang'].search([('code', '=', self.env.user.lang)])
         name = []
         name.append(line)
         if number_of_day:
@@ -101,7 +102,7 @@ class PayslipRun(models.Model):
 
         # error update modules
         if not journal_id:
-            err_msg = _('Unable to close payslips batches.\n'\
+            err_msg = _('Unable to close payslips batches.\n' \
                         'No Accounting Journals for payroll configured.')
             raise exceptions.ValidationError(err_msg)
 
@@ -291,7 +292,10 @@ class PayslipRun(models.Model):
 
     @api.multi
     def create_allocation(self, batch):
+        """ Cost of activity's labor and material. Employee's company = block company."""
         self.ensure_one()
+
+        # upkeep_labor_obj = self.env['estate.upkeep.labor']
 
         move_obj = self.env['account.move']
         debit_sum = 0.0
@@ -357,9 +361,20 @@ class PayslipRun(models.Model):
 
             # show message if no account
             if not line['general_account']:
-                err_msg = _('Activity %s has no general account.\n'\
+                err_msg = _('Activity %s has no general account.\n' \
                             'Please check your account configuration.' % line['activity'])
                 raise exceptions.ValidationError(err_msg)
+
+            quantity_vals = {
+                'start': batch.date_start,
+                'end': batch.date_end,
+                'analytic': analytic_account_id,
+                'account': line['general_account'],
+                'company': batch.company_id.id,
+                'employee_ids': tuple([slip.employee_id.id for slip in batch.slip_ids])
+            }
+
+            account_productivity = move_obj.account_productivity(quantity_vals)
 
             # create move line for current company
             debit_line = (0, 0, {
@@ -373,6 +388,8 @@ class PayslipRun(models.Model):
                 'date': batch.date_end,
                 'debit': line['amount'],
                 'credit': 0,
+                'quantity': account_productivity['quantity'],
+                'product_uom_id': account_productivity['product_uom_id']
             })
 
             # avoid posting activity without general account
@@ -402,9 +419,7 @@ class PayslipRun(models.Model):
         if credit_line[2]['credit']:
             move_line_ids.append(credit_line)
 
-
         vals['line_ids'] = move_line_ids
-
         move_id = move_obj.create(vals)
         move_id.post()
 
@@ -496,6 +511,17 @@ class PayslipRun(models.Model):
                 # make sure analytic_account_id return True or False
                 analytic_account_id = line['analytic_account'] if line['analytic_account'] is not None else False
 
+                quantity_vals = {
+                    'start': batch.date_start,
+                    'end': batch.date_end,
+                    'analytic': analytic_account_id,
+                    'account': line['general_account'],
+                    'company': batch.company_id.id,
+                    'employee_ids': tuple([slip.employee_id.id for slip in batch.slip_ids])
+                }
+
+                account_productivity = move_obj.account_productivity(quantity_vals)
+
                 # create move line for different company
                 debit_line = (0, 0, {
                     'name': self.get_line_name(line['general_account_name'],
@@ -503,11 +529,13 @@ class PayslipRun(models.Model):
                                                batch.date_end),
                     'partner_id': company_id.partner_id.id,
                     'account_id': debit_account_id.id,
-                    'analytic_account_id':  analytic_account_id,
+                    'analytic_account_id': analytic_account_id,
                     'journal_id': journal_id.id,
                     'date': batch.date_end,
                     'debit': line['amount'],
                     'credit': 0,
+                    'quantity': account_productivity['quantity'],
+                    'product_uom_id': account_productivity['product_uom_id']
                 })
 
                 move_line_ids.append(debit_line)
@@ -543,7 +571,8 @@ class PayslipRun(models.Model):
 
     @api.multi
     def create_receivable(self, batch):
-        """Receivable should be included in allocation move line."""
+        """ Cost of activity's labor and material which conducted by other company's employee != block company.
+        Receivable should be included in allocation move line."""
 
         self.ensure_one()
 
@@ -646,7 +675,6 @@ class PayslipRun(models.Model):
         Not included yet: adjustment, deduction, tax, insurance, etc.
         :return: True
         """
-
         for record in self:
             self.create_accrued(record)
             self.create_allocation(record)
@@ -655,7 +683,51 @@ class PayslipRun(models.Model):
 
             super(PayslipRun, record).close_payslip_run()
 
+            # super close_payslip_run set state to close
             record.state = 'journaled'
 
             return record
+
+    def period_date(self, reference):
+        """
+        Get start and end date by reference name
+        :param reference:
+        :return: dict
+        """
+        payslip_run_id = self.env['hr.payslip.run'].search([('name', '=', reference)], limit=1)
+        res = {
+            'start': payslip_run_id.date_start,
+            'end': payslip_run_id.date_end
+        }
+        return res if payslip_run_id else {}
+
+    @api.multi
+    def journal_to_close(self):
+        """
+        Sometimes closing payslip run failed.
+        :return:
+        """
+        for record in self:
+            # remove all journal created
+            journal_ids = self.env['account.move'].search([('date', '>=', record.date_start),
+                                                           ('date', '<=', record.date_end),
+                                                           ('ref', '=', record.name)])
+            for journal in journal_ids:
+                if journal.button_cancel():
+                    journal.unlink()
+
+            # set payslip run to close
+            record.state = 'close'
+
+        return True
+
+    @api.multi
+    def close_to_journal(self):
+        """
+        Recreate journal from close payslip
+        :return:
+        """
+        for record in self:
+            record.close_payslip_run()
+        return True
 

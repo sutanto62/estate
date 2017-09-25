@@ -10,8 +10,13 @@
             <field name="arch" type="xml">
                 <xpath expr="//header//button" position="after">
                     <button name="journal_to_close" type="object"
-                            groups="base.group_no_one" help="Set payroll batches and its descendants to draft position."
-                            string="Reset to Close" states="journaled"/>
+                            groups="account.group_account_manager" help="Remove posted journal."
+                            string="Journaled to Close" states="journaled"/>
+                    </xpath>
+                <xpath expr="//button[@name='draft_payslip_run']" position="after">
+                    <button name="close_to_journal" type="object"
+                        groups="account.group_account_manager" help="Create posted journal."
+                        string="Close to Journaled" states="close"/>
                 </xpath>
                 <xpath expr="//field[@name='credit_note']" position="after">
                     <!--<field name="accrued_journal_id"/>-->
