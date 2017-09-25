@@ -348,15 +348,15 @@ class QuotationComparisonForm(models.Model):
     backorder_purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line',domain=[('validation_check_backorder','=',True)])
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids3 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids4 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids5 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids6 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids7 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids8 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids9 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
-    v_quotation_comparison_line_ids10 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids3 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids4 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids5 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids6 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids7 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids8 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids9 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+#     v_quotation_comparison_line_ids10 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     #Back Order
     # v_backorder_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
     # v_backorder_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line',domain=[('backorder','=',True)])
@@ -571,10 +571,20 @@ class QuotationComparisonForm(models.Model):
                 tender_line_id = tender_line.search([('requisition_id','=',item.requisition_id.id)])
                 purchase = item.env['purchase.order']
                 purchase_ids = purchase.search([('comparison_id','=',item.id)])
+                
+                #check that we have at least confirm one line
+                confirm = False
+                for po_line in item.requisition_id.po_line_ids:
+                    if po_line.quantity_tendered > 0:
+                        confirm = True
+                        break
+                if not confirm:
+                    raise exceptions.ValidationError('You have no line selected for buying.')
+                    
                 if purchase_ids:
                     for record in purchase_ids:
                         arrPoid.append(record.id)
-
+                        
                     for tender in tender_line_id:
 
                         order_line_ids = item.env['purchase.order.line'].search([('order_id','in',arrPoid),('product_id','=',tender.product_id.id)])
@@ -600,10 +610,20 @@ class QuotationComparisonForm(models.Model):
     
     @api.multi
     def action_approve(self):
-        #approval finance head procurement
-        if self._get_purchase_request().code in ['KPST','KOKB','KPWK'] :
-            self.write({'state': 'approve1', 'assign_to': self._get_division_finance()})
-            self.send_mail_template()
+        
+        #check that we have at least confirm one line
+        confirm = False
+        for po_line in self.requisition_id.po_line_ids:
+            if po_line.quantity_tendered > 0:
+                confirm = True
+                break
+        if not confirm:
+            raise exceptions.ValidationError('You have no line selected for buying.')
+        else:
+            #approval finance head procurement
+            if self._get_purchase_request().code in ['KPST','KOKB','KPWK'] :
+                self.write({'state': 'approve1', 'assign_to': self._get_division_finance()})
+                self.send_mail_template()
 
     @api.multi
     def action_approve1(self):
@@ -889,333 +909,117 @@ class ViewComparisonLine(models.Model):
                 po_pol_min.cheapest,
                 po_pol_all.po_des_all_name,
                 po_pol_all.trigger_state
-               FROM (( SELECT qcf_po.pol_des_name AS po_des_all_name,
+               FROM (
+                           ( 
+                       SELECT 
+                           qcf_po.pol_des_name AS po_des_all_name,
                         qcf.id AS qcf_id,
                         qcf.requisition_id AS req_id,
                         qcf_po.po_backorder AS pol_po_backorder,
-                        qcf.id,
-                        qcf.origin,
-                        qcf.create_date,
-                        qcf.write_uid,
-                        qcf.pic_id,
-                        qcf.create_uid,
-                        qcf.reject_reason,
-                        qcf.partner_id,
-                        qcf.message_last_post,
-                        qcf.company_id,
-                        qcf.state,
-                        qcf.complete_name,
-                        qcf.location,
-                        qcf.date_pp,
-                        qcf.requisition_id,
-                        qcf.write_date,
-                        qcf.remarks,
-                        qcf.assign_to,
-                        qcf.name,
-                        qcf.type_location,
-                        qcf.validation_missing_product,
-                        qcf.validation_check_backorder,
                         qcf_po.pol_id,
                         qcf_po.com_id,
                         qcf_po.part_id,
-                        qcf_po.po_backorder,
-                        qcf_po.pol_des_name,
-                        qcf_po.id,
-                        qcf_po.origin,
-                        qcf_po.create_date,
-                        qcf_po.write_uid,
-                        qcf_po.currency_id,
-                        qcf_po.date_order,
-                        qcf_po.partner_id,
-                        qcf_po.dest_address_id,
-                        qcf_po.create_uid,
                         qcf_po.amount_untaxed,
-                        qcf_po.picking_type_id,
-                        qcf_po.message_last_post,
-                        qcf_po.company_id,
-                        qcf_po.amount_tax,
-                        qcf_po.state,
-                        qcf_po.fiscal_position_id,
                         qcf_po.incoterm_id,
                         qcf_po.payment_term_id,
-                        qcf_po.write_date,
-                        qcf_po.partner_ref,
-                        qcf_po.date_approve,
                         qcf_po.amount_total,
-                        qcf_po.invoice_status,
-                        qcf_po.name,
-                        qcf_po.notes,
-                        qcf_po.group_id,
-                        qcf_po.requisition_id,
-                        qcf_po.source_purchase_request,
-                        qcf_po.companys_id,
-                        qcf_po.complete_name,
-                        qcf_po.location,
-                        qcf_po.hide,
-                        qcf_po.confirmed_by,
                         qcf_po.delivery_term,
-                        qcf_po.days,
-                        qcf_po.comparison_id,
-                        qcf_po.po_no,
-                        qcf_po.request_id,
-                        qcf_po.type_location,
-                        qcf_po.confirmed_by_value,
-                        qcf_po.confirmed_by_person,
-                        qcf_po.validation_check_confirm_vendor,
-                        qcf_po.validation_check_backorder,
-                        qcf_po.pol_name,
-                        qcf_po.id_1 AS id,
-                        qcf_po.create_date_1 AS create_date,
                         qcf_po.product_uom,
                         qcf_po.price_unit,
                         qcf_po.price_subtotal,
-                        qcf_po.write_uid_1 AS write_uid,
-                        qcf_po.currency_id_1 AS currency_id,
-                        qcf_po.product_qty,
-                        qcf_po.partner_id_1 AS partner_id,
-                        qcf_po.qty_received,
-                        qcf_po.create_uid_1 AS create_uid,
                         qcf_po.price_tax,
-                        qcf_po.company_id_1 AS company_id,
-                        qcf_po.account_analytic_id,
-                        qcf_po.order_id,
-                        qcf_po.qty_invoiced,
-                        qcf_po.write_date_1 AS write_date,
-                        qcf_po.name_1 AS name,
-                        qcf_po.price_total,
                         qcf_po.product_id,
                         qcf_po.date_planned,
-                        qcf_po.quantity_tendered,
-                        qcf_po.trigger_state,
-                        qcf_po.spesification,
-                        qcf_po.term_of_goods,
-                        qcf_po.qty_request,
-                        qcf_po.days_1 AS days,
-                        qcf_po.comparison_id_1 AS comparison_id,
-                        qcf_po.validation_check_backorder_1 AS validation_check_backorder,
-                        qcf_po.trigger_draft
+                        qcf_po.trigger_state
                        FROM (quotation_comparison_form qcf
-                         JOIN ( SELECT pol.id AS pol_id,
+                         JOIN ( 
+                             SELECT 
+                                 pol.id AS pol_id,
                                 po.company_id AS com_id,
                                 po.partner_id AS part_id,
                                 po.validation_check_backorder AS po_backorder,
                                 pol.pol_name AS pol_des_name,
                                 po.id,
-                                po.origin,
-                                po.create_date,
-                                po.write_uid,
-                                po.currency_id,
-                                po.date_order,
-                                po.partner_id,
-                                po.dest_address_id,
-                                po.create_uid,
                                 po.amount_untaxed,
-                                po.picking_type_id,
-                                po.message_last_post,
-                                po.company_id,
-                                po.amount_tax,
-                                po.state,
-                                po.fiscal_position_id,
                                 po.incoterm_id,
                                 po.payment_term_id,
-                                po.write_date,
-                                po.partner_ref,
-                                po.date_approve,
                                 po.amount_total,
-                                po.invoice_status,
-                                po.name,
-                                po.notes,
-                                po.group_id,
                                 po.requisition_id,
-                                po.source_purchase_request,
-                                po.companys_id,
-                                po.complete_name,
-                                po.location,
-                                po.hide,
-                                po.confirmed_by,
                                 po.delivery_term,
-                                po.days,
-                                po.comparison_id,
-                                po.po_no,
-                                po.request_id,
-                                po.type_location,
-                                po.confirmed_by_value,
-                                po.confirmed_by_person,
-                                po.validation_check_confirm_vendor,
-                                po.validation_check_backorder,
-                                pol.pol_name,
-                                pol.id,
-                                pol.create_date,
                                 pol.product_uom,
                                 pol.price_unit,
                                 pol.price_subtotal,
-                                pol.write_uid,
-                                pol.currency_id,
-                                pol.product_qty,
-                                pol.partner_id,
-                                pol.qty_received,
-                                pol.create_uid,
                                 pol.price_tax,
-                                pol.company_id,
-                                pol.account_analytic_id,
-                                pol.order_id,
-                                pol.qty_invoiced,
-                                pol.write_date,
-                                pol.name,
-                                pol.price_total,
                                 pol.product_id,
                                 pol.date_planned,
-                                pol.quantity_tendered,
-                                pol.trigger_state,
-                                pol.spesification,
-                                pol.term_of_goods,
-                                pol.qty_request,
-                                pol.days,
-                                pol.comparison_id,
-                                pol.validation_check_backorder,
-                                pol.trigger_draft
+                                pol.trigger_state
                                FROM (purchase_order po
-                                 JOIN ( SELECT purchase_order_line.name AS pol_name,
+                                 JOIN ( SELECT 
+                                         purchase_order_line.name AS pol_name,
                                         purchase_order_line.id,
-                                        purchase_order_line.create_date,
                                         purchase_order_line.product_uom,
                                         purchase_order_line.price_unit,
                                         purchase_order_line.price_subtotal,
-                                        purchase_order_line.write_uid,
-                                        purchase_order_line.currency_id,
-                                        purchase_order_line.product_qty,
                                         purchase_order_line.partner_id,
-                                        purchase_order_line.qty_received,
-                                        purchase_order_line.create_uid,
                                         purchase_order_line.price_tax,
                                         purchase_order_line.company_id,
-                                        purchase_order_line.account_analytic_id,
                                         purchase_order_line.order_id,
-                                        purchase_order_line.qty_invoiced,
-                                        purchase_order_line.write_date,
-                                        purchase_order_line.name,
-                                        purchase_order_line.price_total,
                                         purchase_order_line.product_id,
                                         purchase_order_line.date_planned,
-                                        purchase_order_line.quantity_tendered,
                                         purchase_order_line.trigger_state,
-                                        purchase_order_line.spesification,
-                                        purchase_order_line.term_of_goods,
-                                        purchase_order_line.qty_request,
-                                        purchase_order_line.days,
-                                        purchase_order_line.comparison_id,
-                                        purchase_order_line.validation_check_backorder,
-                                        purchase_order_line.trigger_draft
-                                       FROM purchase_order_line) pol ON (((po.id = pol.order_id) AND (po.requisition_id IS NOT NULL))))) qcf_po(pol_id, com_id, part_id, po_backorder, pol_des_name, id, origin, create_date, write_uid, currency_id, date_order, partner_id, dest_address_id, create_uid, amount_untaxed, picking_type_id, message_last_post, company_id, amount_tax, state, fiscal_position_id, incoterm_id, payment_term_id, write_date, partner_ref, date_approve, amount_total, invoice_status, name, notes, group_id, requisition_id, source_purchase_request, companys_id, complete_name, location, hide, confirmed_by, delivery_term, days, comparison_id, po_no, request_id, type_location, confirmed_by_value, confirmed_by_person, validation_check_confirm_vendor, validation_check_backorder, pol_name, id_1, create_date_1, product_uom, price_unit, price_subtotal, write_uid_1, currency_id_1, product_qty, partner_id_1, qty_received, create_uid_1, price_tax, company_id_1, account_analytic_id, order_id, qty_invoiced, write_date_1, name_1, price_total, product_id, date_planned, quantity_tendered, trigger_state, spesification, term_of_goods, qty_request, days_1, comparison_id_1, validation_check_backorder_1, trigger_draft) ON ((qcf.requisition_id = qcf_po.requisition_id)))) po_pol_all(po_des_all_name, qcf_id, req_id, pol_po_backorder, id, origin, create_date, write_uid, pic_id, create_uid, reject_reason, partner_id, message_last_post, company_id, state, complete_name, location, date_pp, requisition_id, write_date, remarks, assign_to, name, type_location, validation_missing_product, validation_check_backorder, pol_id, com_id, part_id, po_backorder, pol_des_name, id_1, origin_1, create_date_1, write_uid_1, currency_id, date_order, partner_id_1, dest_address_id, create_uid_1, amount_untaxed, picking_type_id, message_last_post_1, company_id_1, amount_tax, state_1, fiscal_position_id, incoterm_id, payment_term_id, write_date_1, partner_ref, date_approve, amount_total, invoice_status, name_1, notes, group_id, requisition_id_1, source_purchase_request, companys_id, complete_name_1, location_1, hide, confirmed_by, delivery_term, days, comparison_id, po_no, request_id, type_location_1, confirmed_by_value, confirmed_by_person, validation_check_confirm_vendor, validation_check_backorder_1, pol_name, id_2, create_date_2, product_uom, price_unit, price_subtotal, write_uid_2, currency_id_1, product_qty, partner_id_2, qty_received, create_uid_2, price_tax, company_id_2, account_analytic_id, order_id, qty_invoiced, write_date_2, name_2, price_total, product_id, date_planned, quantity_tendered, trigger_state, spesification, term_of_goods, qty_request, days_1, comparison_id_1, validation_check_backorder_2, trigger_draft)
-                 JOIN ( SELECT po_pol.requisition_id,
-                        po_pol.product_id,
-                        min(po_pol.price_subtotal) AS cheapest
-                       FROM ( SELECT po.id,
-                                po.origin,
-                                po.create_date,
-                                po.write_uid,
-                                po.currency_id,
-                                po.date_order,
-                                po.partner_id,
-                                po.dest_address_id,
-                                po.create_uid,
-                                po.amount_untaxed,
-                                po.picking_type_id,
-                                po.message_last_post,
-                                po.company_id,
-                                po.amount_tax,
-                                po.state,
-                                po.fiscal_position_id,
-                                po.incoterm_id,
-                                po.payment_term_id,
-                                po.write_date,
-                                po.partner_ref,
-                                po.date_approve,
-                                po.amount_total,
-                                po.invoice_status,
-                                po.name,
-                                po.notes,
-                                po.group_id,
+                                        purchase_order_line.validation_check_backorder
+                                       FROM purchase_order_line
+                                     ) pol 
+                                     ON (
+                                             (
+                                                 (po.id = pol.order_id) AND (po.requisition_id IS NOT NULL)
+                                             )
+                                         )
+                                 )
+                               ) qcf_po
+                           ON (
+                                   (qcf.requisition_id = qcf_po.requisition_id)
+                               )
+                           )
+                       ) po_pol_all
+                 JOIN ( 
+                         SELECT 
+                             po_pol.requisition_id,
+                            po_pol.product_id,
+                            min(po_pol.price_subtotal) AS cheapest
+                           FROM ( 
+                               SELECT 
                                 po.requisition_id,
-                                po.source_purchase_request,
-                                po.companys_id,
-                                po.complete_name,
-                                po.location,
-                                po.hide,
-                                po.confirmed_by,
-                                po.delivery_term,
-                                po.days,
-                                po.comparison_id,
-                                po.po_no,
-                                po.request_id,
-                                po.type_location,
-                                po.confirmed_by_value,
-                                po.confirmed_by_person,
-                                po.validation_check_confirm_vendor,
-                                po.validation_check_backorder,
-                                pol.id,
-                                pol.create_date,
-                                pol.product_uom,
-                                pol.price_unit,
                                 pol.price_subtotal,
-                                pol.write_uid,
-                                pol.currency_id,
-                                pol.product_qty,
-                                pol.partner_id,
-                                pol.qty_received,
-                                pol.create_uid,
-                                pol.price_tax,
-                                pol.company_id,
-                                pol.account_analytic_id,
-                                pol.order_id,
-                                pol.qty_invoiced,
-                                pol.write_date,
-                                pol.name,
-                                pol.price_total,
-                                pol.product_id,
-                                pol.date_planned,
-                                pol.quantity_tendered,
-                                pol.trigger_state,
-                                pol.spesification,
-                                pol.term_of_goods,
-                                pol.qty_request,
-                                pol.days,
-                                pol.comparison_id,
-                                pol.validation_check_backorder,
-                                pol.trigger_draft
+                                pol.product_id
                                FROM (purchase_order po
-                                 JOIN ( SELECT purchase_order_line.id,
-                                        purchase_order_line.create_date,
-                                        purchase_order_line.product_uom,
-                                        purchase_order_line.price_unit,
-                                        purchase_order_line.price_subtotal,
-                                        purchase_order_line.write_uid,
-                                        purchase_order_line.currency_id,
-                                        purchase_order_line.product_qty,
-                                        purchase_order_line.partner_id,
-                                        purchase_order_line.qty_received,
-                                        purchase_order_line.create_uid,
-                                        purchase_order_line.price_tax,
-                                        purchase_order_line.company_id,
-                                        purchase_order_line.account_analytic_id,
-                                        purchase_order_line.order_id,
-                                        purchase_order_line.qty_invoiced,
-                                        purchase_order_line.write_date,
-                                        purchase_order_line.name,
-                                        purchase_order_line.price_total,
-                                        purchase_order_line.product_id,
-                                        purchase_order_line.date_planned,
-                                        purchase_order_line.quantity_tendered,
-                                        purchase_order_line.trigger_state,
-                                        purchase_order_line.spesification,
-                                        purchase_order_line.term_of_goods,
-                                        purchase_order_line.qty_request,
-                                        purchase_order_line.days,
-                                        purchase_order_line.comparison_id,
-                                        purchase_order_line.validation_check_backorder,
-                                        purchase_order_line.trigger_draft
-                                       FROM purchase_order_line) pol ON (((po.id = pol.order_id) AND (po.requisition_id IS NOT NULL))))) po_pol(id, origin, create_date, write_uid, currency_id, date_order, partner_id, dest_address_id, create_uid, amount_untaxed, picking_type_id, message_last_post, company_id, amount_tax, state, fiscal_position_id, incoterm_id, payment_term_id, write_date, partner_ref, date_approve, amount_total, invoice_status, name, notes, group_id, requisition_id, source_purchase_request, companys_id, complete_name, location, hide, confirmed_by, delivery_term, days, comparison_id, po_no, request_id, type_location, confirmed_by_value, confirmed_by_person, validation_check_confirm_vendor, validation_check_backorder, id_1, create_date_1, product_uom, price_unit, price_subtotal, write_uid_1, currency_id_1, product_qty, partner_id_1, qty_received, create_uid_1, price_tax, company_id_1, account_analytic_id, order_id, qty_invoiced, write_date_1, name_1, price_total, product_id, date_planned, quantity_tendered, trigger_state, spesification, term_of_goods, qty_request, days_1, comparison_id_1, validation_check_backorder_1, trigger_draft)
-                      GROUP BY po_pol.requisition_id, po_pol.product_id) po_pol_min ON (((po_pol_all.req_id = po_pol_min.requisition_id) AND (po_pol_all.product_id = po_pol_min.product_id))));""")
+                                 JOIN ( 
+                                         SELECT 
+                                            purchase_order_line.price_subtotal,
+                                            purchase_order_line.order_id,
+                                            purchase_order_line.product_id
+                                           FROM 
+                                               purchase_order_line
+                                       ) pol 
+                                           ON (
+                                                   (
+                                                       (po.id = pol.order_id) AND (po.requisition_id IS NOT NULL)
+                                                   )
+                                               )
+                                       )
+                                )po_pol
+                      GROUP BY 
+                          po_pol.requisition_id, po_pol.product_id
+                    ) po_pol_min 
+                    ON 
+                    (
+                        (
+                            (po_pol_all.req_id = po_pol_min.requisition_id) 
+                            AND 
+                            (po_pol_all.product_id = po_pol_min.product_id)
+                        )
+                    )
+            );""")
 
 class QuotationComparisonFormLine(models.Model):
 

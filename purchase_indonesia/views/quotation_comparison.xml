@@ -1,6 +1,12 @@
 <openerp>
     <data>
-
+        <!-- adding custom css to allow tree on qcf horizontal scrolling -->
+		<template id="assets_backend" name="purchase_indonesia css assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/purchase_indonesia/static/src/css/quotation_comparison.css"/>
+            </xpath>
+        </template>
+        
         <record model="ir.ui.view" id="inherit_qcf_purchase_order_line">
              <field name="name">Inherit purchase order line</field>
              <field name="model">purchase.order.line</field>
@@ -167,19 +173,18 @@
                             </group>
                             <separator string="Quotation Comparison"/>
                             
-                            <field name="v_quotation_comparison_line_ids5" track_visibility="onchange"
+                            <field name="v_quotation_comparison_line_ids" track_visibility="onchange"
                                                        attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],
                                                        'invisible':[('line_remarks','&gt;',5)]}"
-                                                    context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line5',
+                                                    context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',
                                                            }"/>
-                            
-                            <field name="v_quotation_comparison_line_ids10" track_visibility="onchange"
+                            <!-- 
+                            <field name="v_quotation_comparison_line_ids" track_visibility="onchange"
                                                        attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],
                                                        'invisible':[('line_remarks','&lt;=',5)]}"
                                                     context="{'tree_view_ref' : 'purchase_indonesia.view_tree_quotation_comparison_line10',
                                                            }"/>
-                            
-                            <!--  
+                                                           
                             <field name="v_quotation_comparison_line_ids" track_visibility="onchange"
                                                    attrs="{'readonly' : ['|',('state', '=', 'done'),('state','=','reject')],
                                                    'invisible':[('line_remarks','!=',1)]}"
@@ -350,8 +355,10 @@
                     <!--<field name="origin"/>-->
                     <field name="state"/>
                     <button name="button_cancel" states="draft,sent,to approve,purchase" string="Cancel Purchase Order" type="object" icon="fa-times"/>
+                    <!-- 
                     <button name="button_confirm" states="draft" string="Confirm Purchase Order" type="object" icon="fa-check"/>
                     <button name="button_approve" states="to approve" string="Approved by Vendor" type="object" icon="fa-check-square-o"/>
+                     -->
                     <button name="action_rfq_send" states="draft" string="Send RFQ by Email" type="object" context="{'send_rfq':True}" icon="fa-envelope-o"/>
                 </tree>
             </field>
@@ -471,7 +478,7 @@
                 </tree>
             </field>
         </record>
- -->
+
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line5">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -496,7 +503,7 @@
                 </tree>
             </field>
         </record>
-<!-- 
+
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line6">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -522,7 +529,8 @@
                 </tree>
             </field>
         </record>
-
+-->
+<!-- 
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line7">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
@@ -606,12 +614,13 @@
                 </tree>
             </field>
         </record>
- -->
+-->
+
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line10">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
             <field name="arch" type="xml">
-                <tree string="Quotation Comparison Line Tree" decoration-bf="isheader==6" decoration-info="isheader in (7,8,9)" create="false" editable='bottom' delete="true">
+                <tree string="Quotation Comparison Line Tree" decoration-bf="isheader==6" decoration-info="isheader in (7,8,9)" create="false" editable='bottom' delete="true" class="qcf_tree_10">
                     <field name="id"  invisible="1" readonly="1"/>
                     <field name="req_id" invisible="1" string="Requisition_id" options="{'no_create_edit': True}"/>
                     <field name="isheader" invisible="1"/>
@@ -636,7 +645,7 @@
                 </tree>
             </field>
         </record>
-<!-- 
+<!--
         <record model="ir.ui.view" id="view_tree_quotation_comparison_line7">
             <field name="name">Quotation Comparison Line</field>
             <field name="model">v.quotation.comparison.form.line</field>
