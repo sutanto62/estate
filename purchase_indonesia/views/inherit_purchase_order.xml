@@ -234,6 +234,7 @@
 	                    <button name="button_cancel" states="draft,to approve,sent,purchase" string="Cancel" type="object" groups="purchase.group_purchase_manager" />
 	                    <button name="button_done" type="object" string="Set to Done" states="purchase"
 	                        help="If a purchase order is done, you cannot modify it manually anymore. You will not be able to receive invoices anymore for this purchase order." groups="purchase.group_purchase_manager"/>
+	                    <button name="print_purchase_order" string="Print PO" type="object" states="purchase" groups="base.group_user"/>
 	                    <field name="state" widget="statusbar" statusbar_visible="draft,sent,purchase,done" readonly="1" />
 	                </header>
               	</xpath>
