@@ -251,6 +251,7 @@
                     <!--  field name="name" string="Call for Tenders"/-->
                     <!--  field name="exclusive" /-->
                     <field name="request_id" string="No PP"/>
+                    <filter string="Active PP" domain="[('request_id.active','=',True)]" help="Active PP"/>
                     <filter string="New" domain="[('state','=','draft')]" help="New Call for Tenders"/>
                     <filter string="Confirmed" domain="[('state','=','in_progress')]" help="Call for Tenders in negotiation"/>
                     <filter string="Closed Tenders" domain="[('state','=','closed')]" help="Call for Tenders where tenders are closed"/>
