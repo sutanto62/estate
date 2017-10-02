@@ -441,7 +441,7 @@ class QuotationComparisonForm(models.Model):
     def _get_price_low(self):
         #get Minimal price from purchase params for Quotation comparison Form
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
-        price = min(price.value_params for price in price_standard)
+        price = min(float(price.value_params) for price in price_standard)
         return float(price)
 
     @api.multi
@@ -670,7 +670,6 @@ class QuotationComparisonForm(models.Model):
         elif self._get_purchase_request().code in ['KOKB','KPWK'] and (self._get_max_price() > self._get_price_low()):
             #action to send Procurement Finance
             self.write({'state' : 'approve','assign_to':self._get_procurement_finance()})
-            print self._get_procurement_finance()
             self.send_mail_template()
 
         # elif self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() >= self._get_price_mid() or self._get_purchase_request().code in ['KOKB','KPWK'] and self._get_max_price() > self._get_price_low() :
