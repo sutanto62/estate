@@ -70,10 +70,11 @@
                      <button name="print_purchase_order" string="Print PO" type="object" states="purchase" groups="base.group_user"/>
                  </xpath>
                  <xpath expr="//tree//field[@name='product_qty']" position="after">
-                        <field name="qty_request" string="Qty Actual"/>
+                        <field name="is_qcf_not_draft" string="QCF is not draft" invisible="1"/>
+                        <field name="qty_request" string="Qty Actual" attrs="{'readonly':[('is_qcf_not_draft','=',True)]}"/>
                  </xpath>
                  <xpath expr="//tree//field[@name='price_subtotal']" position="after">
-                        <field name="term_of_goods" class="oe_inline" string="Delivery Term"/>
+                        <field name="term_of_goods" class="oe_inline" string="Delivery Term" attrs="{'readonly':[('is_qcf_not_draft','=',True)]}"/>
                         <field name="validation_check_backorder" invisible="1"/>
                         <field name="days" string="Days Of Indent" class="oe_inline" attrs="{'readonly': [('term_of_goods','!=', 'indent')]}"/>
                         <field name="spesification" string="Spesification" invisible="1"/>
@@ -97,6 +98,14 @@
                  
 				 <xpath expr="//tree//field[@name='product_uom']" position="attributes">
                         <attribute name="attrs">{'readonly':True}</attribute>
+                 </xpath>
+                 
+				 <xpath expr="//tree//field[@name='taxes_id']" position="attributes">
+                        <attribute name="attrs">{'readonly':[('is_qcf_not_draft','=',True)]}</attribute>
+                 </xpath>
+				 
+				 <xpath expr="//tree//field[@name='price_unit']" position="attributes">
+                        <attribute name="attrs">{'readonly':[('is_qcf_not_draft','=',True)]}</attribute>
                  </xpath>
                  
 				 <xpath expr="//field[@name='order_line']//tree" position="attributes">

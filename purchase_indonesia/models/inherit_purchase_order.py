@@ -265,3 +265,8 @@ class InheritPurchaseOrderLine(models.Model):
     spesification = fields.Text('Spesification')
     term_of_goods = fields.Selection([('indent','Indent'),('ready','Ready Stock')],'Term Of Goods')
     days = fields.Float('Days Of Indent')
+    is_qcf_not_draft = fields.Boolean('QCF Is Not Draft',compute='_compute_is_qcf_not_draft')
+    
+    def _compute_is_qcf_not_draft(self):
+        for item in self:
+            item.is_qcf_not_draft = True if item.order_id.comparison_id.state != 'draft' else False
