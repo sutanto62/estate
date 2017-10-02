@@ -131,8 +131,9 @@
                             <button name="action_approve2" states="approve2" type="object" string="Approve" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>
                             <button name="action_approve3" states="approve3"  type="object" string="Approve" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_president_director"/>
                             <button name="action_approve4" states="approve4"  type="object" string="Approve" class="oe_highlight" groups="purchase_indonesia.group_purchase_request_head_of_ro"/>
-                            <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action" groups="purchase_request.group_purchase_request_manager"/>
-                            <button name="button_draft" states="draft" type="object" string="Cancel"/>
+                            <button name="%(action_quotation_comparison_reject)d" states="confirm" string="Reject QCF" type="action" groups="purchase_request.group_purchase_request_manager" invisible="1"/>
+                            <button name="button_draft" type="object" string="Set To Draft" class="oe_highlight" attrs="{'invisible': [('is_assign_to_user','=',False)]}"/>
+                            <button name="button_draft" states="draft" type="object" string="Cancel" invisible="1"/>
                             <button name="print_qcf" string="Print QCF" type="object" groups="base.group_user"/>
                             <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                      </header>
@@ -159,6 +160,7 @@
                                      <field name="requisition_id" />
                                 </group>
                                 <group>
+                                    <field name="is_assign_to_user" invisible="1"/>
                                     <field name="pic_id" string="Created By" readonly="1"/>
                                     <field name="assign_to" string="Approval By" readonly="1"/>
                                     <field name="company_id" string="Company" options="{'no_create_edit': True}"/>

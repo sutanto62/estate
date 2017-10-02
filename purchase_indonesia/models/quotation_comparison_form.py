@@ -348,6 +348,7 @@ class QuotationComparisonForm(models.Model):
     backorder_purchase_line_ids = fields.One2many('purchase.order.line','comparison_id','Order Line',domain=[('validation_check_backorder','=',True)])
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
+    is_assign_to_user = fields.Boolean('Is Assign to User', compute='_compute_is_assign_to_user')
 #     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
 #     v_quotation_comparison_line_ids3 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
 #     v_quotation_comparison_line_ids4 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -373,7 +374,12 @@ class QuotationComparisonForm(models.Model):
     _defaults = {
         'state' : 'draft'
     }
-
+    
+    @api.multi
+    def _compute_is_assign_to_user(self):
+        for item in self:
+            item.is_assign_to_user = True if item.assign_to.id == self._get_user().id and item.state in ('approve','approve1','approve2','approve3','approve4') else False
+    
     @api.multi
     def generated_po(self):
         for item in self:
@@ -606,6 +612,8 @@ class QuotationComparisonForm(models.Model):
     def button_draft(self):
         for rec in self:
             rec.state = 'draft'
+            rec.assign_to = None
+            rec.send_mail_template_redraft()
         return True
     
     @api.multi
@@ -803,6 +811,16 @@ class QuotationComparisonForm(models.Model):
 
             # Find the e-mail template
             template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
+            # You can also find the e-mail template like this:
+            # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
+            # Send out the e-mail template to the user
+            self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
+            
+    @api.one
+    def send_mail_template_redraft(self):
+
+            # Find the e-mail template
+            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison_draft')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
