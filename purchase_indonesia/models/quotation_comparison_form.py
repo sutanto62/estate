@@ -458,7 +458,7 @@ class QuotationComparisonForm(models.Model):
     def _get_price_high(self):
         #get Maximal price from purchase params for Quotation comparison Form
         price_standard = self.env['purchase.params.setting'].search([('name','=',self._name)])
-        price = max(price.value_params for price in price_standard)
+        price = max(float(price.value_params) for price in price_standard)
         return float(price)
 
     @api.one
