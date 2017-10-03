@@ -36,7 +36,7 @@ class WizardStockPickingSplit(models.TransientModel):
             for item in self:
                 picking = item.env['stock.picking']
                 list_picking=picking.search([('id','=',context['active_id'])])
-                domain = [('picking_id','=',list_picking.id),('qty_done','>',0)]
+                domain = [('picking_id','=',list_picking.id),('qty_done','>=',0)]
                 for item in list_picking.pack_operation_product_ids.search(domain):
                     item.split_quantities2()
         return {'type': 'ir.actions.act_window_close',}

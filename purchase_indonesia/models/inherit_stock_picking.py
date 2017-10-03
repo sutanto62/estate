@@ -344,32 +344,49 @@ class InheritStockPicking(models.Model):
 
             temp_qty_done= 0
 
-            for record in item.pack_operation_product_ids:
-                 if item._get_user().id not in list(item._get_user_procurement_staff()) and item._get_user().id not in item._get_user_purchase_tender() :
-                        error_msg = 'You cannot approve this \"%s\" , you are not PROCUREMENT STAFF '%(self.complete_name_picking)
+#             for record in item.pack_operation_product_ids:
+#                  if item._get_user().id not in list(item._get_user_procurement_staff()) and item._get_user().id not in item._get_user_purchase_tender() :
+#                         error_msg = 'You cannot approve this \"%s\" , you are not PROCUREMENT STAFF '%(self.complete_name_picking)
+# 
+#                         raise exceptions.ValidationError(error_msg)
+#                  else:
+#                      if record.qty_done > 0 or record.qty_done < 0 :
+#                          temp_qty_done = temp_qty_done + 1
+# 
+#                      if temp_qty_done == 0:
+#                         error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
+#                         raise exceptions.ValidationError(error_msg)
+# 
+#                      else:
+#                         pack_ids = pack_operation.search([('picking_id','=',item.id),('qty_done','>',0)])
+# 
+#                         for pack in pack_ids:
+#                             arrProduct.append(pack.product_id.id)
+# 
+#                         picking_pack_ids = pack_operation.search([('picking_id','=',item.id),('product_id','in',arrProduct)])
+# 
+#                         for product in picking_pack_ids:
+#                             data = {
+#                                 'procurment_qty' : product.qty_done,
+#                                 }
+#                             product.write(data)
+            
+            if item._get_user().id not in list(item._get_user_procurement_staff()) and item._get_user().id not in item._get_user_purchase_tender() :
+                error_msg = 'You cannot approve this \"%s\" , you are not PROCUREMENT STAFF '%(self.complete_name_picking)
+                raise exceptions.ValidationError(error_msg)
+            else:
+                pack_ids = pack_operation.search([('picking_id','=',item.id),('qty_done','>',0)])
 
-                        raise exceptions.ValidationError(error_msg)
-                 else:
-                     if record.qty_done > 0 or record.qty_done < 0 :
-                         temp_qty_done = temp_qty_done + 1
+                for pack in pack_ids:
+                    arrProduct.append(pack.product_id.id)
 
-                     if temp_qty_done == 0:
-                        error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
-                        raise exceptions.ValidationError(error_msg)
+                picking_pack_ids = pack_operation.search([('picking_id','=',item.id),('product_id','in',arrProduct)])
 
-                     else:
-                        pack_ids = pack_operation.search([('picking_id','=',item.id),('qty_done','>',0)])
-
-                        for pack in pack_ids:
-                            arrProduct.append(pack.product_id.id)
-
-                        picking_pack_ids = pack_operation.search([('picking_id','=',item.id),('product_id','in',arrProduct)])
-
-                        for product in picking_pack_ids:
-                            data = {
-                                'procurment_qty' : product.qty_done,
-                                }
-                            product.write(data)
+                for product in picking_pack_ids:
+                    data = {
+                        'procurment_qty' : product.qty_done,
+                        }
+                    product.write(data)
 
             item.set_qty_done_to_zero()
 
@@ -384,48 +401,88 @@ class InheritStockPicking(models.Model):
     def action_validate_user(self):
         for item in self:
 
-            temp_qty_done= 0
-
+#             temp_qty_done= 0
+#
+#             for record in item.pack_operation_product_ids:
+#                 if record.qty_done > 0 or record.qty_done < 0:
+#                          temp_qty_done = temp_qty_done + 1
+# 
+#                 if temp_qty_done == 0:
+#                     error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
+#                     raise exceptions.ValidationError(error_msg)
+#                 else:
+#                     if record.qty_done > 0 and record.qty_done < record.product_qty:
+#                         #show wizard Split quantity
+#                         wizard_form = item.env.ref('purchase_indonesia.view_stock_picking_split', False)
+#                         view_id = item.env['stock.picking.wizard.split']
+#                         vals = {
+#                                     'name'   : 'this is for set name',
+#                                 }
+#                         new = view_id.create(vals)
+#                         return {
+#                                     'name'      : _('Split Your Delivery Quantity List'),
+#                                     'type'      : 'ir.actions.act_window',
+#                                     'res_model' : 'stock.picking.wizard.split',
+#                                     'res_id'    : new.id,
+#                                     'view_id'   : wizard_form.id,
+#                                     'view_type' : 'form',
+#                                     'view_mode' : 'form',
+#                                     'target'    : 'new'
+#                                 }
+#                     elif record.qty_done == record.product_qty:
+#                         item._get_technical_user_id()
+#                         purchase_request = item.env['purchase.request'].search([('id','=',self._get_purchase_request_id())])
+#                         if purchase_request.code == 'KOKB' and purchase_request.type_product == 'product' and (purchase_request.type_functional == 'technic' or purchase_request.type_functional == 'agronomy'):
+#                             item.write({
+#                                 'validation_manager':True,
+#                                 'assigned_to':item._get_technical_user_id(),
+#                                 'validation_warehouse':True
+#                             })
+#                         else:
+#                             item.write({
+#                                 'validation_manager':True,
+#                                 'assigned_to':item._get_technical_user_id()
+#                             })
+            
+            all_qty_done = True
+            
+            #check if there is partial received on qty
             for record in item.pack_operation_product_ids:
-                if record.qty_done > 0 or record.qty_done < 0:
-                         temp_qty_done = temp_qty_done + 1
-
-                if temp_qty_done == 0:
-                    error_msg='You cannot Process this \"%s\" , Please Insert Qty Done '%(item.complete_name_picking)
-                    raise exceptions.ValidationError(error_msg)
+                if record.qty_done < record.product_qty:
+                    #show wizard Split quantity
+                    all_qty_done = False
+                    wizard_form = item.env.ref('purchase_indonesia.view_stock_picking_split', False)
+                    view_id = item.env['stock.picking.wizard.split']
+                    vals = {
+                                'name'   : 'this is for set name',
+                            }
+                    new = view_id.create(vals)
+                    return {
+                                'name'      : _('Split Your Delivery Quantity List'),
+                                'type'      : 'ir.actions.act_window',
+                                'res_model' : 'stock.picking.wizard.split',
+                                'res_id'    : new.id,
+                                'view_id'   : wizard_form.id,
+                                'view_type' : 'form',
+                                'view_mode' : 'form',
+                                'target'    : 'new'
+                            }
+            
+            #check all qty_done == product_qty
+            if all_qty_done :
+                item._get_technical_user_id()
+                purchase_request = item.env['purchase.request'].search([('id','=',self._get_purchase_request_id())])
+                if purchase_request.code == 'KOKB' and purchase_request.type_product == 'product' and (purchase_request.type_functional == 'technic' or purchase_request.type_functional == 'agronomy'):
+                    item.write({
+                        'validation_manager':True,
+                        'assigned_to':item._get_technical_user_id(),
+                        'validation_warehouse':True
+                    })
                 else:
-                    if record.qty_done > 0 and record.qty_done < record.product_qty:
-                        #show wizard Split quantity
-                        wizard_form = item.env.ref('purchase_indonesia.view_stock_picking_split', False)
-                        view_id = item.env['stock.picking.wizard.split']
-                        vals = {
-                                    'name'   : 'this is for set name',
-                                }
-                        new = view_id.create(vals)
-                        return {
-                                    'name'      : _('Split Your Delivery Quantity List'),
-                                    'type'      : 'ir.actions.act_window',
-                                    'res_model' : 'stock.picking.wizard.split',
-                                    'res_id'    : new.id,
-                                    'view_id'   : wizard_form.id,
-                                    'view_type' : 'form',
-                                    'view_mode' : 'form',
-                                    'target'    : 'new'
-                                }
-                    elif record.qty_done == record.product_qty:
-                        item._get_technical_user_id()
-                        purchase_request = item.env['purchase.request'].search([('id','=',self._get_purchase_request_id())])
-                        if purchase_request.code == 'KOKB' and purchase_request.type_product == 'product' and (purchase_request.type_functional == 'technic' or purchase_request.type_functional == 'agronomy'):
-                            item.write({
-                                'validation_manager':True,
-                                'assigned_to':item._get_technical_user_id(),
-                                'validation_warehouse':True
-                            })
-                        else:
-                            item.write({
-                                'validation_manager':True,
-                                'assigned_to':item._get_technical_user_id()
-                            })
+                    item.write({
+                        'validation_manager':True,
+                        'assigned_to':item._get_technical_user_id()
+                    })
 
             item.send_mail_template()
 
