@@ -270,110 +270,130 @@
 														
 														<t t-if="show_vendor1 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															   	<t t-if=" '*' in l.vendor1">
-															   	    <b><span t-field="l.vendor1"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor1">
-															   	    <span t-field="l.vendor1"/>
+															   	<t t-if="l.vendor1 is not False">
+																   	<t t-if=" '*' in l.vendor1">
+																   	    <b><span t-field="l.vendor1"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor1">
+																   	    <span t-field="l.vendor1"/>
+																  	</t>
 															  	</t> 
 															</td>
 														</t>
 														
 														<t t-if="show_vendor2 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor2">
-															   	    <b><span t-field="l.vendor2"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor2">
-															   	    <span t-field="l.vendor2"/>
+															    <t t-if="l.vendor2 is not False">
+																    <t t-if=" '*' in l.vendor2">
+																   	    <b><span t-field="l.vendor2"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor2">
+																   	    <span t-field="l.vendor2"/>
+																  	</t>
 															  	</t> 
 															</td>
 														</t>
 														
 														<t t-if="show_vendor3 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															   	<t t-if=" '*' in l.vendor3">
-															   	    <b><span t-field="l.vendor3"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor3">
-															   	    <span t-field="l.vendor3"/>
+															   	<t t-if="l.vendor3 is not False">
+																   	<t t-if=" '*' in l.vendor3">
+																   	    <b><span t-field="l.vendor3"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor3">
+																   	    <span t-field="l.vendor3"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor4 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor4">
-															   	    <b><span t-field="l.vendor4"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor4">
-															   	    <span t-field="l.vendor4"/>
+															    <t t-if="l.vendor4 is not False">
+																    <t t-if=" '*' in l.vendor4">
+																   	    <b><span t-field="l.vendor4"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor4">
+																   	    <span t-field="l.vendor4"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor5 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor5">
-															   	    <b><span t-field="l.vendor5"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor5">
-															   	    <span t-field="l.vendor5"/>
+															    <t t-if="l.vendor5 is not False">
+																    <t t-if=" '*' in l.vendor5">
+																   	    <b><span t-field="l.vendor5"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor5">
+																   	    <span t-field="l.vendor5"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor6 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor6">
-															   	    <b><span t-field="l.vendor6"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor6">
-															   	    <span t-field="l.vendor6"/>
+															    <t t-if="l.vendor6 is not False">
+																    <t t-if=" '*' in l.vendor6">
+																   	    <b><span t-field="l.vendor6"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor6">
+																   	    <span t-field="l.vendor6"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor7 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor7">
-															   	    <b><span t-field="l.vendor7"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor7">
-															   	    <span t-field="l.vendor7"/>
+															    <t t-if="l.vendor7 is not False">
+																    <t t-if=" '*' in l.vendor7">
+																   	    <b><span t-field="l.vendor7"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor7">
+																   	    <span t-field="l.vendor7"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor8 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor8">
-															   	    <b><span t-field="l.vendor8"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor8">
-															   	    <span t-field="l.vendor8"/>
+															    <t t-if="l.vendor8 is not False">
+																    <t t-if=" '*' in l.vendor8">
+																   	    <b><span t-field="l.vendor8"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor8">
+																   	    <span t-field="l.vendor8"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor9 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor9">
-															   	    <b><span t-field="l.vendor9"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor9">
-															   	    <span t-field="l.vendor9"/>
+															    <t t-if="l.vendor9 is not False">
+																    <t t-if=" '*' in l.vendor9">
+																   	    <b><span t-field="l.vendor9"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor9">
+																   	    <span t-field="l.vendor9"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
 														
 														<t t-if="show_vendor10 == 1">
 															<td style="border-right:1px solid;border-bottom:1px solid;height:20px;" align="right"  valign="center">
-															    <t t-if=" '*' in l.vendor10">
-															   	    <b><span t-field="l.vendor10"/></b>
-															  	</t> 	
-																<t t-if=" '*' not in l.vendor10">
-															   	    <span t-field="l.vendor10"/>
+															    <t t-if="l.vendor10 is not False">
+																    <t t-if=" '*' in l.vendor10">
+																   	    <b><span t-field="l.vendor10"/></b>
+																  	</t> 	
+																	<t t-if=" '*' not in l.vendor10">
+																   	    <span t-field="l.vendor10"/>
+																  	</t>
 															  	</t>
 															</td>
 														</t>
