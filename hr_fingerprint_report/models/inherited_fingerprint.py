@@ -368,11 +368,14 @@ class FingerAttendance(models.Model):
 
             res = 0
             if is_pkwt_daily and finger_day == 'Friday' and schedule == 'Opr Kebun SenSab':
+                # PKWT Daily at site
                 res = time_end['Friday'] - record.sign_out
             elif is_pkwt_daily and finger_day == 'Saturday' and schedule == 'RO SenJum':
+                # PKWT Daily at site office
                 res = time_end['Saturday'] - record.sign_out
             else:
-                res = record.time_end - record.sign_out
+                # Other did not required recalculation
+                res = record.p_early_leave
 
             return int(round(res, 2)*60) if res > 0 else 0
 
