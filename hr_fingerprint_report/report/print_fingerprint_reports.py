@@ -104,7 +104,9 @@ class FingerprintReport(models.AbstractModel):
         #     print '  Remark %s: %s, res %s' % (other, domain, res)
         #     list.append(res)
         # print '  Attendance Remark %s' % sorted(list, key=lambda res: res['reason'])
-        return sorted(list, key=lambda res: res['reason'])
+        res = sorted(list, key=lambda res: res['reason'])
+        print 'remark %s' % res
+        return res
 
     @api.multi
     def get_department(self, data=None):

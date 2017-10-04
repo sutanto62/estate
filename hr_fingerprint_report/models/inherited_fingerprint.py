@@ -26,7 +26,7 @@ class FingerAttendance(models.Model):
     # integrate odoo, filter
     employee_id = fields.Many2one('hr.employee', 'Employee', compute='_compute_employee', store=True)
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
-    office_level_id = fields.Many2one(related='employee_id.location_id', store=True)
+    office_level_id = fields.Many2one(related='employee_id.office_level_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
     contract_type = fields.Selection([('1', 'PKWTT'), ('2', 'PKWT')], related='employee_id.contract_type', store=True)
     contract_period = fields.Selection([('1', 'Monthly'), ('2', 'Daily')], related='employee_id.contract_period', store=True)
@@ -369,15 +369,16 @@ class FingerAttendance(models.Model):
             res = 0
             if is_pkwt_daily and finger_day == 'Friday' and schedule == 'Opr Kebun SenSab':
                 # PKWT Daily at site
-                res = time_end['Friday'] - record.sign_out
+                delta = time_end['Friday'] - record.sign_out
+                res = int(round(delta, 2) * 60)
             elif is_pkwt_daily and finger_day == 'Saturday' and schedule == 'RO SenJum':
                 # PKWT Daily at site office
-                res = time_end['Saturday'] - record.sign_out
+                delta = time_end['Saturday'] - record.sign_out
+                res = int(round(delta, 2) * 60)
             else:
                 # Other did not required recalculation
                 res = record.p_early_leave
-
-            return int(round(res, 2)*60) if res > 0 else 0
+            return res if res > 0 else 0
 
     def _search_hour_late(self, operator, value):
         if operator == 'like':
