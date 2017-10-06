@@ -679,7 +679,7 @@
             <field name="model">quotation.comparison.form</field>
             <field name="arch" type="xml">
                 <search string="Search Quotation Comparison Form">
-                    <field name="name" string="Purchase Request"/>
+                    <field name="origin" string="Purchase Request"/>
                     <separator/>
                     <field name="state"/>
                     <filter name="unassigned" string="Unassigned"

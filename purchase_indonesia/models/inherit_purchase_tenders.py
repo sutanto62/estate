@@ -1022,7 +1022,7 @@ class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'
 
-    qty_received = fields.Float('Quantity received',readonly=True)
+    qty_received = fields.Float('Quantity Received',readonly=True)
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
     check_missing_product = fields.Boolean('Checking Missing Product')
     est_price = fields.Float('Estimated Price',compute='_compute_est_price')

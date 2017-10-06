@@ -107,13 +107,22 @@
             <field name="model">stock.picking</field>
             <field name="arch" type="xml">
                 <search string="Picking Lists">
-                    <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]"/>
-                    <filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves"/>
+                    <field name="pr_source" string="Purchase Request"/>
+                    <field name="purchase_order_name" string="Purchase Order"/>
+                    <filter string="My Approval (All)" domain="['|',('purchase_id.request_id.requested_by.id','=', uid),('assigned_to.id','=', uid)]"/>
+                    <separator/>
+                    <filter name="validation_procurement" string="Procurement Staff Approved" domain="[('validation_procurement','=', True)]"/>
+                    <separator/>
+                    <filter name="validation_user" string="Requester PP Approved" domain="[('validation_user','=', True)]"/>
+                    <separator/>
+                    <filter name="validation_manager" string="Manager Unapproved" domain="[('validation_manager','!=', True)]"/>
+                    <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]" invisible="1"/>
+                    <filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves" invisible="1"/>
                     <filter icon="terp-check" name="available" string="Ready" domain="[('state','in',('assigned', 'partially_available'))]" help="Assigned Moves"/>
-                    <filter icon="terp-check" name="waiting" string="Waiting Availability" domain="[('state','=', 'confirmed')]" help="Waiting Moves"/>
-                    <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','in', ('confirmed', 'waiting', 'assigned'))]" help="Confirmed Moves"/>
+                    <filter icon="terp-check" name="waiting" string="Waiting Availability" domain="[('state','=', 'confirmed')]" help="Waiting Moves" invisible="1"/>
+                    <filter icon="terp-camera_test" name="confirmed" string="Confirmed" domain="[('state','in', ('confirmed', 'waiting', 'assigned'))]" help="Confirmed Moves" invisible="1"/>
                     <filter icon="terp-dialog-close" name="done" string="Done" domain="[('state','=','done')]" help="Pickings already processed"/>
-                    <filter icon="terp-dialog-close" name="purchase_order_name" string="Purchase Order No"/>
+                    <filter icon="terp-dialog-close" name="purchase_order_name" string="Purchase Order No"  invisible="1"/>
                     <filter name="group_pp_no" string="PP No" icon="terp-partner" context="{'group_by':'pr_source'}"/>
                     <separator/>
                     <filter name="late" string="Late" domain="[('min_date','&lt;', time.strftime('%%Y-%%m-%%d %%H:%%M:%%S'))]" help="Pickings that are late on scheduled time"/>
@@ -123,8 +132,6 @@
                     <field name="product_id"/>
                     <field name="picking_type_id"/>
                     <field name="group_id"/>
-                    <field name="pr_source" string="PP No"/>
-                    <field name="purchase_order_name" string="Purchase Order No"/>
                     <separator/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),

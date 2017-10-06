@@ -158,6 +158,7 @@
             <field name="model">purchase.order</field>
             <field name="arch" type="xml">
                 <search string="Search Purchase Order">
+                    <field name="source_purchase_request" string="Purchase Request"/>
                     <field name="name" string="Reference"/>
                     <field name="partner_id" operator="child_of"/>
                     <field name="product_id"/>

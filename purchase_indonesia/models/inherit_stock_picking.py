@@ -19,6 +19,14 @@ import time
 from operator import attrgetter
 import re
 
+class InheritPurchaseRequisitionPicking(models.Model):
+
+    _inherit = 'purchase.requisition'
+    
+    @api.multi
+    def is_all_product_received(self):
+        for item in self:
+            return True if sum(line.qty_outstanding for line in  item.line_ids)== 0 else False
 
 class InheritStockPicking(models.Model):
 
@@ -723,12 +731,19 @@ class InheritStockPicking(models.Model):
 
                 super(InheritStockPicking,self).do_new_transfer()
 
-                for outstanding in requisition_line.search(domain):
-                    arrOutstanding.append(outstanding.id)
-
-                search_tender.write({
-                                'state': 'open' if len(arrOutstanding) > 0 else 'done'
-                            })
+#                 for outstanding in requisition_line.search(domain):
+#                     arrOutstanding.append(outstanding.id)
+# 
+#                 search_tender.write({
+#                                 'state': 'open' if len(arrOutstanding) > 0 else 'done'
+#                             })
+                
+                #update state if all product have been received
+                if search_tender.is_all_product_received():
+                    search_tender.write({
+                        'state': 'done'
+                    })
+                    
 
 
     @api.multi
