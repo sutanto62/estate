@@ -679,6 +679,7 @@
             <field name="model">quotation.comparison.form</field>
             <field name="arch" type="xml">
                 <search string="Search Quotation Comparison Form">
+                    <field name="complete_name" string="Quotation Comparison Form"/>
                     <field name="origin" string="Purchase Request"/>
                     <separator/>
                     <field name="state"/>
