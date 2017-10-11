@@ -17,7 +17,7 @@ class UpkeepLabor(models.Model):
 
     def get_quantity(self, vals):
         """
-        Quantity defined in upkeep labour.
+        It help account move to get quantity and uom of journal item.
         :param start: start date of payslip batch
         :param end: end date of payslip batch
         :param analytic: analytic account ID
@@ -29,15 +29,24 @@ class UpkeepLabor(models.Model):
         """
 
         labour_obj = self.env['estate.upkeep.labour']
-        activity_obj = self.env['estate.activity']
-        labour_ids = labour_obj.search([('upkeep_date', '>=', vals['start']),
-                                        ('upkeep_date', '<=', vals['end']),
-                                        ('planted_year_id.analytic_account_id', "=", vals['analytic']),
-                                        ('general_account_id', '=', vals['account']),
-                                        ('company_id', '=', vals['company']),
-                                        ('employee_id', 'in', vals['employee_ids']),
-                                        ('state', 'in', ('approved', 'correction', 'payslip')),
-                                        ('activity_id.is_productivity', '=', 'True')])
+        domain = [('upkeep_date', '>=', vals['start']),
+                ('upkeep_date', '<=', vals['end']),
+                ('planted_year_id.analytic_account_id', "=", vals['analytic']),
+                ('general_account_id', '=', vals['account']),
+                ('company_id', '=', vals['company']),
+                ('state', 'in', ('approved', 'correction', 'payslip'))]
+
+        # TODO how to get activity when update from account move?
+        if vals.has_key('activity_id'):
+            domain.append(('activity_id', '=', vals['activity_id']))
+            domain.append(('activity_id.is_productivity', '=', 'True'))
+
+        # TODO how to get employees when update from account move?
+        if vals.has_key('employee_ids'):
+            domain.append(('employee_id', 'in', vals['employee_ids']))
+
+        labour_ids = labour_obj.search(domain)
+
         quantity = 0.0
         uom_ids = []
         for labour in labour_ids:
@@ -52,10 +61,9 @@ class UpkeepLabor(models.Model):
         uom = set(uom_ids).pop().id if set(uom_ids) else ''
 
         res = {
-            'quantity': quantity,
-            'productivity_uom_id': uom
+            'quantity': quantity or 0.0,
+            'productivity_uom_id': uom or ''
         }
-
         return res
 
 

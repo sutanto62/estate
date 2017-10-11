@@ -218,7 +218,12 @@ class PayslipRun(models.Model):
 
     @api.multi
     def create_bank(self, batch, credit):
-        """ Create payroll bank account from accrued."""
+        """
+        Create journal entries for payroll bank account from accrued.
+        :param batch: payslip run record
+        :param credit: amount
+        :return: True
+        """
 
         move_obj = self.env['account.move']
         move_line_ids = []
@@ -292,7 +297,12 @@ class PayslipRun(models.Model):
 
     @api.multi
     def create_allocation(self, batch):
-        """ Cost of activity's labor and material. Employee's company = block company."""
+        """
+        Create journal entries for company's estate activity. Amount labor (daily wage, overtime, piece rate) and
+        material cost.
+        :param batch: payslip run record
+        :return: True
+        """
         self.ensure_one()
 
         # upkeep_labor_obj = self.env['estate.upkeep.labor']
@@ -319,10 +329,11 @@ class PayslipRun(models.Model):
             'ref': batch.name,
         }
 
-        # get approved upkeep labour
+        # get approved upkeep labour - journal item created per activity
         query = """
                 select
                     a.company_id "company",
+                    a.activity_id "activity_id",
                     e.name "activity",
                     a.general_account_id "general_account",
                     b.name "general_account_name",
@@ -339,7 +350,7 @@ class PayslipRun(models.Model):
                     and a.company_id = %d
                     and a.state in ('approved', 'correction', 'payslip')
                     and a.employee_id in (%s)
-                group by a.company_id, e.name, a.general_account_id, b.name, d.analytic_account_id
+                group by a.company_id, a.activity_id, e.name, a.general_account_id, b.name, d.analytic_account_id
                 order by a.company_id, e.name, a.general_account_id, b.name, d.analytic_account_id
                 """ % (batch.date_start,
                        batch.date_end,
@@ -352,6 +363,8 @@ class PayslipRun(models.Model):
         if not res:
             err_msg = _('No accrued allocation will be created.')
             raise exceptions.ValidationError(err_msg)
+
+        employee_ids = tuple([slip.employee_id.id for slip in batch.slip_ids])
 
         # check debit account move line
         for line in res:
@@ -370,8 +383,9 @@ class PayslipRun(models.Model):
                 'end': batch.date_end,
                 'analytic': analytic_account_id,
                 'account': line['general_account'],
+                'activity_id': line['activity_id'],
                 'company': batch.company_id.id,
-                'employee_ids': tuple([slip.employee_id.id for slip in batch.slip_ids])
+                'employee_ids': employee_ids
             }
 
             account_productivity = move_obj.account_productivity(quantity_vals)
@@ -389,7 +403,8 @@ class PayslipRun(models.Model):
                 'debit': line['amount'],
                 'credit': 0,
                 'quantity': account_productivity['quantity'],
-                'product_uom_id': account_productivity['product_uom_id']
+                'product_uom_id': account_productivity['product_uom_id'],
+                'activity_id': line['activity_id']
             })
 
             # avoid posting activity without general account
@@ -422,13 +437,15 @@ class PayslipRun(models.Model):
         vals['line_ids'] = move_line_ids
         move_id = move_obj.create(vals)
         move_id.post()
-
         return True
 
     @api.multi
     def create_payable_allocation(self, batch):
-        """ Payable allocation recorded at location company account which was not belong to batch company."""
-
+        """
+        Create payable journal entries that used company's employee to work at other company location.
+        :param batch: payslip run record
+        :return: True
+        """
         self.ensure_one()
 
         move_obj = self.env['account.move']
@@ -482,6 +499,7 @@ class PayslipRun(models.Model):
                     select
                         a.company_id "company",
                         a.general_account_id "general_account",
+                        a.activity_id "activity_id",
                         b.name "general_account_name",
                         d.analytic_account_id "analytic_account",
                         sum(a.number_of_day) "number_of_day",
@@ -495,7 +513,7 @@ class PayslipRun(models.Model):
                         and a.company_id = %d
                         and a.state in ('approved', 'correction', 'payslip')
                         and a.employee_id in (%s)
-                    group by a.company_id,  a.general_account_id, b.name, d.analytic_account_id
+                    group by a.company_id,  a.general_account_id, a.activity_id, b.name, d.analytic_account_id
                     order by a.company_id,  a.general_account_id, b.name, d.analytic_account_id
                     """ % (batch.date_start,
                            batch.date_end,
@@ -504,6 +522,8 @@ class PayslipRun(models.Model):
 
             self.env.cr.execute(query)
             res = self.env.cr.dictfetchall()
+
+            employee_ids = tuple([slip.employee_id.id for slip in batch.slip_ids])
 
             for line in res:
                 debit_account_id = self.env['account.account'].browse([line['general_account']])
@@ -516,10 +536,10 @@ class PayslipRun(models.Model):
                     'end': batch.date_end,
                     'analytic': analytic_account_id,
                     'account': line['general_account'],
-                    'company': batch.company_id.id,
-                    'employee_ids': tuple([slip.employee_id.id for slip in batch.slip_ids])
+                    'activity_id': line['activity_id'],
+                    'company': company_id.id,
+                    'employee_ids': employee_ids
                 }
-
                 account_productivity = move_obj.account_productivity(quantity_vals)
 
                 # create move line for different company
@@ -535,7 +555,8 @@ class PayslipRun(models.Model):
                     'debit': line['amount'],
                     'credit': 0,
                     'quantity': account_productivity['quantity'],
-                    'product_uom_id': account_productivity['product_uom_id']
+                    'product_uom_id': account_productivity['product_uom_id'],
+                    'activity_id': line['activity_id']
                 })
 
                 move_line_ids.append(debit_line)
@@ -571,8 +592,13 @@ class PayslipRun(models.Model):
 
     @api.multi
     def create_receivable(self, batch):
-        """ Cost of activity's labor and material which conducted by other company's employee != block company.
-        Receivable should be included in allocation move line."""
+        """
+        Create journal entries of receivable. Amount of labour (daily wage, overtime, piece rate) and material cost
+        used for other company.
+        :param batch: payslip run record
+        :return: True
+        """
+
 
         self.ensure_one()
 
