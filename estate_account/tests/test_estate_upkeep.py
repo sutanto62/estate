@@ -21,13 +21,14 @@ class TestEstateUpkeep(TransactionCase):
 
         self.assistant_id = self.env.ref('hr.employee_al')
         self.team_id = self.env.ref('estate.team_syukur')
-        self.estate_id = self.env.ref('stock.stock_main_estate')
+        self.estate_id = self.env.ref('.estate_lyd')
         self.division_id = self.env.ref('stock.stock_division_1')
         self.att_code_k = self.env.ref('estate.hr_attendance_k')
         self.att_code_l = self.env.ref('estate.hr_attendance_k2')
         self.product_sp = self.env.ref('estate.product_product_sp')
 
         User = self.env['res.users'].with_context({'no_reset_password': True})
+        group_employee = self.ref('base.group_user')
         group_user = self.ref('estate.group_user')
         group_assistant = self.ref('estate.group_assistant')
         group_manager = self.ref('estate.group_manager')
@@ -35,7 +36,7 @@ class TestEstateUpkeep(TransactionCase):
 
         self.estate_user = User.create({
             'name': 'Irma', 'login': 'irma', 'alias_name': 'irma', 'email': 'irma@irma.com',
-            'groups_id': [(6, 0, [group_user])]})
+            'groups_id': [(6, 0, [group_employee, group_user])]})
 
         # assign planted year
         self.tt_2018 = self.env.ref('.estate_planted_year_2018')

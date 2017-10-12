@@ -14,18 +14,18 @@ class TestActivity(TransactionCase):
 
         # Setup user
         User = self.env['res.users'].with_context({'no_reset_password': True})
-        (group_admin, group_estate, group_agronomy) = (self.ref('base.group_no_one'),
+        (group_user, group_admin, group_estate, group_agronomy) = (self.ref('base.group_user'), self.ref('base.group_no_one'),
                                                        self.ref('estate.group_user'),
                                                        self.ref('estate.group_agronomi'))
         self.user_admin = User.create({
             'name': 'Lukas Peeters', 'login': 'Lukas', 'alias_name': 'lukas', 'email': 'lukas.petters@example.com',
-            'groups_id': [(6, 0, [group_admin, group_estate])]})
+            'groups_id': [(6, 0, [group_user, group_admin, group_estate])]})
         self.user_estate = User.create({
             'name': 'Wout Janssens', 'login': 'Wout', 'alias_name': 'wout', 'email': 'wout.janssens@example.com',
-            'groups_id': [(6, 0, [group_estate])]})
+            'groups_id': [(6, 0, [group_user, group_estate])]})
         self.user_agronomy = User.create({
             'name': 'Broot Janssens', 'login': 'Broot', 'alias_name': 'broott', 'email': 'broot.janssens@example.com',
-            'groups_id': [(6, 0, [group_agronomy])]})
+            'groups_id': [(6, 0, [group_user, group_agronomy])]})
 
         self.vals = {
             'name': 'Activity',
