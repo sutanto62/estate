@@ -105,7 +105,6 @@ class FingerprintReport(models.AbstractModel):
         #     list.append(res)
         # print '  Attendance Remark %s' % sorted(list, key=lambda res: res['reason'])
         res = sorted(list, key=lambda res: res['reason'])
-        print 'remark %s' % res
         return res
 
     @api.multi
