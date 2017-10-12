@@ -65,6 +65,7 @@
                  </xpath>
                  <xpath expr="//button[@name='show_details']" position="before">
                      <field name="checking_split" invisible="1"/>
+                     <field name="assigned_to" invisible="1"/>
                      <button name="split_quantities2" attrs="{'invisible': ['|',('qty_done', '=', 0),('qty_done', '&lt;', 0)]}" class="oe_link"  icon="fa-list" string="Split ha" type="object" invisible="1"/>
                      <button name="do_force_donce"
                       class="oe_link"  attrs="{'invisible': ['|',('qty_done', '&gt;', 0),('qty_done', '&lt;', 0)]}" icon="fa-scissors" string="Force Done" type="object" invisible="1"/>
@@ -72,6 +73,19 @@
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
                      <button name="print_grn" string="Print GRN/SRN" type="object" states="assigned" groups="base.group_user"/>
                  </xpath>
+                 <xpath expr="//field/tree" position="attributes">
+                     <attribute name="delete">false</attribute>
+                     <attribute name="create">false</attribute>
+                 </xpath>
+                 <xpath expr="//field/tree/field[@name='qty_done']" position="attributes">
+                     <attribute name="attrs">{'readonly':[('assigned_to', '!=', False)]}</attribute>
+                 </xpath>
+                 <xpath expr="//field/tree/button[@name='show_details']" position="attributes">
+                     <attribute name="invisible">1</attribute>
+                 </xpath>
+                 <xpath expr="//button[@states='done']" position="attributes">
+                 	 <attribute name="invisible">1</attribute>
+                 </xpath>     
 
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
                         <button name="action_validate_user"

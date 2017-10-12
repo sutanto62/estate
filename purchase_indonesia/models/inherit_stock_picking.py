@@ -828,7 +828,13 @@ class InheritStockPackOperation(models.Model):
     checking_split = fields.Boolean('Checking Split',default=False)
     initial_qty = fields.Float('Initial Qty',readonly=1)
     procurment_qty = fields.Float('Procurement Qty',readonly=1,help="Procurement Received QTY From Vendor")
-
+    assigned_to = fields.Many2one('res.users', 'Approver', compute='_compute_assigned_to')
+    
+    @api.multi
+    def _compute_assigned_to(self):
+        for item in self:
+            item.assigned_to = item.picking_id.assigned_to
+    
     @api.multi
     def do_force_donce(self):
         # do force down line stock picking
