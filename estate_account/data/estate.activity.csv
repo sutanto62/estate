@@ -1,0 +1,8 @@
+id,code,name,parent_id/id,uom_id/id,standard_price,piece_rate_price,type,wage_method,qty_base,qty_base_max,qty_base_min,activity_type,is_productivity,productivity,productivity_uom_id/id,rounding,factor
+estate.activity_54100,54100,Pembibitan,,,,,view,,,,,estate,,,,,
+estate.activity_54110,54110,PN Persiapan Media Tanam,estate.activity_54100,,,,view,,,,,estate,,,,,
+estate.activity_54110_1,54110,PN Kumpul Topsoil,estate.activity_54110,,,,normal,standard,1,1,0.666667,estate,,,,,
+estate.activity_54110_2,54110,PN Pembuatan Bedengan,estate.activity_54110,product.product_uom_unit,75000,,normal,standard,1,1,0.666667,estate,,,,,
+estate.activity_54110_3,54110,PN Pembuatan Papan Nama,estate.activity_54110,product.product_uom_unit,1125000,,normal,standard,0.066667,0.066667,0.058824,estate,,,,,
+estate.activity_54110_4,54110,PN Mengatur Baby Bag,estate.activity_54110,estate.product_uom_bag,75000,,normal,standard,1,1,1,estate,,,,,
+estate.activity_54110_5,54110,PN Mengisi Tanah,estate.activity_54110,estate.product_uom_bag,535714.285714,,normal,standard,0.14,0.14,0.116667,estate,TRUE,reference,estate.product_uom_bag,0.01,1.0

@@ -51,10 +51,12 @@
                 <xpath expr="//button[@name='close_payslip_run']" position="attributes">
                     <attribute name="confirm">Are you sure to close this payslip run?</attribute>
                     <attribute name="groups">base.group_hr_manager</attribute>
+                    <attribute name="states">draft</attribute>
                 </xpath>
                 <xpath expr="//button[@name='draft_payslip_run']" position="attributes">
                     <attribute name="confirm">Are you sure to reopen this payslip run?</attribute>
                     <attribute name="groups">base.group_hr_manager</attribute>
+                    <attribute name="states">close</attribute>
                 </xpath>
                 <xpath expr="//label[@for='name']" position="before">
                     <div class="oe_button_box" name="button_box" groups="base.group_hr_user">

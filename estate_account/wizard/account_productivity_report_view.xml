@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="account_productivity_report_form" model="ir.ui.view">
+            <field name="name">Account Productivity Report View Form</field>
+            <field name="model">estate_account.productivity.report</field>
+            <field name="arch" type="xml">
+                <form string="Account Productivity Report">
+                    <group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="company_id"/>
+                            <field name="analytic_account_id"/>
+                        </group>
+                        <!--<field name="type"/>-->
+                        <group>
+                            <field name="date_end"/>
+                            <field name="upkeep" widget="radio"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="check_report" string="Print Report" type="object" default_focus="1" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</openerp>

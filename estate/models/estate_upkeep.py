@@ -1234,9 +1234,8 @@ class UpkeepLabour(models.Model):
     def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
         """
-
-        # No need to sum quantity and piece rate from different activities.
-        if 'quantity' in fields:
+        # No need to sum quantity and piece rate from different activities, unless group by activity_id
+        if 'quantity' in fields and 'activity_id' not in groupby:
             fields.remove('quantity')
 
         if 'quantity_piece_rate' in fields:

@@ -3,7 +3,7 @@
     'name': "Estate Account",
 
     'summary': """
-        Payroll, Estate, Account Move""",
+        Payroll, Estate, Account Move, Productivity""",
 
     'description': """
         Create Account Move based on Payroll and Estate Upkeep
@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'estate', 'estate_payroll', 'account'],
+    'depends': ['base', 'estate_payroll', 'account'],
 
     # always loaded
     'data': [
@@ -31,11 +31,18 @@
         'views/inherited_estate_upkeep.xml',
         'views/inherited_hr_payroll_view.xml',
         'views/inherited_account_view.xml',
-        'views/estate_account_view.xml' # error menu and action did not appear,
+        # 'wizard/account_productivity_report_view.xml',
+        # 'views/estate_account_view.xml', # error menu and action did not appear,
     ],
     # only loaded in demonstration mode
     'demo': [
         # 'demo.xml',
+        'data/account.analytic.account.csv',
+        'data/estate.planted.year.csv',
         'data/account_demo.xml',
+        'data/account.account.type.csv',
+        # 'data/account.account.csv',
+        'data/estate.activity.csv',
+
     ],
 }

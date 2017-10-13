@@ -158,36 +158,239 @@
             </field>
         </record>
 
-        <record id="hr_indonesia_location_view_tree" model="ir.ui.view">
-            <field name="name">hr_indonesia.location.tree</field>
-            <field name="model">hr_indonesia.location</field>
+        <!--<record id="hr_indonesia_location_view_tree" model="ir.ui.view">-->
+            <!--<field name="name">hr_indonesia.location.tree</field>-->
+            <!--<field name="model">hr_indonesia.location</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<tree>-->
+                    <!--<field name="complete_name"/>-->
+                    <!--<field name="code"/>-->
+                    <!--<field name="type"/>-->
+                <!--</tree>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <!--<record id="hr_indonesia_location_view_form" model="ir.ui.view">-->
+            <!--<field name="name">hr_indonesia.location.form</field>-->
+            <!--<field name="model">hr_indonesia.location</field>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<form>-->
+                    <!--<div class="oe_button_box" name="button_box">-->
+                        <!--<button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive"-->
+                                <!--attrs="{'invisible': [('active', '=', True)]}">-->
+                            <!--<field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                    <!--<group>-->
+                        <!--<field name="name"/>-->
+                        <!--<field name="code"/>-->
+                        <!--<field name="type"/>-->
+                        <!--<field name="comment"/>-->
+                        <!--<field name="parent_id"/>-->
+                    <!--</group>-->
+                <!--</form>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <!--<record id="office_view_tree" model="ir.ui.view">-->
+            <!--<field name="name">Office Level Tree</field>-->
+            <!--<field name="model">hr_indonesia.office</field>-->
+            <!--<field name="priority" eval="1"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<tree>-->
+                    <!--<field name="name"/>-->
+                    <!--<field name="code"/>-->
+                <!--</tree>-->
+            <!--</field>-->
+        <!--</record>-->
+
+        <!--<record id="office_view_form" model="ir.ui.view">-->
+            <!--<field name="name">Office Level Form</field>-->
+            <!--<field name="model">hr_indonesia.office</field>-->
+            <!--<field name="priority" eval="1"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<form>-->
+                    <!--<div class="oe_button_box" name="button_box">-->
+                        <!--<button name="toggle_active" type="object" groups="base.group_user"-->
+                                <!--class="oe_stat_button" icon="fa-archive">-->
+                            <!--<field name="active" widget="boolean_button"-->
+                                <!--options='{"terminology": "archive"}'/>-->
+                        <!--</button>-->
+                    <!--</div>-->
+                    <!--<group name="top" string="Office Level">-->
+                        <!--<group name="left">-->
+                            <!--<field name="name"/>-->
+                            <!--<field name="code"/>-->
+                        <!--</group>-->
+                        <!--<group name="right">-->
+                            <!--<field name="sequence"/>-->
+                            <!--<field name="comment"/>-->
+                        <!--</group>-->
+                    <!--</group>-->
+                <!--</form>-->
+            <!--</field>-->
+        <!--</record>-->
+        
+        <record id="religion_view_tree" model="ir.ui.view">
+            <field name="name">Religion View Tree</field>
+            <field name="model">hr_indonesia.religion</field>
+            <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="complete_name"/>
-                    <field name="code"/>
-                    <field name="type"/>
+                    <field name="name"/>
                 </tree>
             </field>
         </record>
-
-        <record id="hr_indonesia_location_view_form" model="ir.ui.view">
-            <field name="name">hr_indonesia.location.form</field>
-            <field name="model">hr_indonesia.location</field>
+        <record id="religion_view_form" model="ir.ui.view">
+            <field name="name">Religion View Form</field>
+            <field name="model">hr_indonesia.religion</field>
+            <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <form>
                     <group>
-                        <field name="name"/>
-                        <field name="code"/>
-                        <field name="type"/>
-                        <field name="comment"/>
-                        <field name="parent_id"/>
+                        <group string="Religion">
+                            <field name="name"/>
+                        </group>
+                        <group string="Information">
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
                     </group>
                 </form>
             </field>
         </record>
+        <record id="religion_view_search" model="ir.ui.view">
+            <field name="name">Religion View Search</field>
+            <field name="model">hr_indonesia.religion</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
 
-        <record id="office_view_tree" model="ir.ui.view">
-            <field name="name">Office Level Tree</field>
+        <record id="ethnic_view_tree" model="ir.ui.view">
+            <field name="name">Ethnic View Tree</field>
+            <field name="model">hr_indonesia.ethnic</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="ethnic_view_form" model="ir.ui.view">
+            <field name="name">Ethnic View Form</field>
+            <field name="model">hr_indonesia.ethnic</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group string="Ethnic">
+                            <field name="name"/>
+                        </group>
+                        <group string="Information">
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="ethnic_view_search" model="ir.ui.view">
+            <field name="name">Ethnic View Search</field>
+            <field name="model">hr_indonesia.ethnic</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="tax_marital_view_tree" model="ir.ui.view">
+            <field name="name">Tax Marital View Tree</field>
+            <field name="model">hr_indonesia.tax_marital</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="tax_marital_view_form" model="ir.ui.view">
+            <field name="name">Tax Marital View Form</field>
+            <field name="model">hr_indonesia.tax_marital</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group string="Tax Marital">
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group string="Information">
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <record id="tax_marital_view_search" model="ir.ui.view">
+            <field name="name">Tax Marital View Search</field>
+            <field name="model">hr_indonesia.tax_marital</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+        
+        <record id="placement_location_view_tree" model="ir.ui.view">
+            <field name="name">Placement Location View Tree</field>
+            <field name="model">hr_indonesia.location</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+        <record id="placement_location_view_form" model="ir.ui.view">
+            <field name="name">Placement Location View Form</field>
+            <field name="model">hr_indonesia.location</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group string="Placement Location">
+                            <field name="name"/>
+                            <field name="parent_id"/>
+                            <field name="code"/>
+                        </group>
+                        <group string="Information">
+                            <field name="type"/>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <field name="comment"/>
+                </form>
+            </field>
+        </record>
+        <record id="placement_location_view_search" model="ir.ui.view">
+            <field name="name">Placement Location View Search</field>
+            <field name="model">hr_indonesia.location</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+        
+        <record id="office_level_view_tree" model="ir.ui.view">
+            <field name="name">Office Level View Tree</field>
             <field name="model">hr_indonesia.office</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
@@ -197,27 +400,85 @@
                 </tree>
             </field>
         </record>
-
-        <record id="office_view_form" model="ir.ui.view">
-            <field name="name">Office Level Form</field>
+        <record id="office_level_view_form" model="ir.ui.view">
+            <field name="name">Office Level View Form</field>
             <field name="model">hr_indonesia.office</field>
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <form>
-                    <group name="top">
-                        <group name="left">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive"
+                                attrs="{'invisible': [('active', '=', True)]}">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="Office Level">
                             <field name="name"/>
                             <field name="code"/>
                         </group>
-                        <group name="right">
+                        <group string="Information">
+                            <field name="active"/>
                             <field name="sequence"/>
-                            <field name="comment"/>
                         </group>
                     </group>
+                    <field name="comment"/>
                 </form>
             </field>
         </record>
+        <record id="offic_level_view_search" model="ir.ui.view">
+            <field name="name">Office Level View Search</field>
+            <field name="model">hr_indonesia.office</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
 
+        <record id="supervisor_view_tree" model="ir.ui.view">
+            <field name="name">Supervisor Level View Tree</field>
+            <field name="model">hr_indonesia.supervisor</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="sequence"/>
+                    <field name="name"/>
+                    <field name="code"/>
+                </tree>
+            </field>
+        </record>
+        <record id="supervisor_view_form" model="ir.ui.view">
+            <field name="name">Supervisor Level View Form</field>
+            <field name="model">hr_indonesia.supervisor</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group name="left" string="Supervisor Level">
+                            <field name="name"/>
+                            <field name="parent_id"/>
+                            <field name="sequence" string="Supervisor Level"/>
+                            <field name="code"/>
+                        </group>
+                        <group name="right" string="Information">
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="comment"/>
+                </form>
+            </field>
+        </record>
+        <record id="supervisor_view_search" model="ir.ui.view">
+            <field name="name">Supervisor Level View Search</field>
+            <field name="model">hr_indonesia.supervisor</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+        
         <!-- todo error while installed -->
         <!--
         <record id="action_work_schedule" model="ir.actions.act_window" >
@@ -258,6 +519,12 @@
             <field name="view_mode">tree,form</field>
         </record>
 
+        <record id="action_list_hr_supervisor" model="ir.actions.act_window" >
+            <field name="name">Supervisor Levels</field>
+            <field name="res_model">hr_indonesia.supervisor</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
         <menuitem id="menu_hr_indonesia_configuration_indonesia" name="Configuration ID" parent="hr.menu_hr_root"
                   sequence="110" groups="base.group_configuration,base.group_hr_manager"/>
         <menuitem id="menu_hr_indonesia_configuration_religion" name="Religion" parent="menu_hr_indonesia_configuration_indonesia"
@@ -278,5 +545,10 @@
                   action="action_list_hr_office"
                   sequence="40"
                   groups="base.group_configuration,base.group_hr_manager"/>
+        <menuitem id="menu_hr_indonesia_configuration_supervisor"
+                  name="Supervisor Level"
+                  parent="menu_hr_indonesia_configuration_indonesia"
+                  action="action_list_hr_supervisor"
+                  sequence="40" groups="base.group_configuration,base.group_hr_manager"/>
     </data>
 </openerp>

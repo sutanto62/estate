@@ -32,7 +32,7 @@
                     <field name="qty_base" string="Std. Qty./Day"/>
                     <field name="standard_price" digits="[16,2]"/>
                     <field name="wage_method"/>
-                    <field name="contract"/>
+                    <field name="contract" string="PR"/>
                     <!-- do not delete field below -->
                     <field name="type" invisible="True"/>
                 </tree>

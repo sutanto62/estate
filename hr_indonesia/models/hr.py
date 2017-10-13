@@ -7,6 +7,28 @@ from openerp.exceptions import ValidationError, RedirectWarning
 
 _logger = logging.getLogger(__name__)
 
+class Search(models.TransientModel):
+    _name = 'hr_indonesia.search'
+    _description = 'HR Indonesia Search'
+
+    def check_archived(self, ids, object, attr, name=None, active=False, ):
+        """
+        Encapsulate search archived recordset
+        :param object: self.env[]
+        :type: object
+        :param attr: model attribute
+        :type: string
+        :param active: False, search for archived. True, search for active record
+        :param name: value
+        :type: string
+        :return: dict
+        :rtype: boolean
+        """
+        res = object.search([('id', '!=', ids), ('active', '=', active)]).mapped(attr)
+        print '_check_archived %s' % res
+        return res
+
+
 class Employee(models.Model):
     """Extend HR Employee to accommodate Indonesian Workforce.
     1. KHL is Daily PKWT.
@@ -171,26 +193,82 @@ class Religion(models.Model):
     """ Required to define THR allowance """
     _name = 'hr_indonesia.religion'
     _description = 'Religion'
+    _inherit = 'mail.thread'
 
-    name = fields.Char("Religion")
+    name = fields.Char("Religion", track_visibility="onchange")
     sequence = fields.Integer('Sequence')
+    active = fields.Boolean('Active', default=True)
+
+    @api.constrains('name')
+    def _check_name(self):
+        obj = self.env['hr_indonesia.religion']
+        search = self.env['hr_indonesia.search']
+
+        if self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name)):
+            err_msg = _('We found religion %s in archived record.\n'
+                        'Please activate that record instead of create new one.' % self.name)
+            raise ValidationError(err_msg)
+        elif self.name.lower() in map(lambda x: x.lower(),
+                                      search.check_archived(self.ids, obj, 'name', self.name, True)):
+            err_msg = _('Religion %s is exist.' % self.name)
+            raise ValidationError(err_msg)
+        else:
+            return True
 
 
 class Ethnic(models.Model):
     _name = 'hr_indonesia.ethnic'
     _description = 'Ethnic'
+    _order = 'sequence'
+    _inherit = 'mail.thread'
 
-    name = fields.Char('Ethnic')
+    name = fields.Char('Ethnic', track_visibility="onchange")
     sequence = fields.Integer('Sequence')
+    active = fields.Boolean('Active', default=True)
 
+    @api.constrains('name')
+    def _check_name(self):
+        """ No duplicate even for archived one."""
+        obj = self.env['hr_indonesia.ethnic']
+        search = self.env['hr_indonesia.search']
+
+        if self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name)):
+            err_msg = _('We found ethnic %s in archived record.\n'
+                        'Please activate that record instead of create new one.' % self.name)
+            raise ValidationError(err_msg)
+        elif self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name, True)):
+            err_msg = _('Ethnic %s is exist.' % self.name)
+            raise ValidationError(err_msg)
+        else:
+            return True
 
 class TaxMarital(models.Model):
     _name = 'hr_indonesia.tax_marital'
     _description = 'Tax Marital'
+    _order = 'sequence'
+    _inherit = 'mail.thread'
 
-    name = fields.Char('Tax Marital')
-    code = fields.Char('Code', help='Displayed at report.')
+    name = fields.Char('Tax Marital', track_visibility="onchange")
+    code = fields.Char('Code', help='Displayed at report.', track_visibility="onchange")
     sequence = fields.Integer('Sequence')
+    active = fields.Boolean('Active', default=True)
+
+    @api.constrains('name')
+    def _check_name(self):
+        """ No duplicate even for archived one."""
+        obj = self.env['hr_indonesia.tax_marital']
+        search = self.env['hr_indonesia.search']
+
+        if self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name)):
+            err_msg = _('We found tax marital %s in archived record.\n'
+                        'Please activate that record instead of create new one.' % self.name)
+            raise ValidationError(err_msg)
+        elif self.name.lower() in map(lambda x: x.lower(),
+                                      search.check_archived(self.ids, obj, 'name', self.name, True)):
+            err_msg = _('Tax marital %s is exist.' % self.name)
+            raise ValidationError(err_msg)
+        else:
+            return True
 
 
 class Location(models.Model):
@@ -201,12 +279,13 @@ class Location(models.Model):
     _parent_name = 'parent_id'
     _order = 'complete_name'
     _rec_name = 'name'  # complete_name too long for upkeep entry
+    _inherit = ['mail.thread', 'hr_indonesia.search']
 
     _description = 'Placement Location'
 
-    name = fields.Char('Location Name', required=True)
+    name = fields.Char('Location Name', required=True, track_visibility="onchange")
     complete_name = fields.Char("Complete Name", compute="_complete_name", store=True)
-    code = fields.Char('Code', help='Write location abbreviation')
+    code = fields.Char('Code', help='Write location abbreviation', track_visibility="onchange")
     type = fields.Selection([('view', "View"),
                              ('normal', "Normal")], "Type",
                             required=True,
@@ -217,6 +296,7 @@ class Location(models.Model):
     parent_left = fields.Integer("Parent Left",	index=True)
     parent_right = fields.Integer("Parent Right", index=True)
     child_ids = fields.One2many('hr_indonesia.location', 'parent_id', "Child Locations")
+    active = fields.Boolean('Active', default=True)
 
     @api.multi
     @api.depends('name', 'parent_id')
@@ -229,6 +309,22 @@ class Location(models.Model):
             else:
                 record.complete_name = record.name
 
+    @api.constrains('name')
+    def _check_name(self):
+        """ No duplicate even for archived one."""
+        obj = self.env['hr_indonesia.location']
+        search = self.env['hr_indonesia.search']
+
+        if self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name)):
+            err_msg = _('We found location %s in archived record.\n'
+                        'Please activate that record instead of create new one.' % self.name)
+            raise ValidationError(err_msg)
+        elif self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name, True)):
+            err_msg = _('Location %s is exist.' % self.name)
+            raise ValidationError(err_msg)
+        else:
+            return True
+
 
 class Office(models.Model):
     """ Hierarchy of office - required by purchase"""
@@ -237,15 +333,33 @@ class Office(models.Model):
     _parent_name = 'parent_id'
     _order = 'sequence'
     _description = 'Office Level'
+    _inherit = 'mail.thread'
 
-    name = fields.Char('Name', required=True)
-    code = fields.Char('Code', help='Write office level')
+    name = fields.Char('Name', required=True, track_visibility="onchange")
+    code = fields.Char('Code', help='Write office level', track_visibility="onchange")
     comment = fields.Text("Additional Information")
     sequence = fields.Integer("Sequence", help="Small number higher position.")
     parent_id = fields.Many2one('hr_indonesia.office', "Parent Office", ondelete='restrict')
     parent_left = fields.Integer("Parent Left", index=True)
     parent_right = fields.Integer("Parent Right", index=True)
     child_ids = fields.One2many('hr_indonesia.office', 'parent_id', "Child Office Levels")
+    active = fields.Boolean('Active', default=True)
+
+    @api.constrains('name')
+    def _check_name(self):
+        obj = self.env['hr_indonesia.office']
+        search = self.env['hr_indonesia.search']
+
+        if self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name)):
+            err_msg = _('We found office %s in archived record.\n'
+                        'Please activate that record instead of create new one.' % self.name)
+            raise ValidationError(err_msg)
+        elif self.name.lower() in map(lambda x: x.lower(),
+                                      search.check_archived(self.ids, obj, 'name', self.name, True)):
+            err_msg = _('Office %s is exist.' % self.name)
+            raise ValidationError(err_msg)
+        else:
+            return True
 
 
 class SupervisorLevel(models.Model):
@@ -255,17 +369,19 @@ class SupervisorLevel(models.Model):
     _parent_store = True
     _parent_name = 'parent_id'
     _order = 'sequence'
+    _inherit = 'mail.thread'
 
     _description = 'Supervisor Level'
 
-    name = fields.Char('Name', required=True)
-    code = fields.Char('Code', help='Write supervisor level')
+    name = fields.Char('Name', required=True, track_visibility="onchange")
+    code = fields.Char('Code', help='Write supervisor level', track_visibility="onchange")
     comment = fields.Text("Additional Information")
     sequence = fields.Integer("Sequence", help="Small number higher position.")
     parent_id = fields.Many2one('hr_indonesia.supervisor', "Parent Supervisor", ondelete='restrict')
     parent_left = fields.Integer("Parent Left", index=True)
     parent_right = fields.Integer("Parent Right", index=True)
     child_ids = fields.One2many('hr_indonesia.supervisor', 'parent_id', "Child Supervisor Levels")
+    active = fields.Boolean('Active', default=True)
 
     @api.constrains('code')
     def _check_code(self):
@@ -277,3 +393,18 @@ class SupervisorLevel(models.Model):
         else:
             return True
 
+    @api.constrains('name')
+    def _check_name(self):
+        obj = self.env['hr_indonesia.supervisor']
+        search = self.env['hr_indonesia.search']
+
+        if self.name.lower() in map(lambda x: x.lower(), search.check_archived(self.ids, obj, 'name', self.name)):
+            err_msg = _('We found supervisor level %s in archived record.\n'
+                        'Please activate that record instead of create new one.' % self.name)
+            raise ValidationError(err_msg)
+        elif self.name.lower() in map(lambda x: x.lower(),
+                                      search.check_archived(self.ids, obj, 'name', self.name, True)):
+            err_msg = _('Supervisor level %s is exist.' % self.name)
+            raise ValidationError(err_msg)
+        else:
+            return True
