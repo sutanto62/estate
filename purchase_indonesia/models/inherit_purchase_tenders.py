@@ -59,6 +59,12 @@ class InheritPurchaseTenders(models.Model):
     is_grn_done = fields.Boolean('GRN/SRN', store=True)
     is_inv_done = fields.Boolean('Invoice', store=True)
     is_pp_confirmation = fields.Boolean('PP Confirmation',compute='_compute_is_confirmation')
+    total_estimate_price = fields.Float('Total Estimate Price', compute='_compute_total_estimate_price')
+    
+    @api.multi
+    def _compute_total_estimate_price(self):
+        for item in self:
+            item.total_estimate_price = item.request_id.total_estimate_price
     
     @api.multi
     def _compute_is_confirmation(self):

@@ -109,6 +109,10 @@
                      <field name="due_date" string="Due Date" attrs="{'readonly': [('state','not in',('draft'))]}"/>
                      <field name="validation_due_date" invisible="1"/>
                  </xpath>
+                 
+                 <xpath expr="//field[@name='user_id']" position="before">
+                 	<field name="total_estimate_price"/>
+                 </xpath>
 
                  <xpath expr="//field[@name='user_id']" position="after">
                      <field name="is_pp_confirmation" invisible="0"/>
@@ -212,6 +216,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='state']" position="after">
+                     <field name="total_estimate_price"/>
                      <field name="quotation_state" string="Status QCF" invisible="1"/>
                      <field name="is_qcf_done" string="Quotation"/>
                      <field name="is_po_done" string="PO"/>
