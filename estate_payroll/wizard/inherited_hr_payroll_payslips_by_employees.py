@@ -18,7 +18,7 @@ class PayslipEmployee(models.Model):
         payslip_run = self.env['hr.payslip.run'].search([('id', '=', self._context['active_id'])])
 
         # Get upkeep labour
-        domain = [('state', '=', 'approved'),
+        domain = [('state', 'in', ['approved','confirmed']),
                   ('upkeep_date', '>=', payslip_run.date_start),
                   ('upkeep_date', '<=', payslip_run.date_end),
                   ('employee_id.company_id', '=', payslip_run.company_id.id)]
