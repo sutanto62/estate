@@ -60,7 +60,6 @@
                 <tree>
                     <field name="date"/>
                     <field name="block_id" string="Location"/>
-                    <field name="date_month"/>
                     <field name="time_start" string="Start" widget="float_time"/>
                     <field name="time_end" string="End" widget="float_time"/>
                     <field name="volume" sum="volume"/>
