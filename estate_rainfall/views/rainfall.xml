@@ -1,0 +1,153 @@
+<openerp>
+    <data>
+        <!--search-->
+        <record id="rainfall_view_search" model="ir.ui.view">
+            <field name="name">Rainfall View Search</field>
+            <field name="model">estate_rainfall.rainfall</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="date"/>
+                    <field name="block_id"/>
+                    <filter name="filter_last_2" icon="terp-go-year" string="Last 2 Years"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(years=-1, day=1, month=1)).strftime('%%Y-%%m-%%d'))]"
+                    />
+                    <filter name="filter_last_5" icon="terp-go-year" string="Last 5 Years"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(years=-4, day=1, month=1)).strftime('%%Y-%%m-%%d'))]"
+                    />
+                    <filter name="filter_last_10" icon="terp-go-year" string="Last 10 Years"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(years=-9, day=1, month=1)).strftime('%%Y-%%m-%%d'))]"
+                    />
+                    <separator/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <!-- Relativedelta required weeks, days and weekday -->
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
+                            ('date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <group string="Group By">
+                        <filter name="by_block" string="Observation Location"
+                                context="{'group_by': 'block_id'}"/>
+                        <filter name="by_year" string="Year"
+                                context="{'group_by': 'date:year'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'date:month'}"/>
+                        <filter name="by_week" string="Week"
+                                context="{'group_by': 'date:week'}"/>
+                        <filter name="by_date" string="Date"
+                                context="{'group_by': 'date:day'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!--/search-->
+
+        <!--tree-->
+        <record id="rainfall_view_tree" model="ir.ui.view">
+            <field name="name">Rainfall View Tree</field>
+            <field name="model">estate_rainfall.rainfall</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="date"/>
+                    <field name="block_id" string="Location"/>
+                    <field name="date_month"/>
+                    <field name="time_start" string="Start" widget="float_time"/>
+                    <field name="time_end" string="End" widget="float_time"/>
+                    <field name="volume" sum="volume"/>
+                    <field name="observation"/>
+                    <field name="day" sum="day"/>
+                    <!--<field name="observation"/>-->
+                    <!--<field name="duration" widget="float_time"/>-->
+                </tree>
+            </field>
+        </record>
+        <!--/tree-->
+
+        <!--pivot-->
+        <record id="rainfall_view_pivot" model="ir.ui.view">
+            <field name="name">Rainfall View Pivot</field>
+            <field name="model">estate_rainfall.rainfall</field>
+            <field name="arch" type="xml">
+                <pivot>
+                    <field name="date_month" type="row"/>
+                    <field name="date" interval="year" type="col"/>
+                    <field name="day" type="measure"/>
+                    <field name="volume" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+        <!--/pivot-->
+
+        <!--graph-->
+        <record id="rainfall_view_graph" model="ir.ui.view">
+            <field name="name">Rainfall View Graph</field>
+            <field name="model">estate_rainfall.rainfall</field>
+            <field name="arch" type="xml">
+                <graph type="line" string="Rainfall Chart">
+                    <field name="date_month" type="row"/>
+                    <field name="volume" type="measure"/>
+                    <field name="date_year" type="col"/>
+                </graph>
+            </field>
+        </record>
+        <!--/graph-->
+
+        <!--form-->
+        <record id="rainfall_veiw_form" model="ir.ui.view">
+            <field name="name">Rainfall View Form</field>
+            <field name="model">estate_rainfall.rainfall</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group string="Rainfall">
+                                <field name="date"/>
+                                <field name="time_start" widget="float_time"/>
+                                <field name="time_end" widget="float_time"/>
+                                <field name="volume"/>
+                                <field name="block_id"/>
+                            </group>
+                            <group string="Information">
+                                <field name="observation"/>
+                                <field name="duration" widget="float_time" readonly="True"/>
+                                <!--invisble-->
+                                <field name="name" invisible="0"/>
+                                <field name="day" invisible="0"/>
+                                <field name="period" invisible="0"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <!--/form-->
+
+        <!--action-->
+        <record id="estate_rainfall_action" model="ir.actions.act_window">
+            <field name="name">Rainfall</field>
+            <field name="res_model">estate_rainfall.rainfall</field>
+            <field name="context">{'search_default_filter_last_2': True, 'graph_mode': 'line'}</field>
+            <field name="view_mode">tree,pivot,graph,form</field>
+        </record>
+        <!--/action-->
+
+        <!--menu-->
+        <menuitem id="estate_rainfall_menu"
+              name="Rainfall"
+              parent="estate.estate_operation_menu"
+              action="estate_rainfall_action"
+              sequence="50"/>
+        <!--/menu-->
+
+    </data>
+</openerp>

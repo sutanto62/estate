@@ -1,0 +1,358 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* estate_rainfall
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-18 03:31+0000\n"
+"PO-Revision-Date: 2017-10-18 03:31+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_duration
+msgid "1 minute rainfall duration required to set 1 rainfall day."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_volume
+msgid "1 mm rainfall volume required to set 1 rainfall day."
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate.config.settings,default_observation_method:0
+msgid "Based on end time"
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate.config.settings,default_observation_method:0
+msgid "Based on start time"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_block_id
+msgid "Block Location"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.inherit_view_estate_configuration
+msgid "Configure Estate"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_create_date
+msgid "Created on"
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate_rainfall.rainfall,period:0
+msgid "Daily"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_date
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Date"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_date_month
+msgid "Date Month"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_date_year
+msgid "Date Year"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_date
+msgid "Date used to define next upkeep activity on that day."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_block_id
+msgid "Define observation location"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_time_end
+msgid "Define observation period for time end based configuration."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_time_start
+msgid "Define observation period for time start based configuration."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_duration
+msgid "Duration (minutes)"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_tree
+msgid "End"
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate_rainfall.rainfall,observation:0
+msgid "Evening"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Group By"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_date_month
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_date_year
+msgid "Help to compare rainfall by month."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_config_settings_default_observation_method
+#: model:ir.model.fields,help:estate_rainfall.field_estate_config_settings_default_observation_method
+msgid "How to define observation"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_id
+msgid "ID"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_veiw_form
+msgid "Information"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Last 10 Years"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Last 2 Years"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Last 5 Years"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall___last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_tree
+msgid "Location"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Month"
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate_rainfall.rainfall,period:0
+msgid "Monthly"
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate_rainfall.rainfall,observation:0
+msgid "Morning"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_config_settings_default_time_end
+msgid "Morning Observation Time End"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_config_settings_default_time_start
+msgid "Morning Observation Time Start"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_config_settings_default_time_end
+msgid "Morning observation time end at current day, H\n"
+""
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_config_settings_default_time_start
+msgid "Morning observation used yesterday data, H-1."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_day
+msgid "Morning observation, minimum 1 minute duration and 1 mm volume.\n"
+"Evening observation, minimum 1 minute duration and 1 mm volume. Change morning observation to 0."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_name
+msgid "Name"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Observation Location"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_observation
+msgid "Observation Period"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_config_settings_default_time_overnight
+msgid "Observation time overnight"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_period
+msgid "Period"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_period
+msgid "Period of observation. It use to set rainfall data weekly or monthly."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Previous Month"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Previous Week"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.actions.act_window,name:estate_rainfall.estate_rainfall_action
+#: model:ir.model,name:estate_rainfall.model_estate_rainfall_rainfall
+#: model:ir.ui.menu,name:estate_rainfall.estate_rainfall_menu
+#: model:ir.ui.view,arch_db:estate_rainfall.inherit_view_estate_configuration
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_veiw_form
+msgid "Rainfall"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_graph
+msgid "Rainfall Chart"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_day
+msgid "Rainfall Day"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_config_settings_default_time_overnight
+msgid "Set True if observation time start and end overnight."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_tree
+msgid "Start"
+msgstr ""
+
+#. module: estate_rainfall
+#: code:addons/estate_rainfall/models/rainfall.py:211
+#: code:addons/estate_rainfall/models/rainfall.py:232
+#, python-format
+msgid "There are %s observation at %s already."
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "This Month"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "This Year"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_time_end
+msgid "Time End"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_time_start
+msgid "Time Start"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_observation
+msgid "Use time start and end to defined observation period"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_volume
+msgid "Volume (mm)"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Week"
+msgstr ""
+
+#. module: estate_rainfall
+#: selection:estate_rainfall.rainfall,period:0
+msgid "Weekly"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
+msgid "Year"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_tree
+msgid "day"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.model,name:estate_rainfall.model_estate_config_settings
+msgid "estate.config.settings"
+msgstr ""
+
+#. module: estate_rainfall
+#: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_tree
+msgid "volume"
+msgstr ""
+
