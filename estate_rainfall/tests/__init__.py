@@ -1,1 +1,2 @@
 import test_rainfall
+import test_rainfall_configuration

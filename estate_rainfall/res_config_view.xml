@@ -14,11 +14,11 @@
                             <label for="id" string="Rainfall"/>
                             <div name="rainfall">
                                 <div name="start">
-                                    <field name="default_time_start" class="oe_inline"/>
+                                    <field name="default_time_start" widget="float_time" class="oe_inline"/>
                                     <label for="default_time_start"/>
                                 </div>
                                 <div name="end">
-                                    <field name="default_time_end" class="oe_inline"/>
+                                    <field name="default_time_end" widget="float_time" class="oe_inline"/>
                                     <label for="default_time_end"/>
                                 </div>
                                 <div name="method">

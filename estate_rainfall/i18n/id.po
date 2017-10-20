@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-18 10:31+0700\n"
-"PO-Revision-Date: 2017-10-18 10:32+0700\n"
+"POT-Creation-Date: 2017-10-19 14:02+0700\n"
+"PO-Revision-Date: 2017-10-19 14:08+0700\n"
 "Last-Translator: Cayadi Sutanto <cayadi.sutanto@palmagroup.co.id>\n"
 "Language-Team: \n"
 "Language: id_ID\n"
@@ -71,12 +71,12 @@ msgstr "Tanggal"
 #. module: estate_rainfall
 #: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_date_month
 msgid "Date Month"
-msgstr ""
+msgstr "Bulan Observasi"
 
 #. module: estate_rainfall
 #: model:ir.model.fields,field_description:estate_rainfall.field_estate_rainfall_rainfall_date_year
 msgid "Date Year"
-msgstr ""
+msgstr "Tahun Observasi"
 
 #. module: estate_rainfall
 #: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_date
@@ -300,8 +300,8 @@ msgid "Start"
 msgstr "Mulai"
 
 #. module: estate_rainfall
-#: code:addons/estate_rainfall/models/rainfall.py:211
-#: code:addons/estate_rainfall/models/rainfall.py:232
+#: code:addons/estate_rainfall/models/rainfall.py:227
+#: code:addons/estate_rainfall/models/rainfall.py:254
 #, python-format
 msgid "There are %s observation at %s already."
 msgstr "Ada pengamatan %s pada %s yang telah dilakukan."
@@ -327,6 +327,12 @@ msgid "Time Start"
 msgstr "Jam Mulai"
 
 #. module: estate_rainfall
+#: code:addons/estate_rainfall/models/rainfall.py:102
+#, python-format
+msgid "Use 24:00 time value."
+msgstr "Jam mulai dan berakhir harus dalam 24 jam."
+
+#. module: estate_rainfall
 #: model:ir.model.fields,help:estate_rainfall.field_estate_rainfall_rainfall_observation
 msgid "Use time start and end to defined observation period"
 msgstr "Gunakan jam mulai dan berakhir untuk menentukan periode pengamatan"
@@ -350,6 +356,12 @@ msgstr "Mingguan"
 #: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_search
 msgid "Year"
 msgstr "Tahun"
+
+#. module: estate_rainfall
+#: code:addons/estate_rainfall/models/rainfall.py:96
+#, python-format
+msgid "You should update rainfall volume."
+msgstr "Isi curah hujan (mm)"
 
 #. module: estate_rainfall
 #: model:ir.ui.view,arch_db:estate_rainfall.rainfall_view_tree

@@ -9,7 +9,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 class Rainfall(models.Model):
     _name = 'estate_rainfall.rainfall'
     _description = 'Rainfall'
-    _order = 'date desc, block_id asc, time_start asc'
+    _order = 'date desc, date_year asc, date_month asc, block_id asc, time_start asc'
 
     def _default_date(self):
         today = datetime.today().strftime(DF)
@@ -18,12 +18,12 @@ class Rainfall(models.Model):
     name = fields.Char('Name', compute='_compute_name', store=True)
     date = fields.Date('Date', default=_default_date, required=True,
                        help='Date used to define next upkeep activity on that day.')
-    date_month = fields.Char('Date Month', compute='_compute_month', store=True,
+    date_month = fields.Integer('Date Month', compute='_compute_month', store=True,
                              help='Help to compare rainfall by month.')
-    date_year = fields.Char('Date Year', compute='_compute_year', store=True,
+    date_year = fields.Integer('Date Year', compute='_compute_year', store=True,
                             help='Help to compare rainfall by month.')
     # day = fields.Integer('Rainfall Day', default=0, compute='_compute_day', store=True, group_operator="sum",
-    day = fields.Integer('Rainfall Day', default=0, group_operator="sum",
+    day = fields.Float('Rainfall Day', default=0, group_operator="sum",
                          help='Morning observation, minimum 1 minute duration and 1 mm volume.\n' \
                               'Evening observation, minimum 1 minute duration and 1 mm volume. Change morning observation to 0.')
     duration = fields.Float('Duration (minutes)', default=0.0, compute='_compute_duration', store=True,
@@ -39,7 +39,7 @@ class Rainfall(models.Model):
                               help='Define observation period for time start based configuration.')
     time_end = fields.Float('Time End', required=True,
                             help='Define observation period for time end based configuration.')
-    volume = fields.Integer('Volume (mm)', default=0, required=True, group_operator="sum",
+    volume = fields.Float('Volume (mm)', default=0, required=True, group_operator="sum",
                             help='1 mm rainfall volume required to set 1 rainfall day.')
     block_id = fields.Many2one('estate.block.template', 'Block Location',
                                domain=[('estate_location', '=', True)],
@@ -50,27 +50,12 @@ class Rainfall(models.Model):
     def _compute_name(self):
         self.name = self.date
 
-    @api.one
     @api.model
     def _morning_day(self, rainfall):
         """ Cannot update morning observation while creating evening one."""
-        # morning_rainfall_id = self.env['estate_rainfall.rainfall'].browse(rainfall)
-        # res = morning_rainfall_id.write({'day': 0})
-        self.day = 0
-        return True
-
-    @api.one
-    @api.depends('duration')
-    def _compute_day(self, observation=None):
-        """ 1 rainfall day minimum require 1 minute duration and 1 mm volume."""
-        rainfall_obj = self.env['estate_rainfall.rainfall']
-        rainfall_ids = rainfall_obj.search([('date', '=', self.date)])
-        if self.duration > 0 and self.volume > 0:
-            if len(rainfall_ids) == 2 and self.observation == 'morning':
-                self.day = 0
-            else:
-                self.day = 1
-        return True
+        morning_rainfall_id = self.env['estate_rainfall.rainfall'].browse(rainfall)
+        res = morning_rainfall_id.write({'day': 0})
+        return res
 
     @api.one
     @api.depends('date')
@@ -99,6 +84,24 @@ class Rainfall(models.Model):
             record.duration = res
         return res
 
+    @api.one
+    def _compute_day(self):
+        if self.volume > 0 and self.duration > 0.0:
+            self.day = 1
+        return True
+
+    @api.constrains('volume')
+    def _check_volume(self):
+        if self.volume == 0:
+            err_msg = _('You should update rainfall volume.')
+            raise ValidationError(err_msg)
+
+    @api.constrains('time_start', 'time_end')
+    def _check_time(self):
+        if (not 0.0 <= self.time_start <= 24.0) or (not 0.0 <= self.time_end <= 24.0):
+            err_msg = _('Use 24:00 time value.')
+            raise ValidationError(err_msg)
+
     @api.onchange('time_start', 'time_end')
     def _onchange_time(self):
         """ Automatically define observation based on time start and end"""
@@ -107,11 +110,13 @@ class Rainfall(models.Model):
         res = ''
 
         # Observation method depends on configuration
+        # TODO use self._config()
         config_id = self.env['estate.config.settings'].search([], order='id desc', limit=1)
         start = config_id.default_time_start
         end = config_id.default_time_end
         overnight = config_id.default_time_overnight
         observation_method = config_id.default_observation_method
+
 
         # define single hour to decide morning/evening
         hour = 0.0
@@ -130,9 +135,18 @@ class Rainfall(models.Model):
                 res = observation[1]
             else:
                 res = observation[0]
+
         self.observation = res
 
         return res
+
+    @api.one
+    @api.onchange('volume')
+    def _onchange_volume(self):
+        if self.volume > 0 and self.duration > 0.0:
+            self.day = 1
+        return True
+
 
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
@@ -164,8 +178,11 @@ class Rainfall(models.Model):
 
                 monthly_volume = sum(r.volume for r in monthly_rainfall_ids)
                 monthly_day = sum(r.day for r in monthly_rainfall_ids)
-                # undefined location count as 1
-                monthly_location = len(set(monthly_rainfall_ids.mapped('block_id'))) or 1
+
+                # count 1 for empty location
+                undefined_location = 1 if monthly_rainfall_ids.filtered(lambda r: not r.block_id) else 0
+
+                monthly_location = len(set(monthly_rainfall_ids.mapped('block_id'))) + undefined_location
 
                 month_res = {
                     'month': month,
@@ -185,12 +202,18 @@ class Rainfall(models.Model):
 
                 total_volume = sum(r.volume for r in rainfall_ids)
                 total_day = sum(r.day for r in rainfall_ids)
-                # undefined location count as 1
-                # TODO empty location is single location
-                total_location = len(set(rainfall_ids.mapped('block_id'))) or 1
+
+                # count 1 for empty location
+                undefined_location = 1 if rainfall_ids.filtered(lambda r: not r.block_id) else 0
+
+                total_location = len(rainfall_ids.mapped('block_id')) + undefined_location
+
+                print 'read_group: average/month have %s location' % rainfall_ids
 
                 line['day'] = total_day/float(total_location)
                 line['volume'] = total_volume/float(total_location)
+
+                print ' read_group %s ' % line
 
 
         return res
@@ -198,17 +221,19 @@ class Rainfall(models.Model):
     @api.model
     def create(self, vals):
         """ Limit single morning/evening observation data in a day."""
+
         rainfall_obj = self.env['estate_rainfall.rainfall']
 
         domain = [('date', '=', vals['date'])]
 
+        # support multi location
         if vals.has_key('block_id'):
             domain.append(('block_id', '=', vals['block_id']))
 
         rainfall_ids = rainfall_obj.search(domain)
 
         if vals['observation'] in rainfall_ids.mapped('observation'):
-            err_msg = _('There are %s observation at %s already.' % (vals['observation'], vals['date']))
+            err_msg = _('There are %s observation at %s already.') % (vals['observation'], vals['date'])
             raise ValidationError(err_msg)
         else:
             if 'morning' in rainfall_ids.mapped('observation'):
@@ -223,15 +248,41 @@ class Rainfall(models.Model):
         # odoo edit mode only include modified field in vals
         vals['date'] = self.date
 
-        # check duplicate observation
+        domain = [('id', 'not in', self.ids), ('date', '=', vals['date'])]
+
+        # support multi location
+        if self.block_id:
+            domain.append(('block_id', '=', self.block_id.id))
+
+        # check duplicate observation in a single day
         if vals.has_key('observation'):
             rainfall_obj = self.env['estate_rainfall.rainfall']
-            rainfall_ids = rainfall_obj.search([('date', '=', vals['date'])])
+            rainfall_ids = rainfall_obj.search(domain)
 
             if vals['observation'] in rainfall_ids.mapped('observation'):
-                err_msg = _('There are %s observation at %s already.' % (vals['observation'], vals['date']))
+                err_msg = _('There are %s observation at %s already.') % (vals['observation'], vals['date'])
                 raise ValidationError(err_msg)
 
         res = super(Rainfall, self).write(vals)
+
+        return res
+
+    @api.model
+    def _config(self):
+        # Observation method depends on configuration
+        config_id = self.env['estate.config.settings'].search([], order='id desc', limit=1)
+        start = config_id.default_time_start
+        end = config_id.default_time_end
+        overnight = config_id.default_time_overnight
+        method = config_id.default_observation_method
+        res = {
+            'start': start,
+            'end': end,
+            'overnight': overnight,
+            'method': method
+        }
+
+        if not res:
+            raise ValueError('No rainfall configuration.')
 
         return res
