@@ -20,30 +20,25 @@ class InheritRequisitionPartner(models.TransientModel):
         purchase_requisition_line = self.env['purchase.requisition.line'].search([('requisition_id','=',self._context.get('active_id'))])
         idx_qty_received_zero = 0
         idx_qty_outstanding = 0
+        
         for record in purchase_requisition_line:
             if record.qty_received == 0 :
                 idx_qty_received_zero = idx_qty_received_zero + 1
             if record.qty_received > 0 and record.qty_outstanding > 0:
                 idx_qty_outstanding = idx_qty_outstanding + 1
+        
         if idx_qty_received_zero == len(purchase_requisition_line) and purchase_requisition.check_missing_product == False :
-
             super(InheritRequisitionPartner,self).create_order()
             self.create_comparison()
-
         elif  idx_qty_outstanding > 0 and purchase_requisition.check_missing_product == True:
             self.create_backorder()
             self.create_missing_comparison()
-
         elif  idx_qty_outstanding > 0 and purchase_requisition.check_missing_product == False and purchase_requisition.validation_check_backorder == True :
-
             self.create_backorder()
             self.create_backorder_quotation_comparison_form()
-
         elif idx_qty_received_zero > 0 and purchase_requisition.check_missing_product == False:
-
             self.create_backorder()
             self.create_backorder_quotation_comparison_form()
-
         else:
             self.create_backorder()
             self.create_missing_comparison()
@@ -70,7 +65,7 @@ class InheritRequisitionPartner(models.TransientModel):
 
         for requisition in purchase_tender.line_ids:
             comparisonline_data={
-                'product_qty' : requisition.product_qty,
+#                 'product_qty' : requisition.product_qty,
                 # 'qty_request' : requisition.product_qty,
                 'comparison_id' : quotation_comparison_form.id
             }
@@ -112,7 +107,7 @@ class InheritRequisitionPartner(models.TransientModel):
         purchase_tender.write({'check_missing_product' : False})
         for requisition in purchase_tender.line_ids:
             comparisonline_data={
-                'product_qty' : requisition.product_qty,
+#                 'product_qty' : requisition.product_qty,
                 # 'qty_request' : requisition.product_qty,
                 # 'comparison_id' : max(arrQcfid)
                 # 'comparison_id' : write_order.comparison_id.id
@@ -189,7 +184,7 @@ class InheritRequisitionPartner(models.TransientModel):
                 po = order.search([('requisition_id','=',self._context.get('active_id')),('validation_check_backorder','=',True)])
                 for item in po :
                     comparisonline_data={
-                        'product_qty' : requisition.product_qty,
+#                         'product_qty' : requisition.product_qty,
                         # 'comparison_id' : max(arrQcfid)
                     }
                     order_line.search([('order_id','=',item.id),('product_id','=',requisition.product_id.id)]).write(comparisonline_data)

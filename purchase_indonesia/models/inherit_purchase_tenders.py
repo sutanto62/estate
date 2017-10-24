@@ -11,6 +11,7 @@ from openerp.tools.translate import _
 from dateutil.relativedelta import *
 import calendar
 from openerp.tools import (DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT,drop_view_if_exists)
+from purchase_indonesia.models import quotation_comparison_form
 
 
 class InheritPurchaseTenders(models.Model):
@@ -60,6 +61,19 @@ class InheritPurchaseTenders(models.Model):
     is_inv_done = fields.Boolean('Invoice', store=True)
     is_pp_confirmation = fields.Boolean('PP Confirmation',compute='_compute_is_confirmation')
     total_estimate_price = fields.Float('Total Estimate Price', compute='_compute_total_estimate_price')
+    pp_description = fields.Char('Description', compute='_compute_pp_description')
+    is_qcf_draft = fields.Boolean('Is QCF Draft', compute='_compute_is_qcf_draft')
+    
+    @api.multi
+    def _compute_is_qcf_draft(self):
+        for item in self:
+            qcf = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id),('state','=','draft')])
+            item.is_qcf_draft = True if len(qcf) > 0 else False
+        
+    @api.multi
+    def _compute_pp_description(self):
+        for item in self:
+            item.pp_description = item.request_id.description
     
     @api.multi
     def _compute_total_estimate_price(self):
@@ -296,13 +310,15 @@ class InheritPurchaseTenders(models.Model):
             arrMissing = []
             domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
             domain2 = [('requisition_id','=',record.id),('check_missing_product','=',True)]
+            
+            qcf = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id),('state','=','draft')])
 
             for line in record.line_ids.search(domain2):
                 arrMissing.append(line.id)
             for line in record.line_ids.search(domain):
                 arrOutstanding.append(line.id)
 
-            if record.state in ['draft','cancel','closed']:
+            if record.state in ['draft','cancel','closed'] or len(qcf) > 0:
                 record.check_backorder = True
             else:
                 if record.validation_check_backorder == False and len(arrOutstanding) > 0 and len(arrMissing) > 0:
@@ -768,6 +784,7 @@ class InheritPurchaseTenders(models.Model):
             'trigger_draft' : True,
             'taxes_id': [(6, 0, taxes_id)],
             'account_analytic_id': requisition_line.account_analytic_id.id,
+            'validation_check_backorder': po.comparison_id.validation_check_backorder
         }
 
         return vals
@@ -888,7 +905,8 @@ class InheritPurchaseTenders(models.Model):
         ctx = context.copy()
         ctx['tz'] = requisition.user_id.tz
         date_order = requisition.ordering_date  or fields.datetime.now()
-        qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line.product_qty, default_uom_po_id)
+        requisition_line_qty = requisition_line.qty_outstanding if requisition_line.qty_outstanding > 0 else requisition_line.product_qty
+        qty = product_uom._compute_qty(cr, uid, requisition_line.product_uom_id.id, requisition_line_qty, default_uom_po_id)
 
         taxes = product.supplier_taxes_id
         fpos = supplier.property_account_position_id
@@ -1032,7 +1050,13 @@ class InheritPurchaseRequisitionLine(models.Model):
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)
     check_missing_product = fields.Boolean('Checking Missing Product')
     est_price = fields.Float('Estimated Price',compute='_compute_est_price')
-
+    qty_outstanding_comp = fields.Float('Quantity Outstanding', compute='_compute_qty_outstanding_comp', readonly=True)
+    
+    @api.multi
+    def _compute_qty_outstanding_comp(self):
+        for item in self:
+            item.qty_outstanding_comp = item.product_qty - item.qty_received
+        
     @api.multi
     @api.depends('est_price')
     def _compute_est_price(self):

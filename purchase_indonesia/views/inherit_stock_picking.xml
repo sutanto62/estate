@@ -60,9 +60,14 @@
                      <field name="procurment_qty" string="Send QTY"/>
 
                  </xpath>
-                 <xpath expr="//button[@name='do_new_transfer']" position="replace">
-                     <button name="do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate"  type="object" class="oe_highlight"/>
+                 <xpath expr="//button[@name='do_new_transfer']" position="after">
+                     <button name="inherit_do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate"  type="object" class="oe_highlight"/>
                  </xpath>
+                 
+                 <xpath expr="//button[@name='do_new_transfer']" position="attributes">
+                     <attribute name="invisible">1</attribute>
+                 </xpath>
+                 
                  <xpath expr="//button[@name='show_details']" position="before">
                      <field name="checking_split" invisible="1"/>
                      <field name="assigned_to" invisible="1"/>
@@ -89,12 +94,12 @@
 
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
                         <button name="action_validate_user"
-                                attrs="{'invisible': [('validation_user','!=',True)]}"
+                                attrs="{'invisible': ['|',('validation_user','!=',True),('state','=','cancel')]}"
                                 groups="purchase_request.group_purchase_request_user"
                                 string="Requester Approve" type="object"
                                 class="oe_highlight"/>
                         <button name="action_validate_procurement"
-                                attrs="{'invisible': [('validation_procurement','=',True)]}"
+                                attrs="{'invisible': ['|',('validation_procurement','=',True),('state','=','cancel')]}"
                                 groups="purchase_request.group_purchase_request_procstaff"
                                 string="Shipper Approve" type="object"
                                 class="oe_highlight"/>

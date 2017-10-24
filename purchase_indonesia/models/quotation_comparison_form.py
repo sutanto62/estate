@@ -306,7 +306,10 @@ class QuotationComparisonForm(models.Model):
             hr_location_code = hr.search([('user_id','=',item.pic_id.id)]).office_level_id.code
 
             return hr_location_code
-
+    
+    @api.model
+    def _get_purchase_procurement_staff_group_id(self):
+        return [('groups_id', '=', self.purchase_procurement_staff())]
 
     _name = 'quotation.comparison.form'
     _description = 'Form Quotation Comparison'
@@ -317,7 +320,7 @@ class QuotationComparisonForm(models.Model):
     complete_name =fields.Char("Complete Name", compute="_complete_name", store=True)
     date_pp = fields.Date('Date')
     type_location = fields.Char('Location')
-    pic_id = fields.Many2one('res.users','Created By')
+    pic_id = fields.Many2one('res.users','Created By',domain=_get_purchase_procurement_staff_group_id)
     assign_to = fields.Many2one('res.users','Approver by')
     location = fields.Char('Location')
     origin = fields.Char('Source Purchase Request')
@@ -349,6 +352,7 @@ class QuotationComparisonForm(models.Model):
     quotation_comparison_line_ids = fields.One2many('quotation.comparison.form.line','qcf_id','Comparison Line')
     v_quotation_comparison_line_ids = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
     is_assign_to_user = fields.Boolean('Is Assign to User', compute='_compute_is_assign_to_user')
+    pic_id_string = fields.Char('Created By', compute="_compute_pic_id_string")
 #     v_quotation_comparison_line_ids2 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
 #     v_quotation_comparison_line_ids3 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
 #     v_quotation_comparison_line_ids4 = fields.One2many('v.quotation.comparison.form.line','qcf_id','Comparison Line')
@@ -374,6 +378,11 @@ class QuotationComparisonForm(models.Model):
     _defaults = {
         'state' : 'draft'
     }
+    
+    @api.multi
+    def _compute_pic_id_string(self):
+        for item in self:
+            item.pic_id_string = item.pic_id.name
     
     @api.multi
     def _compute_is_assign_to_user(self):
@@ -578,13 +587,30 @@ class QuotationComparisonForm(models.Model):
                 purchase = item.env['purchase.order']
                 purchase_ids = purchase.search([('comparison_id','=',item.id)])
                 
+#                 #check that we have at least confirm one line
+#                 confirm = False
+#                 for po_line in item.requisition_id.po_line_ids:
+#                     if po_line.quantity_tendered > 0:
+#                         confirm = True
+#                         break
+#                 if not confirm:
+#                     raise exceptions.ValidationError('You have no line selected for buying.')
+                
                 #check that we have at least confirm one line
                 confirm = False
-                for po_line in item.requisition_id.po_line_ids:
+                for po_line in item.purchase_line_ids:
                     if po_line.quantity_tendered > 0:
                         confirm = True
                         break
-                if not confirm:
+                if not confirm and len(item.purchase_line_ids) > 0:
+                    raise exceptions.ValidationError('You have no line selected for buying.')
+                
+                confirm = False
+                for po_line in item.backorder_purchase_line_ids:
+                    if po_line.quantity_tendered > 0:
+                        confirm = True
+                        break
+                if not confirm and len(item.backorder_purchase_line_ids) > 0:
                     raise exceptions.ValidationError('You have no line selected for buying.')
                     
                 if purchase_ids:

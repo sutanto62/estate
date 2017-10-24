@@ -115,6 +115,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='user_id']" position="after">
+                     <field name="is_qcf_draft" invisible="1"/>
                      <field name="is_pp_confirmation" invisible="0"/>
                      <field name="validation_button_correction" invisible="1"/>
                      <field name="validation_correction" invisible="1"/>
@@ -138,7 +139,9 @@
                  <xpath expr="//tree/field[@name='product_qty']" position="after">
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
-                           <field name="qty_outstanding" class="oe_inline" invisible="0"
+                           <field name="qty_outstanding" class="oe_inline" invisible="1"
+                               readonly="0"/>
+                           <field name="qty_outstanding_comp" class="oe_inline" invisible="0"
                                readonly="0"/>
 
                             <field name="check_missing_product" class="oe_inline" invisible="1"
@@ -164,7 +167,7 @@
                  <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="replace">
                          <button name="%(purchase_requisition.action_purchase_requisition_partner)d" type="action"
                         string="Request a Quotation" icon="fa-cogs"
-                        attrs="{'invisible': [('validation_correction','=',False)]}"/>
+                        attrs="{'invisible': [('is_qcf_draft','!=',True)]}"/>
                  </xpath>
 
                  <xpath expr="//button[@name='%(purchase_requisition.action_purchase_requisition_partner)d']" position="after">
@@ -216,7 +219,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='state']" position="after">
-                     <field name="total_estimate_price"/>
+                     <field name="pp_description"/>
                      <field name="quotation_state" string="Status QCF" invisible="1"/>
                      <field name="is_qcf_done" string="Quotation"/>
                      <field name="is_po_done" string="PO"/>
@@ -302,7 +305,43 @@
             </field>
         </record>
 
+		<!--pivot-->
+        <record id="purchase_requisition_view_pivot" model="ir.ui.view">
+            <field name="name">Purchase Requisition Pivot</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                <pivot>
+                    <field name="ordering_date" interval="month" type="row"/>
+                    <field name="is_qcf_done" type="col"/>
+                    <field name="is_po_done" type="col"/>
+                    <field name="is_grn_done" type="col"/>
+                    <field name="is_inv_done" type="col"/>
+                </pivot>
+            </field>
+        </record>
+        <!--/pivot-->
 
+        <!--graph-->
+        <record id="purchase_requisition_view_graph" model="ir.ui.view">
+            <field name="name">Purchase Requisition Graph</field>
+            <field name="model">purchase.requisition</field>
+            <field name="arch" type="xml">
+                <graph type="line" string="Purchase Request Chart">
+                    <field name="ordering_date" interval="month" type="row"/>
+                    <field name="is_qcf_done" type="col"/>
+                    <field name="is_po_done" type="col"/>
+                    <field name="is_grn_done" type="col"/>
+                    <field name="is_inv_done" type="col"/>
+                </graph>
+            </field>
+        </record>
+        <!--/graph-->
+        
+        <record model="ir.actions.act_window" id="purchase_requisition.action_purchase_requisition">
+	        <field name="name">Purchase Tenders</field>
+	        <field name="res_model">purchase.requisition</field>
+	        <field name="view_mode">tree,pivot,graph,form</field>
+	    </record>
 
     </data>
 </openerp>

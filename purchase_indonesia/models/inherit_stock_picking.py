@@ -631,7 +631,7 @@ class InheritStockPicking(models.Model):
                 purchase_order.write({'state':'done'})
 
     @api.multi
-    def do_new_transfer(self):
+    def inherit_do_new_transfer(self):
 #         validation warehouse is check variable if this GRN need to be checked by warehouse
         if self.validation_warehouse == True :
             self.write({
@@ -662,49 +662,51 @@ class InheritStockPicking(models.Model):
                 error_msg = 'You cannot approve this \"%s\" , you are not requester of this PP '%(self.complete_name_picking)
                 raise exceptions.ValidationError(error_msg)
             else:
-
-
-
                 for record in purchase_requisition_line:
                     stock_pack_operation = record.env['stock.pack.operation'].search([('picking_id','=',self.id),('product_id','=',record.product_id.id)])
                     stock_pack_operation_length = len(stock_pack_operation)
 
                     if stock_pack_operation_length > 0 :
                         sumitem =0
-
                         sumitemmin =0
-
+                        
+                        #produk per grn
                         for item in stock_pack_operation:
                             if item.product_id.type in ['service','consu','product']:
                                 if item.qty_done > 0:
                                     sumitem = sumitem + item.qty_done
                                 else:
                                     sumitemmin = sumitemmin + item.qty_done
+                        
                         tender_line_data = {
-
                             'qty_received' : sumitem + record.qty_received,
                             'qty_outstanding' : record.product_qty - sumitem if record.qty_received == 0 else record.qty_outstanding - sumitem
                             }
                         record.write(tender_line_data)
 
-                        if stock_pack_operation_length == 1 and sumitemmin < 0 :
+                        if sumitemmin < 0 and sumitem == 0 :
                             count_action_cancel_status = count_action_cancel_status +1
 
                         count_product = count_product +1
-
+                        
                 if count_action_cancel_status == count_product :
+                    #cancel grn from vendor
                     po = self.env['purchase.order'].search([('id','=',self.purchase_id.id)])
                     if self.checking_picking_backorder() == False:
                         po.button_cancel()
+                        
+                        purchase_requisition = self.env['purchase.requisition'].search([('id','=',tender_id)])
+                        purchase_requisition.write({'check_missing_product':True,'validation_check_backorder':False})
+                        
                         for itemmin in self.pack_operation_product_ids:
                             purchase_requisition_linemin = self.env['purchase.requisition.line'].search([('requisition_id','=',tender_id),('product_id','=',itemmin.product_id.id)])
                             if itemmin.qty_done < 0 :
                                 for recordoutstanding in purchase_requisition_linemin:
                                     outstanding_data = {
+                                                'check_missing_product':False,        
                                                 'qty_outstanding' : itemmin.qty_done * -1
                                             }
                                     recordoutstanding.write(outstanding_data)
-
 
                         self.action_cancel()
                         self.action_validate_manager()
