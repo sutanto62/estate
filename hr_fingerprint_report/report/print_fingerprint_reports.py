@@ -130,7 +130,10 @@ class FingerprintReport(models.AbstractModel):
         # build dict
         for employee in employee_ids:
             # unique employee param: name and nik.
-            domain_employee = [('employee_name', '=', employee.name_related), ('nik', '=', employee.nik_number)]
+            # exclude 0 day finger.
+            domain_employee = [('employee_name', '=', employee.name_related),
+                               ('nik', '=', employee.nik_number),
+                               ('day_finger', '>', 0)]
             domain = domain_form + domain_employee
 
             attendance_ids = attendance_obj.search(domain)
