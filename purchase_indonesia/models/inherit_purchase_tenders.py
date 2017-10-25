@@ -11,7 +11,6 @@ from openerp.tools.translate import _
 from dateutil.relativedelta import *
 import calendar
 from openerp.tools import (DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT,drop_view_if_exists)
-from purchase_indonesia.models import quotation_comparison_form
 
 
 class InheritPurchaseTenders(models.Model):
