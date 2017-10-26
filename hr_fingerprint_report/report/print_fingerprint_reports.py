@@ -28,7 +28,9 @@ class FingerprintReport(models.AbstractModel):
         if data['form']['office_level_id']:
             domain.append(('office_level_id', '=', data['form']['office_level_id'][0]))
 
-        # print 'Wizard %s' % domain
+        # exclude 0 day finger
+        domain.append(('day_finger', '>', 0))
+
         return domain
 
     @api.multi
@@ -111,7 +113,8 @@ class FingerprintReport(models.AbstractModel):
     def get_department(self, data=None):
         domain = self.get_domain(data)
         attendance_ids = self.env['hr_fingerprint_ams.attendance'].search(domain).mapped('department')
-        return sorted(set(attendance_ids))
+        res = sorted(set(attendance_ids))
+        return res
 
     @api.multi
     def get_attendance(self, data=None):
@@ -132,11 +135,14 @@ class FingerprintReport(models.AbstractModel):
             # unique employee param: name and nik.
             # exclude 0 day finger.
             domain_employee = [('employee_name', '=', employee.name_related),
-                               ('nik', '=', employee.nik_number),
-                               ('day_finger', '>', 0)]
+                               ('nik', '=', employee.nik_number)]
             domain = domain_form + domain_employee
 
             attendance_ids = attendance_obj.search(domain)
+
+            # IndexError if no attendance_ids - str(attendance_ids[0].department
+            if not attendance_ids:
+                continue
 
             res = {
                 'employee_name': employee.name_related,
@@ -172,7 +178,7 @@ class FingerprintReport(models.AbstractModel):
             }
             dict.append(res)
 
-        return sorted(dict, key=operator.itemgetter('department','nik','employee_name'))
+        return sorted(dict, key=operator.itemgetter('department', 'nik', 'employee_name'))
 
     @api.multi
     def get_employee(self, data=None):
@@ -267,7 +273,6 @@ class FingerprintReport(models.AbstractModel):
 
     @api.multi
     def render_html(self, data):
-        # print 'print_fingerprint_reports ... started %s' % data
         report_obj = self.env['report']
         report = report_obj._get_report_from_name('hr_fingerprint_report.report_fingerprint')
         docargs = {
