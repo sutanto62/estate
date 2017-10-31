@@ -557,6 +557,31 @@
             </field>
         </record>
 
+        <record id="upkeep_labour_view_pivot" model="ir.ui.view">
+            <field name="name">Upkeep Labour View Pivot</field>
+            <field name="model">estate.upkeep.labour</field>
+            <field name="arch" type="xml">
+                <pivot string="Division Report">
+                    <!--row-->
+                    <field name="division_id" type="row"/>
+                    <field name="activity_id" type="row"/>
+                    <field name="location_id" type="row"/>
+                    <field name="planted_year_id" type="row"/>
+                    <field name="upkeep_date" interval="day" type="row"/>
+                    <!--column-->
+                    <field name="quantity" type="measure" string="Prod."/>
+                    <field name="number_of_day" type="measure" string="D"/>
+                    <field name="wage_number_of_day" type="measure" string="WD"/>
+                    <field name="wage_overtime" type="measure" string="WOT"/>
+                    <field name="wage_piece_rate" type="measure" string="WPR"/>
+                    <field name="amount" type="measure" string="W"/>
+                    <field name="ratio_quantity_day" type="measure" string="Prod./D"/>
+                    <field name="ratio_day_quantity" type="measure" string="D/Prod."/>
+                    <field name="ratio_wage_quantity" type="measure" string="W/Prod."/>
+                </pivot>
+            </field>
+        </record>
+
         <record id="upkeep_labour_view_tree" model="ir.ui.view" >
             <field name="name">Upkeep Labour Tree</field>
             <field name="model">estate.upkeep.labour</field>
@@ -902,7 +927,7 @@
         <record id="action_list_upkeep_labour" model="ir.actions.act_window" >
             <field name="name">Upkeep Labour</field>
             <field name="res_model">estate.upkeep.labour</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">tree,pivot,form</field>
             <field name="view_id" ref="upkeep_labour_view_tree"/>
             <field name="context">{'search_default_filter_month': 1, 'search_default_by_employee': 1}</field>
         </record>
