@@ -160,61 +160,22 @@ class Rainfall(models.Model):
         if 'time_end' in fields:
             fields.remove('time_end')
 
-        res = super(Rainfall, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
-
-        # show average per month at total
+        # remove total value
         if 'date:year' in groupby and 'date_month' not in groupby:
-            year_domain = res[0].get('__domain', domain)
-            month_ids = list(set(obj.search(year_domain, order='date_month asc').mapped('date_month')))
+            fields.remove('day')
+            fields.remove('volume')
 
-            year_res = []
+        # remove monthly value
+        if 'date_month' in groupby and 'block_id' not in groupby:
+            fields.remove('day')
+            fields.remove('volume')
 
-            for month in month_ids:
-                domain_month = []
-                domain_month.append(('date_month', '=', month))
-                domain_month.extend(year_domain)
+        # remove monthly grand total
+        # if 'date_month' in groupby and 'block_id' in groupby and 'date:year' not in groupby:
+        #     fields.remove('day')
+        #     fields.remove('volume')
 
-                monthly_rainfall_ids = obj.search(domain_month)
-
-                monthly_volume = sum(r.volume for r in monthly_rainfall_ids)
-                monthly_day = sum(r.day for r in monthly_rainfall_ids)
-
-                # count 1 for empty location
-                undefined_location = 1 if monthly_rainfall_ids.filtered(lambda r: not r.block_id) else 0
-
-                monthly_location = len(set(monthly_rainfall_ids.mapped('block_id'))) + undefined_location
-
-                month_res = {
-                    'month': month,
-                    'day': monthly_day/float(monthly_location),
-                    'volume': monthly_volume/float(monthly_location)
-                }
-
-                year_res.append(month_res)
-
-            res[0]['day'] = sum(r['day'] for r in year_res)
-            res[0]['volume'] = sum(r['volume'] for r in year_res)
-
-        # show average per month (not sum)
-        if 'date_month' in groupby:
-            for line in res:
-                rainfall_ids = obj.search(line.get('__domain', domain))
-
-                total_volume = sum(r.volume for r in rainfall_ids)
-                total_day = sum(r.day for r in rainfall_ids)
-
-                # count 1 for empty location
-                undefined_location = 1 if rainfall_ids.filtered(lambda r: not r.block_id) else 0
-
-                total_location = len(rainfall_ids.mapped('block_id')) + undefined_location
-
-                print 'read_group: average/month have %s location' % rainfall_ids
-
-                line['day'] = total_day/float(total_location)
-                line['volume'] = total_volume/float(total_location)
-
-                print ' read_group %s ' % line
-
+        res = super(Rainfall, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
 
         return res
 

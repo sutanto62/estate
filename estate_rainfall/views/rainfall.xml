@@ -63,8 +63,8 @@
                     <field name="time_start" string="Start" widget="float_time"/>
                     <field name="time_end" string="End" widget="float_time"/>
                     <field name="volume" sum="volume"/>
-                    <field name="observation"/>
                     <field name="day" sum="day"/>
+                    <field name="observation"/>
                     <!--<field name="observation"/>-->
                     <!--<field name="duration" widget="float_time"/>-->
                 </tree>
@@ -79,6 +79,7 @@
             <field name="arch" type="xml">
                 <pivot>
                     <field name="date_month" type="row"/>
+                    <field name="block_id" type="row"/>
                     <field name="date" interval="year" type="col"/>
                     <field name="day" type="measure"/>
                     <field name="volume" type="measure"/>
@@ -95,7 +96,7 @@
                 <graph type="line" string="Rainfall Chart">
                     <field name="date_month" type="row"/>
                     <field name="volume" type="measure"/>
-                    <field name="date_year" type="col"/>
+                    <field name="block_id" type="col"/>
                 </graph>
             </field>
         </record>
