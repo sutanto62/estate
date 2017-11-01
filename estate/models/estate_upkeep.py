@@ -1231,7 +1231,8 @@ class UpkeepLabour(models.Model):
                 "%s is going to work for more than 1 worked day." % self.employee_id.name)
             raise ValidationError(error_msg)
 
-    def read_group(self, cr, uid, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, context=None, orderby=False, lazy=True):
         """Remove sum.
         """
         # No need to sum quantity and piece rate from different activities, unless group by activity_id
@@ -1241,7 +1242,16 @@ class UpkeepLabour(models.Model):
         if 'quantity_piece_rate' in fields:
             fields.remove('quantity_piece_rate')
 
-        return super(UpkeepLabour, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
+        res = super(UpkeepLabour, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+
+        # planted area required
+        if 'location_id' in groupby:
+            for line in res:
+                block_obj = self.env['estate.block.template']
+                block_area = line['location_id'][1] + ' (%sha)' % block_obj.browse(line['location_id'][0]).area_planted
+                line['location_id'] = ['', block_area]
+
+        return res
 
     @api.multi
     def confirm_all(self):
