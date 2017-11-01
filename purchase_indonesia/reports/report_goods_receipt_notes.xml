@@ -177,7 +177,7 @@
 										<tbody>
 											<t t-foreach="o.pack_operation_product_ids" t-as="l">
 												<t t-set="idx" t-value="idx+1"/>
-												<t t-set="delta" t-value="l.product_qty-l.qty_done"/>
+												<t t-set="delta" t-value="l.qty_done-l.product_qty"/>
 												<tr>
 												   	<td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
 														<span t-esc="idx"/>
