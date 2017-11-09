@@ -665,10 +665,18 @@ class InheritPurchaseRequest(models.Model):
 #                 item.write(state_data)
 #                 item.send_mail_template()
         
+#         for item in self:
+#             if item.code in ['KPST'] and item._get_total_price_budget() < item._get_price_mid():
+#                 item.button_approved()
+#             elif item.code in ['KOKB'] and item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
+#                 item.button_approved()
+#             else :
+#                 state_data = {'state':'approval5','assigned_to' : item._get_director()}
+#                 item.write(state_data)
+#                 item.send_mail_template()
+        
         for item in self:
-            if item.code in ['KPST'] and item._get_total_price_budget() < item._get_price_mid():
-                item.button_approved()
-            elif item.code in ['KOKB'] and item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
+            if item.department_id.code not in item._get_department_not_finance_code() and item._get_total_price_budget() < item._get_price_mid():
                 item.button_approved()
             else :
                 state_data = {'state':'approval5','assigned_to' : item._get_director()}
