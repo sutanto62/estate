@@ -132,8 +132,10 @@
                     <separator/>
                     <filter name="validation_procurement" string="Procurement Staff Approved" domain="[('validation_procurement','=', True)]"/>
                     <separator/>
+                    <!-- 
                     <filter name="validation_user" string="Requester PP Approved" domain="[('validation_user','=', True)]"/>
                     <separator/>
+                    -->
                     <filter name="validation_manager" string="Manager Unapproved" domain="[('validation_manager','!=', True)]"/>
                     <field name="name" string="Picking List" filter_domain="['|',('name','ilike', self),('origin','ilike',self)]" invisible="1"/>
                     <filter icon="terp-check" name="draft" string="Draft" domain="[('state','=','draft')]" help="Draft Moves" invisible="1"/>
