@@ -89,7 +89,7 @@ class InheritPurchaseOrder(models.Model):
             arrPickingAssignedManager = []
             done = item.env['stock.picking'].search([('purchase_id','=',item.id),('state','=','done')])
             assigned = item.env['stock.picking'].search([('purchase_id','=',item.id),('validation_manager','=',True),('state','=','assigned')])
-            assigned_user = item.env['stock.picking'].search([('purchase_id','=',item.id),('validation_user','=',True),('state','=','assigned')])
+            assigned_user = item.env['stock.picking'].search([('purchase_id','=',item.id),('state','=','assigned')])
             for itemDone in done:
                 arrPickingDone.append(itemDone.id)
             for itemAssign in assigned:
