@@ -629,6 +629,9 @@ class InheritStockPicking(models.Model):
                     backorder_picking.write(purchase_data)
             else:
                 purchase_order.write({'state':'done'})
+                # update product price
+                for pol in purchase_order.order_line:
+                    pol.product_id.sudo().write({'standard_price':pol.price_unit})
 
     @api.multi
     def inherit_do_new_transfer(self):
