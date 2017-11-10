@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "budget_indonesia",
+    'name': "Budget Estate Extension",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Add estate budgeting functional, estate budgeting consist of labour, material, other.
+        """,
 
     'description': """
-        Long description of module's purpose
+        Differentiate budgeting into for types of calculation, now budgeting can calculate total workday, total amount of labour, material and other.
     """,
 
-    'author': "Your Company",
-    'website': "http://www.yourcompany.com",
+    'author': "Palmagroup",
+    'website': "http://www.palmagroup.co.id",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/openerp/addons/base/module/module_data.xml
@@ -20,12 +20,11 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base'],
+    'depends': ['base','account_budget'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
-        'templates.xml',
+        'views/budget_estate.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

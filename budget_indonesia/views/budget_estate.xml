@@ -1,0 +1,363 @@
+<openerp>
+    <data>	
+		<record id="view_budget_lines_pivot_tree" model="ir.ui.view">
+			<field name="name">Budget Lines Pivot</field>
+			<field name="model">v.budget.lines.pivot</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="crossovered_budget_id"/>
+			        <field name="budget_year_str"/>
+			        <field name="analytic_account_id"/>
+			        <field name="general_budget_id"/>
+			        <field name="date_from"/>
+			        <field name="date_to"/>
+			        <field name="qty"/>
+			        <field name="tenaga"/>
+			        <field name="material"/>
+			        <field name="lain"/>
+			        <field name="act_qty"/>
+			        <field name="act_tenaga"/>
+			        <field name="act_material"/>
+			        <field name="act_lain"/>
+			        <field name="var_qty"/>
+			        <field name="var_tenaga"/>
+			        <field name="var_material"/>
+			        <field name="var_lain"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record id="view_budget_lines_pivot_tree_search" model="ir.ui.view">
+            <field name="name">Budget Lines Pivot Search</field>
+            <field name="model">v.budget.lines.pivot</field>
+            <field name="arch" type="xml">
+                <search string="Search Budget">
+                    <filter name="filter_name" context="{'filters' : 'budget_year_str'}" string="Budget Year"/>
+                    <group expand="0" string="Group By">
+				        <filter name="by_budget_year" string="Budget Year" context="{'group_by': 'budget_year_str'}"/>
+				        <filter name="by_crossovered_budget_id" string="Budget" context="{'group_by': 'crossovered_budget_id'}"/>
+				        <filter name="by_analytic_account_id" string="Planted Year" context="{'group_by': 'analytic_account_id'}"/>
+				        <filter name="by_general_budget_id" string="Budgetary Position" context="{'group_by': 'general_budget_id'}"/>
+				  	</group>
+                </search>
+            </field>
+        </record>
+	   	
+		<record model="ir.ui.view" id="inherit_view_budget_post_form">
+            <field name="name">account.budget.post.form</field>
+            <field name="model">account.budget.post</field>
+            <field name="inherit_id" ref="account_budget.view_budget_post_form"/>
+            <field name="arch" type="xml">
+              	<xpath expr="//form" position="replace">
+              	    <form string="Budgetary Position">
+	                    <group col="4">
+	                        <field name="name"/>
+	                        <field name="company_id"  groups="base.group_multi_company" options="{'no_create': True}"/>
+	                        <field name="is_budget_estate"/>
+	                        <field name="coa_account" attrs="{'invisible':[('is_budget_estate','!=',True)]}"/>
+	                    </group>
+	                	<notebook>
+	                        <page string="Accounts" attrs="{'invisible':[('is_budget_estate','=',True)]}">
+	                            <field name="account_ids">
+	                                <tree>
+	                                    <field name="code"/>
+	                                    <field name="name"/>
+	                                </tree>
+	                            </field>
+	                        </page>
+	                    </notebook>
+	               	</form>
+              	</xpath>      
+            </field>
+        </record>
+                   
+		<record model="ir.actions.act_window" id="budget_lines_pivot_action">
+            <field name="name">Budget Lines Pivot</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.budget.lines.pivot</field>
+            <field name="view_mode">tree</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new Budget Lines.
+              </p><p>
+                A Budget Lines is an set of budget in order to control cost/revenue at a certain point in time.
+              </p>
+            </field>
+        </record>
+        
+		<record model="ir.ui.view" id="inherit_crossovered_budget_view_form">
+           	<field name="name">Budget Lines Pivot</field>
+           	<field name="model">crossovered.budget</field>
+          	<field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+          	<field name="arch" type="xml">
+          	   	<xpath expr="//form" position="replace">
+    				<form string="Budget">
+	                    <header>
+	                        <button string="Confirm" name="confirm" states="draft" type="workflow" class="oe_highlight"/>
+	                        <button string="Approve" name="validate" states="confirm" type="workflow" class="oe_highlight"/>
+	                        <button string="Done" name="done" states="validate" type="workflow" class="oe_highlight"/>
+	                        <button name="draft" states="cancel" string="Reset to Draft" type="workflow" />
+	                        <button string="Cancel Budget" name="cancel" states="confirm,validate" type="workflow"/>
+	                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm"/>
+	                    </header>
+	                    <sheet string="Budget">
+	                        <div class="oe_title">
+	                            <label for="name" class="oe_edit_only"/>
+	                            <h1>
+	                                <field name="name" attrs="{'readonly':[('state','!=','draft')]}" placeholder="Budget Name"/>
+	                            </h1>
+	                        </div>
+	                        <group>
+	                            <field name="is_parent_budget"/>
+	                            <group attrs="{'invisible':[('is_parent_budget','=',True)]}">
+	                                <field name="parent_budget"/>
+	                                <field name="is_budget_estate"/>
+	                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" attrs="{'invisible':[('is_budget_estate','!=',True)]}"/>
+	                                <field name="department_account" groups="analytic.group_analytic_accounting" attrs="{'invisible':[('is_budget_estate','!=',True)]}"/>
+	                                <field name="creating_user_id" attrs="{'readonly':[('state','!=','draft')]}" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_user']}"/>
+	                            </group>
+	                            <group attrs="{'invisible':[('is_parent_budget','=',True)]}">
+	                                <label for="date_from" string="Period"/>
+	                                <div>
+	                                    <field name="date_from" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}"/> - 
+	                                    <field name="date_to" class="oe_inline" attrs="{'readonly':[('state','!=','draft')]}" nolabel="1"/>
+	                                </div>
+	                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+	                            </group>
+	                        </group>
+	                        <notebook attrs="{'invisible':[('is_parent_budget','=',True)]}">
+	                            <page string="Budget Lines" attrs="{'invisible':[('is_budget_estate','=',True)]}">
+	                                <field name="crossovered_budget_line" context="{'default_date_from': date_from,'default_date_to': date_to}" colspan="4" nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
+	                                    <tree string="Budget Lines">
+	                                        <field name="general_budget_id"/>
+	                                        <field name="account_code"/>
+	                                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+	                                        <field name="budget_line_type"/>
+	                                        <field name="date_from"/>
+	                                        <field name="date_to"/>
+	                                        <field name="paid_date" groups="base.group_no_one"/>
+	                                        <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
+	                                        <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+	                                        <field name="theoritical_amount" sum="Theoretical Amount" widget="monetary"/>
+	                                        <field name="percentage"/>
+	                                    </tree>
+	                                    <form string="Budget Lines">
+	                                        <group>
+	                                            <group>
+	                                                <field name="general_budget_id"/>
+	                                                <field name="planned_amount" widget="monetary"/>
+	                                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+	                                                <field name="budget_line_type"/>
+	                                            </group>
+	                                            <group>
+	                                                <label for="date_from" string="Period"/>
+	                                                <div>
+	                                                    <field name="date_from" class="oe_inline"/> - 
+	                                                    <field name="date_to" class="oe_inline"/>
+	                                                </div>
+	                                                <field name="paid_date" groups="base.group_no_one"/>
+	                                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+	                                            </group>
+	                                        </group>
+	                                    </form>
+	                                </field>
+	                            </page>
+	                            <page string="Quantity">
+	                                <field name="crossovered_budget_line_qty" context="{'default_date_from': date_from,'default_date_to': date_to,'default_analytic_account_id':analytic_account_id,'default_budget_line_type': 'unit'}" colspan="4" nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
+	                                    <tree string="Quantity">
+	                                        <field name="general_budget_id"/>
+	                                        <field name="account_code"/>
+	                                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                        <field name="budget_line_type" invisible="1"/>
+	                                        <field name="date_from"/>
+	                                        <field name="date_to"/>
+	                                        <field name="paid_date" groups="base.group_no_one"/>
+	                                        <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
+	                                        <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+	                                        <field name="varian_amount" sum="Varian Amount" widget="monetary"/>
+	                                        <field name="theoritical_amount" sum="Theoretical Amount" widget="monetary"/>
+	                                        <field name="percentage"/>
+	                                    </tree>
+	                                    <form string="Quantity">
+	                                        <group>
+	                                            <group>
+	                                                <field name="general_budget_id"/>
+	                                                <field name="planned_amount" widget="monetary"/>
+	                                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                                <field name="budget_line_type" invisible="1"/>
+	                                            </group>
+	                                            <group>
+	                                                <label for="date_from" string="Period"/>
+	                                                <div>
+	                                                    <field name="date_from" class="oe_inline"/> - 
+	                                                    <field name="date_to" class="oe_inline"/>
+	                                                </div>
+	                                                <field name="paid_date" groups="base.group_no_one"/>
+	                                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+	                                            </group>
+	                                        </group>
+	                                    </form>
+	                                </field>
+	                            </page>
+	                            <page string="Labour" attrs="{'invisible':[('is_budget_estate','!=',True)]}">
+	                                <field name="crossovered_budget_line_manpower" context="{'default_date_from': date_from,'default_date_to': date_to,'default_analytic_account_id':analytic_account_id,'default_budget_line_type': 'amount_labour'}" colspan="4" nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
+	                                    <tree string="Labour">
+	                                        <field name="general_budget_id"/>
+	                                        <field name="account_code"/>
+	                                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                        <field name="budget_line_type" invisible="1"/>
+	                                        <field name="date_from"/>
+	                                        <field name="date_to"/>
+	                                        <field name="paid_date" groups="base.group_no_one"/>
+	                                        <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
+	                                        <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+	                                        <field name="varian_amount" sum="Varian Amount" widget="monetary"/>
+	                                        <field name="theoritical_amount" sum="Theoretical Amount" widget="monetary"/>
+	                                        <field name="percentage"/>
+	                                    </tree>
+	                                    <form string="Labour">
+	                                        <group>
+	                                            <group>
+	                                                <field name="general_budget_id"/>
+	                                                <field name="planned_amount" widget="monetary"/>
+	                                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                                <field name="budget_line_type" invisible="1"/>
+	                                            </group>
+	                                            <group>
+	                                                <label for="date_from" string="Period"/>
+	                                                <div>
+	                                                    <field name="date_from" class="oe_inline"/> - 
+	                                                    <field name="date_to" class="oe_inline"/>
+	                                                </div>
+	                                                <field name="paid_date" groups="base.group_no_one"/>
+	                                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+	                                            </group>
+	                                        </group>
+	                                    </form>
+	                                </field>
+	                            </page>
+	                            <page string="Material" attrs="{'invisible':[('is_budget_estate','!=',True)]}">
+	                                <field name="crossovered_budget_line_material" context="{'default_date_from': date_from,'default_date_to': date_to,'default_analytic_account_id':analytic_account_id,'default_budget_line_type': 'amount_material'}" colspan="4" nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
+	                                    <tree string="Material">
+	                                        <field name="general_budget_id"/>
+	                                        <field name="account_code"/>
+	                                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                        <field name="budget_line_type" invisible="1"/>
+	                                        <field name="date_from"/>
+	                                        <field name="date_to"/>
+	                                        <field name="paid_date" groups="base.group_no_one"/>
+	                                        <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
+	                                        <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+	                                        <field name="varian_amount" sum="Varian Amount" widget="monetary"/>
+	                                        <field name="theoritical_amount" sum="Theoretical Amount" widget="monetary"/>
+	                                        <field name="percentage"/>
+	                                    </tree>
+	                                    <form string="Material">
+	                                        <group>
+	                                            <group>
+	                                                <field name="general_budget_id"/>
+	                                                <field name="planned_amount" widget="monetary"/>
+	                                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                                <field name="budget_line_type" invisible="1"/>
+	                                            </group>
+	                                            <group>
+	                                                <label for="date_from" string="Period"/>
+	                                                <div>
+	                                                    <field name="date_from" class="oe_inline"/> - 
+	                                                    <field name="date_to" class="oe_inline"/>
+	                                                </div>
+	                                                <field name="paid_date" groups="base.group_no_one"/>
+	                                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+	                                            </group>
+	                                        </group>
+	                                    </form>
+	                                </field>
+	                            </page>
+	                            <page string="Other" attrs="{'invisible':[('is_budget_estate','!=',True)]}">
+	                                <field name="crossovered_budget_line_other" context="{'default_date_from': date_from,'default_date_to': date_to,'default_analytic_account_id':analytic_account_id,'default_budget_line_type': 'amount_other'}" colspan="4" nolabel="1" attrs="{'readonly':[('state','!=','draft')]}">
+	                                    <tree string="Other">
+	                                        <field name="general_budget_id"/>
+	                                        <field name="account_code"/>
+	                                        <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                        <field name="budget_line_type" invisible="1"/>
+	                                        <field name="date_from"/>
+	                                        <field name="date_to"/>
+	                                        <field name="paid_date" groups="base.group_no_one"/>
+	                                        <field name="planned_amount" sum="Planned Amount" widget="monetary"/>
+	                                        <field name="practical_amount" sum="Practical Amount" widget="monetary"/>
+	                                        <field name="varian_amount" sum="Varian Amount" widget="monetary"/>
+	                                        <field name="theoritical_amount" sum="Theoretical Amount" widget="monetary"/>
+	                                        <field name="percentage"/>
+	                                    </tree>
+	                                    <form string="Other">
+	                                        <group>
+	                                            <group>
+	                                                <field name="general_budget_id"/>
+	                                                <field name="planned_amount" widget="monetary"/>
+	                                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" invisible="1"/>
+	                                                <field name="budget_line_type" invisible="1"/>
+	                                            </group>
+	                                            <group>
+	                                                <label for="date_from" string="Period"/>
+	                                                <div>
+	                                                    <field name="date_from" class="oe_inline"/> - 
+	                                                    <field name="date_to" class="oe_inline"/>
+	                                                </div>
+	                                                <field name="paid_date" groups="base.group_no_one"/>
+	                                                <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+	                                            </group>
+	                                        </group>
+	                                    </form>
+	                                </field>
+	                            </page>
+	                        </notebook>
+	                    </sheet>
+	                    <div class="oe_chatter">
+	                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+	                        <field name="message_ids" widget="mail_thread"/>
+	                    </div>
+	                </form>
+              	</xpath>
+      		</field>
+	   	</record>
+	   	
+		<record model="ir.ui.view" id="inherit_crossovered_budget_view_tree">
+            <field name="name">crossovered.budget.view.tree</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+            		<field name="parent_budget"/>		
+            	</xpath>
+            </field>
+        </record>
+	   	
+		<record model="ir.actions.act_window" id="crossovered_budget_lines_action">
+            <field name="name">Budget Lines</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crossovered.budget.lines</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to start a new Budget Lines.
+              </p><p>
+                A Budget Lines is an set of budget in order to control cost/revenue at a certain point in time.
+              </p>
+            </field>
+        </record>
+        
+		<menuitem parent="account.menu_finance_entries"
+            id="menu_crossovered_budget_line"
+            name="Budgets Lines"
+            action="crossovered_budget_lines_action" sequence="611" 
+            groups="account.group_account_user"/>
+	   	
+		<menuitem parent="account.menu_finance_entries"
+            id="menu_budget_lines_pivot"
+            name="Budgets Lines Pivot"
+            action="budget_lines_pivot_action" sequence="711" 
+            groups="account.group_account_user"/>
+		
+	</data>
+</openerp>
