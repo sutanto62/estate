@@ -99,6 +99,7 @@
 
                  <xpath expr="//field[@name='origin']" position="after">
                      <field name="complete_name" readonly="1" string="Purchase Tender"/>
+                     <field name="is_spec_not_clear"/>
                  </xpath>
 
                  <xpath expr="//field[@name='schedule_date']" position="replace">
@@ -219,7 +220,7 @@
                  </xpath>
 
                  <xpath expr="//field[@name='state']" position="after">
-                     <field name="pp_description"/>
+                     <field name="first_product_name"/>
                      <field name="quotation_state" string="Status QCF" invisible="1"/>
                      <field name="is_qcf_done" string="Quotation"/>
                      <field name="is_po_done" string="PO"/>
@@ -245,6 +246,7 @@
                  </xpath>
                  <xpath expr="//field[@name='ordering_date']" position="after">
                      <field name="due_date" string="Due Date"/>
+                     <field name="max_grn_date"/>
                      <field name="validation_due_date" invisible="1"/>
                  </xpath>
 
@@ -342,6 +344,168 @@
 	        <field name="res_model">purchase.requisition</field>
 	        <field name="view_mode">tree,pivot,graph,form</field>
 	    </record>
-
+		
+        <!-- summary progress pp -->
+		<record id="view_summary_progress_pp_report_tree" model="ir.ui.view">
+			<field name="name">Summary Progress Purchase Request</field>
+			<field name="model">v.summary.progress.pp.report</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree decoration-bf="id in (1,2,9,11,16)">
+			        <field name="company_name"/>
+			        <field name="category_name"/>
+			        <field name="ho"/>
+			        <field name="ro"/>
+			        <field name="po_done"/>
+			        <field name="po_undone"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record model="ir.actions.act_window" id="summary_progress_pp_report_action">
+            <field name="name">Summary Progress PP</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.summary.progress.pp.report</field>
+            <field name="view_mode">tree</field>
+        </record>
+	   	
+		<menuitem parent="base.purchase_report"
+	        id="menu_summary_progress_pp_report"
+	        sequence="712"
+	        action="summary_progress_pp_report_action"/>
+		
+		<!-- purchase requisition line -->
+		<record id="v_purchase_requisition_line_tree" model="ir.ui.view">
+			<field name="name">Summary Tender Line</field>
+			<field name="model">v.purchase.requisition.line</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="create_date"/>
+			        <field name="approve_date"/>
+			        <field name="request_id"/>
+			        <field name="company_id"/>
+			        <field name="category"/>
+			        <field name="product_id"/>
+			        <field name="product_qty"/>
+			        <field name="qty_received"/>
+			        <field name="qty_outstanding"/>
+			        <field name="product_uom_id"/>
+			        <field name="is_po_done"/>
+			        <field name="pic"/>
+			        <field name="qcf_id"/>
+			        <field name="po_approve_date"/>
+			        <field name="po_id"/>
+			        <field name="partner_id"/>
+			        <field name="price_unit"/>
+			        <field name="price_tax"/>
+			        <field name="price_subtotal"/>
+			        <field name="completion_date"/>
+			        <field name="grn_id"/>
+			        <field name="is_inv_done"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record id="v_purchase_requisition_line_tree_filter" model="ir.ui.view">
+            <field name="name">v.purchase.requisition.line.select</field>
+            <field name="model">v.purchase.requisition.line</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Request">
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('approve_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+              		<separator/>
+	          		<filter icon="terp-go-month" string="Previous Month"
+		                	domain="[('approve_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+		                  	('approve_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+           		</search>
+           	</field>
+	 	</record>
+	 	
+		<record model="ir.actions.act_window" id="v_purchase_requisition_line_action">
+            <field name="name">Summary Tender Line</field>
+            <field name="context">{'search_default_filter_month':1}</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.purchase.requisition.line</field>
+            <field name="view_mode">tree</field>
+        </record>
+	   	
+		<menuitem parent="base.purchase_report"
+	        id="menu_v_purchase_requisition_line"
+	        sequence="712"
+	        action="v_purchase_requisition_line_action"/>
+		
+		<!-- purchase requisition -->
+		<record id="v_purchase_requisition_tree" model="ir.ui.view">
+			<field name="name">Summary Tender</field>
+			<field name="model">v.purchase.requisition</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="create_date"/>
+			        <field name="approve_date"/>
+			        <field name="request_id"/>
+			        <field name="company_id"/>
+			        <field name="category"/>
+			        <field name="is_po_done"/>
+			        <field name="pic"/>
+			        <field name="qcf_id"/>
+			        <field name="po_approve_date"/>
+			        <field name="po_id"/>
+			        <field name="completion_date"/>
+			        <field name="grn_id"/>
+			        <field name="is_inv_done"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record id="v_purchase_requisition_tree_filter" model="ir.ui.view">
+            <field name="name">v.purchase.requisition.select</field>
+            <field name="model">v.purchase.requisition</field>
+            <field name="arch" type="xml">
+                <search string="Search Purchase Request">
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('approve_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+              		<separator/>
+	          		<filter icon="terp-go-month" string="Previous Month"
+		                	domain="[('approve_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+		                  	('approve_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+           		</search>
+           	</field>
+	 	</record>
+	   	
+        <record id="v_purchase_requisition_tree_pivot" model="ir.ui.view">
+            <field name="name">Summary Tender</field>
+            <field name="model">v.purchase.requisition</field>
+            <field name="arch" type="xml">
+                <pivot>
+                    <field name="ordering_date" interval="month" type="row"/>
+                    <field name="status" type="col"/>
+                </pivot>
+            </field>
+        </record>
+	   	
+		<record model="ir.actions.act_window" id="v_purchase_requisition_action">
+            <field name="name">Summary Tender</field>
+            <field name="context">{'search_default_filter_month':1}</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.purchase.requisition</field>
+            <field name="view_mode">tree,pivot</field>
+        </record>
+	   	
+		<menuitem parent="base.purchase_report"
+	        id="menu_v_purchase_requisition"
+	        sequence="713"
+	        action="v_purchase_requisition_action"/>
+		
+		<record model="ir.actions.act_window" id="purchase.action_purchase_line_product_tree">
+          	<field name="context">{}</field>
+            <field name="res_model">purchase.order.line</field>
+            <field name="domain">[('product_id.product_tmpl_id','in',active_ids),('order_id.state','=',('purchase','done'))]</field>
+            <field name="name">Purchases</field>
+            <field name="view_id" ref="purchase.purchase_order_line_tree"/>
+     	</record>
     </data>
 </openerp>

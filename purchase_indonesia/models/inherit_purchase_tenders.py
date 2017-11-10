@@ -62,7 +62,27 @@ class InheritPurchaseTenders(models.Model):
     total_estimate_price = fields.Float('Total Estimate Price', compute='_compute_total_estimate_price')
     pp_description = fields.Char('Description', compute='_compute_pp_description')
     is_qcf_draft = fields.Boolean('Is QCF Draft', compute='_compute_is_qcf_draft')
+    first_product_name = fields.Char('First Product Name', compute='_compute_first_product_name')
+    max_grn_date = fields.Date('Completion Date', compute='_compute_max_grn_date')
+    is_spec_not_clear = fields.Boolean('Spec Not Yet Clear', store=True)
     
+    @api.multi
+    def _compute_first_product_name(self):
+        for item in self:
+            if item.line_ids :
+                item.first_product_name = item.line_ids[0].product_id.name
+                
+    @api.multi
+    def _compute_max_grn_date(self):
+        for item in self :
+            if item.request_id :
+                pickings = self.env['stock.picking'].search([('pr_source', 'like', item.request_id.complete_name)])
+                for i in pickings :
+                    for mids in i.message_ids:
+                        for mids_tracking in mids.tracking_value_ids:
+                            if mids_tracking.field == 'state' and (mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai'):
+                                item.max_grn_date = mids.date
+        
     @api.multi
     def _compute_is_qcf_draft(self):
         for item in self:
@@ -1287,3 +1307,454 @@ class TriggerPurchaseTender(models.Model):
 #             prs = item.env['purchase.requisition'].search([('request_id','=',item.request_id.id)])
 #             for pr in prs:
 #                 pr.set_status_po_grn_inv()
+
+class SummaryProgressPurchaseRequest(models.Model):
+    _name = 'v.summary.progress.pp.report'
+    _description = 'Summary Progress Purchase Request'
+    _auto = False
+    
+    company_name = fields.Char("1")
+    category_name  = fields.Char("2")
+    ho  = fields.Char("3")
+    ro  = fields.Char("4")
+    po_done  = fields.Char("5")
+    po_undone  = fields.Char("6")
+    
+    def init(self, cr):
+        drop_view_if_exists(cr, 'v_summary_progress_pp_report')
+        drop_view_if_exists(cr, 'v_summary_progress_pp_undone_current')
+        drop_view_if_exists(cr, 'v_summary_progress_pp_current')
+        drop_view_if_exists(cr, 'v_summary_progress_pp')
+        
+        cr.execute("""
+            create or replace view v_summary_progress_pp as
+                select
+                    pr.company_name,
+                    pr.code,
+                    pr.category_name,
+                    po_summary.*,
+                    date_part('month',po_summary.pr_create_date) pr_month,
+                    date_part('year',po_summary.pr_create_date) pr_year,
+                    date_part('month',po_summary.po_create_date) po_month,
+                    date_part('year',po_summary.po_create_date) po_year
+                from 
+                (
+                    (
+                        select
+                            pr.request_id,
+                            (case when pr.is_qcf_done is null then false else pr.is_qcf_done end) is_qcf_done,
+                            (case when pr.is_spec_not_clear is null then false else pr.is_spec_not_clear end) is_spec_not_clear,
+                            pr.create_date pr_create_date,
+                            po.create_date po_create_date,
+                            'po_done' state
+                        from 
+                            (select requisition_id, max(create_date) create_date from purchase_order group by requisition_id) po 
+                            right join 
+                            (select * from purchase_requisition where is_po_done = true) pr
+                            on po.requisition_id = pr.id
+                    )
+                    union all
+                    (
+                        select 
+                            pr.request_id,
+                            (case when pr.is_qcf_done is null then false else pr.is_qcf_done end) is_qcf_done,
+                            (case when pr.is_spec_not_clear is null then false else pr.is_spec_not_clear end) is_spec_not_clear,
+                            pr.create_date pr_create_date,
+                            po.create_date po_create_date,
+                            'po_undone' state
+                        from 
+                            (select requisition_id, max(create_date) create_date from purchase_order group by requisition_id) po 
+                            right join 
+                            (select * from purchase_requisition where is_po_done = false or is_po_done is null) pr
+                            on po.requisition_id = pr.id    
+                    )
+                )po_summary 
+                inner join 
+                (    select 
+                        pr.id,
+                        rc.name company_name,
+                        pit.name category_name,
+                        (case when pr.code = 'KOKB' then 'RO' else 'HO' end) code
+                    from 
+                        (select * from purchase_request where active = true) pr 
+                        inner join 
+                        res_company rc on rc.id = pr.company_id
+                        inner join 
+                        purchase_indonesia_type pit
+                        on pr.type_purchase = pit.id
+                ) pr 
+                on po_summary.request_id = pr.id
+        """)
+        
+        cr.execute("""
+            create or replace view v_summary_progress_pp_current as
+                select 
+                    dummy.company_name_val company_name,
+                    dummy.category_name,
+                    ''||summ.ho ho,
+                    ''||summ.ro ro,
+                    ''||summ.po_done po_done,
+                    ''||summ.po_undone po_undone,
+                    summ.ho ho_val,
+                    summ.ro ro_val,
+                    summ.po_done po_done_val,
+                    summ.po_undone po_undone_val
+                from 
+                (
+                    select 
+                        case when category_name = 'Urgent' then '' else company_name end company_name_val,
+                        company_name,
+                        category_name
+                    from (
+                        select name company_name from res_company where code != 'PG'
+                        ) rc, 
+                        (
+                        select name category_name from purchase_indonesia_type
+                        ) pit
+                ) dummy
+                left join 
+                (
+                    select  
+                        by_code.company_name,
+                        by_code.category_name,
+                        by_code.ho,
+                        by_code.ro,
+                        by_state.po_done,
+                        by_state.po_undone
+                    from 
+                    (
+                        select 
+                            summ.company_name, 
+                            summ.category_name,
+                            sum(
+                                CASE WHEN
+                                 code = 'RO' THEN summ.total_code
+                                ELSE (0)::numeric
+                            END) AS RO,
+                            sum(
+                                CASE WHEN
+                                 code = 'HO' THEN summ.total_code
+                                ELSE (0)::numeric
+                            END) AS HO
+                        from 
+                        (
+                            select company_name, category_name, code, count(*) total_code from (
+                                select * from v_summary_progress_pp where 
+                                    (pr_month = date_part('month', now())-1  and pr_year = date_part('year', now()) ) or
+                                    (pr_month < date_part('month', now())-1  and pr_year = date_part('year', now())  and state = 'po_undone')
+                            ) summ group by company_name, category_name, code
+                        )summ group by company_name, category_name
+                    ) by_code 
+                    inner join 
+                    (
+                        select 
+                            summ.company_name, 
+                            summ.category_name,
+                            sum(
+                                CASE WHEN
+                                 state = 'po_undone' THEN summ.total_state
+                                ELSE (0)::numeric
+                            END) AS po_undone,
+                            sum(
+                                CASE WHEN
+                                 state = 'po_done' THEN summ.total_state
+                                ELSE (0)::numeric
+                            END) AS po_done
+                        from 
+                        (
+                            select company_name, category_name, state, count(*) total_state from (
+                                select * from v_summary_progress_pp where 
+                                    (pr_month = date_part('month', now())-1  and pr_year = date_part('year', now()) ) or
+                                    (pr_month < date_part('month', now())-1  and pr_year = date_part('year', now())  and state = 'po_undone')
+                            ) summ group by company_name, category_name, state
+                        )summ group by company_name, category_name
+                    ) by_state on by_code.company_name = by_state.company_name and by_code.category_name = by_state.category_name
+                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name
+        """)
+        
+        cr.execute("""
+            create or replace view v_summary_progress_pp_undone_current as
+                select 
+                    row_number() over () idx,
+                    dummy.status_pp_undone,
+                    (case when data_value.total is null then 0 else data_value.total end) total
+                from (
+                    select 'Proses Quotation' status_pp_undone
+                    union all
+                    select 'Proses Approval PO' status_pp_undone
+                    union all
+                    select 'PP Bertahap' status_pp_undone
+                    union all
+                    select 'Spesifikasi Belum Jelas' status_pp_undone
+                ) dummy left join 
+                (    
+                    select 
+                        status_pp_undone,
+                        sum(total) as total
+                    from (
+                        select
+                            (case when is_qcf_done = true then 'Proses Approval PO' else 
+                                (case when is_spec_not_clear = true then 'Spesifikasi Belum Jelas' else 
+                                    (case when po_month is not null then 'PP Bertahap' else 'Proses Quotation' end)
+                                end)  
+                            end) as status_pp_undone,
+                            count(*) total
+                        from 
+                            v_summary_progress_pp 
+                        where 
+                            ((pr_month = date_part('month', now())-1  and pr_year = date_part('year', now())) or
+                            (pr_month < date_part('month', now())-1  and pr_year = date_part('year', now()))) and
+                            state = 'po_undone'
+                        group by 
+                            is_qcf_done,is_spec_not_clear,po_month
+                    )a group by status_pp_undone
+                ) data_value 
+                on dummy.status_pp_undone = data_value.status_pp_undone
+        """)
+        
+        cr.execute("""
+            create or replace view v_summary_progress_pp_report as
+                select 
+                    row_number() over() id,
+                    summ.* 
+                from 
+                (
+                    --select '' company_name, '' category_name, 'PP s.d '|| to_char(now(),'dd Mon YYYY') ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
+                    select '' company_name, '' category_name, 'PP s.d Oktober 2017' ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
+                    union all
+                    select 'Perusahaan' company_name, 'Kategori' category_name, 'HO' ho, 'SO' ro, '(Done)' po_done, '(Undone)' po_undone
+                    union all
+                    select company_name, category_name, ho, ro, po_done, po_undone from v_summary_progress_pp_current
+                    union all
+                    select '' company_name, 'Total' category_name, null ho, ''||sum(ho_val)+sum(ro_val) ro, ''||sum(po_done_val) po_done, ''||sum(po_undone_val) po_undone from v_summary_progress_pp_current
+                    union all
+                    select '' company_name, '' category_name, null ho, null ro, null po_done, null po_undone
+                    union all
+                    select 'No' company_name, 'Status PP Undone' category_name, 'Jumlah PP' ho, null ro, null po_done, null po_undone
+                    union all
+                    select ''||idx company_name,status_pp_undone category_name, ''||total ho, null ro, null po_done, null po_undone from v_summary_progress_pp_undone_current
+                    union all
+                    select null company_name,'Total' category_name, ''||sum(total) ho, null ro, null po_done, null po_undone from v_summary_progress_pp_undone_current
+                ) summ 
+        """)
+    
+class ViewPurchaseTenderLine(models.Model):
+    _name = 'v.purchase.requisition.line'
+    _description = 'Purchase Request Line'
+    _auto = False
+    
+    request_id = fields.Many2one('purchase.request','Purchase Request')
+    product_id = fields.Many2one('product.product', 'Product')
+    product_uom_id = fields.Many2one('product.uom', 'Product Unit of Measure')
+    company_id = fields.Many2one('res.company', 'Company')
+    product_qty = fields.Float('Quantity')
+    qty_received = fields.Float('Quantity Received')
+    qty_outstanding = fields.Float('Quantity Outstanding')
+    ordering_date = fields.Date('Ordering Date')
+    is_qcf_done = fields.Boolean('QCF Done')
+    is_po_done = fields.Boolean('PO Done')
+    is_grn_done = fields.Boolean('GRN Done')
+    is_inv_done = fields.Boolean('Invoice Done')
+    pic = fields.Many2one('res.users', 'PIC')
+    qcf_id = fields.Char('QCF')
+    po_id = fields.Char('Purchase Order')
+    po_approve_date = fields.Date('PO Approve Date')
+    price_unit = fields.Float('Unit Price')
+    price_tax = fields.Float('Tax')
+    price_subtotal = fields.Float('Subtotal')
+    partner_id = fields.Many2one('res.partner','Vendor')
+    grn_id = fields.Char('GRN')
+    completion_date = fields.Date('Completion Date')
+    create_date = fields.Date('PP Create Date')
+    approve_date = fields.Date('PP Approve Date')
+    category = fields.Char('PP Category')
+    status = fields.Char('Status')
+    
+    def init(self, cr):
+        drop_view_if_exists(cr, 'v_purchase_requisition')
+        drop_view_if_exists(cr, 'v_purchase_requisition_line')
+        
+        cr.execute("""
+            create or replace view v_purchase_requisition_line
+            as
+            select
+                row_number() over() id,
+                pr.requisition_id,
+                pr.request_id,
+                pr.create_date::date create_date,
+                pr.approve_date::date approve_date,
+                pr.category,
+                pr.product_id,
+                pr.product_uom_id,
+                pr.company_id,
+                pr.product_qty,
+                pr.qty_received,
+                pr.qty_outstanding,
+                pr.ordering_date::date ordering_date,
+                pr.is_qcf_done,
+                pr.is_grn_done,
+                pr.is_inv_done,
+                pr.is_po_done,
+                pr.pic,
+                qcf.qcf_id,
+                po.po_id,
+                po.origin,
+                po.po_approve_date::date po_approve_date,
+                po.price_unit,
+                po.price_tax,
+                po.price_subtotal,
+                po.partner_id,
+                grn.grn_id,
+                grn.completion_date::date completion_date,
+                (case when is_inv_done = true then '5-Invoice Done' else 
+                    (case when is_grn_done = true then '4-GRN Done' else
+                        (case when is_po_done = true then '3-PO Done' else
+                            (case when is_qcf_done = true then '2-QCF Done' else
+                                 '1-PP Full Approved'
+                            end)
+                        end) 
+                    end)
+                end) status
+            from 
+                (
+                    select
+                        prl.requisition_id,
+                        pr.request_id,
+                        pr.create_date,
+                        pr.approve_date,
+                        pr.category,
+                        prl.product_id,
+                        prl.product_uom_id,
+                        pr.companys_id company_id,
+                        prl.product_qty,
+                        (case when prl.qty_received is null then 0.0 else prl.qty_received end) qty_received,
+                        (prl.product_qty - (case when prl.qty_received is null then 0.0 else prl.qty_received end)) qty_outstanding,
+                        pr.ordering_date,
+                        pr.is_qcf_done,
+                        pr.is_grn_done,
+                        pr.is_po_done,
+                        pr.is_inv_done,
+                        pr.pic
+                    from 
+                        purchase_requisition_line prl inner join 
+                        (select 
+                            preq.id,
+                            pr.create_date,
+                            preq.create_date approve_date,
+                            (case when is_confirmation = true then 'Confirmation' else 
+                                (case when pr.type_purchase = 1 then 'Normal' else 'Urgent' end)
+                            end) category,
+                            pr.id request_id,
+                            preq.companys_id,
+                            preq.ordering_date,
+                            preq.is_qcf_done,
+                            preq.is_grn_done,
+                            preq.is_inv_done,
+                            preq.is_po_done,
+                            preq.user_id pic
+                            from 
+                                purchase_request pr 
+                                inner join purchase_requisition preq 
+                                on pr.id = preq.request_id 
+                                where pr.active = true
+                        ) pr 
+                        on prl.requisition_id = pr.id
+                ) pr 
+                left join 
+                (
+                    select 
+                        max(complete_name) qcf_id, 
+                        requisition_id 
+                    from 
+                        quotation_comparison_form 
+                    group by 
+                        requisition_id
+                ) qcf
+                on pr.requisition_id = qcf.requisition_id
+                left join 
+                (   
+                    select
+                        po.complete_name po_id,
+                        max(po.name) origin,
+                        po.requisition_id,
+                        max(po.create_date) po_approve_date,
+                        pol.product_id,
+                        max(pol.price_unit) price_unit,
+                        max(pol.price_tax) price_tax,
+                        max(pol.price_subtotal) price_subtotal,
+                        pol.partner_id
+                       from 
+                        purchase_order_line pol inner join 
+                        (select * from purchase_order where state in ('done','purchase')) po
+                        on pol.order_id = po.id
+                    group by
+                        po.complete_name,po.requisition_id,pol.product_id,pol.partner_id
+                 ) po 
+                on pr.requisition_id = po.requisition_id and pr.product_id = po.product_id
+                left join 
+                (
+                    select 
+                         sp.complete_name_picking grn_id,
+                         spo.product_id,
+                         sp.origin,
+                         sp.state,
+                         case when sp.state = 'done' then sp.write_date else null end completion_date
+                    from 
+                         stock_pack_operation spo 
+                         inner join stock_picking sp
+                         on spo.picking_id = sp.id
+                )grn
+                on grn.product_id = po.product_id and grn.origin = po.origin;
+        """)
+        
+        cr.execute("""
+            create or replace view v_purchase_requisition
+            as
+            select
+                row_number() over() id,
+                request_id,
+                max(create_date)::date create_date,
+                max(approve_date)::date approve_date,
+                max(category) category,
+                max(product_id) product_id,    
+                max(company_id) company_id,    
+                max(ordering_date)::date ordering_date,    
+                case when (max(case when is_qcf_done = true then 1 else 0 end)) = 1 then true else false end is_qcf_done,    
+                case when (max(case when is_grn_done = true then 1 else 0 end)) = 1 then true else false end is_grn_done,    
+                case when (max(case when is_inv_done = true then 1 else 0 end)) = 1 then true else false end is_inv_done,    
+                case when (max(case when is_po_done = true then 1 else 0 end)) = 1 then true else false end is_po_done,    
+                max(pic) pic,    
+                max(qcf_id) qcf_id,    
+                max(po_id) po_id,    
+                max(po_approve_date)::date po_approve_date,    
+                max(grn_id) grn_id,    
+                max(completion_date)::date completion_date,
+                max(status) status
+            from 
+                v_purchase_requisition_line 
+            group by
+                request_id;
+        """)
+        
+class ViewPurchaseTender(models.Model):
+    _name = 'v.purchase.requisition'
+    _description = 'Purchase Request Line'
+    _auto = False
+    
+    request_id = fields.Many2one('purchase.request','Purchase Request')
+    company_id = fields.Many2one('res.company', 'Company')
+    ordering_date = fields.Date('Ordering Date')
+    is_qcf_done = fields.Boolean('QCF Done')
+    is_po_done = fields.Boolean('PO Done')
+    is_grn_done = fields.Boolean('GRN Done')
+    is_inv_done = fields.Boolean('Invoice Done')
+    pic = fields.Many2one('res.users', 'PIC')
+    qcf_id = fields.Char('QCF')
+    po_id = fields.Char('Purchase Order')
+    po_approve_date = fields.Date('PO Approve Date')
+    grn_id = fields.Char('GRN')
+    completion_date = fields.Date('Completion Date')
+    create_date = fields.Date('PP Create Date')
+    approve_date = fields.Date('PP Approve Date')
+    category = fields.Char('PP Category')
+    status = fields.Char('Status')

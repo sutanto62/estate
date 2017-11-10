@@ -22,7 +22,7 @@
                 </tree>
             </field>
         </record>
-
+		<!--
         <record model='ir.ui.view' id='view_summary_procurement_process_search'>
             <field name="name">Report Procurement Status</field>
             <field name="model">state.procurement.process</field>
@@ -49,5 +49,6 @@
                   parent="base.purchase_report"
                   action="action_list_view_Procurement_Process"
                   sequence="14"/>
+        -->
     </data>
 </openerp>
