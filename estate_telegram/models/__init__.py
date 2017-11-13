@@ -2,3 +2,4 @@
 
 from . import models
 from . import lha
+from . import inherit_telegram

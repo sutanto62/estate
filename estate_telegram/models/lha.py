@@ -12,7 +12,7 @@ class Lha(models.TransientModel):
     """
 
     _name = 'estate_telegram.lha'
-    _description = 'Estatae Telegram LHA'
+    _description = 'Estate Telegram LHA'
 
 
     @api.model
@@ -23,13 +23,22 @@ class Lha(models.TransientModel):
         return True
 
     @api.model
-    def report(self,day=1):
+    def report(self, employee=None, day=1):
+        """
+        Create notification content
+        :param user: assistant's employee id
+        :param day: report of H-day
+        :return: custom dictionary
+        :rtype: dict
+        """
         report = {}
-        employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.user.id)],
+
+        if not employee:
+            return False
+
+        employee_id = self.env['hr.employee'].search([('id', '=', employee)],
                                                      limit=1, order='name asc')
         estate_id = employee_id.estate_id
-
-        # H-1 report
         lha_date = (datetime.today() + relativedelta.relativedelta(days=-day)).strftime(DF)
 
         data = {
@@ -44,7 +53,7 @@ class Lha(models.TransientModel):
         report['assistant'] = employee_id.name
 
         division_ids = []
-        asst_divisions = self.division()
+        asst_divisions = self.division(employee)
         for division in asst_divisions:
             # set domain
             data['form']['division_id'] = division.inherit_location_id.ids
@@ -61,18 +70,16 @@ class Lha(models.TransientModel):
         return report
 
     @api.model
-    def division(self):
+    def division(self, employee):
         """
         Division under current user supervision
         :return: recordsets of division
         :rtype: recordsets
         """
         division_ids = []
-        employee_id = self.env['hr.employee'].search([('user_id', '=', self.env.user.id)],
-                                                     limit=1, order='name asc')
-        if employee_id:
+        if employee:
             division_ids = self.env['estate.block.template'].search([('estate_location_level', '=', '2'),
-                                                                     ('assistant_id', '=', employee_id.id)],
+                                                                     ('assistant_id', '=', employee)],
                                                                     order='name asc')
         return division_ids
 

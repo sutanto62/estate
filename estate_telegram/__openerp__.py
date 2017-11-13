@@ -26,6 +26,7 @@
         # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'views/inherit_telegram_command_views.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

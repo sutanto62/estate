@@ -37,6 +37,12 @@ class TestLha(TransactionCase):
             'estate_id': self.estate.id
         })
 
+        self.employee_b = self.Employee.create({
+            'name': 'Assistant B',
+            'user_id': self.user_assistant_non_division.id,
+            'estate_id': self.estate.id
+        })
+
         self.division_a = self.Block.create({
             'name': 'Division A',
             'assistant_id': self.employee.id,
@@ -62,18 +68,19 @@ class TestLha(TransactionCase):
     def test_01_get_division(self):
         """ Get all division a user responsible to"""
 
-        division_ids = self.lha.sudo(self.user_assistant).division()
+        division_ids = self.lha.division(self.employee.id)
         self.assertTrue(division_ids)
 
         # assistant without division
-        other_division_ids = self.lha.sudo(self.user_assistant_non_division).division()
+        other_division_ids = self.lha.division(self.employee_b.id)
         self.assertFalse(other_division_ids)
 
         return True
 
     def test_02_get_activities(self):
+        """ Get activities"""
         estate_id = self.employee.estate_id
-        division_ids = self.lha.division()
+        division_ids = self.lha.division(self.employee.id)
 
         for division in division_ids:
             data = {'form': {
@@ -87,5 +94,7 @@ class TestLha(TransactionCase):
         return True
 
     def test_03_get_report(self):
-        self.lha.report()
+        """ Return all activities within division."""
+        self.assertTrue(self.lha.report(self.employee.id,1))
+        self.assertFalse(self.lha.report())
         return True
