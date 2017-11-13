@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- inherit view -->
+        <record id="inherit_telegram_command_view_form" model="ir.ui.view">
+            <field name="name">Inherit Telegram Command View Form</field>
+            <field name="model">telegram.command</field>
+            <field name="inherit_id" ref="telegram.view_telegram_command_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='menu_id']" position="after">
+                    <field name="hide"/>
+                </xpath>
+            </field>
+        </record>
+        <!--/inherit view-->
+    </data>
+</openerp>
