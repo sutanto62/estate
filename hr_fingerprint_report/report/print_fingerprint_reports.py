@@ -28,9 +28,6 @@ class FingerprintReport(models.AbstractModel):
         if data['form']['office_level_id']:
             domain.append(('office_level_id', '=', data['form']['office_level_id'][0]))
 
-        # exclude 0 day finger
-        domain.append(('day_finger', '>', 0))
-
         return domain
 
     @api.multi
@@ -133,9 +130,13 @@ class FingerprintReport(models.AbstractModel):
         # build dict
         for employee in employee_ids:
             # unique employee param: name and nik.
-            # exclude 0 day finger.
             domain_employee = [('employee_name', '=', employee.name_related),
                                ('nik', '=', employee.nik_number)]
+
+            # exclude 0 day finger if KHL
+            if employee.contract_type == '2' and employee.contract_period == '2':
+                domain_employee.append(('day_finger', '>', 0))
+
             domain = domain_form + domain_employee
 
             attendance_ids = attendance_obj.search(domain)
