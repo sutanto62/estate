@@ -308,7 +308,7 @@
                                         </tr>
 
                                         <!--calculate-->
-                                        <t t-if="a['p_hour_late_office'] >= 6">
+                                        <t t-if="a['p_hour_late_office'] >= 31">
                                             <t t-set="sum_hour_late_office_person"
                                                t-value="sum_hour_late_office_person+1"/>
                                         </t>
