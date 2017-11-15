@@ -345,6 +345,12 @@
 	        <field name="view_mode">tree,pivot,graph,form</field>
 	    </record>
 		
+        <menuitem id="purchase_summary_report" name="Summary Reports" parent="base.menu_purchase_root" sequence="99"
+        	groups="purchase_request.group_purchase_request_user"/>
+        
+        <menuitem id="purchase_request_summary_report" parent="purchase_request.parent_menu_purchase_request" name="Summary Reports" sequence="99"
+            groups="purchase_request.group_purchase_request_user"/>
+        
         <!-- summary progress pp -->
 		<record id="view_summary_progress_pp_report_tree" model="ir.ui.view">
 			<field name="name">Summary Progress Purchase Request</field>
@@ -369,7 +375,7 @@
             <field name="view_mode">tree</field>
         </record>
 	   	
-		<menuitem parent="base.purchase_report"
+		<menuitem parent="purchase_summary_report"
 	        id="menu_summary_progress_pp_report"
 	        sequence="712"
 	        action="summary_progress_pp_report_action"/>
@@ -431,9 +437,14 @@
             <field name="view_mode">tree</field>
         </record>
 	   	
-		<menuitem parent="base.purchase_report"
+		<menuitem parent="purchase_summary_report"
 	        id="menu_v_purchase_requisition_line"
 	        sequence="712"
+	        action="v_purchase_requisition_line_action"/>
+		
+		<menuitem parent="purchase_request_summary_report"
+	        id="menu_v_purchase_requisition_line_1"
+	        sequence="713"
 	        action="v_purchase_requisition_line_action"/>
 		
 		<!-- purchase requisition -->
@@ -495,8 +506,13 @@
             <field name="view_mode">tree,pivot</field>
         </record>
 	   	
-		<menuitem parent="base.purchase_report"
+		<menuitem parent="purchase_summary_report"
 	        id="menu_v_purchase_requisition"
+	        sequence="713"
+	        action="v_purchase_requisition_action"/>
+		
+		<menuitem parent="purchase_request_summary_report"
+	        id="menu_v_purchase_requisition_1"
 	        sequence="713"
 	        action="v_purchase_requisition_action"/>
 		
