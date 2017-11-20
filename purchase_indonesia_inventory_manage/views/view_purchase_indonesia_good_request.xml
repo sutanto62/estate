@@ -165,11 +165,14 @@
               </p>
             </field>
         </record>
-
+		
+        <menuitem id="purchase_request_warehouse" parent="purchase_request.parent_menu_purchase_request" name="Warehouse" sequence="99"
+            groups="purchase_request.group_purchase_request_user"/>
+        
         <menuitem
             id="menu_procur_request_act"
             sequence="11"
-            parent="purchase_request.menu_purchase_request"
+            parent="purchase_request_warehouse"
             action="procur_good_request_action"
             />
     </data>

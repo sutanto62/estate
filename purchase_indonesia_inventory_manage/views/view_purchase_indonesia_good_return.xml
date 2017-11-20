@@ -163,11 +163,11 @@
               </p>
             </field>
         </record>
-
+        
         <menuitem
             id="menu_procur_return_act"
             sequence="11"
-            parent="purchase_request.menu_purchase_request"
+            parent="purchase_request_warehouse"
             action="procur_good_return_action"
             />
     </data>
