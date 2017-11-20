@@ -174,15 +174,6 @@ class InheritBudgeteryPosition(models.Model):
     crossovered_budget_line_manpower = fields.One2many('crossovered.budget.lines', 'crossovered_budget_id', 'Budget Lines', domain=[('budget_line_type', '=', 'amount_labour')], states={'done':[('readonly',True)]}, copy=True)
     crossovered_budget_line_material = fields.One2many('crossovered.budget.lines', 'crossovered_budget_id', 'Budget Lines', domain=[('budget_line_type', '=', 'amount_material')], states={'done':[('readonly',True)]}, copy=True)
     crossovered_budget_line_other = fields.One2many('crossovered.budget.lines', 'crossovered_budget_id', 'Budget Lines', domain=[('budget_line_type', '=', 'amount_other')], states={'done':[('readonly',True)]}, copy=True)
-    department_account = fields.Selection([
-                                            ('TBM-0','TBM-0'),
-                                            ('TBM-1','TBM-1'),
-                                            ('TBM-2','TBM-2'),
-                                            ('TBM-3','TBM-3'),
-                                            ('TM','TM'),
-                                            ('LAND CLEARING','LAND CLEARING'),
-                                            ]
-                                        )
     is_parent_budget = fields.Boolean('Budget Parent?')
     parent_budget = fields.Many2one('crossovered.budget', 'Budget Parent')
 
@@ -194,8 +185,7 @@ class BudgetLinesPivot(models.Model):
     crossovered_budget_id = fields.Many2one("crossovered.budget","Budget")
     analytic_account_id = fields.Many2one("account.analytic.account","Analytic Account")
     general_budget_id = fields.Many2one("account.budget.post","Budgetery Position")
-    department_account = fields.Char("Department Account")
-    budget_year = fields.Integer("Budget Year")
+    budget_year = fields.Integer("Budget Year Value")
     budget_year_str = fields.Char("Budget Year")
     budget_date_from = fields.Date("Budget Start Date")
     date_from = fields.Date("Start Date")
@@ -212,6 +202,14 @@ class BudgetLinesPivot(models.Model):
     var_tenaga = fields.Float("Varian Tenaga")
     var_material = fields.Float("Varian Material")
     var_lain = fields.Float("Varian Lain-lain")
+    total_money_planned = fields.Float("Planned Total Rupiah")
+    total_money_actual = fields.Float("Actual Total Rupiah")
+    money_per_ha_planned = fields.Float("Planned Rupiah/Ha")
+    money_per_ha_actual = fields.Float("Actual Rupiah/Ha")
+    achievement_percentage_qty = fields.Char("% Achievement Qty")
+    achievement_percentage_tenaga = fields.Char("% Achievement Tenaga")
+    achievement_percentage_material = fields.Char("% Achievement Material")
+    achievement_percentage_lain = fields.Char("% Achievement Lain lain")
     
     def init(self, cr):
         drop_view_if_exists(cr, 'v_budget_lines_pivot')
@@ -221,11 +219,33 @@ class BudgetLinesPivot(models.Model):
                     select 
                             row_number() over() id,
                             cb.analytic_account_id,
-                            cb.department_account,
                             date_part('year', cb.date_from) as budget_year,
                             ''||date_part('year', cb.date_from) as budget_year_str,
                             cb.date_from as budget_date_from,
-                            cbl.*
+                            cbl.crossovered_budget_id,
+                            cbl.general_budget_id,
+                            cbl.date_from,
+                            cbl.date_to,
+                            cbl.qty,
+                            round((cbl.tenaga/1000000)::numeric,2) tenaga,
+                            round((cbl.material/1000000)::numeric,2) material,
+                            round((cbl.lain/1000000)::numeric,2) lain,
+                            cbl.act_qty,
+                            round((cbl.act_tenaga/1000000)::numeric,2) act_tenaga,
+                            round((cbl.act_material/1000000)::numeric,2) act_material,
+                            round((cbl.act_lain/1000000)::numeric,2) act_lain,
+                            cbl.var_qty,
+                            round((cbl.var_tenaga/1000000)::numeric,2) var_tenaga,
+                            round((cbl.var_material/1000000)::numeric,2) var_material,
+                            round((cbl.var_lain/1000000)::numeric,2) var_lain,
+                            round(((cbl.tenaga + cbl.material + cbl.lain)/1000000)::numeric,2) total_money_planned, 
+                            round(((cbl.act_tenaga + cbl.act_material + cbl.act_lain)/1000000)::numeric,2) total_money_actual,
+                            round(((case when cbl.qty = 0  then 0 else (cbl.tenaga + cbl.material + cbl.lain)/cbl.qty end)/1000000)::numeric,2) money_per_ha_planned,
+                            round(((case when cbl.act_qty = 0  then 0 else (cbl.act_tenaga + cbl.act_material + cbl.act_lain)/cbl.act_qty end)/1000000)::numeric,2) money_per_ha_actual,
+                            case when cbl.qty = 0 or cbl.act_qty = 0 then 0.0 else to_char((cbl.act_qty/cbl.qty)*100,'FM999999999.00')::float end achievement_percentage_qty,
+                            case when cbl.tenaga = 0 or cbl.act_tenaga = 0.0 then 0 else to_char((cbl.act_tenaga/cbl.tenaga)*100,'FM999999999.00')::float end achievement_percentage_tenaga,
+                            case when cbl.material = 0 or cbl.act_material = 0.0 then 0 else to_char((cbl.act_material/cbl.material)*100,'FM999999999.00')::float end achievement_percentage_material,
+                            case when cbl.lain = 0 or cbl.act_lain = 0.0 then 0 else to_char((cbl.act_lain/cbl.lain)*100,'FM999999999.00')::float end achievement_percentage_lain
                         from 
                         (
                         SELECT 
@@ -295,14 +315,14 @@ class BudgetLinesPivot(models.Model):
                                 END) AS var_lain
                            FROM (
                                   select 
-                                      budget_line.crossovered_budget_id,
-                                      budget_line.budget_line_type,
-                                      budget_line.general_budget_id,
-                                      budget_line.date_from,
-                                    budget_line.date_to,
-                                      budget_line.planned_amount,
-                                      budget_line.actual_amount,
-                                      budget_line.planned_amount - budget_line.actual_amount varian_amount
+                                        budget_line.crossovered_budget_id,
+                                        budget_line.budget_line_type,
+                                        budget_line.general_budget_id,
+                                        budget_line.date_from,
+                                        budget_line.date_to,
+                                        budget_line.planned_amount,
+                                        (case when budget_line.actual_amount is null then 0.0 else budget_line.actual_amount end) actual_amount,
+                                        budget_line.planned_amount - (case when budget_line.actual_amount is null then 0.0 else budget_line.actual_amount end) varian_amount
                                   from (
                                       select 
                                         cbl.budget_line_type,

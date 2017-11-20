@@ -29,5 +29,6 @@
     # only loaded in demonstration mode
     'demo': [
         'demo.xml',
+        'data/account.budget.post.init.csv',
     ],
 }

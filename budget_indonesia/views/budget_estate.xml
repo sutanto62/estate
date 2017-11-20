@@ -13,17 +13,23 @@
 			        <field name="date_from"/>
 			        <field name="date_to"/>
 			        <field name="qty"/>
-			        <field name="tenaga"/>
-			        <field name="material"/>
-			        <field name="lain"/>
 			        <field name="act_qty"/>
-			        <field name="act_tenaga"/>
-			        <field name="act_material"/>
-			        <field name="act_lain"/>
 			        <field name="var_qty"/>
+			        <field name="achievement_percentage_qty"/>
+			        <field name="tenaga"/>
+			        <field name="act_tenaga"/>
 			        <field name="var_tenaga"/>
+			        <field name="achievement_percentage_tenaga"/>
+			        <field name="material"/>
+			        <field name="act_material"/>
 			        <field name="var_material"/>
+			        <field name="achievement_percentage_material"/>
+			        <field name="lain"/>
+			        <field name="act_lain"/>
 			        <field name="var_lain"/>
+			        <field name="achievement_percentage_lain"/>
+			        <field name="money_per_ha_planned"/>
+			        <field name="money_per_ha_actual"/>
 			    </tree>
 			</field>
 	   	</record>
@@ -114,7 +120,6 @@
 	                                <field name="parent_budget"/>
 	                                <field name="is_budget_estate"/>
 	                                <field name="analytic_account_id" groups="analytic.group_analytic_accounting" attrs="{'invisible':[('is_budget_estate','!=',True)]}"/>
-	                                <field name="department_account" groups="analytic.group_analytic_accounting" attrs="{'invisible':[('is_budget_estate','!=',True)]}"/>
 	                                <field name="creating_user_id" attrs="{'readonly':[('state','!=','draft')]}" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_user']}"/>
 	                            </group>
 	                            <group attrs="{'invisible':[('is_parent_budget','=',True)]}">
@@ -329,6 +334,9 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='name']" position="before">
             		<field name="parent_budget"/>		
+            	</xpath>
+            	<xpath expr="//field[@name='name']" position="after">
+            		<field name="analytic_account_id"/>		
             	</xpath>
             </field>
         </record>
