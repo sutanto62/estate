@@ -26,6 +26,9 @@ class AccountMove(models.Model):
             payslip_run_id = self.env['hr.payslip.run'].search([('name', '=', record.ref)])
 
             for line in record.line_ids:
+
+                self.env['hr.payslip.run'].partner_general_account(line.account_id.id, line.partner_id.company_id.id)
+
                 # account move recorded per activity
                 query_activity_id = """
                                     select distinct a.activity_id as id
