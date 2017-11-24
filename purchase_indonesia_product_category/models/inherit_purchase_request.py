@@ -52,7 +52,8 @@ class InheritPurchaseRequest(models.Model):
 class InheritPurchaseRequestLine(models.Model):
 
     _inherit = ['purchase.request.line']
-
+    _order = "product_id asc"
+    
     @api.multi
     @api.onchange('request_id','product_id')
     def _onchange_product_purchase_request_line(self):

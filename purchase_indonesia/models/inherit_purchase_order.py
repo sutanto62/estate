@@ -259,6 +259,7 @@ class InheritPurchaseOrder(models.Model):
 class InheritPurchaseOrderLine(models.Model):
 
     _inherit = 'purchase.order.line'
+    _order = 'product_id asc'
 
     qty_request = fields.Float('Quantity Actual')
     validation_check_backorder = fields.Boolean('Confirm backorder',related='order_id.validation_check_backorder',store=True)

@@ -1064,6 +1064,7 @@ class InheritPurchaseTenders(models.Model):
 class InheritPurchaseRequisitionLine(models.Model):
 
     _inherit = 'purchase.requisition.line'
+    _order = 'product_id asc'
 
     qty_received = fields.Float('Quantity Received',readonly=True)
     qty_outstanding = fields.Float('Quantity Outstanding',readonly=True)

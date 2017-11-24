@@ -829,6 +829,7 @@ class InheritStockPicking(models.Model):
 class InheritStockPackOperation(models.Model):
 
     _inherit='stock.pack.operation'
+    _order = 'product_id asc'
 
     checking_split = fields.Boolean('Checking Split',default=False)
     initial_qty = fields.Float('Initial Qty',readonly=1)

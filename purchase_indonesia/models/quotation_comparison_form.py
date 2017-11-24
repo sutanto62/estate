@@ -1453,121 +1453,146 @@ class ViewQuotationComparison(models.Model):
                                     content.vendor10,
                                     content.po_des_all_name,
                                     content.isheader
-                               FROM ( SELECT r.req_id,
-                                        r.product_id,
-                                        (0)::boolean AS hide,
-                                        ''::character varying AS grand_total_label,
-                                        (r.qty_request)::character varying AS qty_request,
-                                        r.product_uom,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 1) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor1,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 2) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor2,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 3) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor3,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 4) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor4,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 5) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor5,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 6) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor6,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 7) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor7,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 8) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor8,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 9) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor9,
-                                        max((
-                                            CASE
-                                                WHEN (r.rownum = 10) THEN r.trigger_state || monetary((r.price_unit)::double precision)
-                                                ELSE NULL::character varying
-                                            END)::text) AS vendor10,
-                                        (max(r.po_des_all_name))::character varying AS po_des_all_name,
-                                        3 AS isheader
-                                       FROM ( SELECT con_qcfl_rn.rownum,
-                                                partner.name,
-                                                con_qcfl_rn.req_id,
-                                                con_qcfl_rn.product_id,
-                                                con_qcfl_rn.qty_request,
-                                                con_qcfl_rn.product_uom,
-                                                con_qcfl_rn.price_unit,
-                                                con_qcfl_rn.price_subtotal,
-                                                con_qcfl_rn.price_tax,
-                                                con_qcfl_rn.payment_term_id,
-                                                con_qcfl_rn.incoterm_id,
-                                                con_qcfl_rn.delivery_term,
-                                                con_qcfl_rn.po_des_all_name,
-                                                case when con_qcfl_rn.trigger_state = true then '* ' else '' end trigger_state
-                                               FROM ( 
-                                                       SELECT 
-                                                           qcfl_rn.id AS rownum,
-                                                        qcfl.company_id,
-                                                        qcfl.po_des_all_name,
-                                                        qcfl_rn.req_id,
-                                                        qcfl_rn.partner_id,
-                                                        qcfl.product_id,
-                                                        qcfl.price_unit,
-                                                        qcfl.qty_request,
-                                                        qcfl.product_uom,
-                                                        qcfl.price_subtotal,
-                                                        qcfl.price_tax,
-                                                        qcfl.payment_term_id,
-                                                        qcfl.incoterm_id,
-                                                        qcfl.delivery_term,
-                                                        qcfl.trigger_state
-                                                   FROM
-                                                       quotation_comparison_form_line qcfl
-                                                     JOIN ( 
-                                                         SELECT 
-                                                             row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                              quotation_comparison_form_line.partner_id,
-                                                              quotation_comparison_form_line.req_id
-                                                         FROM 
-                                                             quotation_comparison_form_line
-                                                        GROUP BY 
-                                                            quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                    ) qcfl_rn 
-                                                    ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                ) con_qcfl_rn
-                                                JOIN ( 
-                                                        SELECT 
-                                                            res_partner.id,
-                                                            res_partner.name
-                                                           FROM 
-                                                               res_partner
-                                                       ) partner 
-                                                       ON con_qcfl_rn.partner_id = partner.id
-                                                   ) r
-                                              GROUP BY 
-                                                  r.product_id, r.req_id, r.qty_request, r.product_uom
-                                      ) content
+                                FROM(
+                                    SELECT 
+                                        content1.req_id,
+                                        content1.product_id,
+                                        content1.hide,
+                                        content1.grand_total_label,
+                                        content1.qty_request,
+                                        content1.product_uom,
+                                        content1.vendor1,
+                                        content1.vendor2,
+                                        content1.vendor3,
+                                        content1.vendor4,
+                                        content1.vendor5,
+                                        content1.vendor6,
+                                        content1.vendor7,
+                                        content1.vendor8,
+                                        content1.vendor9,
+                                        content1.vendor10,
+                                        content1.po_des_all_name,
+                                        content1.isheader
+                                   FROM ( SELECT r.req_id,
+                                            r.product_id,
+                                            (0)::boolean AS hide,
+                                            ''::character varying AS grand_total_label,
+                                            (r.qty_request)::character varying AS qty_request,
+                                            r.product_uom,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 1) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor1,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 2) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor2,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 3) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor3,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 4) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor4,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 5) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor5,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 6) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor6,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 7) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor7,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 8) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor8,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 9) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor9,
+                                            max((
+                                                CASE
+                                                    WHEN (r.rownum = 10) THEN r.trigger_state || monetary((r.price_unit)::double precision)
+                                                    ELSE NULL::character varying
+                                                END)::text) AS vendor10,
+                                            (max(r.po_des_all_name))::character varying AS po_des_all_name,
+                                            3 AS isheader
+                                           FROM ( SELECT con_qcfl_rn.rownum,
+                                                    partner.name,
+                                                    con_qcfl_rn.req_id,
+                                                    con_qcfl_rn.product_id,
+                                                    con_qcfl_rn.qty_request,
+                                                    con_qcfl_rn.product_uom,
+                                                    con_qcfl_rn.price_unit,
+                                                    con_qcfl_rn.price_subtotal,
+                                                    con_qcfl_rn.price_tax,
+                                                    con_qcfl_rn.payment_term_id,
+                                                    con_qcfl_rn.incoterm_id,
+                                                    con_qcfl_rn.delivery_term,
+                                                    con_qcfl_rn.po_des_all_name,
+                                                    case when con_qcfl_rn.trigger_state = true then '* ' else '' end trigger_state
+                                                   FROM ( 
+                                                           SELECT 
+                                                               qcfl_rn.id AS rownum,
+                                                            qcfl.company_id,
+                                                            qcfl.po_des_all_name,
+                                                            qcfl_rn.req_id,
+                                                            qcfl_rn.partner_id,
+                                                            qcfl.product_id,
+                                                            qcfl.price_unit,
+                                                            qcfl.qty_request,
+                                                            qcfl.product_uom,
+                                                            qcfl.price_subtotal,
+                                                            qcfl.price_tax,
+                                                            qcfl.payment_term_id,
+                                                            qcfl.incoterm_id,
+                                                            qcfl.delivery_term,
+                                                            qcfl.trigger_state
+                                                       FROM
+                                                           quotation_comparison_form_line qcfl
+                                                         JOIN ( 
+                                                             SELECT 
+                                                                 row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
+                                                                  quotation_comparison_form_line.partner_id,
+                                                                  quotation_comparison_form_line.req_id
+                                                             FROM 
+                                                                 quotation_comparison_form_line
+                                                            GROUP BY 
+                                                                quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
+                                                        ) qcfl_rn 
+                                                        ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
+                                                    ) con_qcfl_rn
+                                                    JOIN ( 
+                                                            SELECT 
+                                                                res_partner.id,
+                                                                res_partner.name
+                                                               FROM 
+                                                                   res_partner
+                                                           ) partner 
+                                                           ON con_qcfl_rn.partner_id = partner.id
+                                                       ) r
+                                                  GROUP BY 
+                                                      r.product_id, r.req_id, r.qty_request, r.product_uom
+                                                    order by 
+                                                        r.product_id asc
+                                          ) content1 inner join product_product pp on content1.product_id = pp.id
+                                            order by
+                                                pp.default_code,pp.name_template
+                                    )content
                             UNION ALL
                              SELECT 
                                     footer1.req_id,
