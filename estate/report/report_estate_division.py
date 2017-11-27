@@ -41,6 +41,7 @@ class ParticularReport(models.AbstractModel):
                 '    e.code "coa", '\
                 '    c.name "activity", '\
                 '    d.name "uom", '\
+                '    string_agg(distinct g.name,  \', \') as "block", ' \
                 '    coalesce(sum(a.quantity), 0) "quantity", '\
                 '    coalesce(sum(a.number_of_day), 0) "number_of_day", '\
                 '    coalesce(sum(a.quantity_overtime), 0) "overtime", '\
@@ -66,6 +67,8 @@ class ParticularReport(models.AbstractModel):
                 'left join estate_activity c on c.id = a.activity_id '\
                 'left join product_uom d on d.id = c.uom_id '\
                 'left join account_account e on e.id = c.general_account_id ' \
+                'left join estate_block_template f on f.id = a.location_id ' \
+                'left join stock_location g on g.id = f.inherit_location_id ' \
                 'where ' \
                 '    a.upkeep_date between \'%s\' and \'%s\'' \
                 '    and a.estate_id = %s' \
