@@ -12,6 +12,10 @@
              <field name="model">purchase.order.line</field>
              <field name="inherit_id" ref="purchase_requisition.purchase_order_line_tree_tender"/>
              <field name="arch" type="xml">
+                 <xpath expr="//tree" position="attributes">
+                     <attribute name='default_order'>partner_id</attribute>
+                 </xpath>
+                 
                  <xpath expr="//field[@name='name']" position="before">
                           <field name="trigger_state" string="Picked" attrs="{'invisible': [('trigger_filter_cancel', '=',True)]}"/>
                           <field name="trigger_filter_cancel" string="Filter Cancel" invisible="1"/>
