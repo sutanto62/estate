@@ -57,6 +57,7 @@ class Employee(models.Model):
 
             # ignore non daily contract period
             if record.contract_period != '2':
+                super(Employee, self).toggle_active()
                 return
 
             # todo change to config
