@@ -1298,9 +1298,11 @@ class ViewQuotationComparison(models.Model):
                         vqcf.po_des_all_name,
                         vqcf.isheader,
                         qcf.id AS qcf_id
-                       FROM (( 
+                       FROM 
+                       (
+                               ( 
                                SELECT 
-                                   header.req_id,
+                                header.req_id,
                                 header.product_id,
                                 header.hide,
                                 header.grand_total_label,
@@ -1380,56 +1382,28 @@ class ViewQuotationComparison(models.Model):
                                         END)::text) AS vendor10
                                    FROM ( 
                                            SELECT 
-                                               con_qcfl_rn.rownum,
+                                            DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,   
                                             partner.name,
-                                            con_qcfl_rn.req_id,
-                                            con_qcfl_rn.product_id,
-                                            con_qcfl_rn.qty_request,
-                                            con_qcfl_rn.product_uom,
-                                            con_qcfl_rn.price_unit,
-                                            con_qcfl_rn.price_subtotal,
-                                            con_qcfl_rn.price_tax,
-                                            con_qcfl_rn.payment_term_id,
-                                            con_qcfl_rn.incoterm_id,
-                                            con_qcfl_rn.delivery_term,
-                                            con_qcfl_rn.po_des_all_name
+                                            qcfl.req_id,
+                                            qcfl.product_id,
+                                            qcfl.qty_request,
+                                            qcfl.product_uom,
+                                            qcfl.price_unit,
+                                            qcfl.price_subtotal,
+                                            qcfl.price_tax,
+                                            qcfl.payment_term_id,
+                                            qcfl.incoterm_id,
+                                            qcfl.delivery_term,
+                                            qcfl.po_des_all_name
                                            FROM
-                                               ( 
-                                               SELECT 
-                                                     qcfl_rn.id AS rownum,
-                                                  qcfl.company_id,
-                                                  qcfl.po_des_all_name,
-                                                  qcfl_rn.req_id,
-                                                  qcfl_rn.partner_id,
-                                                  qcfl.product_id,
-                                                  qcfl.price_unit,
-                                                  qcfl.qty_request,
-                                                  qcfl.product_uom,
-                                                  qcfl.price_subtotal,
-                                                  qcfl.price_tax,
-                                                  qcfl.payment_term_id,
-                                                  qcfl.incoterm_id,
-                                                  qcfl.delivery_term
-                                             FROM (
-                                                     quotation_comparison_form_line qcfl
-                                                       JOIN (
-                                                               SELECT 
-                                                                   row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                quotation_comparison_form_line.partner_id,
-                                                                quotation_comparison_form_line.req_id
-                                                               FROM quotation_comparison_form_line
-                                                            GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                        ) qcfl_rn
-                                                      ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                    )
-                                                ) con_qcfl_rn
+                                                  quotation_comparison_form_line qcfl
                                                   JOIN ( 
                                                      SELECT 
                                                          res_partner.id,
                                                           res_partner.name
                                                      FROM 
                                                          res_partner
-                                                     ) partner ON con_qcfl_rn.partner_id = partner.id
+                                                     ) partner ON qcfl.partner_id = partner.id
                                          ) r
                                            GROUP BY r.req_id
                                  ) header
@@ -1531,59 +1505,32 @@ class ViewQuotationComparison(models.Model):
                                                 END)::text) AS vendor10,
                                             (max(r.po_des_all_name))::character varying AS po_des_all_name,
                                             3 AS isheader
-                                           FROM ( SELECT con_qcfl_rn.rownum,
+                                           FROM ( 
+                                                   SELECT 
+                                                       DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
                                                     partner.name,
-                                                    con_qcfl_rn.req_id,
-                                                    con_qcfl_rn.product_id,
-                                                    con_qcfl_rn.qty_request,
-                                                    con_qcfl_rn.product_uom,
-                                                    con_qcfl_rn.price_unit,
-                                                    con_qcfl_rn.price_subtotal,
-                                                    con_qcfl_rn.price_tax,
-                                                    con_qcfl_rn.payment_term_id,
-                                                    con_qcfl_rn.incoterm_id,
-                                                    con_qcfl_rn.delivery_term,
-                                                    con_qcfl_rn.po_des_all_name,
-                                                    case when con_qcfl_rn.trigger_state = true then '* ' else '' end trigger_state
-                                                   FROM ( 
-                                                           SELECT 
-                                                               qcfl_rn.id AS rownum,
-                                                            qcfl.company_id,
-                                                            qcfl.po_des_all_name,
-                                                            qcfl_rn.req_id,
-                                                            qcfl_rn.partner_id,
-                                                            qcfl.product_id,
-                                                            qcfl.price_unit,
-                                                            qcfl.qty_request,
-                                                            qcfl.product_uom,
-                                                            qcfl.price_subtotal,
-                                                            qcfl.price_tax,
-                                                            qcfl.payment_term_id,
-                                                            qcfl.incoterm_id,
-                                                            qcfl.delivery_term,
-                                                            qcfl.trigger_state
-                                                       FROM
-                                                           quotation_comparison_form_line qcfl
-                                                         JOIN ( 
-                                                             SELECT 
-                                                                 row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                  quotation_comparison_form_line.partner_id,
-                                                                  quotation_comparison_form_line.req_id
-                                                             FROM 
-                                                                 quotation_comparison_form_line
-                                                            GROUP BY 
-                                                                quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                        ) qcfl_rn 
-                                                        ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                    ) con_qcfl_rn
-                                                    JOIN ( 
-                                                            SELECT 
-                                                                res_partner.id,
-                                                                res_partner.name
-                                                               FROM 
-                                                                   res_partner
+                                                    qcfl.req_id,
+                                                    qcfl.product_id,
+                                                    qcfl.qty_request,
+                                                    qcfl.product_uom,
+                                                    qcfl.price_unit,
+                                                    qcfl.price_subtotal,
+                                                    qcfl.price_tax,
+                                                    qcfl.payment_term_id,
+                                                    qcfl.incoterm_id,
+                                                    qcfl.delivery_term,
+                                                    qcfl.po_des_all_name,
+                                                    case when qcfl.trigger_state = true then '* ' else '' end trigger_state
+                                                   FROM
+                                                               quotation_comparison_form_line qcfl
+                                                            JOIN ( 
+                                                                SELECT 
+                                                                    res_partner.id,
+                                                                    res_partner.name
+                                                                   FROM 
+                                                                       res_partner
                                                            ) partner 
-                                                           ON con_qcfl_rn.partner_id = partner.id
+                                                           ON qcfl.partner_id = partner.id
                                                        ) r
                                                   GROUP BY 
                                                       r.product_id, r.req_id, r.qty_request, r.product_uom
@@ -1594,7 +1541,7 @@ class ViewQuotationComparison(models.Model):
                                                 pp.default_code,pp.name_template
                                     )content
                             UNION ALL
-                             SELECT 
+                                 SELECT 
                                     footer1.req_id,
                                     footer1.product_id,
                                     footer1.hide,
@@ -1691,61 +1638,35 @@ class ViewQuotationComparison(models.Model):
                                                 END) AS vendor10
                                                FROM ( 
                                                        SELECT 
-                                                           con_qcfl_rn.rownum,
+                                                        DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
                                                         partner.name,
-                                                        con_qcfl_rn.req_id,
-                                                        con_qcfl_rn.product_id,
-                                                        con_qcfl_rn.qty_request,
-                                                        con_qcfl_rn.product_uom,
-                                                        con_qcfl_rn.price_unit,
-                                                        con_qcfl_rn.price_subtotal,
-                                                        con_qcfl_rn.price_tax,
-                                                        con_qcfl_rn.payment_term_id,
-                                                        con_qcfl_rn.incoterm_id,
-                                                        con_qcfl_rn.delivery_term,
-                                                        con_qcfl_rn.po_des_all_name
-                                                   FROM (
-                                                           SELECT 
-                                                              qcfl_rn.id AS rownum,
-                                                              qcfl.company_id,
-                                                              qcfl_rn.req_id,
-                                                              qcfl_rn.partner_id,
-                                                              qcfl.po_des_all_name,
-                                                              qcfl.product_id,
-                                                              qcfl.price_unit,
-                                                              qcfl.qty_request,
-                                                              qcfl.product_uom,
-                                                              qcfl.price_subtotal,
-                                                              qcfl.price_tax,
-                                                              qcfl.payment_term_id,
-                                                              qcfl.incoterm_id,
-                                                              qcfl.delivery_term
-                                                         FROM
-                                                               quotation_comparison_form_line qcfl
-                                                               JOIN ( 
-                                                                   SELECT 
-                                                                       row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                        quotation_comparison_form_line.partner_id,
-                                                                    quotation_comparison_form_line.req_id
-                                                                   FROM 
-                                                                       quotation_comparison_form_line
-                                                                  GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                              ) qcfl_rn ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                      ) con_qcfl_rn
-                                                     JOIN ( 
-                                                         SELECT 
-                                                             res_partner.id,
-                                                              res_partner.name
-                                                         FROM 
-                                                             res_partner
-                                                         ) partner ON con_qcfl_rn.partner_id = partner.id
+                                                        qcfl.req_id,
+                                                        qcfl.product_id,
+                                                        qcfl.qty_request,
+                                                        qcfl.product_uom,
+                                                        qcfl.price_unit,
+                                                        qcfl.price_subtotal,
+                                                        qcfl.price_tax,
+                                                        qcfl.payment_term_id,
+                                                        qcfl.incoterm_id,
+                                                        qcfl.delivery_term,
+                                                        qcfl.po_des_all_name
+                                                   FROM
+                                                         quotation_comparison_form_line qcfl
+                                                         JOIN ( 
+                                                             SELECT 
+                                                                 res_partner.id,
+                                                                  res_partner.name
+                                                             FROM 
+                                                                 res_partner
+                                                         ) partner ON qcfl.partner_id = partner.id
                                                      ) r
                                               GROUP BY r.product_id, r.req_id, r.qty_request, r.product_uom
                                               ) h
                                       GROUP BY h.req_id) footer1
                             UNION ALL
                                      SELECT 
-                                              footer2.req_id,
+                                               footer2.req_id,
                                             footer2.product_id,
                                             footer2.hide,
                                             footer2.grand_total_label,
@@ -1841,64 +1762,36 @@ class ViewQuotationComparison(models.Model):
                                                     END) AS vendor10
                                                FROM ( 
                                                        SELECT 
-                                                           con_qcfl_rn.rownum,
+                                                        DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
                                                         partner.name,
-                                                        con_qcfl_rn.req_id,
-                                                        con_qcfl_rn.product_id,
-                                                        con_qcfl_rn.qty_request,
-                                                        con_qcfl_rn.product_uom,
-                                                        con_qcfl_rn.price_unit,
-                                                        con_qcfl_rn.price_subtotal,
-                                                        con_qcfl_rn.price_tax,
-                                                        con_qcfl_rn.payment_term_id,
-                                                        con_qcfl_rn.incoterm_id,
-                                                        con_qcfl_rn.delivery_term,
-                                                        con_qcfl_rn.po_des_all_name
+                                                        qcfl.req_id,
+                                                        qcfl.product_id,
+                                                        qcfl.qty_request,
+                                                        qcfl.product_uom,
+                                                        qcfl.price_unit,
+                                                        qcfl.price_subtotal,
+                                                        qcfl.price_tax,
+                                                        qcfl.payment_term_id,
+                                                        qcfl.incoterm_id,
+                                                        qcfl.delivery_term,
+                                                        qcfl.po_des_all_name
                                                    FROM 
-                                                           ( 
-                                                           SELECT 
-                                                                 qcfl_rn.id AS rownum,
-                                                              qcfl.company_id,
-                                                              qcfl.po_des_all_name,
-                                                              qcfl_rn.req_id,
-                                                              qcfl_rn.partner_id,
-                                                              qcfl.product_id,
-                                                              qcfl.price_unit,
-                                                              qcfl.qty_request,
-                                                              qcfl.product_uom,
-                                                              qcfl.price_subtotal,
-                                                              qcfl.price_tax,
-                                                              qcfl.payment_term_id,
-                                                              qcfl.incoterm_id,
-                                                              qcfl.delivery_term
-                                                         FROM 
-                                                              quotation_comparison_form_line qcfl
-                                                               JOIN ( 
-                                                                   SELECT 
-                                                                       row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                    quotation_comparison_form_line.partner_id,
-                                                                    quotation_comparison_form_line.req_id
-                                                                   FROM 
-                                                                       quotation_comparison_form_line
-                                                                  GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                                  ) qcfl_rn 
-                                                                  ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                        ) con_qcfl_rn
-                                                          JOIN ( 
+                                                          quotation_comparison_form_line qcfl
+                                                           JOIN ( 
                                                              SELECT 
                                                                  res_partner.id,
                                                                   res_partner.name
                                                              FROM 
                                                                  res_partner
                                                          ) partner ON 
-                                                         con_qcfl_rn.partner_id = partner.id
+                                                         qcfl.partner_id = partner.id
                                                     ) r
                                                       GROUP BY r.product_id, r.req_id, r.qty_request, r.product_uom
                                                       ) h
                                                   GROUP BY h.req_id) footer2
                             UNION ALL
-                             SELECT 
-                                                      footer.req_id,
+                                             SELECT 
+                                                       footer.req_id,
                                                     footer.product_id,
                                                     footer.hide,
                                                     footer.grand_total_label,
@@ -1994,57 +1887,34 @@ class ViewQuotationComparison(models.Model):
                                                             END) AS vendor10
                                                            FROM ( 
                                                                SELECT 
-                                                                   con_qcfl_rn.rownum,
-                                                                partner.name,
-                                                                con_qcfl_rn.req_id,
-                                                                con_qcfl_rn.product_id,
-                                                                con_qcfl_rn.qty_request,
-                                                                con_qcfl_rn.product_uom,
-                                                                con_qcfl_rn.price_unit,
-                                                                (con_qcfl_rn.price_subtotal + con_qcfl_rn.price_tax) AS amount_total,
-                                                                con_qcfl_rn.price_tax,
-                                                                con_qcfl_rn.payment_term_id,
-                                                                con_qcfl_rn.incoterm_id,
-                                                                con_qcfl_rn.delivery_term,
-                                                                con_qcfl_rn.po_des_all_name
-                                                           FROM (
-                                                                   SELECT 
-                                                                         qcfl_rn.id AS rownum,
-                                                                      qcfl.company_id,
-                                                                      qcfl.po_des_all_name,
-                                                                      qcfl_rn.req_id,
-                                                                      qcfl_rn.partner_id,
-                                                                      qcfl.product_id,
-                                                                      qcfl.price_unit,
-                                                                      qcfl.qty_request,
-                                                                      qcfl.product_uom,
-                                                                      qcfl.amount_total,
-                                                                      qcfl.price_subtotal,
-                                                                      qcfl.price_tax,
-                                                                      qcfl.payment_term_id,
-                                                                      qcfl.incoterm_id,
-                                                                      qcfl.delivery_term
-                                                                 FROM 
-                                                                    quotation_comparison_form_line qcfl
-                                                                           JOIN ( 
-                                                                               SELECT 
-                                                                                   row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                                quotation_comparison_form_line.partner_id,
-                                                                                quotation_comparison_form_line.req_id
-                                                                               FROM 
-                                                                                   quotation_comparison_form_line
-                                                                              GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                                          ) qcfl_rn ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                                      ) con_qcfl_rn
-                                                             JOIN ( SELECT res_partner.id,
-                                                              res_partner.name
-                                                             FROM res_partner) partner ON con_qcfl_rn.partner_id = partner.id
+                                                                    DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
+                                                                    partner.name,
+                                                                    qcfl.req_id,
+                                                                    qcfl.product_id,
+                                                                    qcfl.qty_request,
+                                                                    qcfl.product_uom,
+                                                                    qcfl.price_unit,
+                                                                    (qcfl.price_subtotal + qcfl.price_tax) AS amount_total,
+                                                                    qcfl.price_tax,
+                                                                    qcfl.payment_term_id,
+                                                                    qcfl.incoterm_id,
+                                                                    qcfl.delivery_term,
+                                                                    qcfl.po_des_all_name
+                                                               FROM
+                                                                      quotation_comparison_form_line qcfl
+                                                                     JOIN ( 
+                                                                         SELECT 
+                                                                             res_partner.id,
+                                                                              res_partner.name
+                                                                         FROM 
+                                                                             res_partner) 
+                                                                     partner ON qcfl.partner_id = partner.id
                                                              ) r
                                               GROUP BY r.product_id, r.req_id, r.qty_request, r.product_uom
                                               ) h
                                       GROUP BY h.req_id) footer
                             UNION ALL
-                                     SELECT 
+                                    SELECT 
                                               paymentterm.req_id,
                                             paymentterm.product_id,
                                             paymentterm.hide,
@@ -2138,58 +2008,29 @@ class ViewQuotationComparison(models.Model):
                                                     END)::text) AS vendor10
                                                FROM ( 
                                                        SELECT 
-                                                           con_qcfl_rn.rownum,
+                                                        DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
                                                         partner.name,
-                                                        con_qcfl_rn.req_id,
-                                                        con_qcfl_rn.product_id,
-                                                        con_qcfl_rn.qty_request,
-                                                        con_qcfl_rn.product_uom,
-                                                        con_qcfl_rn.price_unit,
-                                                        con_qcfl_rn.price_subtotal,
-                                                        con_qcfl_rn.price_tax,
+                                                        qcfl.req_id,
+                                                        qcfl.product_id,
+                                                        qcfl.qty_request,
+                                                        qcfl.product_uom,
+                                                        qcfl.price_unit,
+                                                        qcfl.price_subtotal,
+                                                        qcfl.price_tax,
                                                         payterm.name_term,
                                                         incoterm.name_inco,
-                                                        con_qcfl_rn.delivery_term,
-                                                        con_qcfl_rn.po_des_all_name
+                                                        qcfl.delivery_term,
+                                                        qcfl.po_des_all_name
                                                    FROM 
-                                                           ( 
-                                                           SELECT
-                                                                 qcfl_rn.id AS rownum,
-                                                              qcfl.company_id,
-                                                              qcfl.po_des_all_name,
-                                                              qcfl_rn.req_id,
-                                                              qcfl_rn.partner_id,
-                                                              qcfl.product_id,
-                                                              qcfl.price_unit,
-                                                              qcfl.qty_request,
-                                                              qcfl.product_uom,
-                                                              qcfl.price_subtotal,
-                                                              qcfl.price_tax,
-                                                              qcfl.payment_term_id,
-                                                              qcfl.incoterm_id,
-                                                              qcfl.delivery_term
-                                                         FROM
-                                                             quotation_comparison_form_line qcfl
-                                                               JOIN ( 
-                                                                   SELECT 
-                                                                       row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                        quotation_comparison_form_line.partner_id,
-                                                                    quotation_comparison_form_line.req_id
-                                                                   FROM 
-                                                                       quotation_comparison_form_line
-                                                                  GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                                  ORDER BY quotation_comparison_form_line.req_id DESC
-                                                              ) qcfl_rn 
-                                                              ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                          ) con_qcfl_rn
-                                                     JOIN ( 
-                                                         SELECT 
-                                                             res_partner.id,
-                                                              res_partner.name
-                                                         FROM 
-                                                             res_partner
-                                                     ) partner 
-                                                     ON con_qcfl_rn.partner_id = partner.id
+                                                          quotation_comparison_form_line qcfl
+                                                         JOIN ( 
+                                                             SELECT 
+                                                                 res_partner.id,
+                                                                  res_partner.name
+                                                             FROM 
+                                                                 res_partner
+                                                         ) partner 
+                                                         ON qcfl.partner_id = partner.id
                                                    LEFT JOIN ( 
                                                        SELECT 
                                                            apt.id AS apt_id,
@@ -2197,7 +2038,7 @@ class ViewQuotationComparison(models.Model):
                                                       FROM 
                                                           account_payment_term apt
                                                       ) payterm 
-                                                      ON con_qcfl_rn.payment_term_id = payterm.apt_id
+                                                      ON qcfl.payment_term_id = payterm.apt_id
                                                    LEFT JOIN ( 
                                                        SELECT 
                                                            si.id AS si_id,
@@ -2205,13 +2046,13 @@ class ViewQuotationComparison(models.Model):
                                                       FROM 
                                                           stock_incoterms si
                                                    ) incoterm 
-                                                   ON con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                   ON qcfl.incoterm_id = incoterm.si_id
                                               ) r
                                               GROUP BY r.req_id
                                           ) h
                                       ) paymentterm
                             UNION ALL
-                             SELECT 
+                                SELECT 
                                           deliverydate.req_id,
                                         deliverydate.product_id,
                                         deliverydate.hide,
@@ -2305,59 +2146,30 @@ class ViewQuotationComparison(models.Model):
                                                 END)::text) AS vendor10
                                                FROM ( 
                                                        SELECT 
-                                                           con_qcfl_rn.backorder,
-                                                        con_qcfl_rn.rownum,
+                                                        qcfl.pol_po_backorder backorder,
+                                                        DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
                                                         partner.name,
-                                                        con_qcfl_rn.req_id,
-                                                        con_qcfl_rn.product_id,
-                                                        con_qcfl_rn.qty_request,
-                                                        con_qcfl_rn.product_uom,
-                                                        con_qcfl_rn.price_unit,
-                                                        con_qcfl_rn.price_subtotal,
-                                                        con_qcfl_rn.price_tax,
+                                                        qcfl.req_id,
+                                                        qcfl.product_id,
+                                                        qcfl.qty_request,
+                                                        qcfl.product_uom,
+                                                        qcfl.price_unit,
+                                                        qcfl.price_subtotal,
+                                                        qcfl.price_tax,
                                                         payterm.name_term,
                                                         incoterm.name_inco,
-                                                        con_qcfl_rn.delivery_term,
-                                                        con_qcfl_rn.po_des_all_name
-                                                   FROM (
-                                                           SELECT 
-                                                                 qcfl_rn.id AS rownum,
-                                                              qcfl.company_id,
-                                                              qcfl.po_des_all_name,
-                                                              qcfl_rn.req_id,
-                                                              qcfl_rn.partner_id,
-                                                              qcfl.pol_po_backorder AS backorder,
-                                                              qcfl.product_id,
-                                                              qcfl.price_unit,
-                                                              qcfl.qty_request,
-                                                              qcfl.product_uom,
-                                                              qcfl.price_subtotal,
-                                                              qcfl.price_tax,
-                                                              qcfl.payment_term_id,
-                                                              qcfl.incoterm_id,
-                                                              qcfl.delivery_term
-                                                         FROM 
-                                                             quotation_comparison_form_line qcfl
-                                                               JOIN ( 
-                                                                   SELECT 
-                                                                       row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                    quotation_comparison_form_line.partner_id,
-                                                                    quotation_comparison_form_line.req_id,
-                                                                    quotation_comparison_form_line.pol_po_backorder
-                                                                   FROM 
-                                                                       quotation_comparison_form_line
-                                                                  GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id, quotation_comparison_form_line.pol_po_backorder
-                                                                  ) qcfl_rn 
-                                                                  ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                              ) con_qcfl_rn
-                                                     JOIN ( 
-                                                         SELECT 
-                                                             res_partner.id,
-                                                              res_partner.name
-                                                         FROM 
-                                                             res_partner
-                                                     ) partner 
-                                                     ON con_qcfl_rn.partner_id = partner.id
+                                                        qcfl.delivery_term,
+                                                        qcfl.po_des_all_name
+                                                   FROM 
+                                                          quotation_comparison_form_line qcfl
+                                                         JOIN ( 
+                                                             SELECT 
+                                                                 res_partner.id,
+                                                                  res_partner.name
+                                                             FROM 
+                                                                 res_partner
+                                                         ) partner 
+                                                     ON qcfl.partner_id = partner.id
                                                      LEFT JOIN ( 
                                                          SELECT 
                                                              apt.id AS apt_id,
@@ -2365,7 +2177,7 @@ class ViewQuotationComparison(models.Model):
                                                          FROM 
                                                              account_payment_term apt
                                                      ) payterm 
-                                                     ON con_qcfl_rn.payment_term_id = payterm.apt_id
+                                                     ON qcfl.payment_term_id = payterm.apt_id
                                                      LEFT JOIN ( 
                                                          SELECT 
                                                              si.id AS si_id,
@@ -2373,14 +2185,14 @@ class ViewQuotationComparison(models.Model):
                                                          FROM 
                                                              stock_incoterms si
                                                      ) incoterm 
-                                                     ON con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                     ON qcfl.incoterm_id = incoterm.si_id
                                                      ) r
                                               GROUP BY r.req_id
                                               ) h
                                          ) deliverydate
                             UNION ALL
-                             SELECT 
-                                             franco.req_id,
+                                     SELECT 
+                                               franco.req_id,
                                             franco.product_id,
                                             franco.hide,
                                             franco.grand_total_label,
@@ -2473,71 +2285,45 @@ class ViewQuotationComparison(models.Model):
                                                          ELSE NULL::character varying
                                                         END)::text) AS vendor10
                                                    FROM ( 
-                                                       SELECT 
-                                                           con_qcfl_rn.rownum,
-                                                        partner.name,
-                                                        con_qcfl_rn.req_id,
-                                                        con_qcfl_rn.product_id,
-                                                        con_qcfl_rn.qty_request,
-                                                        con_qcfl_rn.product_uom,
-                                                        con_qcfl_rn.price_unit,
-                                                        con_qcfl_rn.price_subtotal,
-                                                        con_qcfl_rn.price_tax,
-                                                        payterm.name_term,
-                                                        incoterm.name_inco,
-                                                        con_qcfl_rn.delivery_term,
-                                                        con_qcfl_rn.po_des_all_name
-                                                   FROM ( 
                                                            SELECT 
-                                                                 qcfl_rn.id AS rownum,
-                                                              qcfl.company_id,
-                                                              qcfl.po_des_all_name,
-                                                              qcfl_rn.req_id,
-                                                              qcfl_rn.partner_id,
-                                                              qcfl.product_id,
-                                                              qcfl.price_unit,
-                                                              qcfl.qty_request,
-                                                              qcfl.product_uom,
-                                                              qcfl.price_subtotal,
-                                                              qcfl.price_tax,
-                                                              qcfl.payment_term_id,
-                                                              qcfl.incoterm_id,
-                                                              qcfl.delivery_term
-                                                         FROM
+                                                            DENSE_RANK() OVER (PARTITION BY qcfl.req_id ORDER BY qcfl.partner_id DESC NULLS LAST) as rownum,
+                                                            partner.name,
+                                                            qcfl.req_id,
+                                                            qcfl.product_id,
+                                                            qcfl.qty_request,
+                                                            qcfl.product_uom,
+                                                            qcfl.price_unit,
+                                                            qcfl.price_subtotal,
+                                                            qcfl.price_tax,
+                                                            payterm.name_term,
+                                                            incoterm.name_inco,
+                                                            qcfl.delivery_term,
+                                                            qcfl.po_des_all_name
+                                                           FROM 
                                                              quotation_comparison_form_line qcfl
-                                                               JOIN ( 
-                                                                   SELECT 
-                                                                       row_number() OVER (PARTITION BY quotation_comparison_form_line.req_id ORDER BY quotation_comparison_form_line.partner_id DESC NULLS LAST) AS id,
-                                                                    quotation_comparison_form_line.partner_id,
-                                                                    quotation_comparison_form_line.req_id
-                                                                   FROM 
-                                                                       quotation_comparison_form_line
-                                                                  GROUP BY quotation_comparison_form_line.partner_id, quotation_comparison_form_line.req_id
-                                                              ) qcfl_rn ON qcfl.partner_id = qcfl_rn.partner_id AND qcfl.req_id = qcfl_rn.req_id
-                                                         ) con_qcfl_rn
-                                                          JOIN ( 
-                                                              SELECT 
-                                                                  res_partner.id,
-                                                                  res_partner.name
-                                                             FROM 
-                                                                 res_partner
-                                                         ) partner 
-                                                         ON con_qcfl_rn.partner_id = partner.id
-                                                         LEFT JOIN ( 
-                                                             SELECT 
-                                                                 apt.id AS apt_id,
-                                                                  apt.name AS name_term
-                                                             FROM 
-                                                                 account_payment_term apt) payterm 
-                                                                 ON con_qcfl_rn.payment_term_id = payterm.apt_id
-                                                         LEFT JOIN ( 
-                                                            SELECT 
-                                                                si.id AS si_id,
-                                                                  si.name AS name_inco
-                                                             FROM 
-                                                                 stock_incoterms si
-                                                        ) incoterm 
-                                                        ON con_qcfl_rn.incoterm_id = incoterm.si_id
+                                                              JOIN ( 
+                                                                  SELECT 
+                                                                      res_partner.id,
+                                                                      res_partner.name
+                                                                 FROM 
+                                                                     res_partner
+                                                             ) partner 
+                                                             ON qcfl.partner_id = partner.id
+                                                             LEFT JOIN ( 
+                                                                 SELECT 
+                                                                     apt.id AS apt_id,
+                                                                      apt.name AS name_term
+                                                                 FROM 
+                                                                     account_payment_term apt) payterm 
+                                                                     ON qcfl.payment_term_id = payterm.apt_id
+                                                             LEFT JOIN ( 
+                                                                SELECT 
+                                                                    si.id AS si_id,
+                                                                      si.name AS name_inco
+                                                                 FROM 
+                                                                     stock_incoterms si
+                                                            ) incoterm 
+                                                            ON qcfl.incoterm_id = incoterm.si_id
                                                         ) r
                                               GROUP BY r.req_id
                                               ) h
@@ -2574,7 +2360,8 @@ class ViewQuotationComparison(models.Model):
                                                FROM purchase_order_line) pol ON ((po.id = pol.order_id)))
                                       WHERE ((po.state)::text = 'done'::text)
                                       GROUP BY po.id, pol.order_id, pol.product_id, pol.price_total, pol.price_unit, pol.product_qty) a) b
-                      WHERE (b.rank_id = 1)) last_price ON ((qcf_line.product_id = last_price.product_id)));""")
+                      WHERE (b.rank_id = 1)) last_price ON ((qcf_line.product_id = last_price.product_id)));
+                      """)
 
 
     @api.multi
