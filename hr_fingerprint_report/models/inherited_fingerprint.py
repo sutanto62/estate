@@ -255,7 +255,7 @@ class FingerAttendance(models.Model):
             record.p_estate_late = labor_late if record.nik[:1] in ('1', '2') and record.work_schedules in ('Opr Kebun SenSab', 'Opr Kebun Jumat', 'Waker Pagi', 'Waker Malam') else 0
             record.p_estate_late_amount = 1 if record.p_estate_late >= 1 else 0
             record.p_labor_late = record.p_labor_late_circle - 30 if record.p_labor_late_circle > 30 else 0
-            record.p_labor_late_amount = 1 if record.p_labor_late > 1 else 0
+            record.p_labor_late_amount = 1 if record.p_labor_late >= 1 else 0
 
             reason = ''
             if record.p_labor_early_leave:

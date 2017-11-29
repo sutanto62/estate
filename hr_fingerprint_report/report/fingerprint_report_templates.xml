@@ -113,54 +113,58 @@
                                 <!--periode-->
                             </td>
                             <td width="30%">
-                                <!--keterangan potong poin-->
-                                <table class="table table-condensed" width="auto">
-                                    <thead>
-                                        <tr><th colspan="4"><strong>Keterangan Potong Poin</strong></th></tr>
-                                    </thead>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
-                                        <td width="10"><strong>-2</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
-                                        <td width="10"><strong>-1</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
-                                        <td width="10"><strong>-3</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
-                                        <td width="10"><strong>-2</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
-                                        <td width="10"><strong>-4</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
-                                        <td width="10"><strong>-3</strong></td>
-                                    </tr>
-                                </table>
-                                <!--/keterangan potong poin-->
+                                <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                    <!--keterangan potong poin-->
+                                    <table class="table table-condensed" width="auto">
+                                        <thead>
+                                            <tr><th colspan="4"><strong>Keterangan Potong Poin</strong></th></tr>
+                                        </thead>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
+                                            <td width="10"><strong>0</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
+                                            <td width="10"><strong>0</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
+                                            <td width="10"><strong>-2</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
+                                            <td width="10"><strong>-1</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
+                                            <td width="10"><strong>-3</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
+                                            <td width="10"><strong>-2</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
+                                            <td width="10"><strong>-4</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
+                                            <td width="10"><strong>-3</strong></td>
+                                        </tr>
+                                    </table>
+                                    <!--/keterangan potong poin-->
+                                </t>
                             </td>
                             <td width="30%">
-                                <!--keterangan terlambat-->
-                                <table class="table table-condensed" width="auto">
-                                    <thead>
+                                <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                    <!--keterangan terlambat-->
+                                    <table class="table table-condensed" width="auto">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4"><strong>Keterangan Terlambat</strong></th>
+                                            </tr>
+                                        </thead>
                                         <tr>
-                                            <th colspan="4"><strong>Keterangan Terlambat</strong></th>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
+                                            <td width="10"><strong>0</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
+                                            <td width="10"><strong>0</strong></td>
                                         </tr>
-                                    </thead>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                    </tr>
-                                </table>
-                                <!--/keterangan terlambat-->
+                                    </table>
+                                    <!--/keterangan terlambat-->
+                                </t>
                             </td>
                         </tr>
                     </table>
@@ -364,7 +368,7 @@
 
                         <!--attendance footer-->
                         <!--put tfoot after tbody for calculation-->
-                        <tfoot>
+                        <!--<tfoot>-->
                             <tr>
                                 <td colspan="2" class="text-right"><strong>Total</strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_day_normal)"/></strong></td>
@@ -420,7 +424,7 @@
                             <t t-set="sum_p_hour_early_leave" t-value="'{0:,.0f}'.format(p_hour_early_leave)"/>
                             <t t-set="sum_p_early_leave_amount" t-value="'{0:,.0f}'.format(p_early_leave_amount)"/>
                             <!--/summary-->
-                        </tfoot>
+                        <!--</tfoot>-->
                         <!--/attendance footer-->
                     </table>
                     <!--/attendance-->
@@ -536,7 +540,7 @@
                                         <td class="text-right"><t t-esc="sum_late_amount_office_person"/> orang</td>
                                     </tr>
                                     <t t-if="data['form']['office_level_id']">
-                                        <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
+                                        <t t-if="str(data['form']['office_level_id'][1]) == 'Estate'">
                                             <tr>
                                                 <td>Kebun</td>
                                                 <td class="text-right"><t t-esc="sum_estate_late_amount"/> kali</td>
@@ -548,17 +552,19 @@
                                                 <td class="text-right"><t t-esc="sum_labor_late_circle_amount_person"/> orang</td>
                                             </tr>
                                             <tr>
-                                                <td>KHL Kerja</td>
+                                                <td>Jam Kerja</td>
                                                 <td class="text-right"><t t-esc="sum_labor_late_amount"/> kali</td>
                                                 <td class="text-right"><t t-esc="sum_labor_late_amount_person"/> orang</td>
                                             </tr>
                                         </t>
                                     </t>
+                                    <!--
                                     <tr>
                                         <td>Pulang Cepat</td>
                                         <td class="text-right"><t t-esc="sum_p_hour_early_leave"/> menit</td>
                                         <td class="text-right"><t t-esc="sum_p_early_leave_amount"/> kali</td>
                                     </tr>
+                                    -->
                                 </table>
                                 <!--/terlambat-->
                             </td>
