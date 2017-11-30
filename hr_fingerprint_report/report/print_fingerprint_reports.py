@@ -48,9 +48,11 @@ class FingerprintReport(models.AbstractModel):
         elif reason == 'Ijin':
             res = str(sum(att.p_permit for att in action_reason_ids)) + ' hari'
         elif reason == 'Dinas Luar':
-            res = str(sum(att.p_business_trip for att in action_reason_ids))  + ' hari'
+            res = str(sum(att.p_business_trip for att in action_reason_ids)) + ' hari'
+        # Do not sum pulang cepat minute. Attendance with action reason Pulang Cepat did not return early leave.
         # elif reason == 'Pulang Cepat':
         #     res = str(sum(att.p_hour_early_leave for att in action_reason_ids)) + ' menit'
+
         # elif reason == 'Keluar Kantor':
         #     res = str(sum(att.p_out_office for att in action_reason_ids)) + ' kali'
         else:
@@ -60,6 +62,7 @@ class FingerprintReport(models.AbstractModel):
     @api.multi
     def get_attendance_remark(self, data=None):
         """
+        Get summary of attendance with action reason.
         Get action reason recordset.
         :param data: form filter
         :type: dictionary
@@ -75,6 +78,8 @@ class FingerprintReport(models.AbstractModel):
         for reason in action_reason_ids.mapped('name'):
             if reason:
                 person = set(attendance_obj.search(domain + [('action_reason', '=', reason)]).mapped('employee_name'))
+
+                print 'reason %s person %s' % (reason, person)
                 res = {
                     'reason': str(reason),
                     'person': len(person),
@@ -223,9 +228,9 @@ class FingerprintReport(models.AbstractModel):
 
         # p_hour_late_office
         if type == a[0]:
-            if 6 <= late <= 30:
+            if 31 <= late <= 60:
                 color = 'gold'
-            if 31 <= late <= 90:
+            if 61 <= late <= 90:
                 color = 'red'
             if late >= 91:
                 color = 'black'

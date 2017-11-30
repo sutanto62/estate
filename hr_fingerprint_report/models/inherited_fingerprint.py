@@ -206,7 +206,7 @@ class FingerAttendance(models.Model):
             t = Decimal(record.p_hour_late) * Decimal(24) * Decimal(60)
             record.p_hour_late_office = round(t,0) if record.work_schedules in ('RO SenJum', 'RO Sabtu', 'Sec Pagi', 'Sec Malam', 'Staff HO') else 0
             record.p_late_amount = 1 if record.p_hour_late_office else 0
-            record.p_late_amount_office = 1 if (record.work_schedules in ('RO SenJum', 'RO Sabtu', 'Staff HO')) and record.p_hour_late_office >= 5 else 0
+            record.p_late_amount_office = 1 if (record.work_schedules in ('RO SenJum', 'RO Sabtu', 'Staff HO')) and record.p_hour_late_office > 5 else 0
             record.p_early_leave_leave = record.timevalue(record.hour_early_leave_t)
             c = Decimal(record.p_early_leave_leave) * Decimal(24) * Decimal(60)
             record.p_early_leave = round(c,0)
@@ -280,6 +280,7 @@ class FingerAttendance(models.Model):
                 reason = 'Ijin'
             else:
                 reason = ''
+
             record.p_action_reason = reason
 
             record.p_late_all = 1 if record.p_estate_late_amount or record.p_labor_late_amount or record.p_late_amount_office else 0

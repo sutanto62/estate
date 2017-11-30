@@ -13,6 +13,8 @@ class TestFingerprint(TransactionCase):
 
         # setup
         self.Fingerprint = self.env['hr_fingerprint_ams.attendance']
+
+        # create action reason
         reasons = ['Cuti', 'Sakit', 'Ijin', 'Dinas Luar', 'Keluar Kantor', 'Pulang Cepat']
         for r in reasons:
             self.env['hr.action.reason'].create({
@@ -20,6 +22,7 @@ class TestFingerprint(TransactionCase):
                 'name': r
             })
 
+        # create PKWTT Monthly
         self.employee_id = self.env['hr.employee'].create({
             'name': 'Employee',
             'nik_number': '1234567890',
