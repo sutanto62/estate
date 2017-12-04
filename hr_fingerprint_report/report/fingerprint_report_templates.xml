@@ -8,7 +8,10 @@
                 <t t-set="avg_day_work_divide" t-value="0"/>
                 
                 <t t-set="sum_hour_late_office" t-value="0"/>
+                <t t-set="sum_hour_late_office_30" t-value="0"/>
                 <t t-set="sum_late_amount_office" t-value="0"/>
+                <t t-set="sum_late_amount_office_3" t-value="0"/>
+                <t t-set="sum_estate_late_amount" t-value="0"/>
                 <t t-set="sum_labor_late_circle_amount" t-value="0"/>
                 <t t-set="sum_labor_late_circle_amount" t-value="0"/>
                 <t t-set="sum_labor_late" t-value="0"/>
@@ -22,6 +25,7 @@
 
                 <t t-set="sum_p_hour_early_leave" t-value="0"/>
                 <t t-set="sum_p_early_leave_amount" t-value="0"/>
+                <t t-set="sum_p_early_leave_person" t-value="0"/>
                 <!--/global variable-->
 
                 <!--page 1-->
@@ -113,54 +117,58 @@
                                 <!--periode-->
                             </td>
                             <td width="30%">
-                                <!--keterangan potong poin-->
-                                <table class="table table-condensed" width="auto">
-                                    <thead>
-                                        <tr><th colspan="4"><strong>Keterangan Potong Poin</strong></th></tr>
-                                    </thead>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
-                                        <td width="10"><strong>-2</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
-                                        <td width="10"><strong>-1</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
-                                        <td width="10"><strong>-3</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
-                                        <td width="10"><strong>-2</strong></td>
-                                    </tr>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
-                                        <td width="10"><strong>-4</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
-                                        <td width="10"><strong>-3</strong></td>
-                                    </tr>
-                                </table>
-                                <!--/keterangan potong poin-->
+                                <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                    <!--keterangan potong poin-->
+                                    <table class="table table-condensed" width="auto">
+                                        <thead>
+                                            <tr><th colspan="4"><strong>Keterangan Potong Poin</strong></th></tr>
+                                        </thead>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
+                                            <td width="10"><strong>0</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-white"/></td>
+                                            <td width="10"><strong>0</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
+                                            <td width="10"><strong>-2</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-gold"/></td>
+                                            <td width="10"><strong>-1</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
+                                            <td width="10"><strong>-3</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-red"/></td>
+                                            <td width="10"><strong>-2</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
+                                            <td width="10"><strong>-4</strong></td>
+                                            <td width="50" class="text-right"><i class="fa fa-circle-black"/></td>
+                                            <td width="10"><strong>-3</strong></td>
+                                        </tr>
+                                    </table>
+                                    <!--/keterangan potong poin-->
+                                </t>
                             </td>
                             <td width="30%">
-                                <!--keterangan terlambat-->
-                                <table class="table table-condensed" width="auto">
-                                    <thead>
+                                <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
+                                    <!--keterangan terlambat-->
+                                    <table class="table table-condensed" width="auto">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4"><strong>Keterangan Terlambat</strong></th>
+                                            </tr>
+                                        </thead>
                                         <tr>
-                                            <th colspan="4"><strong>Keterangan Terlambat</strong></th>
+                                            <td width="10"><i class="fa fa-circle-goldenrod"/></td>
+                                            <td width="50"><strong>Terlambat kebun/apel pagi/jam kerja</strong></td>
+                                            <td width="10"><i class="fa fa-circle-red"/></td>
+                                            <td width="50"><strong>Surat teguran terlambat kali kebun</strong></td>
                                         </tr>
-                                    </thead>
-                                    <tr>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                        <td width="50" class="text-right"><i class="fa fa-circle-goldenrod"/></td>
-                                        <td width="10"><strong>0</strong></td>
-                                    </tr>
-                                </table>
-                                <!--/keterangan terlambat-->
+                                    </table>
+                                    <!--/keterangan terlambat-->
+                                </t>
                             </td>
                         </tr>
                     </table>
@@ -195,6 +203,10 @@
                         <t t-set="p_average_day_work" t-value="0"/>
                         <t t-set="p_average_day_work_divide" t-value="0"/>
 
+                        <t t-set="hour_late_office_30" t-value="0"/>
+                        <t t-set="late_amount_office_3" t-value="0"/>
+                        <t t-set="estate_late_amount_3" t-value="0"/>
+
                         <!--/sum variable-->
 
                         <!--attendance header-->
@@ -205,15 +217,29 @@
                                 <th class="text-right" rowspan="2">Normal Hari Kerja</th>
                                 <th class="text-center" colspan="6">Pengecualian</th>
                                 <th class="text-right" rowspan="2">Riil Hari Kerja</th>
+
                                 <t t-if="data['form']['office_level_id']">
                                     <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
                                         <th class="text-right" rowspan="2">Premi HK2</th>
                                     </t>
                                 </t>
-                                <th class="text-center" colspan="2">Terlambat Kary Kantor</th>
+
+                                <!-- hide if office level estate -->
+                                <t t-if="data['form']['office_level_id']">
+                                    <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                        <th class="text-center" colspan="2">Terlambat Kary Kantor</th>
+                                    </t>
+                                </t>
+
+                                <!-- hide if office level is HO -->
                                 <t t-if="data['form']['office_level_id']">
                                     <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
                                         <th class="text-center" colspan="2">Terlambat Kebun</th>
+                                    </t>
+                                </t>
+
+                                <t t-if="data['form']['office_level_id']">
+                                    <t t-if="str(data['form']['office_level_id'][1]) == 'Estate'">
                                         <th class="text-center" colspan="2">Terlambat KHL Apel</th>
                                         <th class="text-center" colspan="2">Terlambat KHL Kerja</th>
                                     </t>
@@ -234,12 +260,25 @@
                                 <th class="text-right">Mangkir</th>
                                 <!--pengecualian-->
                                 <!--terlambat-->
-                                <th class="text-right">Menit</th>
-                                <th class="text-right">X</th>
+
+                                <!-- hide if office level estate -->
+                                <t t-if="data['form']['office_level_id']">
+                                    <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                        <th class="text-right">Menit</th>
+                                        <th class="text-right">X</th>
+                                    </t>
+                                </t>
+
+                                <!-- hide if office level is HO-->
                                 <t t-if="data['form']['office_level_id']">
                                     <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
                                         <th class="text-right">Menit</th>
                                         <th class="text-right">X</th>
+                                    </t>
+                                </t>
+
+                                <t t-if="data['form']['office_level_id']">
+                                    <t t-if="str(data['form']['office_level_id'][1]) == 'Estate'">
                                         <th class="text-right">Menit</th>
                                         <th class="text-right">X</th>
                                         <th class="text-right">Menit</th>
@@ -286,12 +325,23 @@
                                             <td class="text-right" t-att-style="get_color('p_estate_late',a['p_estate_late'])"><t t-esc="a['p_estate_late']"/></td>
                                             <td class="text-right" t-att-style="get_color('p_estate_late_amount',a['p_estate_late_amount'])"><t t-esc="a['p_estate_late_amount']"/></td>
                                             -->
-                                            <td class="text-right"><span t-att-class="get_color('p_hour_late_office',a['p_hour_late_office'])"/> <t t-esc="a['p_hour_late_office']"/></td>
-                                            <td class="text-right"><span t-att-class="get_color('p_late_amount_office',a['p_late_amount_office'])"/> <t t-esc="a['p_late_amount_office']"/></td>
-                                             <t t-if="data['form']['office_level_id']">
+                                            <!-- hide if office level estate -->
+                                            <t t-if="data['form']['office_level_id']">
+                                                <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                                    <td class="text-right"><span t-att-class="get_color('p_hour_late_office',a['p_hour_late_office'])"/> <t t-esc="a['p_hour_late_office']"/></td>
+                                                    <td class="text-right"><span t-att-class="get_color('p_late_amount_office',a['p_late_amount_office'])"/> <t t-esc="a['p_late_amount_office']"/></td>
+                                                </t>
+                                            </t>
+                                            <!-- hide if office level is HO -->
+                                            <t t-if="data['form']['office_level_id']">
                                                 <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
                                                     <td class="text-right"><span t-att-class="get_color('p_estate_late',a['p_estate_late'])"/> <t t-esc="a['p_estate_late']"/></td>
                                                     <td class="text-right"><span t-att-class="get_color('p_estate_late_amount',a['p_estate_late_amount'])"/> <t t-esc="a['p_estate_late_amount']"/></td>
+                                                </t>
+                                            </t>
+
+                                             <t t-if="data['form']['office_level_id']">
+                                                <t t-if="str(data['form']['office_level_id'][1]) == 'Estate'">
 
                                                     <!--same color if value > 0-->
                                                     <td class="text-right"><t t-if="a['p_labor_late_circle'] >= 1"><span class="fa fa-circle-goldenrod"/></t> <t t-esc="a['p_labor_late_circle']"/></td>
@@ -309,12 +359,26 @@
 
                                         <!--calculate-->
                                         <t t-if="a['p_hour_late_office'] >= 31">
+                                            <t t-set="hour_late_office_30" t-value="a['p_hour_late_office']-30"/>
+                                            <t t-set="sum_hour_late_office_30"
+                                               t-value="sum_hour_late_office_30 + hour_late_office_30"/>
+                                        </t>
+                                        <t t-if="a['p_hour_late_office'] >= 31">
                                             <t t-set="sum_hour_late_office_person"
                                                t-value="sum_hour_late_office_person+1"/>
                                         </t>
                                         <t t-if="a['p_late_amount_office'] >= 4">
+                                            <t t-set="sum_late_amount_office_3"
+                                               t-value="sum_late_amount_office_3+1"/>
+                                        </t>
+                                        <t t-if="a['p_late_amount_office'] >= 4">
                                             <t t-set="sum_late_amount_office_person"
                                                t-value="sum_late_amount_office_person+1"/>
+                                        </t>
+                                        <t t-if="a['p_estate_late_amount'] >= 4">
+                                            <t t-set="estate_late_amount_3" t-value="a['p_estate_late_amount']-3"/>
+                                            <t t-set="sum_estate_late_amount"
+                                               t-value="sum_estate_late_amount+estate_late_amount_3"/>
                                         </t>
                                         <t t-if="a['p_estate_late_amount'] >= 4">
                                             <t t-set="sum_estate_late_amount_person"
@@ -327,6 +391,10 @@
                                         <t t-if="a['p_labor_late_amount'] >= 1">
                                             <t t-set="sum_labor_late_amount_person"
                                                t-value="sum_labor_late_amount_person+1"/>
+                                        </t>
+                                        <t t-if="a['p_early_leave_amount'] >= 1">
+                                            <t t-set="sum_p_early_leave_person"
+                                                t-value="sum_p_early_leave_person+1"/>
                                         </t>
 
                                         <t t-set="p_day_normal" t-value="p_day_normal+a['p_day_normal']"/>
@@ -364,7 +432,7 @@
 
                         <!--attendance footer-->
                         <!--put tfoot after tbody for calculation-->
-                        <tfoot>
+                        <!--<tfoot>-->
                             <tr>
                                 <td colspan="2" class="text-right"><strong>Total</strong></td>
                                 <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_day_normal)"/></strong></td>
@@ -380,12 +448,25 @@
                                         <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_piece_rate_day)"/></strong></td>
                                     </t>
                                 </t>
-                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_late_office)"/></strong></td>
-                                <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_late_amount_office)"/></strong></td>
+
+                                <!-- hide if office level estate -->
+                                <t t-if="data['form']['office_level_id']">
+                                    <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                    <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_hour_late_office)"/></strong></td>
+                                        <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_late_amount_office)"/></strong></td>
+                                    </t>
+                                </t>
+
+                                <!-- hide if office level is HO -->
                                 <t t-if="data['form']['office_level_id']">
                                     <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
                                         <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_estate_late)"/></strong></td>
                                         <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_estate_late_amount)"/></strong></td>
+                                    </t>
+                                </t>
+
+                                <t t-if="data['form']['office_level_id']">
+                                    <t t-if="str(data['form']['office_level_id'][1]) == 'Estate'">
                                         <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_circle)"/></strong></td>
                                         <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late_circle_amount)"/></strong></td>
                                         <td class="text-right"><strong><t t-esc="'{0:,.0f}'.format(p_labor_late)"/></strong></td>
@@ -420,7 +501,7 @@
                             <t t-set="sum_p_hour_early_leave" t-value="'{0:,.0f}'.format(p_hour_early_leave)"/>
                             <t t-set="sum_p_early_leave_amount" t-value="'{0:,.0f}'.format(p_early_leave_amount)"/>
                             <!--/summary-->
-                        </tfoot>
+                        <!--</tfoot>-->
                         <!--/attendance footer-->
                     </table>
                     <!--/attendance-->
@@ -493,11 +574,20 @@
                                         <th class="text-right">Keterangan</th>
                                     </thead>
                                     <t t-foreach="remarks" t-as="r">
-                                        <tr>
-                                            <td class="col-md-1"><t t-esc="r['reason']"/></td>
-                                            <td class="col-md-1 text-right"><t t-esc="r['person']"/> orang</td>
-                                            <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
-                                        </tr>
+                                        <t t-if="r['reason'] != 'Pulang Cepat'">
+                                            <tr>
+                                                <td class="col-md-1"><t t-esc="r['reason']"/></td>
+                                                <td class="col-md-1 text-right"><t t-esc="r['person']"/> orang</td>
+                                                <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
+                                            </tr>
+                                        </t>
+                                        <t t-if="r['reason'] == 'Pulang Cepat'">
+                                            <tr>
+                                                <td class="col-md-1"><t t-esc="r['reason']"/></td>
+                                                <td class="col-md-1 text-right"><t t-esc="sum_p_early_leave_person"/> orang</td>
+                                                <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
+                                            </tr>
+                                        </t>
                                     </t>
                                 </table>
                                 <!--/pengecualian-->
@@ -526,15 +616,21 @@
                                         <th class="text-right">Menit/X</th>
                                         <th class="text-right">Keterangan</th>
                                     </thead>
-                                    <tr>
-                                        <td rowspan="2">Kantor</td>
-                                        <td class="text-right"><t t-esc="sum_hour_late_office"/> menit</td>
-                                        <td class="text-right"><t t-esc="sum_hour_late_office_person"/> orang</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-right"><t t-esc="sum_late_amount_office"/> kali</td>
-                                        <td class="text-right"><t t-esc="sum_late_amount_office_person"/> orang</td>
-                                    </tr>
+                                    <!-- hide if site office is HO -->
+                                    <t t-if="data['form']['office_level_id']">
+                                        <t t-if="str(data['form']['office_level_id'][1]) != 'Estate'">
+                                            <tr>
+                                                <td rowspan="2">Kantor (>30 menit/>3 kali)</td>
+                                                <td class="text-right"><t t-esc="sum_hour_late_office_30"/> menit</td>
+                                                <td class="text-right"><t t-esc="sum_hour_late_office_person"/> orang</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-right"><t t-esc="sum_late_amount_office_3"/> kali</td>
+                                                <td class="text-right"><t t-esc="sum_late_amount_office_person"/> orang</td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                    <!-- hide if site office is HO -->
                                     <t t-if="data['form']['office_level_id']">
                                         <t t-if="str(data['form']['office_level_id'][1]) != 'HO'">
                                             <tr>
@@ -542,23 +638,29 @@
                                                 <td class="text-right"><t t-esc="sum_estate_late_amount"/> kali</td>
                                                 <td class="text-right"><t t-esc="sum_estate_late_amount_person"/> orang</td>
                                             </tr>
+                                        </t>
+                                    </t>
+                                    <t t-if="data['form']['office_level_id']">
+                                        <t t-if="str(data['form']['office_level_id'][1]) == 'Estate'">
                                             <tr>
                                                 <td>Apel Pagi</td>
                                                 <td class="text-right"><t t-esc="sum_labor_late_circle_amount"/> kali</td>
                                                 <td class="text-right"><t t-esc="sum_labor_late_circle_amount_person"/> orang</td>
                                             </tr>
                                             <tr>
-                                                <td>KHL Kerja</td>
+                                                <td>Jam Kerja</td>
                                                 <td class="text-right"><t t-esc="sum_labor_late_amount"/> kali</td>
                                                 <td class="text-right"><t t-esc="sum_labor_late_amount_person"/> orang</td>
                                             </tr>
                                         </t>
                                     </t>
+                                    <!--
                                     <tr>
                                         <td>Pulang Cepat</td>
                                         <td class="text-right"><t t-esc="sum_p_hour_early_leave"/> menit</td>
                                         <td class="text-right"><t t-esc="sum_p_early_leave_amount"/> kali</td>
                                     </tr>
+                                    -->
                                 </table>
                                 <!--/terlambat-->
                             </td>
