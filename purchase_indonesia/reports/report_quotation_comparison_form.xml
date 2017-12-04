@@ -839,6 +839,7 @@
 							</div>
 
 							<!-- Tanda Tangan -->
+							<!-- 
 							<div class="row">
 								<div class="col-xs-12">	
 									<table width="100%" class="noborder">
@@ -907,7 +908,7 @@
 											<t t-set="is_director_approval" t-value="0"/>
 											<t t-foreach="o.message_ids" t-as="mids">
 												<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-												    <t t-if="mids_tracking.field == 'state' and (mids_tracking.old_value_char == 'Approval President Director' or mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai')">
+												    <t t-if="mids_tracking.field == 'state' and (mids_tracking.old_value_char == 'Approval President Director' and (mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai'))">
 													    <t t-set="is_director_approval" t-value="1"/>
 												    </t>
 												</t>
@@ -1062,8 +1063,233 @@
 										</tr>
 									</table>
 								</div>
+								 -->
+							<div class="row">
+							    <table width="100%" class="noborder">
+							    	<tr>
+							    	    <td valign="top">
+							    	   		<table width="100%" class="noborder">
+												<tr>
+													<td colspan="2" class="noborder" style="text-align:left;font-size:10pt;">
+													  Proposed By
+													</td>
+												</tr>
+												
+											    <t t-set="has_shown" t-value="0"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+														<t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Draft'">
+															<tr>
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<t t-if="has_shown == 0">
+																	    Pengaju
+																		<t t-set="has_shown" t-value="1"/>
+																	</t>
+																</td>
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<u>
+																		<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																		<span t-field="mids.date"/>&#160;
+																	[
+																		<span t-field="mids_tracking.old_value_char"/>&#160;to
+																		<span t-field="mids_tracking.new_value_char"/>
+																	]
+																</td>
+															</tr>
+														</t>
+													</t>
+												</t>
+											</table>     
+							    	    </td>
+							    	    <td valign="top">
+							    	    	<table width="100%" class="noborder">
+												<tr>
+													<td colspan="2" class="noborder" style="text-align:left;font-size:10pt;">
+													  Approved By
+													</td>
+												</tr>
+												
+												<t t-set="has_shown" t-value="0"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+														<t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Head of the Representative Office'">
+															<tr>
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<t t-if="has_shown == 0">
+																	    RO Head
+																		<t t-set="has_shown" t-value="1"/>
+																	</t>
+																</td>		    
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<u>
+																		<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																		<span t-field="mids.date"/>&#160;
+																	[
+																		<span t-field="mids_tracking.old_value_char"/>&#160;to
+																		<span t-field="mids_tracking.new_value_char"/>
+																	]
+																</td>
+															</tr>
+														</t>
+													</t>
+												</t>
+												
+												<t t-set="has_shown" t-value="0"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+														<t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Finance'">
+															<tr>
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<t t-if="has_shown == 0">
+																	    Proc &amp; Log Div Head
+																		<t t-set="has_shown" t-value="1"/>
+																	</t>
+																</td>		    
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<u>
+																		<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																		<span t-field="mids.date"/>&#160;
+																	[
+																		<span t-field="mids_tracking.old_value_char"/>&#160;to
+																		<span t-field="mids_tracking.new_value_char"/>
+																	]
+																</td>
+															</tr>
+														</t>
+													</t>
+												</t>
+												
+												<t t-set="has_shown" t-value="0"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+														<t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval GM Finance'">
+															<tr>
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<t t-if="has_shown == 0">
+																	    Finance Div Head
+																		<t t-set="has_shown" t-value="1"/>
+																	</t>
+																</td>		    
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<u>
+																		<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																		<span t-field="mids.date"/>&#160;
+																	[
+																		<span t-field="mids_tracking.old_value_char"/>&#160;to
+																		<span t-field="mids_tracking.new_value_char"/>
+																	]
+																</td>
+															</tr>
+														</t>
+													</t>
+												</t>
+												
+											</table>      
+							    	    </td>
+							    	    <td valign="top">
+							    	        <table width="100%" class="noborder">
+												<tr>
+													<td colspan="2" class="noborder" style="text-align:left;font-size:10pt;">
+													  &#160;
+													</td>
+												</tr>
+												
+												<t t-set="is_director_approval" t-value="0"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+													    <t t-if="mids_tracking.field == 'state' and (mids_tracking.old_value_char == 'Approval President Director' and (mids_tracking.new_value_char == 'Done' or mids_tracking.new_value_char == 'selesai'))">
+														    <t t-set="is_director_approval" t-value="1"/>
+													    </t>
+													</t>
+												</t>
+												
+												<t t-set="has_shown" t-value="0"/>
+												<t t-foreach="o.message_ids" t-as="mids">
+													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+														<t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval Director'">
+															<tr>
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<t t-if="has_shown == 0">
+																	    Director
+																		<t t-set="has_shown" t-value="1"/>
+																	</t>
+																</td>		    
+																<td class="noborder" style="text-align:left;font-size:10pt;">
+																	<u>
+																		<span t-field="mids.author_id"/>&#160;
+																	</u>
+																	<br/>
+																		<span t-field="mids.date"/>&#160;
+																	[
+																		<span t-field="mids_tracking.old_value_char"/>&#160;to
+																		<span t-field="mids_tracking.new_value_char"/>
+																	]
+																</td>
+															</tr>
+														</t>
+													</t>
+												</t>
+												
+												<t t-if="is_director_approval == 1">
+													<t t-set="has_shown" t-value="0"/>
+													<t t-foreach="o.message_ids" t-as="mids">
+														<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
+															<t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'Approval President Director'">
+																<tr>
+																	<td class="noborder" style="text-align:left;font-size:10pt;">
+																		<t t-if="has_shown == 0">
+																		    President Director
+																			<t t-set="has_shown" t-value="1"/>
+																		</t>
+																	</td>		    
+																	<td class="noborder" style="text-align:left;font-size:10pt;">
+																		<u>
+																			<span t-field="mids.author_id"/>&#160;
+																		</u>
+																		<br/>
+																			<span t-field="mids.date"/>&#160;
+																		[
+																			<span t-field="mids_tracking.old_value_char"/>&#160;to
+																			<span t-field="mids_tracking.new_value_char"/>
+																		]
+																	</td>
+																</tr>
+															</t>
+														</t>
+													</t>
+												</t>
+												
+												<t t-if="is_director_approval == 0 and o.state == 'approve3'">
+												    <tr>
+												      	<td style="border-right: 1px solid; border-left: 1px solid; border-top: 1px solid; border-bottom: 1px solid; text-align:center;font-size:10pt;" colspan="2">
+						                                    Disetujui oleh President Director
+						                                    <br/>
+						                                    <br/>
+						                                    <br/>
+						                                    <br/>
+						                                    <u>
+														        &#160;Stanley Atmadja&#160;
+															</u>
+															<br/>
+																&#160;President Director&#160;
+														</td>   
+												    </tr>
+												</t>
+											</table>
+							    	    </td>
+							    	</tr>    
+							  	</table>
 							</div>
 	             		</div>
+	             		
 	             	</t>
             	</t>
             </t>
