@@ -10,6 +10,7 @@
                 <xpath expr="//group[@name='first']" position="inside">
                     <group name="procurement_technical_checker" string="Procurement Technical Checker" colspan="2">
                         <field name="technical_checker"/>
+                        <field name="code"/>
                     </group>
                 </xpath>
             </field>
