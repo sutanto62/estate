@@ -124,7 +124,7 @@
                           <field name="name" string="Name" invisible="1"/>
                  </xpath>
                  <xpath expr="//field[@name='name']" position="after">
-                          <field name="complete_name" string="Reference" invisible="0"/>
+                          <field name="complete_name" string="Purchase Order" invisible="0"/>
                  </xpath>
                  <xpath expr="//field[@name='date_order']" position="replace">
                           <field name="date_order" widget='date' string="Order Date" invisible="0"/>
@@ -159,7 +159,7 @@
             <field name="arch" type="xml">
                 <search string="Search Purchase Order">
                     <field name="source_purchase_request" string="Purchase Request"/>
-                    <field name="name" string="Reference"/>
+                    <field name="complete_name" string="Purchase Order"/>
                     <field name="partner_id" operator="child_of"/>
                     <field name="product_id"/>
                     <field name="create_uid"/>

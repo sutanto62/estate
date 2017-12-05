@@ -128,6 +128,7 @@
                 <search string="Picking Lists">
                     <field name="pr_source" string="Purchase Request"/>
                     <field name="purchase_order_name" string="Purchase Order"/>
+                    <field name="complete_name_picking" string="GRN"/>
                     <filter string="My Approval (All)" domain="['|',('purchase_id.request_id.requested_by.id','=', uid),('assigned_to.id','=', uid)]"/>
                     <separator/>
                     <filter name="validation_procurement" string="Procurement Staff Approved" domain="[('validation_procurement','=', True)]"/>
