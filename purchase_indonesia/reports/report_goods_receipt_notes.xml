@@ -177,7 +177,15 @@
 										<tbody>
 											<t t-foreach="o.pack_operation_product_ids" t-as="l">
 												<t t-set="idx" t-value="idx+1"/>
-												<t t-set="delta" t-value="l.qty_done-l.product_qty"/>
+												<!--
+												<t t-if="l.initial_qty &gt; 0">
+													<t t-set="delta" t-value="l.qty_done-l.initial_qty"/>
+												</t>
+												<t t-if="l.initial_qty == 0">
+													<t t-set="delta" t-value="l.qty_done-l.product_qty"/>
+												</t>
+												-->
+												<t t-set="delta" t-value="l.qty_done-l.procurment_qty"/>
 												<tr>
 												   	<td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
 														<span t-esc="idx"/>
@@ -189,7 +197,7 @@
 												      	<span t-field="l.product_id.name"/>
 												    </td>
 												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
-												      	<span t-field="l.product_qty"/>
+												      	<span t-field="l.procurment_qty"/>
 												    </td>
 												    <td style="border-right:1px solid;border-bottom:1px solid;height:25px;font-size:10pt;" align="center" valign="center">
 												      	<span t-field="l.qty_done"/>
