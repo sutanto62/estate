@@ -1332,7 +1332,7 @@ class SummaryProgressPurchaseRequest(models.Model):
                 select
                     pr.company_name,
                     pr.code,
-                    pr.category_name,
+                    (case when pr.category_name is null then 'Confirmation' else pr.category_name end) category_name,
                     po_summary.*,
                     date_part('month',po_summary.pr_create_date) pr_month,
                     date_part('year',po_summary.pr_create_date) pr_year,
@@ -1377,10 +1377,20 @@ class SummaryProgressPurchaseRequest(models.Model):
                         pit.name category_name,
                         (case when pr.code = 'KOKB' then 'RO' else 'HO' end) code
                     from 
-                        (select * from purchase_request where active = true) pr 
+                        (    
+                            select 
+                                id,
+                                company_id,
+                                code,
+                                (case when is_confirmation is true then 0 else type_purchase end) type_purchase 
+                            from 
+                                purchase_request 
+                            where 
+                                active = true
+                        ) pr 
                         inner join 
                         res_company rc on rc.id = pr.company_id
-                        inner join 
+                        left join 
                         purchase_indonesia_type pit
                         on pr.type_purchase = pit.id
                 ) pr 
@@ -1403,14 +1413,16 @@ class SummaryProgressPurchaseRequest(models.Model):
                 from 
                 (
                     select 
-                        case when category_name = 'Urgent' then '' else company_name end company_name_val,
+                        case when category_name in ('Urgent','Confirmation') then '' else company_name end company_name_val,
                         company_name,
                         category_name
                     from (
                         select name company_name from res_company where code != 'PG'
                         ) rc, 
                         (
-                        select name category_name from purchase_indonesia_type
+                            select name category_name from purchase_indonesia_type
+                            union all
+                            select 'Confirmation' category_name
                         ) pit
                 ) dummy
                 left join 
@@ -1441,8 +1453,8 @@ class SummaryProgressPurchaseRequest(models.Model):
                         (
                             select company_name, category_name, code, count(*) total_code from (
                                 select * from v_summary_progress_pp where 
-                                    (pr_month = date_part('month', now())-1  and pr_year = date_part('year', now()) ) or
-                                    (pr_month < date_part('month', now())-1  and pr_year = date_part('year', now())  and state = 'po_undone')
+                                    (pr_month = date_part('month', now())  and pr_year = date_part('year', now()) ) or
+                                    (pr_month < date_part('month', now())  and pr_year = date_part('year', now())  and state = 'po_undone')
                             ) summ group by company_name, category_name, code
                         )summ group by company_name, category_name
                     ) by_code 
@@ -1465,12 +1477,12 @@ class SummaryProgressPurchaseRequest(models.Model):
                         (
                             select company_name, category_name, state, count(*) total_state from (
                                 select * from v_summary_progress_pp where 
-                                    (pr_month = date_part('month', now())-1  and pr_year = date_part('year', now()) ) or
-                                    (pr_month < date_part('month', now())-1  and pr_year = date_part('year', now())  and state = 'po_undone')
+                                    (pr_month = date_part('month', now())  and pr_year = date_part('year', now()) ) or
+                                    (pr_month < date_part('month', now())  and pr_year = date_part('year', now())  and state = 'po_undone')
                             ) summ group by company_name, category_name, state
                         )summ group by company_name, category_name
                     ) by_state on by_code.company_name = by_state.company_name and by_code.category_name = by_state.category_name
-                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name
+                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name;
         """)
         
         cr.execute("""
@@ -1503,14 +1515,14 @@ class SummaryProgressPurchaseRequest(models.Model):
                         from 
                             v_summary_progress_pp 
                         where 
-                            ((pr_month = date_part('month', now())-1  and pr_year = date_part('year', now())) or
-                            (pr_month < date_part('month', now())-1  and pr_year = date_part('year', now()))) and
+                            ((pr_month = date_part('month', now())  and pr_year = date_part('year', now())) or
+                            (pr_month < date_part('month', now())  and pr_year = date_part('year', now()))) and
                             state = 'po_undone'
                         group by 
                             is_qcf_done,is_spec_not_clear,po_month
                     )a group by status_pp_undone
                 ) data_value 
-                on dummy.status_pp_undone = data_value.status_pp_undone
+                on dummy.status_pp_undone = data_value.status_pp_undone;
         """)
         
         cr.execute("""
@@ -1520,8 +1532,7 @@ class SummaryProgressPurchaseRequest(models.Model):
                     summ.* 
                 from 
                 (
-                    --select '' company_name, '' category_name, 'PP s.d '|| to_char(now(),'dd Mon YYYY') ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
-                    select '' company_name, '' category_name, 'PP s.d Oktober 2017' ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
+                    select '' company_name, '' category_name, 'PP s.d '|| to_char(now(),'dd Mon YYYY') ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
                     union all
                     select 'Perusahaan' company_name, 'Kategori' category_name, 'HO' ho, 'SO' ro, '(Done)' po_done, '(Undone)' po_undone
                     union all
@@ -1536,7 +1547,7 @@ class SummaryProgressPurchaseRequest(models.Model):
                     select ''||idx company_name,status_pp_undone category_name, ''||total ho, null ro, null po_done, null po_undone from v_summary_progress_pp_undone_current
                     union all
                     select null company_name,'Total' category_name, ''||sum(total) ho, null ro, null po_done, null po_undone from v_summary_progress_pp_undone_current
-                ) summ 
+                ) summ; 
         """)
     
 class ViewPurchaseTenderLine(models.Model):
@@ -1570,7 +1581,15 @@ class ViewPurchaseTenderLine(models.Model):
     approve_date = fields.Date('PP Approve Date')
     category = fields.Char('PP Category')
     status = fields.Char('Status')
-    
+    pr_state = fields.Selection([('draft', 'Draft'), 
+                                 ('in_progress', 'Confirmed'),
+                                 ('open', 'Bid Selection'), 
+                                 ('rollback','Roll Back PP'),
+                                 ('closed','PP Closed'),
+                                 ('open', 'PP Outstanding'),
+                                 ('done', 'Shipment'),
+                                 ('cancel', 'Cancelled')]
+                                )
     def init(self, cr):
         drop_view_if_exists(cr, 'v_purchase_requisition')
         drop_view_if_exists(cr, 'v_purchase_requisition_line')
@@ -1595,7 +1614,7 @@ class ViewPurchaseTenderLine(models.Model):
                 pr.is_qcf_done,
                 pr.is_grn_done,
                 pr.is_inv_done,
-                pr.is_po_done,
+                (case when po.po_id is not null then true else false end) is_po_done,
                 pr.pic,
                 qcf.qcf_id,
                 po.po_id,
@@ -1615,7 +1634,8 @@ class ViewPurchaseTenderLine(models.Model):
                             end)
                         end) 
                     end)
-                end) status
+                end) status,
+                pr.state pr_state
             from 
                 (
                     select
@@ -1635,7 +1655,8 @@ class ViewPurchaseTenderLine(models.Model):
                         pr.is_grn_done,
                         pr.is_po_done,
                         pr.is_inv_done,
-                        pr.pic
+                        pr.pic,
+                        pr.state
                     from 
                         purchase_requisition_line prl inner join 
                         (select 
@@ -1652,7 +1673,8 @@ class ViewPurchaseTenderLine(models.Model):
                             preq.is_grn_done,
                             preq.is_inv_done,
                             preq.is_po_done,
-                            preq.user_id pic
+                            preq.user_id pic,
+                            preq.state
                             from 
                                 purchase_request pr 
                                 inner join purchase_requisition preq 
@@ -1730,7 +1752,8 @@ class ViewPurchaseTenderLine(models.Model):
                 max(po_approve_date)::date po_approve_date,    
                 max(grn_id) grn_id,    
                 max(completion_date)::date completion_date,
-                max(status) status
+                max(status) status,
+                max(pr_state) pr_state
             from 
                 v_purchase_requisition_line 
             group by
@@ -1739,7 +1762,7 @@ class ViewPurchaseTenderLine(models.Model):
         
 class ViewPurchaseTender(models.Model):
     _name = 'v.purchase.requisition'
-    _description = 'Purchase Request Line'
+    _description = 'Purchase Request'
     _auto = False
     
     request_id = fields.Many2one('purchase.request','Purchase Request')
@@ -1759,3 +1782,12 @@ class ViewPurchaseTender(models.Model):
     approve_date = fields.Date('PP Approve Date')
     category = fields.Char('PP Category')
     status = fields.Char('Status')
+    pr_state = fields.Selection([('draft', 'Draft'), 
+                                 ('in_progress', 'Confirmed'),
+                                 ('open', 'Bid Selection'), 
+                                 ('rollback','Roll Back PP'),
+                                 ('closed','PP Closed'),
+                                 ('open', 'PP Outstanding'),
+                                 ('done', 'Shipment'),
+                                 ('cancel', 'Cancelled')],
+                                'Tender Status')
