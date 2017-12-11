@@ -59,15 +59,21 @@ class Team(models.Model):
                                ('employee_id', '=', self.employee_id.id),
                                ('state', '=', 'active')])
             if res:
-                msg = '%s is a leader at Team %s' % (self.employee_id.name, res.name)
+                msg = _('%s is a leader at Team %s' % (self.employee_id.name, res.name))
                 raise ValidationError(msg)
 
         if self.member_ids:
             for rec in self.member_ids:
                 # validate double job
                 if self.employee_id == rec.employee_id:
-                    msg = '%s has been registered as a Team Leader.' % rec.employee_id.name
-                    raise ValidationError(msg)
+                    date_effective = datetime.strptime(self.date_effective, '%Y-%m-%d')
+                    current_contract = self.env['hr.contract'].current(self.employee_id,
+                                                                       date_effective)
+                    if current_contract.is_probation(date_effective):
+                        return True
+                    else:
+                        msg = _('%s has been registered as a Team Leader.' % rec.employee_id.name)
+                        raise ValidationError(msg)
                 # todo error in validating in another team
                 # constrains: add double team (config)
                 # validate double team
