@@ -16,9 +16,8 @@ class InheritUpkeepLabour(models.Model):
 
     @api.constrains('attendance_code_id')
     def _check_attendance_code(self):
-        """ Override estate upkeep."""
-        monthly_limit = 20
-        monthly_worked_days = 0
+        """ Piece rate attendance code used only if monthly number of days > 20."""
+        monthly_limit = 20.0
 
         att_code = self.env['estate.hr.attendance'].search([('piece_rate', '=', False)]).ids
         start = datetime.strptime(self.upkeep_date, DF).replace(day=1)
@@ -30,12 +29,15 @@ class InheritUpkeepLabour(models.Model):
                                                               ('upkeep_date', '<=', end),
                                                               ('attendance_code_id', 'in', att_code)])
 
-        # Validate only attendance code withouth piece rate day
-        if self.attendance_code_id.piece_rate is False:
-            monthly_worked_days = sum(item.number_of_day for item in upkeep_ids) + self.number_of_day
+        regular_number_of_days = sum(item.number_of_day for item in upkeep_ids) + self.number_of_day
 
-        if monthly_worked_days > monthly_limit:
-            error_msg = _("%s has been work for more than %s days." % (self.employee_id.name, monthly_limit))
-            raise ValidationError(error_msg)
+        if not self.attendance_code_id.piece_rate and (regular_number_of_days > monthly_limit):
+            # check if month to date exceed monthly limit.
+            err_msg = _('%s will exceed  %s number of days. Use piece rate attendance code.' % (self.employee_id.name, monthly_limit))
+            raise ValidationError(err_msg)
+        elif self.attendance_code_id.piece_rate and (regular_number_of_days <= 20):
+            # prevent piece rate attendance code used before total exceed monthly limit
+            err_msg = _('%s has not exceed %s number of days yet. Use regular attendance' % (self.employee_id.name, monthly_limit))
+            raise ValidationError(err_msg)
 
         return super(InheritUpkeepLabour, self)._check_attendance_code()

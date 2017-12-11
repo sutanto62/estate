@@ -71,7 +71,8 @@ class Contract(models.Model):
         :param employee: employee recordset
         :param date: datetime
         :param period: month/year
-        :return: contract recordset
+        :return: contract
+        :rtype: contract if any, or False
         """
         today = date
 
@@ -91,6 +92,8 @@ class Contract(models.Model):
         for contract in contract_ids:
             if today.strftime(DF) >= contract.date_start:
                 return contract
+            else:
+                return False
 
     @api.model
     def is_probation(self, date=None):

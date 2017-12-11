@@ -27,28 +27,29 @@ class TestPayslip(TransactionCase):
     def test_01_get_worked_day_lines(self):
         """ Check Worked Days """
         for payslip in self.payslip_run.slip_ids:
-            if payslip.worked_days_line_ids['number_of_days']:
-                self.assertEqual(payslip.worked_days_line_ids['number_of_days'], 1,
+            for line in payslip.worked_days_line_ids:
+            # if payslip.worked_days_line_ids['number_of_days']:
+                self.assertEqual(line['number_of_days'], 1,
                                  'Estate Payroll: _get_worked_day_lines did not return number of day')
-                self.assertEqual(payslip.worked_days_line_ids['code'], 'WORK300',
+                self.assertEqual(line['code'], 'WORK300',
                                  'Estate Payroll: _get_worked_day_lines return wrong code')
 
     def test_01_get_inputs(self):
         """ Check Other Inputs """
         for payslip in self.payslip_run.slip_ids:
-            # Check return code
-            self.assertGreaterEqual(payslip.input_line_ids['amount'], 0,
-                                    'Estate Payroll: _get_inputs did not return amount')
-            # Support only OT, PR and ADJA/B
-            if payslip.input_line_ids['code']:
-                self.assertIn(payslip.input_line_ids['code'], ['OT', 'PR', 'ADJA', 'ADJB'],
-                              'Estate Payroll: _get_inputs return wrong code')
+            for line in payslip.input_line_ids:
+                # Check return code
+                self.assertGreaterEqual(line['amount'], 0,
+                                        'Estate Payroll: _get_inputs did not return amount')
+                # Support only OT, PR and ADJA/B
+                if line['code']:
+                    self.assertIn(line['code'], ['OT', 'PR', 'ADJA', 'ADJB'],
+                                  'Estate Payroll: _get_inputs return wrong code')
 
     def test_01_action_open_labour(self):
         """ Check context contains res_model estate.upkeep.labour) """
         res = self.payslip_run.slip_ids[0].action_open_labour()
         self.assertEqual(res['res_model'], 'estate.upkeep.labour', 'Estate Payroll: action_open_labour wrong res.models')
-
 
     def test_02_get_upkeep_labour(self):
         """ Check contract labour (not contract activity)"""
@@ -61,3 +62,17 @@ class TestPayslip(TransactionCase):
 
         contract_labour = self.Employee.create(vals_labour)
         self.assertTrue(contract_labour)
+
+    def test_03_check_payslip_to_team(self):
+        """ Checked if there is payslip's labour who did not being member of any team."""
+        print 'test ...'
+        for line in self.payslip_run.slip_ids:
+            # remove team member
+            team_id = self.env['estate.hr.team'].browse([line.team_id.id])
+            print ' team member %s' % team_id.member_ids
+            team_id.member_ids = False
+            print ' team member %s' % team_id.member_ids
+
+
+            print ' check payslip to team %s' % line._check_payslip_team()
+        self.assertTrue(True)
