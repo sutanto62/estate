@@ -94,15 +94,21 @@ class TeamMember(models.Model):
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
 
-    @api.model
-    def create(self, vals):
-        """ Prevent upkeep labor created when no contract defined."""
-        employee_id = self.env['hr.employee'].browse(vals['employee_id'])
-        contract_id = self.env['hr.contract'].current(employee_id)
+    @api.constrains('employee_id')
+    def _check_employee(self):
+        """ """
+        # prevent differences between upkeep labor wage (weekly closing) and payslip (monthly)
+        contract_id = self.env['hr.contract'].current(self.employee_id)
         if not contract_id:
-            err_msg = _('Do not add %s without active contract.' % employee_id.name)
+            err_msg = _('Do not add %s without active contract.' % self.employee_id.name)
             raise ValidationError(err_msg)
-        return super(TeamMember, self).create(vals)
+
+        # prevent a labor registered into more than a team
+        team_ids = self.env['estate.hr.member'].search([('id', '!=', self.ids),
+                                                        ('employee_id', '=', self.employee_id.id)])
+        if team_ids:
+            err_msg = _('%s has been registered at others team.' % self.employee_id.name)
+            raise ValidationError(err_msg)
 
 class AttendanceCode(models.Model):
     _name = 'estate.hr.attendance'
