@@ -88,7 +88,8 @@ class PayslipRun(models.Model):
     @api.multi
     def create_accrued(self, batch):
         """
-        Multiple debit move line - allocation cost control.
+        Create multiple debit move line for each salary component (wage, overtime, piece rate) and location company.
+        Create single credit move line.
         Single credit move line - allocation cost control.
         Args:
             batch: payslip run
@@ -119,7 +120,7 @@ class PayslipRun(models.Model):
         vals = {
             'journal_id': journal_id.id,
             'company_id': batch.company_id.id,
-            'partner_id': batch.company_id.partner_id.id,
+            'partner_id': False,
             'date': batch.date_end,
             'ref': batch.name,
         }
@@ -177,7 +178,7 @@ class PayslipRun(models.Model):
             if debit_account_id and employee_company_id and company_id:
                 debit_line = (0, 0, {
                     'name': self.get_line_name(batch.get_debit_name(line), False, batch.date_end),
-                    'partner_id': batch.company_id.partner_id.id,
+                    # 'partner_id': batch.company_id.partner_id.id,
                     'account_id': debit_account_id,
                     'accrued_journal_id': journal_id.id,
                     'date': batch.date_end,
@@ -195,7 +196,7 @@ class PayslipRun(models.Model):
         # credit account move line - summarized
         credit_line = (0, 0, {
             'name': self.get_line_name(batch.get_credit_name(), False, batch.date_end),
-            'partner_id': batch.company_id.partner_id.id,
+            # 'partner_id': batch.company_id.partner_id.id,
             'account_id': journal_id.default_credit_account_id.id,
             'journal_id': journal_id.id,
             'date': batch.date_end,
@@ -244,7 +245,7 @@ class PayslipRun(models.Model):
         vals = {
             'journal_id': journal_id.id,
             'company_id': batch.company_id.id,
-            'partner_id': batch.company_id.partner_id.id,
+            'partner_id': False,
             'date': batch.date_end,
             'ref': batch.name,
         }
@@ -253,7 +254,7 @@ class PayslipRun(models.Model):
         payroll_bank_debit_sum = credit_sum
         bank_debit_line = (0, 0, {
             'name': self.get_line_name(account_name, False, batch.date_end),
-            'partner_id': batch.company_id.partner_id.id,
+            # 'partner_id': batch.company_id.partner_id.id,
             'account_id': journal_id.default_debit_account_id.id,
             'journal_id': journal_id.id,
             'date': batch.date_end,
@@ -278,7 +279,7 @@ class PayslipRun(models.Model):
         # setup account id at journal
         bank_credit_line = (0, 0, {
             'name': self.get_line_name(account_name, False, batch.date_end),
-            'partner_id': batch.company_id.partner_id.id,
+            # 'partner_id': batch.company_id.partner_id.id,
             'account_id': bank_account_id.id,
             'journal_id': journal_id.id,
             'date': batch.date_end,
@@ -298,8 +299,7 @@ class PayslipRun(models.Model):
     @api.multi
     def create_allocation(self, batch):
         """
-        Create journal entries for company's estate activity. Amount labor (daily wage, overtime, piece rate) and
-        material cost.
+        Create journal entries for company's estate activity. Amount labor (daily wage, overtime, piece rate).
         :param batch: payslip run record
         :return: True
         """
@@ -324,12 +324,13 @@ class PayslipRun(models.Model):
         vals = {
             'journal_id': journal_id.id,
             'company_id': batch.company_id.id,
-            'partner_id': batch.company_id.partner_id.id,
+            'partner_id': False,
             'date': batch.date_end,
             'ref': batch.name,
         }
 
-        # get approved upkeep labour - journal item created per activity
+        # get approved upkeep labour - journal item created per activity.
+        # pay attention: general account did not support multi company - call partner_general_account()
         query = """
                 select
                     a.company_id "company",
@@ -391,12 +392,13 @@ class PayslipRun(models.Model):
             account_productivity = move_obj.account_productivity(quantity_vals)
 
             # create move line for current company
+            # make sure to replace account_id to current company (estate activity did not support multi company)
             debit_line = (0, 0, {
                 'name': self.get_line_name(line['general_account_name'],
                                            line['number_of_day'],
                                            batch.date_end),
-                'partner_id': batch.company_id.partner_id.id,
-                'account_id': line['general_account'],
+                # 'partner_id': batch.company_id.partner_id.id,
+                'account_id': self.partner_general_account(line['general_account'], batch.company_id.id),
                 'analytic_account_id': analytic_account_id,
                 'journal_id': journal_id.id,
                 'date': batch.date_end,
@@ -422,7 +424,7 @@ class PayslipRun(models.Model):
         credit_sum = debit_sum
         credit_line = (0, 0, {
             'name': self.get_line_name(batch.get_credit_name(), False, batch.date_end),
-            'partner_id': batch.company_id.partner_id.id,
+            # 'partner_id': batch.company_id.partner_id.id,
             'account_id': journal_id.default_credit_account_id.id,
             'journal_id': journal_id.id,
             'date': batch.date_end,
@@ -490,7 +492,7 @@ class PayslipRun(models.Model):
             vals = {
                 'journal_id': journal_id.id,
                 'company_id': company_id.id,
-                'partner_id': partner_id.id,
+                'partner_id': False,
                 'date': batch.date_end,
                 'ref': batch.name,
             }
@@ -526,7 +528,7 @@ class PayslipRun(models.Model):
             employee_ids = tuple([slip.employee_id.id for slip in batch.slip_ids])
 
             for line in res:
-                debit_account_id = self.env['account.account'].browse([line['general_account']])
+                # debit_account_id = self.env['account.account'].browse([line['general_account']])
 
                 # make sure analytic_account_id return True or False
                 analytic_account_id = line['analytic_account'] if line['analytic_account'] is not None else False
@@ -547,8 +549,9 @@ class PayslipRun(models.Model):
                     'name': self.get_line_name(line['general_account_name'],
                                                line['number_of_day'],
                                                batch.date_end),
-                    'partner_id': company_id.partner_id.id,
-                    'account_id': debit_account_id.id,
+                    'partner_id': batch.company_id.partner_id.id,
+                    # 'account_id': debit_account_id.id,
+                    'account_id': self.partner_general_account(line['general_account'], company_id.id),
                     'analytic_account_id': analytic_account_id,
                     'journal_id': journal_id.id,
                     'date': batch.date_end,
@@ -574,7 +577,7 @@ class PayslipRun(models.Model):
 
             credit_line = (0, 0, {
                 'name': self.get_line_name(credit_account_id.name, False, batch.date_end),
-                'partner_id': company_id.partner_id.id,
+                # 'partner_id': company_id.partner_id.id,
                 'account_id': credit_account_id.id,
                 'journal_id': journal_id.id,
                 'date': batch.date_end,
@@ -593,12 +596,11 @@ class PayslipRun(models.Model):
     @api.multi
     def create_receivable(self, batch):
         """
-        Create journal entries of receivable. Amount of labour (daily wage, overtime, piece rate) and material cost
+        Create journal entries of receivable. Amount of labour (daily wage, overtime, piece rate)
         used for other company.
         :param batch: payslip run record
         :return: True
         """
-
 
         self.ensure_one()
 
@@ -655,8 +657,12 @@ class PayslipRun(models.Model):
 
         # check debit account move line
         for line in res:
-            receivable_company_id = self.env['res.company'].browse([line['company']])
-            partner_id = self.env['res.partner'].browse([receivable_company_id.partner_id.id])
+
+            # Set partner for debit
+            partner_id = ''
+            if line['company'] != batch.company_id.id:
+                receivable_company_id = self.env['res.company'].browse([line['company']])
+                partner_id = self.env['res.partner'].browse([receivable_company_id.partner_id.id])
 
             # create move line for current company
             # TODO change receivable account based on company
@@ -677,7 +683,7 @@ class PayslipRun(models.Model):
                 'name': self.get_line_name(journal_id.default_credit_account_id.name + " " + receivable_company_id.code,
                                            False,
                                            batch.date_end),
-                'partner_id': batch.company_id.partner_id.id,
+                # 'partner_id': batch.company_id.partner_id.id,
                 'account_id': journal_id.default_credit_account_id.id,
                 'journal_id': journal_id.id,
                 'date': batch.date_end,
@@ -728,6 +734,24 @@ class PayslipRun(models.Model):
         return res if payslip_run_id else {}
 
     @api.multi
+    def partner_general_account(self, account, company):
+        """
+        Estate activity model only support single company. Return general account id based on partner.
+        :param account: initial account
+        :param company: journal item's partner
+        :return: partner's general account id
+        """
+        init_account_id = self.env['account.account'].search([('id', '=', account)])
+        res = ''
+        if init_account_id.company_id.id != company:
+            res = self.env['account.account'].search([('company_id', '=', company),
+                                                      ('name', '=', init_account_id.name)],
+                                                     limit=1).id
+        else:
+            res = account
+        return res
+
+    @api.multi
     def journal_to_close(self):
         """
         Sometimes closing payslip run failed.
@@ -756,4 +780,3 @@ class PayslipRun(models.Model):
         for record in self:
             record.close_payslip_run()
         return True
-

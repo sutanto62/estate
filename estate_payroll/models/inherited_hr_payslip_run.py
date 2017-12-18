@@ -5,6 +5,7 @@ from openerp import models, fields, api, exceptions, _
 from datetime import datetime
 from dateutil import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -67,17 +68,45 @@ class PayslipRun(models.Model):
         Update payslip done and upkeep state payslip
         :return: True
         """
+
+        # No payslip, no closing
+        if not self.slip_ids:
+            err_msg = _('You have not any payslip to close.')
+            raise ValidationError(err_msg)
+
         upkeep_obj = self.env['estate.upkeep']
-        # attendance_obj = self.env['hr_fingerprint_ams.attendance']
         employees = []
+
+        # Check payslip
+        summary = []
+        for record in self.slip_ids:
+            summary.append(record.check_payslip())
+            team = []
+            company = []
+
+            for x in summary:
+                if x['team']:
+                    team.append(x['team']['khl'])
+                if x['company']:
+                    company.append(x['company']['khl'])
+
+            if len(team) or len(company):
+                err_msg = _('There are problem with our payslip.\n\n'
+                            'Labour without team: %s\n '
+                            'Difference at company: %s' % (', '.join(team),
+                                                           ', '.join(company)))
+                raise ValidationError(err_msg)
+
+        # Make sure all upkeep has been closed
+        for record in self.slip_ids:
+            employees.append(record.employee_id.id)
+        if upkeep_obj.get_upkeep_by_employee(employees, self.date_start, self.date_end, 'confirmed'):
+            err_msg = _('Some upkeep labor did not approved yet.')
+            raise ValidationError(err_msg)
 
         # Close payslip
         self.env['hr.payslip'].search([('payslip_run_id', 'in', self.ids)]).write({'state': 'done'})
 
-        # Close upkeep
-        if self.slip_ids:
-            for record in self.slip_ids:
-                employees.append(record.employee_id.id)
         upkeep_list = upkeep_obj.get_upkeep_by_employee(employees, self.date_start, self.date_end, 'approved')
 
         # Update upkeep state to payslip  state

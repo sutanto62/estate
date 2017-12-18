@@ -59,15 +59,21 @@ class Team(models.Model):
                                ('employee_id', '=', self.employee_id.id),
                                ('state', '=', 'active')])
             if res:
-                msg = '%s is a leader at Team %s' % (self.employee_id.name, res.name)
+                msg = _('%s is a leader at Team %s' % (self.employee_id.name, res.name))
                 raise ValidationError(msg)
 
         if self.member_ids:
             for rec in self.member_ids:
                 # validate double job
                 if self.employee_id == rec.employee_id:
-                    msg = '%s has been registered as a Team Leader.' % rec.employee_id.name
-                    raise ValidationError(msg)
+                    date_effective = datetime.strptime(self.date_effective, '%Y-%m-%d')
+                    current_contract = self.env['hr.contract'].current(self.employee_id,
+                                                                       date_effective)
+                    if current_contract.is_probation(date_effective):
+                        return True
+                    else:
+                        msg = _('%s has been registered as a Team Leader.' % rec.employee_id.name)
+                        raise ValidationError(msg)
                 # todo error in validating in another team
                 # constrains: add double team (config)
                 # validate double team
@@ -83,11 +89,26 @@ class TeamMember(models.Model):
 
     team_id = fields.Many2one('estate.hr.team', "Team", ondelete='restrict')
     employee_id = fields.Many2one('hr.employee', "Labour", ondelete='restrict',
-                                  help="Member should not be a Team Leader.")
+                                  help="Member should not be a Team Leader or other team member.")
     nik_number = fields.Char(related='employee_id.nik_number', store=True, readonly=True)
     contract_type = fields.Selection(related='employee_id.contract_type', store=False)
     contract_period = fields.Selection(related='employee_id.contract_period', store=False)
 
+    @api.constrains('employee_id')
+    def _check_employee(self):
+        """ """
+        # prevent differences between upkeep labor wage (weekly closing) and payslip (monthly)
+        contract_id = self.env['hr.contract'].current(self.employee_id)
+        if not contract_id:
+            err_msg = _('Do not add %s without active contract.' % self.employee_id.name)
+            raise ValidationError(err_msg)
+
+        # prevent a labor registered into more than a team
+        team_ids = self.env['estate.hr.member'].search([('id', '!=', self.ids),
+                                                        ('employee_id', '=', self.employee_id.id)])
+        if team_ids:
+            err_msg = _('%s has been registered at others team.' % self.employee_id.name)
+            raise ValidationError(err_msg)
 
 class AttendanceCode(models.Model):
     _name = 'estate.hr.attendance'

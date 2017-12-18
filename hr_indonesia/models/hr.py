@@ -25,7 +25,6 @@ class Search(models.TransientModel):
         :rtype: boolean
         """
         res = object.search([('id', '!=', ids), ('active', '=', active)]).mapped(attr)
-        print '_check_archived %s' % res
         return res
 
 
@@ -214,6 +213,12 @@ class Religion(models.Model):
             raise ValidationError(err_msg)
         else:
             return True
+
+    @api.multi
+    def contract(self):
+        """ Get current active contract."""
+        return self.env['hr.contract'].current(self)
+
 
 
 class Ethnic(models.Model):
