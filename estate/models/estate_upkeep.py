@@ -572,6 +572,12 @@ class UpkeepActivity(models.Model):
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measurement', related='activity_id.uom_id')
 
     location_ids = fields.Many2many('estate.block.template', id1='activity_id', id2='location_id', string='Location',
+                                    # domain="[('inherit_location_id.location_id', 'in', (upkeep_id.estate_id.id, upkeep_id.division_id.id)),
+                                    #         ('company_id', '=', upkeep_id.company_id.id),
+                                    #         ('estate_location_level', '=', '3')]",
+                                    # domain="[('inherit_location_id.location_id', 'in', (upkeep_id.estate_id.id, upkeep_id.division_id.id)),"
+                                    #        "('company_id', '=', upkeep_id.company_id.id), ('estate_location_level', '=', '3'),"
+                                    #        "('inherit_location_id.estate_location_type', '=', activity_id.location_type)]",
                                     track_visibility='onchange')
     division_id = fields.Many2one('stock.location', compute='_compute_division')
     unit_amount = fields.Float('Quantity', digits=dp.get_precision('Estate'), track_visibility='onchange',
@@ -691,6 +697,14 @@ class UpkeepActivity(models.Model):
             except ZeroDivisionError:
                 record.ratio_wage_quantity = 0
 
+    @api.onchange('activity_id')
+    def _onchange_activity(self):
+        """ Set domain for location against activity location type."""
+        if self.activity_id.location_type:
+            return self.get_location_domain()
+        else:
+            return False
+
     @api.onchange('upkeep_id')
     def _onchange_upkeep(self):
         """Set domain for location while create new record
@@ -704,12 +718,7 @@ class UpkeepActivity(models.Model):
 
         if self.upkeep_id.division_id:
             # non block domain
-            return {
-                'domain': {'location_ids': [('inherit_location_id.location_id', 'in', (self.upkeep_id.estate_id.id,
-                                                                                       self.upkeep_id.division_id.id)),
-                                            ('company_id', '=', self.upkeep_id.company_id.id),
-                                            ('estate_location_level', '=', '3')]}
-            }
+            return self.get_location_domain()
 
     @api.onchange('location_ids')
     def _onchange_location_ids(self):
@@ -735,13 +744,20 @@ class UpkeepActivity(models.Model):
             }
         else:
             # Put back domain
-            return {
-                'domain': {'location_ids': [('inherit_location_id.location_id', 'in', (self.upkeep_id.estate_id.id,
-                                                                                       self.upkeep_id.division_id.id)),
-                                            ('company_id', '=', self.upkeep_id.company_id.id),
-                                            ('estate_location_level', '=', '3')]}
-            }
+            return self.get_location_domain()
 
+    @api.multi
+    def get_location_domain(self):
+        return {
+            'domain': {
+                'location_ids': [
+                    ('inherit_location_id.location_id', 'in', (self.upkeep_id.estate_id.id, self.upkeep_id.division_id.id)),
+                    ('company_id', '=', self.upkeep_id.company_id.id),
+                    ('estate_location_level', '=', '3'),
+                    ('inherit_location_id.estate_location_type', '=', self.activity_id.location_type)
+                ]
+            }
+        }
 
 class UpkeepLabour(models.Model):
     """

@@ -80,6 +80,11 @@ class Activity(models.Model):
     user_company_id = fields.Many2one('res.company', 'Login User', help='Help to domain account based on user',
                                       default=_default_user_company_id)
     active = fields.Boolean('Active', default=True, track_visibility="onchange")
+    location_type = fields.Selection([('nursery', 'Nursery'),
+                                      ('planted', 'Planted'),
+                                      ('emplacement', 'Emplacement')], 'Location Type',
+                                     default='planted', track_visibility="onchange",
+                                     help='It will be used to filter activity against location.')
 
     @api.one
     @api.depends('name', 'parent_id')

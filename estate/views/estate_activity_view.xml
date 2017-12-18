@@ -64,6 +64,7 @@
                             <group name="type" string="Activity">
                                 <field name="code"/>
                                 <field name="activity_type"/>
+                                <field name="location_type"/>
                             </group>
                         </group>
 
