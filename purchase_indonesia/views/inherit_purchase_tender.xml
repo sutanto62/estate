@@ -387,6 +387,8 @@
 			<field name="priority" eval="1"/>
 			<field name="arch" type="xml">
 			    <tree>
+			        <field name="requested_by"/>
+			        <field name="department_id"/>	
 			        <field name="create_date"/>
 			        <field name="approve_date"/>
 			        <field name="request_id"/>

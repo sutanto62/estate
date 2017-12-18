@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="product.product_category_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//group[@name='first']" position="inside">
-                    <group name="procurement_technical_checker" string="Procurement Technical Checker" colspan="2">
+                    <group name="procurement_technical_checker" string="Procurement Setting" colspan="2">
                         <field name="technical_checker"/>
                         <field name="code"/>
                     </group>

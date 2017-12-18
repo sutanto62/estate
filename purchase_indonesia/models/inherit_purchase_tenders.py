@@ -1399,7 +1399,7 @@ class SummaryProgressPurchaseRequest(models.Model):
         
         cr.execute("""
             create or replace view v_summary_progress_pp_current as
-                select 
+            select 
                     dummy.company_name_val company_name,
                     dummy.category_name,
                     ''||summ.ho ho,
@@ -1415,14 +1415,15 @@ class SummaryProgressPurchaseRequest(models.Model):
                     select 
                         case when category_name in ('Urgent','Confirmation') then '' else company_name end company_name_val,
                         company_name,
-                        category_name
+                        category_name,
+                        id
                     from (
                         select name company_name from res_company where code != 'PG'
                         ) rc, 
                         (
-                            select name category_name from purchase_indonesia_type
+                            select id, name category_name from purchase_indonesia_type
                             union all
-                            select 'Confirmation' category_name
+                            select (select max(id)+1 from purchase_indonesia_type)id, 'Confirmation' category_name
                         ) pit
                 ) dummy
                 left join 
@@ -1482,7 +1483,9 @@ class SummaryProgressPurchaseRequest(models.Model):
                             ) summ group by company_name, category_name, state
                         )summ group by company_name, category_name
                     ) by_state on by_code.company_name = by_state.company_name and by_code.category_name = by_state.category_name
-                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name;
+                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name
+                order by
+                    summ.company_name, id;
         """)
         
         cr.execute("""
@@ -1590,6 +1593,9 @@ class ViewPurchaseTenderLine(models.Model):
                                  ('done', 'Shipment'),
                                  ('cancel', 'Cancelled')]
                                 )
+    requested_by = fields.Many2one('res.users','Requested by')
+    department_id = fields.Many2one('hr.department','Department')
+    
     def init(self, cr):
         drop_view_if_exists(cr, 'v_purchase_requisition')
         drop_view_if_exists(cr, 'v_purchase_requisition_line')
@@ -1601,6 +1607,8 @@ class ViewPurchaseTenderLine(models.Model):
                 row_number() over() id,
                 pr.requisition_id,
                 pr.request_id,
+                pr.requested_by,
+                pr.department_id,
                 pr.create_date::date create_date,
                 pr.approve_date::date approve_date,
                 pr.category,
@@ -1641,6 +1649,8 @@ class ViewPurchaseTenderLine(models.Model):
                     select
                         prl.requisition_id,
                         pr.request_id,
+                        pr.requested_by,
+                        pr.department_id,
                         pr.create_date,
                         pr.approve_date,
                         pr.category,
@@ -1662,6 +1672,8 @@ class ViewPurchaseTenderLine(models.Model):
                         (select 
                             preq.id,
                             pr.create_date,
+                            pr.requested_by,
+                            pr.department_id,
                             preq.create_date approve_date,
                             (case when is_confirmation = true then 'Confirmation' else 
                                 (case when pr.type_purchase = 1 then 'Normal' else 'Urgent' end)
