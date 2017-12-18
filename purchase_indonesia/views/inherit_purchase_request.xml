@@ -42,6 +42,7 @@
                           <field name="validation_state_budget" invisible="1"/>
                           <field name="type_purchase" string="Purchase Type" required="1" options="{'no_create_edit': True}" attrs="{'readonly': [('state','!=','draft')]}"/>
                           <field name="validation_requester" invisible="1"/>
+                          <field name="validation_div_financial" invisible="1"/>
                           <field name="is_confirmation" string="PP Confirmation"/>
                  </xpath>
              </field>
@@ -195,26 +196,38 @@
                             attrs="{'invisible': [('validation_requester','!=',True)]}"
                             class="oe_highlight"
                              />
+                     
                      <button name="action_confirm1"
                             string="Approve" type="object"
-                             attrs="{'invisible': [('validation_user','!=',True)]}"
+                            attrs="{'invisible': [('validation_user','!=',True)]}"
                             class="oe_highlight" />
+                     
+                     <!-- approval2 div head -->
                      <button name="action_confirm2" states="approval2"
                             string="Approve" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
+                            class="oe_highlight" 
+                            groups="purchase_request.group_purchase_request_div_head"/>
+                     
                      <button name="action_budget" states="budget"
                             string="Approve" type="object"
                             class="oe_highlight" groups="purchase_request.group_purchase_request_budget"/>
+                     
                      <button name="action_technic"
                             string="Approve" type="object"
                             class="oe_highlight" attrs="{'invisible': [('validation_technic','!=',True)]}"/>
+                     
+                     <!-- approval3 dept head -->
                      <button name="action_financial_approval1"
                              attrs="{'invisible': [('validation_finance','!=',True)]}"
                              string="Approve" type="object"
                             class="oe_highlight" />
-                     <button name="action_financial_approval2" states="approval4"
-                             string="Approve" type="object"
-                            class="oe_highlight" groups="purchase_request.group_purchase_request_div_head"/>
+                     
+                     <!-- approval4 div head financial -->
+                     <button name="action_financial_approval2"
+                         	string="Approve" type="object"
+                            class="oe_highlight"
+                            attrs="{'invisible': [('validation_div_financial','!=',True)]}"/>
+                     
                      <button name="action_financial_approval3" states="approval5"
                              string="Approve" type="object"
                             class="oe_highlight" groups="purchase_indonesia.group_purchase_request_director"/>

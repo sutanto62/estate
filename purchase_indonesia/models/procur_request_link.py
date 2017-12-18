@@ -220,6 +220,7 @@ class InheritPurchaseRequest(models.Model):
     count_po_done = fields.Integer('PO Done', compute='_compute_po_line')
     isByPass =  fields.Boolean("Code By Pass" ,store=False)
     validation_requester = fields.Boolean("Validation Requester",compute='_change_validation_requester')
+    validation_div_financial = fields.Boolean("Validation Div Financial",compute='_change_validation_div_financial')
     count_po = fields.Integer('PO', compute='_compute_po_line')
     count_grn = fields.Integer('GRN/SRN', compute='_compute_grn_or_srn')
     is_confirmation = fields.Boolean('PP Confirmation', default=False)
@@ -982,6 +983,11 @@ class InheritPurchaseRequest(models.Model):
         self.validation_requester = False
         if self.requested_by.id == self._get_user().id and self.state == 'draft' :
             self.validation_requester = True
+    
+    def _change_validation_div_financial(self):
+        self.validation_div_financial = False
+        if self.assigned_to.id == self._get_user().id and self.state == 'approval4' :
+            self.validation_div_financial = True
         
     @api.multi
     @api.depends('assigned_to')
