@@ -7,7 +7,7 @@
         """,
 
     'description': """
-        Differentiate budgeting into for types of calculation, now budgeting can calculate total workday, total amount of labour, material and other.
+        Differentiate budgeting into four types of calculation (actual and planned) : 'productivity' in hectare and 'labour', 'material', 'other' in cost.
     """,
 
     'author': "Palmagroup",
