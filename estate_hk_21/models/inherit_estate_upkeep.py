@@ -29,7 +29,7 @@ class InheritUpkeepLabour(models.Model):
                                                               ('upkeep_date', '<=', end),
                                                               ('attendance_code_id', 'in', att_code)])
 
-        regular_number_of_days = sum(item.number_of_day for item in upkeep_ids) + self.number_of_day
+        regular_number_of_days = sum(item.number_of_day for item in upkeep_ids) + (self.number_of_day if not self.attendance_code_id.piece_rate else 0) 
 
         if not self.attendance_code_id.piece_rate and (regular_number_of_days > monthly_limit):
             # check if month to date exceed monthly limit.
