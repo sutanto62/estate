@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!-- Inherit view -->
+        <record id="inherited_product_category_form" model="ir.ui.view">
+            <field name="name">product.category.form.inherit</field>
+            <field name="model">product.category</field>
+            <field name="inherit_id" ref="purchase_indonesia.inherited_product_category_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='code']" position="after">
+                 	<field name="hide_on_pp"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</openerp>

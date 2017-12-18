@@ -25,6 +25,7 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/inherit_purchase_request.xml',
+        'views/inherit_product_category.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -13,6 +13,11 @@ from openerp import tools
 import re
 import itertools
 
+class ProductCategoryPurchaseRequest(models.Model):
+    """Extend Product Category for Estate Activity Material Line."""
+    _inherit = "product.category"
+
+    hide_on_pp = fields.Boolean('Hide on Purchase Request')
 
 class InheritPurchaseRequest(models.Model):
 
@@ -37,6 +42,8 @@ class InheritPurchaseRequest(models.Model):
                 for category in category_mapping:
                     arrMapping.append(category.product_category_id.id)
                     category_product = item.env['product.category'].search([('parent_id','in',arrMapping)])
+                    print "category_product "
+                    print category_product
                     arrParent.append(category.product_category_id.id)
                     if len(category_product) > 0:
                         for categ_id in category_product:
@@ -44,7 +51,7 @@ class InheritPurchaseRequest(models.Model):
                 
                 return  {
                         'domain':{
-                            'product_category_id':[('id','in',arrParent)]
+                            'product_category_id':[('id','in',arrParent),('hide_on_pp','!=',True)]
                              }
                         }
 
