@@ -12,6 +12,16 @@
             </field>
         </record>
 
+        <record id="view_team_search" model="ir.ui.view">
+            <field name="name">Estate Team Search</field>
+            <field name="model">estate.hr.team</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+
         <record id="view_team_form" model="ir.ui.view" >
             <field name="name">Estate Team Form</field>
             <field name="model">estate.hr.team</field>
@@ -19,9 +29,13 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
+                        <div class="oe_button_box" name="button_box" groups="base.group_configuration,estate.group_agronomi">
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options="{&quot;terminology&quot;: &quot;archive&quot;}"/>
+                            </button>
+                        </div>
                         <group>
                             <field name="name"/>
-                            <field name="active"/>
                             <field name="date_effective"/>
                             <field name="employee_id"/>
                             <field name="division_id"/>
@@ -151,6 +165,25 @@
                 </form>
             </field>
         </record>
+        
+        <record id="hr_member_wizard" model="ir.ui.view">
+            <field name="name">Team Member Wizard</field>
+            <field name="model">estate.hr.member.wizard</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="team_id"/>
+                    </group>
+                    <footer>
+                        <button name="move_team_member" type="object"
+                                string="Move" class="oe_highlight"/>
+                        or
+                        <button special="cancel" string="Cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
 
         <!-- Action -->
@@ -178,6 +211,15 @@
             <field name="view_mode">tree,form</field>
             <field name="context">{'search_default_by_team_id': 1}</field>
         </record>
+
+        <act_window id="move_team_member"
+            name="Move Member"
+            src_model="estate.hr.member"
+            res_model="estate.hr.member.wizard"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"/>
+        <!-- /action -->
 
         <!-- Menu -->
         <menuitem id="estate_labour_menu"
@@ -209,6 +251,7 @@
                   parent="estate_labour_menu"
                   action="estate_wage_action"
                   groups="base.group_configuration,estate.group_agronomi,base.group_hr_manager"/>
+        <!-- /menu -->
 
 
     </data>

@@ -2,9 +2,10 @@
 
 from openerp import models, fields, api, _
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 import openerp.addons.decimal_precision as dp
-from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DATE_FORMAT
-from openerp.exceptions import ValidationError
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+from openerp.exceptions import ValidationError, UserError
 
 class Team(models.Model):
     """Group of Estate Employee. Responsible to Assistant.
@@ -18,7 +19,7 @@ class Team(models.Model):
     _inherit = 'mail.thread'
 
     name = fields.Char("Team Name")
-    complete_name = fields.Char("")
+    complete_name = fields.Char("Complete Name")
     active = fields.Boolean("Active", default="True")
     date_effective = fields.Date("Date Effective")
     employee_id = fields.Many2one('hr.employee', "Team Leader", required='True', ondelete='restrict',
@@ -82,6 +83,40 @@ class Team(models.Model):
                 # msg = '%s has been registered in another active Team.' % rec.employee_id.name
                 # raise ValidationError(msg)
 
+    @api.multi
+    def toggle_active(self):
+        """ Active team should not be archived."""
+        start = (datetime.today() + relativedelta(day=1)).strftime(DF)
+        end = (datetime.today() + relativedelta(months=1, day=1, days=-1)).strftime(DF)
+        for team in self:
+            if self.env['estate.upkeep'].search([('team_id', '=', team.id),
+                                                 ('date', '>=', start),
+                                                 ('dateq', '<=', end)]):
+                err_msg = _('Do not archived active team.')
+                raise UserError(err_msg)
+
+        return super(Team, self).toggle_active()
+
+    @api.multi
+    def unlink(self):
+        """ Payslip will not displayed labour under deleted team."""
+
+        today = datetime.today()
+        start = (today + relativedelta(day=1)).strftime(DF)
+        end = (today + relativedelta(months=1, day=1, days=-1)).strftime(DF)
+
+        for team in self:
+            if self.env['estate.upkeep'].search([('team_id', '=', team.id), ('date', '>=', start), ('date', '<=', end)]):
+                # error when there are active upkeeps
+                err_msg = _('You should not delete active team within the period.')
+                raise UserError(err_msg)
+            elif self.env['estate.upkeep'].search([('team_id', '=', team.id)]):
+                # error when there were upkeeps
+                err_msg = _('You should use archive instead of delete.')
+                raise UserError(err_msg)
+
+        return super(Team, self).unlink()
+
 class TeamMember(models.Model):
     """List of Team Member
     """
@@ -109,6 +144,49 @@ class TeamMember(models.Model):
         if team_ids:
             err_msg = _('%s has been registered at others team.' % self.employee_id.name)
             raise ValidationError(err_msg)
+
+    @api.multi
+    def unlink(self):
+        """ Payslip miscalculated payroll."""
+        today = datetime.today()
+        start = (today + relativedelta(day=1)).strftime(DF)
+        end = (today + relativedelta(months=1, day=1, days=-1)).strftime(DF)
+
+        for member in self:
+            if self.env['estate.upkeep.labour'].search([('employee_id', '=', member.employee_id.id),
+                                                        ('upkeep_date', '>=', start),
+                                                        ('upkeep_date', '<=', end)]):
+                err_msg = _('Don\'t delete %s as upkeep labour detected within the period.\n'
+                            'Press ok or discard button to cancel.' % member.employee_id.name)
+                raise UserError(err_msg)
+
+        return super(TeamMember, self).unlink()
+
+    @api.multi
+    def current_labour(self, start=None, end=None):
+        """ Check if team member has active upkeep labour."""
+        if not start:
+            start = (datetime.today() + relativedelta(day=1)).strftime(DF)
+
+        if not end:
+            end = (datetime.today() + relativedelta(months=1, day=1, days=-1)).strftime(DF)
+
+        for member in self:
+            return self.env['estate.upkeep.labour'].search_count([('employee_id', '=', member.employee_id.id)])
+
+    @api.multi
+    def move(self, target):
+        """ Unlink and move to another team."""
+        for member in self:
+            vals = {
+                'employee_id': member.employee_id.id,
+                'team_id': target.id
+            }
+            # Delete first
+            member.unlink()
+
+            # Create
+            return self.env['estate.hr.member'].create(vals)
 
 class AttendanceCode(models.Model):
     _name = 'estate.hr.attendance'
@@ -201,7 +279,7 @@ class Wage(models.Model):
         :param estate: estate instances
         :return: float
         """
-        today = datetime.today().strftime(DATE_FORMAT)
+        today = datetime.today().strftime(DF)
         current = self.env['estate.wage'].search([('active', '=', True), ('date_start', '<=', today), ('estate_id', '=', estate.id)],
                               order='date_start desc', limit=1)
         for record in current:
