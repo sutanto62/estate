@@ -1,0 +1,10 @@
+<openerp>
+    <data>
+        <!--
+        Estate Stock User Group
+        group_stock_user, officer (odoo).
+        group_stock_assistant, confirmed stock move.
+        group_stock_manager, manager (odoo).
+        -->
+    </data>
+</openerp>

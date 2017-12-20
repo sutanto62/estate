@@ -1,0 +1,146 @@
+<openerp>
+    <data>
+        <!--product-->
+        <record id="product_product_npk" model="product.product">
+            <field name="name">NPK</field>
+            <field name="type">product</field>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="uom_po_id" ref="product.product_uom_ton"/>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="sale_ok" eval="False"/>
+        </record>
+        <record id="product_product_urea" model="product.product">
+            <field name="name">Urea</field>
+            <field name="type">product</field>
+            <field name="uom_id" ref="product.product_uom_kgm"/>
+            <field name="uom_po_id" ref="product.product_uom_ton"/>
+            <field name="categ_id" ref="product.product_category_chemical"/>
+            <field name="sale_ok" eval="False"/>
+        </record>
+        <!--/product-->
+        
+        <!--update quantity-->
+        <record id="product_npk_quant" model="stock.quant">
+            <field name="product_id" ref="product_product_npk"/>
+            <field name="qty">100</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+        </record>
+        <record id="product_npk_stock_move" model="stock.move">
+            <field name="product_id" ref="product_product_npk"/>
+            <field name="product_uom_qty">100</field>
+            <field name="location_id" ref="stock.location_inventory"/>
+            <field name="location_dest_id" ref="stock.stock_location_stock"/>
+            <field name="name">INV: NPK</field>
+            <field name="quant_ids" eval="[(6, 0, [ref('product_npk_quant')])]"/>
+            <field name="state">done</field>
+            <field name="date_expected" eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+            <field name="product_uom" ref="product.product_uom_kgm"/>
+        </record>
+
+        <record id="product_urea_quant" model="stock.quant">
+            <field name="product_id" ref="product_product_urea"/>
+            <field name="qty">100</field>
+            <field name="location_id" ref="stock.stock_location_stock"/>
+        </record>
+        <record id="product_urea_stock_move" model="stock.move">
+            <field name="product_id" ref="product_product_urea"/>
+            <field name="product_uom_qty">100</field>
+            <field name="location_id" ref="stock.location_inventory"/>
+            <field name="location_dest_id" ref="stock.stock_location_stock"/>
+            <field name="name">INV: UREA</field>
+            <field name="quant_ids" eval="[(6, 0, [ref('product_urea_quant')])]"/>
+            <field name="state">done</field>
+            <field name="date_expected" eval="(DateTime.today() - relativedelta(months=1)).strftime('%Y-%m-%d')"/>
+            <field name="product_uom" ref="product.product_uom_kgm"/>
+        </record>
+        <!--/update quantity-->
+
+        <!--sequence-->
+        <record id="material_order_sequence" model="ir.sequence">
+            <field name="name">Warehouse Material Order Sequence</field>
+            <field name="implementation">standard</field>
+            <field name="prefix">WH/</field>
+            <field name="suffix">/%(month)s/%(year)s</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+            <field name="active" eval="True"/>
+            <field name="reset_period">month</field>
+            <field name="reset_time">2018-01-01 00:00:00</field>
+            <field name="reset_init_number">1</field>
+        </record>
+
+        <record id="stock.picking_type_internal" model="stock.picking.type" forcecreate="False">
+            <field name="mo_sequence_id" ref='material_order_sequence'/>
+        </record>
+        <!--/sequence-->
+
+        <!--material order line 1-->
+        <record id="mo_1_line_1" model="estate_stock.material_line">
+            <field name="product_id" ref="product_product_npk"/>
+            <!--<field name="product_uom_id" ref="product.product_uom_kgm"/>-->
+            <field name="product_uom_qty">1.5</field>
+            <field name="block_id" ref="estate.block_1"/>
+            <field name="activity_id" ref="estate.activity_97"/>
+        </record>
+        <record id="mo_1_line_2" model="estate_stock.material_line">
+            <field name="product_id" ref="product_product_npk"/>
+            <!--<field name="product_uom_id" ref="product.product_uom_kgm"/>-->
+            <field name="product_uom_qty">1.5</field>
+            <field name="block_id" ref="estate.block_2"/>
+            <field name="activity_id" ref="estate.activity_97"/>
+        </record>
+        <record id="mo_1_line_3" model="estate_stock.material_line">
+            <field name="product_id" ref="product_product_urea"/>
+            <!--<field name="product_uom_id" ref="product.product_uom_kgm"/>-->
+            <field name="product_uom_qty">3.5</field>
+            <field name="block_id" ref="estate.block_2"/>
+            <field name="activity_id" ref="estate.activity_97"/>
+        </record>
+        <record id="mo_1" model="estate_stock.material_order">
+            <field name="estate_id" ref="estate.estate"/>
+            <field name="division_id" ref="estate.division_1"/>
+            <field name="date_expected" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
+            <field name="move_type">one</field>
+            <field name="picking_type_id" ref="stock.picking_type_internal"/>
+            <field name="type">estate</field>
+            <field name="material_ids" eval="[(6, 0, [ref('mo_1_line_1'), ref('mo_1_line_2'), ref('mo_1_line_3')])]"/>
+        </record>
+        <!--/material order line 1-->
+
+
+        <!--material order line 2-->
+        <record id="mo_2_line_1" model="estate_stock.material_line">
+            <field name="product_id" ref="product_product_npk"/>
+            <!--<field name="product_uom_id" ref="product.product_uom_kgm"/>-->
+            <field name="product_uom_qty">1.5</field>
+            <field name="block_id" ref="estate.block_1"/>
+            <field name="activity_id" ref="estate.activity_97"/>
+        </record>
+        <record id="mo_2_line_2" model="estate_stock.material_line">
+            <field name="product_id" ref="product_product_npk"/>
+            <!--<field name="product_uom_id" ref="product.product_uom_kgm"/>-->
+            <field name="product_uom_qty">1.5</field>
+            <field name="block_id" ref="estate.block_2"/>
+            <field name="activity_id" ref="estate.activity_97"/>
+        </record>
+        <record id="mo_2_line_3" model="estate_stock.material_line">
+            <field name="product_id" ref="product_product_urea"/>
+            <!--<field name="product_uom_id" ref="product.product_uom_kgm"/>-->
+            <field name="product_uom_qty">3.5</field>
+            <field name="block_id" ref="estate.block_2"/>
+            <field name="activity_id" ref="estate.activity_97"/>
+        </record>
+        <record id="mo_2" model="estate_stock.material_order">
+            <field name="estate_id" ref="estate.estate"/>
+            <field name="division_id" ref="estate.division_1"/>
+            <field name="date_expected" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="move_type">one</field>
+            <field name="state">draft</field>
+            <field name="picking_type_id" ref="stock.picking_type_internal"/>
+            <field name="type">estate</field>
+            <field name="material_ids" eval="[(6, 0, [ref('mo_2_line_1'), ref('mo_2_line_2'), ref('mo_2_line_3')])]"/>
+        </record>
+        <!--/material order line 2-->
+    </data>
+</openerp>

@@ -1,0 +1,210 @@
+<openerp>
+    <data>
+        <!--view-->
+        <record id="material_order_view_search" model="ir.ui.view">
+            <field name="name">Material Order Search</field>
+            <field name="model">estate_stock.material_order</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="division_id"/>
+                    <field name="date_expected"/>
+                    <filter name="filter_progress" string="In Progress" domain="[('state', 'in', ('draft','confirm','approve'))]"/>
+                    <separator/>
+                    <!--<filter name="filter_approve" string="Approved" domain="[('state', '=', 'approve')]"/>-->
+                    <filter name="filter_done" string="Done" domain="[('state', '=', 'done')]"/>
+                    <group string="Group By">
+                        <filter name="by_date" string="Date" context="{'group_by': 'date_expected'}"/>
+                        <filter name="by_estate" string="Estate" context="{'group_by': 'estate_id'}"/>
+                        <filter name="by_division" string="Division" context="{'group_by': 'division_id'}"/>
+                        <filter name="by_state" string="State" context="{'group_by': 'state'}"/>
+
+                    </group>
+                </search>
+            </field>
+        </record>
+        <record id="material_order_view_tree" model="ir.ui.view">
+            <field name="name">Material Order</field>
+            <field name="model">estate_stock.material_order</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree default_order="date_expected asc" decoration-danger="state in ('draft','confirm')" decoration-success="state=='approve'">
+                    <field name="name"/>
+                    <field name="employee_id"/>
+                    <field name="estate_id"/>
+                    <field name="division_id"/>
+                    <field name="date_expected"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="material_order_view_form" model="ir.ui.view">
+            <field name="name">Material Order</field>
+            <field name="model">estate_stock.material_order</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_draft" states="confirm" string="Draft" type="object"
+                                groups="stock.group_stock_manager"
+                                confirm="Are you sure to set this material order to draft?"/>
+                        <button name="action_confirm" states="draft" string="Confirm" type="object"
+                                class="oe_highlight" groups="stock.group_stock_assistant"/>
+                        <button name="action_approve" states="draft,confirm" string="Approve" type="object"
+                                class="oe_highlight" groups="stock.group_stock_manager"/>
+                        <button name="action_cancel" states="confirm,approve" string="Cancel" type="object"
+                                groups="stock.group_stock_assistant, stock.group_stock_manager"
+                                confirm="Are you sure to cancel this material order?"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirm,approve,done"
+                               readonly="1"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_view_stock_pickings" icon="fa-truck" type="object"
+                            help="Number of pickings created.">
+                                <div class="o_form_field o_stat_info ">
+                                    <span class="o_stat_value">
+                                        <field name="stock_picking_amount" widget="statinfo" nolabel="1"/>
+                                    </span>
+                                    <span class="o_stat_text">Picking</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" name="action_view_stock_moves" icon="fa-cubes" type="object"
+                            help="(+X/-Y): X is material prepared, Y is material delivered.">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="stock_move_amount" widget="statinfo" nolabel="1"/>
+                                        <span attrs="{'invisible':[('stock_move_available', '=', 0),('stock_move_done','=',0)]}">
+                                            (+<field name="stock_move_available" widget="statinfo" nolabel="1"/>
+                                            -<field name="stock_move_done" widget="statinfo" nolabel="1"/>)
+                                        </span>
+                                    </span>
+                                    <span class="o_stat_text">Stock Move</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" placeholder="New" readonly="True"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group name="request">
+                                <field name="date_expected" attrs="{'readonly': [('readonly', '=', True)]}"/>
+                                <field name="type" attrs="{'readonly': [('readonly', '=', True)]}"/>
+                                <field name="move_type" attrs="{'readonly': [('readonly', '=', True)]}"/>
+                                <field name="picking_type_id" attrs="{'readonly': [('readonly', '=', True)]}" options='{"no_create_edit": True}'/>
+                                <field name="company_id"/>
+                                <field name="origin" attrs="{'readonly': [('readonly', '=', True)]}"/>
+                            </group>
+                            <group name="delivery">
+                                <field name="employee_id" attrs="{'readonly': [('readonly', '=', True)]}"
+                                       options='{"no_open": True, "no_create_edit": True}'/>
+                                <field name="estate_id"
+                                       attrs="{'readonly': [('readonly', '=', True)], 'invisible': [('type', '!=', 'estate')]}"
+                                       options='{"no_open": True, "no_create_edit": True}'/>
+                                <field name="division_id"
+                                       attrs="{'readonly': [('readonly', '=', True)], 'invisible': [('type', '!=', 'estate')]}"
+                                       options='{"no_open": True, "no_create_edit": True}'/>
+                                <!--do not remove-->
+                                <field name="estate_location_id" invisible="True"/>
+                                <field name="readonly" invisible="True"/>
+                            </group>
+                        </group>
+                        <field name="material_ids" attrs="{'readonly': [('readonly', '=', True)]}">
+                            <tree editable="true" string="Estate Material Order" default_order="block_id, product_id">
+                                <field name="block_id"
+                                       attrs="{'required': [('type', '!=', 'general')], 'readonly': [('type', '!=', 'estate')]}"/>
+                                <field name="activity_id"
+                                       domain="[('activity_type', '=', type)]"
+                                       attrs="{'readonly': [('type', '=', 'general')], 'required': [('type', '!=', 'general')]}"/>
+                                <field name="product_id"/>
+                                <field name="product_uom_id"/>
+                                <field name="product_uom_qty"/>
+                                <!--do not remove-->
+                                <field name="order_id" invisible="True"/>
+                                <field name="division_location_id" invisible="True"/>
+                                <field name="type" invisible="False"/>
+                                <!--<field name="partner_id"/>-->
+                                <!--<field name="general_account_id" invisible="False"/>-->
+                                <!--<field name="account_id" invisible="False"/>-->
+                            </tree>
+                        </field>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="inherit_picking_type_view_form" model="ir.ui.view">
+            <field name="name">Picking Types</field>
+            <field name="model">stock.picking.type</field>
+            <field name="inherit_id" ref="stock.view_picking_type_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='sequence_id']" position="after">
+                    <field name="mo_sequence_id"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="material_order_line_view_form" model="ir.ui.view">
+            <field name="name">Material Order Line Form</field>
+            <field name="model">estate_stock.material_line</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group string="Order">
+                            <field name="order_id"/>
+                            <field name="company_id"/>
+                            <field name="estate_id"/>
+                            <field name="division_id"/>
+                        </group>
+                        <group string="Material">
+                            <field name="product_id"/>
+                            <field name="product_uom_id"/>
+                            <field name="product_uom_qty"/>
+                            <field name="block_id"/>
+                            <field name="activity_id"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <!--/view-->
+
+        <!--action-->
+        <record model="ir.actions.act_window" id="action_estate_stock_material_order">
+            <field name="name">Material Order</field>
+            <field name="res_model">estate_stock.material_order</field>
+            <field name="context">{'search_default_filter_progress': True}</field>
+            <!--<field name="view_ids" eval="[(5, 0, 0),-->
+            <!--(0, 0, {'view_mode': 'tree', 'view_id': ref('estate_picking_view_tree')}),-->
+            <!--(0, 0, {'view_mode': 'form', 'view_id': ref('estate_picking_view_form')})]"/>-->
+            <!--<field name="domain">[('estate_id', '!=', None)]</field>-->
+        </record>
+
+        <!--/action-->
+
+        <!--menu-->
+        <menuitem id="warehouse"
+                  name="Estate Warehouse"
+                  sequence="1"
+                  parent="stock.menu_stock_root"
+                  groups="stock.group_stock_manager,stock.group_stock_user,estate.group_user"
+        />
+        <menuitem id="stock_move"
+                  name="Material Order"
+                  sequence="100"
+                  parent="estate_stock.warehouse"
+                  action="action_estate_stock_material_order"
+                  groups="stock.group_stock_manager,stock.group_stock_user,estate.group_user"
+        />
+        <!--/menu-->
+    </data>
+    `</openerp>

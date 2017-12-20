@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+
         <!-- Team -->
         <record id="team_syukur" model="estate.hr.team">
             <field name="name">1RA</field>
@@ -19,6 +20,39 @@
             <field name="state">active</field>
         </record>
 
+        <!-- contract -->
+        <record id="khl_1_contract" model="hr.contract">
+            <field name="name">KHL 1 Contract</field>
+            <field name="employee_id" ref="khl_1"/>
+            <field name="wage">1950000</field>
+        </record>
+        <record id="khl_2_contract" model="hr.contract">
+            <field name="name">KHL 2 Contract</field>
+            <field name="employee_id" ref="khl_2"/>
+            <field name="wage">1950000</field>
+        </record>
+        <record id="khl_3_contract" model="hr.contract">
+            <field name="name">KHL 3 Contract</field>
+            <field name="employee_id" ref="khl_3"/>
+            <field name="wage">1950000</field>
+        </record>
+        <record id="khl_4_contract" model="hr.contract">
+            <field name="name">KHL 4 Contract</field>
+            <field name="employee_id" ref="khl_4"/>
+            <field name="wage">1950000</field>
+        </record>
+        <record id="khl_5_contract" model="hr.contract">
+            <field name="name">KHL 5 Contract</field>
+            <field name="employee_id" ref="khl_5"/>
+            <field name="wage">1950000</field>
+        </record>
+        <record id="khl_6_contract" model="hr.contract">
+            <field name="name">KHL 6 Contract</field>
+            <field name="employee_id" ref="khl_6"/>
+            <field name="wage">1950000</field>
+        </record>
+
+        <!-- /contract -->
         <!-- Team Member -->
         <record id="team_syukur_1" model="estate.hr.member">
             <field name="team_id" ref="team_syukur"/>
