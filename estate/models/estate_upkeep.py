@@ -931,10 +931,11 @@ class UpkeepLabour(models.Model):
 
         # Latest contract before upkeep date if any
         newest_contract = self.env['hr.contract'].search([('employee_id', '=', self.employee_id.id),
-                                                          ('date_start', '<=', self.upkeep_date)],
+                                                          ('date_start', '<=', self.upkeep_date),
+                                                          ('date_end', '>=', self.upkeep_date)],
                                                          order='date_start desc',
                                                          limit=1)
-
+        
         # Contract override regional wage
         if newest_contract:
             try:
