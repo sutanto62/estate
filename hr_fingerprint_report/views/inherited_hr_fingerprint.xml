@@ -64,6 +64,8 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='state']" position="before">
                     <!--computed field cannot be aggregated when using group by-->
+                    <field name="p_hour_early_leave" sum="AA"/>
+                    <field name="p_early_leave_amount" sum="BB"/>
                     <field name="p_hour_late_office" sum="A"/>
                     <field name="p_late_amount_office" sum="B"/>
                     <field name="p_estate_late" sum="C"/>
