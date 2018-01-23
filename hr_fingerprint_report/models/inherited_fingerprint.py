@@ -349,7 +349,7 @@ class FingerAttendance(models.Model):
     @api.multi
     def get_early_leave(self, sign_out):
         """
-        Return integer of early leave
+        Return integer of early leave on Friday/Saturday.
         :param sign_out: sign out datetime
         :type sign_out: float
         :return: minutes of early leave
@@ -371,11 +371,11 @@ class FingerAttendance(models.Model):
             if is_pkwt_daily and finger_day == 'Friday' and schedule == 'Opr Kebun SenSab':
                 # PKWT Daily at site
                 delta = time_end['Friday'] - record.sign_out
-                res = int(round(delta, 2) * 60)
+                res = int(round(delta, 2) * 60) if record.sign_out else record.p_early_leave
             elif is_pkwt_daily and finger_day == 'Saturday' and schedule == 'RO SenJum':
                 # PKWT Daily at site office
                 delta = time_end['Saturday'] - record.sign_out
-                res = int(round(delta, 2) * 60)
+                res = int(round(delta, 2) * 60) if record.sign_out else record.p_early_leave
             else:
                 # Other did not required recalculation
                 res = record.p_early_leave
