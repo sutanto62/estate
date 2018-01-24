@@ -2335,7 +2335,7 @@ class ViewQuotationComparison(models.Model):
                         b.last_price,
                         b.write_date,
                         b.validation_check_backorder
-                       FROM ( SELECT row_number() OVER (PARTITION BY a.po_id ORDER BY a.write_date DESC NULLS LAST) AS rank_id,
+                       FROM ( SELECT row_number() OVER (PARTITION BY a.product_id ORDER BY a.write_date DESC NULLS LAST) AS rank_id,
                                 a.po_id,
                                 a.validation_check_backorder,
                                 a.order_id,
@@ -2358,7 +2358,7 @@ class ViewQuotationComparison(models.Model):
                                                 purchase_order_line.price_unit,
                                                 purchase_order_line.product_qty
                                                FROM purchase_order_line) pol ON ((po.id = pol.order_id)))
-                                      WHERE ((po.state)::text = 'done'::text)
+                                      WHERE ((po.state)::text = 'purchase'::text or (po.state)::text = 'done'::text or (po.state)::text = 'received_force_done'::text)
                                       GROUP BY po.id, pol.order_id, pol.product_id, pol.price_total, pol.price_unit, pol.product_qty) a) b
                       WHERE (b.rank_id = 1)) last_price ON ((qcf_line.product_id = last_price.product_id)));
                       """)

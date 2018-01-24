@@ -934,6 +934,7 @@ class InheritPurchaseRequest(models.Model):
                 'est_price':purchaseline.price_per_product,
                 'product_uom_id': purchaseline.product_uom_id.id,
                 'product_qty' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
+                'qty_outstanding' : purchaseline.product_qty if purchaseline.control_unit == 0 else purchaseline.control_unit,
                 'requisition_id' : res.id,
                 'owner_id' :res.owner_id
             }
