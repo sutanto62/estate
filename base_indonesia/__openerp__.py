@@ -27,7 +27,8 @@
         # 'templates.xml',
         'views/inherit_res_company.xml',
         'views/inherit_res_partner.xml',
-        'views/sequence_res_partner.xml'
+        'views/sequence_res_partner.xml',
+        'views/inherit_res_country_state.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
