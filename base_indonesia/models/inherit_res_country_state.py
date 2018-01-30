@@ -10,7 +10,7 @@ class InheritResCountryState(models.Model):
         ('province', 'Province'),
     ])
     island_id = fields.Many2one('res.country.state',
-                             domain="[('state_type', 'like', 'island')]")
+                             domain="[('state_type', '=', 'island')]")
     province_id = fields.Many2one('res.country.state',
-                             domain="[('state_type', 'like', 'province')]")
+                             domain="[('state_type', '=', 'province')]")
 
