@@ -56,7 +56,7 @@ class TestUpkeep(TransactionCase):
         assistant_id = self.env['hr.employee'].sudo().create({
             'name': 'Assistant'
         })
-        labor_a = self.env['hr.employee'].sudo().create({
+        self.labor_a = self.env['hr.employee'].sudo().create({
             'name': 'Labor A',
             'contract_type': '2',
             'contract_period': '2'
@@ -66,10 +66,12 @@ class TestUpkeep(TransactionCase):
             'contract_type': '2',
             'contract_period': '2'
         })
+
+        # create contract
         self.estate_contract_type_id = self.env['hr.contract.type'].sudo().create({
             'name': 'Estate Worker'
         })
-        contract_b = self.env['hr.contract'].sudo().create({
+        self.labor_b_contract = self.env['hr.contract'].sudo().create({
             'name': 'Labor B Contract',
             'employee_id': self.labor_b.id,
             'wage': 3100000,
@@ -77,13 +79,23 @@ class TestUpkeep(TransactionCase):
             'date_end': (datetime.today() + relativedelta.relativedelta(years=1, month=1, days=-1)).strftime(DF),
             'type_id': self.estate_contract_type_id.id
         })
+        self.labor_a_contract = self.env['hr.contract'].sudo().create({
+            'name': 'Labor A Contract',
+            'employee_id': self.labor_a.id,
+            'wage': 3100000,
+            'date_start': (datetime.today() + relativedelta.relativedelta(month=1, day=1)).strftime(DF),
+            'date_end': (datetime.today() + relativedelta.relativedelta(years=1, month=1, days=-1)).strftime(DF),
+            'type_id': self.estate_contract_type_id.id
+        })
+
+        # create team
         team_id = self.env['estate.hr.team'].sudo().create({
             'name': 'Team',
             'date_effective': (datetime.today() + relativedelta.relativedelta(month=1, day=1)).strftime(DF),
             'employee_id': assistant_id.id,
             'member_ids': [
                 (0, 0, {
-                    'employee_id': labor_a.id
+                    'employee_id': self.labor_a.id
                 }),
                 (0, 0, {
                     'employee_id': self.labor_b.id
@@ -156,7 +168,7 @@ class TestUpkeep(TransactionCase):
             ],
             'labour_line_ids': [
                 (0, 0, {
-                    'employee_id': labor_a.id,
+                    'employee_id': self.labor_a.id,
                     'activity_id': activity_a.id,
                     'attendance_code_id': attendance_k_id.id,
                     'quantity': 200
@@ -177,7 +189,8 @@ class TestUpkeep(TransactionCase):
     def test_01_compute_wage_number_of_day(self):
         """ Checked wage number of day."""
 
-        # computed wage based on minimum regional wage
+        # check if return daily wage or not (without contract)
+        self.labor_a_contract.sudo().unlink()
         self.upkeep.labour_line_ids[0]._compute_wage_number_of_day()
         self.assertEqual(self.upkeep.labour_line_ids[0].wage_number_of_day, 75000)
 
@@ -185,26 +198,14 @@ class TestUpkeep(TransactionCase):
         self.upkeep.labour_line_ids[1]._compute_wage_number_of_day()
         self.assertEqual(self.upkeep.labour_line_ids[1].wage_number_of_day, 62000)
 
-        # computed wage based on multiple contract, overlapped.
-        self.env['hr.contract'].sudo().create({
-            'name': 'Labor B Contract 2',
-            'employee_id': self.labor_b.id,
-            'wage': 6200000,
-            'date_start': (datetime.today() + relativedelta.relativedelta(month=12, day=1)).strftime(DF),
-            'date_end': (datetime.today() + relativedelta.relativedelta(years=1, month=1, days=-1)).strftime(DF),
-            'type_id': self.estate_contract_type_id.id
-        })
-        self.upkeep.labour_line_ids[1]._compute_wage_number_of_day()
-        self.assertEqual(self.upkeep.labour_line_ids[1].wage_number_of_day, 124000)
+        # checked if create overlap contract raised error or not
+        with self.assertRaises(ValidationError):
+            self.env['hr.contract'].sudo().create({
+                'name': 'Labor B Contract 2',
+                'employee_id': self.labor_b.id,
+                'wage': 6200000,
+                'date_start': (datetime.today() + relativedelta.relativedelta(month=12, day=1)).strftime(DF),
+                'date_end': (datetime.today() + relativedelta.relativedelta(years=1, month=1, days=-1)).strftime(DF),
+                'type_id': self.estate_contract_type_id.id
+            })
 
-        # computed wage based on past due contract
-        contract_b_second = self.env['hr.contract'].sudo().create({
-            'name': 'Labor B Contract 3',
-            'employee_id': self.labor_b.id,
-            'wage': 3100000,
-            'date_start': (datetime.today() + relativedelta.relativedelta(month=1, day=1)).strftime(DF),
-            'date_end': (datetime.today() + relativedelta.relativedelta(month=3, days=-1)).strftime(DF),
-            'type_id': self.estate_contract_type_id.id
-        })
-        self.upkeep.labour_line_ids[1]._compute_wage_number_of_day()
-        self.assertEqual(self.upkeep.labour_line_ids[1].wage_number_of_day, 124000)
