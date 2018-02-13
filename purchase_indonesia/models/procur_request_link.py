@@ -1,4 +1,4 @@
-from openerp import models, fields, api, exceptions
+from openerp import models, fields, api, exceptions, _
 from psycopg2 import OperationalError
 
 from openerp import SUPERUSER_ID
@@ -923,7 +923,8 @@ class InheritPurchaseRequest(models.Model):
                 'origin': purchase.complete_name,
                 'request_id':purchase.id,
                 'ordering_date' : datetime.today(),
-                'owner_id' : purchase.id
+                'owner_id' : purchase.id,
+                'picking_type_id' : purchase.picking_type_id.id
             }
             res = self.env['purchase.requisition'].create(purchase_data)
             res.send_mail_template_new_tender()
@@ -1100,6 +1101,22 @@ class InheritPurchaseRequest(models.Model):
             self.type_functional = 'general'
         else:
             self.type_functional
+
+    @api.multi
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        # This function is used to change picking_type_id based on selected company_id and code value
+        for purchase in self:
+            type_obj = self.env['stock.picking.type']
+            # add limit=1, this search could get more than 1 value
+            # if stock_warehouse have more than one warehouse with the same company_id
+            picking_type_id = type_obj.search([('code', '=', 'incoming'),
+                                               ('warehouse_id.company_id', '=', purchase.company_id.id)],
+                                              limit=1)
+            if not picking_type_id:
+                err_msg = _('Could not get picking_type_id!')
+                raise exceptions.ValidationError(err_msg)
+            purchase.picking_type_id = picking_type_id
 
     # @api.multi
     # @api.onchange('company_id')
