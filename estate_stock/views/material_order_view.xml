@@ -120,7 +120,7 @@
                                        attrs="{'required': [('type', '!=', 'general')], 'readonly': [('type', '!=', 'estate')]}"/>
                                 <field name="activity_id"
                                        domain="[('activity_type', '=', type)]"
-                                       attrs="{'readonly': [('type', '=', 'general')], 'required': [('type', '!=', 'general')]}"/>
+                                       attrs="{'required': [('type', '!=', 'general')], 'readonly': [('type', '!=', 'estate')]}"/>
                                 <field name="product_id"/>
                                 <field name="product_uom_id"/>
                                 <field name="product_uom_qty"/>

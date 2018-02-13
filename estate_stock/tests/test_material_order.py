@@ -118,7 +118,10 @@ class TestMaterialOrder(TransactionCase):
 
     def test_01_action_approve(self):
         """ Approve a material order."""
+
+        # Check warehouse company
         self.material_order.sudo(self.user_stock_manager).action_approve()
+
         self.assertEqual(self.material_order.state, 'approve')
 
         # Check stock picking created or not
@@ -128,6 +131,15 @@ class TestMaterialOrder(TransactionCase):
         # Check stock picking confirmed or not
         for picking in picking_ids:
             self.assertEqual(picking.state, 'confirmed')
+
+            # check stock picking required field
+            self.assertEqual(picking.company_id.id, self.material_order.picking_type_id.warehouse_id.company_id.id)
+            self.assertTrue(picking.move_type, 'No move type found.')
+            self.assertTrue(picking.location_id, 'No source location found.')
+            self.assertTrue(picking.location_dest_id, 'No destination location found.')
+            self.assertTrue(picking.picking_type_id, 'No picking type found.')
+            self.assertTrue(picking.priority, 'No priority defined.')
+            self.assertTrue(picking.company_id, 'No company found.')
 
     def test_02_action_cancel(self):
         """ Cancel material order."""

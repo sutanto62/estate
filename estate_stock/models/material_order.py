@@ -263,6 +263,7 @@ class MaterialOrder(models.Model):
             # picking data
             vals = {
                 'picking_type_id': order.picking_type_id.id,
+                'company_id': order.picking_type_id.warehouse_id.company_id.id,
                 'location_id': order.picking_type_id.default_location_src_id.id,
                 'location_dest_id': order.picking_type_id.default_location_dest_id.id,
                 'move_type': order.move_type,
@@ -272,11 +273,7 @@ class MaterialOrder(models.Model):
                 'move_lines': []
             }
 
-            # picking must be in single source and destination location for traceability
-            location_ids = []
-            for line in order.material_ids:
-                location_ids.append(line.location_id.id)
-            location_dest_ids = set(location_ids)
+            location_dest_ids = self.get_location(order)
             for location in location_dest_ids:
                 vals['location_dest_id'] = location
 
@@ -286,8 +283,11 @@ class MaterialOrder(models.Model):
                 vals['name'] = sequence_id.next_by_id()
 
                 # prepare stock move data
-                material_ids = material_line_obj.search([('order_id', 'in', order.ids),
-                                                         ('location_id', '=', location)]).mapped('product_id')
+                domain = [('order_id', 'in', order.ids)]
+                if order.type == 'estate':
+                    domain.append(('location_id', '=', location))
+                material_ids = material_line_obj.search(domain).mapped('product_id')
+                print material_ids
                 move_lines = []
                 for product in set(material_ids):
                     product_uom_qty = sum(
@@ -300,13 +300,15 @@ class MaterialOrder(models.Model):
                         'product_uom': product.uom_id.id,
                         'product_uom_qty': product_uom_qty,
                         'location_id': vals['location_id'],
-                        'location_dest_id': vals['location_dest_id']
+                        'location_dest_id': vals['location_dest_id'],
+                        'company_id': vals['company_id']
                     }
                     move_lines.append((0, 0, move_val))
                 vals['move_lines'] = move_lines
 
                 # create picking and mark to do (ready to validate)
                 picking = self.env['stock.picking'].with_context({'mail_create_nosubscribe': True}).create(vals)
+
                 picking.action_confirm()
 
         return True
@@ -334,6 +336,18 @@ class MaterialOrder(models.Model):
         stock_move_ids = stock_move_obj.search(domain)
         return stock_move_ids
 
+    def get_location(self, order):
+        """ picking must be in single source and destination location for traceability."""
+        location_ids = []
+        if order.type == 'estate':
+            for line in order.material_ids:
+                location_ids.append(line.location_id.id)
+            return set(location_ids)
+        elif order.type == 'general':
+            res = self.env.ref('stock.stock_location_scrapped').id
+            return [res]
+        else:
+            return location_ids
 
 class MaterialOrderLine(models.Model):
     _name = 'estate_stock.material_line'
@@ -377,3 +391,12 @@ class MaterialOrderLine(models.Model):
             if material.block_id:
                 material.partner_id = material.block_id.company_id.partner_id.id
 
+
+    @api.model
+    def create(self, vals):
+        """ Set stock location for general"""
+
+        # if vals.get('type') == 'general':
+        #     vals['location_id'] = self.env.ref('stock.stock_location_scrapped').id
+        print vals
+        return super(MaterialOrderLine, self).create(vals)
