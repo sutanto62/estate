@@ -287,13 +287,13 @@ class MaterialOrder(models.Model):
                 if order.type == 'estate':
                     domain.append(('location_id', '=', location))
                 material_ids = material_line_obj.search(domain).mapped('product_id')
-                print material_ids
                 move_lines = []
+                
                 for product in set(material_ids):
-                    product_uom_qty = sum(
-                        q.product_uom_qty for q in material_line_obj.search([('order_id', 'in', order.ids),
-                                                                             ('location_id', '=', location),
-                                                                             ('product_id', '=', product.id)]))
+                    product_domain = domain
+                    product_domain.append(('product_id', '=', product.id))
+                    product_uom_qty = sum(q.product_uom_qty for q in material_line_obj.search(product_domain))
+                    
                     move_val = {
                         'name': product.name,
                         'product_id': product.id,

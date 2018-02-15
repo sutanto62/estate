@@ -155,9 +155,16 @@ class EstateBlockTemplate(models.Model):
             parent_id = self.get_parent_location() or False
 
             # get higher block level
-            while parent_id and parent_id.estate_location_level != type:
-                # False will stop looping
-                parent_id = parent_id.location_id or False
+#             while parent_id and parent_id.estate_location_level != type:
+#                 # False will stop looping
+#                 parent_id = parent_id.location_id or False
+
+            loop = True
+            while loop: 
+                if parent_id and parent_id.estate_location_level != type:
+                    parent_id = parent_id.location_id
+                else:
+                    loop = False
 
             res = parent_id
 
