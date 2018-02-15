@@ -4,3 +4,4 @@ import test_upkeep_labour
 import test_upkeep_labour_contract
 import test_ir_sequence
 import test_security
+import test_estate

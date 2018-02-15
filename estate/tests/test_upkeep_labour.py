@@ -62,6 +62,7 @@ class TestUpkeep(TransactionCase):
             'activity_type': 'estate',
             'wage_method': 'standard',
         }
+        self.activity_with_contract = self.env['estate.activity'].sudo().create(self.val_activity)
 
         val = {
             'date': datetime.today().strftime(DF),
@@ -112,52 +113,10 @@ class TestUpkeep(TransactionCase):
     def test_01_compute_activity_contract(self):
         """ Check activity contract"""
 
-        # attendance code
-        att_contract = self.env['estate.hr.attendance'].create(self.attendance_code_contract)
-        self.assertTrue(att_contract)
-
-        # activity
-        val_activity_contract = self.val_activity
-        val_activity_contract['contract'] = True
-
-        activity_contract = self.env['estate.activity'].create(val_activity_contract)
-        self.assertTrue(activity_contract)
-
-        # upkeep
-        val = {
-            'date': datetime.today().strftime(DF),
-            'team_id': self.env.ref('estate.team_syukur').id,
-            'assistant_id': self.env.ref('hr.employee_al').id,
-            'division_id': self.env.ref('stock.stock_nursery').id,
-            'estate_id': self.env.ref('stock.stock_main_estate').id,
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': activity_contract.id,
-                    'unit_amount': 400,
-                }),
-            ],
-            'labour_line_ids': [
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_5').id,
-                    'activity_id': activity_contract.id,
-                    'attendance_code_id': att_contract.id,
-                    'quantity': 300
-                }),
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_4').id,
-                    'activity_id': activity_contract.id,
-                    'attendance_code_id': att_contract.id,
-                    'quantity': 100
-                }),
-            ]
-        }
-
-        upkeep_id = self.env['estate.upkeep'].create(val)
-        self.assertTrue(upkeep_id)
-
-        # check first labour has activity_contract true
-        for labor in upkeep_id['labour_line_ids']:
-            self.assertTrue(labor.activity_contract)
+        # check if contract could be with time based activity or not
+        self.activity_with_contract.sudo().write({'wage_method': 'attendance'})
+        with self.assertRaises(ValidationError):
+            self.activity_with_contract.sudo().write({'contract': True})
 
     def test_01_compute_number_of_day(self):
         """ Compute number of day for attendance, standard (and contract) based activity """
@@ -182,6 +141,9 @@ class TestUpkeep(TransactionCase):
         for labour in self.upkeep.labour_line_ids.sorted(key=lambda r: r.employee_id):
             labour._compute_number_of_day()
         self.assertEqual(self.upkeep.labour_line_ids[0].number_of_day, 0, 'Estate: _compute_number_of_day for contract based activity failed')
+
+    def test_01_compute_block_division(self):
+        """ Check if cross team return block division."""
 
 # TODO create test multi satuan waktu dan produktititas
 # TODO create test no labour has more than 1 worked day.

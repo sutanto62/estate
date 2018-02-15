@@ -1,0 +1,581 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* estate_stock
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0c\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-01-31 07:50+0000\n"
+"PO-Revision-Date: 2018-01-31 07:50+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "(+X/-Y): X is material prepared, Y is material delivered."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "<span class=\"o_stat_text\">Picking</span>"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "<span class=\"o_stat_text\">Stock Move</span>"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_activity_id
+msgid "Activity"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,move_type:0
+msgid "All at once"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Approve"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+msgid "Approved"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Are you sure to cancel this material order?"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Are you sure to set this material order to draft?"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_stock_move_available
+msgid "Available Stock Move"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_block_id
+msgid "Block"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_partner_id
+msgid "Block Partner"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_company_id
+msgid "Company"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Confirm"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+msgid "Confirmed"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_create_uid
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_create_date
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_create_date
+msgid "Created on"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "Date"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_date_expected
+#: model:ir.model.fields,field_description:estate_stock.field_stock_picking_date_expected
+msgid "Date Expected"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_message_last_post
+msgid "Date of the last message posted on the record."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_type
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_type
+msgid "Define cost center."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_move_type
+msgid "Delivery Method"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_display_name
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_division_id
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_division_id
+#: model:ir.model.fields,field_description:estate_stock.field_stock_move_division_id
+#: model:ir.model.fields,field_description:estate_stock.field_stock_picking_division_id
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "Division"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_division_location_id
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_division_location_id
+#: model:ir.model.fields,field_description:estate_stock.field_stock_picking_division_location_id
+msgid "Division Location"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "Done"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Draft"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_estate_id
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_estate_id
+#: model:ir.model.fields,field_description:estate_stock.field_stock_move_estate_id
+#: model:ir.model.fields,field_description:estate_stock.field_stock_picking_estate_id
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "Estate"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_estate_location_id
+msgid "Estate Location"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,type:0
+msgid "Estate Material"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Estate Material Order"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.menu,name:estate_stock.warehouse
+msgid "Estate Warehouse"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_channel_ids
+msgid "Followers (Channels)"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,type:0
+msgid "General Material"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "Group By"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_id
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_id
+msgid "ID"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_message_unread
+msgid "If checked new messages require your attention."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "In Progress"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_move_type
+msgid "It specifies goods to be deliver partially or all at once"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_last_post
+msgid "Last Message Date"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line___last_update
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order___last_update
+msgid "Last Modified on"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_write_uid
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_write_date
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_line_view_form
+msgid "Material"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model,name:estate_stock.model_estate_stock_material_line
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_material_ids
+msgid "Material Line"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.actions.act_window,name:estate_stock.action_estate_stock_material_order
+#: model:ir.model,name:estate_stock.model_estate_stock_material_order
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_order_id
+#: model:ir.ui.menu,name:estate_stock.stock_move
+msgid "Material Order"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_name
+msgid "Material Order No"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_stock_picking_type_mo_sequence_id
+msgid "Material Order Sequence"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_type
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_type
+msgid "Material Order Type"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_stock_picking_multi_location
+msgid "Multi Location"
+msgstr ""
+
+#. module: estate_stock
+#: model:product.product,name:estate_stock.product_product_npk
+#: model:product.template,name:estate_stock.product_product_npk_product_template
+msgid "NPK"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "New"
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:119
+#, python-format
+msgid "No material order sequence for %s found. Please contact your Administrator."
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:169
+#: code:addons/estate_stock/models/material_order.py:186
+#, python-format
+msgid "No material requested."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_message_needaction_counter
+msgid "Number of messages which requires an action"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_form
+msgid "Number of pickings created."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_order_message_unread_counter
+msgid "Number of unread messages"
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:133
+#, python-format
+msgid "Only draft material order could be deleted."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_line_view_form
+msgid "Order"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,move_type:0
+msgid "Partial"
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+msgid "Partially Available"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_picking_type_id
+msgid "Picking Type"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_product_id
+msgid "Product"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_product_uom_qty
+msgid "Quantity"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_readonly
+msgid "Readonly"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_employee_id
+msgid "Requestor"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_partner_id
+msgid "Required for creating journal entry with different company."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_activity_id
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_company_id
+msgid "Required for creating journal entry."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_location_id
+msgid "Required for creating stock move."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_block_id
+msgid "Select estate material order type to enable"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_stock_picking_multi_location
+msgid "Set multi location in order to deliver product at several location."
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:156
+#: code:addons/estate_stock/models/material_order.py:224
+#, python-format
+msgid "Some of %s stock pickings has been processed."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_origin
+msgid "Source Document"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.ui.view,arch_db:estate_stock.material_order_view_search
+msgid "State"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_state
+msgid "Status"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_location_id
+msgid "Stock Location"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model,name:estate_stock.model_stock_move
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_stock_move_amount
+msgid "Stock Move"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_stock_picking_amount
+msgid "Stock Picking"
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/inherit_stock.py:33
+#, python-format
+msgid "Stock picking could not marked to do as material order not approved yet."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model,name:estate_stock.model_stock_picking_type
+msgid "The picking type determines the picking view"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model,name:estate_stock.model_stock_picking
+msgid "Transfer"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_stock_move_done
+msgid "Transfered Stock Move"
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/inherit_stock.py:46
+#, python-format
+msgid "Unable to reserve. Some of your required product is waiting for availability."
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_product_uom_id
+msgid "Unit of Measure"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_unread
+msgid "Unread Messages"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_order_message_unread_counter
+msgid "Unread Messages Counter"
+msgstr ""
+
+#. module: estate_stock
+#: model:product.product,name:estate_stock.product_product_urea
+#: model:product.template,name:estate_stock.product_product_urea_product_template
+msgid "Urea"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_estate_stock_material_line_product_uom_id
+msgid "Usage unit of measure. Define at product."
+msgstr ""
+
+#. module: estate_stock
+#: selection:estate_stock.material_order,state:0
+msgid "Waiting Another Operation"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,field_description:estate_stock.field_estate_stock_material_line_company_id
+msgid "Warehouse Company"
+msgstr ""
+
+#. module: estate_stock
+#: model:ir.model.fields,help:estate_stock.field_stock_picking_type_mo_sequence_id
+msgid "Warehouse need to maintain material request"
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:180
+#, python-format
+msgid "You have no access to approve this record."
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:213
+#, python-format
+msgid "You have no access to cancel this record."
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:163
+#, python-format
+msgid "You have no access to confirm this record."
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:148
+#, python-format
+msgid "You have no access to draft this record."
+msgstr ""
+
+#. module: estate_stock
+#: code:addons/estate_stock/models/material_order.py:232
+#, python-format
+msgid "You have no access to receive material."
+msgstr ""
+

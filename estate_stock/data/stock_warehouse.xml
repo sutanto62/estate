@@ -1,0 +1,18 @@
+<openerp>
+    <data noupdate="0">
+
+        <!-- warehouse -->
+        <record id="tpn_warehouse" model="stock.warehouse">
+            <field name="name">Gudang TPN</field>
+            <field name="code">TPN</field>
+            <field name="company_id" ref="base.tpn_company"/>
+        </record>
+        <record id="apk_warehouse" model="stock.warehouse">
+            <field name="name">Gudang APK</field>
+            <field name="code">APK</field>
+            <field name="company_id" ref="base.apk_company"/>
+        </record>
+        <!-- /warehouse -->
+
+    </data>
+</openerp>

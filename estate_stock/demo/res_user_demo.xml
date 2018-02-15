@@ -1,0 +1,59 @@
+<openerp>
+    <data>
+        <!--partner-->
+        <record id="partner_inv_user" model="res.partner">
+            <field name="name">Inventory User</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="customer" eval="False"/>
+            <field name="email">inventory_user@demo.com</field>
+            <field name="street">Datahu, 2</field>
+            <field name="city">Gorontalo</field>
+            <field name="zip">12345</field>
+            <field name="country_id" ref="base.id"/>
+        </record>
+        <record id="partner_inv_assistant" model="res.partner">
+            <field name="name">Inventory Assistant</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="customer" eval="False"/>
+            <field name="email">inventory_assistant@demo.com</field>
+            <field name="street">Datahu, 2</field>
+            <field name="city">Gorontalo</field>
+            <field name="zip">12345</field>
+            <field name="country_id" ref="base.id"/>
+        </record>
+        <record id="partner_inv_manager" model="res.partner">
+            <field name="name">Inventory Manager</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="customer" eval="False"/>
+            <field name="email">inventory_manager@demo.com</field>
+            <field name="street">Datahu, 2</field>
+            <field name="city">Gorontalo</field>
+            <field name="zip">12345</field>
+            <field name="country_id" ref="base.id"/>
+        </record>
+
+        <!--user-->
+        <record id="estate_stock_user" model="res.users">
+            <field name="partner_id" ref="estate_stock.partner_inv_user"/>
+            <field name="name">Inventory User</field>
+            <field name="login">inventory_user</field>
+            <field name="password">inventory_user</field>
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]" />
+        </record>
+        <record id="estate_stock_assistant" model="res.users">
+            <field name="partner_id" ref="estate_stock.partner_inv_assistant"/>
+            <field name="name">Inventory Assistant</field>
+            <field name="login">inventory_assistant</field>
+            <field name="password">inventory_assistant</field>
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_assistant'))]" />
+        </record>
+        <record id="estate_stock_manager" model="res.users">
+            <field name="partner_id" ref="estate_stock.partner_inv_manager"/>
+            <field name="name">Inventory Manager</field>
+            <field name="login">inventory_manager</field>
+            <field name="password">inventory_manager</field>
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_manager'))]" />
+        </record>
+        <!--/user-->
+    </data>
+</openerp>

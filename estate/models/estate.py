@@ -141,6 +141,28 @@ class EstateBlockTemplate(models.Model):
             # Set default (based on stand per hectare default value)
             self.qty_sph_standard = 130
 
+    # @api.multi
+    def get_parent_location(self, type=None):
+        """
+        Get parent stock location based on type and deep.
+        :param type: '1': Estate', '2': Division, '3': Block, '4': Sub Block
+        :return: stock.location object or False
+        """
+        if not type:
+            res = self.inherit_location_id.location_id or False
+        else:
+            # get stock location first
+            parent_id = self.get_parent_location() or False
+
+            # get higher block level
+            while parent_id and parent_id.estate_location_level != type:
+                # False will stop looping
+                parent_id = parent_id.location_id or False
+
+            res = parent_id
+
+        return res
+
 class EstateBlock(models.Model):
     _name = 'estate.block'
     _inherits = {'estate.block.template': 'block_template_id'}

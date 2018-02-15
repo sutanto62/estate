@@ -7,32 +7,31 @@
             <field name="model">estate.config.settings</field>
             <field name="inherit_id" ref="estate.view_estate_configuration"/>
             <field name="arch" type="xml">
-                <form string="Configure Estate" class="oe_form_configuration">
-                    <xpath expr="//form" position="inside">
-
-                        <group name="rainfall_grp">
-                            <label for="id" string="Rainfall"/>
-                            <div name="rainfall">
-                                <div name="start">
-                                    <field name="default_time_start" widget="float_time" class="oe_inline"/>
-                                    <label for="default_time_start"/>
-                                </div>
-                                <div name="end">
-                                    <field name="default_time_end" widget="float_time" class="oe_inline"/>
-                                    <label for="default_time_end"/>
-                                </div>
-                                <div name="method">
-                                    <field name="default_time_overnight" class="oe_inline"/>
-                                    <label for="default_time_overnight"/>
-                                </div>
-                                <div name="method">
-                                    <field name="default_observation_method" class="oe_inline"/>
-                                    <label for="default_observation_method"/>
-                                </div>
+                <!--<form string="Configure Estate" class="oe_form_configuration">-->
+                <xpath expr="//form" position="inside">
+                    <group name="rainfall_grp">
+                        <label for="id" string="Rainfall"/>
+                        <div name="rainfall">
+                            <div name="start">
+                                <field name="default_time_start" widget="float_time" class="oe_inline"/>
+                                <label for="default_time_start"/>
                             </div>
-                        </group>
-                    </xpath>
-                </form>
+                            <div name="end">
+                                <field name="default_time_end" widget="float_time" class="oe_inline"/>
+                                <label for="default_time_end"/>
+                            </div>
+                            <div name="method">
+                                <field name="default_time_overnight" class="oe_inline"/>
+                                <label for="default_time_overnight"/>
+                            </div>
+                            <div name="method">
+                                <field name="default_observation_method" class="oe_inline"/>
+                                <label for="default_observation_method"/>
+                            </div>
+                        </div>
+                    </group>
+                </xpath>
+                <!--</form>-->
             </field>
         </record>
 

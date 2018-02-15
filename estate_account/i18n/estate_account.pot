@@ -4,10 +4,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 9.0c-20160712\n"
+"Project-Id-Version: Odoo Server 9.0c\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-30 05:03+0000\n"
-"PO-Revision-Date: 2017-05-30 05:03+0000\n"
+"POT-Creation-Date: 2017-12-20 08:40+0000\n"
+"PO-Revision-Date: 2017-12-20 08:40+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -16,21 +16,26 @@ msgstr ""
 "Plural-Forms: \n"
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:32
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:36
 #, python-format
 msgid "%s %s "
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:34
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:38
 #, python-format
 msgid "%s %s for %s"
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:470
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:575
 #, python-format
 msgid "%s has no payable account."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_productivity_report_type
+msgid "* By Estate, shows all activities.* By Division, group activities by Division."
 msgstr ""
 
 #. module: estate_account
@@ -44,20 +49,21 @@ msgid "* PKWTT, Perjanjian Kerja Waktu Tidak Tertentu, * PKWT, Perjanjian Kerja 
 msgstr ""
 
 #. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_account_productivity_report_upkeep
+msgid "*Paid (Journaled) - Payslip has been closed and journal entries created.\n"
+"*Payslip Prepared - Payslip has been created.\n"
+"*Approved Upkeep - All BKM has been approved by Estate Manager.\n"
+"*All Upkeep - All BKM"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.model,name:estate_account.model_account_move
 msgid "Account Entry"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.actions.act_window,name:estate_account.payroll_cost_category_action
-#: model:ir.ui.menu,name:estate_account.payroll_cost_category
-msgid "Accrued Category"
-msgstr ""
-
-#. module: estate_account
-#: model:ir.actions.act_window,name:estate_account.payroll_cost_action
-#: model:ir.ui.menu,name:estate_account.payroll_cost_menu
-msgid "Accrued Labour Account"
+#: model:ir.model,name:estate_account.model_estate_account_productivity_report
+msgid "Account Productivity Report"
 msgstr ""
 
 #. module: estate_account
@@ -74,9 +80,17 @@ msgid "Active"
 msgstr ""
 
 #. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_account_move_line_activity_id
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "Activity"
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:378
+#, python-format
+msgid "Activity %s has no general account.\n"
+"Please check your account configuration.activity"
 msgstr ""
 
 #. module: estate_account
@@ -90,8 +104,18 @@ msgid "Additional Information"
 msgstr ""
 
 #. module: estate_account
+#: selection:estate_account.productivity.report,upkeep:0
+msgid "All Upkeep"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.menu,name:estate_account.estate_costing_payroll_report_menu
 msgid "Allocation Report"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_analytic_account_id
+msgid "Analytic Account"
 msgstr ""
 
 #. module: estate_account
@@ -100,9 +124,44 @@ msgid "Approved"
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:335
+#: selection:estate_account.productivity.report,upkeep:0
+msgid "Approved Upkeep"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_view_activity_list_tree
+msgid "Base"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_factor_inv
+msgid "Bigger Ratio"
+msgstr ""
+
+#. module: estate_account
+#: selection:estate.activity,productivity:0
+msgid "Bigger than reference."
+msgstr ""
+
+#. module: estate_account
+#: selection:estate_account.productivity.report,type:0
+msgid "By Division"
+msgstr ""
+
+#. module: estate_account
+#: selection:estate_account.productivity.report,type:0
+msgid "By Estate"
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:414
 #, python-format
 msgid "Cannot create journal entries for %s - account not defined yet.activity"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
+msgid "Close to Journaled"
 msgstr ""
 
 #. module: estate_account
@@ -113,6 +172,7 @@ msgstr ""
 #. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_company_id
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_company_id
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_company_id
 msgid "Company"
 msgstr ""
 
@@ -142,14 +202,25 @@ msgid "Cost Allocation"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_id_10221
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_id_10222
 msgid "Cost Category"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_is_productivity
+msgid "Count as Productivity"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
+msgid "Create posted journal."
 msgstr ""
 
 #. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_create_uid
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_create_uid
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_create_uid
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_create_uid
 msgid "Created by"
 msgstr ""
 
@@ -157,6 +228,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_create_date
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_create_date
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_create_date
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_create_date
 msgid "Created on"
 msgstr ""
 
@@ -202,15 +274,31 @@ msgid "Default Bank Account for all payroll."
 msgstr ""
 
 #. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_activity_is_productivity
+msgid "Define general account to enable this option."
+msgstr ""
+
+#. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_display_name
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_display_name
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_display_name
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_display_name
 msgid "Display Name"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_division_id
+msgid "Division"
 msgstr ""
 
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "Draft/Confirmed"
+msgstr ""
+
+#. module: estate_account
+#: selection:estate.activity,location_type:0
+msgid "Emplacement"
 msgstr ""
 
 #. module: estate_account
@@ -225,8 +313,13 @@ msgid "Employee Company"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.ui.menu,name:estate_account.estate_account_menu
-msgid "Estate Account"
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_date_end
+msgid "End Date"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_estate_id
+msgid "Estate"
 msgstr ""
 
 #. module: estate_account
@@ -264,19 +357,26 @@ msgid "General Account"
 msgstr ""
 
 #. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_type
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_search
 msgid "Group By"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_category_id_10221
+#: model:ir.model.fields,help:estate_account.field_estate_account_payroll_cost_category_id_10222
 msgid "Help to collect amount of wage."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_activity_factor
+msgid "How much bigger or smaller this unit is compared to the reference activity: 1 * (reference unit) = ratio * (this unit)"
 msgstr ""
 
 #. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_id
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_id
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_id
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_id
 msgid "ID"
 msgstr ""
 
@@ -299,8 +399,18 @@ msgid "Is Follower"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,field_description:estate_account.field_estate_activity_labour_account_id
-msgid "Labour Account"
+#: model:ir.model.fields,help:estate_account.field_estate_activity_location_type
+msgid "It will be used to filter activity against location."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_account_move_line
+msgid "Journal Item"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
+msgid "Journaled to Close"
 msgstr ""
 
 #. module: estate_account
@@ -319,6 +429,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account___last_update
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost___last_update
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category___last_update
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report___last_update
 msgid "Last Modified on"
 msgstr ""
 
@@ -326,6 +437,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_write_uid
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_write_uid
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_write_uid
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_write_uid
 msgid "Last Updated by"
 msgstr ""
 
@@ -333,6 +445,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_write_date
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_category_write_date
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_write_date
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_write_date
 msgid "Last Updated on"
 msgstr ""
 
@@ -347,8 +460,8 @@ msgid "Location Company"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,field_description:estate_account.field_estate_activity_material_account_id
-msgid "Material Account"
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_location_type
+msgid "Location Type"
 msgstr ""
 
 #. module: estate_account
@@ -364,6 +477,7 @@ msgstr ""
 
 #. module: estate_account
 #: selection:estate_account.payroll_cost,contract_period:0
+#: selection:estate_account.productivity.report,period:0
 msgid "Monthly"
 msgstr ""
 
@@ -374,15 +488,22 @@ msgid "Name"
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:239
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:276
 #, python-format
 msgid "No Payroll Bank Account defined."
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:312
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:365
 #, python-format
 msgid "No accrued allocation will be created."
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:489
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:621
+#, python-format
+msgid "No journal for "
 msgstr ""
 
 #. module: estate_account
@@ -404,6 +525,11 @@ msgid "Number of unread messages"
 msgstr ""
 
 #. module: estate_account
+#: selection:estate.activity,location_type:0
+msgid "Nursery"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "OT"
 msgstr ""
@@ -411,11 +537,6 @@ msgstr ""
 #. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "OT Wage"
-msgstr ""
-
-#. module: estate_account
-#: model:ir.model.fields,field_description:estate_account.field_estate_activity_other_account_id
-msgid "Other Account"
 msgstr ""
 
 #. module: estate_account
@@ -444,20 +565,19 @@ msgid "PY"
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:40
+#: selection:estate_account.productivity.report,upkeep:0
+msgid "Paid (Journaled)"
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:44
 #, python-format
 msgid "Payroll %s"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.actions.act_window,name:estate_account.payroll_company_account_action
-#: model:ir.ui.menu,name:estate_account.company_account_menu
-msgid "Payroll Bank Account"
-msgstr ""
-
-#. module: estate_account
 #: model:ir.model,name:estate_account.model_estate_account_company_account
-msgid "Payroll Company Account"
+msgid "Payroll Bank Account"
 msgstr ""
 
 #. module: estate_account
@@ -481,6 +601,31 @@ msgid "Payslip Batches"
 msgstr ""
 
 #. module: estate_account
+#: selection:estate_account.productivity.report,upkeep:0
+msgid "Payslip Prepared"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_period
+msgid "Period"
+msgstr ""
+
+#. module: estate_account
+#: selection:estate.activity,location_type:0
+msgid "Planted"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_productivity
+msgid "Productivity Reference"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_productivity_uom_id
+msgid "Productivity Unit of Measurements"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_payroll_cost_amount_python_compute
 msgid "Python Code"
 msgstr ""
@@ -491,13 +636,33 @@ msgid "Qty."
 msgstr ""
 
 #. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_factor
+msgid "Ratio"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.model.fields,field_description:estate_account.field_estate_account_company_account_receivable_id
 msgid "Receivable Account"
 msgstr ""
 
 #. module: estate_account
+#: selection:estate.activity,productivity:0
+msgid "Reference productivity."
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
-msgid "Reset to Close"
+msgid "Remove posted journal."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_account_move_line_activity_id
+msgid "Reverse search."
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_activity_rounding
+msgid "Rounding Precision"
 msgstr ""
 
 #. module: estate_account
@@ -506,23 +671,28 @@ msgid "SQL Syntax"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,help:estate_account.field_estate_activity_other_account_id
-msgid "Set as contract works or VRA account."
+#: selection:estate_account.productivity.report,period:0
+msgid "Select Dates"
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,help:estate_account.field_estate_activity_labour_account_id
-msgid "Set as labour account."
+#: model:ir.model.fields,help:estate_account.field_estate_account_productivity_report_period
+msgid "Select period of activities to be displayed at report."
 msgstr ""
 
 #. module: estate_account
-#: model:ir.model.fields,help:estate_account.field_estate_activity_material_account_id
-msgid "Set as material account."
+#: selection:estate.activity,productivity:0
+msgid "Smaller than reference."
 msgstr ""
 
 #. module: estate_account
-#: model:ir.ui.view,arch_db:estate_account.inherited_estate_account_hr_payslip_run_form
-msgid "Set payroll batches and its descendants to draft position."
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_date_start
+msgid "Start Date"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,help:estate_account.field_estate_activity_rounding
+msgid "The computed quantity will be a multiple of this value. Use 1.0 for a Unit of Measure that cannot be further split, such as a piece."
 msgstr ""
 
 #. module: estate_account
@@ -536,7 +706,22 @@ msgid "This Year"
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:142
+#: selection:estate_account.productivity.report,period:0
+msgid "Today"
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:106
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:241
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:320
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:616
+#, python-format
+msgid "Unable to close payslips batches.\n"
+"No Accounting Journals for payroll configured."
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:168
 #, python-format
 msgid "Unable to close payslips batches. No payroll cost setup available."
 msgstr ""
@@ -559,12 +744,32 @@ msgid "UoM"
 msgstr ""
 
 #. module: estate_account
+#: model:ir.ui.view,arch_db:estate_account.inherited_account_move_form
+msgid "Update Quantity"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model.fields,field_description:estate_account.field_estate_account_productivity_report_upkeep
+msgid "Upkeep"
+msgstr ""
+
+#. module: estate_account
+#: model:ir.model,name:estate_account.model_estate_upkeep_labour
+msgid "Upkeep Labour"
+msgstr ""
+
+#. module: estate_account
 #: model:ir.ui.view,arch_db:estate_account.accountant_upkeep_labour_view_tree
 msgid "Wage"
 msgstr ""
 
 #. module: estate_account
-#: code:addons/estate_account/models/inherited_hr_payslip_run.py:60
+#: selection:estate_account.productivity.report,period:0
+msgid "Weekly"
+msgstr ""
+
+#. module: estate_account
+#: code:addons/estate_account/models/inherited_hr_payslip_run.py:79
 #, python-format
 msgid "You have not defined Accrued Category and Labour Account."
 msgstr ""

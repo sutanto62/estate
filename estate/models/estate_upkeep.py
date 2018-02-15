@@ -805,7 +805,11 @@ class UpkeepLabour(models.Model):
                                             compute="_compute_activity_location_ids")
     company_id = fields.Many2one(related='location_id.company_id', store=True, help='Company of location')
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
-    division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
+    division_id = fields.Many2one(related='upkeep_id.division_id', string='Division (Employee)', store=True,
+                            help='Define division of employee.')
+    division_location_id = fields.Many2one('stock.location', 'Division (Location)', compute='_compute_block_division',
+                            store=True, domain="[('estate_location', '=', True),('estate_location_level', '=', '2')]",
+                            help='Define division of location.')
     attendance_code_id = fields.Many2one('estate.hr.attendance', 'Attendance', track_visibility='onchange',
                                     help='Any update will reset employee\'s timesheet')
     attendance_code_ratio = fields.Float('Ratio', digits=(4,2), related='attendance_code_id.qty_ratio')
@@ -848,15 +852,16 @@ class UpkeepLabour(models.Model):
     @api.multi
     @api.depends('employee_id')
     def _compute_name(self):
-        # domain = {}
         for record in self:
             record.name = record.employee_id.name
 
-    @api.one
-    def _compute_division(self):
-        """Define location domain while editing record
-        """
-        self.division_id = self.upkeep_id.division_id
+    @api.multi
+    @api.depends('location_id')
+    def _compute_block_division(self):
+        """ Cross team might belong to different division."""
+        for labor in self:
+            if labor.location_id:
+                labor.division_location_id = labor.location_id.get_parent_location('2').id
 
     @api.multi
     @api.depends('attendance_code_id')
@@ -1338,6 +1343,7 @@ class UpkeepMaterial(models.Model):
     upkeep_date = fields.Date(related='upkeep_id.date', string='Date', store=True)
     activity_id = fields.Many2one('estate.activity', 'Activity', domain=[('type', '=', 'normal'), ('activity_type', '=', 'estate')],
                                   help='Any update will reset Block.', track_visibility = 'onchange', required=True)
+    general_account_id = fields.Many2one(related='activity_id.general_account_id', store="True")
     location_id = fields.Many2one('estate.block.template', 'Location',
                                   domain="[('inherit_location_id.location_id', '=', division_id)]")
     activity_uom_id = fields.Many2one('product.uom', 'Unit of Measure', related='activity_id.uom_id',
@@ -1362,7 +1368,10 @@ class UpkeepMaterial(models.Model):
     state = fields.Selection(related='upkeep_id.state', store=True)  # todo ganti dg context
     company_id = fields.Many2one(related='location_id.company_id', store=True, help='Company of location')
     estate_id = fields.Many2one(related='upkeep_id.estate_id', store=True)
-    division_id = fields.Many2one(related='upkeep_id.division_id', store=True)
+    division_id = fields.Many2one(related='upkeep_id.division_id', string='Division (Employee)', store=True)
+    division_location_id = fields.Many2one('stock.location', 'Division (Location)', compute='_compute_block_division',
+                                           store=True, domain="[('estate_location', '=', True),('estate_location_level', '=', '2')]",
+                                           help='Define division of location.')
 
     @api.multi
     @api.depends('product_id')
@@ -1453,6 +1462,13 @@ class UpkeepMaterial(models.Model):
         #     return {
         #         'domain': {'location_id': [('inherit_location_id.location_id', '=', self.upkeep_id.division_id.id)]}
         #     }
+    @api.multi
+    @api.depends('location_id')
+    def _compute_block_division(self):
+        """ Cross team might belong to different division."""
+        for material in self:
+            if material.location_id:
+                material.division_location_id = material.location_id.get_parent_location('2').id
 
     @api.multi
     @api.onchange('activity_id')

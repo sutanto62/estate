@@ -108,116 +108,46 @@ class TestUpkeep(TransactionCase):
             'name': 'Cahyo', 'login': 'cahyo', 'alias_name': 'cahyo', 'email': 'cayho@cahyo.com',
             'groups_id': [(6, 0, [group_agronomy])]})
 
-    def test_00_create_upkeep(self):
-        """ User created upkeep"""
-        val = {
-            'date': datetime.today().strftime(DF),
-            'team_id': self.env.ref('estate.team_syukur').id,
-            'assistant_id': self.env.ref('hr.employee_al').id,
-            'division_id': self.env.ref('stock.stock_nursery').id,
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'unit_amount': 20,
-                }),
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_136').id,
-                    'unit_amount': 10,
-                }),
-            ]
-        }
+        self.upkeep_id = self.Upkeep.sudo(self.estate_user).create(self.upkeep)
 
-        upkeep = self.Upkeep.sudo(self.estate_user).create(val)
-        self.assertTrue(upkeep, 'Estate user could not create upkeep')
+    def test_00_create_upkeep(self):
+        """ Check upkeep created."""
+        self.assertTrue(self.upkeep_id, 'Estate user could not create upkeep')
 
     def test_01_check_date_00_today(self):
-        assistant_id = self.env.ref('hr.employee_al')
-        team_id = self.env.ref('estate.team_syukur')
-        estate_id = self.env.ref('stock.stock_main_estate')
-        division_id = self.env.ref('stock.stock_division_1')
-
-        self.upkeep_val = {
-            'name': 'BKM',
-            'assistant_id': team_id.id,
-            'team_id': assistant_id.id,
-            'date': datetime.today().strftime(DF),
-            'estate_id': estate_id.id,
-            'division_id': division_id.id,
-        }
+        """ Check default maximum day config."""
 
         config = self.env['estate.config.settings'].search([], limit=1)
 
-        # I changed default max day to 3
+        # I changed default max day to 0
         config['default_max_day'] = 0
         self.assertEqual(config['default_max_day'], 0, 'Estate: failed to get config value')
-        self.upkeep_val['max_day'] = config['default_max_day']
+        self.upkeep_id['max_day'] = config['default_max_day']
 
         # I created upkeep record for today
-        upkeep_today = self.Upkeep.create(self.upkeep_val)
-        self.assertTrue(upkeep_today, 'Estate: failed to create upkeep record for today.')
+        self.assertTrue(self.upkeep_id, 'Estate: failed to create upkeep record for today.')
 
-    def test_01_check_date_01_week_late(self):
-        """ Check upkeep date should not less than 3 days """
-        config = self.env['estate.config.settings'].search([], limit=1)
-
-        # I changed default max day to 3
-        config['default_max_day'] = 3
-        self.assertEqual(config['default_max_day'], 3, 'Estate: failed to get config value')
-
-        # I created upkeep record for last week
+        # Check if validation error occur
+        next_week_date = (datetime.today() + relativedelta.relativedelta(days=1)).strftime(DF),
         with self.assertRaises(ValidationError):
-            self.upkeep_val['max_day'] = config['default_max_day']
-            self.upkeep_val['date'] = (datetime.today() + relativedelta.relativedelta(weeks=-1)).strftime(DF)
-            self.Upkeep.create(self.upkeep_val)
-
-    def test_01_check_date_01_week_earlier(self):
-        """ Check upkeep date should not greater than 3 days """
-        config = self.env['estate.config.settings'].search([], limit=1)
-
-        # I changed default max day to 3
-        config['default_max_day'] = 3
-        self.assertEqual(config['default_max_day'], 3, 'Estate: failed to get config value')
-
-        # I created upkeep record for next week
-        with self.assertRaises(ValidationError):
-            self.upkeep_val['max_day'] = config['default_max_day']
-            self.upkeep_val['date'] = (datetime.today() + relativedelta.relativedelta(weeks=1)).strftime(DF)
-            self.Upkeep.create(self.upkeep_val)
+            self.upkeep_id.write({'date': next_week_date})
 
     def test_02_check_activity_line(self):
-        val = {
-            'date': datetime.today().strftime(DF),
-            'team_id': self.env.ref('estate.team_syukur').id,
-            'assistant_id': self.env.ref('hr.employee_al').id,
-            'division_id':self.env.ref('stock.stock_nursery').id,
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'unit_amount': 20,
-                }),
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_136').id,
-                    'unit_amount': 10,
-                }),
-            ]
-        }
+        """ Check validation for upkeep activity."""
 
-        upkeep = self.Upkeep.create(val)
-        self.assertTrue(upkeep, 'Estate: could not create upkeep')
-
-        # Imitate activity more than once
+        # Check if duplicate activities raised validation error
         val_activity = {
             'activity_line_ids': [
                 (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_136').id,
+                    'activity_id': self.env.ref('estate.activity_135').id,
                     'unit_amount': 10,
                 }),
             ]
         }
         with self.assertRaises(ValidationError):
-            upkeep.write(val_activity)
+            self.upkeep_id.write(val_activity)
 
-        # Imitate sum labour quantity greater than unit_amount
+        # Check if sum labour quantity greater than unit_amount raised validation error
         val_labour = {
             'labour_line_ids': [
                 (0, 0, {
@@ -232,25 +162,12 @@ class TestUpkeep(TransactionCase):
                 })
             ]
         }
+
         with self.assertRaises(ValidationError):
-            upkeep.write(val_labour)
+            self.upkeep_id.write(val_labour)
 
     def test_03_check_labour_line(self):
-        """ Check total quantity work result did  not exceed targeted quantity for single activity """
-        val = {
-            'date': datetime.today().strftime(DF),
-            'team_id': self.env.ref('estate.team_syukur').id,
-            'assistant_id': self.env.ref('hr.employee_al').id,
-            'division_id': self.env.ref('stock.stock_nursery').id,
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'unit_amount': 20,
-                })
-            ]
-        }
-
-        upkeep = self.Upkeep.create(val)
+        """ Check upkeep labor validation."""
 
         # Imitate sum labour quantity greater than unit_amount
         val_labour = {
@@ -269,153 +186,79 @@ class TestUpkeep(TransactionCase):
         }
 
         with self.assertRaises(ValidationError):
-            upkeep.write(val_labour)
+            self.upkeep_id.write(val_labour)
 
-    def test_03_compute_activity_contract(self):
-        # Imitate master data activity contract is True
-        self.env.ref('estate.activity_135').write({'contract': True})
-
-        val = {
-            'date': datetime.today().strftime(DF),
-            'team_id': self.env.ref('estate.team_syukur').id,
-            'assistant_id': self.env.ref('hr.employee_al').id,
-            'division_id': self.env.ref('stock.stock_nursery').id,
-            'estate_id': self.env.ref('stock.stock_main_estate').id,
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'contract': True,
-                    'unit_amount': 20,
-                })
-            ],
-            'labour_line_ids': [
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_5').id,
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'quantity': 15
-                }),
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_4').id,
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'quantity': 5
-                })
-            ]
-        }
-        upkeep = self.Upkeep.create(val)
-
-        self.assertTrue(upkeep)
-
-    def test_04_compute_total_labour(self):
-        """ Compute total labour in single upkeep."""
-
-        # I created upkeep with single activity and two labours
-        upkeep = self.Upkeep.create(self.upkeep)
-        for labour in upkeep.labour_line_ids:
-            labour._compute_number_of_day()
-        upkeep._compute_total_labour_line()
-
-        self.assertEqual(upkeep.total_labour, 2, 'Upkeep: total labour was not 2.')
-        self.assertEqual(upkeep.total_number_of_day, 2, 'Upkeep: total number of day was not 2.')
-        self.assertEqual(upkeep.total_overtime, 0, 'Upkeep: total number of day was not 0.')
-        self.assertEqual(upkeep.total_piece_rate, 0, 'Upkeep: total number of day was not 0.')
-
-        # I edit upkeep with more activity and two labours works at these activities
-        val = {
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_136').id,
-                    'unit_amount': 20,
-                })
-            ],
-            'labour_line_ids': [
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_5').id,
-                    'activity_id': self.env.ref('estate.activity_136').id,
-                    'quantity': 10
-                }),
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_4').id,
-                    'activity_id': self.env.ref('estate.activity_136').id,
-                    'quantity': 10
-                })
-            ]
-        }
-
-        upkeep.write(val)
-        upkeep._compute_total_labour_line()
-        self.assertEqual(upkeep.total_labour, 2, 'Total labour returned value is not 2')
-
+    # def test_04_compute_total_labour(self):
+    #     """ Compute total labour in single upkeep."""
+    #
+    #     # I created upkeep with single activity and two labours
+    #     upkeep = self.Upkeep.create(self.upkeep)
+    #     for labour in upkeep.labour_line_ids:
+    #         labour._compute_number_of_day()
+    #     upkeep._compute_total_labour_line()
+    #
+    #     self.assertEqual(upkeep.total_labour, 2, 'Upkeep: total labour was not 2.')
+    #     self.assertEqual(upkeep.total_number_of_day, 2, 'Upkeep: total number of day was not 2.')
+    #     self.assertEqual(upkeep.total_overtime, 0, 'Upkeep: total number of day was not 0.')
+    #     self.assertEqual(upkeep.total_piece_rate, 0, 'Upkeep: total number of day was not 0.')
+    #
+    #     # I edit upkeep with more activity and two labours works at these activities
+    #     val = {
+    #         'activity_line_ids': [
+    #             (0, 0, {
+    #                 'activity_id': self.env.ref('estate.activity_136').id,
+    #                 'unit_amount': 20,
+    #             })
+    #         ],
+    #         'labour_line_ids': [
+    #             (0, 0, {
+    #                 'employee_id': self.env.ref('estate.khl_5').id,
+    #                 'activity_id': self.env.ref('estate.activity_136').id,
+    #                 'quantity': 10
+    #             }),
+    #             (0, 0, {
+    #                 'employee_id': self.env.ref('estate.khl_4').id,
+    #                 'activity_id': self.env.ref('estate.activity_136').id,
+    #                 'quantity': 10
+    #             })
+    #         ]
+    #     }
+    #
+    #     upkeep.write(val)
+    #     upkeep._compute_total_labour_line()
+    #     self.assertEqual(upkeep.total_labour, 2, 'Total labour returned value is not 2')
+    #
     def test_05_confirm_approve_draft_upkeep(self):
-        """ Test confirm, approve and draft button and action on single/multiple upkeeps"""
-
-        val = {
-            'name': 'BKM',
-            'assistant_id': self.team_id.id,
-            'team_id': self.assistant_id.id,
-            'date': datetime.today().strftime(DF),
-            'estate_id': self.estate_id.id,
-            'division_id': self.division_id.id,
-            'activity_line_ids': [
-                (0, 0, {
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'unit_amount': 20,
-                })
-            ],
-            'labour_line_ids': [
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_5').id,
-                    'attendance_code_id': self.att_code_k.id,
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'quantity': 10
-                }),
-                (0, 0, {
-                    'employee_id': self.env.ref('estate.khl_4').id,
-                    'attendance_code_id': self.att_code_k.id,
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'quantity': 10
-                })
-            ],
-            'material_line_ids': [
-                (0, 0, {
-                    'product_id': self.product_sp.id,
-                    'activity_id': self.env.ref('estate.activity_135').id,
-                    'unit_amount': 3
-                })
-            ]
-        }
-
-        user_admin = self.env.ref('base.user_root')
-        user_estate = self.env.ref('estate.estate_user')
-
-        # I created new upkeep
-        upkeep = self.Upkeep.create(self.upkeep)
-        self.assertTrue(upkeep)
+        """ Check action button."""
 
         # It should be in draft state
-        self.assertEqual(upkeep.state, 'draft')
+        self.assertEqual(self.upkeep_id.state, 'draft')
 
         # I pressed confirm button
-        upkeep.button_confirmed()
-        self.assertEqual(upkeep.state, 'confirmed')
+        self.upkeep_id.button_confirmed()
+        self.assertEqual(self.upkeep_id.state, 'confirmed')
 
         # I pressed approve button
-        upkeep.button_approved()
-        self.assertEqual(upkeep.state, 'approved')
+        self.upkeep_id.button_approved()
+        self.assertEqual(self.upkeep_id.state, 'approved')
 
         # I pressed draft button as normal user
         with self.assertRaises(ValidationError):
-            upkeep.sudo(user_estate).draft_selected()
+            self.upkeep_id.sudo(self.estate_user).draft_selected()
 
-        # I imitate base.group_erp_manager
-        upkeep.sudo(user_admin).draft_selected()
-        self.assertEqual(upkeep.state, 'draft')
+        # checked if only user agronomy able to redraft
+        with self.assertRaises(ValidationError):
+            self.upkeep_id.sudo(self.estate_user).draft_selected()
 
-        # Checked labour line
-        for labour in upkeep.labour_line_ids:
+        # checked if user agronomy able to redraft or not
+        self.upkeep_id.sudo(self.estate_agronomy).draft_selected()
+        self.assertEqual(self.upkeep_id.state, 'draft')
+
+        # checked if each labor line state went draft or not
+        for labour in self.upkeep_id.labour_line_ids:
             self.assertEqual(labour.state, 'draft')
 
-        # Checked material line
-        for material in upkeep.material_line_ids:
+        # checked if each material line state went draft or not
+        for material in self.upkeep_id.material_line_ids:
             self.assertEqual(material.state, 'draft')
-
 
