@@ -52,14 +52,16 @@
                      <field name="pr_source" string="REF PP NO" attrs="{'readonly': [('state', '=', 'done')]}"/>
                      <field name="delivery_number" string="DO Reference" attrs="{'readonly': [('state', '=', 'done')]}"/>
                  </xpath>
+                 
                  <xpath expr="//field/tree/field[@name='product_qty']" position="before">
                      <field name="initial_qty" string="Init QTY"/>
-
+					 <field name="purchase_id" invisible="1"/>
                  </xpath>
+                 
                  <xpath expr="//field/tree/field[@name='product_qty']" position="after">
                      <field name="procurment_qty" string="Send QTY"/>
-
                  </xpath>
+                 
                  <xpath expr="//button[@name='do_new_transfer']" position="after">
                      <button name="inherit_do_new_transfer" attrs="{'invisible': [('validation_check_approve','!=',True)]}" string="Validate"  type="object" class="oe_highlight"/>
                  </xpath>
@@ -83,7 +85,7 @@
                      <attribute name="create">false</attribute>
                  </xpath>
                  <xpath expr="//field/tree/field[@name='qty_done']" position="attributes">
-                     <attribute name="attrs">{'readonly':[('assigned_to', '!=', False)]}</attribute>
+                     <attribute name="attrs">{'readonly':[('assigned_to', '!=', False),('purchase_id','!=',False)]}</attribute>
                  </xpath>
                  <xpath expr="//field/tree/button[@name='show_details']" position="attributes">
                      <attribute name="invisible">1</attribute>

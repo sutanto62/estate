@@ -274,7 +274,7 @@ class InheritStockPicking(models.Model):
     validation_manager = fields.Boolean('Validation Manager')
     validation_user = fields.Boolean('Validation User',compute='_check_validation_user')
     validation_check_approve = fields.Boolean('Validation checking approve',compute='_check_validation_manager')
-    validation_procurement = fields.Boolean('Validation Procurement')
+    validation_procurement = fields.Boolean('Validation Procurement',track_visibility='onchange')
     validation_warehouse = fields.Boolean('Validation Warehouse',track_visibility='onchange',default=False)
     description = fields.Text('Description')
     pack_operation_product_ids = fields.One2many('stock.pack.operation', 'picking_id', states={'done': [('readonly', True)], 'cancel': [('readonly', True)]}, domain=[('product_id', '!=', False),('checking_split','=',False)], string='Non pack')
@@ -297,6 +297,11 @@ class InheritStockPicking(models.Model):
     @api.depends('assigned_to')
     def _check_validation_manager(self):
         for item in self:
+            #check if this stock_picking is not from procurement
+            if not item.purchase_id:
+                item.validation_check_approve = True
+                return True
+            
             if item.validation_manager == True:
                 item.validation_check_approve = True if item.assigned_to.id == item._get_user().id  and item.state != 'done' else False
             elif item.validation_manager == True and item.validation_receive and item.state == 'done':
@@ -583,6 +588,10 @@ class InheritStockPicking(models.Model):
 
     @api.multi
     def do_transfer(self):
+        if not self.purchase_id:
+            super(InheritStockPicking,self).do_transfer()
+            return True
+        
         for item in self:
             #search list of pack operation
             pack_operation = item.env['stock.pack.operation'].search([('picking_id','=',self.id)])
@@ -636,6 +645,10 @@ class InheritStockPicking(models.Model):
     @api.multi
     def inherit_do_new_transfer(self):
 #         validation warehouse is check variable if this GRN need to be checked by warehouse
+        if not self.purchase_id:
+            super(InheritStockPicking,self).do_new_transfer()
+            return True
+
         if self.validation_warehouse == True :
             self.write({
                 'assigned_to':self._get_stock_manager(),
@@ -771,9 +784,11 @@ class InheritStockPicking(models.Model):
     @api.constrains('pack_operation_product_ids')
     def _constraint_pack_operation_product_ids(self):
         for item in self:
-            if item._get_user().id != item.requested_by.id and item._get_user().id not in list(item._get_user_procurement_staff()):
-                error_msg = 'You cannot Process this \"%s\" , You are not requester of this PP or You are not Procurement Staff '%(item.complete_name_picking)
-                raise exceptions.ValidationError(error_msg)
+            #check if this stock_picking is not from procurement
+            if item.purchase_id:
+                if item._get_user().id != item.requested_by.id and item._get_user().id not in list(item._get_user_procurement_staff()):
+                    error_msg = 'You cannot Process this \"%s\" , You are not requester of this PP or You are not Procurement Staff '%(item.complete_name_picking)
+                    raise exceptions.ValidationError(error_msg)
 
     #Email Template Code Starts Here
 
@@ -835,11 +850,17 @@ class InheritStockPackOperation(models.Model):
     initial_qty = fields.Float('Initial Qty',readonly=1)
     procurment_qty = fields.Float('Procurement Qty',readonly=1,help="Procurement Received QTY From Vendor")
     assigned_to = fields.Many2one('res.users', 'Approver', compute='_compute_assigned_to')
+    purchase_id = fields.Many2one('purchase.order','Purchase Order', compute='_compute_purchase_id')
     
     @api.multi
     def _compute_assigned_to(self):
         for item in self:
             item.assigned_to = item.picking_id.assigned_to
+            
+    @api.multi
+    def _compute_purchase_id(self):
+        for item in self:
+            item.purchase_id = item.picking_id.purchase_id
     
     @api.multi
     def do_force_donce(self):

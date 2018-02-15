@@ -914,6 +914,11 @@ class StockPicking(models.Model):
         """
         Extend stock transfer wizard to create stock move and lot.
         """
+        #check if this stock_picking is not from nursery
+        if not self.age_seed or self.age_seed <= 0:
+            super(StockPicking, self).do_new_transfer()
+            return True
+        
         self.ensure_one()
         date_done = self.min_date
         arrQtyDone = []
