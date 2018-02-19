@@ -28,6 +28,7 @@
         'data/hr_data.xml',
         'views/hr_indonesia_view.xml',
         'views/supervisorlevel_view.xml',
+        'views/inherited_hr_contract_view.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

@@ -24,6 +24,7 @@
                                 <field name="contract_type"/>
                                 <field name="contract_period"/>
                                 <field name="joindate"/>
+                                <field name="resigndate"/>
                                 <field name="internship"/>
                                 <field name="outsource"/>
                                 <field name="office_level_id"/>

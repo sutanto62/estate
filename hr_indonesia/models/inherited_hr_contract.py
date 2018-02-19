@@ -14,6 +14,14 @@ _logger = logging.getLogger(__name__)
 class Contract(models.Model):
     _inherit = 'hr.contract'
 
+    active = fields.Boolean('Active', default=True, track_visibility='onchange')
+
+    @api.multi
+    def toggle_active(self):
+        """Cascaded employee archive."""
+        for contract in self:
+            super(Contract, contract).toggle_active()
+
     @api.multi
     @api.constrains('date_start', 'date_end')
     def _check_date_start(self):

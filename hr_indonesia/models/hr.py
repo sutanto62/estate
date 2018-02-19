@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, _
-import logging
-
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError, RedirectWarning
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT as DF
+
+import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -52,7 +55,8 @@ class Employee(models.Model):
     outsource = fields.Boolean("Outsource employee", help="Activate to represent employee as Outsource.")
     internship = fields.Boolean("Internship", help="Activate to represent internship employee.")
     age = fields.Float("Employee Age", compute='_compute_age')
-    joindate = fields.Date("Date of Join")
+    joindate = fields.Date("Date of Join", track_visibility='onchange')
+    resigndate = fields.Date("Date of Resign", track_visibility='onchange')
     religion_id = fields.Many2one('hr_indonesia.religion', "Religion")
     ethnic_id = fields.Many2one('hr_indonesia.ethnic', "Ethnic")
     tax_marital_id = fields.Many2one('hr_indonesia.tax_marital', 'Tax Marital')
@@ -124,6 +128,46 @@ class Employee(models.Model):
                     raise ValidationError(error_msg)
 
             return True
+
+    @api.multi
+    @api.constrains('resigndate')
+    def _check_resigndate(self):
+        """ Support scheduled resign date."""
+
+        for employee in self:
+            if employee.joindate and (employee.resigndate < employee.joindate):
+                err_msg = _('%s resign date should not early than %s' % (employee.name, employee.joindate))
+                raise ValidationError(err_msg)
+            elif not employee.joindate:
+                err_msg = _('Set join date before define resign date.')
+                raise ValidationError(err_msg)
+            else:
+                return True
+
+    @api.multi
+    def toggle_active(self):
+        """ Prevent archived without resign date. It archived active related contract."""
+        limit = (datetime.today() + relativedelta(months=2, day=1)).strftime(DF)
+
+        for employee in self:
+            # archive only active employee with resign date, no vice versa
+            if not employee.resigndate and employee.active:
+                err_msg = _('Unable to archive employee without resign date.')
+                raise ValidationError(err_msg)
+
+            # archive after month+1
+            if employee.resigndate < limit:
+                err_msg = _('Unable to archive employee as next month payroll process.')
+                raise ValidationError(err_msg)
+
+
+            # cascaded to active contract only. unarchived employee did not make contract
+            if employee.active:
+                contract_ids = self.env['hr.contract'].search([('employee_id', '=', employee.id),
+                                                               ('active', '=', True)])
+                contract_ids.write({'active': False})
+
+            super(Employee, employee).toggle_active()
 
     @api.multi
     def generate_nik(self, vals):
