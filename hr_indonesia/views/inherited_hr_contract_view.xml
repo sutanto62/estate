@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <!--contract-->
+        <record id="hr_indonesia_inherited_hr_contract_view_form" model="ir.ui.view">
+            <field name="name">hr_indonesia.hr.contract</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}"/>
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <!--<record id="inherited_hr_contract_view_search" model="ir.ui.view">-->
+            <!--<field name="name">Inherited contract view search</field>-->
+            <!--<field name="model">hr.contract</field>-->
+            <!--<field name="inherited_id" ref="hr_contract.hr_contract_view_search"/>-->
+            <!--<field name="arch" type="xml">-->
+                <!--<xpath expr="//filter[@name='to_renew']" position="after">-->
+                    <!--<filter string="Archived" name="inactive" domain="[('active','=',False)]"/>-->
+                <!--</xpath>-->
+            <!--</field>-->
+        <!--</record>-->
+        <record id="inherited_hr_contract_view_search" model="ir.ui.view">
+            <field name="name">Inherited Contract View Search</field>
+            <field name="model">hr.contract</field>
+            <field name="inherit_id" ref="hr_contract.hr_contract_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </xpath>
+            </field>
+        </record>
+        <!--/contract-->
+    </data>
+</openerp>
