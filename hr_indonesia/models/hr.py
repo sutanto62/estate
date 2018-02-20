@@ -135,7 +135,7 @@ class Employee(models.Model):
         """ Support scheduled resign date."""
 
         for employee in self:
-            if employee.joindate and (employee.resigndate < employee.joindate):
+            if employee.joindate and employee.resigndate and (employee.resigndate < employee.joindate):
                 err_msg = _('%s resign date should not early than %s' % (employee.name, employee.joindate))
                 raise ValidationError(err_msg)
             elif not employee.joindate:
