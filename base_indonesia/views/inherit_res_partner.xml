@@ -221,6 +221,119 @@
                </search>
             </field>
         </record>
-
+		<record model="ir.ui.view" id="inherit_res_partner_create_address">
+             <field name="name">Inherit res Partner</field>
+             <field name="model">res.partner</field>
+             <field name="inherit_id" ref="base.view_partner_form"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//templates" position="replace">
+                      <templates>
+		                   <t t-name="kanban-box">
+		                       <t t-set="color" t-value="kanban_color(record.color.raw_value)"/>
+		                       <div t-att-class="color + (record.title.raw_value == 1 ? ' oe_kanban_color_alert' : '') + ' oe_kanban_global_click'">
+		                           <a t-if="!read_only_mode" type="delete" class="fa fa-times pull-right"/>
+		                           <div class="o_kanban_image">
+		                               <img t-if="record.image.raw_value" t-att-src="'data:image/png;base64,'+record.image.raw_value"/>
+		                               <t t-if="!record.image.raw_value">
+		                                   <img t-if="record.type.raw_value === 'delivery'" t-att-src='_s + "/base/static/src/img/truck.png"'/>
+		                                   <img t-if="record.type.raw_value === 'invoice'" t-att-src='_s + "/base/static/src/img/money.png"'/>
+		                                   
+		                                   <!-- inherit to add this selection -->
+		                                   <img t-if="record.type.raw_value === 'identity'" t-att-src='_s + "/base_indonesia/static/src/img/identity.png"'/>
+		                                   <img t-if="record.type.raw_value === 'mailing'" t-att-src='_s + "/base_indonesia/static/src/img/mailing.png"'/>
+		                                   <img t-if="record.type.raw_value === 'work'" t-att-src='_s + "/base_indonesia/static/src/img/work.png"'/>
+		                                   <!-- end of addition -->
+		                                   
+		                                   <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' 
+		                                       &amp;&amp; record.type.raw_value !== 'identity' &amp;&amp; record.type.raw_value !== 'mailing' &amp;&amp; record.type.raw_value !== 'work'">
+		                                       <img t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/src/img/company_image.png"'/>
+		                                       <img t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/src/img/avatar.png"'/>
+		                                   </t>
+		                               </t>
+		                           </div>
+		                           <div class="oe_kanban_details">
+		                               <field name="name"/>
+		                               <div t-if="record.function.raw_value"><field name="function"/></div>
+		                               <div t-if="record.email.raw_value"><field name="email"/></div>
+		                               <div t-if="record.type.raw_value != 'contact'">
+		                                   <div>
+		                                       <field name="zip"/>
+		                                       <field name="city"/>
+		                                   </div>
+		                                   <field t-if="record.state_id.raw_value" name="state_id"/>
+		                                   <field name="country_id"/>
+		                               </div>
+		                               <div t-if="record.phone.raw_value">Phone: <field name="phone"/></div>
+		                               <div t-if="record.mobile.raw_value">Mobile: <field name="mobile"/></div>
+		                               <div t-if="record.fax.raw_value">Fax: <field name="fax"/></div>
+		                           </div>
+		                       </div>
+		                   </t>
+		               </templates>
+                 </xpath>
+             </field>
+		</record>
+		<record model="ir.ui.view" id="inherit_res_partner_kanban_view">
+             <field name="name">Inherit res Partner Kanban</field>
+             <field name="model">res.partner</field>
+             <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+             <field name="arch" type="xml">
+                 <xpath expr="//templates" position="replace">
+                      <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_res_partner_kanban">
+                                <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                                <div class="o_kanban_image">
+                                    <t t-if="record.image.raw_value">
+                                        <img t-att-src="kanban_image('res.partner', 'image_small', record.id.value)"/>
+                                    </t>
+                                    <t t-if="!record.image.raw_value">
+                                        <t t-if="record.type.raw_value === 'delivery'">
+                                            <img t-att-src='_s + "/base/static/src/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                        </t>
+                                        <t t-if="record.type.raw_value === 'invoice'">
+                                            <img t-att-src='_s + "/base/static/src/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                       	</t>
+                                       	
+                                        <t t-if="record.type.raw_value === 'identity'">
+                                            <img t-att-src='_s + "/base_indonesia/static/src/img/identity.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                       	</t>
+                                        <t t-if="record.type.raw_value === 'mailing'">
+                                            <img t-att-src='_s + "/base_indonesia/static/src/img/mailing.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                       	</t>
+                                       	<t t-if="record.type.raw_value === 'work'">
+                                            <img t-att-src='_s + "/base_indonesia/static/src/img/work.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                                       	</t>
+                                       	
+                                        <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' 
+                                            &amp;&amp; record.type.raw_value !== 'identity' &amp;&amp; record.type.raw_value !== 'mailing' &amp;&amp; record.type.raw_value !== 'work'">
+                                            <t t-if="record.is_company.raw_value === true">
+                                                <img t-att-src='_s + "/base/static/src/img/company_image.png"'/>
+                                            </t>
+                                            <t t-if="record.is_company.raw_value === false">
+                                                <img t-att-src='_s + "/base/static/src/img/avatar.png"'/>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong class="oe_partner_heading"><field name="display_name"/></strong>
+                                    <ul>
+                                        <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
+                                        <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
+                                        <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
+                                        <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
+                                        <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
+                                        <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                        <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
+                                    </ul>
+                                    <div class="oe_kanban_partner_links"/>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                 </xpath>
+             </field>
+		</record>
     </data>
 </openerp>

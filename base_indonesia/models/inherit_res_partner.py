@@ -12,6 +12,7 @@ from dateutil.relativedelta import *
 import calendar
 from openerp import tools
 import re
+import threading
 
 
 class InheritResPartner(models.Model):
@@ -59,6 +60,11 @@ class InheritResPartner(models.Model):
     email = fields.Char('Email')
     phone = fields.Char('Phone')
     mobile = fields.Char('Mobile')
+    type = fields.Selection(selection_add=[
+                                           ('identity', 'Identity'),
+                                           ('mailing', 'Mailing'),
+                                           ('work', 'Work')
+                                           ])
 
 
     @api.multi
@@ -173,7 +179,69 @@ class InheritResPartner(models.Model):
         for item in self:
             model = item._name
             return model
-
+        
+    def name_get(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        if isinstance(ids, (int, long)):
+            ids = [ids]
+        res = []
+        for record in self.browse(cr, uid, ids, context=context):
+            name = record.name or ''
+            if record.parent_id and not record.is_company:
+                if not name and record.type in ['invoice', 'delivery', 'other', 'identity', 'mailing', 'work']:
+                    name = dict(self.fields_get(cr, uid, ['type'], context=context)['type']['selection'])[record.type]
+                name = "%s, %s" % (record.parent_name, name)
+            if context.get('show_address_only'):
+                name = self._display_address(cr, uid, record, without_company=True, context=context)
+            if context.get('show_address'):
+                name = name + "\n" + self._display_address(cr, uid, record, without_company=True, context=context)
+            name = name.replace('\n\n','\n')
+            name = name.replace('\n\n','\n')
+            if context.get('show_email') and record.email:
+                name = "%s <%s>" % (name, record.email)
+            if context.get('html_format'):
+                name = name.replace('\n', '<br/>')
+            res.append((record.id, name))
+        return res
+    
+    @api.model
+    def _get_default_image(self, is_company, colorize=False):
+        if getattr(threading.currentThread(), 'testing', False) or self.env.context.get('install_mode'):
+            return False
+ 
+        if self.env.context.get('partner_type') == 'delivery':
+            img_path = openerp.modules.get_module_resource('base', 'static/src/img', 'truck.png')
+        elif self.env.context.get('partner_type') == 'invoice':
+            img_path = openerp.modules.get_module_resource('base', 'static/src/img', 'money.png')
+        elif self.env.context.get('partner_type') == 'identity':
+            img_path = openerp.modules.get_module_resource('base_indonesia', 'static/src/img', 'identity.png')
+        elif self.env.context.get('partner_type') == 'mailing':
+            img_path = openerp.modules.get_module_resource('base_indonesia', 'static/src/img', 'mailing.png')
+        elif self.env.context.get('partner_type') == 'work':
+            img_path = openerp.modules.get_module_resource('base_indonesia', 'static/src/img', 'work.png')
+        else:
+            img_path = openerp.modules.get_module_resource(
+                'base', 'static/src/img', 'company_image.png' if is_company else 'avatar.png')
+        with open(img_path, 'rb') as f:
+            image = f.read()
+ 
+        # colorize user avatars
+        if not is_company and colorize:
+            image = tools.image_colorize(image)
+ 
+        return tools.image_resize_image_big(image.encode('base64'))
+ 
+    @api.model
+    def create(self, vals):
+        vals['image'] = self.with_context(partner_type=vals['type'])._get_default_image(False, False)
+        partner = super(InheritResPartner, self).create(vals)
+        return partner
+    
+    def _get_res_partner_by_type(self, partner_type):
+        res = self.env['res.partner'].search([('parent_id','=',self.id),('type','=',partner_type)], order='id desc')
+        return res[0] if res else False
+        
 class ResPartnerVendorBusinessPermit(models.Model):
 
     _name = 'base.indonesia.vendor.business.permit'
