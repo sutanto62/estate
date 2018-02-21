@@ -1399,6 +1399,20 @@ class SummaryProgressPurchaseRequest(models.Model):
         
         cr.execute("""
             create or replace view v_summary_progress_pp_current as
+            with param_month as (
+                select 
+                    case when (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_month_param') is null 
+                    then date_part('month', now()) else 
+                    (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_month_param')
+                    end
+            ),
+            param_year as (
+                select 
+                    case when (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_year_param') is null 
+                    then date_part('year', now()) else 
+                    (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_year_param')
+                    end 
+            )
             select 
                     dummy.company_name_val company_name,
                     dummy.category_name,
@@ -1454,8 +1468,16 @@ class SummaryProgressPurchaseRequest(models.Model):
                         (
                             select company_name, category_name, code, count(*) total_code from (
                                 select * from v_summary_progress_pp where 
-                                    (pr_month = date_part('month', now())  and pr_year = date_part('year', now()) ) or
-                                    (pr_month < date_part('month', now())  and pr_year = date_part('year', now())  and state = 'po_undone')
+                                    (
+                                        pr_month = (select val from param_month)
+                                        and 
+                                        pr_year = (select val from param_year)
+                                    ) or
+                                    (    
+                                        pr_month < (select val from param_month)
+                                        and 
+                                        pr_year = (select val from param_year)
+                                    )
                             ) summ group by company_name, category_name, code
                         )summ group by company_name, category_name
                     ) by_code 
@@ -1478,18 +1500,30 @@ class SummaryProgressPurchaseRequest(models.Model):
                         (
                             select company_name, category_name, state, count(*) total_state from (
                                 select * from v_summary_progress_pp where 
-                                    (pr_month = date_part('month', now())  and pr_year = date_part('year', now()) ) or
-                                    (pr_month < date_part('month', now())  and pr_year = date_part('year', now())  and state = 'po_undone')
+                                    (pr_month = (select val from param_month)  and pr_year = (select val from param_year) ) or
+                                    (pr_month < (select val from param_month)  and pr_year = (select val from param_year)  and state = 'po_undone')
                             ) summ group by company_name, category_name, state
                         )summ group by company_name, category_name
                     ) by_state on by_code.company_name = by_state.company_name and by_code.category_name = by_state.category_name
-                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name
-                order by
-                    summ.company_name, id;
+                )summ on dummy.company_name = summ.company_name and dummy.category_name = summ.category_name;
         """)
         
         cr.execute("""
             create or replace view v_summary_progress_pp_undone_current as
+                with param_month as (
+                    select 
+                        case when (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_month_param') is null 
+                        then date_part('month', now()) else 
+                        (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_month_param')
+                        end
+                ),
+                param_year as (
+                    select 
+                        case when (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_year_param') is null 
+                        then date_part('year', now()) else 
+                        (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_year_param')
+                        end 
+                )
                 select 
                     row_number() over () idx,
                     dummy.status_pp_undone,
@@ -1518,8 +1552,8 @@ class SummaryProgressPurchaseRequest(models.Model):
                         from 
                             v_summary_progress_pp 
                         where 
-                            ((pr_month = date_part('month', now())  and pr_year = date_part('year', now())) or
-                            (pr_month < date_part('month', now())  and pr_year = date_part('year', now()))) and
+                            ((pr_month = (select val from param_month) and pr_year = (select val from param_year)) or
+                            (pr_month < (select val from param_month) and pr_year = (select val from param_year))) and
                             state = 'po_undone'
                         group by 
                             is_qcf_done,is_spec_not_clear,po_month
@@ -1530,12 +1564,26 @@ class SummaryProgressPurchaseRequest(models.Model):
         
         cr.execute("""
             create or replace view v_summary_progress_pp_report as
+                with param_month as (
+                    select 
+                        case when (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_month_param') is null 
+                        then date_part('month', now()) else 
+                        (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_month_param')
+                        end
+                ),
+                param_year as (
+                    select 
+                        case when (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_year_param') is null 
+                        then date_part('year', now()) else 
+                        (select "value"::integer val from ir_config_parameter where key = 'summary_progress_pp_year_param')
+                        end 
+                )
                 select 
                     row_number() over() id,
                     summ.* 
                 from 
                 (
-                    select '' company_name, '' category_name, 'PP s.d '|| to_char(now(),'dd Mon YYYY') ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
+                    select '' company_name, '' category_name, 'PP s.d Bulan '|| (select val from param_month) || ' Tahun ' || (select val from param_year) ho, null ro, 'PP Final Process' po_done, 'PP on Process' po_undone
                     union all
                     select 'Perusahaan' company_name, 'Kategori' category_name, 'HO' ho, 'SO' ro, '(Done)' po_done, '(Undone)' po_undone
                     union all
@@ -1615,14 +1663,17 @@ class ViewPurchaseTenderLine(models.Model):
                 pr.product_id,
                 pr.product_uom_id,
                 pr.company_id,
-                pr.product_qty,
-                pr.qty_received,
-                pr.qty_outstanding,
+                --pr.product_qty,
+                --pr.qty_received,
+                --pr.qty_outstanding,
+                (case when grn.grn_id is null then pr.product_qty else (case when grn.initial_qty is null then grn.product_qty else grn.initial_qty end)end)::numeric  product_qty,
+                grn.qty_done::double precision qty_received,
+                ((case when grn.initial_qty is null then grn.product_qty else grn.initial_qty end) - grn.qty_done)::double precision qty_outstanding,
                 pr.ordering_date::date ordering_date,
                 pr.is_qcf_done,
                 pr.is_grn_done,
                 pr.is_inv_done,
-                (case when po.po_id is not null then true else false end) is_po_done,
+                (case when po.po_id is not null or pr.state = 'cancel' then true else false end) is_po_done,
                 pr.pic,
                 qcf.qcf_id,
                 po.po_id,
@@ -1720,7 +1771,7 @@ class ViewPurchaseTenderLine(models.Model):
                         pol.partner_id
                        from 
                         purchase_order_line pol inner join 
-                        (select * from purchase_order where state in ('done','purchase')) po
+                        (select * from purchase_order where state in ('done','purchase','received_force_done')) po
                         on pol.order_id = po.id
                     group by
                         po.complete_name,po.requisition_id,pol.product_id,pol.partner_id
@@ -1731,6 +1782,10 @@ class ViewPurchaseTenderLine(models.Model):
                     select 
                          sp.complete_name_picking grn_id,
                          spo.product_id,
+                         spo.qty_done,
+                         spo.procurment_qty,
+                         spo.initial_qty,
+                         spo.product_qty,
                          sp.origin,
                          sp.state,
                          case when sp.state = 'done' then sp.write_date else null end completion_date
@@ -1738,6 +1793,8 @@ class ViewPurchaseTenderLine(models.Model):
                          stock_pack_operation spo 
                          inner join stock_picking sp
                          on spo.picking_id = sp.id
+                    where
+                         product_qty > 0
                 )grn
                 on grn.product_id = po.product_id and grn.origin = po.origin;
         """)
