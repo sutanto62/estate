@@ -8,7 +8,9 @@ class ProductCategoryProcurement(models.Model):
 
     technical_checker = fields.Many2one('res.users', 'Technical Checker')
     code = fields.Char('Naming Code')
+    allowed_company_ids = fields.Many2many('res.company',string='Allowed Company')
     
+    #return the first found technical checker
     def get_technical_checker(self):
         if self.technical_checker:
             return self.technical_checker
@@ -17,6 +19,16 @@ class ProductCategoryProcurement(models.Model):
                 return self.parent_id.get_technical_checker()
             else:
                 return None
+    
+    #return the first found allowed company        
+    def get_allowed_company_ids(self):
+        if self.allowed_company_ids:
+            return self.allowed_company_ids
+        else:
+            if self.parent_id:
+                return self.parent_id.get_allowed_company_ids()
+            else:
+                return False
 
 class ProductCustomFunction(models.Model):
     _name = 'product.custom.function'

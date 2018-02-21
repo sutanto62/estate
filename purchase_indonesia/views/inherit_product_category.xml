@@ -11,6 +11,7 @@
                     <group name="procurement_technical_checker" string="Procurement Setting" colspan="2">
                         <field name="technical_checker"/>
                         <field name="code"/>
+                        <field name="allowed_company_ids" widget="many2many_tags"/>
                     </group>
                 </xpath>
             </field>

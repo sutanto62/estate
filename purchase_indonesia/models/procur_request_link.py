@@ -1193,7 +1193,17 @@ class InheritPurchaseRequest(models.Model):
                 self.type_budget = 'not'
             if item.budget_available > 0:
                 self.type_budget = 'available'
-
+    
+    @api.constrains('company_id')
+    def _constraint_company_id(self):
+        if self.product_category_id:
+            allowed_company_ids = self.product_category_id.get_allowed_company_ids() 
+            if allowed_company_ids:
+                if self.company_id.id not in allowed_company_ids.ids:
+                    comps = ','.join(e.name for e in allowed_company_ids)
+                    error_msg = "Product category \"%s\" is only allowed with \"%s\" not \"%s\"." % (self.product_category_id.name,comps,self.company_id.name)
+                    raise exceptions.ValidationError(error_msg)
+    
     @api.multi
     @api.constrains('line_ids')
     def _constraint_line_ids(self):
