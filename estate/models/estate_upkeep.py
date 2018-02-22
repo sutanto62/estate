@@ -1269,10 +1269,12 @@ class UpkeepLabour(models.Model):
         # planted area required
         if 'location_id' in groupby:
             for line in res:
-                block_obj = self.env['estate.block.template']
-                block_area = line['location_id'][1] + ' (%sha)' % block_obj.browse(line['location_id'][0]).area_planted
-                line['location_id'] = ['', block_area]
-
+                try:
+                    block_obj = self.env['estate.block.template']
+                    block_area = line['location_id'][1] + ' (%sha)' % block_obj.browse(line['location_id'][0]).area_planted
+                    line['location_id'] = ['', block_area]
+                except:
+                    break
         return res
 
     @api.multi
