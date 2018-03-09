@@ -12,6 +12,7 @@ import calendar
 from openerp import tools
 import re
 import itertools
+from dateutil import parser
 
 class InheritPurchaseRequisition(models.Model):
     _inherit = 'purchase.requisition'
@@ -1343,7 +1344,8 @@ class InheritPurchaseRequest(models.Model):
     @api.one
     def send_mail_template(self):
             # Find the e-mail template
-            template = self.env.ref('purchase_indonesia.email_template_purchase_request')
+            # template = self.env.ref('purchase_indonesia.email_template_purchase_request')
+            template = self.env.ref('purchase_indonesia.email_template_purchase_request_new')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
@@ -1367,6 +1369,12 @@ class InheritPurchaseRequest(models.Model):
         for item in self:
             model = item._name
             return model
+
+    def get_formatted_date(self):
+        # Used for converting default date format to dd-Month-YYYY
+        date_pp = parser.parse(self.date_start)
+        return date_pp.strftime('%d %B %Y')
+
 
 class InheritPurchaseRequestLine(models.Model):
 

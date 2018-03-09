@@ -1,0 +1,1199 @@
+<odoo>
+    <!-- New Purchase Request Approval Notification Mail Templates -->
+    <data noupdate="0">
+        <record id="email_template_purchase_request_new" model="mail.template">
+          <field name="name">Email Template Purchase Request</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] PR Approval ${object.complete_name}</field>
+          <field name="email_to">${object.assigned_to.partner_id.email}</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_request.model_purchase_request"/>
+          <field name="auto_delete" eval="True"/>
+          <field name="body_html">
+                <![CDATA[
+                <style>
+                    input[type="submit"]{
+                        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                        box-sizing: border-box;
+                        font-size: 14px;
+                        text-decoration: none;
+                        color: #FFF;
+                        line-height: 2;
+                        font-weight: bold;
+                        text-align: center;
+                        cursor: pointer;
+                        display: inline-block;
+                        border-radius: 5px;
+                        text-transform: capitalize;
+                        background-color: #348eda;
+                        margin: 0;
+                        padding: 0;
+                        border-color: #348eda;
+                        border-style: solid;
+                        border-width: 10px 20px;
+                    }
+                </style>
+                <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                    <tr>
+                        <td >
+                            <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;border: 1px solid #cccccc;margin-top: 30px; margin-bottom: 30px">
+                                <tr>
+                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 30px; padding-bottom: 0; color: #153643; font-family: Arial, sans-serif;color: white">
+                                        <table cellspacing="0" cellpadding="0" width="100%" border="0" style="padding-left: 20px; padding-right: 20px;">
+                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; color: white">
+	                                            <b>Purchase Request Approval</b>
+                                            </td>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 0;padding-bottom: 25px;color: #153643; font-family: Arial, sans-serif;color: white">
+                                        <table cellspacing="0" cellpadding="0" width="100%" border="0"  style="padding-left: 20px; padding-right: 20px;">
+                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 26px; color: white;">
+	                                            <b>${(object.complete_name)}</b>
+                                            </td>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                   <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;">
+                                        <table border="0" cellspacing="0" cellspacing="0" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px;">
+                                            <tr>
+                                                <td>
+                                                    Dear <font style="font-weight: bold;">${(object.assigned_to.name)}</font>,
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 20px;">
+                                                    <p>There is one new Purchase Request (PP) for your approval:</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table border="0" cellspacing="0" cellpadding="0" width="100%" style="font-family: Arial, sans-serif;font-size: 14px;">
+                                                        <tr>
+                                                            <td>Requester PP</td>
+                                                            <td>:</td>
+                                                            <td>${(object.requested_by.name)}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Request Date</td>
+                                                            <td>:</td>
+                                                            <td>${(object.get_formatted_date())}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Purchase Type</td>
+                                                            <td>:</td>
+                                                            <td>${(object.type_purchase.name)}</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" style="width: 100%;border-bottom: 1px solid black;padding-top: 10px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;width: 40%">Product</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Quantity</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">UOM</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Est Price</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Total Price</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            % for item in object.line_ids:
+                                                            <tr style="text-align: center;line-height: 1;">
+                                                                <td style="text-align: left;padding-top: 5px;padding-bottom: 5px;">
+                                                                    ${(item.product_id.name)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;">
+                                                                    ${(item.product_qty)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;">
+                                                                    ${(item.product_uom_id.name)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;text-align: right;">
+                                                                    ${(item.price_per_product)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;text-align: right;">
+                                                                    ${(item.total_price)}
+                                                                </td>
+                                                            </tr>
+                                                            % endfor
+                                                            <tr style="line-height: 1;">
+                                                                <td style="border-top: 1px solid black;padding-top: 5px;padding-bottom: 5px;"></td>
+                                                                <td style="border-top: 1px solid black;padding-top: 5px;padding-bottom: 5px;"></td>
+                                                                <td style="border-top: 1px solid black;padding-top: 5px;padding-bottom: 5px;"></td>
+                                                                <td style="border-top: 1px solid black;font-weight: bold;text-align: center;padding-top: 5px;padding-bottom: 5px;">Total</td>
+                                                                <td style="border-top: 1px solid black;font-weight: bold;text-align: right;padding-top: 5px;padding-bottom: 5px;">${(object.total_estimate_price)}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>To proceed your approval, please click at the button below.</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    <a style="font-size: 14px; text-decoration: none; color: #FFF; line-height: 1; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #1E90FF; margin: 0; padding: 0; border-color: #1E90FF; border-style: solid; border-width: 10px 20px;"
+                                                        href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">
+                                                        APPROVE PP
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 40px;padding-bottom: 30px;">
+                                                    Regards,<br/><br/>
+                                                    ${(object.company_id.name)}
+                                                </td>
+                                            </tr>
+                                            <!-- Footer -->
+                                            <tr>
+                                                <td style="font-size:12px;font-style: italic;border-top: 1px solid #f2eeed;padding-top: 20px;padding-bottom: 20px;">
+                                                    <ul style="color:#808080;padding: 0px 20px 0px 30px">
+                                                        <li>
+                                                            This email is for notification purpose only. If you want to check this document details, please login to your Palma Group ERP account.
+                                                        </li>
+                                                        <li>
+                                                            If you have trouble accessing or login to Palma Group ERP, please contact ICT Department.
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                   </td>
+                                </tr>
+                                <tr>
+                                    <td bgcolor="#FFFFFF">
+                                        <table cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif; line-height: 20px;text-align: center;border-top: 1px solid #f2eeed;">
+                                            <tr>
+                                                <td width="100%" style="font-size:14px;">
+                                                    <img src="https://www.google.com/a/palmagroup.co.id/images/logo.gif" alt="Palma Group Logo" width="143px" height="59px" border="0" style="display: block;margin-left: auto;margin-right: auto;" />
+                                                    <p style="font-size: 11px;">Gd. Graha Arda Lt 8, Jl. HR. Rasuna Said Kav B6 Setiabudi, 	Kuningan - Jakarta Selatan 12910. <br/> Telp. 021-5220335</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td bgcolor="#1E90FF" style="height: 15px"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                ]]>
+          </field>
+        </record>
+    </data>
+
+    <!-- Purchase Request Full Approve Notification Mail Template-->
+    <!-- !change name to _new-->
+    <data noupdate="0">
+        <record id="email_template_new_purchase_tender_new" model="mail.template">
+          <field name="name">Email Template New Purchase Tender</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] PR Full Approve ${object.request_id.complete_name}</field>
+          <field name="email_to">mery@palmagroup.co.id,procurement.ho@palmagroup.co.id,dedy.iswandi@palmagroup.co.id</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_requisition.model_purchase_requisition"/>
+          <field name="auto_delete" eval="True"/>
+            <field name="body_html">
+                <![CDATA[
+                <style>
+                    input[type="submit"]{
+                        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                        box-sizing: border-box;
+                        font-size: 14px;
+                        text-decoration: none;
+                        color: #FFF;
+                        line-height: 2;
+                        font-weight: bold;
+                        text-align: center;
+                        cursor: pointer;
+                        display: inline-block;
+                        border-radius: 5px;
+                        text-transform: capitalize;
+                        background-color: #348eda;
+                        margin: 0;
+                        padding: 0;
+                        border-color: #348eda;
+                        border-style: solid;
+                        border-width: 10px 20px;
+                    }
+                </style>
+                <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                    <tr>
+                        <td >
+                            <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;border: 1px solid #cccccc;margin-top: 30px; margin-bottom: 30px">
+                                <tr>
+                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 30px; padding-bottom: 0; color: #153643; font-family: Arial, sans-serif;color: white">
+                                        <table cellspacing="0" cellpadding="0" width="100%" border="0" style="padding-left: 20px; padding-right: 20px;">
+                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; color: white">
+	                                            <b>Purchase Request Full Approve</b>
+                                            </td>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 0;padding-bottom: 25px;color: #153643; font-family: Arial, sans-serif;color: white">
+                                        <table cellspacing="0" cellpadding="0" width="100%" border="0"  style="padding-left: 20px; padding-right: 20px;">
+                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 26px; color: white;">
+                                                <b>${(object.request_id.complete_name)}</b>
+                                            </td>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                   <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;">
+                                        <table border="0" cellspacing="0" cellspacing="0" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px;">
+                                            <tr>
+                                                <td>
+                                                    Dear <font style="font-weight: bold;">Procurement</font>,
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 20px;">
+                                                    <p>There is one new Full Approved Purchase Request (PP):</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table border="0" cellspacing="0" cellpadding="0" width="100%" style="font-family: Arial, sans-serif;font-size: 14px;">
+                                                        <tr>
+                                                            <td>PP Number</td>
+                                                            <td>:</td>
+                                                            <td>
+                                                                <a style="text-decoration: none;" href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.request_id.id)}&view_type=form&model=purchase.request" target="self">
+                                                                    ${(object.request_id.complete_name)}
+                                                                </a>
+                                                                <span style="background-color: red;border:3px solid red;font-weight: bold; color: #ffffff;padding: 2px;text-align: center;border-radius: 5px;font-size: 11px;">
+                                                                    % if object.request_id.type_purchase.name:
+                                                                        ${(object.request_id.type_purchase.name)}
+                                                                    % endif
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Requester PP</td>
+                                                            <td>:</td>
+                                                            <td>${(object.request_id.requested_by.name)}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Request Date</td>
+                                                            <td>:</td>
+                                                            <td>${(object.request_id.get_formatted_date())}</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" style="width: 100%;border-bottom: 1px solid black;padding-top: 10px;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;width: 40%">Product</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Quantity</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">UOM</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Est Price</th>
+                                                                <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Total Price</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            % for item in object.request_id.line_ids:
+                                                            <tr style="text-align: center;line-height: 1;">
+                                                                <td style="text-align: left;padding-top: 5px;padding-bottom: 5px;">
+                                                                    ${(item.product_id.name)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;">
+                                                                    ${(item.product_qty)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;">
+                                                                    ${(item.product_uom_id.name)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;text-align: right;">
+                                                                    ${(item.price_per_product)}
+                                                                </td>
+                                                                <td style="padding-top: 5px;padding-bottom: 5px;text-align: right;">
+                                                                    ${(item.total_price)}
+                                                                </td>
+                                                            </tr>
+                                                            % endfor
+                                                            <tr style="line-height: 1;">
+                                                                <td style="border-top: 1px solid black;padding-top: 5px;padding-bottom: 5px;"></td>
+                                                                <td style="border-top: 1px solid black;padding-top: 5px;padding-bottom: 5px;"></td>
+                                                                <td style="border-top: 1px solid black;padding-top: 5px;padding-bottom: 5px;"></td>
+                                                                <td style="border-top: 1px solid black;font-weight: bold;text-align: center;padding-top: 5px;padding-bottom: 5px;">Total</td>
+                                                                <td style="border-top: 1px solid black;font-weight: bold;text-align: right;padding-top: 5px;padding-bottom: 5px;">${(object.request_id.total_estimate_price)}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>To proceed your tender, please click at the button below.</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="text-align: center;">
+                                                    <a style="font-size: 14px; text-decoration: none; color: #FFF; line-height: 1; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #1E90FF; margin: 0; padding: 0; border-color: #1E90FF; border-style: solid; border-width: 10px 20px;"
+                                                        href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">
+                                                        Open Tender
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 40px;padding-bottom: 30px;">
+                                                    Regards,<br/><br/>
+                                                    ${(object.company_id.name)}
+                                                </td>
+                                            </tr>
+                                            <!-- Footer -->
+                                            <tr>
+                                                <td style="font-size:12px;font-style: italic;border-top: 1px solid #f2eeed;padding-top: 20px;padding-bottom: 20px;">
+                                                    <ul style="color:#808080;padding: 0px 20px 0px 30px">
+                                                        <li>
+                                                            This email is for notification purpose only. If you want to check this document details, please login to your Palma Group ERP account.
+                                                        </li>
+                                                        <li>
+                                                            If you have trouble accessing or login to Palma Group ERP, please contact ICT Department.
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                   </td>
+                                </tr>
+                                <tr>
+                                    <td bgcolor="#FFFFFF">
+                                        <table cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif; line-height: 20px;text-align: center;border-top: 1px solid #f2eeed;">
+                                            <tr>
+                                                <td width="100%" style="font-size:14px;">
+                                                    <img src="https://www.google.com/a/palmagroup.co.id/images/logo.gif" alt="Palma Group Logo" width="143px" height="59px" border="0" style="display: block;margin-left: auto;margin-right: auto;" />
+                                                    <p style="font-size: 11px;">Gd. Graha Arda Lt 8, Jl. HR. Rasuna Said Kav B6 Setiabudi, 	Kuningan - Jakarta Selatan 12910. <br/> Telp. 021-5220335</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td bgcolor="#1E90FF" style="height: 15px"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            ]]>
+            </field>
+       </record>
+    </data>
+
+    <!-- New GRN/SRN Approval Notification Mail Templates For Manager -->
+    <data noupdate="0">
+        <record id="email_template_stock_picking_new" model="mail.template">
+          <field name="name">Email Template Stock Picking</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] GRN / SRN Approval ${object.complete_name_picking}</field>
+          <field name="email_to">${object.assigned_to.partner_id.email}</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="stock.model_stock_picking"/>
+          <field name="auto_delete" eval="True"/>
+          <field name="body_html">
+                <![CDATA[
+              <style>
+                 input[type="submit"]{
+                        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                        box-sizing: border-box;
+                        font-size: 14px;
+                        text-decoration: none;
+                        color: #FFF;
+                        line-height: 2;
+                        font-weight: bold;
+                        text-align: center;
+                        cursor: pointer;
+                        display: inline-block;
+                        border-radius: 5px;
+                        text-transform: capitalize;
+                        background-color: #348eda;
+                        margin: 0;
+                        padding: 0;
+                        border-color: #348eda;
+                        border-style: solid;
+                        border-width: 10px 20px;
+                    }
+                </style>
+              	<table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                    <tr>
+                        <td >
+                            <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;border: 1px solid #cccccc;margin-top: 30px; margin-bottom: 30px">
+                                <tr>
+                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 30px; padding-bottom: 0; color: #153643; font-family: Arial, sans-serif;color: white">
+                                        <table cellspacing="0" cellpadding="0" width="100%" border="0" style="padding-left: 20px; padding-right: 20px;">
+                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; color: white">
+                                                <b>GRN / SRN Approval</b>
+                                            </td>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 0;padding-bottom: 25px;color: #153643; font-family: Arial, sans-serif;color: white">
+                                        <table cellspacing="0" cellpadding="0" width="100%" border="0"  style="padding-left: 20px; padding-right: 20px;">
+                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 26px; color: white;">
+                                                <b>${object.complete_name_picking}</b>
+                                            </td>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                   <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;">
+                                        <table border="0" cellspacing="0" cellspacing="0" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px;">
+                                            <tr>
+                                                <td>
+                                                    Dear <font style="font-weight: bold;">${(object.assigned_to.name)}</font>,
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 20px;">
+                                                    <p>There is one new GRN/SRN for your approval:</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table align="center" border="0" cellspacing="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;font-size: 14px">
+                                                        <tr>
+                                                            <td>PP Number</td>
+                                                            <td>:</td>
+                                                            <td>
+                                                                <a style="text-decoration: none;"
+                                                                    href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.purchase_id.request_id.id)}&view_type=form&model=purchase.request" target="self">
+                                                                    ${object.pr_source}
+                                                                </a>
+                                                                <span style="background-color: red;border:3px solid red;font-weight: bold; color: #ffffff;padding: 2px;text-align: center;border-radius: 5px;font-size: 11px;">
+                                                                    % if object.purchase_id.request_id.type_purchase.name:
+                                                                        ${(object.purchase_id.request_id.type_purchase.name)}
+                                                                    % endif
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>PO Number</td>
+                                                            <td>:</td>
+                                                            <td>
+                                                                <a style="text-decoration: none;"
+                                                                    href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.purchase_id.id)}&view_type=form&model=purchase.order" target="self">
+                                                                    ${(object.purchase_order_name)}
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Shipper By</td>
+                                                            <td>:</td>
+                                                            <td>${(object.shipper_by)}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>Requester PP</td>
+                                                            <td>:</td>
+                                                            <td>${(object.requested_by.name)}</td>
+                                                        </tr>
+                                                        % if object.backorder_id.complete_name_picking:
+                                                            <tr>
+                                                                <td>GRN Parent</td>
+                                                                <td>:</td>
+                                                                <a style="text-decoration: none;"
+                                                                    href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.backorder_id.id)}&view_type=form&model=stock.picking" target="self">
+                                                                        ${(object.backorder_id.complete_name_picking)}
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        % endif
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <table cellpadding="0" cellspacing="0" style="width: 100%;border-bottom: 1px solid black;padding-top: 10px;">
+                                                        <thead>
+                                                            <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;width: 50%">Product</th>
+                                                            <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">UOM</th>
+                                                            <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Send</th>
+                                                            <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Done</th>
+                                                        </thead>
+                                                        <tbody>
+                                                            % for stock in object.pack_operation_product_ids:
+                                                            <tr style="text-align: center;">
+                                                                <td style="text-align: left;">
+                                                                    ${stock.product_id.name_template}
+                                                                </td>
+                                                                <td>
+                                                                    ${stock.product_uom_id.name}
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                    ${stock.procurment_qty}
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                    ${stock.qty_done}
+                                                                </td>
+                                                            </tr>
+                                                            % endfor
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <p>To proceed your approval, please click at the button below.</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center">
+                                                    <a style="font-size: 14px; text-decoration: none; color: #FFF; line-height: 1; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #1E90FF; margin: 0; padding: 0; border-color: #1E90FF; border-style: solid; border-width: 10px 20px;"
+                                                        href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">
+                                                        Approve GRN/SRN
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding-top: 40px;padding-bottom: 30px;">
+                                                    Regards,<br/><br/>
+                                                    ${object.company_id.name}
+                                                </td>
+                                            </tr>
+                                            <!-- Footer -->
+                                            <tr>
+                                                <td style="font-size:12px;font-style: italic;border-top: 1px solid #f2eeed;padding-top: 20px;padding-bottom: 20px;">
+                                                    <ul style="color:#808080;padding: 0px 20px 0px 30px">
+                                                        <li>
+                                                            This email is for notification purpose only. If you want to check this document details, please login to your Palma Group ERP account.
+                                                        </li>
+                                                        <li>
+                                                            If you have trouble accessing or login to Palma Group ERP, please contact ICT Department.
+                                                        </li>
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                   </td>
+                                </tr>
+                                <tr>
+                                    <td bgcolor="#FFFFFF">
+                                        <table cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif; line-height: 20px;text-align: center;border-top: 1px solid #f2eeed;">
+                                            <tr>
+                                                <td width="100%" style="font-size:14px;">
+                                                    <img src="https://www.google.com/a/palmagroup.co.id/images/logo.gif" alt="Palma Group Logo" width="143px" height="59px" border="0" style="display: block;margin-left: auto;margin-right: auto;" />
+                                                    <p style="font-size: 11px;">Gd. Graha Arda Lt 8, Jl. HR. Rasuna Said Kav B6 Setiabudi, 	Kuningan - Jakarta Selatan 12910. <br/> Telp. 021-5220335</p>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td bgcolor="#1E90FF" style="height: 15px"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            ]]>
+          </field>
+       </record>
+    </data>
+
+    <!-- New GRN/SRN Approval Notification Mail Templates For User -->
+    <data noupdate="0">
+        <record id="email_template_stock_picking_2_new" model="mail.template">
+          <field name="name">Email Template Stock Picking User</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] GRN / SRN Approval ${object.complete_name_picking}</field>
+          <field name="email_to">${object.requested_by.partner_id.email}</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="stock.model_stock_picking"/>
+          <field name="auto_delete" eval="True"/>
+	        <field name="body_html">
+            <![CDATA[
+	        <style>
+             input[type="submit"]{
+	         		font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+	         		box-sizing: border-box;
+	         		font-size: 14px;
+	         		text-decoration: none;
+	         		color: #FFF;
+	         		line-height: 2;
+	         		font-weight: bold;
+	         		text-align: center;
+	         		cursor: pointer;
+	         		display: inline-block;
+	         		border-radius: 5px;
+	         		text-transform: capitalize;
+	         		background-color: #348eda;
+	         		margin: 0;
+	         		padding: 0;
+	         		border-color: #348eda;
+	         		border-style: solid;
+	         		border-width: 10px 20px;
+	         	}
+            </style>
+            <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                <tr>
+                    <td >
+                        <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;border: 1px solid #cccccc;margin-top: 30px; margin-bottom: 30px">
+                            <tr>
+                                <td align="center" bgcolor="#1E90FF" style="padding-top: 30px; padding-bottom: 0; color: #153643; font-family: Arial, sans-serif;color: white">
+                                    <table cellspacing="0" cellpadding="0" width="100%" border="0" style="padding-left: 20px; padding-right: 20px;">
+                                        <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; color: white">
+                                            <b>GRN / SRN Approval</b>
+                                        </td>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" bgcolor="#1E90FF" style="padding-top: 0;padding-bottom: 25px;color: #153643; font-family: Arial, sans-serif;color: white">
+                                    <table cellspacing="0" cellpadding="0" width="100%" border="0"  style="padding-left: 20px; padding-right: 20px;">
+                                        <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 26px; color: white;">
+                                            <b>${object.complete_name_picking}</b>
+                                        </td>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                               <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;">
+                                    <table border="0" cellspacing="0" cellspacing="0" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px;">
+                                        <tr>
+                                            <td>
+                                                Dear <font style="font-weight: bold;">${(object.requested_by.name)}</font>,
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-top: 20px;">
+                                                <p>There is one new GRN/SRN for your approval:</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table align="center" border="0" cellspacing="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;font-size: 14px">
+                                                    <tr>
+                                                        <td>PP Number</td>
+                                                        <td>:</td>
+                                                        <td>
+                                                            <a style="text-decoration: none;"
+                                                                href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.purchase_id.request_id.id)}&view_type=form&model=purchase.request" target="self">
+                                                                ${object.pr_source}
+                                                            </a>
+                                                            <span style="background-color: red;border:3px solid red;font-weight: bold; color: #ffffff;padding: 2px;text-align: center;border-radius: 5px;font-size: 11px;">
+                                                                % if object.purchase_id.request_id.type_purchase.name:
+                                                                    ${(object.purchase_id.request_id.type_purchase.name)}
+                                                                % endif
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>PO Number</td>
+                                                        <td>:</td>
+                                                        <td>
+                                                            <a style="text-decoration: none;"
+                                                                href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.purchase_id.id)}&view_type=form&model=purchase.order" target="self">
+                                                                ${(object.purchase_order_name)}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Shipper By</td>
+                                                        <td>:</td>
+                                                        <td>${(object.shipper_by)}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Requester PP</td>
+                                                        <td>:</td>
+                                                        <td>${(object.requested_by.name)}</td>
+                                                    </tr>
+                                                    % if object.backorder_id.complete_name_picking:
+                                                        <tr>
+                                                            <td>GRN Parent</td>
+                                                            <td>:</td>
+                                                            <a style="text-decoration: none;"
+                                                                href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.backorder_id.id)}&view_type=form&model=stock.picking" target="self">
+                                                                    ${(object.backorder_id.complete_name_picking)}
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    % endif
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table cellpadding="0" cellspacing="0" style="width: 100%;border-bottom: 1px solid black;padding-top: 10px;">
+                                                    <thead>
+                                                        <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;width: 50%">Product</th>
+                                                        <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">UOM</th>
+                                                        <th style="line-height: 1;padding-top: 5px;padding-bottom: 5px;border-bottom: 1px solid black;border-top: 1px solid black;">Send</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        % for stock in object.pack_operation_product_ids:
+                                                        <tr style="text-align: center;">
+                                                            <td style="text-align: left;">
+                                                                ${stock.product_id.name_template}
+                                                            </td>
+                                                            <td>
+                                                                ${stock.product_uom_id.name}
+                                                            </td>
+                                                            <td style="text-align: right;">
+                                                                ${stock.procurment_qty}
+                                                            </td>
+                                                        </tr>
+                                                        % endfor
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <p>To proceed your approval, please click at the button below.</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center">
+                                                <a style="font-size: 14px; text-decoration: none; color: #FFF; line-height: 1; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #1E90FF; margin: 0; padding: 0; border-color: #1E90FF; border-style: solid; border-width: 10px 20px;"
+                                                    href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">
+                                                    Approve GRN/SRN
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-top: 40px;padding-bottom: 30px;">
+                                                Regards,<br/><br/>
+                                                ${object.company_id.name}
+                                            </td>
+                                        </tr>
+                                        <!-- Footer -->
+                                        <tr>
+                                            <td style="font-size:12px;font-style: italic;border-top: 1px solid #f2eeed;padding-top: 20px;padding-bottom: 20px;">
+                                                <ul style="color:#808080;padding: 0px 20px 0px 30px">
+                                                    <li>
+                                                        This email is for notification purpose only. If you want to check this document details, please login to your Palma Group ERP account.
+                                                    </li>
+                                                    <li>
+                                                        If you have trouble accessing or login to Palma Group ERP, please contact ICT Department.
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    </table>
+                               </td>
+                            </tr>
+                            <tr>
+                                <td bgcolor="#FFFFFF">
+                                    <table cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif; line-height: 20px;text-align: center;border-top: 1px solid #f2eeed;">
+                                        <tr>
+                                            <td width="100%" style="font-size:14px;">
+                                                <img src="https://www.google.com/a/palmagroup.co.id/images/logo.gif" alt="Palma Group Logo" width="143px" height="59px" border="0" style="display: block;margin-left: auto;margin-right: auto;" />
+                                                <p style="font-size: 11px;">Gd. Graha Arda Lt 8, Jl. HR. Rasuna Said Kav B6 Setiabudi, 	Kuningan - Jakarta Selatan 12910. <br/> Telp. 021-5220335</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td bgcolor="#1E90FF" style="height: 15px"></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+	        ]]>
+	        </field>
+       </record>
+    </data>
+
+    <!-- New QCF Approval Notification Mail Templates -->
+    <data noupdate="0">
+        <record id="email_template_purchase_quotation_comparison_new" model="mail.template">
+          <field name="name">Email Template Quotation Comparison Form</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] QCF Approval ${object.complete_name}</field>
+          <field name="email_to">${object.assign_to.partner_id.email}</field>
+		  <field name="email_cc">procurement.ho@palmagroup.co.id</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_indonesia.model_quotation_comparison_form"/>
+          <field name="auto_delete" eval="True"/>
+          <field name="body_html">
+              <![CDATA[
+                    <style>
+                      input[type="submit"]{
+                          font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                          box-sizing: border-box;
+                          font-size: 14px;
+                          text-decoration: none;
+                          color: #FFF;
+                          line-height: 2;
+                          font-weight: bold;
+                          text-align: center;
+                          cursor: pointer;
+                          display: inline-block;
+                          border-radius: 5px;
+                          text-transform: capitalize;
+                          background-color: #348eda;
+                          margin: 0;
+                          padding: 0;
+                          border-color: #348eda;
+                          border-style: solid;
+                          border-width: 10px 20px;
+                      }
+                    </style>
+                    <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                        <tr>
+                            <td >
+                                <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                                    <!--Header-->
+                                    <tr>
+                                        <td >
+                                            <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;border: 1px solid #cccccc;margin-top: 30px; margin-bottom: 30px">
+                                                <tr>
+                                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 30px; padding-bottom: 0; color: #153643; font-family: Arial, sans-serif;color: white">
+                                                        <table cellspacing="0" cellpadding="0" width="100%" border="0" style="padding-left: 20px; padding-right: 20px;">
+                                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; color: white">
+                                                                <b>QCF Approval</b>
+                                                            </td>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 0;padding-bottom: 25px;color: #153643; font-family: Arial, sans-serif;color: white">
+                                                        <table cellspacing="0" cellpadding="0" width="100%" border="0"  style="padding-left: 20px; padding-right: 20px;">
+                                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 26px; color: white;">
+                                                                <b>${(object.complete_name)}</b>
+                                                            </td>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <!-- Content -->
+                                                <tr>
+                                                   <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;">
+                                                        <table border="0" cellspacing="0" cellspacing="0" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px;">
+                                                            <tr>
+                                                                <td>
+                                                                    Dear <font style="font-weight: bold;">${(object.assign_to.name)}</font>,
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 20px;">
+                                                                    <p>There is one new Quotation Comparison Form (QCF) for your approval:</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table align="center" border="0" cellspacing="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;font-size: 14px">
+                                                                        <tr>
+                                                                            <td style="width: 20%;">PP Number</td>
+                                                                            <td>:</td>
+                                                                            <td>
+                                                                                <a style="text-decoration: none;"
+                                                                                    href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.requisition_id.request_id.id)}&view_type=form&model=purchase.request" target="self">
+                                                                                    ${(object.requisition_id.request_id.complete_name)}
+                                                                                </a>
+                                                                                <span style="background-color: red;border:3px solid red;font-weight: bold; color: #ffffff;padding: 2px;text-align: center;border-radius: 5px;font-size: 11px;">
+                                                                                    % if object.requisition_id.request_id.type_purchase.name:
+                                                                                        ${(object.requisition_id.request_id.type_purchase.name)}
+                                                                                    % endif
+                                                                                </span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;"></td>
+                                                                            <td></td>
+                                                                            <td>
+                                                                                <p style="font-style: italic;color: #696969;font-size:12px;">${(object.requisition_id.first_product_name)}</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;">PP Date</td>
+                                                                            <td>:</td>
+                                                                            <td>
+                                                                                <span>${(object.requisition_id.request_id.get_formatted_date())}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;">PIC</td>
+                                                                            <td>:</td>
+                                                                            <td>${(object.pic_id.name)}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;">Requested By</td>
+                                                                            <td>:</td>
+                                                                            <td>${(object.requisition_id.request_id.requested_by.name)}</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <p>To proceed your approval, please click at the button below.</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <a style="font-size: 14px; text-decoration: none; color: #FFF; line-height: 1; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #1E90FF; margin: 0; padding: 0; border-color: #1E90FF; border-style: solid; border-width: 10px 20px;"
+                                                                        href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">
+                                                                        APPROVE QCF
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 40px;padding-bottom: 30px;">
+                                                                    Regards,<br/><br/>
+                                                                    ${object.company_id.name}
+                                                                </td>
+                                                            </tr>
+                                                            <!-- Footer -->
+                                                            <tr>
+                                                                <td style="font-size:12px;font-style: italic;border-top: 1px solid #f2eeed;padding-top: 20px;padding-bottom: 20px;">
+                                                                    <ul style="color:#808080;padding: 0px 20px 0px 30px">
+                                                                        <li>
+                                                                            This email is for notification purpose only. If you want to check this document details, please login to your Palma Group ERP account.
+                                                                        </li>
+                                                                        <li>
+                                                                            If you have trouble accessing or login to Palma Group ERP, please contact ICT Department.
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                    <td bgcolor="#FFFFFF">
+                                                        <table cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif; line-height: 20px;text-align: center;border-top: 1px solid #f2eeed;">
+                                                            <tr>
+                                                                <td width="100%" style="font-size:14px;">
+                                                                    <img src="https://www.google.com/a/palmagroup.co.id/images/logo.gif" alt="Palma Group Logo" width="143px" height="59px" border="0" style="display: block;margin-left: auto;margin-right: auto;" />
+                                                                    <p style="font-size: 11px;">Gd. Graha Arda Lt 8, Jl. HR. Rasuna Said Kav B6 Setiabudi, 	Kuningan - Jakarta Selatan 12910. <br/> Telp. 021-5220335</p>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td bgcolor="#1E90FF" style="height: 15px"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+              ]]>
+          </field>
+       </record>
+    </data>
+
+    <!-- New QCF Redraft Approval Notification Mail Templates -->
+    <data noupdate="0">
+        <record id="email_template_purchase_quotation_comparison_draft_new" model="mail.template">
+          <field name="name">Email Template Quotation Comparison Form Draft</field>
+          <field name="email_from">admin@palmagroup.co.id</field>
+          <field name="subject">[SYS] Redraft QCF Approval ${object.complete_name}</field>
+          <field name="email_to">${object.pic_id.partner_id.email}</field>
+		  <field name="email_cc">procurement.ho@palmagroup.co.id</field>
+          <field name="lang">${object.lang}</field>
+          <field name="model_id" ref="purchase_indonesia.model_quotation_comparison_form"/>
+          <field name="auto_delete" eval="True"/>
+          <field name="body_html">
+                <![CDATA[
+                    <style>
+                        input[type="submit"]{
+                            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+                            box-sizing: border-box;
+                            font-size: 14px;
+                            text-decoration: none;
+                            color: #FFF;
+                            line-height: 2;
+                            font-weight: bold;
+                            text-align: center;
+                            cursor: pointer;
+                            display: inline-block;
+                            border-radius: 5px;
+                            text-transform: capitalize;
+                            background-color: #348eda;
+                            margin: 0;
+                            padding: 0;
+                            border-color: #348eda;
+                            border-style: solid;
+                            border-width: 10px 20px;
+                        }
+                    </style>
+                    <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                        <tr>
+                            <td >
+                                <table bgcolor="#F5F5F5" align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                                    <!--Header-->
+                                    <tr>
+                                        <td >
+                                            <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;border: 1px solid #cccccc;margin-top: 30px; margin-bottom: 30px">
+                                                <tr>
+                                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 30px; padding-bottom: 0; color: #153643; font-family: Arial, sans-serif;color: white">
+                                                        <table cellspacing="0" cellpadding="0" width="100%" border="0" style="padding-left: 20px; padding-right: 20px;">
+                                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 16px; color: white">
+                                                                <b>Redraft QCF Approval</b>
+                                                            </td>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="center" bgcolor="#1E90FF" style="padding-top: 0;padding-bottom: 25px;color: #153643; font-family: Arial, sans-serif;color: white">
+                                                        <table cellspacing="0" cellpadding="0" width="100%" border="0"  style="padding-left: 20px; padding-right: 20px;">
+                                                            <td align="center" bgcolor="#1E90FF" style="padding: 0 0 0 0; color: #153643; font-family: Arial, sans-serif; font-size: 26px; color: white;">
+                                                                <b>${(object.complete_name)}</b>
+                                                            </td>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <!-- Content -->
+                                                <tr>
+                                                   <td bgcolor="#ffffff" style="padding: 40px 30px 10px 30px;">
+                                                        <table border="0" cellspacing="0" cellspacing="0" width="100%" style="color: #153643; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px;">
+                                                            <tr>
+                                                                <td>
+                                                                        Dear <font style="font-weight: bold;">${(object.pic_id.name)}</font>,
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 20px;">
+                                                                    <p>There is one Redraft Quotation Comparison Form (QCF):</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <table align="center" border="0" cellspacing="0" cellspacing="0" width="100%" style="font-family: Arial, sans-serif;font-size: 14px">
+                                                                        <tr>
+                                                                            <td style="width: 20%;">PP Number</td>
+                                                                            <td>:</td>
+                                                                            <td>
+                                                                                <a style="text-decoration: none;"
+                                                                                    href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.requisition_id.request_id.id)}&view_type=form&model=purchase.request" target="self">
+                                                                                    ${(object.requisition_id.request_id.complete_name)}
+                                                                                </a>
+                                                                                <span style="background-color: red;border:3px solid red;font-weight: bold; color: #ffffff;padding: 2px;text-align: center;border-radius: 5px;font-size: 11px;">
+                                                                                    % if object.requisition_id.request_id.type_purchase.name:
+                                                                                        ${(object.requisition_id.request_id.type_purchase.name)}
+                                                                                    % endif
+                                                                                </span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;"></td>
+                                                                            <td></td>
+                                                                            <td>
+                                                                                <p style="font-style: italic;color: #696969;font-size:12px;">${(object.requisition_id.first_product_name)}</p>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;">PP Date</td>
+                                                                            <td>:</td>
+                                                                            <td>
+                                                                                <span>${(object.requisition_id.request_id.get_formatted_date())}</span>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;">PIC</td>
+                                                                            <td>:</td>
+                                                                            <td>${(object.pic_id.name)}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td style="width: 20%;">Requested By</td>
+                                                                            <td>:</td>
+                                                                            <td>${(object.requisition_id.request_id.requested_by.name)}</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <p>To check the QCF, please click at the button below.</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td align="center">
+                                                                    <a style="font-size: 14px; text-decoration: none; color: #FFF; line-height: 1; font-weight: bold; text-align: center; cursor: pointer; display: inline-block; border-radius: 5px; text-transform: capitalize; background-color: #1E90FF; margin: 0; padding: 0; border-color: #1E90FF; border-style: solid; border-width: 10px 20px;"
+                                                                        href="${(object.web_url())}/web?db=${(object.database())}#id=${(object.id)}&view_type=form&model=${(object.email_model())}" target="self">
+                                                                        OPEN QCF
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-top: 40px;padding-bottom: 30px;">
+                                                                    Regards,<br/><br/>
+                                                                    ${object.company_id.name}
+                                                                </td>
+                                                            </tr>
+                                                            <!-- Footer -->
+                                                            <tr>
+                                                                <td style="font-size:12px;font-style: italic;border-top: 1px solid #f2eeed;padding-top: 20px;padding-bottom: 20px;">
+                                                                    <ul style="color:#808080;padding: 0px 20px 0px 30px">
+                                                                        <li>
+                                                                            This email is for notification purpose only. If you want to check this document details, please login to your Palma Group ERP account.
+                                                                        </li>
+                                                                        <li>
+                                                                            If you have trouble accessing or login to Palma Group ERP, please contact ICT Department.
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                    <td bgcolor="#FFFFFF">
+                                                        <table cellspacing="0" cellpadding="0" border="0" width="100%" style="font-family: Arial, sans-serif; line-height: 20px;text-align: center;border-top: 1px solid #f2eeed;">
+                                                            <tr>
+                                                                <td width="100%" style="font-size:14px;">
+                                                                    <img src="https://www.google.com/a/palmagroup.co.id/images/logo.gif" alt="Palma Group Logo" width="143px" height="59px" border="0" style="display: block;margin-left: auto;margin-right: auto;" />
+                                                                    <p style="font-size: 11px;">Gd. Graha Arda Lt 8, Jl. HR. Rasuna Said Kav B6 Setiabudi, 	Kuningan - Jakarta Selatan 12910. <br/> Telp. 021-5220335</p>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td bgcolor="#1E90FF" style="height: 15px"></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                ]]>
+          </field>
+       </record>
+    </data>
+</odoo>

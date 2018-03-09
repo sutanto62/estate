@@ -835,7 +835,8 @@ class QuotationComparisonForm(models.Model):
     def send_mail_template(self):
 
             # Find the e-mail template
-            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
+            # template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison')
+            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison_new')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
@@ -845,7 +846,8 @@ class QuotationComparisonForm(models.Model):
     def send_mail_template_redraft(self):
 
             # Find the e-mail template
-            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison_draft')
+            # template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison_draft')
+            template = self.env.ref('purchase_indonesia.email_template_purchase_quotation_comparison_draft_new')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
