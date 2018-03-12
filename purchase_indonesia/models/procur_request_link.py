@@ -1,4 +1,4 @@
-from openerp import models, fields, api, exceptions
+from openerp import models, fields, api, exceptions, _
 from psycopg2 import OperationalError
 
 from openerp import SUPERUSER_ID
@@ -12,6 +12,7 @@ import calendar
 from openerp import tools
 import re
 import itertools
+from dateutil import parser
 
 class InheritPurchaseRequisition(models.Model):
     _inherit = 'purchase.requisition'
@@ -923,7 +924,8 @@ class InheritPurchaseRequest(models.Model):
                 'origin': purchase.complete_name,
                 'request_id':purchase.id,
                 'ordering_date' : datetime.today(),
-                'owner_id' : purchase.id
+                'owner_id' : purchase.id,
+                'picking_type_id' : purchase.picking_type_id.id
             }
             res = self.env['purchase.requisition'].create(purchase_data)
             res.send_mail_template_new_tender()
@@ -1100,6 +1102,22 @@ class InheritPurchaseRequest(models.Model):
             self.type_functional = 'general'
         else:
             self.type_functional
+
+    @api.multi
+    @api.onchange('company_id')
+    def _onchange_company_id(self):
+        # This function is used to change picking_type_id based on selected company_id and code value
+        for purchase in self:
+            type_obj = self.env['stock.picking.type']
+            # add limit=1, this search could get more than 1 value
+            # if stock_warehouse have more than one warehouse with the same company_id
+            picking_type_id = type_obj.search([('code', '=', 'incoming'),
+                                               ('warehouse_id.company_id', '=', purchase.company_id.id)],
+                                              limit=1)
+            if not picking_type_id:
+                err_msg = _('Could not get picking_type_id!')
+                raise exceptions.ValidationError(err_msg)
+            purchase.picking_type_id = picking_type_id
 
     # @api.multi
     # @api.onchange('company_id')
@@ -1326,7 +1344,8 @@ class InheritPurchaseRequest(models.Model):
     @api.one
     def send_mail_template(self):
             # Find the e-mail template
-            template = self.env.ref('purchase_indonesia.email_template_purchase_request')
+            # template = self.env.ref('purchase_indonesia.email_template_purchase_request')
+            template = self.env.ref('purchase_indonesia.email_template_purchase_request_new')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
@@ -1350,6 +1369,12 @@ class InheritPurchaseRequest(models.Model):
         for item in self:
             model = item._name
             return model
+
+    def get_formatted_date(self):
+        # Used for converting default date format to dd-Month-YYYY
+        date_pp = parser.parse(self.date_start)
+        return date_pp.strftime('%d %B %Y')
+
 
 class InheritPurchaseRequestLine(models.Model):
 

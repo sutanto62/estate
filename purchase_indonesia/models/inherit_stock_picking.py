@@ -796,7 +796,8 @@ class InheritStockPicking(models.Model):
     def send_mail_template(self):
 
             # Find the e-mail template
-            template = self.env.ref('purchase_indonesia.email_template_stock_picking')
+            # template = self.env.ref('purchase_indonesia.email_template_stock_picking')
+            template = self.env.ref('purchase_indonesia.email_template_stock_picking_new')
             # You can also find the e-mail template like this:
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
@@ -805,7 +806,8 @@ class InheritStockPicking(models.Model):
     @api.one
     def send_mail_template_user(self):
         # Find the e-mail template
-        template = self.env.ref('purchase_indonesia.email_template_stock_picking_2')
+        # template = self.env.ref('purchase_indonesia.email_template_stock_picking_2')
+        template = self.env.ref('purchase_indonesia.email_template_stock_picking_2_new')
         # You can also find the e-mail template like this:
         # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
         # Send out the e-mail template to the user
