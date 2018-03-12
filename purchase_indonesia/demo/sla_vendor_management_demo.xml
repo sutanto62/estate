@@ -1,0 +1,24 @@
+<openerp>
+    <data>
+        <record id="local_rec" model="sla.vendor.management">
+            <field name="name">Lokal</field>
+            <field name="days">30</field>
+            <field name="code">local</field>
+            <field name="count_weekend">True</field>
+        </record>
+
+        <record id="inter_island_rec" model="sla.vendor.management">
+            <field name="name">Antar Pulau</field>
+            <field name="days">60</field>
+            <field name="code">inter_island</field>
+            <field name="count_weekend">True</field>
+        </record>
+
+        <record id="inter_country_rec" model="sla.vendor.management">
+            <field name="name">Antar Negara</field>
+            <field name="days">90</field>
+            <field name="code">inter_country</field>
+            <field name="count_weekend">False</field>
+        </record>
+    </data>
+</openerp>

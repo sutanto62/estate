@@ -51,6 +51,8 @@
         'views/mapping_department_to_product.xml',
         'views/inherit_product_template.xml',
         'views/inherit_product_category.xml',
+        'views/inherit_product_category.xml',
+        'views/sla_vendor_management_views.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',
@@ -66,7 +68,8 @@
     'demo': [
 
         'demo/account_payment_term.xml',
-        'demo/stock_incoterms.xml'
+        'demo/stock_incoterms.xml',
+        'demo/sla_vendor_management_demo.xml',
     ],
     'qweb': [
         'static/src/xml/purchase_requisition.xml',

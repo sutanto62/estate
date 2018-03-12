@@ -1,0 +1,49 @@
+<openerp>
+    <data>
+        <record id="sla_vendor_management_view_tree" model="ir.ui.view">
+            <field name="name">SLA Vendor Management</field>
+            <field name="model">sla.vendor.management</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="code" />
+                            <field name="name" />
+                            <field name="days" />
+                            <field name="count_weekend" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="sla_vendor_management_view_form" model="ir.ui.view">
+            <field name="name">SLA Vendor Management</field>
+            <field name="model">sla.vendor.management</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="code" />
+                    <field name="name" />
+                    <field name="days" />
+                    <field name="count_weekend" />
+                </tree>
+            </field>
+        </record>
+
+        <record id="sla_vendor_management_list_action" model="ir.actions.act_window">
+            <field name="name">SLA Vendor Management</field>
+            <field name="res_model">sla.vendor.management</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">Create the first SLA</p>
+            </field>
+        </record>
+
+
+        <menuitem id="sla_vendor_menu"
+                  name="SLA Vendor Management"
+                  parent="purchase.menu_purchase_config"
+                  action="sla_vendor_management_list_action"/>
+    </data>
+</openerp>
