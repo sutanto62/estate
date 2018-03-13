@@ -234,9 +234,11 @@ class InheritResPartner(models.Model):
  
     @api.model
     def create(self, vals):
-        vals['image'] = self.with_context(partner_type=vals['type'])._get_default_image(False, False)
-        partner = super(InheritResPartner, self).create(vals)
-        return partner
+        try:
+            vals['image'] = self.with_context(partner_type=vals['type'])._get_default_image(False, False)
+        finally:
+            partner = super(InheritResPartner, self).create(vals)
+            return partner
     
     def _get_res_partner_by_type(self, partner_type):
         res = self.env['res.partner'].search([('parent_id','=',self.id),('type','=',partner_type)], order='id desc')

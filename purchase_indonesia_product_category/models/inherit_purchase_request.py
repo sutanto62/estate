@@ -42,8 +42,6 @@ class InheritPurchaseRequest(models.Model):
                 for category in category_mapping:
                     arrMapping.append(category.product_category_id.id)
                     category_product = item.env['product.category'].search([('parent_id','in',arrMapping)])
-                    print "category_product "
-                    print category_product
                     arrParent.append(category.product_category_id.id)
                     if len(category_product) > 0:
                         for categ_id in category_product:
@@ -54,7 +52,16 @@ class InheritPurchaseRequest(models.Model):
                             'product_category_id':[('id','in',arrParent),('hide_on_pp','!=',True)]
                              }
                         }
-
+    
+    @api.constrains('company_id')
+    def _constraint_company_id(self):
+        if self.product_category_id:
+            allowed_company_ids = self.product_category_id.get_allowed_company_ids() 
+            if allowed_company_ids:
+                if self.company_id.id not in allowed_company_ids.ids:
+                    comps = ','.join(e.name for e in allowed_company_ids)
+                    error_msg = "Product category \"%s\" is only allowed with \"%s\" not \"%s\"." % (self.product_category_id.name,comps,self.company_id.name)
+                    raise exceptions.ValidationError(error_msg)
 
 class InheritPurchaseRequestLine(models.Model):
 
