@@ -9,3 +9,4 @@ import quotation_comparison_form
 import inherit_purchase_tenders
 import tracking_approval
 import mapping_department_to_product
+import sla_vendor_management
