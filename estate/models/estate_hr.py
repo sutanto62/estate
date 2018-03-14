@@ -91,7 +91,7 @@ class Team(models.Model):
         for team in self:
             if self.env['estate.upkeep'].search([('team_id', '=', team.id),
                                                  ('date', '>=', start),
-                                                 ('dateq', '<=', end)]):
+                                                 ('date', '<=', end)]):
                 err_msg = _('Do not archived active team.')
                 raise UserError(err_msg)
 
