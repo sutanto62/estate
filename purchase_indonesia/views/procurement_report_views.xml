@@ -1,0 +1,198 @@
+<openerp>
+    <data>
+        <!-- sla procurement -->
+		<record id="v_sla_procurement_tree" model="ir.ui.view">
+			<field name="name">SLA Procurement</field>
+			<field name="model">v.sla.procurement</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="pr_no"/>
+			        <field name="urgency"/>	
+			        <field name="po_no"/>
+			        <field name="pp_location_code"/>
+			        <field name="vendor_location_code"/>
+			        <field name="distance"/>
+			        <field name="days"/>
+			        <field name="pp_full_approve_date"/>
+			        <field name="qcf_approve_date"/>
+			        <field name="grn_approve_date"/>
+			        <field name="inv_received_procurement_date"/>
+			        <field name="inv_paid_date"/>
+			        <field name="pp_to_qcf"/>
+			        <field name="qcf_to_grn"/>
+			        <field name="grn_to_inv_received"/>
+			        <field name="inv_received_to_inv_paid"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record id="v_sla_procurement_tree_filter" model="ir.ui.view">
+            <field name="name">SLA Procurement Filter</field>
+            <field name="model">v.sla.procurement</field>
+            <field name="arch" type="xml">
+                <search string="Search SLA Procurement">
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('pp_full_approve_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('pp_full_approve_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+              		<separator/>
+	          		<filter icon="terp-go-month" string="Previous Month"
+		                	domain="[('pp_full_approve_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+		                  	('pp_full_approve_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+           		</search>
+           	</field>
+	 	</record>
+	 	
+		<record model="ir.actions.act_window" id="v_sla_procurement_action">
+            <field name="name">SLA Procurement</field>
+            <field name="context">{'search_default_filter_month':1}</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.sla.procurement</field>
+            <field name="view_mode">tree</field>
+        </record>
+	   	
+		<menuitem parent="purchase_summary_report"
+	        id="menu_v_sla_procurement_action"
+	        sequence="714"
+	        action="v_sla_procurement_action"/>
+		
+		<!-- sla vendor -->
+		<record id="v_sla_vendor_tree" model="ir.ui.view">
+			<field name="name">SLA Vendor</field>
+			<field name="model">v.sla.vendor</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="no_vendor"/>
+			        <field name="vendor_name"/>	
+			        <field name="po_no"/>
+			        <field name="qcf_approved"/>
+			        <field name="grn_picked"/>
+			        <field name="sla_vendor"/>
+			        <field name="status"/>
+			        <field name="total_transaction"/>
+			        <field name="product_category"/>
+			        <field name="total_po_per_product_category"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record model="ir.actions.act_window" id="v_sla_vendor_action">
+            <field name="name">SLA Vendor</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.sla.vendor</field>
+            <field name="view_mode">tree</field>
+        </record>
+	   	
+		<menuitem parent="purchase_summary_report"
+	        id="menu_v_sla_vendor_action"
+	        sequence="715"
+	        action="v_sla_vendor_action"/>
+		
+		<!-- history product -->
+		<record id="v_history_product_tree" model="ir.ui.view">
+			<field name="name">History Product</field>
+			<field name="model">v.history.product</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="code"/>
+			        <field name="product_category"/>	
+			        <field name="product_name"/>
+			        <field name="uom"/>
+			        <field name="purchase_no"/>
+			        <field name="po_create_date"/>
+			        <field name="product_qty"/>
+			        <field name="accumulation_qty"/>
+			        <field name="product_unit_price"/>
+			        <field name="avg_price"/>
+			        <field name="ranked_by_purchase" invisible="1"/>
+			        <field name="ranked_by_qty" invisible="1"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<!-- 
+		<record model="ir.actions.act_window" id="v_history_product_action">
+            <field name="name">History Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.history.product</field>
+            <field name="view_mode">tree</field>
+        </record>
+	   	
+		<menuitem parent="purchase_summary_report"
+	        id="menu_v_history_product_action"
+	        sequence="716"
+	        action="v_history_product_action"/>
+		 -->
+		 
+		<!-- summary history product -->
+		<record id="v_sum_history_product_tree" model="ir.ui.view">
+			<field name="name">Summary History Product</field>
+			<field name="model">v.sum.history.product</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+			        <field name="code"/>
+			        <field name="product_category"/>	
+			        <field name="product_name"/>
+			        <field name="uom"/>
+			        <field name="sum_purchase_no"/>
+			        <field name="sum_product_qty"/>
+			        <field name="avg_price"/>
+			    </tree>
+			</field>
+	   	</record>
+	   	
+		<record id="v_sum_history_product_form" model="ir.ui.view">
+			<field name="name">Summary History Product</field>
+			<field name="model">v.sum.history.product</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <form>
+			        <sheet string="Summary Product">
+                        <div class="oe_title">
+                        	<h1>
+                                <field name="product_name"/>
+                            </h1>
+                        </div>
+				        <group>
+					        <field name="code"/>
+					        <field name="product_category"/>	
+					        <field name="uom"/>
+					        <field name="sum_purchase_no"/>
+					        <field name="sum_product_qty"/>
+					        <field name="avg_price"/>
+					  	</group>
+					  	<notebook>
+                            <page string="Purchase History">
+						        <field name="line_ids">
+						      		<tree>
+						      		    <field name="purchase_no"/>
+						      		    <field name="po_create_date"/>
+								        <field name="product_qty"/>
+								        <field name="accumulation_qty"/>
+								        <field name="product_unit_price"/>
+								        <field name="avg_price"/>
+						      		</tree>
+						      	</field>
+					      	</page>
+				      	</notebook>
+					</sheet>
+			    </form>
+			</field>
+	   	</record>
+	   	
+		<record model="ir.actions.act_window" id="v_sum_history_product_action">
+            <field name="name">Summary History Product</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.sum.history.product</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+	   	
+		<menuitem parent="purchase_summary_report"
+	        id="menu_v_sum_history_product_action"
+	        sequence="717"
+	        action="v_sum_history_product_action"/>
+  	</data>
+</openerp>      

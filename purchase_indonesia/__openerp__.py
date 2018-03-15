@@ -53,6 +53,7 @@
         'views/inherit_product_category.xml',
         'views/inherit_product_category.xml',
         'views/sla_vendor_management_views.xml',
+        'views/procurement_report_views.xml',
         # 'workflow/workflow_quotation_comparison_form.xml',
 
         'reports/report_quotation_comparison_form.xml',

@@ -10,3 +10,4 @@ import inherit_purchase_tenders
 import tracking_approval
 import mapping_department_to_product
 import sla_vendor_management
+import procurement_report
