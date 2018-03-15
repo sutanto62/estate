@@ -1861,3 +1861,87 @@ class ViewPurchaseTender(models.Model):
                                  ('done', 'Shipment'),
                                  ('cancel', 'Cancelled')],
                                 'Tender Status')
+
+
+class VPurchaseOrder(models.Model):
+    _name = 'v.purchase.order'
+    _description = 'Purchase Order'
+    _auto = False
+
+    requested_by = fields.Many2one('res.users','Requested by')
+    department_id = fields.Many2one('hr.department','Department')
+    create_date = fields.Date('PP Create Date')
+    approve_date = fields.Date('PP Approve Date')
+    request_id = fields.Char('Purchase Request')
+    company_id = fields.Many2one('res.company', 'Company')
+    category = fields.Char('PP Category')
+    pic_preq = fields.Many2one('res.users', 'PIC')
+    qcf_id = fields.Char('QCF')
+    pic_po = fields.Many2one('res.users', 'PIC PO')
+    po_id = fields.Char('Purchase Order')
+    partner_id = fields.Many2one('res.partner','Vendor')
+
+    def init(self, cr):
+        drop_view_if_exists(cr, 'v_purchase_order')
+
+        cr.execute("""
+            create or replace view v_purchase_order
+            as
+            select
+                row_number() over() id,
+                pr.requested_by,
+                pr.department_id,
+                pr.create_date::date create_date,
+                pr.approve_date::date approve_date,
+                pr.request_id,
+                pr.company_id,
+                pr.category,
+                pr.user_id pic_preq,
+                qcf.complete_name qcf_id,
+                qcf.pic_id pic_po,
+                po.complete_name po_id,
+                po.partner_id
+            from
+                (
+                    select
+                        po.complete_name,
+                        po.partner_id,
+                        po.state,
+                        po.comparison_id,
+                        po.request_id
+                    from
+                        purchase_order po
+                    where
+                        po.state != 'draft'
+                        and po.state !=  'cancel'
+                ) po
+            inner join
+                quotation_comparison_form qcf
+                on
+                qcf.id = po.comparison_id
+            inner join
+                (
+                    select 
+                        pr.id,
+                        pr.complete_name  request_id,
+                        pr.requested_by,
+                        pr.department_id,
+                        pr.create_date,
+                        preq.create_date approve_date,
+                        pr.company_id,
+                        (case when is_confirmation = true then 'Confirmation' else
+                            (case when pr.type_purchase = 1 then 'Normal' else 'Urgent' end)
+                        end) category,
+                        preq.user_id
+                    from
+                        purchase_request pr
+                    inner join
+                        purchase_requisition preq
+                        on pr.id = preq.request_id
+                    where
+                        pr.active = true
+                ) pr
+                on
+                pr.id = po.request_id
+            ;
+        """)
