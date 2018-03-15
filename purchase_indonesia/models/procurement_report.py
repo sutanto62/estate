@@ -22,6 +22,7 @@ class ViewSLAProcurement(models.Model):
     grn_to_inv_received = fields.Float('GRN to Invoice')
     inv_received_to_inv_paid = fields.Float('Invoice to Paid')
     days = fields.Float('SLA (Days)')
+    partner = fields.Char('Vendor Name')
     
     def init(self, cr):
         drop_view_if_exists(cr, 'v_sla_procurement')
@@ -134,7 +135,8 @@ class ViewSLAProcurement(models.Model):
                         end
                     else 
                         svm.name 
-                    end) as distance
+                    end) as distance,
+                    sla_procurement.vendor_name partner
               from
                 (
                 select
@@ -154,7 +156,8 @@ class ViewSLAProcurement(models.Model):
                     EXTRACT('epoch' from po.qcf_approve_date-pr.pp_full_approve_date)/(60*60*24) pp_to_qcf,
                     EXTRACT('epoch' from po.grn_approve_date-po.qcf_approve_date)/(60*60*24) qcf_to_grn,
                     EXTRACT('epoch' from po.inv_received_procurement_date-po.grn_approve_date)/(60*60*24) grn_to_inv_received,
-                    EXTRACT('epoch' from po.inv_paid_date-po.inv_received_procurement_date)/(60*60*24) inv_received_to_inv_paid
+                    EXTRACT('epoch' from po.inv_paid_date-po.inv_received_procurement_date)/(60*60*24) inv_received_to_inv_paid,
+                    po.vendor_name
                 from 
                 (
                     select 
@@ -167,7 +170,8 @@ class ViewSLAProcurement(models.Model):
                         po.partner_id,
                         p."name" vendor_name,
                         vl.island_name,
-                        po.state
+                        po.state,
+                        po.partner_id
                     from 
                         (select * from purchase_order where state = 'purchase' or state = 'done') po 
                             inner join res_partner p 

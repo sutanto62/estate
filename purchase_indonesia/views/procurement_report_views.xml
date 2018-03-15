@@ -10,6 +10,7 @@
 			        <field name="pr_no"/>
 			        <field name="urgency"/>	
 			        <field name="po_no"/>
+			        <field name="partner"/>
 			        <field name="pp_location_code"/>
 			        <field name="vendor_location_code"/>
 			        <field name="distance"/>
