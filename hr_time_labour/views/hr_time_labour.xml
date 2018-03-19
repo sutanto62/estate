@@ -23,6 +23,7 @@
                     <group>
                         <group name="schedule" string="Schedule Information">
                             <field name="code"/>
+                            <field name="calendar_id"/>
                             <field name="effective_date"/>
                             <field name="active" groups="base.group_no_one"/>
                             <field name="description"/>
@@ -32,7 +33,6 @@
                             <field name="rotating_schedule"/>
                             <field name="overnight_schedule"/>
                             <field name="days_in_schedule"/>
-                            <field name="calendar_id"/>
                         </group>
                     </group>
                     <notebook>
@@ -57,6 +57,23 @@
                 </form>
             </field>
         </record>
+        <record id="schedule_view_search" model="ir.ui.view">
+            <field name="name">Schedule View Search</field>
+            <field name="model">hr_time_labour.schedule</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="calendar_id"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                    <group string="Group By">
+                        <filter name="filter_calendar" string="Calendar" context="{'group_by': 'calendar_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!--/Schedule-->
 
         <!-- Shift -->
         <record id="shift_view_tree" model="ir.ui.view">
@@ -65,8 +82,8 @@
             <field name="priority" eval="1"/>
             <field name="arch" type="xml">
                 <tree>
-                    <field name="type"/>
                     <field name="name"/>
+                    <field name="type"/>
                 </tree>
             </field>
         </record>
@@ -105,6 +122,19 @@
                 </form>
             </field>
         </record>
+        <record id="shift_view_search" model="ir.ui.view">
+            <field name="name">Shift View Search</field>
+            <field name="model">hr_time_labour.shift</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+        <!--/shift-->
 
         <!-- Time Restriction -->
         <record id="time_restriction_view_form" model="ir.ui.view">
@@ -134,6 +164,34 @@
                 </form>
             </field>
         </record>
+        <record id="time_restriction_view_tree" model="ir.ui.view">
+            <field name="name">Time Restriction View Tree</field>
+            <field name="model">hr_time_labour.time_restriction</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="early_in" widget="float_time"/>
+                    <field name="early_out" widget="float_time"/>
+                    <field name="late_in" widget="float_time"/>
+                    <field name="late_out" widget="float_time"/>
+                </tree>
+            </field>
+        </record>
+        <record id="time_restriction_view_search" model="ir.ui.view">
+            <field name="name">Time Restriction View Search</field>
+            <field name="model">hr_time_labour.time_restriction</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="code"/>
+                    <separator/>
+                    <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
+                </search>
+            </field>
+        </record>
+        <!--/Time Restriction-->
         <!--
         <record id="time_restriction_view_form" model="ir.actions.act_window">
             <field name="name">Time Restriction Rule</field>

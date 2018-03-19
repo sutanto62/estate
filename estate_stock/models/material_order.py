@@ -82,7 +82,7 @@ class MaterialOrder(models.Model):
     def _compute_stock_available(self):
         """ Stock officer has marked picking as to do."""
         self.ensure_one()
-        res = len(self.stock_moves('assigned'))
+        res = len(self.stock_moves(['assigned']))
         self.stock_move_available = res
         return res
 
@@ -90,7 +90,7 @@ class MaterialOrder(models.Model):
     def _compute_stock_done(self):
         """ Stock officer has validated picking."""
         self.ensure_one()
-        res = len(self.stock_moves('done'))
+        res = len(self.stock_moves(['done']))
         self.stock_move_done = res
         return res
 
@@ -325,14 +325,14 @@ class MaterialOrder(models.Model):
         return picking_ids
 
     @api.multi
-    def stock_moves(self, state=None):
+    def stock_moves(self, state=[]):
         """Display all created stock move (from one or many stock picking) from approved material order."""
         self.ensure_one()
         stock_move_obj = self.env['stock.move']
         picking_ids = self.stock_pickings()
         domain = [('picking_id', 'in', picking_ids.ids)]
         if state:
-            domain.append(('state', '=', state))
+            domain.append(('state', 'in', state))
         stock_move_ids = stock_move_obj.search(domain)
         return stock_move_ids
 
@@ -396,7 +396,4 @@ class MaterialOrderLine(models.Model):
     def create(self, vals):
         """ Set stock location for general"""
 
-        # if vals.get('type') == 'general':
-        #     vals['location_id'] = self.env.ref('stock.stock_location_scrapped').id
-        print vals
         return super(MaterialOrderLine, self).create(vals)

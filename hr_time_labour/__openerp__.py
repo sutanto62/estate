@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr','hr_attendance'],
 
     # always loaded
     'data': [
@@ -31,6 +31,6 @@
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo.xml',
+        'demo/schedule_demo.xml',
     ],
 }

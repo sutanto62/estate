@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--shift-->
+        <record id="shift_estate_reguler" model="hr_time_labour.shift">
+            <field name="name">Shift Opr Kebun SenSab</field>
+            <field name="code">SOPKSS</field>
+            <field name="active" eval="True"/>
+            <field name="effective_date">2000-01-01</field>
+            <field name="type">punch</field>
+            <field name="time_start">6.0</field>
+            <field name="time_end">14.0</field>
+        </record>
+        <record id="shift_estate_friday" model="hr_time_labour.shift">
+            <field name="name">Shift Opr Kebun Jumat</field>
+            <field name="code">SOPKJ</field>
+            <field name="active" eval="True"/>
+            <field name="effective_date">2000-01-01</field>
+            <field name="type">punch</field>
+            <field name="time_start">6.0</field>
+            <field name="time_end">11.0</field>
+        </record>
+        <!--/shift-->
+
+        <!--schedule-->
+        <record id="schedule_day_4" model="hr_time_labour.schedule">
+            <field name="name">Estate Schedule</field>
+            <field name="code">WSES</field>
+            <field name="effective_date">2000-01-01</field>
+            <field name="active" eval="True"/>
+            <field name="type">punch</field>
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+        </record>
+        <record id="schedule_day_1" model="hr_time_labour.schedule">
+            <field name="name">Office Schedule</field>
+            <field name="code">WSOF</field>
+            <field name="effective_date">2000-01-01</field>
+            <field name="active" eval="True"/>
+            <field name="type">punch</field>
+            <field name="calendar_id" ref="resource.timesheet_estate_ops"/>
+        </record>
+        <!--/schedule-->
+        <!--schedule shift-->
+        <record id="schedule_day_4_0" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">0</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+        <record id="schedule_day_4_1" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">1</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+        <record id="schedule_day_4_2" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">2</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+        <record id="schedule_day_4_3" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">3</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+        <record id="schedule_day_4_4" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">4</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+        <record id="schedule_day_4_5" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">5</field>
+            <field name="shift_id" ref="shift_estate_friday"/>
+        </record>
+        <record id="schedule_day_4_6" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_4"/>
+            <field name="day">6</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+
+        <record id="schedule_day_1_5" model="hr_time_labour.schedule_shift">
+            <field name="schedule_id" ref="schedule_day_1"/>
+            <field name="day">5</field>
+            <field name="shift_id" ref="shift_estate_reguler"/>
+        </record>
+        <!--/schedule shift-->
+
+    </data>
+</openerp>

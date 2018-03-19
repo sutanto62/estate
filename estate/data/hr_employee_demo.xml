@@ -10,6 +10,7 @@
             <field name="contract_type">2</field>
             <field name="contract_period">2</field>
             <field name="estate_id" ref="estate.estate"/>
+            <field name="nik_number">3011000224</field>
         </record>
 
         <record id="khl_2" model="hr.employee">
@@ -20,16 +21,18 @@
             <field name="contract_type">2</field>
             <field name="contract_period">2</field>
             <field name="estate_id" ref="estate.estate"/>
+            <field name="nik_number">30110000233</field>
         </record>
 
         <record id="khl_3" model="hr.employee">
-            <field name="name">Gani  Nanggili</field>
+            <field name="name">Gani Nanggili</field>
             <field name="resource_type">user</field>
             <field name="time_efficiency">1</field>
             <field name="company_id" ref="base.main_company"/>
             <field name="contract_type">2</field>
             <field name="contract_period">2</field>
             <field name="estate_id" ref="estate.estate"/>
+            <field name="nik_number">30110000331</field>
         </record>
 
         <record id="khl_4" model="hr.employee">
@@ -40,6 +43,7 @@
             <field name="contract_type">2</field>
             <field name="contract_period">2</field>
             <field name="estate_id" ref="estate.estate"/>
+            <field name="nik_number">30110000332</field>
         </record>
 
         <record id="khl_5" model="hr.employee">
