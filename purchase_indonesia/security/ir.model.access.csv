@@ -153,3 +153,4 @@
 "sla_vendor_management_purchase_manager","sla_vendor_management","purchase_indonesia.model_sla_vendor_management","purchase.group_purchase_manager","True","True","True","True"
 "sla_vendor_management_purchase_user","sla_vendor_management","purchase_indonesia.model_sla_vendor_management","purchase.group_purchase_user","True","False","False","False"
 "sla_vendor_management_purchase_request_user","sla_vendor_management","purchase_indonesia.model_sla_vendor_management","purchase_request.group_purchase_request_user","True","False","False","False"
+"access_purchase_ir_sequence","ir_sequence_purchase_user","base.model_ir_sequence","purchase_request.group_purchase_request_user","TRUE","TRUE","FALSE","FALSE"

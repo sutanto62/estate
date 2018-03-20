@@ -26,8 +26,15 @@ class Sequence(models.Model):
 
     def _next_do(self):
         if self['implementation'] == 'standard' and self['auto_reset']:
-
-            if self.reset_time < self.env.context.get('ir_sequence_date'):
+            
+            reset = False
+            if self.reset_time:
+                if self.env.context.get('ir_sequence_date'):
+                    reset = self.reset_time < self.env.context.get('ir_sequence_date')
+                else:
+                    reset = datetime.strptime(self.reset_time, '%Y-%m-%d %H:%M:%S') < datetime.today()
+            
+            if reset:
                 delta = [item for item in RESET_PERIOD_TIMEDELTA if item[0] == self.reset_period]
                 reset_time_datetime = datetime.strptime(self.reset_time, '%Y-%m-%d %H:%M:%S')
 
