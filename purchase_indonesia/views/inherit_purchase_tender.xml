@@ -420,13 +420,23 @@
             <field name="model">v.purchase.requisition.line</field>
             <field name="arch" type="xml">
                 <search string="Search Purchase Request">
+                    <field name="request_id"/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
                             ('approve_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('approve_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
               		<separator/>
 	          		<filter icon="terp-go-month" string="Previous Month"
 		                	domain="[('approve_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
 		                  	('approve_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <group string="Group By">
+                        <filter name="company" string="Company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'approve_date:month'}"/>
+                    </group>
            		</search>
            	</field>
 	 	</record>
@@ -479,13 +489,23 @@
             <field name="model">v.purchase.requisition</field>
             <field name="arch" type="xml">
                 <search string="Search Purchase Request">
+                    <field name="request_id"/>
                     <filter name="filter_month" icon="terp-go-month" string="This Month"
                             domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
                             ('approve_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('approve_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
               		<separator/>
 	          		<filter icon="terp-go-month" string="Previous Month"
 		                	domain="[('approve_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
 		                  	('approve_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <group string="Group By">
+                        <filter name="company" string="Company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'approve_date:month'}"/>
+                    </group>
            		</search>
            	</field>
 	 	</record>
@@ -526,5 +546,76 @@
             <field name="name">Purchases</field>
             <field name="view_id" ref="purchase.purchase_order_line_tree"/>
      	</record>
+
+        <!-- view summary progress purchase order-->
+		<record id="v_purchase_order_view_tree" model="ir.ui.view">
+			<field name="name">Summary Purchase Order</field>
+			<field name="model">v.purchase.order</field>
+			<field name="priority" eval="1"/>
+			<field name="arch" type="xml">
+			    <tree>
+                    <field name="requested_by"/>
+                    <field name="department_id"/>
+                    <field name="create_date"/>
+                    <field name="approve_date"/>
+                    <field name="request_id"/>
+                    <field name="company_id"/>
+                    <field name="category"/>
+                    <field name="pic_preq"/>
+                    <field name="qcf_id"/>
+                    <field name="pic_po"/>
+                    <field name="po_id"/>
+                    <field name="partner_id"/>
+			    </tree>
+			</field>
+	   	</record>
+
+        <record id="v_purchase_order_view_search" model="ir.ui.view">
+            <field name="name">Summary Purchase Order</field>
+            <field name="model">v.purchase.order</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="request_id"/>
+                    <field name="pic_po"/>
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('approve_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')),
+                            ('approve_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter name="filter_prev_month" icon="terp-go-month" string="Previous Month"
+                            domain="[('approve_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),
+                            ('approve_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <group string="Group By">
+                        <filter name="pic_po" string="PIC PO"
+                                context="{'group_by': 'pic_po'}"/>
+                        <filter name="company" string="Company"
+                                context="{'group_by': 'company_id'}"/>
+                        <filter name="by_month" string="Month"
+                                context="{'group_by': 'approve_date:month'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="v_purchase_order_action" model="ir.actions.act_window">
+            <field name="name">Summary Purchase Order</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">v.purchase.order</field>
+            <field name="view_mode">tree</field>
+            <field name="context">{'search_default_filter_month':1}</field>
+        </record>
+
+		<menuitem id="v_purchase_order_menu_action"
+                  parent="purchase_summary_report"
+                  sequence="713"
+                  action="v_purchase_order_action"/>
+
+		<menuitem id="v_purchase_order_menu_action_1"
+                  parent="purchase_request_summary_report"
+                  sequence="714"
+                  action="v_purchase_order_action"/>
+
     </data>
 </openerp>
