@@ -14,7 +14,8 @@ class Calendar(models.Model):
         # prevent error when day is empty
         if day is None:
             return False
-
+        
+        day_num = int(day)
         # transform number to day
         day_name = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
@@ -26,13 +27,13 @@ class Calendar(models.Model):
 
         # calendar has no schedule shift
         if not schedule_shift_id:
-            name = day_name[day] if day < 7 else 'out of range'
+            name = day_name[day_num] if day_num < 7 else 'out of range'
             err_msg = _('No schedule shift found for %s') % name
             raise ValueError(err_msg)
 
         # prevent multiple shift returned
         if len(schedule_shift_id) > 1:
-            err_msg = _('We found muptiple schedule shift for %s') % (day_name[day])
+            err_msg = _('We found muptiple schedule shift for %s') % (day_name[day_num])
             raise ValueError(err_msg)
 
         time_start = schedule_shift_id.time_start
