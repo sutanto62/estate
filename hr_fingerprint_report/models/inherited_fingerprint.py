@@ -28,6 +28,7 @@ class FingerAttendance(models.Model):
     company_id = fields.Many2one(related='employee_id.company_id', store=True)
     office_level_id = fields.Many2one(related='employee_id.office_level_id', store=True)
     department_id = fields.Many2one(related='employee_id.department_id', store=True)
+    contract = fields.Boolean(related='employee_id.contract', string="Contract Based", store=True)
     contract_type = fields.Selection([('1', 'PKWTT'), ('2', 'PKWT')], related='employee_id.contract_type', store=True)
     contract_period = fields.Selection([('1', 'Monthly'), ('2', 'Daily')], related='employee_id.contract_period', store=True)
     schedule_id = fields.Many2one(related='contract_id.working_hours',
