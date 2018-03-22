@@ -23,8 +23,8 @@ class Schedule(models.Model):
     rotating_schedule = fields.Boolean('Rotating Schedule', help='Define Rotating Schedule')
     overnight_schedule = fields.Boolean('Overnight Schedule', help="Allow sign-in or sign-out in different day")
     days_in_schedule = fields.Integer('Days in Schedule', help='Populate shift time')
-    calendar_id = fields.Many2one('resource.calendar', string='Working Schedule',
-                                  help='Link to Odoo Working Schedule at Contract')
+    calendar_id = fields.Many2one('resource.calendar', string='Calendar',
+                                  help='Link to Odoo Working Schedule (calendar) at Contract')
     schedule_shift_ids = fields.One2many('hr_time_labour.schedule_shift', 'schedule_id', string='Schedule Shifts')
 
 
@@ -33,6 +33,7 @@ class ScheduleShift(models.Model):
     _name = 'hr_time_labour.schedule_shift'
     _description = 'Schedule Shifts'
 
+    active = fields.Boolean('Active', default=True)
     schedule_id = fields.Many2one('hr_time_labour.schedule', string='Schedule')
     shift_id = fields.Many2one('hr_time_labour.shift', string='Code')
     day = fields.Integer('Day')
@@ -50,7 +51,7 @@ class Shift(models.Model):
     name = fields.Char('Shift Name')
     code = fields.Char('Shift Code')
     description = fields.Text('Description')
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
     effective_date = fields.Date('Effective Date')
     off_shift = fields.Boolean('Off Shift', help='This shift is for off')
     type = fields.Selection([('punch', 'Punch'),
@@ -73,6 +74,7 @@ class ShiftTime(models.Model):
     _name = 'hr_time_labour.shift_time'
     _description = 'Shift Time'
 
+    active = fields.Boolean('Active', default=True)
     shift_id = fields.Many2one('hr_time_labour.shift')
     name = fields.Char('Shift Time Name')
     code = fields.Char('Shift Time Code')
@@ -102,7 +104,7 @@ class Workday(models.Model):
     name = fields.Char('Workday Name')
     code = fields.Char('Workday Code')
     description = fields.Text('Description')
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
     effective_date = fields.Date('Effective Date')
 
 
@@ -114,7 +116,7 @@ class TimeRestriction(models.Model):
     name = fields.Char('Restriction Name')
     code = fields.Char('Restriction Code')
     description = fields.Text('Description')
-    active = fields.Boolean('Active')
+    active = fields.Boolean('Active', default=True)
     effective_date = fields.Date('Effective Date')
     early_in = fields.Float('Early In')  # None is no restriction
     late_in = fields.Float('Late In')

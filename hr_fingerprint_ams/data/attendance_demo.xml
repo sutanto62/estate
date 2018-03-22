@@ -3,104 +3,105 @@
     <data noupdate="0">
 
         <!-- demo data attendance for 4 person only -->
-        <record id="finger_att_1" model="hr_fingerprint_ams.attendance"
-            context="{'tz':'Asia/Jakarta'}">
-            <field name="db_id">1537</field>
-            <field name="terminal_id">301100224</field>
-            <field name="nik">3011000224</field>
-            <field name="employee_name">Abas Akumali</field>
-            <field name="auto_assign" eval="True"/>
-            <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
-            <field name="work_schedules">KebunSen&amp;Sab</field>
-            <field name="time_start">6</field>
-            <field name="time_end">14</field>
-            <field name="sign_in" eval="3.02"/>
-            <field name="sign_out" eval="14.6"/>
-            <field name="day_normal">1</field>
-            <field name="day_finger">1</field>
-            <field name="hour_overtime">0</field>
-            <field name="hour_work">8</field>
-            <field name="required_in" eval="True"/>
-            <field name="required_out" eval="True"/>
-            <field name="department">Liyodu (Kurni Y. Latada)</field>
-            <field name="hour_attendance">9.58</field>
-            <field name="hour_ot_normal">0</field>
-            <field name="action_reason"></field>
-        </record>
+        <!--<record id="finger_att_1_1" model="hr_fingerprint_ams.attendance"-->
+            <!--context="{'tz':'Asia/Jakarta'}">-->
+            <!--<field name="db_id">1537</field>-->
+            <!--<field name="terminal_id">301100224</field>-->
+            <!--<field name="nik">3011000224</field>-->
+            <!--<field name="employee_name">Abas Akumali</field>-->
+            <!--<field name="auto_assign" eval="True"/>-->
+            <!--<field name="date">2017-03-17</field>-->
+            <!--&lt;!&ndash;<field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>&ndash;&gt;-->
+            <!--<field name="work_schedules">Opr Kebun SenSab</field>-->
+            <!--<field name="time_start">6</field>-->
+            <!--<field name="time_end">14</field>-->
+            <!--<field name="sign_in" eval="3.02"/>-->
+            <!--<field name="sign_out" eval="14.6"/>-->
+            <!--<field name="day_normal">1</field>-->
+            <!--<field name="day_finger">1</field>-->
+            <!--<field name="hour_overtime">0</field>-->
+            <!--<field name="hour_work">8</field>-->
+            <!--<field name="required_in" eval="True"/>-->
+            <!--<field name="required_out" eval="True"/>-->
+            <!--<field name="department">Estate</field>-->
+            <!--<field name="hour_attendance">9.58</field>-->
+            <!--<field name="hour_ot_normal">0</field>-->
+            <!--<field name="action_reason"></field>-->
+        <!--</record>-->
 
-        <record id="finger_att_2" model="hr_fingerprint_ams.attendance"
-            context="{'tz':'Asia/Jakarta'}">
-            <field name="db_id">1570</field>
-            <field name="terminal_id">301100331</field>
-            <field name="nik">30110000331</field>
-            <field name="employee_name">Gani Nanggili</field>
-            <field name="auto_assign" eval="True"/>
-            <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
-            <field name="work_schedules">KebunSen&amp;Sab</field>
-            <field name="time_start">6</field>
-            <field name="time_end">14</field>
-            <field name="sign_in" eval="5.15"/>
-            <field name="sign_out" eval="14.7"/>
-            <field name="day_normal">1</field>
-            <field name="day_finger">1</field>
-            <field name="hour_overtime">0</field>
-            <field name="hour_work">8</field>
-            <field name="required_in" eval="True"/>
-            <field name="required_out" eval="True"/>
-            <field name="department">Liyodu (Kurni Y. Latada)</field>
-            <field name="hour_attendance">9.53</field>
-            <field name="hour_ot_normal">0</field>
-            <field name="action_reason"></field>
-        </record>
+        <!--<record id="finger_att_2" model="hr_fingerprint_ams.attendance"-->
+            <!--context="{'tz':'Asia/Jakarta'}">-->
+            <!--<field name="db_id">1570</field>-->
+            <!--<field name="terminal_id">301100331</field>-->
+            <!--<field name="nik">30110000331</field>-->
+            <!--<field name="employee_name">Gani Nanggili</field>-->
+            <!--<field name="auto_assign" eval="True"/>-->
+            <!--<field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>-->
+            <!--<field name="work_schedules">KebunSen&amp;Sab</field>-->
+            <!--<field name="time_start">6</field>-->
+            <!--<field name="time_end">14</field>-->
+            <!--<field name="sign_in" eval="5.15"/>-->
+            <!--<field name="sign_out" eval="14.7"/>-->
+            <!--<field name="day_normal">1</field>-->
+            <!--<field name="day_finger">1</field>-->
+            <!--<field name="hour_overtime">0</field>-->
+            <!--<field name="hour_work">8</field>-->
+            <!--<field name="required_in" eval="True"/>-->
+            <!--<field name="required_out" eval="True"/>-->
+            <!--<field name="department">Liyodu (Kurni Y. Latada)</field>-->
+            <!--<field name="hour_attendance">9.53</field>-->
+            <!--<field name="hour_ot_normal">0</field>-->
+            <!--<field name="action_reason"></field>-->
+        <!--</record>-->
 
-        <record id="finger_att_3" model="hr_fingerprint_ams.attendance"
-            context="{'tz':'Asia/Jakarta'}">
-            <field name="db_id">1566</field>
-            <field name="terminal_id">301100233</field>
-            <field name="nik">30110000233</field>
-            <field name="employee_name">Abas Depo</field>
-            <field name="auto_assign" eval="True"/>
-            <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
-            <field name="work_schedules">KebunSen&amp;Sab</field>
-            <field name="time_start">6</field>
-            <field name="time_end">14</field>
-            <field name="sign_in" eval="5.33"/>
-            <field name="sign_out" eval="14.67"/>
-            <field name="day_normal">1</field>
-            <field name="day_finger">1</field>
-            <field name="hour_overtime">0</field>
-            <field name="hour_work">8</field>
-            <field name="required_in" eval="True"/>
-            <field name="required_out" eval="True"/>
-            <field name="department">Liyodu (Kurni Y. Latada)</field>
-            <field name="hour_attendance">9.32</field>
-            <field name="hour_ot_normal">0</field>
-            <field name="action_reason"></field>
-        </record>
+        <!--<record id="finger_att_3" model="hr_fingerprint_ams.attendance"-->
+            <!--context="{'tz':'Asia/Jakarta'}">-->
+            <!--<field name="db_id">1566</field>-->
+            <!--<field name="terminal_id">301100233</field>-->
+            <!--<field name="nik">30110000233</field>-->
+            <!--<field name="employee_name">Abas Depo</field>-->
+            <!--<field name="auto_assign" eval="True"/>-->
+            <!--<field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>-->
+            <!--<field name="work_schedules">KebunSen&amp;Sab</field>-->
+            <!--<field name="time_start">6</field>-->
+            <!--<field name="time_end">14</field>-->
+            <!--<field name="sign_in" eval="5.33"/>-->
+            <!--<field name="sign_out" eval="14.67"/>-->
+            <!--<field name="day_normal">1</field>-->
+            <!--<field name="day_finger">1</field>-->
+            <!--<field name="hour_overtime">0</field>-->
+            <!--<field name="hour_work">8</field>-->
+            <!--<field name="required_in" eval="True"/>-->
+            <!--<field name="required_out" eval="True"/>-->
+            <!--<field name="department">Liyodu (Kurni Y. Latada)</field>-->
+            <!--<field name="hour_attendance">9.32</field>-->
+            <!--<field name="hour_ot_normal">0</field>-->
+            <!--<field name="action_reason"></field>-->
+        <!--</record>-->
 
-        <record id="finger_att_4" model="hr_fingerprint_ams.attendance"
-            context="{'tz':'Asia/Jakarta'}">
-            <field name="db_id">1571</field>
-            <field name="terminal_id">301100332</field>
-            <field name="nik">30110000332</field>
-            <field name="employee_name">Kanono Desta</field>
-            <field name="auto_assign" eval="True"/>
-            <field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>
-            <field name="work_schedules">KebunSen&amp;Sab</field>
-            <field name="time_start">6</field>
-            <field name="time_end">14</field>
-            <field name="sign_in" eval="5.32"/>
-            <field name="sign_out" eval="17.42"/>
-            <field name="day_normal">1</field>
-            <field name="day_finger">1</field>
-            <field name="hour_overtime">0</field>
-            <field name="hour_work">8</field>
-            <field name="required_in" eval="True"/>
-            <field name="required_out" eval="True"/>
-            <field name="department">Liyodu (Kurni Y. Latada)</field>
-            <field name="hour_attendance">12.08</field>
-            <field name="hour_ot_normal">0</field>
-            <field name="action_reason"></field>
-        </record>
+        <!--<record id="finger_att_4" model="hr_fingerprint_ams.attendance"-->
+            <!--context="{'tz':'Asia/Jakarta'}">-->
+            <!--<field name="db_id">1571</field>-->
+            <!--<field name="terminal_id">301100332</field>-->
+            <!--<field name="nik">30110000332</field>-->
+            <!--<field name="employee_name">Kanono Desta</field>-->
+            <!--<field name="auto_assign" eval="True"/>-->
+            <!--<field name="date" eval="(datetime.today() + relativedelta(days=0)).strftime('%Y-%m-%d')"/>-->
+            <!--<field name="work_schedules">KebunSen&amp;Sab</field>-->
+            <!--<field name="time_start">6</field>-->
+            <!--<field name="time_end">14</field>-->
+            <!--<field name="sign_in" eval="5.32"/>-->
+            <!--<field name="sign_out" eval="17.42"/>-->
+            <!--<field name="day_normal">1</field>-->
+            <!--<field name="day_finger">1</field>-->
+            <!--<field name="hour_overtime">0</field>-->
+            <!--<field name="hour_work">8</field>-->
+            <!--<field name="required_in" eval="True"/>-->
+            <!--<field name="required_out" eval="True"/>-->
+            <!--<field name="department">Liyodu (Kurni Y. Latada)</field>-->
+            <!--<field name="hour_attendance">12.08</field>-->
+            <!--<field name="hour_ot_normal">0</field>-->
+            <!--<field name="action_reason"></field>-->
+        <!--</record>-->
     </data>
 </openerp>

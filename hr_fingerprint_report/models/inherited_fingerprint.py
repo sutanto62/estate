@@ -289,7 +289,6 @@ class FingerAttendance(models.Model):
             record.p_scan_hour = record.sign_out - record.sign_in if record.sign_in and record.sign_out else 0
             record.p_scan_day_finger = record.p_scan_hour/record.p_hour_work_float if record.p_hour_work_float else 0
 
-
         return True
 
     def _get_time(self, schedule, date, mode=1):
@@ -356,29 +355,16 @@ class FingerAttendance(models.Model):
         :rtype: integer
         """
         for record in self:
-            finger_date = datetime.strptime(record.date, DF)
-            finger_day = finger_date.strftime('%A')
-            is_pkwt_daily = True if record.nik[:1] == '3' else False
-            schedule = record.work_schedules
-
-            # todo should switch to res_calendar
-            time_end = {
-                'Friday': 11.0,
-                'Saturday': 13.0
-            }
-
             res = 0
-            if is_pkwt_daily and finger_day == 'Friday' and schedule == 'Opr Kebun SenSab':
-                # PKWT Daily at site
-                delta = time_end['Friday'] - record.sign_out
-                res = int(round(delta, 2) * 60) if record.sign_out else record.p_early_leave
-            elif is_pkwt_daily and finger_day == 'Saturday' and schedule == 'RO SenJum':
-                # PKWT Daily at site office
-                delta = time_end['Saturday'] - record.sign_out
-                res = int(round(delta, 2) * 60) if record.sign_out else record.p_early_leave
-            else:
-                # Other did not required recalculation
-                res = record.p_early_leave
+
+            # compute early leave
+            if record.contract_id:
+                calendar_id = self.env['resource.calendar'].browse(record.contract_id.working_hours.id)
+                day = datetime.strptime(record.date, DF).strftime('%w')
+                time_start, time_end = calendar_id._get_day_in_out(day)
+                delta = time_end - record.sign_out
+                res = int(round(delta, 2) *60) if record.sign_out else record.p_early_leave
+
             return res if res > 0 else 0
 
     def _search_hour_late(self, operator, value):

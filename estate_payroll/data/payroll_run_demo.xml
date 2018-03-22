@@ -57,7 +57,7 @@
             <field name="date_from" eval="(datetime.today() + relativedelta(months=-1, day=1)).strftime('%Y-%m-%d')"/>
             <field name="date_to" eval="(datetime.today() + relativedelta(day=1, months=0, days=-1)).strftime('%Y-%m-%d')"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
-            <field name="contract_id" ref="estate_payroll.hr_contract_abasakumali_1"/>
+            <field name="contract_id" ref="estate.khl_1_contract"/>
         </record>
         <record id="payslip_line_1" model="hr.payslip.worked_days">
             <field name="name">Estate Upkeep Working Days paid at 100%</field>
@@ -66,7 +66,7 @@
             <field name="code">WORK300</field>
             <field name="number_of_days">1</field>
             <field name="number_of_hours">7.0</field>
-            <field name="contract_id" ref="estate_payroll.hr_contract_abasakumali_1"/>
+            <field name="contract_id" ref="estate.khl_1_contract"/>
         </record>
         <record id="payslip_line_2" model="hr.payslip.input">
             <field name="name">Piece Rate</field>
@@ -74,7 +74,7 @@
             <field name="sequence">10</field>
             <field name="code">PR</field>
             <field name="amount">15000</field>
-            <field name="contract_id" ref="estate_payroll.hr_contract_abasakumali_1"/>
+            <field name="contract_id" ref="estate.khl_1_contract"/>
         </record>
         <function name="compute_sheet" model="hr.payslip" eval="[ref('estate_payslip_1')]"/>
 
@@ -86,7 +86,7 @@
             <field name="date_from" eval="(datetime.today() + relativedelta(day=1, months=-1)).strftime('%Y-%m-%d')"/>
             <field name="date_to" eval="(datetime.today() + relativedelta(day=1, months=0, days=-1)).strftime('%Y-%m-%d')"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
-            <field name="contract_id" ref="estate_payroll.hr_contract_abasdepo_1"/>
+            <field name="contract_id" ref="estate.khl_2_contract"/>
         </record>
         <record id="payslip_line_3" model="hr.payslip.worked_days">
             <field name="name">Estate Upkeep Working Days paid at 100%</field>
@@ -95,7 +95,7 @@
             <field name="code">WORK300</field>
             <field name="number_of_days">1</field>
             <field name="number_of_hours">7.0</field>
-            <field name="contract_id" ref="estate_payroll.hr_contract_abasdepo_1"/>
+            <field name="contract_id" ref="estate.khl_2_contract"/>
         </record>
         <record id="payslip_line_4" model="hr.payslip.input">
             <field name="name">Piece Rate</field>
@@ -103,7 +103,7 @@
             <field name="sequence">10</field>
             <field name="code">PR</field>
             <field name="amount">22500</field>
-            <field name="contract_id" ref="estate_payroll.hr_contract_abasdepo_1"/>
+            <field name="contract_id" ref="estate.khl_2_contract"/>
         </record>
 
         <!-- run function to compute -->

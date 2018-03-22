@@ -1,2 +1,3 @@
 import hr_time_labour
 import inherited_hr_attendance
+import inherited_resource

@@ -108,6 +108,9 @@ class FingerAttendance(models.Model):
         """
         f_attendance_obj = self.env['hr_fingerprint_ams.attendance']
 
+        # override AMS time setup
+        vals = self.cleansing(vals)
+
         # update purposes
         current = f_attendance_obj.search([('db_id', '=', vals['db_id']),
                                            ('terminal_id', '=', vals['terminal_id']),
@@ -392,3 +395,42 @@ class FingerAttendance(models.Model):
             fields.remove('sign_out')
 
         return super(FingerAttendance, self).read_group(cr, uid, domain, fields, groupby, offset, limit, context, orderby, lazy)
+
+    @api.model
+    def cleansing(self, vals):
+        """
+        Some data need to be validated before saved.
+        :return: vals
+        """
+        employee_id = self.env['hr.employee'].search([('name', '=', vals['employee_name']),
+                                                      ('nik_number', '=', vals['nik'])])
+        contract_id = self.env['hr.contract'].current(employee_id)
+        day = datetime.strptime(vals['date'], DF).strftime('%w')
+
+        # Cleansing time start and date
+        vals['time_start'], vals['time_end'] = self._fix_day_in_out(contract_id, day)
+
+        return vals
+
+    @api.model
+    def _fix_day_in_out(self, contract_id, day):
+        """
+        Fix time in and time out based on employee calendar.
+        :param contract_id: employee contract recordset
+        :param day: day of the week, sunday is 0
+        :type: integer
+        :return: list of float
+        """
+
+        if contract_id is None:
+            err_msg = _('No contract found.')
+            raise ValueError(err_msg)
+
+        if contract_id.working_hours is None:
+            err_msg = _('No working hours defined.')
+            raise ValueError(err_msg)
+
+        calendar_id = self.env['resource.calendar'].browse(contract_id.working_hours.id)
+        time_start, time_end = calendar_id._get_day_in_out(day)
+
+        return time_start, time_end

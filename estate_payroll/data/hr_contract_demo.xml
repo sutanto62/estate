@@ -2,7 +2,7 @@
 <openerp>
     <data noupdate="1">
         <!-- Employee Contract -->
-        <record id="hr_contract_abasakumali_1" model="hr.contract">
+        <record id="estate.khl_1_contract" model="hr.contract">
             <field name="name">Abas Akumali</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -12,7 +12,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_abasdepo_1" model="hr.contract">
+        <record id="estate.khl_2_contract" model="hr.contract">
             <field name="name">Abas Depo</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -22,7 +22,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_ganinanggili_1" model="hr.contract">
+        <record id="estate.khl_3_contract" model="hr.contract">
             <field name="name">Gani Nanggili</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -32,7 +32,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwtt_d"/>
         </record>
-        <record id="hr_contract_kanonodesta_1" model="hr.contract">
+        <record id="estate.khl_4_contract" model="hr.contract">
             <field name="name">Kanono Desta</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -42,7 +42,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_latifabdulah_1" model="hr.contract">
+        <record id="estate.khl_5_contract" model="hr.contract">
             <field name="name">Latif Abdulah</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -52,7 +52,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_adamakumali_1" model="hr.contract">
+        <record id="estate.khl_6_contract" model="hr.contract">
             <field name="name">Adam Akumali</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -62,7 +62,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwtt_d"/>
         </record>
-        <record id="hr_contract_lasena_1" model="hr.contract">
+        <record id="estate.khl_7_contract" model="hr.contract">
             <field name="name">Lasena</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -72,7 +72,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_suryomaduto_1" model="hr.contract">
+        <record id="estate.khl_8_contract" model="hr.contract">
             <field name="name">Suryo Maduto</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -82,7 +82,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_amrainahmad_1" model="hr.contract">
+        <record id="estate.khl_9_contract" model="hr.contract">
             <field name="name">Amrain Ahmad</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -92,7 +92,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_ahmadbahrun_1" model="hr.contract">
+        <record id="estate.khl_10_contract" model="hr.contract">
             <field name="name">Ahmad Bahrun</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -102,7 +102,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="hr_contract_syukurmandor_1" model="hr.contract">
+        <record id="estate.mandor_1_contract" model="hr.contract">
             <field name="name">Syukur Mandor</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
