@@ -515,7 +515,9 @@
 			                                <td class="noborder">
 			                                    <t t-foreach="o.message_ids" t-as="mids">
 													<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-													    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'President Director Financial Approval'">
+													    <t t-if="mids_tracking.field == 'state' 
+													        and mids_tracking.old_value_char == 'President Director Financial Approval'
+													        and mids_tracking.new_value_char == 'PP Full Approve'">
 														    <u>
 														        <span t-field="mids.author_id"/>&#160;
 															</u>
@@ -734,7 +736,9 @@
 										<t t-set="is_director_approval" t-value="0"/>
 										<t t-foreach="o.message_ids" t-as="mids">
 											<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-											    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'President Director Financial Approval'">
+											    <t t-if="mids_tracking.field == 'state' 
+											        and mids_tracking.old_value_char == 'President Director Financial Approval'
+											        and mids_tracking.new_value_char == 'PP Full Approve'">
 												    <t t-set="is_director_approval" t-value="1"/>
 											    </t>
 											</t>
@@ -788,7 +792,9 @@
 			                            <t t-if="is_director_approval == 1">
 		                                    <t t-foreach="o.message_ids" t-as="mids">
 												<t t-foreach="mids.tracking_value_ids" t-as="mids_tracking">
-												    <t t-if="mids_tracking.field == 'state' and mids_tracking.old_value_char == 'President Director Financial Approval'">
+												    <t t-if="mids_tracking.field == 'state' 
+												        and mids_tracking.old_value_char == 'President Director Financial Approval'
+												        and mids_tracking.new_value_char == 'PP Full Approve'">
 													    <tr>
 							                            	<td class="noborder">
 							                                    Disetujui oleh President Director

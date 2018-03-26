@@ -77,9 +77,10 @@ class StockMove(models.Model):
 
             # Update material order if all stock moves has been done
             material_order_id = record.get_material_order()
-            picking_ids = material_order_id.stock_pickings()
-            if set(picking_ids.mapped('state')) == set(['done']):
-                material_order_id.state = 'done'
+            if len(material_order_id) > 0:
+                picking_ids = material_order_id.stock_pickings()
+                if set(picking_ids.mapped('state')) == set(['done']):
+                    material_order_id.state = 'done'
 
     @api.multi
     def action_cancel(self):
@@ -89,9 +90,10 @@ class StockMove(models.Model):
 
             # Update material order status if all stock move cancel
             material_order_id = record.get_material_order()
-            res = material_order_id.stock_pickings().mapped('state')
-            if set(res).issubset(['cancel']):
-                material_order_id.state = 'cancel'
+            if len(material_order_id) > 0:
+                res = material_order_id.stock_pickings().mapped('state')
+                if set(res).issubset(['cancel']):
+                    material_order_id.state = 'cancel'
 
     # do not override action_assign, prevent backorder created.
     # @api.multi
