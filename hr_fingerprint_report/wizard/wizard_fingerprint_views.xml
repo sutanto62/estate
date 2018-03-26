@@ -16,9 +16,10 @@
                             <field name="department_id"/>
                         </group>
                         <group string="Optional">
+                            <field name="office_level_id" required="True"/>
                             <field name="contract_type"/>
                             <field name="contract_period"/>
-                            <field name="office_level_id"/>
+                            <field name="contract"/>
                         </group>
                     </group>
                     <footer>

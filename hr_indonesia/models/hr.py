@@ -54,6 +54,8 @@ class Employee(models.Model):
                                             "* Daily, Karyawan Harian.", track_visibility="onchange")
     outsource = fields.Boolean("Outsource employee", help="Activate to represent employee as Outsource.")
     internship = fields.Boolean("Internship", help="Activate to represent internship employee.")
+    contract = fields.Boolean("Contract Based", help="Activate to marked PKWTT with contract agreement.")
+    probation = fields.Boolean("Probation", help="Only applied for PKWT.")
     age = fields.Float("Employee Age", compute='_compute_age')
     joindate = fields.Date("Date of Join", track_visibility='onchange')
     resigndate = fields.Date("Date of Resign", track_visibility='onchange')
@@ -140,6 +142,33 @@ class Employee(models.Model):
                 raise ValidationError(err_msg)
             elif not employee.joindate:
                 err_msg = _('Set join date before define resign date.')
+                raise ValidationError(err_msg)
+            else:
+                return True
+
+    @api.multi
+    @api.constrains('contract','contract_type','contract_period')
+    def _check_contract(self):
+        """ PKWT should not be contract."""
+
+        for employee in self:
+            if employee.contract and employee.contract_type == '2' and employee.contract_period == '2':
+                err_msg = _('Contract did not allowed for PKWT Daily.')
+                raise ValidationError(err_msg)
+            else:
+                return True
+
+    @api.multi
+    @api.constrains('probation')
+    def _check_probation(self):
+        """ PKWTT with contract agreement."""
+
+        for employee in self:
+            if employee.probation and employee.contract_type != '1':
+                err_msg = _('Probation allowed for PKWTT contract type only.')
+                raise ValidationError(err_msg)
+            elif employee.probation and employee.contract:
+                err_msg = _('Probation didn\'t allowed for contract employee.')
                 raise ValidationError(err_msg)
             else:
                 return True

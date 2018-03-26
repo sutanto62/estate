@@ -25,6 +25,9 @@ class FingerprintReport(models.AbstractModel):
         if data['form']['contract_period']:
             domain.append(('contract_period', '=', str(data['form']['contract_type'])))
 
+        if data['form']['contract']:
+            domain.append(('contract', '=', str(data['form']['contract'])))
+
         if data['form']['office_level_id']:
             domain.append(('office_level_id', '=', data['form']['office_level_id'][0]))
 

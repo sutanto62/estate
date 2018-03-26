@@ -25,6 +25,8 @@
                                 <field name="contract_period"/>
                                 <field name="joindate"/>
                                 <field name="resigndate"/>
+                                <field name="contract"/>
+                                <field name="probation"/>
                                 <field name="internship"/>
                                 <field name="outsource"/>
                                 <field name="office_level_id"/>
@@ -126,6 +128,11 @@
             <field name="inherited_id" ref="hr.view_employee_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="//search" position="inside">
+                    <separator/>
+                    <filter string="Contract Employee" name="contract"
+                            domain="[('contract', '=', True)]"/>
+                    <filter string="Probation Employee" name="probation"
+                            domain="[('probation', '=', True)]"/>
                     <separator/>
                     <filter string="Last Month New Employee" name="last_month_employee"
                         domain="[('joindate','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')),

@@ -21,6 +21,17 @@
             <field name="number_next_actual">1</field>
         </record>
 
+        <record id="ir_sequence_nik_pkwt_monthly" model="ir.sequence">
+            <field name="active" eval="True"/>
+            <field name="name">Nomor Induk Karyawan</field>
+            <field name="code">hr_indonesia.nik_pkwt_monthly</field>
+            <field name="implementation">standard</field>
+            <field name="prefix">%(code_1)s%(y)s</field>
+            <field name="padding">7</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+
         <record id="ir_sequence_nik_hja" model="ir.sequence">
             <field name="active" eval="True"/>
             <field name="name">KHL HJA 1</field>

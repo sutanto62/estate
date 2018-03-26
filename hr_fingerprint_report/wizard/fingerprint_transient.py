@@ -29,6 +29,7 @@ class Fingerprint(models.TransientModel):
     contract_period = fields.Selection([('1', 'Monthly'), ('2', 'Daily')], "Contract Period",
                                        help="* Monthly, Karyawan Bulanan, " \
                                             "* Daily, Karyawan Harian.")
+    contract = fields.Boolean('Contract Based', help='Select to filter contract based.')
     location_id = fields.Many2one('hr_indonesia.location', 'Placement Location')
     office_level_id = fields.Many2one('hr_indonesia.office', 'Office Level')
 
@@ -96,6 +97,7 @@ class Fingerprint(models.TransientModel):
         result['department_id'] = data['form']['department_id'] or False
         result['contract_type'] = data['form']['contract_type'] or False
         result['contract_period'] = data['form']['contract_period'] or False
+        result['contract'] = data['form']['contract'] or False
         result['office_level_id'] = data['form']['office_level_id'] or False
 
         return result
@@ -111,6 +113,6 @@ class Fingerprint(models.TransientModel):
         data['ids'] = self.env.context.get('active_ids', [])
         data['model'] = self.env.context.get('active_model', 'ir.ui.menu')
         data['form'] = self.read(['period', 'date_start', 'date_end', 'company_id', 'department_id', 'contract_id',
-                                  'contract_type', 'contract_period','office_level_id'])[0]
+                                  'contract_type', 'contract_period','contract','office_level_id'])[0]
 
         return self._print_report(data)

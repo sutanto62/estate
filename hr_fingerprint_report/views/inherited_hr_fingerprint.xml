@@ -36,6 +36,7 @@
                     <field name="contract_id"/>
                     <field name="contract_type"/>
                     <field name="contract_period"/>
+                    <field name="contract"/>
                     <field name="hour_late_t"/>
                     <!--
                     use work_schedules - cross check AMS
@@ -75,6 +76,22 @@
                     <field name="p_labor_late" sum="G"/>
                     <field name="p_labor_late_amount" sum="H"/>
                     <field name="p_sign_percent" string="Persen Scan" avg="I"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="inherited_fingerprint_attendance_view_search" model="ir.ui.view">
+            <field name="name">Inherited Fingerprint Attendance Search</field>
+            <field name="model">hr_fingerprint_ams.attendance</field>
+            <field name="inherit_id" ref="hr_fingerprint_ams.fingerprint_attendance_view_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='filter_approved']" position="after">
+                    <separator/>
+                    <filter name="filter_contract" string="Contract Based" domain="[('contract','=', 'True')]"/>
+                    <filter name="filter_probation" string="Probation" domain="[('probation','=', 'True')]"/>
+                </xpath>
+                <xpath expr="//group" position="inside">
+                    <filter name="filter_by_contract" string="Contract Based" context="{'group_by': 'contract'}"/>
                 </xpath>
             </field>
         </record>
