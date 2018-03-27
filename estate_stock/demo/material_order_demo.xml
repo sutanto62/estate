@@ -102,8 +102,9 @@
             <field name="division_id" ref="estate.division_1"/>
             <field name="date_expected" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
             <field name="move_type">one</field>
-            <field name="picking_type_id" ref="stock.picking_type_internal"/>
             <field name="type">estate</field>
+            <field name="state">draft</field>
+            <field name="picking_type_id" ref="stock.picking_type_internal"/>
             <field name="material_ids" eval="[(6, 0, [ref('mo_1_line_1'), ref('mo_1_line_2'), ref('mo_1_line_3')])]"/>
         </record>
         <!--/material order line 1-->
