@@ -46,6 +46,7 @@
     'demo': [
         'data/demo.xml',
         'data/account_analytic_demo.xml',
+        'data/estate_demo.xml',
         'data/stock.location.csv',
         'data/estate.block.template.csv',
         'data/hr_employee_demo.xml',
