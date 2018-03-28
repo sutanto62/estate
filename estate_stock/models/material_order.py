@@ -66,7 +66,7 @@ class MaterialOrder(models.Model):
     def _compute_stock_picking(self):
         """ Display how many stock picking created."""
         self.ensure_one()
-        res = len(self.stock_pickings(['draft', 'waiting', 'confirmed', 'partially_available', 'assigned', 'done']))
+        res = len(self.stock_pickings(state=['draft', 'waiting', 'confirmed', 'partially_available', 'assigned', 'done']))
         self.stock_picking_amount = res
         return res
 
@@ -74,7 +74,7 @@ class MaterialOrder(models.Model):
     def _compute_stock_move(self):
         """ Display how many stock moves already available."""
         self.ensure_one()
-        res = len(self.stock_moves(['draft', 'waiting', 'confirmed', 'partially_available', 'assigned', 'done']))
+        res = len(self.stock_moves(state=['draft', 'waiting', 'confirmed', 'partially_available', 'assigned', 'done']))
         self.stock_move_amount = res
         return res
 
@@ -82,7 +82,7 @@ class MaterialOrder(models.Model):
     def _compute_stock_available(self):
         """ Stock officer has marked picking as to do."""
         self.ensure_one()
-        res = len(self.stock_moves(['assigned']))
+        res = len(self.stock_moves(state=['assigned']))
         self.stock_move_available = res
         return res
 
@@ -90,7 +90,7 @@ class MaterialOrder(models.Model):
     def _compute_stock_done(self):
         """ Stock officer has validated picking."""
         self.ensure_one()
-        res = len(self.stock_moves(['done']))
+        res = len(self.stock_moves(state=['done']))
         self.stock_move_done = res
         return res
 
@@ -313,23 +313,46 @@ class MaterialOrder(models.Model):
 
         return True
 
+    # @api.multi
+    # def stock_pickings(self, state=[]):
+    #     """ Display all created stock picking from approved material order."""
+    #     # self.ensure_one() - do not use ensure_one(). error update stock quantity
+    #     stock_picking_obj = self.env['stock.picking']
+    #     domain = [('origin', '=', self.name)]
+    #     if state:
+    #         domain.append(('state', 'in', state))
+    #     picking_ids = stock_picking_obj.search(domain)
+    #     return picking_ids
+
     @api.multi
-    def stock_pickings(self, state=[]):
-        """ Display all created stock picking from approved material order."""
+    def stock_pickings(self, state=[], origin=None):
+        """
+        Get stock pickings from material order.
+        :param state: state of picking
+        :param origin: material order name
+        :return: picking recordset
+        """
         # self.ensure_one() - do not use ensure_one(). error update stock quantity
         stock_picking_obj = self.env['stock.picking']
-        domain = [('origin', '=', self.name)]
+
+        domain = [('origin', '=', origin if origin is not None else self.name)]
         if state:
             domain.append(('state', 'in', state))
         picking_ids = stock_picking_obj.search(domain)
+
         return picking_ids
 
     @api.multi
-    def stock_moves(self, state=[]):
-        """Display all created stock move (from one or many stock picking) from approved material order."""
+    def stock_moves(self, state=[], origin=None):
+        """
+        Display all created stock move (from one or many stock picking) from approved material order.
+        :param state: state of stock move
+        :param origin: material order name
+        :return: stock move recordsets
+        """
         self.ensure_one()
         stock_move_obj = self.env['stock.move']
-        picking_ids = self.stock_pickings()
+        picking_ids = self.stock_pickings(origin=origin)
         domain = [('picking_id', 'in', picking_ids.ids)]
         if state:
             domain.append(('state', 'in', state))

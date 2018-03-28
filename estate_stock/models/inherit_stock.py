@@ -28,8 +28,8 @@ class StockPicking(models.Model):
     def action_confirm(self):
         """ Material order should be approved before picking marked as todo"""
 
-        material_id = self.env['estate_stock.material_order'].search([('name', '=', self.origin)])
-        if material_id and material_id.state != 'approve':
+        material_order_id = self.get_material_order()
+        if material_order_id and material_order_id.state != 'approve':
             err_msg = _('Stock picking could not marked to do as material order not approved yet.')
             raise ValidationError(err_msg)
 
@@ -42,9 +42,12 @@ class StockPicking(models.Model):
     def action_assign(self):
         """ Notify user unable to reserve."""
         res = super(StockPicking, self).action_assign()
-        if self.move_type == 'one' and set(['confirmed']).issubset(set(self.move_lines.mapped('state'))):
-            err_msg = _('Unable to reserve. Some of your required product is waiting for availability.')
-            raise ValidationError(err_msg)
+
+        if self.get_material_order():
+            if self.move_type == 'one' and set(['confirmed']).issubset(set(self.move_lines.mapped('state'))):
+                err_msg = _('Unable to reserve. Some of your required product is waiting for availability.')
+                raise ValidationError(err_msg)
+
         return res
 
     # Backordered stock picking might be canceled for operation reason.
@@ -58,6 +61,11 @@ class StockPicking(models.Model):
     #         super(StockPicking, record).action_cancel()
     #
     #     return True
+    @api.model
+    def get_material_order(self):
+        """ Allow to find material order of a stock picking."""
+        res = self.env['estate_stock.material_order'].search([('name', '=', self.origin)])
+        return res
 
 
 class StockMove(models.Model):
