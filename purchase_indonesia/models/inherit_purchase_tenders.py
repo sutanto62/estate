@@ -111,117 +111,117 @@ class InheritPurchaseTenders(models.Model):
 #         for item in self:
 #             purch_req = item.env['purchase.request.line']
 #             purch_req_lines = purch_req.search([('request_id','=',item.request_id.id)])
-#              
+#
 #             state_purch_order = ['done','purchase']
 #             purch_order = item.env['purchase.order']
 #             purch_orders = purch_order.search([('request_id','=',item.request_id.id),('state','in',state_purch_order)])
 #             purch_order_lines = item.env['purchase.order.line'].search([('order_id','in',purch_orders.ids)])
-#              
+#
 #             stock_picking = item.env['stock.picking']
 #             stock_pickings = stock_picking.search([('purchase_id','in',purch_orders.ids),('state','=','done')])
 #             stock_pack_operations = item.env['stock.pack.operation'].search([('picking_id','in',stock_pickings.ids)])
-#              
+#
 #             state_acc_inv = ['open','paid']
 #             acc_inv = item.env['account.invoice']
 #             acc_invs = acc_inv.search([('picking_id','in',stock_pickings.ids),('state','in',state_acc_inv)])
-#              
+#
 #             #if acc_invs null it means invoice is created per po not per grn.
 #             if not acc_invs:
 #                 acc_inv_lines = item.env['account.invoice.line'].search([('purchase_line_id.order_id.id','in',purch_orders.ids)])
 #             else:
 #                 acc_inv_lines = item.env['account.invoice.line'].search([('invoice_id','in',acc_invs.ids)])
-#                  
+#
 #             l_purch_req_lines = []
 #             str_product_qty = ''
 #             for i in purch_req_lines:
 #                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
 #                 l_purch_req_lines.extend(str_product_qty)
-#                  
+#
 #             l_purch_order_lines = []
 #             str_product_qty = ''
 #             for i in purch_order_lines:
 #                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
 #                 l_purch_order_lines.extend(str_product_qty)
-#                  
+#
 #             l_stock_pack_operations = []
 #             str_product_qty = ''
 #             for i in stock_pack_operations:
 #                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
 #                 l_stock_pack_operations.extend(str_product_qty)
-#              
+#
 #             l_acc_inv_lines = []
 #             str_product_qty = ''
 #             for i in acc_inv_lines:
 #                 str_product_qty = str(i.product_id.id) + '-' + str(i.quantity)
 #                 l_acc_inv_lines.extend(str_product_qty)
-#              
+#
 #             item.is_po_done = set(l_purch_req_lines) == set(l_purch_order_lines)
 #             item.is_grn_done = set(l_purch_req_lines) == set(l_stock_pack_operations)
 #             item.is_inv_done = set(l_purch_req_lines) == set(l_acc_inv_lines)
-    
+
     @api.multi
     def set_is_confirmation_true(self):
         for item in self:
             item.request_id.set_is_confirmation(True)
-            
+
     @api.multi
     def set_is_confirmation_false(self):
         for item in self:
             item.request_id.set_is_confirmation(False)
-        
+
     @api.multi
     def update_status_po_grn_inv(self):
         for item in self:
             purch_req = item.env['purchase.request.line']
             purch_req_lines = purch_req.search([('request_id','=',item.request_id.id)])
-            
+
             state_purch_order = ['done','purchase']
             purch_order = item.env['purchase.order']
             purch_orders = purch_order.search([('request_id','=',item.request_id.id),('state','in',state_purch_order)])
             purch_order_lines = item.env['purchase.order.line'].search([('order_id','in',purch_orders.ids)])
-            
+
             stock_picking = item.env['stock.picking']
             stock_pickings = stock_picking.search([('purchase_id','in',purch_orders.ids),('state','=','done')])
             stock_pack_operations = item.env['stock.pack.operation'].search([('picking_id','in',stock_pickings.ids)])
-            
+
             state_acc_inv = ['open','paid']
             acc_inv = item.env['account.invoice']
             acc_invs = acc_inv.search([('picking_id','in',stock_pickings.ids),('state','in',state_acc_inv)])
-            
+
             #if acc_invs null it means invoice is created per po not per grn.
             if not acc_invs:
                 acc_inv_lines = item.env['account.invoice.line'].search([('purchase_line_id.order_id.id','in',purch_orders.ids)])
             else:
                 acc_inv_lines = item.env['account.invoice.line'].search([('invoice_id','in',acc_invs.ids)])
-                
+
             l_purch_req_lines = []
             str_product_qty = ''
             for i in purch_req_lines:
                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
                 l_purch_req_lines.extend(str_product_qty)
-                
+
             l_purch_order_lines = []
             str_product_qty = ''
             for i in purch_order_lines:
                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
                 l_purch_order_lines.extend(str_product_qty)
-                
+
             l_stock_pack_operations = []
             str_product_qty = ''
             for i in stock_pack_operations:
                 str_product_qty = str(i.product_id.id) + '-' + str(i.product_qty)
                 l_stock_pack_operations.extend(str_product_qty)
-            
+
             l_acc_inv_lines = []
             str_product_qty = ''
             for i in acc_inv_lines:
                 str_product_qty = str(i.product_id.id) + '-' + str(i.quantity)
                 l_acc_inv_lines.extend(str_product_qty)
-            
+
             item.is_po_done = set(l_purch_req_lines) == set(l_purch_order_lines)
             item.is_grn_done = set(l_purch_req_lines) == set(l_stock_pack_operations)
             item.is_inv_done = set(l_purch_req_lines) == set(l_acc_inv_lines)
-            
+
     @api.multi
     def _get_value_low(self):
         #get Minimal value from purchase params for Purchase Request
@@ -329,7 +329,7 @@ class InheritPurchaseTenders(models.Model):
             arrMissing = []
             domain = [('requisition_id','=',record.id),('check_missing_product','=',False),('qty_outstanding','>',0)]
             domain2 = [('requisition_id','=',record.id),('check_missing_product','=',True)]
-            
+
             qcf = self.env['quotation.comparison.form'].search([('requisition_id','=',self.id),('state','=','draft')])
 
             for line in record.line_ids.search(domain2):
@@ -1032,7 +1032,7 @@ class InheritPurchaseTenders(models.Model):
             # template = self.env['ir.model.data'].get_object('mail_template_demo', 'example_email_template')
             # Send out the e-mail template to the user
             self.env['mail.template'].browse(template.id).send_mail(self.id,force_send=True)
-    
+
     @api.one
     def send_mail_template_new_tender(self):
             # Find the e-mail template
@@ -1072,12 +1072,15 @@ class InheritPurchaseRequisitionLine(models.Model):
     check_missing_product = fields.Boolean('Checking Missing Product')
     est_price = fields.Float('Estimated Price',compute='_compute_est_price')
     qty_outstanding_comp = fields.Float('Quantity Outstanding', compute='_compute_qty_outstanding_comp', readonly=True)
-    
+    qty_po = fields.Float('Quantity PO', compute='_compute_qty_po', readonly=True)
+    enable_cancel = fields.Boolean(compute='_compute_enable_cancel', readonly=True)
+    date_cancel = fields.Date('Date Cancel')
+
     @api.multi
     def _compute_qty_outstanding_comp(self):
         for item in self:
             item.qty_outstanding_comp = item.product_qty - item.qty_received
-        
+
     @api.multi
     @api.depends('est_price')
     def _compute_est_price(self):
@@ -1086,6 +1089,69 @@ class InheritPurchaseRequisitionLine(models.Model):
                 request_line  = item.env['purchase.request.line'].search([('request_id','=',item.requisition_id.request_id.id),
                                                                           ('product_id','=',item.product_id.id)]).price_per_product
                 item.est_price = request_line
+
+    @api.multi
+    def _compute_qty_po(self):
+        """ This function is used to compute sum of product already in PO. """
+        for req_line in self:
+            order_ids = self.env['purchase.order'].search([('requisition_id', '=', req_line.requisition_id.id),
+                                                            ('state', 'not in', ['draft', 'sent', 'to_approve', 'cancel'])]).ids
+
+            order_line_ids = self.env['purchase.order.line'].search([('order_id', 'in', order_ids),
+                                                                     ('product_id', '=', req_line.product_id.id)])
+
+            picking_ids = self.env['stock.picking'].search([('purchase_id', 'in', order_ids),
+                                                            ('state', '=', 'cancel')]).ids
+
+            pack_operation_ids = self.env['stock.pack.operation'].search([('picking_id', 'in', picking_ids),
+                                                                          ('product_id', '=', req_line.product_id.id),
+                                                                          ('checking_split', '=', True)])
+
+            qty_po = 0
+            for order_line in order_line_ids:
+                qty_po += order_line.product_qty
+
+            cancel_qty=0
+            for pack_operation_id in pack_operation_ids:
+                cancel_qty += pack_operation_id.qty_done
+
+            req_line.qty_po = qty_po + cancel_qty
+
+    @api.multi
+    def _compute_enable_cancel(self):
+        """ This function is used enable cancel button status """
+        for req_line in self:
+            if req_line.qty_outstanding_comp > 0 and not req_line.date_cancel:
+                if req_line.qty_po == req_line.qty_received != req_line.product_qty and req_line.check_is_allowed_user():
+                    req_line.enable_cancel = True
+
+    @api.multi
+    def action_cancel_product(self):
+        """ This function is used to process cancel product request. """
+        for rec_line in self:
+            rec_line.date_cancel = date.today()
+
+            # check if tender can be set as done
+            if rec_line.check_tender_to_done():
+                rec_line.requisition_id.is_po_done = True
+                rec_line.requisition_id.is_grn_done = True
+
+    def check_tender_to_done(self):
+        """ This function is used to set tender to done if all outstanding product has been canceled. """
+        is_done = True
+        for req_line in self.requisition_id.line_ids:
+            if req_line.qty_outstanding_comp > 0 and not req_line.date_cancel:
+                # some outstanding product still exist.
+                is_done = False
+                break
+        return is_done
+
+    def check_is_allowed_user(self):
+        """ This function is used to check if user allowed clicking cancel button """
+        user_id = self.requisition_id.user_id.id
+        uid = self.env.uid
+        if not self.date_cancel and self.qty_outstanding_comp and user_id == uid:
+            return True
 
 class TriggerPurchaseTender(models.Model):
     _name = "purchase.requisition.trigger"

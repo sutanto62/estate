@@ -137,6 +137,10 @@
                                readonly="1"/>
                  </xpath>
 
+                 <xpath expr="//sheet/notebook/page/field[@name='line_ids']" position="attributes">
+                      <attribute name="attrs">{'readonly': True}</attribute>
+                 </xpath>
+
                  <xpath expr="//tree/field[@name='product_qty']" position="after">
                            <field name="qty_received" class="oe_inline" invisible="0"
                                readonly="1"/>
@@ -144,10 +148,19 @@
                                readonly="0"/>
                            <field name="qty_outstanding_comp" class="oe_inline" invisible="0"
                                readonly="0"/>
-
+                            <field name="qty_po" class="oe_inline" invisible="0" readonly="1" />
                             <field name="check_missing_product" class="oe_inline" invisible="1"
                                readonly="0"/>
                  </xpath>
+
+                 <xpath expr="//tree/field[@name='account_analytic_id']" position="after">
+                     <field name="date_cancel" string="Date Cancel" />
+                     <field name="enable_cancel" invisible="1"/>
+                     <button icon="gtk-cancel" name="action_cancel_product" string="Cancel this product!" type="object"
+                            attrs="{'invisible': [('enable_cancel', '=', False)]}"/>
+
+                 </xpath>
+
                  <xpath expr="//tree/field[@name='schedule_date']" position="replace">
                            <field name="schedule_date" string="Due Date" invisible="1"/>
                  </xpath>
