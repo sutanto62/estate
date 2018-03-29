@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--planted year-->
+        <record id="planted_year_15" model="estate.planted.year">
+            <field name="name">2015</field>
+            <field name="analytic_account_id" ref="account.analytic_estate_yearplanted_2015"/>
+        </record>
+        <record id="planted_year_16" model="estate.planted.year">
+            <field name="name">2016</field>
+            <field name="analytic_account_id" ref="account.analytic_estate_yearplanted_2016"/>
+        </record>
+        <!--/planted year-->
+    </data>
+</openerp>

@@ -33,6 +33,7 @@ class TestSecurity(TransactionCase):
         self.estate_id = self.env.ref('stock.stock_main_estate')
         self.division_id = self.env.ref('stock.stock_division_1')
         self.khl_1 = self.env.ref('estate.khl_1')
+        self.khl_2 = self.env.ref('estate.khl_2')
 
         # User
         User = self.env['res.users'].with_context({'no_reset_password': True})
@@ -87,15 +88,15 @@ class TestSecurity(TransactionCase):
                     'date_from': self.date_1,
                     'date_to': self.date_2,
                     'struct_id': self.ref('hr_payroll.structure_estate_pkwt_d'),
-                    'contract_id': self.ref('estate_payroll.hr_contract_abasakumali_1')
+                    'contract_id': self.ref('estate.hr_contract_abasakumali_1')
                 }),
                 (0, 0, {
                     'name': 'SLIP/002',
-                    'employee_id': self.khl_1.id,
+                    'employee_id': self.khl_2.id,
                     'date_from': self.date_1,
                     'date_to': self.date_2,
                     'struct_id': self.ref('hr_payroll.structure_estate_pkwt_d'),
-                    'contract_id': self.ref('estate_payroll.hr_contract_abasdepo_1')
+                    'contract_id': self.ref('estate.hr_contract_abasdepo_1')
                 })
             ]
         }

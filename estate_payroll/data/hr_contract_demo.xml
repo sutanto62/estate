@@ -2,7 +2,7 @@
 <openerp>
     <data noupdate="1">
         <!-- Employee Contract -->
-        <record id="estate.khl_1_contract" model="hr.contract">
+        <record id="estate.hr_contract_abasakumali_1" model="hr.contract">
             <field name="name">Abas Akumali</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>
@@ -12,7 +12,7 @@
             <field name="working_hours" ref="resource.timesheet_estate_ops"/>
             <field name="struct_id" ref="hr_payroll.structure_estate_pkwt_d"/>
         </record>
-        <record id="estate.khl_2_contract" model="hr.contract">
+        <record id="estate.hr_contract_abasdepo_1" model="hr.contract">
             <field name="name">Abas Depo</field>
             <field name="type_id" ref="hr_indonesia.hr_contract_type_estate"/>
             <field name="date_start" eval="time.strftime('%Y')+'-1-1'"/>

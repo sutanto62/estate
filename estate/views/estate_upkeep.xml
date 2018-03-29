@@ -323,7 +323,7 @@
                                                 options="{'no_create_edit': True}"/>
                                         <field name="location_id" string="Location" options="{'no_create_edit': True}"/>
                                         <field name="division_location_id" options="{'no_create_edit': True}"/>
-                                        <field name="planted_year_id" string="PY"/>
+                                        <field name="planted_year_id" string="PY" readonly="True"/>
                                         <field name="attendance_code_id" string="Attn."
                                                 options="{'no_create': True}"/>
                                         <field name="quantity" string="Qty."
@@ -357,7 +357,7 @@
                                 <field name="material_line_ids" attrs="{'readonly': [('state','not in',('draft','confirmed'))]}">
                                     <tree editable="True" colors="orange: ratio_product_activity != prod_product_activity">
                                         <!-- TODO add future feature - proposed material? -->
-                                        <field name="product_id" string="Material" options="{'no_create': True}"/>
+                                        <field name="product_id" string="Material" options="{'no_open': True}"/>
                                         <field name="unit_amount" string="Qty."/>
                                         <field name="product_uom_id" string="UoM"/>
                                         <field name="amount"/>
