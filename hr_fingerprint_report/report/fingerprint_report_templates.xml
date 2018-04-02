@@ -574,19 +574,21 @@
                                         <th class="text-right">Keterangan</th>
                                     </thead>
                                     <t t-foreach="remarks" t-as="r">
-                                        <t t-if="r['reason'] != 'Pulang Cepat'">
-                                            <tr>
-                                                <td class="col-md-1"><t t-esc="r['reason']"/></td>
-                                                <td class="col-md-1 text-right"><t t-esc="r['person']"/> orang</td>
-                                                <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
-                                            </tr>
-                                        </t>
-                                        <t t-if="r['reason'] == 'Pulang Cepat'">
-                                            <tr>
-                                                <td class="col-md-1"><t t-esc="r['reason']"/></td>
-                                                <td class="col-md-1 text-right"><t t-esc="sum_p_early_leave_person"/> orang</td>
-                                                <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
-                                            </tr>
+                                        <t t-if="r['contract_type'] is False or r['contract_type'] == data['form']['contract_type']">
+                                            <t t-if="r['reason'] != 'Pulang Cepat'">
+                                                <tr>
+                                                    <td class="col-md-1"><t t-esc="r['reason']"/></td>
+                                                    <td class="col-md-1 text-right"><t t-esc="r['person']"/> orang</td>
+                                                    <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="r['reason'] == 'Pulang Cepat'">
+                                                <tr>
+                                                    <td class="col-md-1"><t t-esc="r['reason']"/></td>
+                                                    <td class="col-md-1 text-right"><t t-esc="sum_p_early_leave_person"/> orang</td>
+                                                    <td class="col-md-1 text-right"><span t-if="r['amount']!=''"><t t-esc="r['amount']"/></span></td>
+                                                </tr>
+                                            </t>
                                         </t>
                                     </t>
                                 </table>

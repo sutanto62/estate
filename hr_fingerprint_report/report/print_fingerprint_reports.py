@@ -78,15 +78,18 @@ class FingerprintReport(models.AbstractModel):
         # remark on action reason
         attendance_obj = self.env['hr_fingerprint_ams.attendance']
         action_reason_ids = self.env['hr.action.reason'].search([], order='name asc')
-        for reason in action_reason_ids.mapped('name'):
+        # for reason in action_reason_ids.mapped('name'):
+        for reason in action_reason_ids:
             if reason:
-                person = set(attendance_obj.search(domain + [('action_reason', '=', reason)]).mapped('employee_name'))
+                person = set(attendance_obj.search(domain + [('action_reason', '=', reason.name)]).mapped('employee_name'))
 
-                print 'reason %s person %s' % (reason, person)
+                # print 'reason %s person %s' % (reason, person)
                 res = {
-                    'reason': str(reason),
+                    'reason': str(reason.name),
+                    'contract_type': reason.contract_type,
+                    'contract_period': reason.contract_period,
                     'person': len(person),
-                    'amount': self.sum_action_reason(data, reason)
+                    'amount': self.sum_action_reason(data, reason.name)
                 }
                 list.append(res)
 
