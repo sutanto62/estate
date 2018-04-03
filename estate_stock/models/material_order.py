@@ -274,6 +274,7 @@ class MaterialOrder(models.Model):
             }
 
             location_dest_ids = self.get_location(order)
+            group_id = self.pool.get("procurement.group").create(self._cr, self._uid, {'name': order.name}, context=self._context)
             for location in location_dest_ids:
                 vals['location_dest_id'] = location
 
@@ -301,7 +302,8 @@ class MaterialOrder(models.Model):
                         'product_uom_qty': product_uom_qty,
                         'location_id': vals['location_id'],
                         'location_dest_id': vals['location_dest_id'],
-                        'company_id': vals['company_id']
+                        'company_id': vals['company_id'],
+                        'group_id': group_id
                     }
                     move_lines.append((0, 0, move_val))
                 vals['move_lines'] = move_lines
