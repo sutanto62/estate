@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        
+        'views/inherit_estate_hr_team_views.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
