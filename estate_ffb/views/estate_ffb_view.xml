@@ -120,11 +120,11 @@
                                         <field name="block_id" string="Block" invisible="1"/>
                                         <field name="location_id" string="Block"/>
                                         <field name="planted_year_id" string="PY"/>
-                                        <field name="qty_n" string="N"/>
-                                        <field name="qty_a" string="A"/>
-                                        <field name="qty_e" string="E"/>
-                                        <field name="qty_l" string="L"/>
-                                        <field name="qty_b" string="B"/>
+                                        <field name="qty_n" string="N" sum="N"/>
+                                        <field name="qty_a" string="A" sum="A"/>
+                                        <field name="qty_e" string="E" sum="E"/>
+                                        <field name="qty_l" string="L" sum="L"/>
+                                        <field name="qty_b" string="B" sum="B"/>
                                         <field name="flag_s" string="S"/>
                                         <field name="flag_k" string="K"/>
                                     </tree>
