@@ -23,11 +23,13 @@
 
     # always loaded
     'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
         'views/inherit_estate_hr_team_views.xml',
         'views/estate_ffb_view.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
-        
+        'demo/res_user_demo.xml',
     ],
 }
