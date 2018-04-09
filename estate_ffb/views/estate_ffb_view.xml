@@ -15,6 +15,8 @@
                     <field name="date"/>
                     <filter name="filter_new" string="Draft"
                             domain="[('state', '=', 'draft')]"/>
+                    <filter name="filter_confirmed" string="Confirmed"
+                            domain="[('state', '=', 'confirmed')]"/>
                     <filter name="filter_approved" string="Approved"
                             domain="[('state', '=', 'approved')]"/>
                     <filter name="filter_correction" string="Rejected"
@@ -32,6 +34,10 @@
                             domain="[('date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')),
                             ('date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
                     <group string="Group By">
+                        <filter name="by_company" string="Company"
+                                context="{'group_by': 'company_id'}" />
+                        <filter name="by_estate" string="Estate"
+                                context="{'group_by': 'estate_id'}" />
                         <filter name="by_division" string="Division"
                                 context="{'group_by': 'division_id'}"/>
                         <separator/>
@@ -97,6 +103,7 @@
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
                                 <field name="approver_id" options="{'no_create_edit': True}"
                                         attrs="{'readonly': [('state','not in',('draft','confirmed'))]}"/>
+                                <field name="max_day" invisible="True"/>
                             </group>
                             <group name="division_information">
                                 <field name="company_id" options="{'no_create_edit': True}"
@@ -116,10 +123,10 @@
                                         <field name="division_id" invisible="1"/>
                                         <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
                                         <field name="employee_nik" string="NIK" readonly="True"/>
-                                        <field name="tph_id" string="TPH" options="{'no_create_edit': True}"/>
                                         <field name="block_id" string="Block" invisible="1"/>
                                         <field name="location_id" string="Block"/>
                                         <field name="planted_year_id" string="PY"/>
+                                        <field name="tph_id" string="TPH" options="{'no_create_edit': True}"/>
                                         <field name="qty_n" string="N" sum="N"/>
                                         <field name="qty_a" string="A" sum="A"/>
                                         <field name="qty_e" string="E" sum="E"/>
@@ -147,9 +154,14 @@
             <field name="context">{'search_default_filter_new': 1}</field>
         </record>
 
+        <menuitem id="estate_harvest_menu" name="Harvest"
+                  parent="estate.main_estate_menu"
+                  sequence="11"
+                  groups="estate.group_user" />
+
         <menuitem id="estate_ffb" name="Daily Harvest"
-                  parent="estate.estate_operation_menu"
+                  parent="estate_harvest_menu"
                   action="action_list_ffb"
-                  groups="estate.group_user"/>
+                  groups="estate.group_user" />
     </data>
 </openerp>
