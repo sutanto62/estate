@@ -23,7 +23,7 @@
 
     # always loaded
     'data': [
-        
+        'views/estate_ffbpayroll_view.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
