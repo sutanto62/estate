@@ -23,6 +23,7 @@
 
     # always loaded
     'data': [
+        'data/ir_sequence_data.xml',
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/inherit_estate_hr_team_views.xml',
