@@ -3,7 +3,7 @@
     'name': "Time Labour",
 
     'summary': """
-        Work Schedule, Shift, Action Reason""",
+        Public Holiday, Work Schedule, Shift, Action Reason""",
 
     'description': """
         Long description of module's purpose
@@ -19,7 +19,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'hr','hr_attendance'],
+    'depends': ['hr_attendance'],
 
     # always loaded
     'data': [

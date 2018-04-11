@@ -14,6 +14,7 @@ class TestInheritedResource(TransactionCase):
 
         self.Calendar = self.env['resource.calendar']
         self.calendar_id = self.env.ref('hr_time_labour.schedule_day_4').calendar_id
+        self.calendar = self.env.ref('resource.timesheet_group1')
 
     def test_get_day_in_out(self):
         """ Check day in out."""
@@ -40,3 +41,23 @@ class TestInheritedResource(TransactionCase):
         time_start, time_end = self.calendar_id._get_day_in_out(4)
         self.assertEqual(time_start, 6.0)
         self.assertEqual(time_end, 11.0)
+
+    def test_get_day(self):
+        """ Check day returned."""
+
+        str_workday = '2018-04-16'
+        str_friday = '2018-04-20'
+        str_holiday = '2018-02-14'
+        str_sunday = '2018-04-15'
+
+        # check holiday
+        self.assertEqual(self.calendar.get_day(str_holiday), 'holiday')
+        self.assertEqual(self.calendar.get_day(str_sunday), 'holiday')
+
+        # check friday
+        self.assertEqual(self.calendar.get_day(str_friday), 'friday')
+
+        # check if workday returned true
+        self.assertEqual(self.calendar.get_day(str_workday), 'workday')
+
+

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!--holiday-->
+        <record id="hr_time_labour.holiday_1" model="hr_time_labour.holiday">
+            <field name="name">New Year</field>
+            <field name="date" eval="(DateTime.today() - relativedelta(day=1, month=1)).strftime('%Y-%m-%d')"/>
+            <field name="calendar_id" ref="resource.timesheet_group1"/>
+        </record>
+        <record id="hr_time_labour.holiday_2" model="hr_time_labour.holiday">
+            <field name="name">Valentine Day</field>
+            <field name="date" eval="(DateTime.today() - relativedelta(day=14, month=2)).strftime('%Y-%m-%d')"/>
+            <field name="calendar_id" ref="resource.timesheet_group1"/>
+        </record>
+        <!--/holiday-->
         <!--shift-->
         <record id="shift_estate_reguler" model="hr_time_labour.shift">
             <field name="name">Shift Opr Kebun SenSab</field>
