@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from openerp import models, fields, api, exceptions, _
 from openerp.exceptions import ValidationError
 
 import openerp.addons.decimal_precision as dp
 
+RESET_PERIOD = [('year', 'Every Year'), ('month', 'Every Month')]
+RESET_PERIOD_TIMEDELTA = [('year', 12), ('month', 1)]
 
 class EstateFFB(models.Model):
     
@@ -56,6 +59,30 @@ class EstateFFB(models.Model):
                 raise ValidationError(error_msg)
             else:
                 return True
+
+    @api.constrains('clerk_id')
+    def _check_clerk_id(self):
+        """
+        Check each Bunch Count Sheet with current date is for single clerk_id.
+        """
+        ffb_ids = self.search([('date', '=', self.date), ('clerk_id', '=', self.clerk_id.id)]).ids
+
+        if len(ffb_ids) > 1:
+            error_msg = _("Bunch Count Sheet with current Clerk is already created today.")
+            raise ValidationError(error_msg)
+
+    @api.model
+    def create(self, vals):
+        """ Get sequence for ffb"""
+        if vals.get('name', 'New') == 'New':
+            seq_obj = self.env['ir.sequence']
+            estate_name = self.env['stock.location'].search([('id', '=', vals['estate_id'])])
+
+            vals['name'] = seq_obj.with_context(ir_sequence_code_1=estate_name.name,
+                                                ir_sequence_date=vals['date']).next_by_code('estate.ffb') or '/'
+
+        return super(EstateFFB, self).create(vals)
+
     
 class EstateFFBDetail(models.Model):
     
@@ -67,8 +94,6 @@ class EstateFFBDetail(models.Model):
     upkeep_date = fields.Date(related='ffb_id.date', string='Date', store=True)
     employee_id = fields.Many2one('hr.employee', 'Harvester', required=True, track_visibility='onchange',
                                   domain=[('contract_type', 'in', ['1', '2'])])
-    # employee_id = fields.Many2one('hr.employee', 'Harvester', required=True, track_visibility='onchange',
-    #                               domain=[('contract_type', 'in', ['1', '2'])])
     employee_nik = fields.Char(related='employee_id.nik_number', string="Employee Identity Number ", store=True)
     employee_company_id = fields.Many2one(related='employee_id.company_id', string='Employee Company', store=True,
                                           help="Company of employee")

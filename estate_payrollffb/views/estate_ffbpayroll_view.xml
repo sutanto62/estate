@@ -148,7 +148,7 @@
         </record>
 
         <menuitem id="estate_harvest" name="Daily Harvest Labour"
-                  parent="estate.estate_operation_menu"
+                  parent="estate_ffb.estate_harvest_menu"
                   action="action_list_harvest"
                   groups="estate.group_user"/>
     </data>
