@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
+        <!--Calendar-->
+        <record id="inherited_resource_calendar_form" model="ir.ui.view">
+            <field name="name">Calendar</field>
+            <field name="model">resource.calendar</field>
+            <field name="inherit_id" ref="resource.resource_calendar_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='leave_ids']" position="before">
+                    <field name="holiday_ids">
+                        <tree editable="True">
+                            <field name="name"/>
+                            <field name="date"/>
+                            <!--hide-->
+                            <field name="calendar_id"/>
+                        </tree>
+                    </field>
+                </xpath>
+            </field>
+        </record>
+        <record id="holiday_view_form" model="ir.ui.view">
+            <field name="name">Public Holiday</field>
+            <field name="model">hr_time_labour.holiday</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+        <!--/Calendar-->
         <!-- Schedule View -->
         <record id="schedule_view_tree" model="ir.ui.view">
             <field name="name">Schedule Tree</field>
@@ -222,6 +254,11 @@
         -->
 
         <!-- Action -->
+        <record id="calendar_action" model="ir.actions.act_window" >
+            <field name="name">Calendar</field>
+            <field name="res_model">resource.calendar</field>
+            <field name="view_mode">tree,form</field>
+        </record>
         <record id="schedule_action" model="ir.actions.act_window" >
             <field name="name">Work Schedule</field>
             <field name="res_model">hr_time_labour.schedule</field>
@@ -240,6 +277,10 @@
 
         <!-- Menu -->
         <!--todo tests parent menu available -->
+        <menuitem id="calendar_menu" name="Calendar"
+                  parent="hr.menu_human_resources_configuration"
+                  action="calendar_action"
+                  groups="base.group_configuration,base.group_hr_user"/>
         <menuitem id="schedule_menu" name="Work Schedule"
                   parent="hr.menu_human_resources_configuration"
                   action="schedule_action"
