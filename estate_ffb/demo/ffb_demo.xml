@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <!--ffb-->
+        <record id="ffb_day_1" model="estate.ffb">
+            <field name="date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
+            <field name="max_day">100</field>
+            <field name="clerk_id" ref="hr_indonesia.employee_ffb_user"/>
+            <field name="team_ids" eval="[(6, 0, [ref('estate.team_syukur')])]"/>
+            <field name="estate_id" ref="estate.estate_stock_location"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="division_id" ref="estate.division_1_stock_location"/>
+            <field name="approver_id" ref="hr_indonesia.employee_estate_assistant"/>
+        </record>
+        <record id="ffb_day_2" model="estate.ffb">
+            <field name="date" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="max_day">100</field>
+            <field name="clerk_id" ref="hr_indonesia.employee_ffb_user"/>
+            <field name="team_ids" eval="[(6, 0, [ref('estate.team_syukur')])]"/>
+            <field name="estate_id" ref="estate.estate_stock_location"/>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="division_id" ref="estate.division_2_stock_location"/>
+            <field name="approver_id" ref="hr_indonesia.employee_estate_assistant"/>
+        </record>
+        <!--/ffb-->
+    </data>
+</openerp>

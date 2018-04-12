@@ -53,6 +53,7 @@ class EstateLocation(models.Model):
 
 class LabourType(models.Model):
     _name = 'estate.labour.type'
+    _description = 'Estate Labour Type'
 
     name = fields.Char('Name')
 
@@ -63,6 +64,7 @@ class EstateObject(models.Model):
     * Object types are locations, buildings, infrastructures.
     """
     _name = 'estate.object'
+    _description = 'Estate Object'
 
     name = fields.Char("Name")
     #object_type_id = fields.Many2one('estate.object.type', "Type")
@@ -72,6 +74,7 @@ class EstateObjectType(models.Model):
     """Type of group
     """
     _name = 'estate.object.type'
+    _description = 'Estate Object Type'
 
     name = fields.Char("Name")
 
@@ -81,6 +84,7 @@ class EstateBlockTemplate(models.Model):
     """
 
     _name = 'estate.block.template'
+    _description = 'Estate Block Template'
     _inherits = {'stock.location': 'inherit_location_id'}
     _inherit = 'mail.thread'
 
@@ -172,6 +176,7 @@ class EstateBlockTemplate(models.Model):
 
 class EstateBlock(models.Model):
     _name = 'estate.block'
+    _description = 'Estate Block'
     _inherits = {'estate.block.template': 'block_template_id'}
 
     block_template_id = fields.Many2one('estate.block.template', "Block Template", required=True, ondelete="restrict")
@@ -181,6 +186,7 @@ class BlockParameter(models.Model):
     """Parameter of Block.
     """
     _name = 'estate.block.parameter'
+    _description = 'Block Parameter'
     #_rec_name = 'parameter_id'
 
     block_id = fields.Many2one('estate.block.template', "Estate Block")
@@ -194,6 +200,7 @@ class Parameter(models.Model):
     """Parameter for Block (exclude Planted Year).
     """
     _name = 'estate.parameter'
+    _description = 'Estate Parameter'
 
     name = fields.Char("Parameter Name")
     mandatory = fields.Boolean("Mandatory", help="Checking this option to make it as mandatory Block Parameter.")
@@ -205,6 +212,7 @@ class ParameterValue(models.Model):
     """Selection value for Parameter.
     """
     _name = 'estate.parameter.value'
+    _description = 'Estate Parameter Value'
 
     name = fields.Char('Value', translate=True, required=True)
     parameter_id = fields.Many2one('estate.parameter', "Parameter", ondelete='restrict')
@@ -215,6 +223,7 @@ class PlantedYear(models.Model):
     """@deprecated: change to product variants.
     """
     _name = 'estate.planted.year'
+    _description = 'Planted Year'
 
     name = fields.Char("Planted Year")
     analytic_account_id = fields.Many2one('account.analytic.account', 'Analytic Account ')
@@ -224,6 +233,7 @@ class StandPerHectare(models.Model):
     """Stand per hectare by regional. Parameter value constrains to topography parameter (hard coded).
     """
     _name = 'estate.stand.hectare'
+    _description = 'Estate Stand/Hectare'
 
     name = fields.Char("Name")
     qty = fields.Integer("Stand Per Hectare")

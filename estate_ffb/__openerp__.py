@@ -32,5 +32,6 @@
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
         'demo/res_user_demo.xml',
+        'demo/ffb_demo.xml',
     ],
 }

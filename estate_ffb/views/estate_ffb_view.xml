@@ -124,8 +124,8 @@
                                         <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
                                         <field name="employee_nik" string="NIK" readonly="True"/>
                                         <field name="block_id" string="Block" invisible="1"/>
-                                        <field name="location_id" string="Block"/>
-                                        <field name="planted_year_id" string="PY"/>
+                                        <field name="location_id" string="Block" options="{'no_create_edit': True}"/>
+                                        <field name="planted_year_id" string="PY" readonly="True"/>
                                         <field name="tph_id" string="TPH" options="{'no_create_edit': True}"/>
                                         <field name="qty_n" string="N" sum="N"/>
                                         <field name="qty_a" string="A" sum="A"/>
@@ -157,11 +157,11 @@
         <menuitem id="estate_harvest_menu" name="Harvest"
                   parent="estate.main_estate_menu"
                   sequence="11"
-                  groups="estate.group_user" />
+                  groups="estate_ffb.group_ffb_user" />
 
         <menuitem id="estate_ffb" name="Daily Harvest"
                   parent="estate_harvest_menu"
                   action="action_list_ffb"
-                  groups="estate.group_user" />
+                  groups="estate_ffb.group_ffb_user" />
     </data>
 </openerp>

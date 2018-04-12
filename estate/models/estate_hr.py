@@ -16,6 +16,7 @@ class Team(models.Model):
     3. An employee is allowed to register as member of one active team."""
 
     _name = 'estate.hr.team'
+    _description = 'Estate Team'
     _inherit = 'mail.thread'
 
     name = fields.Char("Team Name")
@@ -121,6 +122,7 @@ class TeamMember(models.Model):
     """List of Team Member
     """
     _name = 'estate.hr.member'
+    _description = 'Estate Team Member'
 
     team_id = fields.Many2one('estate.hr.team', "Team", ondelete='restrict')
     employee_id = fields.Many2one('hr.employee', "Labour", ondelete='restrict',
@@ -190,6 +192,7 @@ class TeamMember(models.Model):
 
 class AttendanceCode(models.Model):
     _name = 'estate.hr.attendance'
+    _description = 'Attendance Code'
     _rec_name = 'code'
 
     name = fields.Char('Attendance')
@@ -250,6 +253,7 @@ class Wage(models.Model):
     """Set default wage for estate level.
     """
     _name = 'estate.wage'
+    _description = 'Estate Wage'
     _order = 'estate_id asc, date_start desc'
     _inherit = 'mail.thread'
 
