@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import estate_ffbpayroll
+from . import estate_payrollffb
