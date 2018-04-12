@@ -19,14 +19,16 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['estate', 'estate_payroll', 'estate_ffb'],
+    'depends': ['estate_payroll', 'estate_ffb'],
 
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'views/estate_ffbpayroll_view.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
+        'demo/estate_ffbpayroll_demo.xml',
         
     ],
 }

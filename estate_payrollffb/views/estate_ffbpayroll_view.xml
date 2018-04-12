@@ -123,7 +123,7 @@
                                         <field name="employee_nik" string="NIK" readonly="True"/>
                                         <field name="attendance_code_id" string="Attendance" options="{'no_create_edit': True}"/>
                                         <field name="location_id" string="Block" options="{'no_create_edit': True}"/>
-                                        <field name="planted_year_id" string="PY" options="{'no_create_edit': True}"/>
+                                        <field name="planted_year_id" string="PY" readonly="True"/>
                                         <field name="qty_ffb" sum="qty_ffb"/>
                                         <field name="qty_loose_ffb" sum="qty_loose_ffb"/>
                                         <field name="qty_penalty" sum="qty_penalty"/>
@@ -150,6 +150,6 @@
         <menuitem id="estate_harvest" name="Daily Harvest Labour"
                   parent="estate_ffb.estate_harvest_menu"
                   action="action_list_harvest"
-                  groups="estate.group_user"/>
+                  groups="estate_ffb.group_ffb_user"/>
     </data>
 </openerp>

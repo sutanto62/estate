@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="0">
+        <record model="ir.module.category" id="module_category_yield">
+            <field name="name">Yield Management</field>
+            <field name="description">Yield Management</field>
+            <field name="sequence">18</field>
+        </record>
+
         <!--FFB User should not have upkeep access -->
         <record id="estate_ffb.group_ffb_user" model="res.groups">
             <field name="name">FFB User</field>
-            <field name="category_id" ref="estate.module_category_estate"/>
+            <field name="category_id" ref="module_category_yield"/>
             <field name="comment">FFB User has restricted access to upkeep</field>
-            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <!--Estate Assistant inherited FFB User-->
