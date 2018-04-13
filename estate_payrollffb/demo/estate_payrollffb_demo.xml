@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!--ffb-->
-        <record id="harvest_day_1" model="estate.harvest">
+        <record id="harvest_day_1" model="estate.payrollffb">
             <field name="date" eval="(DateTime.today()).strftime('%Y-%m-%d')"/>
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="estate_id" ref="estate.estate_stock_location"/>
@@ -10,7 +10,7 @@
             <field name="division_id" ref="estate.division_1_stock_location"/>
             <field name="approver_id" ref="hr_indonesia.employee_estate_assistant"/>
         </record>
-        <record id="harvest_day_2" model="estate.harvest">
+        <record id="harvest_day_2" model="estate.payrollffb">
             <field name="date" eval="(DateTime.today()+relativedelta(days=1)).strftime('%Y-%m-%d')"/>
             <field name="team_id" ref="estate.team_syukur"/>
             <field name="estate_id" ref="estate.estate_stock_location"/>

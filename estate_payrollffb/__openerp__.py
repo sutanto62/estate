@@ -24,11 +24,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/estate_ffbpayroll_view.xml',
+        'data/ir_sequence_data.xml',
+        'views/estate_payrollffb_views.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
-        'demo/estate_ffbpayroll_demo.xml',
+        'demo/estate_payrollffb_demo.xml',
         
     ],
 }
