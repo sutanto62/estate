@@ -97,6 +97,7 @@ class EstateFFBDetail(models.Model):
     employee_nik = fields.Char(related='employee_id.nik_number', string="Employee Identity Number ", store=True)
     employee_company_id = fields.Many2one(related='employee_id.company_id', string='Employee Company', store=True,
                                           help="Company of employee")
+    team_id = fields.Many2one('estate.hr.team', string="Team")
     division_id = fields.Many2one(related='ffb_id.division_id', string='Division',
                             help='Define division of employee.', compute="_compute_division")
     tph_id = fields.Many2one('estate.block.template', 'TPH',
@@ -142,10 +143,17 @@ class EstateFFBDetail(models.Model):
         """
         team_ids = self.ffb_id.team_ids.ids
         if team_ids:
+            """ Filter employee based on selected team """
             current_worker = []
             hr_member_ids = self.env['estate.hr.member'].search([('team_id', 'in', team_ids)])
             for member in hr_member_ids:
                 current_worker.append(member.employee_id.id)
+
+            """ Get team_id of this employee_id"""
+            member_id = self.env['estate.hr.member'].search([('team_id', 'in', team_ids),
+                                                             ('employee_id', '=', self.employee_id.id)])
+            self.team_id = member_id.team_id.id
+
             return {
                 'domain': {
                     'employee_id': [('id', 'in', current_worker)]

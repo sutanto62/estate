@@ -28,6 +28,7 @@
         'security/ir.model.access.csv',
         'views/inherit_estate_hr_team_views.xml',
         'views/estate_ffb_view.xml',
+        'views/estate_ffb_detail_views.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [
