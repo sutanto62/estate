@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="estate_ffb_detail_view_tree" model="ir.ui.view" >
+            <field name="name">Harvester Summary</field>
+            <field name="model">estate.ffb.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree default_order="upkeep_date desc">
+                    <field name="ffb_id" invisible="1"/>
+                    <!--<field name="division_id" invisible="1"/>-->
+                    <field name="team_id" invisible="1"/>
+                    <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
+                    <field name="employee_nik" string="NIK" readonly="True"/>
+                    <field name="location_id" string="Block" options="{'no_create_edit': True}"/>
+                    <field name="planted_year_id" string="PY" readonly="True"/>
+                    <field name="tph_id" string="TPH" options="{'no_create_edit': True}"/>
+                    <field name="qty_n" string="N" sum="N"/>
+                    <field name="qty_a" string="A" sum="A"/>
+                    <field name="qty_e" string="E" sum="E"/>
+                    <field name="qty_l" string="L" sum="L"/>
+                    <field name="qty_b" string="B" sum="B"/>
+                    <field name="flag_s" string="S"/>
+                    <field name="flag_k" string="K"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="estate_ffb_detail_view_pivot" model="ir.ui.view" >
+            <field name="name">Harvester Summary</field>
+            <field name="model">estate.ffb.detail</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <pivot default_order="upkeep_date desc">
+                    <field name="ffb_id" invisible="1"/>
+                    <!--<field name="division_id" invisible="1"/>-->
+                    <field name="team_id" invisible="1"/>
+                    <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
+                    <field name="employee_nik" string="NIK" readonly="True"/>
+                    <field name="location_id" string="Block" options="{'no_create_edit': True}"/>
+                    <field name="planted_year_id" string="PY" readonly="True"/>
+                    <field name="tph_id" string="TPH" options="{'no_create_edit': True}"/>
+                    <field name="qty_n" string="N" sum="N"/>
+                    <field name="qty_a" string="A" sum="A"/>
+                    <field name="qty_e" string="E" sum="E"/>
+                    <field name="qty_l" string="L" sum="L"/>
+                    <field name="qty_b" string="B" sum="B"/>
+                    <field name="flag_s" string="S"/>
+                    <field name="flag_k" string="K"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="estate_ffb_detail_view_search" model="ir.ui.view">
+            <field name="name">Harvester Summary Search</field>
+            <field name="model">estate.ffb.detail</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="employee_id" />
+                    <field name="employee_nik" />
+                    <field name="team_id" />
+                    <filter name="filter_month" icon="terp-go-month" string="This Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31)).strftime('%%Y-%%m-%%d')),
+                            ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <filter name="filter_year" icon="terp-go-year" string="This Year"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(day=31, month=12)).strftime('%%Y-%%m-%%d')), ('upkeep_date','&gt;=',(context_today()-relativedelta(day=1, month=1)).strftime('%%Y-%%m-%%d'))]"/>
+                    <separator/>
+                    <filter icon="terp-go-month" string="Previous Month"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(months=0,day=1,days=-1)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(months=-1,day=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter icon="terp-go-month" string="Previous Week"
+                            domain="[('upkeep_date','&lt;=',(context_today()+relativedelta(weeks=-2, days=7, weekday=6)).strftime('%Y-%m-%d')), ('upkeep_date','&gt;=',(context_today()+relativedelta(weeks=-2, days=1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <group string="Group By">
+                        <filter name="by_team" string="Team"
+                                context="{'group_by': 'team_id'}"/>
+                        <filter name="by_harvester" string="Harvester"
+                                context="{'group_by': 'employee_id'}"/>
+                        <filter name="by_block" string="Block"
+                                context="{'group_by': 'location_id'}"/>
+                        <filter name="by_tph" string="TPH"
+                                context="{'group_by': 'tph_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_list_harvester_summary" model="ir.actions.act_window" >
+            <field name="name">Harvester Summary</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,pivot</field>
+            <field name="res_model">estate.ffb.detail</field>
+            <field name="context">{
+                'search_default_filter_month': 1,
+                'search_default_by_team': 1,
+                'search_default_by_harvester': 1,
+                'search_default_by_block': 1,
+                'search_default_by_tph': 1,
+                'pivot_measures': ['qty_n', 'qty_a', 'qty_e', 'qty_l', 'qty_b']
+                }</field>
+        </record>
+
+        <menuitem id="estate_harvester_summary" name="Harvester Summary"
+                  parent="estate_harvest_menu"
+                  action="action_list_harvester_summary"
+                  groups="estate_ffb.group_ffb_user" />
+    </data>
+</openerp>

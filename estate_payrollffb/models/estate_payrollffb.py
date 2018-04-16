@@ -48,6 +48,7 @@ class EstatePayrolFFB(models.Model):
                               ('rejected', 'Rejected')], "State", default="draft", track_visibility="onchange")
     description = fields.Text("Description")
     labour_line_ids = fields.One2many('estate.payrollffb.labour', string='Harvest Labour', inverse_name='payrollffb_id')
+    ffb_detail_amount = fields.Char('Harvester Total', compute='_compute_ffb_detail_count', store=False)
     
     def _compute_date(self):
         self.date_number = self.get_date_number(self.date)
@@ -57,6 +58,15 @@ class EstatePayrolFFB(models.Model):
     
     def _compute_is_holiday(self):
         self.is_holiday = self.get_is_holiday(self.date)
+
+    def _compute_ffb_detail_count(self):
+        ffb_detail_ids = self.env['estate.ffb.detail'].search([('upkeep_date', '=', self.date), ('team_id', '=', self.team_id.id)])
+        employee_ids = []
+        tph_ids = []
+        for rec in ffb_detail_ids:
+            employee_ids.append(rec.employee_id.id)
+            tph_ids.append(rec.tph_id.id)
+        self.ffb_detail_amount = str(len(set(employee_ids))) + ' / ' + str(len(set(tph_ids)))
 
     @api.constrains('date')
     def _check_date(self):
@@ -107,6 +117,35 @@ class EstatePayrolFFB(models.Model):
                                                 ir_sequende_date=vals['date']).next_by_code('estate.payrollffb') or '/'
 
         return super(EstatePayrolFFB, self).create(vals)
+
+    @api.multi
+    def action_open_harvester_summary(self):
+        for rec in self:
+            rec = rec.with_context(search_default_filter_new=0,
+                                   search_default_filter_month=1,
+                                   search_default_by_date=1,
+                                   search_default_by_team=1,
+                                   search_default_by_harvester=1,
+                                   search_default_by_block=1,
+                                   search_default_by_tph=1,
+                                   pivot_measures=['qty_n', 'qty_a', 'qty_e', 'qty_l', 'qty_b']
+                                   )
+            context = rec._context.copy()
+            view_id = rec.env.ref('estate_ffb.estate_ffb_detail_view_tree').id
+            summary_ids = rec.env['estate.ffb.detail'].search([('team_id', '=', rec.team_id.id),
+                                                               ('upkeep_date', '=', rec.date)]).ids
+            res = {
+                'name': _('Harvester Summary Records Team %s' % self.team_id.name),
+                'view_type': 'form',
+                'view_mode': 'tree,pivot',
+                'views': [(view_id, 'pivot')],
+                'res_model': 'estate.ffb.detail',
+                'view_id': view_id,
+                'type': 'ir.actions.act_window',
+                'context': context,
+                'domain': [('id', '=', summary_ids)],
+            }
+            return res
 
     def check_employee_membership(self):
         """ Check sum of employee in selected team vs employee on harvest labour details """

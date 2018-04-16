@@ -121,9 +121,9 @@
                                     <tree editable="True" >
                                         <field name="ffb_id" invisible="1"/>
                                         <field name="division_id" invisible="1"/>
+                                        <field name="team_id" string="Team" invisible="1"/>
                                         <field name="employee_id" string="Employee" options="{'no_create_edit': True}"/>
                                         <field name="employee_nik" string="NIK" readonly="True"/>
-                                        <field name="block_id" string="Block" invisible="1"/>
                                         <field name="location_id" string="Block" options="{'no_create_edit': True}"/>
                                         <field name="planted_year_id" string="PY" readonly="True"/>
                                         <field name="tph_id" string="TPH" options="{'no_create_edit': True}"/>

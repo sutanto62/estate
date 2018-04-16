@@ -87,6 +87,17 @@
                                statusbar_visible="draft,agr_asst_approved,agr_head_approved,estate_mgr_approved,approved"/>
                     </header>
                     <sheet string="Daily Payroll FFB">
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_open_harvester_summary" icon="fa-leaf"
+                                type="object" help="(X / Y): X is sum of Harvester, Y is sum of TPH.">
+                                <div class="o_form_field o_stat_info ">
+                                    <span class="o_stat_value">
+                                        <field name="ffb_detail_amount" widget="statinfo" nolabel="1"/>
+                                    </span>
+                                    <span class="o_stat_text">Harvest Team</span>
+                                </div>
+                            </button>
+                        </div>
                         <div class="oe_title">
                             <label string="Payroll FFB Draft " attrs="{'invisible': [('state','!=','draft')]}"/>
                             <label string="Payroll FFB " attrs="{'invisible': [('state','=', 'draft')]}"/>
