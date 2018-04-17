@@ -412,6 +412,5 @@ class EstatePayrollffbLabour(models.Model):
                     'activity_id'           : loosefruite_activity_id.id,
                     'location_id'           : self.location_id.id,
                     'quantity'              : quantity,
-                    'quantity_piece_rate'   : quantity_piece_rate,
                 }
                 estate_upkeep_labour_obj.create(vals_loose_fruite)
