@@ -77,6 +77,8 @@
             <field name="arch" type="xml">
                 <form string="Daily Payroll FFB">
                     <header>
+                        <button class="oe_highlight" name="action_sync" string="Sync"
+                                type="object" states="draft" groups="estate.group_assistant"/>
                         <button class="oe_highlight" name="button_confirmed" string="Confirmed"
                                 type="object" states="draft" groups="estate.group_assistant"/>
                         <button class="oe_highlight" name="button_approved" string="Approved"

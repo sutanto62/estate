@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- Estate FFB Weight -->
+        <record id="ffb_weight_view_search" model="ir.ui.view">
+            <field name="name">Average Weight Bunch Search</field>
+            <field name="model">estate.ffb.weight</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <search default_order="date desc">
+                    <field name="name" string="BJR"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="ffb_weight_view_tree" model="ir.ui.view" >
+            <field name="name">Average Weight Bunch Tree</field>
+            <field name="model">estate.ffb.weight</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree default_order="date_start asc">
+                    <field name="name"/>
+                    <field name="date_start"/>
+                    <field name="date_end"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ffb_weight_view_form" model="ir.ui.view" >
+            <field name="name">Average Weight Bunch</field>
+            <field name="model">estate.ffb.weight</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Average Weight Bunch">
+                    <sheet string="Average Weight Bunch">
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <notebook>
+                            <page string="Yield">
+                                <field name="yield_ids">
+                                    <tree editable="True" >
+                                        <field name="ffb_weight_id" invisible="1"/>
+                                        <field name="location_id" string="Block"/>
+                                        <field name="planted_year_id" string="PY"/>
+                                        <field name="qty_ffb_base_jjg"/>
+                                        <field name="qty_ffb_base_kg"/>
+                                        <field name="rp_ffb_base_jjg"/>
+                                        <field name="rp_ffb_base_kg"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_list_ffb_weight" model="ir.actions.act_window" >
+            <field name="name">Average Weight Bunch</field>
+            <field name="res_model">estate.ffb.weight</field>
+            <field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_filter_new': 1}</field>
+        </record>
+
+        <menuitem id="estate_harvest_standard_menu" name="Harvest Standard"
+                  parent="estate.main_estate_menu"
+                  sequence="11"
+                  groups="estate.group_user" />
+
+        <menuitem id="estate_ffb_weight" name="Average Weight Bunch"
+                  parent="estate_harvest_standard_menu"
+                  action="action_list_ffb_weight"
+                  groups="estate.group_user" />
+        
+        <record id="ffb_activity_view_tree" model="ir.ui.view" >
+            <field name="name">Setting Activty</field>
+            <field name="model">estate.ffb.activity</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="activity_type"/>
+                   	<field name="activity_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="ffb_activity_view_form" model="ir.ui.view" >
+            <field name="name">Setting Activty</field>
+            <field name="model">estate.ffb.activity</field>
+            <field name="priority" eval="1"/>
+            <field name="arch" type="xml">
+                <form string="Setting Activity">
+                    <sheet string="Setting Activity">
+                        <group>
+                            <field name="activity_type"/>
+                            <field name="activity_id"/>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="action_list_ffb_activity" model="ir.actions.act_window" >
+            <field name="name">Setting Activity</field>
+            <field name="res_model">estate.ffb.activity</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <menuitem id="estate_ffb_activity" name="Setting Activity"
+                  parent="estate_harvest_standard_menu"
+                  action="action_list_ffb_activity"
+                  groups="estate.group_user" />
+    </data>
+</openerp>

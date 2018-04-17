@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-
-from openerp import models, fields, api, exceptions, _
+from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 
 class EstatePayrolFFB(models.Model):
@@ -186,6 +185,71 @@ class EstatePayrolFFB(models.Model):
                     error_msg = _("Total worked day of %s should not more than 1 worked day" % rec.employee_id.name_related)
                     raise ValidationError(error_msg)
                     break
+                
+    @api.one
+    def sync_upkeep(self):
+        #create estate.upkeep.activity
+        harvest_activity_obj = self.env['estate.ffb.activity']
+        FFB_ACTIVITY_ID, LOOSEFRUIT_ACTIVITY_ID = None, None
+        
+        try:
+            FFB_ACTIVITY_ID = harvest_activity_obj.search([('activity_type', '=', 'panen_janjang')]).activity_id.id
+            LOOSEFRUIT_ACTIVITY_ID = harvest_activity_obj.search([('activity_type', '=', 'panen_brondolan')]).activity_id.id
+        except:
+            error_msg = _("Cannot continue the process, please setting activity of harvest.")
+            raise ValidationError(error_msg)
+        
+        estate_upkeep_activity_obj = self.env['estate.upkeep.activity']
+        activity_obj = self.env['estate.activity']
+        
+        ffb_activity_id = activity_obj.browse(FFB_ACTIVITY_ID)
+        loosefruite_activity_id = activity_obj.browse(LOOSEFRUIT_ACTIVITY_ID)
+        
+        #create estate.upkeep
+        estate_upkeep_obj = self.env['estate.upkeep']
+        vals_estate_upkeep = {
+                              'assistant_id'        : self.team_id.assistant_id.id,
+                              'team_id'             : self.team_id.id,
+                              'date'                : self.date,
+                              'estate_id'           : self.estate_id.id,
+                              'max_day'             : self.max_day,
+                              'company_id'          : self.company_id.id,
+                              'division_id'         : self.division_id.id,
+                              'state'               : 'draft',
+                              'is_harvest'          : True
+                            }
+        upkeep_id = estate_upkeep_obj.create(vals_estate_upkeep)
+        
+        location_ids = []
+        for labour in self.labour_line_ids:
+            location_ids.append(labour.location_id.id)
+        
+        unit_amount = 1000
+        vals_activity_ffb = {
+                    'upkeep_id'             : upkeep_id.id,
+                    'activity_id'           : ffb_activity_id.id,
+                    'location_ids'          : location_ids,
+                    'division_id'           : self.division_id.id,
+                    'unit_amount'           : unit_amount
+                    }
+        estate_upkeep_activity_obj.create(vals_activity_ffb)
+        
+        vals_activity_loose_fruit = {
+                    'upkeep_id'             : upkeep_id.id,
+                    'activity_id'           : loosefruite_activity_id.id,
+                    'location_ids'          : location_ids,
+                    'division_id'           : self.division_id.id,
+                    'unit_amount'           : unit_amount
+                    }
+        estate_upkeep_activity_obj.create(vals_activity_loose_fruit)
+        
+        #create estate.upkeep.labour
+        for labour in self.labour_line_ids:
+            labour.sync_upkeep(upkeep_id)
+    
+    @api.one            
+    def action_sync(self):
+        self.sync_upkeep()
 
 class EstatePayrollffbLabour(models.Model):
     
@@ -251,3 +315,52 @@ class EstatePayrollffbLabour(models.Model):
             return {
                 'domain': {'employee_id': [('id', 'in', current_worker)]}
             }
+            
+    def sync_upkeep(self, estate_upkeep_id):
+        """
+        Create upkeep labour to upkeep_id given
+        """
+        FFB_ACTIVITY_ID = 3021
+        LOOSEFRUIT_ACTIVITY_ID = 3023
+        activity_obj = self.env['estate.activity']
+        estate_upkeep_labour_obj = self.env['estate.upkeep.labour']
+        estate_ffb_weight_id = self.env['estate.ffb.weight'].current()
+        estate_ffb_yield_obj = self.env['estate.ffb.yield']
+        
+        ffb_activity_id = activity_obj.browse(FFB_ACTIVITY_ID)
+        loosefruite_activity_id = activity_obj.browse(LOOSEFRUIT_ACTIVITY_ID)
+        
+        if ffb_activity_id and estate_upkeep_id and loosefruite_activity_id:
+            
+            bjr = estate_ffb_yield_obj.search([
+                                        ('ffb_weight_id', '=', estate_ffb_weight_id.id),
+                                        ('location_id', '=', self.location_id.id)
+                                        ])
+            
+            kg_per_jjg = bjr.qty_ffb_base_kg/bjr.qty_ffb_base_jjg
+            quantity = self.qty_ffb * kg_per_jjg
+            quantity_piece_rate = (self.qty_ffb - bjr.qty_ffb_base_jjg if self.qty_ffb - bjr.qty_ffb_base_jjg > 0 else 0) * kg_per_jjg 
+            
+            vals_ffb = {
+                'upkeep_id'             : estate_upkeep_id.id,
+                'employee_id'           : self.employee_id.id,
+                'activity_id'           : ffb_activity_id.id,
+                'location_id'           : self.location_id.id,
+                'attendance_code_id'    : self.attendance_code_id.id,
+                'quantity'              : quantity,
+                'quantity_piece_rate'   : quantity_piece_rate,
+                'number_of_day'         : self.attendance_code_id.qty_ratio,
+            }
+            estate_upkeep_labour_obj.create(vals_ffb)
+            
+            if self.qty_loose_ffb > 0:
+                quantity = self.qty_loose_ffb
+                vals_loose_fruite = {
+                    'upkeep_id'             : estate_upkeep_id.id,
+                    'employee_id'           : self.employee_id.id,
+                    'activity_id'           : loosefruite_activity_id.id,
+                    'location_id'           : self.location_id.id,
+                    'quantity'              : quantity,
+                    'quantity_piece_rate'   : quantity_piece_rate,
+                }
+                estate_upkeep_labour_obj.create(vals_loose_fruite)
