@@ -381,7 +381,6 @@ class EstatePayrollffbLabour(models.Model):
                                         ('ffb_weight_id', '=', estate_ffb_weight_id.id),
                                         ('location_id', '=', self.location_id.id)
                                         ])
-            print 'panjang bjr: ', len(bjr)
 
             if len(bjr) == 0:
                 error_msg = _("The block %s's standard Average Weight Bunch is not configured." %( self.location_id.name))
@@ -400,6 +399,8 @@ class EstatePayrollffbLabour(models.Model):
                 'quantity'              : quantity,
                 'quantity_piece_rate'   : quantity_piece_rate,
                 'number_of_day'         : self.attendance_code_id.qty_ratio,
+                'qty_jjg'               : self.qty_ffb,
+                'qty_jjg_basis'         : bjr.qty_ffb_base_jjg,
             }
             estate_upkeep_labour_obj.create(vals_ffb)
             

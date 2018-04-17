@@ -6,6 +6,9 @@ class InheritEstateUpkeepLabour(models.Model):
     
     _inherit = 'estate.upkeep.labour'
     
+    qty_jjg = fields.Float('Quantity Janjang', store=True)
+    qty_jjg_basis = fields.Float('Quantity Janjang Basis', store=True)
+    
     @api.multi
     @api.constrains('quantity_piece_rate')
     def _onchange_piece_rate(self):
@@ -55,6 +58,11 @@ class InheritEstateUpkeepLabour(models.Model):
                                         ('ffb_weight_id', '=', estate_ffb_weight_id.id),
                                         ('location_id', '=', self.location_id.id)
                                         ])
+            
+            if len(bjr) == 0:
+                error_msg = _("The block %s's standard Average Weight Bunch is not configured." %( self.location_id.name))
+                raise ValidationError(error_msg)
+            
             self.wage_piece_rate = self.quantity_piece_rate * bjr.rp_ffb_base_kg 
             return True
         
