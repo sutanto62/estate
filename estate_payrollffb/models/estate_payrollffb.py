@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
 
 class EstatePayrolFFB(models.Model):
@@ -48,6 +48,7 @@ class EstatePayrolFFB(models.Model):
     description = fields.Text("Description")
     labour_line_ids = fields.One2many('estate.payrollffb.labour', string='Harvest Labour', inverse_name='payrollffb_id')
     ffb_detail_amount = fields.Char('Harvester Total', compute='_compute_ffb_detail_count', store=False)
+    upkeep_labour_lines = fields.Integer('Upkeep labour Amount', compute='_compute_upkeep_labour_lines')
     
     def _compute_date(self):
         self.date_number = self.get_date_number(self.date)
@@ -66,6 +67,16 @@ class EstatePayrolFFB(models.Model):
             employee_ids.append(rec.employee_id.id)
             tph_ids.append(rec.tph_id.id)
         self.ffb_detail_amount = str(len(set(employee_ids))) + ' / ' + str(len(set(tph_ids)))
+
+    @api.multi
+    def _compute_upkeep_labour_lines(self):
+        for rec in self:
+            labour_lines_ids = rec.env['estate.upkeep.labour'].search([('upkeep_team_id', '=', rec.team_id.id),
+                                                                        ('upkeep_date', '=', rec.date)])
+            employee_ids = []
+            for line in labour_lines_ids:
+                employee_ids.append(line.employee_id.id)
+            self.upkeep_labour_lines = len(set(employee_ids))
 
     @api.constrains('date')
     def _check_date(self):
@@ -143,6 +154,30 @@ class EstatePayrolFFB(models.Model):
                 'type': 'ir.actions.act_window',
                 'context': context,
                 'domain': [('id', '=', summary_ids)],
+            }
+            return res
+
+    @api.multi
+    def action_open_upkeep_labour(self):
+        for rec in self:
+            rec = rec.with_context(search_default_filter_new=0,
+                                   search_default_by_team=1,
+                                   search_default_by_employee=1,
+                                   )
+            context = rec._context.copy()
+            view_id = rec.env.ref('estate.upkeep_labour_view_tree').id
+            line_ids = rec.env['estate.upkeep.labour'].search([('upkeep_team_id', '=', rec.team_id.id),
+                                                                ('upkeep_date', '=', rec.date)]).ids
+            res = {
+                'name': _('Upkeep Labour Records Team %s' % self.team_id.name),
+                'view_type': 'form',
+                'view_mode': 'tree',
+                'views': [(view_id, 'tree')],
+                'res_model': 'estate.upkeep.labour',
+                'view_id': view_id,
+                'type': 'ir.actions.act_window',
+                'context': context,
+                'domain': [('id', '=', line_ids)],
             }
             return res
 
@@ -320,8 +355,18 @@ class EstatePayrollffbLabour(models.Model):
         """
         Create upkeep labour to upkeep_id given
         """
-        FFB_ACTIVITY_ID = 3021
-        LOOSEFRUIT_ACTIVITY_ID = 3023
+        harvest_activity_obj = self.env['estate.ffb.activity']
+        FFB_ACTIVITY_ID, LOOSEFRUIT_ACTIVITY_ID = None, None
+
+        try:
+            FFB_ACTIVITY_ID = harvest_activity_obj.search(
+                [('activity_type', '=', 'panen_janjang')]).activity_id.id
+            LOOSEFRUIT_ACTIVITY_ID = harvest_activity_obj.search(
+                [('activity_type', '=', 'panen_brondolan')]).activity_id.id
+        except:
+            error_msg = _("Cannot continue the process, please setting activity of harvest.")
+            raise ValidationError(error_msg)
+
         activity_obj = self.env['estate.activity']
         estate_upkeep_labour_obj = self.env['estate.upkeep.labour']
         estate_ffb_weight_id = self.env['estate.ffb.weight'].current()
@@ -336,7 +381,12 @@ class EstatePayrollffbLabour(models.Model):
                                         ('ffb_weight_id', '=', estate_ffb_weight_id.id),
                                         ('location_id', '=', self.location_id.id)
                                         ])
-            
+            print 'panjang bjr: ', len(bjr)
+
+            if len(bjr) == 0:
+                error_msg = _("The block %s's standard Average Weight Bunch is not configured." %( self.location_id.name))
+                raise ValidationError(error_msg)
+
             kg_per_jjg = bjr.qty_ffb_base_kg/bjr.qty_ffb_base_jjg
             quantity = self.qty_ffb * kg_per_jjg
             quantity_piece_rate = (self.qty_ffb - bjr.qty_ffb_base_jjg if self.qty_ffb - bjr.qty_ffb_base_jjg > 0 else 0) * kg_per_jjg 

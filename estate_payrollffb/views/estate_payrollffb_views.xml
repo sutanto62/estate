@@ -96,7 +96,16 @@
                                     <span class="o_stat_value">
                                         <field name="ffb_detail_amount" widget="statinfo" nolabel="1"/>
                                     </span>
-                                    <span class="o_stat_text">Harvest Team</span>
+                                    <span class="o_stat_text">FFB Detail</span>
+                                </div>
+                            </button>
+                            <button class="oe_stat_button" name="action_open_upkeep_labour" icon="fa-wrench"
+                                type="object" help="X: X is the sum of Estate Labour Lines records.">
+                                <div class="o_form_field o_stat_info ">
+                                    <span class="o_stat_value">
+                                        <field name="upkeep_labour_lines" widget="statinfo" nolabel="1"/>
+                                    </span>
+                                    <span class="o_stat_text">Upkeep</span>
                                 </div>
                             </button>
                         </div>
