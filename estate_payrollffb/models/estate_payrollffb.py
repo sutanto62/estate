@@ -45,6 +45,7 @@ class EstatePayrolFFB(models.Model):
                               ('estate_mgr_approved', 'Estate Manager Approved'),
                               ('approved', 'Full Approved'),
                               ('rejected', 'Rejected')], "State", default="draft", track_visibility="onchange")
+    validation_confirm = fields.Boolean("Validation Requester", compute='_compute_validation_confirm', store=False)
     description = fields.Text("Description")
     labour_line_ids = fields.One2many('estate.payrollffb.labour', string='Harvest Labour', inverse_name='payrollffb_id')
     ffb_detail_amount = fields.Char('Harvester Total', compute='_compute_ffb_detail_count', store=False)
@@ -77,6 +78,15 @@ class EstatePayrolFFB(models.Model):
             for line in labour_lines_ids:
                 employee_ids.append(line.employee_id.id)
             self.upkeep_labour_lines = len(set(employee_ids))
+
+    @api.multi
+    def _compute_validation_confirm(self):
+        """ check validation user create_uid to confirm."""
+        for rec in self:
+            if rec.state in ('draft','confirmed'):
+                rec.validation_confirm = False
+                if rec.create_uid.id == self.get_user().id:
+                    rec.validation_confirm = True
 
     @api.constrains('date')
     def _check_date(self):
@@ -180,6 +190,41 @@ class EstatePayrolFFB(models.Model):
                 'domain': [('id', '=', line_ids)],
             }
             return res
+
+    @api.multi
+    def action_draft(self):
+        self.state = 'draft'
+        print self.state
+
+    @api.multi
+    def action_confirmed(self):
+        self.state = 'confirmed'
+        print self.state
+
+    @api.multi
+    def action_agr_asst_approved(self):
+        self.state = 'agr_asst_approved'
+        print self.state
+
+    @api.multi
+    def action_agr_head_approved(self):
+        self.state = 'agr_head_approved'
+        print self.state
+
+    @api.multi
+    def action_estate_mgr_approved(self):
+        self.state = 'estate_mgr_approved'
+        print self.state
+
+    @api.multi
+    def action_approved(self):
+        self.state = 'approved'
+        print self.state
+
+    @api.multi
+    def action_rejected(self):
+        self.state = 'rejected'
+        print self.state
 
     def check_employee_membership(self):
         """ Check sum of employee in selected team vs employee on harvest labour details """
@@ -285,6 +330,12 @@ class EstatePayrolFFB(models.Model):
     @api.one            
     def action_sync(self):
         self.sync_upkeep()
+
+    @api.multi
+    def get_user(self):
+        for rec in self:
+            user = rec.env['res.users'].browse(rec.env.uid)
+            return user
 
 class EstatePayrollffbLabour(models.Model):
     

@@ -26,6 +26,7 @@
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
         'views/estate_payrollffb_views.xml',
+        'views/estate_payrollffb_workflow.xml',
     ],
     # only loaded in demonstration mode (prerequisite data should be processed first)
     'demo': [

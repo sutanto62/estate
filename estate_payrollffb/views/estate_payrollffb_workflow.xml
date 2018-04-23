@@ -1,0 +1,159 @@
+<openerp>
+    <data>
+
+        <record id="estate_payrollffb_workflow" model="workflow">
+            <field name="name">Estate Payroll FFB Workflow</field>
+            <field name="osv">estate.payrollffb</field>
+            <field name="on_create">True</field>
+        </record>
+
+        <!--activities-->
+        <record id="act_draft" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Draft</field>
+            <field name="kind">function</field>
+            <field name="action">action_draft()</field>
+            <field name="flow_start">True</field>
+        </record>
+
+        <record id="act_confirm" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Confirm</field>
+            <field name="kind">function</field>
+            <field name="action">action_confirmed()</field>
+        </record>
+
+        <record id="act_agr_asst_approved" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Agronomy Assistant Approved</field>
+            <field name="kind">function</field>
+            <field name="action">action_agr_asst_approved()</field>
+        </record>
+
+        <record id="act_agr_head_approved" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Agronomy Head Assistant Approved</field>
+            <field name="kind">function</field>
+            <field name="action">action_agr_head_approved()</field>
+        </record>
+
+        <record id="act_estate_mgr_approved" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Estate Manager Approved</field>
+            <field name="kind">function</field>
+            <field name="action">action_estate_mgr_approved()</field>
+        </record>
+
+        <record id="act_approved" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Approved</field>
+            <field name="kind">function</field>
+            <field name="action">action_approved()</field>
+        </record>
+
+        <record id="act_rejected" model="workflow.activity">
+            <field name="wkf_id" ref="estate_payrollffb_workflow"/>
+            <field name="name">Rejected</field>
+            <field name="kind">function</field>
+            <field name="action">action_rejected()</field>
+        </record>
+
+        <!-- workflow transition -->
+
+        <record id="trans_draft_confirmed" model="workflow.transition">
+            <field name="act_from" ref="act_draft"/>
+            <field name="act_to" ref="act_confirm"/>
+            <field name="signal">button_confirm</field>
+        </record>
+
+        <record id="trans_approved_draft" model="workflow.transition">
+            <field name="act_from" ref="act_approved"/>
+            <field name="act_to" ref="act_draft"/>
+            <field name="signal">button_redraft</field>
+        </record>
+
+        <record id="trans_estate_mgr_rejected" model="workflow.transition">
+            <field name="act_from" ref="act_estate_mgr_approved"/>
+            <field name="act_to" ref="act_rejected"/>
+            <field name="signal">button_reject</field>
+        </record>
+
+        <!-- Begin approval sections -->
+        <!--<record id="trans_confirmed_asistant" model="workflow.transition">-->
+            <!--<field name="act_from" ref="act_confirm"/>-->
+            <!--<field name="act_to" ref="act_agr_asst_approved"/>-->
+            <!--<field name="signal">button_approve</field>-->
+        <!--</record>-->
+
+        <!-- Temporary transition from confirmed to estate_mgr approval -->
+        <record id="trans_confirmed_estate_mgr" model="workflow.transition">
+            <field name="act_from" ref="act_confirm"/>
+            <field name="act_to" ref="act_estate_mgr_approved"/>
+            <field name="signal">button_approve</field>
+        </record>
+
+        <record id="trans_asistant_head" model="workflow.transition">
+            <field name="act_from" ref="act_agr_asst_approved"/>
+            <field name="act_to" ref="act_agr_head_approved"/>
+            <field name="signal">button_approve</field>
+        </record>
+
+        <record id="trans_head_asistant_estate_mgr" model="workflow.transition">
+            <field name="act_from" ref="act_agr_head_approved"/>
+            <field name="act_to" ref="act_estate_mgr_approved"/>
+            <field name="signal">button_approve</field>
+        </record>
+
+        <record id="trans_estate_mgr_approved" model="workflow.transition">
+            <field name="act_from" ref="act_estate_mgr_approved"/>
+            <field name="act_to" ref="act_approved"/>
+            <field name="signal">button_approve_mgr</field>
+        </record>
+        <!-- end of approval section -->
+
+        <!-- begin revert section -->
+        <record id="trans_confirmed_draft" model="workflow.transition">
+            <field name="act_from" ref="act_confirm"/>
+            <field name="act_to" ref="act_draft"/>
+            <field name="signal">button_revert</field>
+        </record>
+        
+        <record id="trans_asistant_confirmed" model="workflow.transition">
+            <field name="act_from" ref="act_agr_asst_approved"/>
+            <field name="act_to" ref="act_confirm"/>
+            <field name="signal">button_revert</field>
+        </record>
+
+        <record id="trans_head_asistant" model="workflow.transition">
+            <field name="act_from" ref="act_agr_head_approved"/>
+            <field name="act_to" ref="act_agr_asst_approved"/>
+            <field name="signal">button_revert</field>
+        </record>
+
+        <!--<record id="trans_estate_mgr_head" model="workflow.transition">-->
+            <!--<field name="act_from" ref="act_estate_mgr_approved"/>-->
+            <!--<field name="act_to" ref="act_agr_head_approved"/>-->
+            <!--<field name="signal">button_revert</field>-->
+        <!--</record>-->
+
+        <!--temporary transition from estate_mgr to confirmed-->
+        <record id="trans_estate_mgr_head" model="workflow.transition">
+            <field name="act_from" ref="act_estate_mgr_approved"/>
+            <field name="act_to" ref="act_confirm"/>
+            <field name="signal">button_revert</field>
+        </record>
+
+        <record id="trans_approved_estate_mgr" model="workflow.transition">
+            <field name="act_from" ref="act_approved"/>
+            <field name="act_to" ref="act_estate_mgr_approved"/>
+            <field name="signal">button_revert</field>
+        </record>
+
+        <record id="trans_rejected_estate_mgr" model="workflow.transition">
+            <field name="act_from" ref="act_rejected"/>
+            <field name="act_to" ref="act_estate_mgr_approved"/>
+            <field name="signal">button_revert</field>
+        </record>
+        <!-- end of revert section -->
+    </data>
+</openerp>

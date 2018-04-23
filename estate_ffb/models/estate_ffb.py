@@ -34,8 +34,17 @@ class EstateFFB(models.Model):
                               ('confirmed', 'Confirmed'),
                               ('approved', 'Approved'),
                               ('rejected', 'Rejected')], "State", default="draft", track_visibility="onchange")
+    validation_confirm = fields.Boolean("Validation Requester",compute='_compute_validation_confirm', store=False)
     description = fields.Text("Description")
     ffb_detail_ids = fields.One2many('estate.ffb.detail', string='FFB Line', inverse_name='ffb_id')
+
+    @api.multi
+    def _compute_validation_confirm(self):
+        """ check validation user create_uid to confirm. """
+        for rec in self:
+            rec.validation_confirm = False
+            if rec.create_uid.id == self.get_user().id:
+                rec.validation_confirm = True
 
     @api.one
     @api.constrains('date')
@@ -82,6 +91,28 @@ class EstateFFB(models.Model):
                                                 ir_sequence_date=vals['date']).next_by_code('estate.ffb') or '/'
 
         return super(EstateFFB, self).create(vals)
+
+    @api.multi
+    def action_draft(self):
+        self.state='draft'
+
+    @api.multi
+    def action_confirm(self):
+        self.state='confirmed'
+
+    @api.multi
+    def action_approve(self):
+        self.state='approved'
+
+    @api.multi
+    def action_reject(self):
+        self.state='rejected'
+
+    @api.multi
+    def get_user(self):
+        for rec in self:
+            user = rec.env['res.users'].browse(rec.env.uid)
+            return user
 
     
 class EstateFFBDetail(models.Model):
