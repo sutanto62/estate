@@ -315,7 +315,41 @@ class EstatePayrollffbLabour(models.Model):
                                        help='Define penalty', digits=(4,0))
     cross_team = fields.Boolean('Cross Team Activity', default=False,
                                 help='Cross Team (CT). Check to open all locations.')
-
+    qty_ffb_clerk = fields.Float('Qty FFB Clerk', track_visibility='onchange',
+                                       help='Define quantity FFB clerk', digits=(4,0)
+                                       , compute='_compute_qty_ffb_clerk')
+    qty_loose_ffb_clerk = fields.Float('Qty Loose FFB Clerk', track_visibility='onchange',
+                                       help='Define quantity loose FFB clerk', digits=(4,0)
+                                       , compute='_compute_qty_loose_ffb_clerk')
+    
+    def _compute_qty_ffb_clerk(self):
+        result = 0
+        estate_ffb_detail_ids = self.env['estate.ffb.detail'].search([
+                                            ('location_id', '=', self.location_id.id),
+                                            ('employee_id', '=', self.employee_id.id),
+                                            ('upkeep_date', '=', self.date)
+                                                                     ])
+        
+        if len(estate_ffb_detail_ids)>0:
+            for ffb in estate_ffb_detail_ids:
+                result+=ffb.qty_n+ffb.qty_a+ffb.qty_e+ffb.qty_l
+            
+        self.qty_ffb_clerk = result
+        
+    def _compute_qty_loose_ffb_clerk(self):
+        result = 0
+        estate_ffb_detail_ids = self.env['estate.ffb.detail'].search([
+                                            ('location_id', '=', self.location_id.id),
+                                            ('employee_id', '=', self.employee_id.id),
+                                            ('upkeep_date', '=', self.date)
+                                                                     ])
+        
+        if len(estate_ffb_detail_ids)>0:
+            for ffb in estate_ffb_detail_ids:
+                result+=ffb.qty_b
+                
+        self.qty_loose_ffb_clerk = result
+    
     @api.onchange('location_id','cross_team')
     def _onchange_location_id(self):
         """ Change block selection based on cross_team flag value"""
