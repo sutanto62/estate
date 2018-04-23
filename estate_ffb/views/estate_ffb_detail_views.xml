@@ -101,6 +101,7 @@
         <menuitem id="estate_harvester_summary" name="Harvester Summary"
                   parent="estate_harvest_menu"
                   action="action_list_harvester_summary"
+                  sequence="25"
                   groups="estate_ffb.group_ffb_user" />
     </data>
 </openerp>
